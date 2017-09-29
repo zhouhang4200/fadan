@@ -21,7 +21,7 @@ class CreateRealNameIdentsTable extends Migration
             $table->string('corporation')->comment('法人代表');
             $table->string('identity_card')->comment('身份证');
             $table->string('phone_number')->comment('电话号码');
-            $table->string('license_image')->comment('执照照片');
+            $table->string('license_picture')->comment('执照照片');
             $table->string('front_card_picture')->comment('身份证前照');
             $table->string('back_card_picture')->comment('身份证后照');
             $table->string('hold_card_picture')->comment('身份证手持照');
