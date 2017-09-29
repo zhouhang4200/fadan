@@ -38,7 +38,7 @@ class RedirectIfAuthenticated
      * @param  Request $request [description]
      * @return bool
      */
-    public static function checkLoginError(Request $request)
+    protected function checkLoginError(Request $request)
     {
         $user = User::where('name', $request->name)->first();
 
