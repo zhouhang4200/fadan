@@ -17,7 +17,7 @@ class RealNameIdent extends Model
     	return $this->belongsTo(User::class);
     }
 
-    public function rules()
+    public static function rules()
     {
     	return [
 			'license_name'       => 'required',
@@ -32,7 +32,7 @@ class RealNameIdent extends Model
     	];
     }
 
-    public function messages()
+    public static function messages()
     {
     	return [
 			'license_name.required'       => '请填写执照名称！',

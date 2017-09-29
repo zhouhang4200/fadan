@@ -16,3 +16,14 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 });
+
+Route::middleware(['auth'])->group(function () {
+
+	Route::prefix('home')->namespace('Frontend')->group(function () {
+		Route::resource('account', 'AccountController', ['except' => ['show']]);
+	});
+
+	Route::prefix('admin')->namespace('Backend')->group(function () {
+
+	});
+});

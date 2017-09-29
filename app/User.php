@@ -29,6 +29,22 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public static function rules()
+    {
+        return [
+            'name' => 'required|string|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ];
+    }
+
+    public static function messages()
+    {
+        return [
+            'name.required' => '请填写账号！',
+            'password.required' => '请填写密码',
+        ]
+    }
+
     public function children()
     {
         return $this->hasMany(static::class, 'pid');
