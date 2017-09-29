@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\LoginHistory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,4 +27,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function children()
+    {
+        return $this->hasMany(static::class, 'pid');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(static::class, 'pid');
+    }
+
+    public function loginHistories()
+    {
+        return $this->hasMany(LoginHistory::class, 'user_id');
+    }
 }
