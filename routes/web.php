@@ -20,7 +20,10 @@ Route::group(['middleware' => 'auth'], function () {
 Route::middleware(['auth'])->group(function () {
 
 	Route::prefix('home')->namespace('Frontend')->group(function () {
+		
 		Route::resource('account', 'AccountController', ['except' => ['show']]);
+
+		Route::resource('login', 'LoginRecordController', ['only' => ['show']]);
 	});
 
 	Route::prefix('admin')->namespace('Backend')->group(function () {
