@@ -36,9 +36,10 @@ class RealNameIdentController extends Controller
     	$userId = $request->userId;
 
 		if (RealNameIdent::where('user_id', $userId)->update(['status' => 1])) {
-    		return 1;
+
+    		return jsonMessages(1, '审核通过!');
 		}
-		return 0;    	
+		return jsonMessages(0, '操作异常错误，请重试!'); 	
     }
 
     /**
@@ -51,8 +52,9 @@ class RealNameIdentController extends Controller
     	$userId = $request->userId;
 
 		if (RealNameIdent::where('user_id', $userId)->update(['status' => 2, 'fail_message' => '请按要求填写资料!'])) {
-    		return 2;
+            
+    		return jsonMessages(2, '审核不通过!');
 		}
-		return 0; 
+		return jsonMessages(0, '操作异常错误，请重试!');
     }
 }

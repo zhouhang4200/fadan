@@ -22,22 +22,33 @@ if (!function_exists('loginDetail')) {
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
+            
             $city = City::where('name', $res->city)->first();
 
             return [
-                'country' => $res->country,
+                'country'  => $res->country,
                 'province' => $res->province,
-                'city' => empty($res->city) ? $res->province : $res->city,
-                'city_id' => $city ? $city->id : 0,
-                'ip' => ip2long($ip),
+                'city'     => empty($res->city) ? $res->province : $res->city,
+                'city_id'  => $city ? $city->id : 0,
+                'ip'       => ip2long($ip),
             ];
         }
         return [
-            'country' => '',
+            'country'  => '',
             'province' => '',
-            'city' => '',
-            'city_id' => 0,
-            'ip' => ip2long($ip),
+            'city'     => '',
+            'city_id'  => 0,
+            'ip'       => ip2long($ip),
         ];
+    }
+}
+
+if (!function_exists('jsonMessages')) {
+
+    function jsonMessages($code, $message)
+    {
+        $data = ['code' => $code, 'message' => $message];
+
+        return json_encode($data);
     }
 }
