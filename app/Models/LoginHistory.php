@@ -10,7 +10,7 @@ class LoginHistory extends Model
 {
     public $timestamps = true;
 
-    protected $fillable = ['pid', 'user_id', 'user_type', 'ip', 'city_id', 'detail', 'created_at', 'updated_at'];
+    protected $guarded = [];
 
     public function children()
     {
