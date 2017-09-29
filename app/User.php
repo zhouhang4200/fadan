@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\LoginHistory;
+use App\Models\RealNameIdent;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -41,5 +42,10 @@ class User extends Authenticatable
     public function loginHistories()
     {
         return $this->hasMany(LoginHistory::class, 'user_id');
+    }
+
+    public function RealNameIdent()
+    {
+        return $this->belongsTo(RealNameIdent::class, 'user_id');
     }
 }
