@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LoginHistory;
-use App\Http\Controllers\Frontend\BaseController;
+use App\Http\Controllers\Controller;
 
-class HomeController extends Basecontroller
+class HomeController extends Controller
 {
     /**
      * Show the application dashboard.
