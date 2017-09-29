@@ -9,4 +9,9 @@ class City extends Model
     public $timestamps = true;
 
     protected $fillable = ['name'];
+
+    public function loginHistories()
+    {
+    	return $this->hasMany(LoginHistory::class, 'city_id');
+    }
 }

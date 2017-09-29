@@ -37,6 +37,11 @@ class LoginHistory extends Model
         return $this->attributes['detail'] = json_encode($value);
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
     /**
      * 写入登录信息
      * @param  Request
