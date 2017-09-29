@@ -25,4 +25,34 @@ class RealNameIdentController extends Controller
 
     	// return view('users.audit', compact('users'));
     }
+
+    /**
+     * ajax 审核通过
+     * @param  Request $request [description]
+     * @return string
+     */
+    public function pass(Request $request)
+    {
+    	$userId = $request->userId;
+
+		if (RealNameIdent::where('user_id', $userId)->update(['status' => 1])) {
+    		return 1;
+		}
+		return 0;    	
+    }
+
+    /**
+     * ajax 审核不通过
+     * @param  Request $request [description]
+     * @return string
+     */
+    public function refuse(Request $request)
+    {
+    	$userId = $request->userId;
+
+		if (RealNameIdent::where('user_id', $userId)->update(['status' => 2, 'fail_message' => '请按要求填写资料!'])) {
+    		return 2;
+		}
+		return 0; 
+    }
 }
