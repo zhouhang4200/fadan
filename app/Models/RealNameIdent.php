@@ -47,7 +47,12 @@ class RealNameIdent extends Model
     	];
     }
 
-    //返回图片保存的路径
+    /**
+     * 图片上传
+     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
+     * @param  $path string
+     * @return string
+     */
 	public function uploadImage(UploadedFile $file, $path)
     {   
         $extension = $file->getClientOriginalExtension();
@@ -72,5 +77,20 @@ class RealNameIdent extends Model
         $path = strstr($path, '/resources');
 
         return str_replace('\\', '/', $path);
+    }
+
+    /**
+     * 后台 审核 查找界面
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+    	if ($filters['userId']) {
+    		$query->where('user_id', $filters['userId']);
+    	}
+
+    	if ($filters['phone']) {
+    		$query->where('phone', $filters['phone']);
+    	}
+    	return $query;
     }
 }

@@ -20,6 +20,7 @@ class CreateLoginHistoriesTable extends Migration
             $table->tinyInteger('user_type')->unsigned()->comment('父：1，子：2');
             $table->bigInteger('ip')->comment('登录ip');
             $table->integer('city_id')->nullable()->comment('城市id');
+            $table->string('remark')->nullable()->comment('备注');
             $table->text('detail')->nullable()->comment('详情');
             $table->timestamps();
         });
