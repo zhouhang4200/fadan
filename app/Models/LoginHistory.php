@@ -67,7 +67,7 @@ class LoginHistory extends Model
      * 查找 显示 登录详情
      * @var [type]
      */
-    public static scopeFilters($query, $filters = [])
+    public static function scopeFilters($query, $filters = [])
     {
         if ($filters['userId']) {
 

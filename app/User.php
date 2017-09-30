@@ -42,7 +42,7 @@ class User extends Authenticatable
         return [
             'name.required' => '请填写账号！',
             'password.required' => '请填写密码',
-        ]
+        ];
     }
 
     public function children()
