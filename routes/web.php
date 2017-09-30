@@ -28,5 +28,6 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::prefix('admin')->namespace('Backend')->group(function () {
 
+		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realname.audit');
 	});
 });
