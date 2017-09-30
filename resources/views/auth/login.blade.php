@@ -75,6 +75,9 @@
                                 <a class="btn btn-link" href="{{ route('register') }}">
                                     注册
                                 </a>
+                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    密码找回
+                                </a>
                             </div>
                         </div>
                     </form>
