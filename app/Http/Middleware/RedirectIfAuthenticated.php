@@ -26,7 +26,7 @@ class RedirectIfAuthenticated
             return redirect('home');
         }
 
-        if ($this->checkLoginError($request)) {
+        if ($request->isMethod('post') && $this->checkLoginError($request)) {
             return redirect('login')->withInput()->with('loginError', '异地登录!');
         }
 
