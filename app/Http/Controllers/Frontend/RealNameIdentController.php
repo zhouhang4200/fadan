@@ -39,7 +39,7 @@ class RealNameIdentController extends Controller
         }
 
 		$data                       = $request->all();
-		$data['user_id']            = $userId
+		$data['user_id']            = $userId;
 		$data['license_number']     = $request->license_number;
 		$data['corporation']        = $request->corporation;
 		$data['identity_card']      = $request->identity_card;
