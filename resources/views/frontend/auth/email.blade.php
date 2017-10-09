@@ -17,7 +17,7 @@
         <div class="main">
             <div class="container">
                 <div class="input-container">
-                    <div class="title">密码找回-邮件接收地址</div>
+                    <div class="title">注册邮件地址</div>
 
                     <div class="layui-form-item">
                         <input type="email" name="email" required="" lay-verify="required" placeholder="请输入注册邮箱" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
