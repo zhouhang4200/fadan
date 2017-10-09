@@ -9,8 +9,6 @@ class Recharge extends \App\Extensions\Amount\Base\Transaction
     // 更新用户余额
     public function updateUserAmount()
     {
-        throw new Exception("asdfasf", 1);
-
         echo 'updateUserAmount<br />';
     }
 
