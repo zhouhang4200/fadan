@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use App\Models\AdminLoginHistory;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
@@ -60,9 +61,4 @@ class AdminUser extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
-
-    protected function guard()
-	{
-	    return Auth::guard('admin');
-	}
 }
