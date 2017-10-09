@@ -47,4 +47,7 @@
     .hide {
         display: none;
     }
+    .geetest_holder.geetest_wind .geetest_btn {
+        width:332px;
+    }
 </style>
