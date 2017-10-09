@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\AdminLoginHistory;
-use App\Models\RealNameIdent;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,24 +45,9 @@ class AdminUser extends Authenticatable
         ];
     }
 
-    public function children()
+    public function adminLoginHistories()
     {
-        return $this->hasMany(static::class, 'pid');
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(static::class, 'pid');
-    }
-
-    public function loginHistories()
-    {
-        return $this->hasMany(LoginHistory::class, 'user_id');
-    }
-
-    public function RealNameIdent()
-    {
-        return $this->belongsTo(RealNameIdent::class, 'user_id');
+        return $this->hasMany(AdminLoginHistory::class, 'user_id');
     }
 
     /**
@@ -76,4 +60,9 @@ class AdminUser extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    protected function guard()
+	{
+	    return Auth::guard('admin');
+	}
 }
