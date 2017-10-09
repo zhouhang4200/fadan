@@ -5,6 +5,7 @@ namespace App;
 use App\Models\LoginHistory;
 use App\Models\RealNameIdent;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -63,5 +64,16 @@ class User extends Authenticatable
     public function RealNameIdent()
     {
         return $this->belongsTo(RealNameIdent::class, 'user_id');
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

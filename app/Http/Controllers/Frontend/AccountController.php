@@ -114,7 +114,7 @@ class AccountController extends Controller
             $res = $user->update(['password' => $newPassword]);
 
             if (! $res) {
-                return back()->withInput()->with('updateError', '修改密码失败！')
+                return back()->withInput()->with('updateError', '修改密码失败！');
             }
             // return redirect();
         }
