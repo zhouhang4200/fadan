@@ -4,22 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Amount;
-use App\Extensions\Amount\Recharge;
+use Asset;
+use App\Extensions\Asset\Recharge;
 
 class TestController extends Controller
 {
     public function index()
     {
         $amount = 100;
-        $type = 1;
-        $subtype = 1;
+        $subtype = Recharge::TRADE_SUBTYPE_AUTO;
         $number = 111;
         $remark = '备注';
-        $userId = 2841;
 
-        $recharge = new Recharge($amount, $type, $subtype, $number, $remark, $userId);
+        $recharge = new Recharge($amount, $subtype, $number, $remark);
 
-        Amount::handle($recharge);
+        Asset::handle($recharge);
+
+        dump('ok');
     }
 }

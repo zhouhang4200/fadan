@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Extensions\Amount\Facades;
+namespace App\Extensions\Asset\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Amount extends Facade
+class Asset extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'amount';
+        return 'asset';
     }
 }

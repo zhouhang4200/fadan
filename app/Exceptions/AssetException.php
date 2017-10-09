@@ -3,7 +3,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class AmountException extends Exception
+class AssetException extends Exception
 {
 
 }
