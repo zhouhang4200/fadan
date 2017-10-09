@@ -226,6 +226,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // 资金
+        'Amount' => App\Extensions\Amount\Facades\Amount::class,
     ],
 
 ];

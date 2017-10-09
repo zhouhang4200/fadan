@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // 自定义门面
+        $this->app->bind('amount', function ($app) {
+            return new \App\Extensions\Amount\Base\Amount;
+        });
     }
 
     /**
