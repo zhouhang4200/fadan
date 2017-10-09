@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Models\LoginHistory;
+use App\Models\RealNameIdent;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,4 +28,40 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public static function rules()
+    {
+        return [
+            'name' => 'required|string|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ];
+    }
+
+    public static function messages()
+    {
+        return [
+            'name.required' => '请填写账号！',
+            'password.required' => '请填写密码',
+        ];
+    }
+
+    public function children()
+    {
+        return $this->hasMany(static::class, 'pid');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(static::class, 'pid');
+    }
+
+    public function loginHistories()
+    {
+        return $this->hasMany(LoginHistory::class, 'user_id');
+    }
+
+    public function RealNameIdent()
+    {
+        return $this->belongsTo(RealNameIdent::class, 'user_id');
+    }
 }
