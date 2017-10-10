@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Auth;
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class LoginHistory extends Model

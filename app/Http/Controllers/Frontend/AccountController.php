@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
-use App\User;
+use App\Models\User;
 use App\Models\LoginHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

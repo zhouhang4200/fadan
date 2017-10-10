@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Hash;
 use Closure;
-use App\User;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\AdminUser;
 use App\Models\AdminLoginHistory;
 use App\Models\LoginHistory;
@@ -25,8 +25,9 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
+            
             if ($guard == 'admin') {
-                
+
                 return redirect('/admin/index');
             }
             return redirect('home');
