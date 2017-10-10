@@ -179,6 +179,8 @@ return [
         Germey\Geetest\GeetestServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
 
+        // 自定义服务提供者
+        App\Providers\AssetServiceProvider::class,
     ],
 
     /*
@@ -230,6 +232,8 @@ return [
         'Geetest' => Germey\Geetest\Geetest::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
+        // 资金
+        'Asset' => App\Extensions\Asset\Facades\Asset::class,
     ],
 
 ];

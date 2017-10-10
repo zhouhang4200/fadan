@@ -32,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
 
 		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realname.audit');
 	});
+
+	Route::get('test', 'TestController@index');
 });
 
 Route::namespace('Frontend\Auth')->group(function () {
