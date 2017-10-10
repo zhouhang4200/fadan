@@ -47,7 +47,7 @@ class AdminResetPasswordNotification extends Notification
                     ->line('你好，请点击以下链接修改密码:')
                     ->action('点此重置密码', url('admin/password/reset/'.$this->token))
                     ->line('此链接在5分钟内有效!')
-                    ->line('如果不是您本人，请勿点击任何操作');
+                    ->line('如果不是您本人，请勿做任何操作');
     }
 
     /**

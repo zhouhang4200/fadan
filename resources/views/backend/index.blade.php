@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <title>商家后台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_token" content="{{ csrf_token() }}" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
+
 </head>
 <body>
 <!--START 顶部菜单-->
@@ -29,7 +31,7 @@
         <div class="user">
             <div class="operation">
                 <a href=""><i class="iconfont icon-shezhi"></i>设置</a>
-                <a href=""><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
+                <a href="javascript:void(0)" onclick="logout()"><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
             </div>
         </div>
     </div>
@@ -102,11 +104,28 @@
 <!--END 底部-->
 
 <script src="/vendor/layui/layui.js"></script>
+<script src="/js/jquery-1.11.0.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+    });
+
+   function logout() {    
+        $.post("{{ route('admin.logout') }}", function (data) {
+            top.location='/admin/login'; 
+        });
+    };
+        
     //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){
         var element = layui.element;
     });
+
+
 </script>
 </body>
 </html>
