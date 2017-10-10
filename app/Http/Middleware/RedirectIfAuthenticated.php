@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            
+
             if ($guard == 'admin') {
 
                 return redirect('/admin/index');
@@ -90,7 +90,7 @@ class RedirectIfAuthenticated
             // 最常登录IP
             $mostLoginIp = AdminLoginHistory::select(\DB::raw('count(ip) as ipCount, ip'))
                         ->whereBetween('created_at', [$startOfDate, $endOfDate])
-                        ->where('user_id', $user->id)
+                        ->where('admin_user_id', $user->id)
                         ->groupBy('ip')
                         ->latest('ipCount')
                         ->value('ip');
