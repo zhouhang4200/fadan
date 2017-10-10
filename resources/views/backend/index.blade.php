@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>商家后台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="vendor/layui/css/layui.css">
-    <link rel="stylesheet" href="frontend/css/style.css">
+    <link rel="stylesheet" href="/vendor/layui/css/layui.css">
+    <link rel="stylesheet" href="/frontend/css/style.css">
 </head>
 <body>
 <!--START 顶部菜单-->
@@ -15,7 +15,7 @@
             <div class="t">
                 <h1>千手 · 订单集市</h1>
             </div>
-            <div class="en"><img src="frontend/images/en.png"></div>
+            <div class="en"><img src="/frontend/images/en.png"></div>
         </a>
         <div class="nav">
             <ul>
@@ -101,7 +101,7 @@
 </div>
 <!--END 底部-->
 
-<script src="vendor/layui/layui.js"></script>
+<script src="/vendor/layui/layui.js"></script>
 <script>
     //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){
