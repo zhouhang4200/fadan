@@ -31,14 +31,14 @@
                         <i class="layui-icon icon"> &#x1005;</i>
                     </div>
                     <div class="layui-form-item ">
-                        {!! Geetest::render() !!}
+                        <!-- {!! Geetest::render() !!} -->
                     </div>
                     <div class="layui-form-item">
                         <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" style="width: 100%">登 录</button>
                     </div>
                     <div class="register-and-forget-password">
-                        <a class="register" target="_blank" href="{{ route('register') }}">新用户注册</a>
-                        <a class="forget-password" href="{{ route('password.request') }}">忘记密码？</a>
+                        <a class="register" target="_blank" href="{{ route('admin.register') }}">新用户注册</a>
+                        <a class="forget-password" href="{{ route('admin.password.request') }}">忘记密码？</a>
                         <div class="layui-clear"></div>
                     </div>
                 </div>

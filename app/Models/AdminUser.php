@@ -5,7 +5,7 @@ namespace App\Models;
 use Auth;
 use App\Models\AdminLoginHistory;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\ResetPasswordNotification;
+use App\Notifications\AdminResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class AdminUser extends Authenticatable
@@ -33,7 +33,7 @@ class AdminUser extends Authenticatable
     public static function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:users',
+            'name' => 'required|string|max:255|unique:admin_users',
             'password' => 'required|string|min:6|confirmed',
         ];
     }
@@ -59,6 +59,6 @@ class AdminUser extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPasswordNotification($token));
+        $this->notify(new AdminResetPasswordNotification($token));
     }
 }

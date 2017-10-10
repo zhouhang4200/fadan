@@ -15,6 +15,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 });
 
+
+Route::get('/admin/index', 'Backend\AdminController@index')->name('admin.index');
+
+
 Route::middleware(['auth'])->group(function () {
 
 	Route::prefix('home')->namespace('Frontend')->group(function () {

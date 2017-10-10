@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
+use Auth;
+use Password;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -26,7 +28,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/admin/index';
 
     /**
      * Create a new controller instance.
@@ -35,7 +37,27 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guests');
+        $this->middleware('guest:admin');
+    }
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    protected function guard()
+    {
+        return Auth::guard('admin');
+    }
+
+    /**
+     * Get the broker to be used during password reset.
+     *
+     * @return PasswordBroker
+     */
+    protected function broker()
+    {
+        return Password::broker('admin_users');
     }
 
     /**
