@@ -18,7 +18,7 @@ class HomeController extends Controller
         // 验证通过写入登录数据
         LoginHistory::writeLoginHistory($request->ip());
 
-        $user1 = \App\User::find(2);
+        $user1 = \App\Models\User::find(2);
         $user = LoginHistory::find(1);
         // dd($user1->loginHistories);
         // dd($user->user);

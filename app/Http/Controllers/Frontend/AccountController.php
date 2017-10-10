@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
-use App\User;
+use App\Models\User;
 use App\Models\LoginHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -114,7 +114,7 @@ class AccountController extends Controller
             $res = $user->update(['password' => $newPassword]);
 
             if (! $res) {
-                return back()->withInput()->with('updateError', '修改密码失败！')
+                return back()->withInput()->with('updateError', '修改密码失败！');
             }
             // return redirect();
         }
