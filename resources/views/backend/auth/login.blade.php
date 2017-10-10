@@ -31,7 +31,7 @@
                         <i class="layui-icon icon"> &#x1005;</i>
                     </div>
                     <div class="layui-form-item ">
-                        <!-- {!! Geetest::render() !!} -->
+                        {!! Geetest::render() !!}
                     </div>
                     <div class="layui-form-item">
                         <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" style="width: 100%">登 录</button>
