@@ -8,21 +8,21 @@ use App\Models\PlatformAsset;
 use App\Extensions\Asset\Traits\UserAmountFlowTrait;
 use App\Extensions\Asset\Traits\PlatformAmountFlowTrait;
 
-// 加款
-class Recharge extends \App\Extensions\Asset\Base\Trade
+
+// 提现
+class Withdraw extends \App\Extensions\Asset\Base\Trade
 {
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
-    const TRADE_SUBTYPE_AUTO   = 1; // 自动加款
-    const TRADE_SUBTYPE_MANUAL = 2; // 手动加款
+    const TRADE_SUBTYPE_MANUAL = 1; // 手动提现
 
     protected $userAsset;
     protected $platformAsset;
 
     // 前置操作
     public function before() {
-        if ($this->fee <= 0) {
-            throw new Exception('金额必须是一个正数');
+        if ($this->fee >= 0) {
+            throw new Exception('金额必须是一个负数');
         }
     }
 
@@ -35,7 +35,7 @@ class Recharge extends \App\Extensions\Asset\Base\Trade
         }
 
         $this->userAsset->balance        = bcadd($this->userAsset->balance, $this->fee);
-        $this->userAsset->total_recharge = bcadd($this->userAsset->total_recharge, $this->fee);
+        $this->userAsset->total_withdraw = bcadd($this->userAsset->total_withdraw, $this->fee);
 
         if (!$this->userAsset->save()) {
             throw new Exception('数据更新失败');
@@ -53,7 +53,7 @@ class Recharge extends \App\Extensions\Asset\Base\Trade
         }
 
         $this->platformAsset->balance        = bcadd($this->platformAsset->balance, $this->fee);
-        $this->platformAsset->total_recharge = bcadd($this->platformAsset->total_recharge, $this->fee);
+        $this->platformAsset->total_withdraw = bcadd($this->platformAsset->total_withdraw, $this->fee);
 
         if (!$this->platformAsset->save()) {
             throw new Exception('数据更新失败');
