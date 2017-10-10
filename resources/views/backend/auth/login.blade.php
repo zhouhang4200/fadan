@@ -19,10 +19,6 @@
                 <div class="input-container">
                     <div class="title">登录</div>
                     <div class="layui-form-item">
-                        <input type="radio" name="account" value="nan" title="主账号">
-                        <input type="radio" name="account" value="nv" title="子账号" checked>
-                    </div>
-                    <div class="layui-form-item">
                         <input type="text" name="name" required="" lay-verify="required" placeholder="请输入账号" value="{{ old('name') }}" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
@@ -53,7 +49,7 @@
 @section('js')
     <script>
         //Demo
-        layui.use('form', function(){
+        layui.use(['form'], function(){
             var form = layui.form;
             //监听提交
             form.on('submit(formDemo)', function(data){

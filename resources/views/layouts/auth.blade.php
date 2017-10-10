@@ -9,7 +9,7 @@
 </head>
 <body>
 @yield('content')
-<script src="vendor/layui/layui.js"></script>
-@yield('js')
 </body>
+<script src="/vendor/layui/layui.js"></script>
+@yield('js')
 </html>
