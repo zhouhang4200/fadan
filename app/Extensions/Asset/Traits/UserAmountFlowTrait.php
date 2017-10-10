@@ -10,8 +10,8 @@ trait UserAmountFlowTrait
     {
         $userAmountFlow = new UserAmountFlow;
         $userAmountFlow->user_id       = $this->userId;
-        $userAmountFlow->trade_type    = self::TRADE_TYPE_WITHDRAW;
-        $userAmountFlow->trade_subtype = self::TRADE_TYPE_WITHDRAW . $this->subtype;
+        $userAmountFlow->trade_type    = $this->type;
+        $userAmountFlow->trade_subtype = $this->type . $this->subtype;
         $userAmountFlow->trade_no      = $this->no;
         $userAmountFlow->fee           = $this->fee;
         $userAmountFlow->balance       = $this->userAsset->balance;

@@ -2,7 +2,6 @@
 namespace App\Extensions\Asset;
 
 use App\Exceptions\AssetException as Exception;
-
 use App\Models\UserAsset;
 use App\Models\PlatformAsset;
 use App\Extensions\Asset\Traits\UserAmountFlowTrait;
@@ -21,9 +20,13 @@ class Recharge extends \App\Extensions\Asset\Base\Trade
 
     // 前置操作
     public function before() {
+        // 数据验证
         if ($this->fee <= 0) {
             throw new Exception('金额必须是一个正数');
         }
+
+        // 指定交易类型
+        $this->type = self::TRADE_TYPE_RECHARGE;
     }
 
     // 更新用户余额

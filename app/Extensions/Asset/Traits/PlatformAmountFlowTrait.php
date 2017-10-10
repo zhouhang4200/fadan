@@ -10,8 +10,8 @@ trait PlatformAmountFlowTrait
     {
         $platformAmountFlow = new PlatformAmountFlow;
         $platformAmountFlow->user_id       = $this->userId;
-        $platformAmountFlow->trade_type    = self::TRADE_TYPE_RECHARGE;
-        $platformAmountFlow->trade_subtype = self::TRADE_TYPE_RECHARGE . $this->subtype;
+        $platformAmountFlow->trade_type    = $this->type;
+        $platformAmountFlow->trade_subtype = $this->type . $this->subtype;
         $platformAmountFlow->trade_no      = $this->no;
         $platformAmountFlow->fee           = $this->fee;
         $platformAmountFlow->balance       = $this->userAsset->balance;

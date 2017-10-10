@@ -17,6 +17,7 @@ abstract class Trade
     const TRADE_TYPE_INCOME   = 8;
 
     protected $fee;     // 交易金额
+    protected $type;    // 交易类型
     protected $subtype; // 交易子类型
     protected $no;      // 交易单号
     protected $remark;  // 备注
