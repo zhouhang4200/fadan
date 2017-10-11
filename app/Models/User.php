@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;

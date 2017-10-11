@@ -15,9 +15,6 @@ class AdminController extends Controller
 
     public function index(Request $request)
     {
-    	// 验证通过写入登录数据
-        AdminLoginHistory::writeLoginHistory($request->ip());
-
     	return view('Backend.index');
     }
 }
