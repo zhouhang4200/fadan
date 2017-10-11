@@ -25,6 +25,17 @@
                             <li class="layui-this">子账号列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <form class="layui-form h5-join-form" method="get" action="">
+                            <div class="inc">
+                                <input class="form-control laydate-icon input" type="text" placeholder="开始时间" id="starttime" name="startDate" autocomplete="off" value="">
+                                <span style="color:#28bd8b"> - </span>
+                                <input class="form-control laydate-icon input" type="text" placeholder="结束时间" id="end-time" name="endDate" autocomplete="off" value="">
+
+                                账号名：<input type="text" class="input" name="order_id" placeholder="请输入订单号" value="" id="order_id">
+                                <input type="submit" class="bg" value="查询">
+                                <a href="{{ route('accounts.index') }}"><input type="button" class="bg" value="返回"></a>
+                            </div>
+                        </form>
                             <div class="layui-tab-item layui-show" lay-size="sm">
                                 <table class="layui-table">
                                     <colgroup>
@@ -38,6 +49,7 @@
                                         <th>用户名</th>
                                         <th>邮箱</th>
                                         <th>注册时间</th>
+                                        <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -47,6 +59,7 @@
                                             <td>{{ $account->name }}</td>
                                             <td>{{ $account->email }}</td>
                                             <td>{{ $account->created_at }}</td>
+                                            <td>编辑|删除|详情</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
