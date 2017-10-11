@@ -15,9 +15,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 });
 
-Route::middleware(['auth:admin'])->group(function () {
+Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
-	Route::prefix('admin')->namespace('Backend')->group(function () {
+	Route::prefix('admin')->group(function () {
 
 		Route::get('index', 'AdminController@index')->name('admin.index');
 
@@ -26,9 +26,9 @@ Route::middleware(['auth:admin'])->group(function () {
 });
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 
-	Route::prefix('home')->namespace('Frontend')->group(function () {
+	Route::prefix('home')->group(function () {
 
 		Route::resource('account', 'AccountController', ['except' => ['show']]);
 
