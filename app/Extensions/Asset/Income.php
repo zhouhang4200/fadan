@@ -7,22 +7,22 @@ use App\Models\PlatformAsset;
 use App\Extensions\Asset\Traits\UserAmountFlowTrait;
 use App\Extensions\Asset\Traits\PlatformAmountFlowTrait;
 
-// 提现
-class Withdraw extends \App\Extensions\Asset\Base\Trade
+// 交易收入（资金内部流动）
+class Income extends \App\Extensions\Asset\Base\Trade
 {
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
-    const TRADE_SUBTYPE_MANUAL = 1; // 手动提现
+    const TRADE_SUBTYPE_ORDER_MARKET = 1; // 订单集市收入
 
     protected $userAsset;
     protected $platformAsset;
 
     // 前置操作
     public function beforeUser() {
-        $this->fee = -abs($this->fee);
+        $this->fee = abs($this->fee);
 
         // 指定交易类型
-        $this->type = self::TRADE_TYPE_WITHDRAW;
+        $this->type = self::TRADE_TYPE_INCOME;
     }
 
     // 更新用户余额
@@ -33,19 +33,19 @@ class Withdraw extends \App\Extensions\Asset\Base\Trade
             throw new Exception('用户资产不存在');
         }
 
-        $afterFrozen = bcadd($this->userAsset->frozen, $this->fee);
-        if ($afterFrozen < 0) {
-            throw new Exception('用户冻结金额不足');
-        }
-
-        $this->userAsset->frozen         = $afterFrozen;
-        $this->userAsset->total_withdraw = bcadd($this->userAsset->total_withdraw, abs($this->fee));
+        $this->userAsset->balance      = bcadd($this->userAsset->balance, $this->fee);
+        $this->userAsset->total_income = bcadd($this->userAsset->total_income, $this->fee);
 
         if (!$this->userAsset->save()) {
             throw new Exception('数据更新失败');
         }
 
         return true;
+    }
+
+    // 平台前置操作
+    public function beforePlatform() {
+        $this->fee = -abs($this->fee);
     }
 
     // 更新平台资金
@@ -56,13 +56,15 @@ class Withdraw extends \App\Extensions\Asset\Base\Trade
             throw new Exception('平台资产不存在');
         }
 
-        $afterFrozen = bcadd($this->platformAsset->frozen, $this->fee);
-        if ($afterFrozen < 0) {
-            throw new Exception('平台冻结金额不足');
+        $afterManaged = bcadd($this->platformAsset->managed, $this->fee);
+        if ($afterManaged < 0) {
+            throw new Exception('平台资金不足');
         }
 
-        $this->platformAsset->frozen         = $afterFrozen;
-        $this->platformAsset->total_withdraw = bcadd($this->platformAsset->total_withdraw, abs($this->fee));
+        $this->platformAsset->managed              = $afterManaged;
+        $this->platformAsset->balance              = bcadd($this->platformAsset->balance, abs($this->fee));
+        $this->platformAsset->total_trade_quantity = bcadd($this->platformAsset->total_trade_quantity, 1);
+        $this->platformAsset->total_trade_amount   = bcadd($this->platformAsset->total_trade_amount, abs($this->fee));
 
         if (!$this->platformAsset->save()) {
             throw new Exception('数据更新失败');

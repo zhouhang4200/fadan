@@ -32,14 +32,17 @@ abstract class Trade
         $this->userId  = $userId ?: Auth::user()->id;
     }
 
-    // 前置操作
-    public function before() {}
+    // 用户前置操作
+    public function beforeUser() {}
 
     // 更新用户余额
     abstract public function updateUserAsset();
 
     // 写用户流水
     abstract public function writeUserAmountFlow();
+
+    // 平台前置操作
+    public function beforePlatform() {}
 
     // 更新平台资金
     abstract public function updatePlatformAsset();

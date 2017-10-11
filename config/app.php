@@ -179,8 +179,8 @@ return [
         Germey\Geetest\GeetestServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        // 自定义服务提供者
-        App\Providers\AssetServiceProvider::class,
+        // 资金
+        App\Extensions\Asset\Providers\AssetServiceProvider::class,
     ],
 
     /*

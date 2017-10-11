@@ -13,9 +13,10 @@ class Asset
         DB::beginTransaction();
 
         try {
-            $trade->before();
+            $trade->beforeUser();
             $trade->updateUserAsset();
             $trade->writeUserAmountFlow();
+            $trade->beforePlatform();
             $trade->updatePlatformAsset();
             $trade->writePlatformAmountFlow();
             $trade->after();
