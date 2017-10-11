@@ -144,10 +144,10 @@ class AccountController extends Controller
             $res = User::destroy($id);
 
             if (! $res) {
-                return back()->with('destroyError', '删除失败！');
+                return jsonMessages('2', '删除失败！');
             }
 
-            // return redirect();
+            return jsonMessages('1', '删除成功!');
         }
     }
 }

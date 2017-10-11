@@ -126,7 +126,13 @@
             type: 'DELETE',
             url: '/accounts/'+id,
             success: function (data) {
-                window.location.href = '/accounts'; 
+                console.log(data);
+                var obj = eval('(' + data + ')');
+                if (obj.code == 1) {
+                    window.location.href = '/accounts';                    
+                } else {
+                    alert('删除失败');
+                }
             }
         })
     };
