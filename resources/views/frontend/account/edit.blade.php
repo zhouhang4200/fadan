@@ -21,7 +21,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">账号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $user->name }}" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                                            <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $user->name }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -66,12 +66,6 @@
             }
         });
     });
-
-   function logout() {    
-        $.post("{{ route('admin.logout') }}", function (data) {
-            top.location='/admin/login'; 
-        });
-    };
         
     //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){

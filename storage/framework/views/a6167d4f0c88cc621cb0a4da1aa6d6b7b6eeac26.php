@@ -1,20 +1,18 @@
-@extends('frontend.layouts.app')
+<?php $__env->startSection('title', '商家后台'); ?>
 
-@section('title', '商家后台')
-
-@section('css')
+<?php $__env->startSection('css'); ?>
     <style>
         .layui-form-label {
             width:65px;
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!--START 主体-->
     <div class="main">
         <div class="wrapper">
-            @include('frontend.layouts.account-left')
+            <?php echo $__env->make('frontend.layouts.account-left', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
             <div class="right">
                 <div class="content">
 
@@ -23,19 +21,20 @@
                     <div class="layui-tab">
                         
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('accounts.store') }}">
-                            {!! csrf_field() !!}
+                            <form class="layui-form" method="POST" action="<?php echo e(route('accounts.store')); ?>">
+                            <?php echo csrf_field(); ?>
+
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">账号:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="title" value="{{ old('name') }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                                            <input type="text" name="name" lay-verify="title" value="<?php echo e(old('name')); ?>" autocomplete="off" placeholder="请输入账号" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">邮箱:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="email" lay-verify="required" value="{{ old('email') }}" placeholder="邮箱可为空" autocomplete="off" class="layui-input">
+                                            <input type="text" name="email" lay-verify="required" value="<?php echo e(old('email')); ?>" placeholder="邮箱可为空" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -64,9 +63,9 @@
         </div>
     </div>
 <!--END 主体-->
-@endsection
+<?php $__env->stopSection(); ?>
 <!--START 底部-->
-@section('js')
+<?php $__env->startSection('js'); ?>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -80,4 +79,5 @@
         var element = layui.element;
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('frontend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

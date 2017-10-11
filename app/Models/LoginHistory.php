@@ -54,7 +54,6 @@ class LoginHistory extends Model
         $user              = Auth::user();
         $data['pid']       = $user->pid;
         $data['user_id']   = $user->id;
-        $data['user_type'] = $user->type;
         $data['ip']        = $detailArray['ip'];
         $data['city_id']   = $detailArray['city_id'] ?: 0;
         $data['detail']    = json_encode($detailArray) ?: '';

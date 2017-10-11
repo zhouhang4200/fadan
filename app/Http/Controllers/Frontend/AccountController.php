@@ -59,7 +59,6 @@ class AccountController extends Controller
 
             $data = $request->all();
             $data['password'] = bcrypt($request->password);    
-            $data['type'] = 2;
             $data['pid'] = Auth::id();
 
             $res = User::create($data);
