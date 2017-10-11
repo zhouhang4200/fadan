@@ -15,8 +15,15 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 });
 
+Route::middleware(['auth:admin'])->group(function () {
 
-Route::get('/admin/index', 'Backend\AdminController@index')->name('admin.index');
+	Route::prefix('admin')->namespace('Backend')->group(function () {
+
+		Route::get('index', 'AdminController@index')->name('admin.index');
+
+		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realname.audit');
+	});
+});
 
 
 Route::middleware(['auth'])->group(function () {
@@ -26,11 +33,6 @@ Route::middleware(['auth'])->group(function () {
 		Route::resource('account', 'AccountController', ['except' => ['show']]);
 
 		Route::resource('login', 'LoginRecordController', ['only' => ['index']]);
-	});
-
-	Route::prefix('admin')->namespace('Backend')->group(function () {
-
-		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realname.audit');
 	});
 
 	Route::get('test', 'TestController@index');

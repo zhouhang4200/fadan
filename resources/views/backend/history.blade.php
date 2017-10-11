@@ -9,8 +9,8 @@
             <div class="left">
                 <div class="column-menu">
                     <ul class="seller_center_left_menu">
-                        <li class="current"><a href=""> 商品列表 </a><div class="arrow"></div></li>
-                        <li><a href=""> 商品分类 </a><div class="arrow"></div></li>
+                        <li class="current"><a href=""> 登录历史列表 </a><div class="arrow"></div></li>
+                        <li><a href=""> 登录历史 </a><div class="arrow"></div></li>
                     </ul>
                 </div>
             </div>
@@ -18,11 +18,11 @@
             <div class="right">
                 <div class="content">
 
-                    <div class="path"><span> 商品列表</span></div>
+                    <div class="path"><span>登录历史</span></div>
 
                     <div class="layui-tab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this">网站设置</li>
+                            <li class="layui-this">登录历史</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show" lay-size="sm">
@@ -83,7 +83,5 @@
     layui.use('element', function(){
         var element = layui.element;
     });
-
-
 </script>
 @endsection
