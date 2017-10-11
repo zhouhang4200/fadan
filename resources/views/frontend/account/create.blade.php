@@ -35,7 +35,7 @@
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">密码</label>
+                                        <label class="layui-form-label">确认密码</label>
                                         <div class="layui-input-block">
                                             <input type="password" name="password_confirmation" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                                         </div>

@@ -75,7 +75,13 @@
                                             <td>{{ $account->name }}</td>
                                             <td>{{ $account->email }}</td>
                                             <td>{{ $account->created_at }}</td>
-                                            <td>编辑|删除|详情</td>
+                                            <td><fieldset class="layui-elem-field site-demo-button">
+                                                <div class="layui-btn-group">
+                                                <button class="layui-btn">编辑</button>
+                                                <button class="layui-btn ">删除</button>
+                                                <button class="layui-btn">详情</button>
+                                                </div>
+                                            </fieldset></td>
                                         </tr>
                                     @endforeach
                                     </tbody>

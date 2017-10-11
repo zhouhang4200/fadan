@@ -6,14 +6,7 @@
 <!--START 主体-->
     <div class="main">
         <div class="wrapper">
-            <div class="left">
-                <div class="column-menu">
-                    <ul class="seller_center_left_menu">
-                        <li class="current"><a href=""> 登录历史列表 </a><div class="arrow"></div></li>
-                        <li><a href=""> 登录历史 </a><div class="arrow"></div></li>
-                    </ul>
-                </div>
-            </div>
+            @include('frontend.layouts.account-left')
 
             <div class="right">
                 <div class="content">
