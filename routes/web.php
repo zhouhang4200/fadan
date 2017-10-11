@@ -11,29 +11,28 @@
 |
 */
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('/home', 'HomeController@index')->name('home');
-});
-
 Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
 	Route::prefix('admin')->group(function () {
-
+		// 后台首页
 		Route::get('index', 'AdminController@index')->name('admin.index');
-
-		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realname.audit');
+		// 登录历史记录
+		Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
+		// 实名认证页
+		Route::get('realname/audit', 'RealNameIdent@showAudit')->name('realnameident.showaudit');
 	});
 });
 
 
 Route::middleware(['auth'])->namespace('Frontend')->group(function () {
+	// 首页
+	Route::get('/', 'HomeController@index')->name('home.index');
+	// 登录历史记录
+	Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
 
-	Route::prefix('home')->group(function () {
+	Route::resource('account', 'AccountController', ['except' => ['show']]);
 
-		Route::resource('account', 'AccountController', ['except' => ['show']]);
-
-		Route::resource('login', 'LoginRecordController', ['only' => ['index']]);
-	});
+	Route::resource('login', 'LoginRecordController', ['only' => ['index']]);
 
 	Route::get('test', 'TestController@index');
 });
@@ -43,11 +42,9 @@ Route::namespace('Frontend\Auth')->group(function () {
 	Route::get('login', 'LoginController@showLoginForm')->name('login');
 	Route::post('login', 'LoginController@login');
 	Route::post('logout', 'LoginController@logout')->name('logout');
-
 	// 注册
 	Route::get('register', 'RegisterController@showRegistrationForm')->name('register');
 	Route::post('register', 'RegisterController@register');
-
 	// 密码找回
 	Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
 	Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
@@ -60,11 +57,9 @@ Route::prefix('admin')->namespace('Backend\Auth')->group(function () {
 	Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
 	Route::post('login', 'LoginController@login');
 	Route::post('logout', 'LoginController@logout')->name('admin.logout');
-
 	// 注册
 	Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
 	Route::post('register', 'RegisterController@register');
-
 	// 密码找回
 	Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
 	Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');

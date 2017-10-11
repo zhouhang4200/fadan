@@ -21,12 +21,12 @@ class LoginRecordController extends Controller
 
         $startDate = $request->startDate;
 
-        $endData = $request->endDate;
+        $endDate = $request->endDate;
 
         $filters = compact('userId', 'name', 'startDate', 'endDate');
 
-        $datas = LoginHistory::filter()->paginate(config('frontend.page'));
+        $loginRecords = LoginHistory::filter($filters)->paginate(config('frontend.page'));
 
-        // return view(, compact('datas', 'userId', 'name', 'startDate', 'endDate'));
+        return view('frontend.loginrecord.index', compact('loginRecords', 'userId', 'name', 'startDate', 'endDate'));
     }
 }

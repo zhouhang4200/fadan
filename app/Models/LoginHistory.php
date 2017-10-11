@@ -66,7 +66,7 @@ class LoginHistory extends Model
      * 查找 显示 登录详情
      * @var [type]
      */
-    public static function scopeFilters($query, $filters = [])
+    public static function scopeFilter($query, $filters = [])
     {
         if ($filters['userId']) {
 
@@ -75,7 +75,7 @@ class LoginHistory extends Model
 
         if ($filters['name']) {
 
-            $query->where('name', $filters['name']);
+            $query->where('name', 'like', "%{$filters['name']}%");
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {

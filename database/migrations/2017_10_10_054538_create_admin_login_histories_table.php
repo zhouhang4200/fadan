@@ -15,7 +15,7 @@ class CreateAdminLoginHistoriesTable extends Migration
     {
         Schema::create('admin_login_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->comment('用户id');
+            $table->integer('admin_user_id')->unsigned()->comment('用户id');
             $table->bigInteger('ip')->comment('登录ip');
             $table->integer('city_id')->nullable()->comment('城市id');
             $table->string('remark')->nullable()->comment('备注');

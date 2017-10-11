@@ -18,11 +18,11 @@
             <div class="right">
                 <div class="content">
 
-                    <div class="path"><span>登录历史</span></div>
+                    <div class="path"><span>登录历史记录</span></div>
 
                     <div class="layui-tab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this">登录历史</li>
+                            <li class="layui-this">登录历史记录</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show" lay-size="sm">
@@ -34,27 +34,36 @@
                                     </colgroup>
                                     <thead>
                                     <tr>
-                                        <th>昵称</th>
-                                        <th>加入时间</th>
-                                        <th>签名</th>
+                                        <th>ID</th>
+                                        <th>用户ID</th>
+                                        <th>用户名</th>
+                                        <th>登录IP</th>
+                                        <th>登录城市</th>
+                                        <th>登录时间</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>贤心</td>
-                                        <td>2016-11-29</td>
-                                        <td>人生就像是一场修行</td>
-                                    </tr>
-                                    <tr>
-                                        <td>许闲心</td>
-                                        <td>2016-11-28</td>
-                                        <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
-                                    </tr>
+                                    @foreach($loginRecords as $loginRecord)
+                                        <tr>
+                                            <td>{{ $loginRecord->id }}</td>
+                                            <td>{{ $loginRecord->admin_user_id }}</td>
+                                            <td>{{ $loginRecord->adminUser->name }}</td>
+                                            <td>{{ $loginRecord->ip }}</td>
+                                            <td>{{ $loginRecord->city ? $loginRecord->city->name : '' }}</td>
+                                            <td>{{ $loginRecord->created_at }}</td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
-
+                                
                             </div>
                         </div>
+                        {!! $loginRecords->appends([
+                            'name' => $name,
+                            'admin_user_id' => $adminUserId,
+                            'startDate' => $startDate,
+                            'endDate' => $endDate,
+                        ])->render() !!}
                     </div>
                 </div>
             </div>

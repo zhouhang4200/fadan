@@ -14,4 +14,9 @@ class City extends Model
     {
     	return $this->hasMany(LoginHistory::class, 'city_id');
     }
+
+    public function adminLoginHistories()
+    {
+    	return $this->hasMany(AdminLoginHistory::class, 'city_id');
+    }
 }
