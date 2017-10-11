@@ -48,7 +48,7 @@
                                             <td>{{ $loginRecord->id }}</td>
                                             <td>{{ $loginRecord->admin_user_id }}</td>
                                             <td>{{ $loginRecord->adminUser->name }}</td>
-                                            <td>{{ $loginRecord->ip }}</td>
+                                            <td>{{ long2ip($loginRecord->ip) }}</td>
                                             <td>{{ $loginRecord->city ? $loginRecord->city->name : '' }}</td>
                                             <td>{{ $loginRecord->created_at }}</td>
                                         </tr>
