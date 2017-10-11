@@ -16,6 +16,7 @@
                         
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="{{ route('accounts.store') }}">
+                            {!! csrf_field() !!}
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">账号</label>
                                         <div class="layui-input-block">
@@ -40,7 +41,7 @@
                                             <input type="password" name="password_confirmation" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
-                                <div class="layui-form-item">
+                                    <div class="layui-form-item">
                                     <div class="layui-input-block">
                                         <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
                                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>

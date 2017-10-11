@@ -55,10 +55,11 @@ class AccountController extends Controller
     {
         if (Auth::user()->pid == 0) {  
 
+            $this->validate($request, User::rules(), User::messages());
+
             $data = $request->all();
-
+            $data['password'] = bcrypt($request->password);    
             $data['type'] = 2;
-
             $data['pid'] = Auth::id();
 
             $res = User::create($data);
@@ -67,7 +68,7 @@ class AccountController extends Controller
 
                 return back()->withInput()->with('addError', '添加失败!');
             }
-            // return redirect();
+            return redirect('/accounts');
         }
     }
 

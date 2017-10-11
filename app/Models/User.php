@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'type', 'pid'
     ];
 
     /**
@@ -40,6 +40,7 @@ class User extends Authenticatable
     {
         return [
             'name.required' => '请填写账号！',
+            'name.unique' => '账号已经存在！',
             'password.required' => '请填写密码',
         ];
     }
@@ -90,17 +91,17 @@ class User extends Authenticatable
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
 
-            $query->where('create_at', '>=', $filters['startDate']);
+            $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('create_at', '<=', $filters['endDate']);
+            $query->where('created_at', '<=', $filters['endDate']);
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('create_at', [$filters['startDate'], $filters['endDate']]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']]);
         }
 
         return $query;

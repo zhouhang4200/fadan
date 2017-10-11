@@ -66,17 +66,17 @@ class AdminLoginHistory extends Model
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
 
-            $query->where('create_at', '>=', $filters['startDate']);
+            $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('create_at', '<=', $filters['endDate']);
+            $query->where('created_at', '<=', $filters['endDate']);
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('create_at', [$filters['startDate'], $filters['endDate']]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']]);
         }
 
         return $query;

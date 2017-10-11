@@ -14,10 +14,45 @@
                     <div class="path"><span>登录历史记录</span></div>
 
                     <div class="layui-tab">
-                        <ul class="layui-tab-title">
-                            <li class="layui-this">登录历史记录</li>
-                        </ul>
+
                         <div class="layui-tab-content">
+                             <form class="layui-form" method="" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">账号名</label>
+                                <div class="layui-input-inline">
+                                <input type="text" name="name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                          
+                            <div class="layui-form">
+                              <div class="layui-form-item">
+                                <div class="layui-inline">
+                                  <label class="layui-form-label">开始时间</label>
+                                  <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="test1" placeholder="年-月-日">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="layui-form">
+                              <div class="layui-form-item">
+                                <div class="layui-inline">
+                                  <label class="layui-form-label">结束时间</label>
+                                  <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="test2" placeholder="年-月-日">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit="" lay-filter="demo1">查找</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">返回</button>
+                                </div>
+                            </div>
+                        </form>
                             <div class="layui-tab-item layui-show" lay-size="sm">
                                 <table class="layui-table">
                                     <colgroup>
@@ -53,7 +88,6 @@
                         </div>
                         {!! $loginRecords->appends([
                             'name' => $name,
-                            'user_id' => $userId,
                             'startDate' => $startDate,
                             'endDate' => $endDate,
                         ])->render() !!}
