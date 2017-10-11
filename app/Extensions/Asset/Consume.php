@@ -67,7 +67,7 @@ class Consume extends \App\Extensions\Asset\Base\Trade
         }
 
         $this->platformAsset->balance       = $afterBalance;
-        $this->platformAsset->amount        = bcadd($this->platformAsset->amount, $this->fee);
+        $this->platformAsset->income        = bcadd($this->platformAsset->income, $this->fee);
         $this->platformAsset->total_consume = bcadd($this->platformAsset->total_consume, $this->fee);
 
         if (!$this->platformAsset->save()) {
