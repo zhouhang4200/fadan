@@ -74,4 +74,35 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    /**
+     * 子账号查找
+     * @param  [type] $query   [description]
+     * @param  array  $filters [description]
+     * @return Illuminate\Database\Eloquent\query
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if ($filters['name']) {
+
+            $query->where('name', 'like', "%{$filters['name']}%");
+        }
+
+        if ($filters['startDate'] && empty($filters['endDate'])) {
+
+            $query->where('create_at', '>=', $filters['startDate']);
+        }
+
+        if ($filters['endDate'] && empty($filters['startDate'])) {
+
+            $query->where('create_at', '<=', $filters['endDate']);
+        }
+
+        if ($filters['endDate'] && $filters['startDate']) {
+
+            $query->whereBetween('create_at', [$filters['startDate'], $filters['endDate']]);
+        }
+
+        return $query;
+    }
 }

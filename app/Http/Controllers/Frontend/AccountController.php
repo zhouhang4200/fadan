@@ -15,15 +15,23 @@ class AccountController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         if ($user->pid == 0) {
 
-            $user = User::where('id', $user->id)->first();
-            // 所有的子账号
-            $childrenAccounts = $user->children;
+            $name = $request->name;
+
+            $startDate = $request->startDate;
+
+            $endDate = $request->endDate;
+
+            $filters = compact('name', 'startDate', 'endDate');
+
+            $accounts = User::filter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+
+            return view('frontend.account.index', compact('name', 'startDate', 'endDate', 'accounts'));
         }
     }
 
@@ -57,7 +65,7 @@ class AccountController extends Controller
 
             if (! $res) {
 
-                return back()->withInput()->with('addError', '添加失败!')
+                return back()->withInput()->with('addError', '添加失败!');
             }
             // return redirect();
         }
@@ -105,7 +113,7 @@ class AccountController extends Controller
 
             $user = User::find($id);
 
-            User::rules()['name'] = 'required|string|max:255|unique:users,name,'.$id,
+            User::rules()['name'] = 'required|string|max:255|unique:users,name,' . $id;
 
             $this->validate($request, User::rules(), User::messages());
 
