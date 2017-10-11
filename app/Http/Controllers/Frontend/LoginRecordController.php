@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use Auth;
+use App\Models\User;
 use App\Models\LoginHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,16 +17,23 @@ class LoginRecordController extends Controller
      */
     public function index(Request $request)
     {
-        $name = $request->name;
+        $user = Auth::user();
 
-        $startDate = $request->startDate;
+        if ($user->pid == 0) {
 
-        $endDate = $request->endDate;
+            $name = $request->name;
 
-        $filters = compact('name', 'startDate', 'endDate');
+            $userIds = User::where('name', 'like', "%{$name}%")->where('pid', $user->id)->pluck('id')->toArray();
 
-        $loginRecords = LoginHistory::filter($filters)->paginate(config('frontend.page'));
+            $startDate = $request->startDate;
 
-        return view('frontend.loginrecord.index', compact('loginRecords', 'name', 'startDate', 'endDate'));
+            $endDate = $request->endDate;
+
+            $filters = compact('name', 'userIds', 'startDate', 'endDate');
+
+            $loginRecords = LoginHistory::filter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+
+            return view('frontend.loginrecord.index', compact('loginRecords', 'name', 'startDate', 'endDate'));
+        }
     }
 }

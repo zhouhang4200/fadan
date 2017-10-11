@@ -16,43 +16,30 @@
                     <div class="layui-tab">
 
                         <div class="layui-tab-content">
-                             <form class="layui-form" method="" action="">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">账号名</label>
-                                <div class="layui-input-inline">
-                                <input type="text" name="name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                            <form class="layui-form" method="" action="">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">账号名</label>
+                                    <div class="layui-input-inline">
+                                    <input type="text" name="name" value="{{ $name ?: '' }}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                                    </div> 
+                                    <div class="layui-inline">
+                                      <label class="layui-form-label">开始时间</label>
+                                      <div class="layui-input-inline">
+                                            <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
+                                      </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                      <label class="layui-form-label">结束时间</label>
+                                      <div class="layui-input-inline">
+                                            <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                                      </div>
+                                    </div>
                                 </div>
-                            </div>
-                          
-                            <div class="layui-form">
-                              <div class="layui-form-item">
-                                <div class="layui-inline">
-                                  <label class="layui-form-label">开始时间</label>
-                                  <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="test1" placeholder="年-月-日">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="layui-form">
-                              <div class="layui-form-item">
-                                <div class="layui-inline">
-                                  <label class="layui-form-label">结束时间</label>
-                                  <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="test2" placeholder="年-月-日">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
+                                <div class="layui-inline" >
                                     <button class="layui-btn" lay-submit="" lay-filter="demo1">查找</button>
-                                    <button type="reset" class="layui-btn layui-btn-primary">返回</button>
-                                </div>
-                            </div>
-                        </form>
+                                    <button  class="layui-btn"><a href="{{ route('loginrecord.index') }}" style="color:#fff">返回</a></button>
+                                </div>                     
+                            </form>
                             <div class="layui-tab-item layui-show" lay-size="sm">
                                 <table class="layui-table">
                                     <colgroup>
@@ -114,6 +101,19 @@
             top.location='/admin/login'; 
         });
     };
+
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //常规用法
+        laydate.render({
+        elem: '#test1'
+        });
+
+        //常规用法
+        laydate.render({
+        elem: '#test2'
+        });
+    });
         
     //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){
