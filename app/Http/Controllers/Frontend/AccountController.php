@@ -97,7 +97,7 @@ class AccountController extends Controller
 
             $user = User::find($id);
 
-            // return view(, compact('user'));
+            return view('frontend.account.edit', compact('user'));
         }
     }
 
@@ -114,18 +114,20 @@ class AccountController extends Controller
 
             $user = User::find($id);
 
-            User::rules()['name'] = 'required|string|max:255|unique:users,name,' . $id;
-
-            $this->validate($request, User::rules(), User::messages());
+            $this->validate($request, User::updateRules($user->id), User::messages());
 
             $newPassword = $request->password;
 
-            $res = $user->update(['password' => $newPassword]);
+            if ($newPassword) {
 
-            if (! $res) {
-                return back()->withInput()->with('updateError', '修改密码失败！');
+                $res = $user->update(['password' => bcrypt($newPassword)]);
+
+                if (! $res) {
+                    return back()->withInput()->with('updateError', '修改密码失败！');
+                }
             }
-            // return redirect();
+
+            return redirect('/accounts');
         }
     }
 

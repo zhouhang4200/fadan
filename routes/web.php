@@ -30,7 +30,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 登录历史记录
 	Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
 	// 账号管理
-	Route::resource('accounts', 'AccountController', ['except' => ['show']]);
+	Route::resource('accounts', 'AccountController');
 
 	Route::get('test', 'TestController@index');
 });

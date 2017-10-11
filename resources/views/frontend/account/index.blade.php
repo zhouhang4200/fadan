@@ -64,9 +64,9 @@
                                             <td>{{ $account->created_at }}</td>
                                             <td><fieldset class="layui-elem-field site-demo-button">
                                                 <div class="layui-btn-group">
-                                                <button class="layui-btn">编辑</button>
-                                                <button class="layui-btn ">删除</button>
-                                                <button class="layui-btn">详情</button>
+                                                <button class="layui-btn edit"><a href="{{ route('accounts.edit', ['id' => $account->id]) }}" style="color: #fff">编辑</a></button>
+                                                <button class="layui-btn delete" onclick="del({{ $account->id }})">删除</button>
+<!--                                                 <button class="layui-btn show"><a href="{{ route('accounts.show', ['id' => $account->id]) }}" style="color: #fff">详情</a></button> -->
                                                 </div>
                                             </fieldset></td>
                                         </tr>
@@ -98,6 +98,7 @@
         });
     });
 
+    // 时间插件
     layui.use('laydate', function(){
         var laydate = layui.laydate;
         //常规用法
@@ -111,15 +112,24 @@
         });
     });
 
+    // 登出
    function logout() {    
         $.post("{{ route('admin.logout') }}", function (data) {
             top.location='/admin/login'; 
         });
     };
-        
-    //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
-    layui.use('element', function(){
-        var element = layui.element;
-    });
+    
+    // 删除
+    function del(id)
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/accounts/'+id,
+            success: function (data) {
+                window.location.href = '/accounts'; 
+            }
+        })
+    };
+
 </script>
 @endsection

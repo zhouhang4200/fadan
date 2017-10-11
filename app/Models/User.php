@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,6 +34,13 @@ class User extends Authenticatable
         return [
             'name' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+        ];
+    }
+
+    public static function updateRules($id)
+    {
+        return [
+            'name' => ['required', Rule::unique('users')->ignore($id),],
         ];
     }
 
