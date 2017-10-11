@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('frontend.layouts.app')
 
 @section('title', '商家后台')
 
@@ -6,14 +6,7 @@
 <!--START 主体-->
     <div class="main">
         <div class="wrapper">
-            <div class="left">
-                <div class="column-menu">
-                    <ul class="seller_center_left_menu">
-                        <li class="current"><a href=""> 子账号列表 </a><div class="arrow"></div></li>
-                        <li><a href=""> 子账号列表 </a><div class="arrow"></div></li>
-                    </ul>
-                </div>
-            </div>
+            @include('frontend.layouts.account-left')
 
             <div class="right">
                 <div class="content">
@@ -21,19 +14,42 @@
                     <div class="path"><span>子账号列表</span></div>
 
                     <div class="layui-tab">
-                        <ul class="layui-tab-title">
-                            <li class="layui-this">子账号列表</li>
-                        </ul>
                         <div class="layui-tab-content">
-                        <form class="layui-form h5-join-form" method="get" action="">
-                            <div class="inc">
-                                <input class="form-control laydate-icon input" type="text" placeholder="开始时间" id="starttime" name="startDate" autocomplete="off" value="">
-                                <span style="color:#28bd8b"> - </span>
-                                <input class="form-control laydate-icon input" type="text" placeholder="结束时间" id="end-time" name="endDate" autocomplete="off" value="">
+                        <form class="layui-form" method="" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">账号名</label>
+                                <div class="layui-input-inline">
+                                <input type="text" name="name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                          
+                            <div class="layui-form">
+                              <div class="layui-form-item">
+                                <div class="layui-inline">
+                                  <label class="layui-form-label">开始时间</label>
+                                  <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="test1" placeholder="年-月-日">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
-                                账号名：<input type="text" class="input" name="order_id" placeholder="请输入订单号" value="" id="order_id">
-                                <input type="submit" class="bg" value="查询">
-                                <a href="{{ route('accounts.index') }}"><input type="button" class="bg" value="返回"></a>
+                            <div class="layui-form">
+                              <div class="layui-form-item">
+                                <div class="layui-inline">
+                                  <label class="layui-form-label">结束时间</label>
+                                  <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="test2" placeholder="年-月-日">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit="" lay-filter="demo1">查找</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">返回</button>
+                                </div>
                             </div>
                         </form>
                             <div class="layui-tab-item layui-show" lay-size="sm">
@@ -86,6 +102,19 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
+        });
+    });
+
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //常规用法
+        laydate.render({
+        elem: '#test1'
+        });
+
+        //常规用法
+        laydate.render({
+        elem: '#test2'
         });
     });
 

@@ -42,7 +42,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-        // return view();
+        return view('frontend.account.create');
     }
 
     /**
