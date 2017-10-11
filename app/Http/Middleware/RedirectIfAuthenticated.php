@@ -42,7 +42,7 @@ class RedirectIfAuthenticated
 
             return redirect('/admin/login')->withInput()->with('loginError', '异地登录!');
         }
-
+        
         return $next($request);
     }
 
