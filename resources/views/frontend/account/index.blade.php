@@ -22,7 +22,7 @@
                         <form class="layui-form" method="" action="">
                             <div class="layui-inline" >
                                 <div class="layui-form-item" style="float: left">
-                                    <label class="layui-form-label">账号名</label>
+                                    <label class="layui-form-label">用户名</label>
                                     <div class="layui-input-inline">
                                     <input type="text" name="name" value="{{ $name ?: '' }}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                                     </div> 
@@ -93,14 +93,6 @@
 <!--START 底部-->
 @section('js')
 <script>
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-            }
-        });
-    });
-
     // 时间插件
     layui.use('laydate', function(){
         var laydate = layui.laydate;
@@ -139,19 +131,6 @@
             });        
            
         });
-        // $.ajax({
-        //     type: 'DELETE',
-        //     url: '/accounts/'+id,
-        //     success: function (data) {
-        //         console.log(data);
-        //         var obj = eval('(' + data + ')');
-        //         if (obj.code == 1) {
-        //             window.location.href = '/accounts';                    
-        //         } else {
-        //             alert('删除失败');
-        //         }
-        //     }
-        // })
     };
 
 </script>

@@ -7,6 +7,23 @@
     <meta name="_token" content="{{ csrf_token() }}" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
+    <style>
+        .pagination > li{
+            float: left;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: 1px dotted #ccc;
+        }
+        .pagination > .active {
+            color: #fff;
+            background: #139ff0;
+        }
+        .pagination > li a {
+            display: block;
+        }
+    </style>
     @yield('css')
 
 </head>
@@ -51,6 +68,29 @@
 
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+    });
+
+    function logout() {   
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('/admin/logout', {}, function(str){
+                    window.location.href='/admin/login';
+                });  
+                layer.close(index);
+            });        
+           
+        });
+    }
+</script>
 @yield('js')
 </body>
 </html>

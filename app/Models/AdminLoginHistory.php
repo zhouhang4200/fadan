@@ -54,16 +54,6 @@ class AdminLoginHistory extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['adminUserId']) {
-
-            $query->where('admin_user_id', $filters['adminUserId']);
-        }
-
-        if ($filters['name']) {
-
-            $query->where('name', 'like', "%{$filters['name']}%");
-        }
-
         if ($filters['startDate'] && empty($filters['endDate'])) {
 
             $query->where('created_at', '>=', $filters['startDate']);
