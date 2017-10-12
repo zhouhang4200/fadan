@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,6 +35,13 @@ class User extends Authenticatable
         return [
             'name' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+        ];
+    }
+
+    public static function updateRules($id)
+    {
+        return [
+            'name' => ['required', Rule::unique('users')->ignore($id),],
         ];
     }
 
@@ -96,12 +105,12 @@ class User extends Authenticatable
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('created_at', '<=', $filters['endDate']);
+            $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
         return $query;

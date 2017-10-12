@@ -3,7 +3,11 @@
 @section('title', '密码找回')
 
 @section('css')
-
+    <style>
+        .input-container input {
+            height:40px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -29,9 +33,7 @@
                     </div>
 
                 </div>
-                <p style="text-align: center">
-                    © 2017-2018 All Rights Reserved. <a href="">武汉福禄网络科技有限公司</a>
-                </p>
+                @include('backend.layouts.domain')
             </div>
         </div>
     </form>
@@ -39,14 +41,32 @@
 
 @section('js')
     <script>
-        //Demo
-        layui.use('form', function(){
-            var form = layui.form;
+        layui.use(['form', 'layedit', 'laydate'], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+          
+            var error = "{{ $errors->count() > 0 ? '请填写注册时的邮箱!' : '' }}";
+            var succ = "{{ session('status') ? '发送成功!' : '' }}";
+
+            if (error) {
+                layer.msg(error, {icon: 5, time:2000},);
+            } else if (succ) {
+                layer.msg(succ, {icon: 6, time:2000},);
+            }
+
             //监听提交
-            form.on('submit(formDemo)', function(data){
-                // layer.msg(JSON.stringify(data.field));
-                return true;
-            });
+            // form.on('submit(formDemo)', function(data){
+                // var token=$('meta[name="_token"]').attr('content');
+                // $.ajax({
+                //     url: "{{ route('login') }}",
+                //     data: {'_token':token} ,
+                //     type: "post",
+                //     dataType: "json",
+                //     success: function (data) {
+                //         console.log(1);
+                //     },
+                // });
+            // }); 
         });
     </script>
 @endsection

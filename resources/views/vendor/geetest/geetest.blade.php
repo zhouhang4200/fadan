@@ -9,7 +9,8 @@
             $("#geetest-captcha").closest('form').submit(function(e) {
                 var validate = captchaObj.getValidate();
                 if (!validate) {
-                    alert('{{ Config::get('geetest.client_fail_alert')}}');
+                    // alert('{{ Config::get('geetest.client_fail_alert')}}');
+                    layer.msg('请点击按钮进行验证！', {icon: 5, time:1500},);
                     e.preventDefault();
                 }
             });

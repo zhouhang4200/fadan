@@ -1,8 +1,6 @@
-@extends('frontend.layouts.app')
+<?php $__env->startSection('title', '商家后台'); ?>
 
-@section('title', '商家后台')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!--START 主体-->
     <div class="main">
         <div class="wrapper">
@@ -61,9 +59,9 @@
         </div>
     </div>
 <!--END 主体-->
-@endsection
+<?php $__env->stopSection(); ?>
 <!--START 底部-->
-@section('js')
+<?php $__env->startSection('js'); ?>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -96,4 +94,5 @@
 
 
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('frontend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -178,6 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Germey\Geetest\GeetestServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         // 资金
         App\Extensions\Asset\Providers\AssetServiceProvider::class,

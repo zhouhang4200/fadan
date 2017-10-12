@@ -30,7 +30,7 @@ class RedirectIfAuthenticated
 
                 return redirect('/admin/index');
             }
-            return redirect('home');
+            return redirect('/');
         }
 
         if ($request->isMethod('post') && $this->checkLoginError($request)) {
@@ -42,7 +42,7 @@ class RedirectIfAuthenticated
 
             return redirect('/admin/login')->withInput()->with('loginError', '异地登录!');
         }
-
+        
         return $next($request);
     }
 

@@ -15,9 +15,6 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        // 验证通过写入登录数据
-        LoginHistory::writeLoginHistory($request->ip());
-
         return view('frontend.index');
     }
 }

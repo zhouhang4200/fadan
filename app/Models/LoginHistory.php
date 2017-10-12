@@ -54,7 +54,6 @@ class LoginHistory extends Model
         $user              = Auth::user();
         $data['pid']       = $user->pid;
         $data['user_id']   = $user->id;
-        $data['user_type'] = $user->type;
         $data['ip']        = $detailArray['ip'];
         $data['city_id']   = $detailArray['city_id'] ?: 0;
         $data['detail']    = json_encode($detailArray) ?: '';
@@ -68,9 +67,14 @@ class LoginHistory extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['name']) {
+        if ($filters['name'] && count($filters['userIds']) == 0) {
 
-            $query->where('name', 'like', "%{$filters['name']}%");
+            $query->where('user_id', 0);
+        }
+
+        if ($filters['name'] && count($filters['userIds']) > 0) {
+
+            $query->whereIn('user_id', $filters['userIds']);
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
@@ -80,12 +84,12 @@ class LoginHistory extends Model
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('created_at', '<=', $filters['endDate']);
+            $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
         return $query;
