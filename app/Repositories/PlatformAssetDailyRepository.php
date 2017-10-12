@@ -65,4 +65,22 @@ class PlatformAssetDailyRepository
 
         return true;
     }
+
+    /**
+     * 跑历史数据（一般用来手动）
+     * @param date $dateStart 格式：'2017-10-12'
+     * @param date $dateEnd 格式：'2017-10-12'
+     */
+    public function scriptrun($dateStart, $dateEnd)
+    {
+        $start = Carbon::parse($dateStart);
+        $end = Carbon::parse($dateEnd);
+
+        while($start->lte($end)) {
+            $this->generateDaily($start->toDateString());
+            $start->addDay();
+        }
+
+        return true;
+    }
 }
