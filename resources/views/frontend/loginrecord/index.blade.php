@@ -38,7 +38,7 @@
                                 </div>
                                 <div style="float: left">
                                     <div class="layui-inline" >
-                                        <button class="layui-btn" lay-submit="" lay-filter="demo1">查找</button>
+                                        <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                         <button  class="layui-btn"><a href="{{ route('loginrecord.index') }}" style="color:#fff">返回</a></button>
                                     </div>
                                 </div>                     

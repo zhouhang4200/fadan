@@ -7,6 +7,23 @@
     <meta name="_token" content="{{ csrf_token() }}" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
+    <style>
+        .pagination > li{
+            float: left;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: 1px dotted #ccc;
+        }
+        .pagination > .active {
+            color: #fff;
+            background: #139ff0;
+        }
+        .pagination > li a {
+            display: block;
+        }
+    </style>
     @yield('css')
 
 </head>
@@ -27,13 +44,13 @@
                 <li class=""><a href="">财务</a><div class="arrow"></div></li>
                 <li class=""><a href="">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
-                <li class="{{ Route::currentRouteName() == 'accounts.index' ? 'current' : '' }}"><a href="{{ route('accounts.index') }}">账号</a><div class="arrow"></div></li>
+                <li class="{{ Route::currentRouteName() == ('accounts.index' || 'accounts.create' || 'loginrecord.index') ? 'current' : '' }}"><a href="{{ route('accounts.index') }}">账号</a><div class="arrow"></div></li>
             </ul>
         </div>
         <div class="user">
             <div class="operation">
                 <a href=""><i class="iconfont icon-shezhi"></i>设置</a>
-                <a href="javascript:void(0)" onclick="logout()"><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
+                <a href="javascript:(logout())" ><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
             </div>
         </div>
     </div>
@@ -52,6 +69,29 @@
 
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+    });
+
+    function logout() {   
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('logout', {}, function(str){
+                    window.location.href='/login';
+                });  
+                layer.close(index);
+            });        
+           
+        });
+    }
+</script>
 @yield('js')
 </body>
 </html>

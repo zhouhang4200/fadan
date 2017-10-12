@@ -38,7 +38,7 @@
                                       </div>
                                 </div>
                                 <div style="float: left">
-                                <button class="layui-btn" lay-submit="" lay-filter="demo1">查找</button>
+                                <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                 <button  class="layui-btn"><a href="{{ route('accounts.index') }}" style="color:#fff">返回</a></button></div>
                             </div>                     
                         </form>
@@ -66,10 +66,10 @@
                                             <td>{{ $account->email }}</td>
                                             <td>{{ $account->created_at }}</td>
                                             <td>
-                                                <div class="layui-btn-group">
+                                                <div style="text-align: center">
                                                 <button class="layui-btn edit"><a href="{{ route('accounts.edit', ['id' => $account->id]) }}" style="color: #fff">编辑</a></button>
                                                 <button class="layui-btn delete" onclick="del({{ $account->id }})">删除</button>
-<!--                                                 <button class="layui-btn show"><a href="{{ route('accounts.show', ['id' => $account->id]) }}" style="color: #fff">详情</a></button> -->
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -114,30 +114,44 @@
         elem: '#test2'
         });
     });
-
-    // 登出
-   function logout() {    
-        $.post("{{ route('admin.logout') }}", function (data) {
-            top.location='/admin/login'; 
-        });
-    };
     
     // 删除
     function del(id)
     {
-        $.ajax({
-            type: 'DELETE',
-            url: '/accounts/'+id,
-            success: function (data) {
-                console.log(data);
-                var obj = eval('(' + data + ')');
-                if (obj.code == 1) {
-                    window.location.href = '/accounts';                    
-                } else {
-                    alert('删除失败');
-                }
-            }
-        })
+         layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/accounts/'+id,
+                    success: function (data) {
+                        console.log(data);
+                        var obj = eval('(' + data + ')');
+                        if (obj.code == 1) {
+                            window.location.href = '/accounts';                    
+                        } else {
+                            layer.msg('删除失败', {icon: 5, time:1500},);
+                        }
+                    }
+                });
+                layer.close(index);
+            });        
+           
+        });
+        // $.ajax({
+        //     type: 'DELETE',
+        //     url: '/accounts/'+id,
+        //     success: function (data) {
+        //         console.log(data);
+        //         var obj = eval('(' + data + ')');
+        //         if (obj.code == 1) {
+        //             window.location.href = '/accounts';                    
+        //         } else {
+        //             alert('删除失败');
+        //         }
+        //     }
+        // })
     };
 
 </script>
