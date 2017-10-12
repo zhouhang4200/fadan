@@ -27,7 +27,7 @@
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item ">
-                        <input type="password" name="password" required="" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input layui-form-danger">
+                        <input type="password" name="password" required="" lay-verify="required" placeholder="请输入最少6位数密码" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon"> &#x1005;</i>
                     </div>
                     <div class="layui-form-item ">
@@ -46,9 +46,7 @@
                         <div class="layui-clear"></div>
                     </div>
                 </div>
-                <p style="text-align: center">
-                    © 2017-2018 All Rights Reserved. <a href="">武汉福禄网络科技有限公司</a>
-                </p>
+                @include('frontend.layouts.domain')
             </div>
         </div>
     </form>
@@ -56,14 +54,38 @@
 
 @section('js')
     <script>
-        //Demo
-        layui.use('form', function(){
-            var form = layui.form;
+        layui.use(['form', 'layedit', 'laydate'], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+          
+            var errorName = "{{ $errors->count() > 0 && array_key_exists('name', $errors->toArray()) && $errors->toArray()['name'] ? '用户名已经存在!' : '' }}";
+            var errorPassword = "{{ $errors->count() > 0 && array_key_exists('password', $errors->toArray()) && $errors->toArray()['password'] ? '请按要求填写密码!' : '' }}";
+            var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
+            var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱已经存在!' : '' }}";
+
+            if (errorName) {
+                layer.msg(errorName, {icon: 5, time:1500},);
+            } else if(errorPassword) {
+                layer.msg(errorPassword, {icon: 5, time:1500},);
+            } else if (errorEmail) {
+                layer.msg(errorEmail, {icon: 5, time:1500},);
+            }else if (loginError) {
+                layer.msg(loginError, {icon: 5, time:1500},);
+            }
+
             //监听提交
-            form.on('submit(formDemo)', function(data){
-                // layer.msg(JSON.stringify(data.field));
-                return true;
-            });
+            // form.on('submit(formDemo)', function(data){
+                // var token=$('meta[name="_token"]').attr('content');
+                // $.ajax({
+                //     url: "{{ route('login') }}",
+                //     data: {'_token':token} ,
+                //     type: "post",
+                //     dataType: "json",
+                //     success: function (data) {
+                //         console.log(1);
+                //     },
+                // });
+            // }); 
         });
     </script>
 @endsection

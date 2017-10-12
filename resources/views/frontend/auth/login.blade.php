@@ -38,9 +38,7 @@
                         <div class="layui-clear"></div>
                     </div>
                 </div>
-                <p style="text-align: center">
-                    © 2017-2018 All Rights Reserved. <a href="">武汉福禄网络科技有限公司</a>
-                </p>
+                @include('frontend.layouts.domain')
             </div>
         </div>
     </form>
@@ -48,14 +46,34 @@
 
 @section('js')
     <script>
-        //Demo
-        layui.use('form', function(){
-            var form = layui.form;
+        layui.use(['form', 'layedit', 'laydate'], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+          
+            var error = "{{ $errors->count() > 0 ? '账号或密码错误！' : '' }}";
+            var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
+
+            if (error) {
+                layer.msg(error, {icon: 5, time:1500},);
+            } else if(loginError) {
+                layer.msg(loginError, {icon: 5, time:1500},);
+            }
+
             //监听提交
-            form.on('submit(formDemo)', function(data){
-                // layer.msg(JSON.stringify(data.field));
-                return true;
-            });
+            // form.on('submit(formDemo)', function(data){
+                // var token=$('meta[name="_token"]').attr('content');
+                // $.ajax({
+                //     url: "{{ route('login') }}",
+                //     data: {'_token':token} ,
+                //     type: "post",
+                //     dataType: "json",
+                //     success: function (data) {
+                //         console.log(1);
+                //     },
+                // });
+            // }); 
         });
+
     </script>
 @endsection
+

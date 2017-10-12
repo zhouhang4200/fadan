@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('frontend.layouts.app')
 
 @section('title', '商家后台')
 
@@ -74,8 +74,8 @@
     });
 
    function logout() {    
-        $.post("{{ route('admin.logout') }}", function (data) {
-            top.location='/admin/login'; 
+        $.post("{{ route('logout') }}", function (data) {
+            top.location='/login'; 
         });
     };
         
