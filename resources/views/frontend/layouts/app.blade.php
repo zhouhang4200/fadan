@@ -39,12 +39,12 @@
         </a>
         <div class="nav">
             <ul>
-                <li><a href="">首页</a><div class="arrow"></div></li>
+                <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}" ><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
                 <li class=""><a href="">财务</a><div class="arrow"></div></li>
                 <li class=""><a href="">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
-                <li class="{{ Route::currentRouteName() == ('accounts.index' || 'accounts.create' || 'loginrecord.index') ? 'current' : '' }}"><a href="{{ route('accounts.index') }}">账号</a><div class="arrow"></div></li>
+                <li class="{{ Route::currentRouteName() == 'accounts.index' || Route::currentRouteName() == 'accounts.create' || Route::currentRouteName() == 'loginrecord.index' ? 'current' : '' }}"><a href="{{ route('accounts.index') }}">账号</a><div class="arrow"></div></li>
             </ul>
         </div>
         <div class="user">

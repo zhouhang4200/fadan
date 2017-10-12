@@ -13,9 +13,9 @@
 
 Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
-	Route::prefix('admin')->group(function () {
+	Route::prefix('backend')->group(function () {
 		// 后台首页
-		Route::get('index', 'AdminController@index')->name('admin.index');
+		Route::get('index', 'AdminController@index')->name('backend.index');
 		// 登录历史记录
 		Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
 		// 实名认证页
@@ -26,7 +26,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
 Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
-	Route::get('/', 'HomeController@index')->name('home.index');
+	Route::get('/', 'HomeController@index')->name('frontend.index');
 	// 登录历史记录
 	Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
 	// 账号管理
