@@ -3,7 +3,11 @@
 @section('title', '重置密码')
 
 @section('css')
-
+    <style>
+        .input-container input {
+            height:40px;
+        }
+    </style>
 @endsection
 
 @section('content')
