@@ -20,6 +20,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 		Route::get('/login/record', 'LoginRecordController@index')->name('backend.loginrecord.index');
 		// 实名认证页
 		Route::get('/realname/audit', 'RealNameIdent@showAudit')->name('realnameident.showaudit');
+		// 权限管理
+		Route::resource('/roles', 'RoleController');
+		Route::resource('/rbacgroups', 'RbacGroupController');
+		Route::resource('/permissions', 'PermissionController');
 	});
 });
 
