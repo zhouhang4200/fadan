@@ -46,7 +46,7 @@ class LoginHistory extends Model
      * @param  Request
      * @return \Illuminate\Database\Eloquent\Model|$this
      */
-    protected function writeLoginHistory($ip)
+    protected static function writeLoginHistory($ip)
     {
         // 获取登录详情
         $detailArray = loginDetail($ip);

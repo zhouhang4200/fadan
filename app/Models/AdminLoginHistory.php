@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminLoginHistory extends Model
 {
+    public $timestamps = true;
+
 	protected $guarded = [];
 
 	public function adminUser()
@@ -34,16 +36,16 @@ class AdminLoginHistory extends Model
      * @param  Request
      * @return \Illuminate\Database\Eloquent\Model|$this
      */
-    protected function writeLoginHistory($ip)
+    protected static function writeLoginHistory($ip)
     {
         // 获取登录详情
-        $detailArray = loginDetail($ip);
+        $detailArray           = loginDetail($ip);
         // 获取登录用户详情
-        $user              = Auth::user();
-        $data['admin_user_id']   = $user->id;
-        $data['ip']        = $detailArray['ip'];
-        $data['city_id']   = $detailArray['city_id'] ?: 0;
-        $data['detail']    = json_encode($detailArray) ?: '';
+        $user                  = Auth::guard('admin')->user();
+        $data['admin_user_id'] = $user->id;
+        $data['ip']            = $detailArray['ip'];
+        $data['city_id']       = $detailArray['city_id'] ?: 0;
+        $data['detail']        = json_encode($detailArray) ?: '';
         // 写入登录信息表
         static::create($data);
     }
