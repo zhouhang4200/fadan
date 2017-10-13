@@ -34,7 +34,11 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 登录历史记录
 	Route::get('/login/record', 'LoginRecordController@index')->name('loginrecord.index');
 	// 账号管理
-	Route::resource('/accounts', 'AccountController');
+	Route::resource('accounts', 'AccountController');
+	// 权限组
+	Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
+
+	Route::get('test', 'TestController@index');
 });
 
 Route::namespace('Frontend\Auth')->group(function () {
