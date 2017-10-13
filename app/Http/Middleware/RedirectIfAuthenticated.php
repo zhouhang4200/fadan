@@ -28,7 +28,7 @@ class RedirectIfAuthenticated
 
             if ($guard == 'admin') {
 
-                return redirect('/admin/index');
+                return redirect('/backend/index');
             }
             return redirect('/');
         }
