@@ -71,6 +71,22 @@
         });
     });
 
+    function logout() {   
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('logout', {}, function(str){
+                    window.location.href='/login';
+                });  
+                layer.close(index);
+            });        
+           
+        });
+    }
+
+   
+        
     //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
     layui.use('element', function(){
         var element = layui.element;
@@ -79,4 +95,4 @@
 
 </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('backend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('frontend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
