@@ -14,20 +14,21 @@ abstract class Trade
     const TRADE_TYPE_EXPEND   = 7;
     const TRADE_TYPE_INCOME   = 8;
 
+    protected $userId;  // 用户ID
     protected $fee;     // 交易金额
     protected $type;    // 交易类型
     protected $subtype; // 交易子类型
     protected $no;      // 交易单号
     protected $remark;  // 备注
-    protected $userId;  // 用户ID
 
-    public function __construct($userId, $fee, $subtype, $no = '', $remark  = '')
+    public function __construct($fee, $subtype, $no = '', $remark  = '', $userId, $adminUserId = 0)
     {
-        $this->userId  = $userId;
-        $this->fee     = $fee;
-        $this->subtype = $subtype;
-        $this->no      = $no;
-        $this->remark  = $remark;
+        $this->userId      = $userId;
+        $this->adminUserId = $adminUserId;
+        $this->fee         = $fee;
+        $this->subtype     = $subtype;
+        $this->no          = $no;
+        $this->remark      = $remark;
     }
 
     // 用户前置操作
