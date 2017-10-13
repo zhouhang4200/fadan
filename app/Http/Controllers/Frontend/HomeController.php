@@ -19,33 +19,33 @@ class HomeController extends Controller
     {
     	$user = Auth::user();
 
-    	$role = Role::where('name', 'manager')->first();
+    	// $role = Role::where('name', 'manager')->first();
 
-    	$role2 = Role::where('name', 'writer')->first();
+    	// $role2 = Role::where('name', 'writer')->first();
 
-    	$permission = Permission::where('name', 'add accounts')->first();
+    	// $permission = Permission::where('name', 'add accounts')->first();
 
-    	$permission2 = Permission::where('name', 'edit accounts')->first();
+    	// $permission2 = Permission::where('name', 'edit accounts')->first();
 
-    	if (! $role) {
+    	// if (! $role) {
 
-	    	Role::create(['name' => 'manager']);		
-    	}
+	    	// Role::create(['name' => 'manager']);		
+    	// }
 
-    	if (! $role2) {
+    	// if (! $role2) {
 
-    		Role::create(['name' => 'writer']);
-    	}
+    		// Role::create(['name' => 'writer']);
+    	// }
 
-    	if (! $permission) {
+    	// if (! $permission) {
 
-	    	Permission::create(['name' => 'add accounts']);
-    	}
+	    	// Permission::create(['name' => 'add accounts']);
+    	// }
 
-    	if (! $permission2) {
+    	// if (! $permission2) {
 
-    		Permission::create(['name' => 'edit accounts']);
-    	}
+    		// Permission::create(['name' => 'edit accounts']);
+    	// }
 
 
     	// $user->syncRoles(['manager', 'writer']);
@@ -54,11 +54,11 @@ class HomeController extends Controller
     	
     	// $role->givePermissionTo(['add accounts', 'edit accounts']);
     	
-    	$bool = $role->hasPermissionTo('add accounts'); // true
+    	// $bool = $role->hasPermissionTo('add accounts'); // true
 
-    	$bool1 = $user->hasAnyPermission(['add accounts', 'edit accounts', 'dd accounts']); // true
+    	// $bool1 = $user->hasAnyPermission(['add accounts', 'edit accounts', 'dd accounts']); // true
 
-    	$bool2 = $user->can(['edit accounts', 'add accounts', 'as accounts']); // false
+    	// $bool2 = $user->can(['edit accounts', 'add accounts', 'as accounts']); // false
 
 // dd($bool2);
         return view('frontend.index');
