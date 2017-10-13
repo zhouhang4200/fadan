@@ -8,8 +8,9 @@ trait UserAmountFlowTrait
     // 写用户流水
     public function writeUserAmountFlow()
     {
-        $userAmountFlow = new UserAmountFlow;
+        $userAmountFlow                 = new UserAmountFlow;
         $userAmountFlow->user_id        = $this->userId;
+        $userAmountFlow->admin_user_id  = $this->adminUserId;
         $userAmountFlow->trade_type     = $this->type;
         $userAmountFlow->trade_subtype  = $this->type . $this->subtype;
         $userAmountFlow->trade_no       = $this->no;
