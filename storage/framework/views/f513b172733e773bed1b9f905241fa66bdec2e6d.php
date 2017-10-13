@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>@yield('title')</title>
+    <title><?php echo $__env->yieldContent('title'); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="_token" content="{{ csrf_token() }}" >
+    <meta name="_token" content="<?php echo e(csrf_token()); ?>" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
     <style>
@@ -24,7 +24,7 @@
             display: block;
         }
     </style>
-    @yield('css')
+    <?php echo $__env->yieldContent('css'); ?>
 
 </head>
 <body>
@@ -39,10 +39,10 @@
         </a>
         <div class="nav">
             <ul>
-                <li class="{{ Route::currentRouteName() == 'backend.index' ? 'current' : '' }}"><a href="{{ route('backend.index') }}">首页</a><div class="arrow"></div></li>
+                <li class="<?php echo e(Route::currentRouteName() == 'backend.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('backend.index')); ?>">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
                 <li class=""><a href="">财务</a><div class="arrow"></div></li>
-                <li class="{{ in_array(Route::currentRouteName(), ['roles.index', 'roles.create', 'permissions.index', 'permissions.create', 'rbacgroups.index', 'rbacgroups.create']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
+                <li class="<?php echo e(in_array(Route::currentRouteName(), ['roles.index', 'roles.create', 'permissions.index', 'permissions.create', 'rbacgroups.index', 'rbacgroups.create']) ? 'current' : ''); ?>"><a href="<?php echo e(route('rbacgroups.index')); ?>">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
             </ul>
         </div>
@@ -56,7 +56,7 @@
 </div>
 <!--END 顶部菜单-->
 <!--START 主体-->
-@yield('content')
+<?php echo $__env->yieldContent('content'); ?>
 
 <!--END 主体-->
 
@@ -91,6 +91,6 @@
         });
     }
 </script>
-@yield('js')
+<?php echo $__env->yieldContent('js'); ?>
 </body>
 </html>
