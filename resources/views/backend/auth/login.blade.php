@@ -29,7 +29,8 @@
                                     <i class="layui-icon icon"> &#x1005;</i>
                                 </div>
                                 <div class="layui-form-item ">
-                                    {!! Geetest::render() !!}
+                                    <input type="password" name="password" required="" lay-verify="required" placeholder="请输入动态口令" autocomplete="off" class="layui-input layui-form-danger input-text">
+                                    <i class="layui-icon icon"> &#x1005;</i>
                                 </div>
                                 <div class="layui-form-item">
                                     <button class="submit" lay-submit lay-filter="formDemo" style="width: 100%">登 录</button>
@@ -45,6 +46,7 @@
 
 @section('js')
     <script type="text/javascript">
+
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
                     ,layer = layui.layer;
