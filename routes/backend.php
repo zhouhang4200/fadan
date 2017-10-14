@@ -50,6 +50,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     Route::prefix('order')->group(function (){
-      Route::get('/', 'OrderController@index')->name('order.index');
+        Route::get('/', 'OrderController@index')->name('order.index');
     });
 });

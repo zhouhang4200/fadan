@@ -39,10 +39,10 @@
         </a>
         <div class="nav">
             <ul>
-                <li class="<?php echo e(Route::currentRouteName() == 'frontend.index' ? 'current' : ''); ?>" ><a href="<?php echo e(route('frontend.index')); ?>">首页</a><div class="arrow"></div></li>
+                <li class="<?php echo e(Route::currentRouteName() == 'frontend.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.index')); ?>">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
-                <li class=""><a href="">财务</a><div class="arrow"></div></li>
-                <li class=""><a href="">权限</a><div class="arrow"></div></li>
+                <li class="<?php echo e(substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.asset')); ?>">财务</a><div class="arrow"></div></li>
+                <li class="<?php echo e(in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create']) ? 'current' : ''); ?>"><a href="<?php echo e(route('rbacgroups.index')); ?>">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
                 <li class="<?php echo e(Route::currentRouteName() == 'accounts.index' || Route::currentRouteName() == 'accounts.create' || Route::currentRouteName() == 'loginrecord.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('accounts.index')); ?>">账号</a><div class="arrow"></div></li>
             </ul>
@@ -56,42 +56,53 @@
     </div>
 </div>
 <!--END 顶部菜单-->
-<!--START 主体-->
-<?php echo $__env->yieldContent('content'); ?>
 
+<!--START 主体-->
+<div class="main">
+    <div class="wrapper">
+        <div class="left">
+            <div class="column-menu">
+                <?php echo $__env->yieldContent('submenu'); ?>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="content">
+                <div class="path"><span id="main-title"></span></div>
+                <?php echo $__env->yieldContent('main'); ?>
+            </div>
+        </div>
+    </div>
+</div>
 <!--END 主体-->
 
 <!--START 底部-->
 <div class="footer">
-    <p>©&nbsp;2017-2018  福禄络科技有限公司，并保留所有权利。Powered by <span class="vol">s.dai.dev</span></p>
+    <p>©&nbsp;2017-2018  福禄网络科技有限公司，并保留所有权利。Powered by <span class="vol">s.dai.dev</span></p>
 </div>
 <!--END 底部-->
 
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-            }
+$.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
+$('#main-title').text($('title').text());
+
+function logout() {
+    layui.use(['form', 'layedit', 'laydate',], function(){
+        var form = layui.form
+        ,layer = layui.layer;
+        layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+            $.post('/logout', {}, function(str){
+                window.location.href='/login';
+            });
+            layer.close(index);
         });
     });
-
-    function logout() {   
-        layui.use(['form', 'layedit', 'laydate',], function(){
-            var form = layui.form
-            ,layer = layui.layer;
-            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
-                $.post('/logout', {}, function(str){
-                    window.location.href='/login';
-                });  
-                layer.close(index);
-            });        
-           
-        });
-    }
+}
 </script>
+
 <?php echo $__env->yieldContent('js'); ?>
+
 </body>
 </html>

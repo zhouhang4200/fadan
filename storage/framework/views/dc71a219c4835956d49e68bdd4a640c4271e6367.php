@@ -67,7 +67,7 @@
                                                 <div style="text-align: center">
                                                 <button class="layui-btn edit"><a href="<?php echo e(route('accounts.edit', ['id' => $account->id])); ?>" style="color: #fff">编辑</a></button>
                                                 <button class="layui-btn delete" onclick="del(<?php echo e($account->id); ?>)">删除</button>
-
+                                                <button class="layui-btn rbac"><a href="<?php echo e(route('rbacgroups.create')); ?>" style="color: #fff">权限</a></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -131,6 +131,8 @@
            
         });
     };
+
+    // 权限
 
 </script>
 <?php $__env->stopSection(); ?>
