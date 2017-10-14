@@ -77,17 +77,17 @@
         });
     });
 
-    function logout() {   
+    function logout() {
         layui.use(['form', 'layedit', 'laydate',], function(){
             var form = layui.form
             ,layer = layui.layer;
             layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
                 $.post('/admin/logout', {}, function(str){
                     window.location.href='/admin/login';
-                });  
+                });
                 layer.close(index);
-            });        
-           
+            });
+
         });
     }
 </script>
