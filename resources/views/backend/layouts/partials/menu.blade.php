@@ -33,7 +33,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -58,6 +58,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="{{ route('permissions.create') }}" @if($currentRouteName == 'permissions.create') class="active" @endif>
                                     添加权限
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-roles.index') }}" @if($currentRouteName == 'admin-roles.index') class="active" @endif>
+                                    后台角色列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-roles.create') }}" @if($currentRouteName == 'admin-roles.create') class="active" @endif>
+                                    添加后台角色
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-permissions.index') }}" @if($currentRouteName == 'admin-permissions.index') class="active" @endif>
+                                    后台权限列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-permissions.create') }}" @if($currentRouteName == 'admin-permissions.create') class="active" @endif>
+                                    添加后台权限
                                 </a>
                             </li>
                         </ul>

@@ -15,7 +15,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::get();
+        $roles = Role::where('guard_name', 'web')->paginate(config('frontend.page'));
 
         return view('backend.role.index', compact('roles'));
     }
