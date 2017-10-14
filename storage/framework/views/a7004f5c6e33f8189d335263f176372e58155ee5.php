@@ -71,7 +71,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups'): ?> class="open active" <?php endif; ?>>
+                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups' ||$currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'modules'): ?> class="open active" <?php endif; ?>>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -136,6 +136,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="<?php echo e(route('admin-groups.create')); ?>" <?php if($currentRouteName == 'admin-groups.create'): ?> class="active" <?php endif; ?>>
                                     添加后台管理组
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('modules.index')); ?>" <?php if($currentRouteName == 'modules.index'): ?> class="active" <?php endif; ?>>
+                                    前台模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('modules.create')); ?>" <?php if($currentRouteName == 'modules.create'): ?> class="active" <?php endif; ?>>
+                                    添加前台模块
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-modules.index')); ?>" <?php if($currentRouteName == 'admin-modules.index'): ?> class="active" <?php endif; ?>>
+                                    后台模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-modules.create')); ?>" <?php if($currentRouteName == 'admin-modules.create'): ?> class="active" <?php endif; ?>>
+                                    添加后台模块
                                 </a>
                             </li>
                         </ul>

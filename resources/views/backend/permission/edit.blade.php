@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 添加权限')
+@section('title', ' | 修改权限')
 
 @section('content')
     <div class="row">
@@ -9,7 +9,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加权限</li>
+                            <li class="layui-this" lay-id="add">修改权限</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="{{ route('permissions.update', ['id' => $permission->id]) }}">

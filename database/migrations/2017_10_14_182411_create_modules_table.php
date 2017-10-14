@@ -17,7 +17,7 @@ class CreateModulesTable extends Migration
             $table->increments('id');
             $table->string('name')->comment('英文名字');
             $table->string('alias')->comment('中文名字');
-            $table->string('remark')->comment('备注');
+            $table->string('guard_name')->comment('區分前後端');
             $table->timestamps();
         });
     }

@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 角色列表')
+@section('title', ' | 模块列表')
 
 @section('content')
     <div class="row">
@@ -9,14 +9,14 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">角色列表</li>
+                            <li class="layui-this" lay-id="add">模块列表</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>角色ID</th>
+                                    <th>模块ID</th>
                                     <th>名称</th>
                                     <th>别名</th>
                                     <th>添加时间</th>
@@ -24,14 +24,14 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($roles as $role)
+                                    @forelse($modules as $module)
                                         <tr>
-                                            <td>{{ $role->id }}</td>
-                                            <td>{{ $role->name }}</td>
-                                            <td>{{ $role->alias }}</td>
-                                            <td>{{ $role->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('roles.edit', ['id' => $role->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $role->id }})">删除</button></td>
+                                            <td>{{ $module->id }}</td>
+                                            <td>{{ $module->name }}</td>
+                                            <td>{{ $module->alias }}</td>
+                                            <td>{{ $module->created_at }}</td>
+                                            <td style="text-align: center"><a href="{{ route('modules.edit', ['id' => $module->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $module->id }})">删除</button></td>
                                         </tr>
                                     @empty
                                     @endforelse
@@ -39,7 +39,7 @@
                             </table>
                             </div>
                         </div>
-                        {!! $roles->render() !!}
+                        {!! $modules->render() !!}
                 </div>
             </div>
         </div>
@@ -68,13 +68,13 @@
             layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/rbac/roles/'+id,
+                    url: '/admin/rbac/modules/'+id,
                     success: function (data) {
                         console.log(data);
                         var obj = eval('(' + data + ')');
                         if (obj.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = {{ route('roles.index') }};                    
+                            window.location.href = {{ route('modules.index') }};                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }

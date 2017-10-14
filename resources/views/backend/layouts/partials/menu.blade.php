@@ -71,7 +71,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups' ||$currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'modules') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -136,6 +136,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="{{ route('admin-groups.create') }}" @if($currentRouteName == 'admin-groups.create') class="active" @endif>
                                     添加后台管理组
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('modules.index') }}" @if($currentRouteName == 'modules.index') class="active" @endif>
+                                    前台模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('modules.create') }}" @if($currentRouteName == 'modules.create') class="active" @endif>
+                                    添加前台模块
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-modules.index') }}" @if($currentRouteName == 'admin-modules.index') class="active" @endif>
+                                    后台模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-modules.create') }}" @if($currentRouteName == 'admin-modules.create') class="active" @endif>
+                                    添加后台模块
                                 </a>
                             </li>
                         </ul>

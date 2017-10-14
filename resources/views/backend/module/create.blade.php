@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 添加角色')
+@section('title', ' | 添加模块')
 
 @section('content')
     <div class="row">
@@ -9,16 +9,16 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加角色</li>
+                            <li class="layui-this" lay-id="add">添加模块</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="{{ route('roles.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">角色名:</label>
+                                        <label class="layui-form-label">模块名:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入角色名" class="layui-input">
+                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入模块名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
