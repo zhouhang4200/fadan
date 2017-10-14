@@ -17,27 +17,7 @@
     <link rel="stylesheet" type="text/css" href="/backend/css/libs/datepicker.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/compiled/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendor/layui/css/layui.css">
-    <style>
-        body{
-            font: 12px/20px "微软雅黑","Microsoft Yahei","sans-serif", "Arial", "Verdana";
-            color: #707070;
-            background-color: #F9F9F9;
-        }
-        .layui-form-onswitch i {
-            left: 23px;
-            background-color: #fff;
-        }
-        .logo{
-            font-size: 24px;
-            color: #fff;
-            float: left;
-            margin: 17px 0 0 9px;
-            height: 14px;
-            line-height: 14px;
-            padding-bottom: 2px;
-            padding-right: 28px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/backend/css/globale.css">
     @yield('css')
     <!--[if lt IE 9]>
     <script src="/backend/js/html5shiv.js"></script>
