@@ -17,6 +17,15 @@ body {
     margin-top: 80px;
     text-align: center;
 }
+.header .content .logo {
+    width: 260px;
+    height: 60px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-image: url(../images/logo.png);
+}
 .main .container {
     width: 392px;
     margin: 45px  auto 0 auto;
@@ -65,4 +74,7 @@ body {
 }
 .layui-input, .layui-textarea {
     padding-left: 32px;
+}
+.input-container input {
+    height:40px;
 }
