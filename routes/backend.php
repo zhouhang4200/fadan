@@ -1,5 +1,21 @@
 <?php
 
+Route::namespace('Backend\Auth')->group(function () {
+    // 登录
+    Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'LoginController@login');
+    Route::post('logout', 'LoginController@logout')->name('admin.logout');
+    // 注册
+    Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
+    Route::post('register', 'RegisterController@register');
+    // 密码找回
+    Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
+    Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
+    Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('admin.password.reset');
+    Route::post('password/reset', 'ResetPasswordController@reset');
+});
+
+
 Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::get('/', 'DashboardController@index')->name('dashboard');

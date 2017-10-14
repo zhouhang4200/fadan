@@ -18,7 +18,7 @@
                                 <h3>运营管理中心</h3>
                                 <span class="txt"></span>
                             </div>
-                            <form method="post" class="layui-form">
+                            <form method="POST" action="{{ route('admin.login') }}"  class="layui-form">
                                 {!! csrf_field() !!}
                                 <div class="layui-form-item">
                                     <input type="text" name="name" required="" lay-verify="required" placeholder="请输入账号" value="{{ old('name') }}" autocomplete="off" class="layui-input layui-form-danger input-text">
@@ -29,7 +29,7 @@
                                     <i class="layui-icon icon"> &#x1005;</i>
                                 </div>
                                 <div class="layui-form-item ">
-                                    <input type="password" name="password" required="" lay-verify="required" placeholder="请输入动态口令" autocomplete="off" class="layui-input layui-form-danger input-text">
+                                    <input type="password" name="code" required="" lay-verify="required" placeholder="请输入动态口令" autocomplete="off" class="layui-input layui-form-danger input-text">
                                     <i class="layui-icon icon"> &#x1005;</i>
                                 </div>
                                 <div class="layui-form-item">

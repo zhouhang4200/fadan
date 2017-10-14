@@ -80,16 +80,10 @@
                             <ul class="dropdown-menu">
                                 <li><a href="#"><i class="fa fa-cog"></i>修改密码</a></li>
                                 <li>
-                                    <a href="管理员名字"
-                                       onclick="event.preventDefault();
-                                                         document.getElementById('logout-form').submit();">
+                                    <a href="javascript:void(0)" onclick="logout()">
                                         <i class="fa fa-power-off"></i> 注销登录
                                     </a>
                                 </li>
-
-                                <form id="logout-form" action="" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
                             </ul>
                         </li>
                         <li class="hidden-xxs">
@@ -128,6 +122,19 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    function logout() {
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+                    ,layer = layui.layer;
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('/admin/logout', {}, function(str){
+                    window.location.href='/admin/login';
+                });
+                layer.close(index);
+            });
+
+        });
+    }
 </script>
 @yield('js')
 </body>
