@@ -33,7 +33,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'accounts' || $currentOneLevelMenu == 'admin-accounts') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>财务</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('finance.platform.asset') }}" @if($currentRouteName == 'finance.platform.asset') class="active" @endif>
+                                    平台资产
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.platform.flow') }}" @if($currentRouteName == 'finance.platform.flow') class="active" @endif>
+                                    资金流水
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>账号</span>
