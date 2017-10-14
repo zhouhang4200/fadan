@@ -39,6 +39,7 @@
                             </table>
                             </div>
                         </div>
+                        {!! $roles->render() !!}
                 </div>
             </div>
         </div>
