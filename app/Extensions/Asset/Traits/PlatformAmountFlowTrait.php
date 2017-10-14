@@ -10,6 +10,7 @@ trait PlatformAmountFlowTrait
     {
         $platformAmountFlow = new PlatformAmountFlow;
         $platformAmountFlow->user_id              = $this->userId;
+        $platformAmountFlow->admin_user_id        = $this->adminUserId;
         $platformAmountFlow->trade_type           = $this->type;
         $platformAmountFlow->trade_subtype        = $this->type . $this->subtype;
         $platformAmountFlow->trade_no             = $this->no;

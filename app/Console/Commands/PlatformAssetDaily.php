@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 use Carbon\Carbon;
 use Exception;
-use App\Repositories\PlatformAssetDailyRepository;
+use App\Repositories\Commands\PlatformAssetDailyRepository;
 
 class PlatformAssetDaily extends Command
 {

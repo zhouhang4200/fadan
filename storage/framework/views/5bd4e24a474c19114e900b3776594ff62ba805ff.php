@@ -1,14 +1,12 @@
-@extends('frontend.layouts.app')
+<?php $__env->startSection('title', '首页'); ?>
 
-@section('title', '首页')
-
-@section('submenu')
+<?php $__env->startSection('submenu'); ?>
 <ul class="seller_center_left_menu">
-    <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
+    <li class="<?php echo e(Route::currentRouteName() == 'frontend.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.index')); ?>">首页</a><div class="arrow"></div></li>
 </ul>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="layui-tab">
     <ul class="layui-tab-title">
         <li class="layui-this">网站设置</li>
@@ -45,4 +43,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('frontend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

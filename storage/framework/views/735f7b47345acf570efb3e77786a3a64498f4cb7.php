@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>@yield('title')</title>
+    <title><?php echo $__env->yieldContent('title'); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="_token" content="{{ csrf_token() }}" >
+    <meta name="_token" content="<?php echo e(csrf_token()); ?>" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
     <style>
@@ -24,7 +24,7 @@
             display: block;
         }
     </style>
-    @yield('css')
+    <?php echo $__env->yieldContent('css'); ?>
 
 </head>
 <body>
@@ -39,12 +39,12 @@
         </a>
         <div class="nav">
             <ul>
-                <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
+                <li class="<?php echo e(Route::currentRouteName() == 'frontend.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.index')); ?>">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
-                <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : '' }}"><a href="{{ route('frontend.asset') }}">财务</a><div class="arrow"></div></li>
-                <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
+                <li class="<?php echo e(substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.asset')); ?>">财务</a><div class="arrow"></div></li>
+                <li class="<?php echo e(in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create']) ? 'current' : ''); ?>"><a href="<?php echo e(route('rbacgroups.index')); ?>">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
-                <li class="{{ Route::currentRouteName() == 'accounts.index' || Route::currentRouteName() == 'accounts.create' || Route::currentRouteName() == 'loginrecord.index' ? 'current' : '' }}"><a href="{{ route('accounts.index') }}">账号</a><div class="arrow"></div></li>
+                <li class="<?php echo e(Route::currentRouteName() == 'accounts.index' || Route::currentRouteName() == 'accounts.create' || Route::currentRouteName() == 'loginrecord.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('accounts.index')); ?>">账号</a><div class="arrow"></div></li>
             </ul>
         </div>
         <div class="user">
@@ -62,14 +62,14 @@
     <div class="wrapper">
         <div class="left">
             <div class="column-menu">
-                @yield('submenu')
+                <?php echo $__env->yieldContent('submenu'); ?>
             </div>
         </div>
 
         <div class="right">
             <div class="content">
                 <div class="path"><span id="main-title"></span></div>
-                @yield('main')
+                <?php echo $__env->yieldContent('main'); ?>
             </div>
         </div>
     </div>
@@ -102,7 +102,7 @@ function logout() {
 }
 </script>
 
-@yield('js')
+<?php echo $__env->yieldContent('js'); ?>
 
 </body>
 </html>

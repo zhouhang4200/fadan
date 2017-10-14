@@ -21,7 +21,10 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 权限组
 	Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
 
-	Route::get('test', 'TestController@index');
+	// 财务
+    Route::get('asset', 'AssetController@index')->name('frontend.asset');
+    Route::get('asset/flow', 'AssetController@flow')->name('frontend.asset.flow');
+
 });
 
 Route::namespace('Frontend\Auth')->group(function () {

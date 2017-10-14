@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Repositories\Commands;
 
 use Exception;
 use Carbon\Carbon;
