@@ -6,7 +6,7 @@
 @include('frontend.account.submenu')
 @endsection
 
-@section('content')
+@section('main')
 <form class="layui-form" method="" action="">
     <div class="layui-inline" style="float:left">
         <div class="layui-form-item">

@@ -14,7 +14,7 @@
 @include('frontend.rbacgroup.submenu')
 @endsection
 
-@section('content')
+@section('main')
 <form class="layui-form" method="POST" action="{{ route('rbacgroups.update', ['id' => $rbacGroup->id]) }}">
 {!! csrf_field() !!}
 <input type="hidden" name="_method" value="PUT">
