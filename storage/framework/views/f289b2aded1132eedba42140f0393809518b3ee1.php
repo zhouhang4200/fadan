@@ -1,10 +1,21 @@
 <?php $__env->startSection('title', '账号 - 登陆记录'); ?>
 
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(asset('/css/index.css')); ?>" rel="stylesheet">
+    <style>
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 150px;
+            margin-right: 10px;
+        }
+    </style>
+<?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('submenu'); ?>
 <?php echo $__env->make('frontend.account.submenu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php $__env->stopSection(); ?>
 
-<?php $__env->startSection('content'); ?>
+<?php $__env->startSection('main'); ?>
 <form class="layui-form" method="" action="">
     <div class="layui-inline" style="float:left">
         <div class="layui-form-item">
