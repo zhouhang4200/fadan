@@ -33,7 +33,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions'): ?> class="open active" <?php endif; ?>>
+                    <li <?php if($currentOneLevelMenu == 'accounts' || $currentOneLevelMenu == 'admin-accounts'): ?> class="open active" <?php endif; ?>>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>账号</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="<?php echo e(route('accounts.index')); ?>" <?php if($currentRouteName == 'accounts.index'): ?> class="active" <?php endif; ?>>
+                                    前端账号
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-accounts.index')); ?>" <?php if($currentRouteName == 'admin-accounts.index'): ?> class="active" <?php endif; ?>>
+                                    后端账号
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups'): ?> class="open active" <?php endif; ?>>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -58,6 +77,46 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="<?php echo e(route('permissions.create')); ?>" <?php if($currentRouteName == 'permissions.create'): ?> class="active" <?php endif; ?>>
                                     添加权限
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-roles.index')); ?>" <?php if($currentRouteName == 'admin-roles.index'): ?> class="active" <?php endif; ?>>
+                                    后台角色列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-roles.create')); ?>" <?php if($currentRouteName == 'admin-roles.create'): ?> class="active" <?php endif; ?>>
+                                    添加后台角色
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-permissions.index')); ?>" <?php if($currentRouteName == 'admin-permissions.index'): ?> class="active" <?php endif; ?>>
+                                    后台权限列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-permissions.create')); ?>" <?php if($currentRouteName == 'admin-permissions.create'): ?> class="active" <?php endif; ?>>
+                                    添加后台权限
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('groups.index')); ?>" <?php if($currentRouteName == 'groups.index'): ?> class="active" <?php endif; ?>>
+                                    前台管理组列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('groups.create')); ?>" <?php if($currentRouteName == 'groups.create'): ?> class="active" <?php endif; ?>>
+                                    添加前台管理组
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-groups.index')); ?>" <?php if($currentRouteName == 'admin-groups.index'): ?> class="active" <?php endif; ?>>
+                                    后台管理组列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('admin-groups.create')); ?>" <?php if($currentRouteName == 'admin-groups.create'): ?> class="active" <?php endif; ?>>
+                                    添加后台管理组
                                 </a>
                             </li>
                         </ul>

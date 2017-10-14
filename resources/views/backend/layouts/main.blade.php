@@ -19,23 +19,7 @@
     <link rel="stylesheet" type="text/css" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/globale.css">
     @yield('css')
-    <style>
-        .pagination > li{
-            float: left;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            border: 1px dotted #ccc;
-        }
-        .pagination > .active {
-            color: #fff;
-            background: #139ff0;
-        }
-        .pagination > li a {
-            display: block;
-        }
-    </style>
+
     <!--[if lt IE 9]>
     <script src="/backend/js/html5shiv.js"></script>
     <script src="/backend/js/respond.min.js"></script>

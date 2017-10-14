@@ -6,7 +6,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PermissionController extends Controller
+class AdminPermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +15,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::where('guard_name', 'web')->paginate(config('frontend.page'));
+        $permissions = Permission::where('guard_name', 'admin')->paginate(config('backend.page'));
 
-        return view('backend.permission.index', compact('permissions'));
+        return view('backend.permission.admin.index', compact('permissions'));
     }
 
     /**
@@ -27,7 +27,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('backend.permission.create');
+        return view('backend.permission.admin.create');
     }
 
     /**
@@ -40,7 +40,7 @@ class PermissionController extends Controller
     {
         $this->validate($request, Permission::rules(), Permission::messages());
 
-        $data['guard_name'] = 'web';
+        $data['guard_name'] = 'admin';
 
         $data['name'] = $request->name;
 
@@ -75,7 +75,7 @@ class PermissionController extends Controller
     {
         $permission = Permission::find($id);
 
-        return view('backend.permission.edit', compact('permission'));
+        return view('backend.permission.admin.edit', compact('permission'));
     }
 
     /**

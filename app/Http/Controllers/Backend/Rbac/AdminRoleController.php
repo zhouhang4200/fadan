@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
-use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PermissionController extends Controller
+class AdminRoleController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $permissions = Permission::where('guard_name', 'web')->paginate(config('frontend.page'));
+        $roles = Role::where('guard_name', 'admin')->paginate(config('backend.page'));
 
-        return view('backend.permission.index', compact('permissions'));
+        return view('backend.role.admin.index', compact('roles'));
     }
 
     /**
@@ -27,7 +27,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('backend.permission.create');
+        return view('backend.role.admin.create');
     }
 
     /**
@@ -38,20 +38,20 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, Permission::rules(), Permission::messages());
+        $this->validate($request, Role::rules(), Role::messages());
 
-        $data['guard_name'] = 'web';
+        $data['guard_name'] = 'admin';
 
         $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 
-        $res = Permission::create($data);
+        $res = Role::create($data);
         
         if (! $res) {
             return back()->withInput()->with('createFail', '添加失败！');
         }
-        return redirect(route('permissions.index'))->with('succ', '添加成功!');
+        return redirect(route('roles.index'))->with('succ', '添加成功!');
     }
 
     /**
@@ -73,9 +73,9 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
-        $permission = Permission::find($id);
+        $role = Role::find($id);
 
-        return view('backend.permission.edit', compact('permission'));
+        return view('backend.role.admin.edit', compact('role'));
     }
 
     /**
@@ -87,18 +87,18 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, Permission::updateRules($id), Permission::messages());
+        $this->validate($request, Role::updateRules($id), Role::messages());
 
         $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 
-        $permission = Permission::find($id);
+        $role = Role::find($id);
 
-        $int = $permission->update($data);
+        $int = $role->update($data);
 
         if ($int > 0) {
-            return redirect(route('permissions.index'))->with('succ', '更新成功!');
+            return redirect(route('roles.index'))->with('succ', '更新成功!');
         }
 
         return back()->withInput()->with('updateFail', '更新失败!');
@@ -112,7 +112,7 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
-        $permission = Permission::find($id)->delete();
+        $role = Role::find($id)->delete();
 
         if ($bool) {
 

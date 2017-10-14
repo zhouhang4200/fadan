@@ -1,8 +1,6 @@
-@extends('backend.layouts.main')
+<?php $__env->startSection('title', ' | 角色列表'); ?>
 
-@section('title', ' | 角色列表')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="row">
         <div class="col-lg-12">
             <div class="main-box">
@@ -24,29 +22,28 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($roles as $role)
+                                    <?php $__empty_1 = true; $__currentLoopData = $roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
-                                            <td>{{ $role->id }}</td>
-                                            <td>{{ $role->name }}</td>
-                                            <td>{{ $role->alias }}</td>
-                                            <td>{{ $role->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('roles.edit', ['id' => $role->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $role->id }})">删除</button></td>
+                                            <td><?php echo e($role->id); ?></td>
+                                            <td><?php echo e($role->name); ?></td>
+                                            <td><?php echo e($role->alias); ?></td>
+                                            <td><?php echo e($role->created_at); ?></td>
+                                            <td style="text-align: center"><a href="<?php echo e(route('roles.edit', ['id' => $role->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($role->id); ?>)">删除</button></td>
                                         </tr>
-                                    @empty
-                                    @endforelse
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                             </div>
                         </div>
-                        {!! $roles->render() !!}
                 </div>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('js')
+<?php $__env->startSection('js'); ?>
     <script>
         //Demo
         layui.use('form', function(){
@@ -74,7 +71,7 @@
                         var obj = eval('(' + data + ')');
                         if (obj.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = {{ route('roles.index') }};                    
+                            window.location.href = <?php echo e(route('roles.index')); ?>;                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }
@@ -90,7 +87,7 @@
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
 
-        var succ = "{{ session('succ') ?: '' }}";
+        var succ = "<?php echo e(session('succ') ?: ''); ?>";
 
         if(succ) {
             layer.msg(succ, {icon: 6, time:1500},);
@@ -103,4 +100,5 @@
       form.render();
     });  
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('backend.layouts.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

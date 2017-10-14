@@ -33,7 +33,45 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>财务</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('finance.platform.asset') }}" @if($currentRouteName == 'finance.platform.asset') class="active" @endif>
+                                    平台资产
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.platform.flow') }}" @if($currentRouteName == 'finance.platform.flow') class="active" @endif>
+                                    资金流水
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>账号</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('accounts.index') }}" @if($currentRouteName == 'accounts.index') class="active" @endif>
+                                    前端账号
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-accounts.index') }}" @if($currentRouteName == 'admin-accounts.index') class="active" @endif>
+                                    后端账号
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -58,6 +96,46 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="{{ route('permissions.create') }}" @if($currentRouteName == 'permissions.create') class="active" @endif>
                                     添加权限
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-roles.index') }}" @if($currentRouteName == 'admin-roles.index') class="active" @endif>
+                                    后台角色列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-roles.create') }}" @if($currentRouteName == 'admin-roles.create') class="active" @endif>
+                                    添加后台角色
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-permissions.index') }}" @if($currentRouteName == 'admin-permissions.index') class="active" @endif>
+                                    后台权限列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-permissions.create') }}" @if($currentRouteName == 'admin-permissions.create') class="active" @endif>
+                                    添加后台权限
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
+                                    前台管理组列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('groups.create') }}" @if($currentRouteName == 'groups.create') class="active" @endif>
+                                    添加前台管理组
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
+                                    后台管理组列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-groups.create') }}" @if($currentRouteName == 'admin-groups.create') class="active" @endif>
+                                    添加后台管理组
                                 </a>
                             </li>
                         </ul>

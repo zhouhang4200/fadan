@@ -51,10 +51,28 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
         Route::resource('roles', 'RoleController', ['except' => ['show']]);
+        Route::resource('admin-roles', 'AdminRoleController', ['except' => ['show']]);
         Route::resource('permissions', 'PermissionController', ['except' => ['show']]);
+        Route::resource('admin-permissions', 'AdminPermissionController', ['except' => ['show']]);
+        Route::resource('groups', 'GroupController',['except' => ['show']]);
+        Route::resource('admin-groups', 'AdminGroupController',['except' => ['show']]);
+    });
+
+    Route::namespace('Account')->prefix('account')->group(function () {
+        Route::get('accounts', 'AccountController@index')->name('accounts.index');
+        Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
     });
 
     Route::prefix('order')->group(function (){
         Route::get('/', 'OrderController@index')->name('order.index');
+    });
+
+    Route::namespace('Finance')->prefix('finance')->group(function () {
+        Route::get('platform/asset', 'PlatformController@asset')->name('finance.platform.asset');
+        Route::get('platform/flow', 'PlatformController@flow')->name('finance.platform.flow');
+        Route::get('platform/daily', 'PlatformController@daily')->name('finance.platform.daily');
+
+        Route::get('user/asset', 'UserController@asset')->name('finance.user.asset');
+        Route::get('user/flow', 'UserController@flow')->name('finance.user.flow');
     });
 });
