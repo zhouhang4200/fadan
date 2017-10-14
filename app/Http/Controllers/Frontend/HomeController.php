@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,39 +18,45 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-    	$user = Auth::user();
+//     	$user = Auth::user();
 
-    	// $role = Role::where('name', 'manager')->first();
+//     	$role = Role::where('name', 'manager')->first();
 
-    	// $role2 = Role::where('name', 'writer')->first();
+//     	$role2 = Role::where('name', 'writer')->first();
 
-    	// $permission = Permission::where('name', 'add accounts')->first();
+//     	$permission = Permission::where('name', 'add accounts')->first();
 
-    	// $permission2 = Permission::where('name', 'edit accounts')->first();
+//     	$permission2 = Permission::where('name', 'edit accounts')->first();
 
+//     	$permission3 = Permission::where('name', 'delete accounts')->first();
+// dd($role);
     	// if (! $role) {
 
-	    	// Role::create(['name' => 'manager']);		
+	    // 	Role::create(['name' => 'manager']);		
     	// }
 
     	// if (! $role2) {
 
-    		// Role::create(['name' => 'writer']);
+    	// 	Role::create(['name' => 'writer']);
     	// }
 
     	// if (! $permission) {
 
-	    	// Permission::create(['name' => 'add accounts']);
+	    // 	Permission::create(['name' => 'add accounts']);
     	// }
 
     	// if (! $permission2) {
 
-    		// Permission::create(['name' => 'edit accounts']);
+    	// 	Permission::create(['name' => 'edit accounts']);
+    	// }
+
+    	// if (! $permission3) {
+    	// 	Permission::create(['name' => 'delete accounts', 'alias' => '删除子账号']);
     	// }
 
 
     	// $user->syncRoles(['manager', 'writer']);
-    	// 
+    	
     	// $user->syncPermissions(['add accounts', 'edit accounts']);
     	
     	// $role->givePermissionTo(['add accounts', 'edit accounts']);
