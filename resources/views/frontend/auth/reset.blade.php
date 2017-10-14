@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('frontend.layouts.auth')
 
 @section('title', '重置密码')
 
