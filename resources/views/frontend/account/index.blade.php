@@ -4,6 +4,13 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <style>
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 150px;
+            margin-right: 10px;
+        }
+    </style>
 @endsection
 
 @section('content')

@@ -2,6 +2,16 @@
 
 @section('title', '商家后台')
 
+@section('css')
+    <style>
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 150px;
+            margin-right: 10px;
+        }
+    </style>
+@endsection
+
 @section('content')
 <!--START 主体-->
     <div class="main">
@@ -27,8 +37,7 @@
                                       <div class="layui-input-inline">
                                             <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
                                       </div>
-                              
-                                    
+                                                           
                                       <label class="layui-form-label">结束时间</label>
                                       <div class="layui-input-inline">
                                             <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">

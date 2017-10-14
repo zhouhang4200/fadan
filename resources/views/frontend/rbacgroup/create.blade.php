@@ -29,7 +29,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">权限组名:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="title" value="{{ old('name') }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
+                                            <input type="text" name="name" lay-verify="required" lay-verify="title" value="{{ old('name') }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">

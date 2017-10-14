@@ -4,8 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>千手 · 订单集市  @yield('title')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>" />
+    <title>千手 · 订单集市  <?php echo $__env->yieldContent('title'); ?></title>
     <link type="image/x-icon" href="/favicon.ico" rel="shortcut icon"/>
     <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/backend/css/libs/font-awesome.css"/>
@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="/backend/css/compiled/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/globale.css">
-    @yield('css')
+    <?php echo $__env->yieldContent('css'); ?>
     <style>
         .pagination > li{
             float: left;
@@ -95,10 +95,10 @@
     </header>
     <div id="page-wrapper" class="container">
         <div class="row">
-            @include('backend.layouts.partials.menu')
+            <?php echo $__env->make('backend.layouts.partials.menu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
             <div id="content-wrapper">
-                @yield('breadcrumb')
-                @yield('content')
+                <?php echo $__env->yieldContent('breadcrumb'); ?>
+                <?php echo $__env->yieldContent('content'); ?>
             </div>
         </div>
     </div>
@@ -133,6 +133,6 @@
         });
     }
 </script>
-@yield('js')
+<?php echo $__env->yieldContent('js'); ?>
 </body>
 </html>
