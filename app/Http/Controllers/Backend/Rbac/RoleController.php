@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Backend\Rbac;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class RbacGroupController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,9 @@ class RbacGroupController extends Controller
      */
     public function index()
     {
-        return view('backend.rbacgroup.index');
+        $roles = Role::get();
+
+        return view('backend.role.index', compact('roles'));
     }
 
     /**
@@ -24,7 +27,7 @@ class RbacGroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.role.create');
     }
 
     /**
@@ -35,7 +38,20 @@ class RbacGroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, Role::rules(), Role::messages());
+
+        $data['guard_name'] = 'web';
+
+        $data['name'] = $request->name;
+
+        $data['alias'] = $request->alias;
+
+        $res = Role::create($data);
+        
+        if (! $res) {
+            return back()->withInput()->with('createFail', '添加失败！');
+        }
+        return redirect(route('roles.index'))->with('succ', '添加成功!');
     }
 
     /**
@@ -57,7 +73,9 @@ class RbacGroupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $role = Role::find($id);
+
+        return view('backend.role.edit', compact('role'));
     }
 
     /**
@@ -69,7 +87,21 @@ class RbacGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, Role::updateRules($id), Role::messages());
+
+        $data['name'] = $request->name;
+
+        $data['alias'] = $request->alias;
+
+        $role = Role::find($id);
+
+        $int = $role->update($data);
+
+        if ($int > 0) {
+            return redirect(route('roles.index'))->with('succ', '更新成功!');
+        }
+
+        return back()->withInput()->with('updateFail', '更新失败!');
     }
 
     /**
@@ -80,6 +112,12 @@ class RbacGroupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $role = Role::find($id)->delete();
+
+        if ($bool) {
+
+            return jsonMessages('1', '删除成功!');
+        }
+        return jsonMessages('2', '删除失败！');
     }
 }

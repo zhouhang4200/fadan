@@ -9,12 +9,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
             <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
                 <ul class="nav nav-pills nav-stacked">
                     <li>
-                        <a href="{{ url('/') }}">
+                        <a href="<?php echo e(url('/')); ?>">
                             <i class="fa fa-dashboard"></i>
                             <span>后台首页</span>
                         </a>
                     </li>
-                    <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
+                    <li <?php if($currentOneLevelMenu == 'goods'): ?> class="open active" <?php endif; ?>>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>商品</span>
@@ -22,18 +22,18 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ url('admin/order') }}" @if($currentRouteName == 'order.index') class="active" @endif>
+                                <a href="<?php echo e(url('admin/order')); ?>" <?php if($currentRouteName == 'order.index'): ?> class="active" <?php endif; ?>>
                                     商品分类
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('admin/goods/template') }}" @if($currentRouteName == 'order.goods.template') class="active" @endif>
+                                <a href="<?php echo e(url('admin/goods/template')); ?>" <?php if($currentRouteName == 'order.goods.template'): ?> class="active" <?php endif; ?>>
                                     商品模版
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions') class="open active" @endif>
+                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions'): ?> class="open active" <?php endif; ?>>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -41,22 +41,22 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ route('roles.index') }}" @if($currentRouteName == 'roles.index') class="active" @endif>
+                                <a href="<?php echo e(route('roles.index')); ?>" <?php if($currentRouteName == 'roles.index'): ?> class="active" <?php endif; ?>>
                                     角色列表
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('roles.create') }}" @if($currentRouteName == 'roles.create') class="active" @endif>
+                                <a href="<?php echo e(route('roles.create')); ?>" <?php if($currentRouteName == 'roles.create'): ?> class="active" <?php endif; ?>>
                                     添加角色
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('permissions.index') }}" @if($currentRouteName == 'permissions.index') class="active" @endif>
+                                <a href="<?php echo e(route('permissions.index')); ?>" <?php if($currentRouteName == 'permissions.index'): ?> class="active" <?php endif; ?>>
                                     权限列表
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('permissions.create') }}" @if($currentRouteName == 'permissions.create') class="active" @endif>
+                                <a href="<?php echo e(route('permissions.create')); ?>" <?php if($currentRouteName == 'permissions.create'): ?> class="active" <?php endif; ?>>
                                     添加权限
                                 </a>
                             </li>

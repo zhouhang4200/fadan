@@ -32,7 +32,7 @@ class HomeController extends Controller
 // dd($role);
     	// if (! $role) {
 
-	    // 	Role::create(['name' => 'manager']);		
+	    	// \App\Models\Permission::create(['name' => 'manager1']);		
     	// }
 
     	// if (! $role2) {

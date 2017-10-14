@@ -1,9 +1,7 @@
-@extends('frontend.layouts.app')
+<?php $__env->startSection('title', '账号 - 子账号列表'); ?>
 
-@section('title', '账号 - 子账号列表')
-
-@section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(asset('/css/index.css')); ?>" rel="stylesheet">
     <style>
         .layui-form-item .layui-input-inline {
             float: left;
@@ -11,34 +9,34 @@
             margin-right: 10px;
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('submenu')
-@include('frontend.account.submenu')
-@endsection
+<?php $__env->startSection('submenu'); ?>
+<?php echo $__env->make('frontend.account.submenu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@section('main')
+<?php $__env->startSection('main'); ?>
 <form class="layui-form" method="" action="">
     <div class="layui-inline" >
         <div class="layui-form-item" style="float: left">
             <label class="layui-form-label">用户名</label>
             <div class="layui-input-inline">
-            <input type="text" name="name" value="{{ $name ?: '' }}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <input type="text" name="name" value="<?php echo e($name ?: ''); ?>" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
 
               <label class="layui-form-label">开始时间</label>
               <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="<?php echo e($startDate ?: null); ?>" name="startDate" id="test1" placeholder="年-月-日">
               </div>
 
               <label class="layui-form-label">结束时间</label>
               <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="<?php echo e($endDate ?: null); ?>"  name="endDate" id="test2" placeholder="年-月-日">
               </div>
         </div>
         <div style="float: left">
         <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-        <button  class="layui-btn"><a href="{{ route('accounts.index') }}" style="color:#fff">返回</a></button></div>
+        <button  class="layui-btn"><a href="<?php echo e(route('accounts.index')); ?>" style="color:#fff">返回</a></button></div>
     </div>
 </form>
 <div class="layui-tab-item layui-show" lay-size="sm">
@@ -58,34 +56,35 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($accounts as $account)
+        <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <tr class="account-td">
-                <td>{{ $account->id }}</td>
-                <td>{{ $account->name }}</td>
-                <td>{{ $account->email }}</td>
-                <td>{{ $account->created_at }}</td>
+                <td><?php echo e($account->id); ?></td>
+                <td><?php echo e($account->name); ?></td>
+                <td><?php echo e($account->email); ?></td>
+                <td><?php echo e($account->created_at); ?></td>
                 <td>
                     <div style="text-align: center">
-                    <button class="layui-btn edit"><a href="{{ route('accounts.edit', ['id' => $account->id]) }}" style="color: #fff">编辑</a></button>
-                    <button class="layui-btn delete" onclick="del({{ $account->id }})">删除</button>
-                    <button class="layui-btn rbac"><a href="{{ route('rbacgroups.create') }}" style="color: #fff">权限</a></button>
+                    <button class="layui-btn edit"><a href="<?php echo e(route('accounts.edit', ['id' => $account->id])); ?>" style="color: #fff">编辑</a></button>
+                    <button class="layui-btn delete" onclick="del(<?php echo e($account->id); ?>)">删除</button>
+                    <button class="layui-btn rbac"><a href="<?php echo e(route('rbacgroups.create')); ?>" style="color: #fff">权限</a></button>
                     </div>
                 </td>
             </tr>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
 </div>
 
-{!! $accounts->appends([
+<?php echo $accounts->appends([
     'name' => $name,
     'startDate' => $startDate,
     'endDate' => $endDate,
-])->render() !!}
+])->render(); ?>
 
-@endsection
+
+<?php $__env->stopSection(); ?>
 <!--START 底部-->
-@section('js')
+<?php $__env->startSection('js'); ?>
 <script>
     // 时间插件
     layui.use('laydate', function(){
@@ -130,4 +129,5 @@
     // 权限
 
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('frontend.layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -49,6 +49,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         });
     });
 
+    Route::namespace('Rbac')->prefix('rbac')->group(function () {
+        Route::resource('roles', 'RoleController', ['except' => ['show']]);
+        Route::resource('permissions', 'PermissionController', ['except' => ['show']]);
+    });
+
     Route::prefix('order')->group(function (){
         Route::get('/', 'OrderController@index')->name('order.index');
     });

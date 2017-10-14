@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts.main')
 
 @section('title', '商家后台')
 

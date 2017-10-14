@@ -14,7 +14,7 @@
 @include('frontend.rbacgroup.submenu')
 @endsection
 
-@section('content')
+@section('main')
 <form class="layui-form" method="POST" action="{{ route('rbacgroups.store') }}">
     {!! csrf_field() !!}
     <div style="width: 40%">
