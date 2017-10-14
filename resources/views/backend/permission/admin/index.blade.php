@@ -39,6 +39,7 @@
                             </table>
                             </div>
                         </div>
+                        {!! $permissions->render() !!}
                 </div>
             </div>
         </div>

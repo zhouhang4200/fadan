@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class RbacGroupController extends Controller
+class AdminGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,7 @@ class RbacGroupController extends Controller
      */
     public function index()
     {
-        return view('backend.rbacgroup.index');
+        
     }
 
     /**
@@ -24,7 +25,7 @@ class RbacGroupController extends Controller
      */
     public function create()
     {
-        //
+        return view();
     }
 
     /**
