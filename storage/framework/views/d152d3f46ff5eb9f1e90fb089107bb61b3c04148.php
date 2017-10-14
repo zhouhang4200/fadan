@@ -36,6 +36,8 @@
                             </table>
                             </div>
                         </div>
+                        <?php echo $users->render(); ?>
+
                 </div>
             </div>
         </div>
