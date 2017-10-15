@@ -31,8 +31,6 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::get('login/record', 'LoginRecordController@index')->name('loginrecord.index');
 	// 账号管理
 	Route::resource('accounts', 'AccountController', ['except' => ['show']]);
-
-	Route::get('test', 'TestController@index');
 });
 
 Route::namespace('Frontend\Auth')->group(function () {
@@ -64,3 +62,5 @@ Route::prefix('admin')->namespace('Backend\Auth')->group(function () {
 	Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('admin.password.reset');
 	Route::post('password/reset', 'ResetPasswordController@reset');
 });
+
+Route::get('test', 'TestController@index');

@@ -15,7 +15,7 @@ trait PlatformAmountFlowTrait
         $platformAmountFlow->trade_no             = $this->no;
         $platformAmountFlow->fee                  = $this->fee;
         $platformAmountFlow->remark               = $this->remark;
-        $platformAmountFlow->income               = $this->platformAsset->income;
+        $platformAmountFlow->amount               = $this->platformAsset->amount;
         $platformAmountFlow->managed              = $this->platformAsset->managed;
         $platformAmountFlow->balance              = $this->platformAsset->balance;
         $platformAmountFlow->frozen               = $this->platformAsset->frozen;

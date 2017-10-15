@@ -1,8 +1,6 @@
 <?php
 namespace App\Extensions\Asset\Base;
 
-use Auth;
-
 // 交易
 abstract class Trade
 {
@@ -23,13 +21,13 @@ abstract class Trade
     protected $remark;  // 备注
     protected $userId;  // 用户ID
 
-    public function __construct($fee, $subtype, $no = '', $remark  = '', $userId  = null)
+    public function __construct($userId, $fee, $subtype, $no = '', $remark  = '')
     {
+        $this->userId  = $userId;
         $this->fee     = $fee;
         $this->subtype = $subtype;
         $this->no      = $no;
         $this->remark  = $remark;
-        $this->userId  = $userId ?: Auth::user()->id;
     }
 
     // 用户前置操作

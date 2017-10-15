@@ -56,12 +56,12 @@ class Refund extends \App\Extensions\Asset\Base\Trade
             throw new Exception('平台资产不存在');
         }
 
-        $afterIncome = bcadd($this->platformAsset->income, $this->fee);
-        if ($afterIncome < 0) {
+        $afterAmount = bcadd($this->platformAsset->amount, $this->fee);
+        if ($afterAmount < 0) {
             throw new Exception('平台资金不足');
         }
 
-        $this->platformAsset->income       = $afterIncome;
+        $this->platformAsset->amount       = $afterAmount;
         $this->platformAsset->balance      = bcadd($this->platformAsset->balance, abs($this->fee));
         $this->platformAsset->total_refund = bcadd($this->platformAsset->total_refund, abs($this->fee));
 
