@@ -127,7 +127,7 @@ class AdminGroupController extends Controller
 
         $array = $user->roles()->detach($roleIds);
 
-        if ($bool) {
+        if ($array['attached'] || $array['detached'] || $array['updated']) {
 
             return jsonMessages('1', '删除成功!');
         }

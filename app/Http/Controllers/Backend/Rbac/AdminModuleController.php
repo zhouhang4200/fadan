@@ -112,7 +112,7 @@ class AdminModuleController extends Controller
      */
     public function destroy($id)
     {
-        $module = Module::find($id)->delete();
+        $bool = Module::find($id)->delete();
 
         if ($bool) {
 

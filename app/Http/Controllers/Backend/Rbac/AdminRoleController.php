@@ -134,7 +134,7 @@ class AdminRoleController extends Controller
      */
     public function destroy($id)
     {
-        $role = Role::find($id)->delete();
+        $bool = Role::find($id)->delete();
 
         if ($bool) {
 

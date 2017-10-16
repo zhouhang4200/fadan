@@ -127,7 +127,7 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
-        $permission = Permission::find($id)->delete();
+        $bool = Permission::find($id)->delete();
 
         if ($bool) {
 
