@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', ' | 前端账号'); ?>
+<?php $__env->startSection('title', ' | 后端账号'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="row">
@@ -7,7 +7,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">前端账号</li>
+                            <li class="layui-this" lay-id="add">后端账号</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">

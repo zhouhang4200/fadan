@@ -10,6 +10,9 @@
                             <li class="layui-this" lay-id="add">权限列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="<?php echo e(route('admin-permissions.create')); ?>" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台权限</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
@@ -28,7 +31,7 @@
                                             <td><?php echo e($permission->name); ?></td>
                                             <td><?php echo e($permission->alias); ?></td>
                                             <td><?php echo e($permission->created_at); ?></td>
-                                            <td style="text-align: center"><a href="<?php echo e(route('permissions.edit', ['id' => $permission->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <td style="text-align: center"><a href="<?php echo e(route('admin-permissions.edit', ['id' => $permission->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
                                             <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($permission->id); ?>)">删除</button></td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -37,6 +40,8 @@
                             </table>
                             </div>
                         </div>
+                        <?php echo $permissions->render(); ?>
+
                 </div>
             </div>
         </div>
@@ -60,7 +65,7 @@
                             var obj = eval('(' + data + ')');
                             if (obj.code == 1) {
                                 layer.msg('删除成功!', {icon: 6, time:1500},);
-                                window.location.href = <?php echo e(route('permissions.index')); ?>;                    
+                                window.location.href = "<?php echo e(route('admin-permissions.index')); ?>";                    
                             } else {
                                 layer.msg('删除失败!', {icon: 5, time:1500},);
                             }

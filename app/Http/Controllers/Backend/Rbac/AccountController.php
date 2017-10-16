@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Account;
+namespace App\Http\Controllers\Backend\Rbac;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ class AccountController extends Controller
 {
     public function index()
     {
-    	$users = User::where('pid', 0)->paginate(config('frontend.page'));
+    	$users = User::where('pid', 0)->latest('id')->paginate(config('frontend.page'));
 
     	return view('backend.account.index', compact('users'));
     }

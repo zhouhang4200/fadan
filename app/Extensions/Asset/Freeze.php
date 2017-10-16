@@ -12,9 +12,8 @@ class Freeze extends \App\Extensions\Asset\Base\Trade
 {
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
-    const TRADE_SUBTYPE_WANT_BUY_STOCK  = 1; // 库存求购冻结
-    const TRADE_SUBTYPE_WITHDRAW        = 2; // 提现冻结
-    const TRADE_SUBTYPE_ORDER_RECEIVING = 3; // 订单集市抢单冻结
+    const TRADE_SUBTYPE_WITHDRAW        = 1; // 提现冻结
+    const TRADE_SUBTYPE_ORDER_RECEIVING = 2; // 订单集市抢单冻结
 
     protected $userAsset;
     protected $platformAsset;

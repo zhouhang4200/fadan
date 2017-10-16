@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Account;
+namespace App\Http\Controllers\Backend\Rbac;
 
 use App\Models\AdminUser;
 use Illuminate\Http\Request;
@@ -10,8 +10,8 @@ class AdminAccountController extends Controller
 {
     public function index()
     {
-    	$adminUsers = AdminUser::paginate(config('backend.page'));
+    	$users = AdminUser::latest('id')->paginate(config('backend.page'));
 
-    	return view('backend.account.admin-index', compact('adminUsers'));
+    	return view('backend.account.admin.index', compact('users'));
     }
 }

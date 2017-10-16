@@ -10,6 +10,9 @@
                             <li class="layui-this" lay-id="add">角色列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="<?php echo e(route('admin-roles.create')); ?>" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台角色</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
@@ -28,7 +31,7 @@
                                             <td><?php echo e($role->name); ?></td>
                                             <td><?php echo e($role->alias); ?></td>
                                             <td><?php echo e($role->created_at); ?></td>
-                                            <td style="text-align: center"><a href="<?php echo e(route('roles.edit', ['id' => $role->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <td style="text-align: center"><a href="<?php echo e(route('admin-roles.edit', ['id' => $role->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
                                             <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($role->id); ?>)">删除</button></td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -37,6 +40,8 @@
                             </table>
                             </div>
                         </div>
+                        <?php echo $roles->render(); ?>
+
                 </div>
             </div>
         </div>
@@ -65,13 +70,13 @@
             layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/rbac/roles/'+id,
+                    url: '/admin/rbac/admin-roles/'+id,
                     success: function (data) {
                         console.log(data);
                         var obj = eval('(' + data + ')');
                         if (obj.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = <?php echo e(route('roles.index')); ?>;                    
+                            window.location.href = "<?php echo e(route('admin-roles.index')); ?>";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }

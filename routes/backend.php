@@ -54,18 +54,25 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
+        // 前台角色
         Route::resource('roles', 'RoleController', ['except' => ['show']]);
+        // 后台角色
         Route::resource('admin-roles', 'AdminRoleController', ['except' => ['show']]);
+        // 前台权限
         Route::resource('permissions', 'PermissionController', ['except' => ['show']]);
+        // 后台权限
         Route::resource('admin-permissions', 'AdminPermissionController', ['except' => ['show']]);
-        Route::resource('groups', 'GroupController',['except' => ['show']]);
-        Route::resource('admin-groups', 'AdminGroupController',['except' => ['show']]);
+        // 前台账号分配角色
+        Route::resource('groups', 'GroupController');
+        // 后台账号分配角色
+        Route::resource('admin-groups', 'AdminGroupController');
+        // 前台模块
         Route::resource('modules', 'ModuleController', ['except' => ['show']]);
+        // 后台模块
         Route::resource('admin-modules', 'AdminModuleController', ['except' => ['show']]);
-    });
-
-    Route::namespace('Account')->prefix('account')->group(function () {
+        // 前台账号
         Route::get('accounts', 'AccountController@index')->name('accounts.index');
+        // 后台账号
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
     });
 
@@ -74,11 +81,16 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     Route::namespace('Finance')->prefix('finance')->group(function () {
-        Route::get('platform/asset', 'PlatformController@asset')->name('finance.platform.asset');
-        Route::get('platform/flow', 'PlatformController@flow')->name('finance.platform.flow');
-        Route::get('platform/daily', 'PlatformController@daily')->name('finance.platform.daily');
+        Route::get('platform-asset', 'PlatformAssetController@index')->name('finance.platform-asset');
 
-        Route::get('user/asset', 'UserController@asset')->name('finance.user.asset');
-        Route::get('user/flow', 'UserController@flow')->name('finance.user.flow');
+        Route::get('platform-amount-flow', 'PlatformAmountFlowController@index')->name('finance.platform-amount-flow');
+        Route::get('platform-amount-flow/export', 'PlatformAmountFlowController@export')->name('finance.platform-amount-flow.export');
+
+        Route::get('platform-asset-daily', 'PlatformAssetDailyController@index')->name('finance.platform-asset-daily');
+        Route::get('platform-asset-daily/export', 'PlatformAssetDailyController@export')->name('finance.platform-asset-daily.export');
+
+        Route::get('user-asset', 'UserAssetController@index')->name('finance.user-asset');
+
+        Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
     });
 });

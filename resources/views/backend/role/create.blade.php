@@ -1,6 +1,22 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 添加角色')
+@section('title', ' | 添加前台角色')
+
+@section('css')
+    <style>
+        .layui-tab-content input {
+            width:800px;
+        }
+        .table {
+            width:800px;
+        }
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 135px;
+            margin-right: 10px;
+        }
+    </style>
+@endsection
 
 @section('content')
     <div class="row">
@@ -9,28 +25,29 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加角色</li>
+                            <li class="layui-this" lay-id="add">添加前台角色</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="{{ route('roles.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">角色名:</label>
+                                        <label class="layui-form-label">角色名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入角色名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">别名:</label>
+                                        <label class="layui-form-label">别名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
+                                    
 
-                                    <div class="form-group">
-                                        <label for="exampleInputFile">权限</label>
-                                            <div class="ibox float-e-margins">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">权限</label>
+                                            <div class="layui-input-block">
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr>
@@ -39,20 +56,19 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($modulePermissions as $module =>$modulePermission)
+                                                @foreach($modulePermissions as $modulePermission)
                                                     <tr>
-                                                        <td>{{ $key }}</td>
+                                                        <td>{{ $modulePermission->alias }}</td>
                                                         <td>
-                                                            <?php $i = 0 ?>
-                                                            @foreach($modulePermission as $permission)
-                                                                <div class="checkbox-nice checkbox-inline">
-                                                                    <input name="permissions[]" type="checkbox" value="{{ $permissions['id'] }}" id="checkbox-inl-{{$module}}-{{$i}}" @if(in_array($permission['id'], $rolePermissionsIdArr))checked @endif>
-                                                                    <label for="checkbox-inl-{{$module}}-{{$i}}">
-                                                                        {{ $permission['name'] }}
-                                                                    </label>
+                                                                <div class="layui-form-item" pane="">
+                                                
+                                                                @foreach($modulePermission->permissions as $permission)
+                                                                <div class="layui-input-inline">
+                                                                  <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
+ 
                                                                 </div>
-                                                                <?php $i++; ?>
-                                                            @endforeach
+                                                                @endforeach
+                                                              </div>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -83,11 +99,14 @@
 
         var error = "{{ $errors->count() > 0 ? '用户名或别名已经存在！' : '' }}";
         var createFail = "{{ session('createFail') ?: '' }}";
+        var missError = "{{ session('missError') ?: '' }}";
 
         if (error) {
             layer.msg(error, {icon: 5, time:1500},);
         } else if(createFail) {
             layer.msg(createFail, {icon: 5, time:1500},);
+        } else if(missError) {
+            layer.msg(missError, {icon: 5, time:1500},);
         }
   
       //……
