@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 角色列表')
+@section('title', ' | 前台角色列表')
 
 @section('content')
     <div class="row">
@@ -9,7 +9,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">角色列表</li>
+                            <li class="layui-this" lay-id="add">前台角色列表</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">

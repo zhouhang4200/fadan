@@ -15,8 +15,8 @@
                                 <thead>
                                 <tr>
                                     <th>账号ID</th>
-                                    <th>名称</th>
-                                    <th>邮箱</th>
+                                    <th>账号名称</th>
+                                    <th>账号邮箱</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -28,7 +28,12 @@
                                             <td><?php echo e($user->name); ?></td>
                                             <td><?php echo e($user->email); ?></td>
                                             <td><?php echo e($user->created_at); ?></td>
-                                            <td style="text-align: center;"><a href="<?php echo e(route('groups.create', ['id' => $user->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加权限</button></a></td>
+                                            <td style="text-align: center;">
+                                            <?php if(! $user->roles->count() > 0): ?><a href="<?php echo e(route('groups.create', ['id' => $user->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >添加角色</button></a>
+                                            <?php else: ?>
+                                            <a href="<?php echo e(route('groups.show', ['id' => $user->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
+                                            <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <?php endif; ?>

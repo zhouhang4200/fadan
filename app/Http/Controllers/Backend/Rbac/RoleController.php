@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend\Rbac;
 
 use App\Models\Role;
+use App\Models\Module;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -27,9 +29,11 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $modulePermissions = Module::with('permissions')->get();
+        $modulePermissions = Module::where('guard_name', 'web')->with('permissions')->get();
         
-        return view('backend.role.create');
+        $permissions = Permission::where('guard_name', 'web')->get()->toArray();
+
+        return view('backend.role.create', compact('modulePermissions', 'permissions'));
     }
 
     /**
@@ -40,6 +44,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        if (! $request->permissions) {
+
+            return back()->withInput()->with('missError', '请选择权限!');
+        }
+
         $this->validate($request, Role::rules(), Role::messages());
 
         $data['guard_name'] = 'web';
@@ -48,9 +57,10 @@ class RoleController extends Controller
 
         $data['alias'] = $request->alias;
 
-        $res = Role::create($data);
+        $array = Role::create($data)->permissions()->sync($request->permissions);
         
-        if (! $res) {
+        if ($array['attached'] || $array['detached'] || $array['updated']) {
+
             return back()->withInput()->with('createFail', '添加失败！');
         }
         return redirect(route('roles.index'))->with('succ', '添加成功!');
@@ -77,7 +87,9 @@ class RoleController extends Controller
     {
         $role = Role::find($id);
 
-        return view('backend.role.edit', compact('role'));
+        $modulePermissions = Module::where('guard_name', 'web')->with('permissions')->get();
+
+        return view('backend.role.edit', compact('role', 'modulePermissions'));
     }
 
     /**
@@ -89,6 +101,11 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! $request->permissions) {
+
+            return back()->withInput()->with('missError', '请选择权限!');
+        }
+        
         $this->validate($request, Role::updateRules($id), Role::messages());
 
         $data['name'] = $request->name;
@@ -100,6 +117,9 @@ class RoleController extends Controller
         $int = $role->update($data);
 
         if ($int > 0) {
+
+            $role->permissions()->sync($request->permissions);
+
             return redirect(route('roles.index'))->with('succ', '更新成功!');
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +28,9 @@ class AdminPermissionController extends Controller
      */
     public function create()
     {
-        return view('backend.permission.admin.create');
+        $modules = Module::where('guard_name', 'admin')->get();
+
+        return view('backend.permission.admin.create', compact('modules'));
     }
 
     /**
@@ -46,12 +49,14 @@ class AdminPermissionController extends Controller
 
         $data['alias'] = $request->alias;
 
+        $data['module_id'] = $request->module_id;
+
         $res = Permission::create($data);
         
         if (! $res) {
             return back()->withInput()->with('createFail', '添加失败！');
         }
-        return redirect(route('permissions.index'))->with('succ', '添加成功!');
+        return redirect(route('admin-permissions.index'))->with('succ', '添加成功!');
     }
 
     /**
@@ -75,7 +80,9 @@ class AdminPermissionController extends Controller
     {
         $permission = Permission::find($id);
 
-        return view('backend.permission.admin.edit', compact('permission'));
+        $modules = Module::where('guard_name', 'admin')->get();
+
+        return view('backend.permission.admin.edit', compact('permission', 'modules'));
     }
 
     /**
@@ -93,12 +100,14 @@ class AdminPermissionController extends Controller
 
         $data['alias'] = $request->alias;
 
+        $data['module_id'] = $request->module_id;
+
         $permission = Permission::find($id);
 
         $int = $permission->update($data);
 
         if ($int > 0) {
-            return redirect(route('permissions.index'))->with('succ', '更新成功!');
+            return redirect(route('admin-permissions.index'))->with('succ', '更新成功!');
         }
 
         return back()->withInput()->with('updateFail', '更新失败!');

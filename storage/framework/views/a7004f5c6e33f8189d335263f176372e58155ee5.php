@@ -52,7 +52,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li <?php if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions'): ?> class="open active" <?php endif; ?>>
+                    <li <?php if($currentOneLevelMenu == 'accounts.index' || $currentOneLevelMenu == 'admin-accounts.index'): ?> class="open active" <?php endif; ?>>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>账号</span>

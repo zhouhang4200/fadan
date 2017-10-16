@@ -1,4 +1,20 @@
-<?php $__env->startSection('title', ' | 添加角色'); ?>
+<?php $__env->startSection('title', ' | 添加后台角色'); ?>
+
+<?php $__env->startSection('css'); ?>
+    <style>
+        .layui-tab-content input {
+            width:800px;
+        }
+        .table {
+            width:800px;
+        }
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 135px;
+            margin-right: 10px;
+        }
+    </style>
+<?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="row">
@@ -7,23 +23,55 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加角色</li>
+                            <li class="layui-this" lay-id="add">添加后台角色</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="<?php echo e(route('roles.store')); ?>">
+                            <form class="layui-form" method="POST" action="<?php echo e(route('admin-roles.store')); ?>">
                             <?php echo csrf_field(); ?>
 
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">角色名:</label>
+                                        <label class="layui-form-label">角色名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="name" lay-verify="required" value="<?php echo e(old('name')); ?>" autocomplete="off" placeholder="请输入角色名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">别名:</label>
+                                        <label class="layui-form-label">别名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="<?php echo e(old('name')); ?>" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required" value="<?php echo e(old('alias')); ?>" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">权限</label>
+                                            <div class="layui-input-block">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-md-1 text-center">模块</th>
+                                                    <th class="col-md-10 text-center">权限</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <?php $__currentLoopData = $modulePermissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $modulePermission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <tr>
+                                                        <td><?php echo e($modulePermission->alias); ?></td>
+                                                        <td>
+                                                                <div class="layui-form-item" pane="">
+                                                
+                                                                <?php $__currentLoopData = $modulePermission->permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $permission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <div class="layui-input-inline">
+                                                                  <input type="checkbox" name="permissions[]" lay-skin="primary" title="<?php echo e($permission->alias); ?>" value="<?php echo e($permission->id); ?>">
+ 
+                                                                </div>
+                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                              </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 

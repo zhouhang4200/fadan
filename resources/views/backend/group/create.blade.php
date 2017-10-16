@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 添加前台角色')
+@section('title', ' | 添加前台账号角色')
 
 @section('css')
     <style>
@@ -25,53 +25,46 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加前台角色</li>
+                            <li class="layui-this" lay-id="add">添加前台账号角色</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('roles.store') }}">
+                            <form class="layui-form" method="POST" action="{{ route('groups.store', ['userId' => $user->id]) }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">角色名</label>
+                                        <label class="layui-form-label">账号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入角色名" class="layui-input">
+                                            <input type="text" lay-verify="" value="{{ $user->name }}" autocomplete="off" placeholder="请输入角色名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">别名</label>
+                                        <label class="layui-form-label">邮箱</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" lay-verify="" value="{{ $user->email }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
-                                    
 
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">权限</label>
+                                        <label class="layui-form-label">前台角色</label>
                                             <div class="layui-input-block">
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr>
-                                                    <th class="col-md-1 text-center">模块</th>
-                                                    <th class="col-md-10 text-center">权限</th>
+                                                    <th class="col-md-1 text-center">前台角色名</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($modulePermissions as $modulePermission)
                                                     <tr>
-                                                        <td>{{ $modulePermission->alias }}</td>
                                                         <td>
-                                                                <div class="layui-form-item" pane="">
-                                                
-                                                                @foreach($modulePermission->permissions as $permission)
-                                                                <div class="layui-input-inline">
-                                                                  <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
- 
-                                                                </div>
-                                                                @endforeach
-                                                              </div>
+                                                            <div class="layui-form-item" pane="">
+                                                            @foreach($roles as $role)
+                                                            <div class="layui-input-inline">
+                                                              <input type="checkbox" name="roles[]" lay-skin="primary" title="{{ $role->alias }}" value="{{ $role->id }}">
+                                                            </div>
+                                                            @endforeach
+                                                            </div>
                                                         </td>
                                                     </tr>
-                                                @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -98,15 +91,15 @@
         var layer = layui.layer;
 
         var error = "{{ $errors->count() > 0 ? '用户名或别名已经存在！' : '' }}";
-        var createFail = "{{ session('createFail') ?: '' }}";
-        var missError = "{{ session('missError') ?: '' }}";
+        var storeError = "{{ session('storeError') ?: '' }}";
+        var missRole = "{{ session('missRole') ?: '' }}";
 
         if (error) {
             layer.msg(error, {icon: 5, time:1500},);
-        } else if(createFail) {
-            layer.msg(createFail, {icon: 5, time:1500},);
-        } else if(missError) {
-            layer.msg(missError, {icon: 5, time:1500},);
+        } else if(storeError) {
+            layer.msg(storeError, {icon: 5, time:1500},);
+        } else if(missRole) {
+            layer.msg(missRole, {icon: 5, time:1500},);
         }
   
       //……
