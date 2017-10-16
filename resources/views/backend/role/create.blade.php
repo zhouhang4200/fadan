@@ -28,6 +28,39 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="exampleInputFile">权限</label>
+                                            <div class="ibox float-e-margins">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-md-1 text-center">模块</th>
+                                                    <th class="col-md-10 text-center">权限</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($modulePermissions as $module =>$modulePermission)
+                                                    <tr>
+                                                        <td>{{ $key }}</td>
+                                                        <td>
+                                                            <?php $i = 0 ?>
+                                                            @foreach($modulePermission as $permission)
+                                                                <div class="checkbox-nice checkbox-inline">
+                                                                    <input name="permissions[]" type="checkbox" value="{{ $permissions['id'] }}" id="checkbox-inl-{{$module}}-{{$i}}" @if(in_array($permission['id'], $rolePermissionsIdArr))checked @endif>
+                                                                    <label for="checkbox-inl-{{$module}}-{{$i}}">
+                                                                        {{ $permission['name'] }}
+                                                                    </label>
+                                                                </div>
+                                                                <?php $i++; ?>
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
                                             <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>

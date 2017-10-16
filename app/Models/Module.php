@@ -36,4 +36,9 @@ class Module extends Model
     		'alias.unique' => '别名已经存在',
     	];
     }
+
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }

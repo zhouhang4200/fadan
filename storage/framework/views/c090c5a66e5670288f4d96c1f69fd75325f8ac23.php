@@ -14,16 +14,30 @@
                             <?php echo csrf_field(); ?>
 
                                 <div style="width: 40%">
+                                <div class="layui-form-item">
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模块</label>
+                                        <div class="layui-input-block">
+                                            <select name="module_id">
+                                            <option value="">请选择模块</option>
+                                                <?php $__currentLoopData = $modules; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $module): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($module->id); ?>"><?php echo e($module->alias); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">权限名:</label>
+                                        <label class="layui-form-label">权限名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="name" lay-verify="required"  value="<?php echo e(old('name')); ?>" autocomplete="off" placeholder="请输入权限名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">别名:</label>
+                                        <label class="layui-form-label">别名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required"  value="<?php echo e(old('name')); ?>" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required"  value="<?php echo e(old('alias')); ?>" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
 

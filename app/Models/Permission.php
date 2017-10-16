@@ -21,6 +21,11 @@ class Permission extends SpatiePermission
     	return $this->belongsToMany(RbacGroup::class, 'rbac_group_permissions', 'permission_id', 'rbac_group_id');
     }
 
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
+
     public static function rules()
     {
     	return [

@@ -15,16 +15,30 @@
                             <form class="layui-form" method="POST" action="{{ route('permissions.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
+                                <div class="layui-form-item">
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模块</label>
+                                        <div class="layui-input-block">
+                                            <select name="module_id">
+                                            <option value="">请选择模块</option>
+                                                @foreach($modules as $module)
+                                                <option value="{{ $module->id }}">{{ $module->alias }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">权限名:</label>
+                                        <label class="layui-form-label">权限名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="name" lay-verify="required"  value="{{ old('name') }}" autocomplete="off" placeholder="请输入权限名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">别名:</label>
+                                        <label class="layui-form-label">别名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required"  value="{{ old('name') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required"  value="{{ old('alias') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
 

@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', ' | 添加权限'); ?>
+<?php $__env->startSection('title', ' | 修改权限'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="row">
@@ -7,7 +7,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加权限</li>
+                            <li class="layui-this" lay-id="add">修改权限</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="<?php echo e(route('permissions.update', ['id' => $permission->id])); ?>">
@@ -15,6 +15,17 @@
 
                             <input type="hidden" name="_method" value="PUT">
                                 <div style="width: 40%">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模块</label>
+                                        <div class="layui-input-block">
+                                            <select name="module_id">
+                                            <option value="">请选择模块</option>
+                                                <?php $__currentLoopData = $modules; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $module): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($module->id); ?>" <?php echo e($permission->module && $module->id == $permission->module->id ? 'selected' : ''); ?> ><?php echo e($module->alias); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">权限名:</label>
                                         <div class="layui-input-block">

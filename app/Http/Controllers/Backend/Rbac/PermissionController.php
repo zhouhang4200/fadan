@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +28,9 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('backend.permission.create');
+        $modules = Module::where('guard_name', 'web')->get();
+
+        return view('backend.permission.create', compact('modules'));
     }
 
     /**
@@ -38,6 +41,11 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+        if (! $request->module_id) {
+
+            return back()->withInput()->with('missModule', '请选择模块!');
+        }
+
         $this->validate($request, Permission::rules(), Permission::messages());
 
         $data['guard_name'] = 'web';
@@ -46,9 +54,12 @@ class PermissionController extends Controller
 
         $data['alias'] = $request->alias;
 
+        $data['module_id'] = $request->module_id;
+
         $res = Permission::create($data);
         
         if (! $res) {
+
             return back()->withInput()->with('createFail', '添加失败！');
         }
         return redirect(route('permissions.index'))->with('succ', '添加成功!');
@@ -75,7 +86,9 @@ class PermissionController extends Controller
     {
         $permission = Permission::find($id);
 
-        return view('backend.permission.edit', compact('permission'));
+        $modules = Module::where('guard_name', 'web')->get();
+
+        return view('backend.permission.edit', compact('permission', 'modules'));
     }
 
     /**

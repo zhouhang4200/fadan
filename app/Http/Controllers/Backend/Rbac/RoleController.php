@@ -27,6 +27,8 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $modulePermissions = Module::with('permissions')->get();
+        
         return view('backend.role.create');
     }
 

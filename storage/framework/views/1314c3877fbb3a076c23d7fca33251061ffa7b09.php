@@ -37,6 +37,8 @@
                             </table>
                             </div>
                         </div>
+                        <?php echo $permissions->render(); ?>
+
                 </div>
             </div>
         </div>
