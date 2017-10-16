@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 平台资产')
+@section('title', ' | 平台当前资产')
 
 @section('content')
     <div class="row">
@@ -9,7 +9,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">平台资产</li>
+                            <li class="layui-this" lay-id="add">平台当前资产</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
