@@ -12,9 +12,8 @@ class Unfreeze extends \App\Extensions\Asset\Base\Trade
 {
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
-    const TRADE_SUBTYPE_WANT_BUY_STOCK  = 1; // 库存求购解冻
-    const TRADE_SUBTYPE_WITHDRAW        = 2; // 提现解冻
-    const TRADE_SUBTYPE_ORDER_RECEIVING = 3; // 订单集市抢单解冻
+    const TRADE_SUBTYPE_WITHDRAW        = 1; // 提现解冻
+    const TRADE_SUBTYPE_ORDER_RECEIVING = 2; // 订单集市抢单解冻
 
     protected $userAsset;
     protected $platformAsset;

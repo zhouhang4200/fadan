@@ -1,13 +1,13 @@
 <?php
 namespace App\Repositories\Backend;
 
-use App\Models\PlatformAmountFlow;
+use App\Models\UserAmountFlow;
 
-class PlatformAmountFlowRepository
+class UserAmountFlowRepository
 {
     public function getList($userId, $tradeNo, $tradeType, $tradeSubtype, $timeStart, $timeEnd, $pageSize = 20)
     {
-        $dataList = PlatformAmountFlow::orderBy('id', 'desc')
+        $dataList = UserAmountFlow::orderBy('id', 'desc')
             ->when(!empty($userId), function ($query) use ($userId) {
                 return $query->where('user_id', $userId);
             })
