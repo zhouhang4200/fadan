@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Account;
+namespace App\Http\Controllers\Backend\Rbac;
 
 use App\Models\User;
 use Illuminate\Http\Request;
