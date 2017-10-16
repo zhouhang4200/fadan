@@ -78,7 +78,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('platform-asset-daily', 'PlatformAssetDailyController@index')->name('finance.platform-asset-daily');
         Route::get('platform-asset-daily/export', 'PlatformAssetDailyController@export')->name('finance.platform-asset-daily.export');
 
-        Route::get('user/asset', 'UserController@asset')->name('finance.user.asset');
-        Route::get('user/flow', 'UserController@flow')->name('finance.user.flow');
+        Route::get('user-asset', 'UserAssetController@index')->name('finance.user-asset');
+
+        Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
     });
 });

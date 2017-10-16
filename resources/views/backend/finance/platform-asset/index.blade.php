@@ -16,8 +16,8 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th width="135px">模版ID</th>
-                                    <th>模版名称</th>
+                                    <th width="135px">类目</th>
+                                    <th>金额</th>
                                 </tr>
                                 </thead>
                                 <tbody>

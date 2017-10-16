@@ -16,11 +16,7 @@ class PlatformAssetDailyController extends Controller
 
         $dataList = $platformAssetDailyRepository->getList($dateStart, $dateEnd);
 
-        return view('backend.finance.platform-asset-daily.index', compact(
-            'dataList',
-            'dateStart',
-            'dateEnd'
-        ));
+        return view('backend.finance.platform-asset-daily.index', compact('dataList', 'dateStart', 'dateEnd'));
     }
 
     public function export(Request $request, PlatformAssetDailyRepository $platformAssetDailyRepository, ExportPlatformAssetDaily $excel)

@@ -1,13 +1,13 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 平台资金流水')
+@section('title', ' | 用户资金流水')
 
 @section('content')
 <div class="main-box">
     <div class="main-box-body clearfix">
         <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
             <ul class="layui-tab-title">
-                <li class="layui-this" lay-id="add">平台资金流水</li>
+                <li class="layui-this" lay-id="add">用户资金流水</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
@@ -49,7 +49,6 @@
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
-                                <button class="btn btn-primary" type="button" id="export-flow">导出</button>
                             </div>
                         </div>
                     </form>
@@ -124,10 +123,5 @@
 <script>
 $('#time-start').datepicker();
 $('#time-end').datepicker();
-
-$('#export-flow').click(function () {
-    var url = "{{ route('finance.platform-amount-flow.export') }}?" + $('#search-flow').serialize();
-    window.location.href = url;
-});
 </script>
 @endsection
