@@ -78,4 +78,27 @@ class TemplateWidgetController extends Controller
         }
         return jsonMessages(1, '删除成功');
     }
+
+    /**
+     * 获取指定模版ID的所有 select 组件
+     * @param Request $request
+     */
+    public function showSelectWidgetByGoodsTemplateId(Request $request)
+    {
+        return GoodsTemplateWidget::where(['goods_template_id' => $request->id, 'filed_type' => 2])->get();
+    }
+
+    /**
+     * 获取指定父级件的选中值
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showSelectValueByParentId(Request $request)
+    {
+        $widgetValue = GoodsTemplateWidget::where(['filed_parent_id' => $request->parent_id])->first();
+
+        $valueArr = explode(',', $widgetValue->filed_value);
+
+        return response()->json(explode('|', $valueArr[$request->id]));
+    }
 }

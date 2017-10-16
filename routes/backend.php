@@ -37,6 +37,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::prefix('widget')->group(function (){
                 // 获取指定组件
                 Route::post('show', 'TemplateWidgetController@show')->name('goods.template.widget.show');
+                // 获取指定模版ID所有 select 组件
+                Route::post('show-select-all', 'TemplateWidgetController@showSelectWidgetByGoodsTemplateId')->name('goods.template.widget.show-select-all');
+                // 获取指定父级ID组件 的值
+                Route::post('show-select-value', 'TemplateWidgetController@showSelectValueByParentId')->name('goods.template.widget.show-select-value');
                 // 保存修改
                 Route::post('edit', 'TemplateWidgetController@edit')->name('goods.template.widget.edit');
                 // 获取模版所有组件

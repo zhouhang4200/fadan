@@ -59,11 +59,15 @@
                                         </div>
                                     </div>
 
+                                    <div id="show-select-widget">
+
+                                    </div>
+
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">展示方式</label>
-                                        <div class="layui-input-block"  >
+                                        <div class="layui-input-block">
                                             @foreach($filedType as $key => $value)
-                                                <input type="radio" name="filed_type" value="{{ $key }}" title="{{ $value }}" lay-filter="fieldType">
+                                                <input type="radio" name="filed_type" value="{{ $key }}" title="{{ $value }}" lay-filter="field-type">
                                             @endforeach
                                         </div>
                                     </div>
@@ -102,7 +106,7 @@
                                             <input type="checkbox"  name="filed_required" lay-skin="switch"  title="开关" value="1">
                                         </div>
                                     </div>
-                                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="addWidget">确认添加</button>
+                                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add-widget">确认添加</button>
                                 </form>
                             </div>
                             <div class="layui-tab-item" >
@@ -133,8 +137,8 @@
                             <input type="text" name="@{{ item.filed_name }}"  placeholder="请输入@{{ item.filed_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.filed_default_value }}">
                         @{{#  } }}
                     </div>
-                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="showWidget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroyWidget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
                 </div>
             @{{#  } }}
 
@@ -143,15 +147,19 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">@{{ item.filed_display_name }}</label>
                     <div class="layui-input-inline">
-                        <select name="@{{ item.filed_name }}">
-                            @{{# var option = (item.filed_value).split("|") }}
-                            @{{#  layui.each(option, function(i, v){ }}
-                                <option value="@{{ v }}">@{{ v }}</option>
-                            @{{#  }); }}
+                        <select name="@{{ item.filed_name }}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.filed_parent_id }}">
+                            @{{#  if(item.filed_parent_id  == 0){ }}
+                                    @{{# var option = (item.filed_value).split("|") }}
+                                    @{{#  layui.each(option, function(i, v){ }}
+                                        <option value="@{{ i }}">@{{ v }}</option>
+                                    @{{#  }); }}
+                            @{{#  } else { }}
+                                    <option value="请选上级">请选上级</option>
+                            @{{#  } }}
                         </select>
                     </div>
-                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="showWidget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroyWidget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
                 </div>
             @{{#  } }}
 
@@ -167,10 +175,9 @@
                             @{{#  } else { }}
                                 <input type="radio" name="filed_type" value="@{{ v }}" title="@{{ v }}">
                              @{{#  } }}
-
                         @{{#  }); }}
-                        <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="showWidget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                        <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroyWidget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
                     </div>
                 </div>
             @{{#  } }}
@@ -221,9 +228,25 @@
                 @{{#  } }}
             </div>
         </div>
-        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="editWidget">保存修改</button>
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="edit-widget">保存修改</button>
+    </script>
+    <script id="showSelectWidgetTemplate" type="text/html">
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级组件</label>
+            <div class="layui-input-block">
+                <select name="filed_parent_id" lay-verify="required">
+                <option value="0">无</option>
+                    @{{#  if(d.length > 0){ }}
+                        @{{#  layui.each(d, function(i, v){ }}
+                        <option value="@{{ v.id }}">@{{ v.filed_display_name }}</option>
+                        @{{#  }); }}
+                    @{{#  } }}
+                </select>
+            </div>
+        </div>
     </script>
     <script>
+
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
             reloadTemplate();
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
@@ -238,14 +261,16 @@
                 }
             });
             // 监听组件展示方式选择
-            form.on('radio(fieldType)', function(data){
+            form.on('radio(field-type)', function(data){
                 currentWidgetType = data.value;
-                layer.msg('开关checked：', {
-                    offset: '6px'
-                });
+                if (currentWidgetType == 2) {
+                    showSelectWidget();
+                } else {
+                    $('#show-select-widget').html('');
+                }
             });
             // 添加表单组件
-            form.on('submit(addWidget)', function(data){
+            form.on('submit(add-widget)', function(data){
                 $.post('{{ route('goods.template.widget.store') }}', {data:data.field},function (result) {
                     // 添加成功后重新加载模版
                     if (result.code == 1) {
@@ -258,20 +283,34 @@
                 return false;
             });
             // 删除表单组件
-            form.on('submit(destroyWidget)', function(data){
+            form.on('submit(destroy-widget)', function(data){
                 destroyWidget(data.elem.getAttribute("data-id"));
                 return false;
             });
             // 编缉表单组件
-            form.on('submit(showWidget)', function(data){
+            form.on('submit(show-widget)', function(data){
                 showWidget(data.elem.getAttribute("data-id"));
                 return false;
             });
             // 保存组件修改
-            form.on('submit(editWidget)', function(data){
+            form.on('submit(edit-widget)', function(data){
                 $.post('{{ route('goods.template.widget.edit') }}', {id:data.field.id, data:data.field}, function (result) {
 
                 }, 'json');
+                return false;
+            });
+            // 改变下拉框值
+            form.on('select(change-select)', function(data){
+                var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+                if($(subordinate).length > 0){
+                    $.post('{{ route('goods.template.widget.show-select-value') }}', {id:data.value, parent_id:data.elem.getAttribute('data-id')}, function (result) {
+                        $(subordinate).html(result);
+                        $(result).each(function (index, name) {
+                            $(subordinate).append('<option value="' + index + '">' + name + '</option>');
+                        });
+                        layui.form.render();
+                    }, 'json');
+                }
                 return false;
             });
             // 当切换到添加时清空编辑表单
@@ -304,6 +343,16 @@
                 element.tabChange('widgetTab', 'edit');
                 var getTpl = showWidgetTemplate.innerHTML, view = document.getElementById('show-widget');
                 $.post('{{ route('goods.template.widget.show') }}', {id:widgetId}, function (result) {
+                    layTpl(getTpl).render(result, function(html){
+                        view.innerHTML = html;
+                        layui.form.render()
+                    });
+                }, 'json');
+            }
+            // 显示当前模版的所有下拉框组件
+            function showSelectWidget() {
+                var getTpl = showSelectWidgetTemplate.innerHTML, view = document.getElementById('show-select-widget');
+                $.post('{{ route('goods.template.widget.show-select-all') }}', {id:'{{ Route::input('templateId')}}'}, function (result) {
                     layTpl(getTpl).render(result, function(html){
                         view.innerHTML = html;
                         layui.form.render()
