@@ -9,7 +9,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
             <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
                 <ul class="nav nav-pills nav-stacked">
                     <li>
-                        <a href="{{ url('/') }}">
+                        <a href="{{ url('admin') }}">
                             <i class="fa fa-dashboard"></i>
                             <span>后台首页</span>
                         </a>
@@ -41,13 +41,28 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ route('finance.platform.asset') }}" @if($currentRouteName == 'finance.platform.asset') class="active" @endif>
-                                    平台资产
+                                <a href="{{ route('finance.platform-asset') }}" @if($currentRouteName == 'finance.platform-asset') class="active" @endif>
+                                    平台当前资产
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('finance.platform.flow') }}" @if($currentRouteName == 'finance.platform.flow') class="active" @endif>
-                                    资金流水
+                                <a href="{{ route('finance.platform-asset-daily') }}" @if($currentRouteName == 'finance.platform-asset-daily') class="active" @endif>
+                                    平台资产日报
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.platform-amount-flow') }}" @if($currentRouteName == 'finance.platform-amount-flow') class="active" @endif>
+                                    平台资金流水
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.user-asset') }}" @if($currentRouteName == 'finance.user-asset') class="active" @endif>
+                                    用户资产列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.user-amount-flow') }}" @if($currentRouteName == 'finance.user-amount-flow') class="active" @endif>
+                                    用户资金流水
                                 </a>
                             </li>
                         </ul>

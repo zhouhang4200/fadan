@@ -1,20 +1,14 @@
 <?php $__env->startSection('title', '登录'); ?>
 
-<?php $__env->startSection('css'); ?>
-    <style>
-        .input-container input {
-            height:40px;
-        }
-    </style>
-<?php $__env->stopSection(); ?>
-
 <?php $__env->startSection('content'); ?>
     <form method="POST" action="<?php echo e(route('login')); ?>"  class="layui-form">
     <?php echo csrf_field(); ?>
 
         <div class="header">
             <div class="content">
-                <div style="font-size: 23px;color:#2196f3;font-weight: 400">千手 · 订单集市</div>
+                <a href="">
+                    <span class="logo"></span>
+                </a>
             </div>
         </div>
         <div class="main">
@@ -82,4 +76,4 @@
 <?php $__env->stopSection(); ?>
 
 
-<?php echo $__env->make('layouts.auth', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('frontend.layouts.auth', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
