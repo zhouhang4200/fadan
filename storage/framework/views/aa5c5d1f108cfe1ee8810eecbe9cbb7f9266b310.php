@@ -37,6 +37,8 @@
                             </table>
                             </div>
                         </div>
+                        <?php echo $roles->render(); ?>
+
                 </div>
             </div>
         </div>

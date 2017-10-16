@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 修改模块')
+@section('title', ' | 修改前台模块')
 
 @section('content')
     <div class="row">
@@ -9,23 +9,23 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">修改模块</li>
+                            <li class="layui-this" lay-id="add">修改前台模块</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('roles.update', ['id' => $role->id]) }}">
+                            <form class="layui-form" method="POST" action="{{ route('modules.update', ['id' => $module->id]) }}">
                             {!! csrf_field() !!}
                             <input type="hidden" name="_method" value="PUT">
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">模块名:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $role->name }}" autocomplete="off" placeholder="请输入模块名" class="layui-input">
+                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $module->name }}" autocomplete="off" placeholder="请输入模块名" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">别名:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $role->alias  }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $module->alias  }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
 

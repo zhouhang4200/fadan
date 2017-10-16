@@ -51,7 +51,7 @@ class AdminModuleController extends Controller
         if (! $res) {
             return back()->withInput()->with('createFail', '添加失败！');
         }
-        return redirect(route('modules.index'))->with('succ', '添加成功!');
+        return redirect(route('admin-modules.index'))->with('succ', '添加成功!');
     }
 
     /**
@@ -98,7 +98,7 @@ class AdminModuleController extends Controller
         $int = $module->update($data);
 
         if ($int > 0) {
-            return redirect(route('modules.index'))->with('succ', '更新成功!');
+            return redirect(route('admin-modules.index'))->with('succ', '更新成功!');
         }
 
         return back()->withInput()->with('updateFail', '更新失败!');

@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 修改模块')
+@section('title', ' | 修改后台模块')
 
 @section('content')
     <div class="row">
@@ -9,10 +9,10 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">修改模块</li>
+                            <li class="layui-this" lay-id="add">修改后台模块</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('modules.update', ['id' => $module->id]) }}">
+                            <form class="layui-form" method="POST" action="{{ route('admin-modules.update', ['id' => $module->id]) }}">
                             {!! csrf_field() !!}
                             <input type="hidden" name="_method" value="PUT">
                                 <div style="width: 40%">
