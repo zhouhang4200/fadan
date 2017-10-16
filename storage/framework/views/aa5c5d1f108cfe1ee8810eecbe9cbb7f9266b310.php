@@ -73,8 +73,8 @@
                     url: '/admin/rbac/roles/'+id,
                     success: function (data) {
                         console.log(data);
-                        var obj = eval('(' + data + ')');
-                        if (obj.code == 1) {
+                       
+                        if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
                             window.location.href = "<?php echo e(route('roles.index')); ?>";                    
                         } else {

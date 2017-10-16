@@ -76,9 +76,7 @@
                     type: 'DELETE',
                     url: '/admin/rbac/admin-groups/'+id,
                     success: function (data) {
-                        console.log(data);
-                        var obj = eval('(' + data + ')');
-                        if (obj.code == 1) {
+                        if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
                             window.location.href = "{{ route('groups.index') }}";                    
                         } else {

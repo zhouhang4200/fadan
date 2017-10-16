@@ -129,8 +129,8 @@ class GroupController extends Controller
 
         if ($array['attached'] || $array['detached'] || $array['updated']) {
 
-            return jsonMessages('1', '删除成功!');
+            return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
-        return jsonMessages('2', '删除失败！');
+        return response()->json(['code' => '2', 'message' => '删除失败!']);
     }
 }
