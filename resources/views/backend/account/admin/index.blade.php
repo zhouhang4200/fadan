@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 后端账号')
+@section('title', ' | 后台账号')
 
 @section('content')
     <div class="row">
@@ -9,7 +9,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">后端账号</li>
+                            <li class="layui-this" lay-id="add">后台账号</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
@@ -17,20 +17,25 @@
                                 <thead>
                                 <tr>
                                     <th>账号ID</th>
-                                    <th>名称</th>
-                                    <th>邮箱</th>
+                                    <th>账号名称</th>
+                                    <th>账号邮箱</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($adminUsers as $adminUser)
+                                    @forelse($users as $user)
                                         <tr>
-                                            <td>{{ $adminUser->id }}</td>
-                                            <td>{{ $adminUser->name }}</td>
-                                            <td>{{ $adminUser->email }}</td>
-                                            <td>{{ $adminUser->created_at }}</td>
-                                            <td style="text-align: center;"><a href="{{ route('admin-groups.create', ['id' => $adminUser->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加权限</button></a></td>
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->created_at }}</td>
+                                            <td style="text-align: center;">
+                                            @if (! $user->roles->count() > 0)<a href="{{ route('admin-groups.create', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >添加角色</button></a>
+                                            @else
+                                            <a href="{{ route('admin-groups.show', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
+                                            @endif
+                                            </td>
                                         </tr>
                                     @empty
                                     @endforelse
@@ -38,7 +43,7 @@
                             </table>
                             </div>
                         </div>
-                        {!! $adminUsers->render() !!}
+                        {!! $users->render() !!}
                 </div>
             </div>
         </div>

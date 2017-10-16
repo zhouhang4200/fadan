@@ -12,6 +12,9 @@
                             <li class="layui-this" lay-id="add">权限列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="{{ route('admin-permissions.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台权限</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>

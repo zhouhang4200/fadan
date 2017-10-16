@@ -80,62 +80,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         <ul class="submenu">
                             <li>
                                 <a href="{{ route('roles.index') }}" @if($currentRouteName == 'roles.index') class="active" @endif>
-                                    角色列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('roles.create') }}" @if($currentRouteName == 'roles.create') class="active" @endif>
-                                    添加角色
+                                    前台角色列表
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('permissions.index') }}" @if($currentRouteName == 'permissions.index') class="active" @endif>
-                                    权限列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('permissions.create') }}" @if($currentRouteName == 'permissions.create') class="active" @endif>
-                                    添加权限
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-roles.index') }}" @if($currentRouteName == 'admin-roles.index') class="active" @endif>
-                                    后台角色列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-roles.create') }}" @if($currentRouteName == 'admin-roles.create') class="active" @endif>
-                                    添加后台角色
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-permissions.index') }}" @if($currentRouteName == 'admin-permissions.index') class="active" @endif>
-                                    后台权限列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-permissions.create') }}" @if($currentRouteName == 'admin-permissions.create') class="active" @endif>
-                                    添加后台权限
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
-                                    前台管理组列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('groups.create') }}" @if($currentRouteName == 'groups.create') class="active" @endif>
-                                    添加前台管理组
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
-                                    后台管理组列表
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin-groups.create') }}" @if($currentRouteName == 'admin-groups.create') class="active" @endif>
-                                    添加后台管理组
+                                    前台权限列表
                                 </a>
                             </li>
                             <li>
@@ -144,8 +94,18 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('modules.create') }}" @if($currentRouteName == 'modules.create') class="active" @endif>
-                                    添加前台模块
+                                <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
+                                    前台管理组列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-roles.index') }}" @if($currentRouteName == 'admin-roles.index') class="active" @endif>
+                                    后台角色列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin-permissions.index') }}" @if($currentRouteName == 'admin-permissions.index') class="active" @endif>
+                                    后台权限列表
                                 </a>
                             </li>
                             <li>
@@ -154,8 +114,8 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin-modules.create') }}" @if($currentRouteName == 'admin-modules.create') class="active" @endif>
-                                    添加后台模块
+                                <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
+                                    后台管理组列表
                                 </a>
                             </li>
                         </ul>

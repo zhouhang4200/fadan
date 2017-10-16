@@ -61,9 +61,9 @@ class RoleController extends Controller
         
         if ($array['attached'] || $array['detached'] || $array['updated']) {
 
-            return back()->withInput()->with('createFail', '添加失败！');
+            return redirect(route('roles.index'))->with('succ', '添加成功!');
         }
-        return redirect(route('roles.index'))->with('succ', '添加成功!');
+        return back()->withInput()->with('createFail', '添加失败！');
     }
 
     /**

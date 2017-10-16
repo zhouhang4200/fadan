@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 前台角色列表')
+@section('title', ' | 后台账号角色列表')
 
 @section('content')
     <div class="row">
@@ -9,40 +9,43 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">前台角色列表</li>
+                            <li class="layui-this" lay-id="add">后台账号角色列表</li>
                         </ul>
                         <div class="layui-tab-content">
-                        <div style="padding-top:10px; padding-bottom:10px; float:right">
-                            <a href="{{ route('roles.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加前台角色</button></a>
-                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>角色ID</th>
-                                    <th>名称</th>
-                                    <th>别名</th>
-                                    <th>添加时间</th>
+                                    <th>账号ID</th>
+                                    <th>账号名称</th>
+                                    <th>账号邮箱</th>
+                                    <th>账号角色</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($roles as $role)
+                                        @forelse($groups as $group)
                                         <tr>
-                                            <td>{{ $role->id }}</td>
-                                            <td>{{ $role->name }}</td>
-                                            <td>{{ $role->alias }}</td>
-                                            <td>{{ $role->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('roles.edit', ['id' => $role->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $role->id }})">删除</button></td>
+                                            <td>{{ $group->id }}</td>
+                                            <td>{{ $group->name }}</td>
+                                            <td>{{ $group->email }}</td>
+                                            <td>
+                                            @if ($group->roles)
+                                                @foreach($group->roles as $role)
+                                                    {{ $role->alias }}
+                                                @endforeach
+                                            @endif
+                                            </td>
+                                            <td style="text-align: center"><a href="{{ route('admin-groups.edit', ['id' => $group->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $group->id }})">删除</button></td>
                                         </tr>
-                                    @empty
-                                    @endforelse
+                                        @empty
+                                        @endforelse
                                 </tbody>
                             </table>
                             </div>
                         </div>
-                        {!! $roles->render() !!}
+                        {!! $groups->render() !!}
                 </div>
             </div>
         </div>
@@ -71,13 +74,13 @@
             layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/rbac/roles/'+id,
+                    url: '/admin/rbac/admin-groups/'+id,
                     success: function (data) {
                         console.log(data);
                         var obj = eval('(' + data + ')');
                         if (obj.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = {{ route('roles.index') }};                    
+                            window.location.href = {{ route('groups.index') }};                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }

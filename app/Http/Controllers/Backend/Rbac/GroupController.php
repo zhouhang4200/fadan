@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend\Rbac;
 
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

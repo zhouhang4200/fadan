@@ -12,6 +12,9 @@
                             <li class="layui-this" lay-id="add">后台模块列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="{{ route('admin-modules.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台模块</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>

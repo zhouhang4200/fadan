@@ -55,7 +55,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::resource('permissions', 'PermissionController', ['except' => ['show']]);
         Route::resource('admin-permissions', 'AdminPermissionController', ['except' => ['show']]);
         Route::resource('groups', 'GroupController');
-        Route::resource('admin-groups', 'AdminGroupController',['except' => ['show']]);
+        Route::resource('admin-groups', 'AdminGroupController');
         Route::resource('modules', 'ModuleController', ['except' => ['show']]);
         Route::resource('admin-modules', 'AdminModuleController', ['except' => ['show']]);
     });

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
-use App\Models\Permission;
+use App\Models\Role;
+use App\Models\AdminUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +16,9 @@ class AdminGroupController extends Controller
      */
     public function index()
     {
-        
+        $groups = AdminUser::whereHas('roles')->latest('id')->paginate(config('backend.page'));
+
+        return view('backend.group.admin.index', compact('groups'));
     }
 
     /**
@@ -23,9 +26,13 @@ class AdminGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view();
+        $user = AdminUser::find($request->id);
+
+        $roles = Role::where('guard_name', 'admin')->get();
+
+        return view('backend.group.admin.create', compact('roles', 'user'));
     }
 
     /**
@@ -36,7 +43,21 @@ class AdminGroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (! $request->roles) {
+
+            return back()->with('missRole', '请选择角色!');
+        }
+
+        $user = AdminUser::find($request->userId);
+
+        $array = $user->roles()->sync($request->roles);
+
+        if ($array['attached'] || $array['detached'] || $array['updated']) {
+
+            return redirect(route('admin-groups.index'))->with('succ', '赋予角色成功!');
+        }
+
+        return back()->with('storeError', '赋予角色失败!');
     }
 
     /**
@@ -47,7 +68,9 @@ class AdminGroupController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = AdminUser::find($id);
+
+        return view('backend.group.show', compact('user'));
     }
 
     /**
@@ -58,7 +81,11 @@ class AdminGroupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = AdminUser::find($id);
+
+        $roles = Role::where('guard_name', 'admin')->get();
+
+        return view('backend.group.admin.edit', compact('user', 'roles'));
     }
 
     /**
@@ -70,7 +97,20 @@ class AdminGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (! $request->roles) {
+
+            return back()->with('missRole', '请选择角色!');
+        }
+
+        $user = AdminUser::find($id);
+
+        $array = $user->roles()->sync($request->roles);
+
+        if ($array['attached'] || $array['detached'] || $array['updated']) {
+
+            return redirect(route('admin-groups.index'))->with('succ', '修改账号角色成功!');
+        }
+        return back()->with('updateError', '修改账号角色失败!');
     }
 
     /**
@@ -81,6 +121,16 @@ class AdminGroupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = AdminUser::find($id);
+
+        $roleIds = $user->roles->pluck('id')->toArray(); 
+
+        $array = $user->roles()->detach($roleIds);
+
+        if ($bool) {
+
+            return jsonMessages('1', '删除成功!');
+        }
+        return jsonMessages('2', '删除失败！');
     }
 }
