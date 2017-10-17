@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 登陆记录')
+@section('title', '账号 - 历史记录')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -14,17 +14,13 @@
 @endsection
 
 @section('submenu')
-@include('frontend.account.submenu')
+    @include('frontend.account.submenu')
 @endsection
 
 @section('main')
 <form class="layui-form" method="" action="">
     <div class="layui-inline" style="float:left">
         <div class="layui-form-item">
-            <label class="layui-form-label">账号名</label>
-            <div class="layui-input-inline">
-                <input type="text" name="name" value="{{ $name ?: '' }}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
             <label class="layui-form-label">开始时间</label>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
@@ -39,7 +35,7 @@
     <div style="float: left">
         <div class="layui-inline" >
             <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-            <button  class="layui-btn"><a href="{{ route('loginrecord.index') }}" style="color:#fff">返回</a></button>
+            <button  class="layui-btn"><a href="{{ route('login.history') }}" style="color:#fff">返回</a></button>
         </div>
     </div>
 </form>
@@ -62,22 +58,21 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($loginRecords as $loginRecord)
+        @foreach($histories as $history)
             <tr>
-                <td>{{ $loginRecord->id }}</td>
-                <td>{{ $loginRecord->user_id }}</td>
-                <td>{{ $loginRecord->user->name }}</td>
-                <td>{{ long2ip($loginRecord->ip) }}</td>
-                <td>{{ $loginRecord->city ? $loginRecord->city->name : '' }}</td>
-                <td>{{ $loginRecord->created_at }}</td>
+                <td>{{ $history->id }}</td>
+                <td>{{ $history->user_id }}</td>
+                <td>{{ $history->user->name }}</td>
+                <td>{{ long2ip($history->ip) }}</td>
+                <td>{{ $history->city ? $history->city->name : '' }}</td>
+                <td>{{ $history->created_at }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
 </div>
 
-{!! $loginRecords->appends([
-'name' => $name,
+{!! $histories->appends([
 'startDate' => $startDate,
 'endDate' => $endDate,
 ])->render() !!}
