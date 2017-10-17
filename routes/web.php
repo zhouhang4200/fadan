@@ -15,7 +15,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
 
-	Route::prefix('login', function () {
+	Route::prefix('login')->group(function () {
 		// 账号登录记录
 		Route::get('history', 'LoginController@history')->name('login.history');
 		// 子账号登录历史

@@ -67,16 +67,6 @@ class LoginHistory extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['name'] && count($filters['userIds']) == 0) {
-
-            $query->where('user_id', 0);
-        }
-
-        if ($filters['name'] && count($filters['userIds']) > 0) {
-
-            $query->whereIn('user_id', $filters['userIds']);
-        }
-
         if ($filters['startDate'] && empty($filters['endDate'])) {
 
             $query->where('created_at', '>=', $filters['startDate']);
@@ -84,14 +74,14 @@ class LoginHistory extends Model
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
+            $query->where('created_at', '<=', $filters['endDate'] . " 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
         }
 
-        return $query;
+        return $query->latest('created_at');
     }
 }
