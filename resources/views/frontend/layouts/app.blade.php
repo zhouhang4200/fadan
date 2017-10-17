@@ -7,6 +7,7 @@
     <meta name="_token" content="{{ csrf_token() }}" >
     <link rel="stylesheet" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" href="/frontend/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/backend/css/compiled/elements.css?v1"/>
     <style>
         .pagination > li{
             float: left;
