@@ -13,14 +13,16 @@ class RbacGroup extends Model
     public static function rules ()
     {
     	return [
-    		'name' => 'required',
+            'name' => 'required',
+    		'alias' => 'required',
     	];
     }
 
     public static function messages()
     {
     	return [
-    		'name.required' => '请填写组名',
+            'name.required' => '请填写组名!',
+    		'alias.required' => '请填写别名!',
     	];
     }
 

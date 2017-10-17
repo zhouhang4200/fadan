@@ -17,8 +17,7 @@ class CreateRbacGroupsTable extends Migration
             $table->increments('id');
             $table->tinyInteger('user_id')->unsigned()->comment('user_id');
             $table->string('name')->comment('名称');
-            $table->string('permission_ids')->comment('权限id组合');
-            $table->string('remark')->nullable()->comment('备注');
+            $table->string('alias')->comment('别名');
             $table->timestamps();
         });
     }
