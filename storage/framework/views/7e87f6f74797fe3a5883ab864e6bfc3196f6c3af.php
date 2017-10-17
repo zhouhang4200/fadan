@@ -78,7 +78,7 @@
                     success: function (data) {
                         if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = "<?php echo e(route('admin-groups.index')); ?>";                    
+                            window.location.href = "<?php echo e(route('groups.index')); ?>";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }
