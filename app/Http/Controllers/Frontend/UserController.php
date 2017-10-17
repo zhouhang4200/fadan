@@ -21,6 +21,8 @@ class UserController extends Controller
 
         if ($user->pid == 0) {
 
+            $children = $user->children;
+
             $name = $request->name;
 
             $startDate = $request->startDate;
@@ -31,7 +33,7 @@ class UserController extends Controller
 
             $users = User::filter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
 
-            return view('frontend.user.index', compact('name', 'startDate', 'endDate', 'users'));
+            return view('frontend.user.index', compact('name', 'children', 'startDate', 'endDate', 'users'));
         }
     }
 
@@ -58,7 +60,9 @@ class UserController extends Controller
             $this->validate($request, User::rules(), User::messages());
 
             $data = $request->all();
-            $data['password'] = bcrypt($request->password);    
+
+            $data['password'] = bcrypt($request->password);
+
             $data['pid'] = Auth::id();
 
             $res = User::create($data);
@@ -122,11 +126,11 @@ class UserController extends Controller
                 $res = $user->update(['password' => bcrypt($newPassword)]);
 
                 if (! $res) {
+
                     return back()->withInput()->with('updateError', '修改密码失败！');
                 }
             }
-
-            return redirect('/users');
+            return redirect(route('users.index'))->with('succ', '更新成功!');
         }
     }
 
@@ -143,10 +147,11 @@ class UserController extends Controller
             $res = User::destroy($id);
 
             if (! $res) {
-                return jsonMessages('2', '删除失败！');
+
+                return response()->json(['code' => '2', 'message' => '删除失败！']);
             }
 
-            return jsonMessages('1', '删除成功!');
+            return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
     }
 }

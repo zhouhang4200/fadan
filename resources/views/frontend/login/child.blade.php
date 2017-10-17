@@ -30,7 +30,7 @@
                     <select name="name" lay-verify="required" lay-search="">
                         <option value="">输入名字或直接选择</option>
                         @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ $name ? 'selected' : '' }}>{{ $user->name }}</option>
+                        <option value="{{ $user->id }}" {{ $name && $name == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                         @endforeach
                     </select>
                     </div>
@@ -49,8 +49,8 @@
         </div>
         <div style="float: left">
             <div class="layui-inline" >
-                <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                <button  class="layui-btn"><a href="{{ route('login.child') }}" style="color:#fff">返回</a></button>
+                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+                <button  class="layui-btn layui-btn-normal"><a href="{{ route('login.child') }}" style="color:#fff">返回</a></button>
             </div>
         </div>
     </form>

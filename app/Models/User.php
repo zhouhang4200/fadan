@@ -95,7 +95,7 @@ class User extends Authenticatable
     {
         if ($filters['name']) {
 
-            $query->where('name', 'like', "%{$filters['name']}%");
+            $query->where('id', $filters['name']);
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {

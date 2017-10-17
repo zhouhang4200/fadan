@@ -10,8 +10,12 @@
             width: 150px;
             margin-right: 10px;
         }
+
+        .layui-inline .layui-form-label {
+            width: 60px;
+        }
         .layui-form-label {
-            width:50px;
+            width: 55px;
         }
     </style>
 @endsection
@@ -24,27 +28,37 @@
     <form class="layui-form" method="" action="">
         <div class="layui-inline" >
             <div class="layui-form-item" style="float: left">
-                <label class="layui-form-label">用户名</label>
-                <div class="layui-input-inline">
-                <input type="text" name="name" value="{{ $name ?: '' }}" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                <div class="layui-inline">
+                    <label class="layui-form-label">搜索选择框</label>
+                    <div class="layui-input-inline">
+                    <select name="name" lay-verify="required" lay-search="">
+                        <option value="">输入名字或直接选择</option>
+                        @foreach($children as $child)
+                        <option value="{{ $child->id }}" {{ $name && $name == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                        @endforeach
+                    </select>
+                    </div>
                 </div>
 
-                  <label class="layui-form-label">开始时间</label>
-                  <div class="layui-input-inline">
-                        <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
-                  </div>
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
+                </div>
 
-                  <label class="layui-form-label">结束时间</label>
-                  <div class="layui-input-inline">
-                        <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
-                  </div>
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                </div>
             </div>
             <div style="float: left">
-            <button class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-            <button  class="layui-btn"><a href="{{ route('users.index') }}" style="color:#fff">返回</a></button></div>
+            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+            <button  class="layui-btn layui-btn-normal"><a href="{{ route('users.index') }}" style="color:#fff">返回</a></button></div>
         </div>
     </form>
     <div class="layui-tab-item layui-show" lay-size="sm">
+    <div style="padding-top:10px; padding-bottom:10px; float:right">
+        <a href="{{ route('users.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加子账号</button></a>
+    </div>
         <table class="layui-table" lay-size="sm">
             <colgroup>
                 <col width="150">
@@ -69,9 +83,9 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
-                        <button class="layui-btn edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
-                        <button class="layui-btn delete" onclick="del({{ $user->id }})">删除</button>
-                        <button class="layui-btn rbac"><a href="{{ route('rbacgroups.create') }}" style="color: #fff">权限</a></button>
+                        <button class="layui-btn layui-btn-normal edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
+                        <button class="layui-btn layui-btn-normal delete" onclick="del({{ $user->id }})">删除</button>
+                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('rbacgroups.create') }}" style="color: #fff">权限</a></button>
                         </div>
                     </td>
                 </tr>
@@ -91,7 +105,7 @@
 @section('js')
     <script>
         // 时间插件
-        layui.use('laydate', function(){
+        layui.use(['form', 'layedit', 'laydate'], function(){
             var laydate = layui.laydate;
             //常规用法
             laydate.render({
@@ -115,10 +129,9 @@
                         type: 'DELETE',
                         url: '/users/'+id,
                         success: function (data) {
-                            console.log(data);
-                            var obj = eval('(' + data + ')');
-                            if (obj.code == 1) {
-                                window.location.href = '/users';
+                            if (data.code == 1) {
+                                layer.msg(data.message, {icon: 6, time:1000},);
+                                window.location.href = "{{ route('users.index') }}";
                             } else {
                                 layer.msg('删除失败', {icon: 5, time:1500},);
                             }
@@ -130,7 +143,22 @@
             });
         };
 
-        // 权限
+        layui.use('form', function(){
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var layer = layui.layer;
+
+        var succ = "{{ session('succ') ?: '' }}";
+
+        if(succ) {
+            layer.msg(succ, {icon: 6, time:1500},);
+        }
+  
+      //……
+      
+      //但是，如果你的HTML是动态生成的，自动渲染就会失效
+      //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+      form.render();
+    });  
 
     </script>
 @endsection
