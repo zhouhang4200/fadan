@@ -18,7 +18,7 @@ use App\Models\PlatformAsset;
 
 use Carbon\Carbon;
 
-use App\Repositories\PlatformAssetDailyRepository;
+use App\Repositories\Commands\PlatformAssetDailyRepository;
 
 class TestController extends Controller
 {
@@ -42,6 +42,6 @@ class TestController extends Controller
         $interior .= $platformAsset->amount + $platformAsset->managed + $platformAsset->balance + $platformAsset->frozen;
         dump($external, $interior);
 
-        $platformAssetDailyRepository->scriptrun('2017-10-10', '2017-10-15');
+        $platformAssetDailyRepository->scriptrun('2017-10-14', '2017-10-17');
     }
 }

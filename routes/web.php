@@ -29,9 +29,11 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
 
 	// 财务
-    Route::get('asset', 'AssetController@index')->name('frontend.asset');
-    Route::get('asset/flow', 'AssetController@flow')->name('frontend.asset.flow');
-
+	route::namespace('Finance')->prefix('finance')->group(function () {
+	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
+	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow');
+	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
+	});
 });
 
 Route::namespace('Frontend\Auth')->group(function () {
