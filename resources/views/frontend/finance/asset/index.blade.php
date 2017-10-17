@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '财务 - 资产明细')
+@section('title', '财务 - 我的资产')
 
 @section('submenu')
 @include('frontend.finance.submenu')

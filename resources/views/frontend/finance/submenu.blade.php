@@ -1,6 +1,6 @@
 <ul class="seller_center_left_menu">
     <li class="{{ Route::currentRouteName() == 'frontend.finance.asset' ? 'current' : '' }}">
-        <a href="{{ route('frontend.finance.asset') }}">当前资产</a>
+        <a href="{{ route('frontend.finance.asset') }}">我的资产</a>
         <div class="arrow"></div>
     </li>
     <li class="{{ Route::currentRouteName() == 'frontend.finance.amount-flow' ? 'current' : '' }}">
