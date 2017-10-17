@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 添加权限')
+@section('title', ' | 添加后台权限')
 
 @section('content')
     <div class="row">
@@ -9,12 +9,23 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">添加权限</li>
+                            <li class="layui-this" lay-id="add">添加后台权限</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('permissions.store') }}">
+                            <form class="layui-form" method="POST" action="{{ route('admin-permissions.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模块</label>
+                                        <div class="layui-input-block">
+                                            <select name="module_id">
+                                            <option value="">请选择模块</option>
+                                                @foreach($modules as $module)
+                                                <option value="{{ $module->id }}">{{ $module->alias }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">权限名:</label>
                                         <div class="layui-input-block">
@@ -24,7 +35,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">别名:</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required"  value="{{ old('name') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required"  value="{{ old('alias') }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
                                         </div>
                                     </div>
 

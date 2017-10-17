@@ -106,6 +106,8 @@ class PermissionController extends Controller
 
         $data['alias'] = $request->alias;
 
+        $data['module_id'] = $request->module_id;
+
         $permission = Permission::find($id);
 
         $int = $permission->update($data);
