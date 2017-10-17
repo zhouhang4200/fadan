@@ -17,8 +17,8 @@
                                 <thead>
                                 <tr>
                                     <th>账号ID</th>
-                                    <th>名称</th>
-                                    <th>邮箱</th>
+                                    <th>账号名称</th>
+                                    <th>账号邮箱</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -30,7 +30,12 @@
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->created_at }}</td>
-                                            <td style="text-align: center;"><a href="{{ route('groups.create', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加权限</button></a></td>
+                                            <td style="text-align: center;">
+                                            @if (! $user->roles->count() > 0)<a href="{{ route('groups.create', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >添加角色</button></a>
+                                            @else
+                                            <a href="{{ route('groups.show', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
+                                            @endif
+                                            </td>
                                         </tr>
                                     @empty
                                     @endforelse

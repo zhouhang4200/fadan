@@ -12,6 +12,9 @@
                             <li class="layui-this" lay-id="add">前台模块列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="{{ route('modules.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加前台模块</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
@@ -70,11 +73,9 @@
                     type: 'DELETE',
                     url: '/admin/rbac/modules/'+id,
                     success: function (data) {
-                        console.log(data);
-                        var obj = eval('(' + data + ')');
-                        if (obj.code == 1) {
+                        if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = {{ route('modules.index') }};                    
+                            window.location.href = "{{ route('modules.index') }}";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }
