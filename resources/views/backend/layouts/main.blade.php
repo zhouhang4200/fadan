@@ -103,6 +103,10 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    function reload() {
+        setTimeout("window.reload()", 5000)
+    }
     function logout() {
         layui.use(['form', 'layedit', 'laydate',], function(){
             var form = layui.form

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Goods;
 
-use Auth, Config;
+use Auth, Config, \Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -21,9 +21,10 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        $goodsTemplates = GoodsTemplate::all();
+        $name = $request->name;
+        $goodsTemplates = GoodsTemplate::orderBy('id', 'desc')->name($name)->paginate(30);
 
-        return view('backend.goods.template.index', compact('goodsTemplates'));
+        return view('backend.goods.template.index', compact('goodsTemplates', 'name'));
     }
 
     /**
@@ -49,10 +50,16 @@ class TemplateController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-
+        try {
+            GoodsTemplate::create($request->data);
+            return response()->json(['code' => 1, 'message' => '添加成功']);
+        } catch (Exception $exception) {
+            return response()->json(['code' => 0, 'message' => '添加失败']);
+        }
     }
 
     /**

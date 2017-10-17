@@ -93,4 +93,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
         Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
     });
+
+    Route::prefix('template')->group(function (){
+        Route::get('form', 'TemplateController@form')->name('template.form');
+        Route::get('icons1', 'TemplateController@icons1')->name('template.icons1');
+        Route::get('icons2', 'TemplateController@icons2')->name('template.icons2');
+    });
 });

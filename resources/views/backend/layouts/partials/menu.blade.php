@@ -126,6 +126,31 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>模版</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('template.form') }}" @if($currentRouteName == 'from') class="active" @endif>
+                                    表单
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('template.icons1') }}" @if($currentRouteName == 'icons1') class="active" @endif>
+                                    图标1
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('template.icons2') }}" @if($currentRouteName == 'icons2') class="active" @endif>
+                                    图标2
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

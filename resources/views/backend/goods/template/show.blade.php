@@ -18,6 +18,14 @@
 
 @section('content')
     <div class="row">
+        <div class="col-lg-12">
+            <ol class="breadcrumb">
+                <li class=""><span>首页</span></li>
+                <li class="active"><span>模版配置</span></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg-6">
             <div class="main-box">
                 <div class="main-box-body clearfix">
