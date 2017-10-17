@@ -102,7 +102,13 @@ class GroupController extends Controller
             return back()->with('missRole', '请选择角色!');
         }
 
+
         $user = User::find($id);
+
+        if ($request->roles == $user->roles->pluck('id')->toArray()) {
+
+            return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
+        }
 
         $array = $user->roles()->sync($request->roles);
 
@@ -125,9 +131,9 @@ class GroupController extends Controller
 
         $roleIds = $user->roles->pluck('id')->toArray(); 
 
-        $array = $user->roles()->detach($roleIds);
+        $int = $user->roles()->detach($roleIds);
 
-        if ($array['attached'] || $array['detached'] || $array['updated']) {
+        if ($int > 0) {
 
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }

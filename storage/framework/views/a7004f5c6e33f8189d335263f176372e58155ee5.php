@@ -9,7 +9,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
             <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
                 <ul class="nav nav-pills nav-stacked">
                     <li>
-                        <a href="<?php echo e(url('/')); ?>">
+                        <a href="<?php echo e(url('admin')); ?>">
                             <i class="fa fa-dashboard"></i>
                             <span>后台首页</span>
                         </a>
@@ -41,13 +41,28 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="<?php echo e(route('finance.platform.asset')); ?>" <?php if($currentRouteName == 'finance.platform.asset'): ?> class="active" <?php endif; ?>>
-                                    平台资产
+                                <a href="<?php echo e(route('finance.platform-asset')); ?>" <?php if($currentRouteName == 'finance.platform-asset'): ?> class="active" <?php endif; ?>>
+                                    平台当前资产
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('finance.platform.flow')); ?>" <?php if($currentRouteName == 'finance.platform.flow'): ?> class="active" <?php endif; ?>>
-                                    资金流水
+                                <a href="<?php echo e(route('finance.platform-asset-daily')); ?>" <?php if($currentRouteName == 'finance.platform-asset-daily'): ?> class="active" <?php endif; ?>>
+                                    平台资产日报
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('finance.platform-amount-flow')); ?>" <?php if($currentRouteName == 'finance.platform-amount-flow'): ?> class="active" <?php endif; ?>>
+                                    平台资金流水
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('finance.user-asset')); ?>" <?php if($currentRouteName == 'finance.user-asset'): ?> class="active" <?php endif; ?>>
+                                    用户资产列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo e(route('finance.user-amount-flow')); ?>" <?php if($currentRouteName == 'finance.user-amount-flow'): ?> class="active" <?php endif; ?>>
+                                    用户资金流水
                                 </a>
                             </li>
                         </ul>

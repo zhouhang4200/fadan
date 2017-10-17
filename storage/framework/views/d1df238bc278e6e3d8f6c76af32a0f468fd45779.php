@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', ' | 角色列表'); ?>
+<?php $__env->startSection('title', ' | 前台账号角色列表'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="row">
@@ -7,40 +7,44 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">角色列表</li>
+                            <li class="layui-this" lay-id="add">前台账号角色列表</li>
                         </ul>
                         <div class="layui-tab-content">
-                        <div style="padding-top:10px; padding-bottom:10px; float:right">
-                            <a href="<?php echo e(route('admin-roles.create')); ?>" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台角色</button></a>
-                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>角色ID</th>
-                                    <th>名称</th>
-                                    <th>别名</th>
-                                    <th>添加时间</th>
+                                    <th>账号ID</th>
+                                    <th>账号名称</th>
+                                    <th>账号邮箱</th>
+                                    <th>账号角色</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $__empty_1 = true; $__currentLoopData = $roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <?php $__empty_1 = true; $__currentLoopData = $groups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
-                                            <td><?php echo e($role->id); ?></td>
-                                            <td><?php echo e($role->name); ?></td>
-                                            <td><?php echo e($role->alias); ?></td>
-                                            <td><?php echo e($role->created_at); ?></td>
-                                            <td style="text-align: center"><a href="<?php echo e(route('admin-roles.edit', ['id' => $role->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($role->id); ?>)">删除</button></td>
+                                            <td><?php echo e($group->id); ?></td>
+                                            <td><?php echo e($group->name); ?></td>
+                                            <td><?php echo e($group->email); ?></td>
+                                            <td>
+                                            <?php if($group->roles): ?>
+                                                <?php $__currentLoopData = $group->roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php echo e($role->alias); ?>
+
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+                                            </td>
+                                            <td style="text-align: center"><a href="<?php echo e(route('groups.edit', ['id' => $group->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($group->id); ?>)">删除</button></td>
                                         </tr>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                    <?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                        <?php endif; ?>
                                 </tbody>
                             </table>
                             </div>
                         </div>
-                        <?php echo $roles->render(); ?>
+                        <?php echo $groups->render(); ?>
 
                 </div>
             </div>
@@ -70,13 +74,11 @@
             layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/rbac/admin-roles/'+id,
+                    url: '/admin/rbac/groups/'+id,
                     success: function (data) {
-                        console.log(data);
-                        var obj = eval('(' + data + ')');
-                        if (obj.code == 1) {
+                        if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = "<?php echo e(route('admin-roles.index')); ?>";                    
+                            window.location.href = "<?php echo e(route('groups.index')); ?>";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }

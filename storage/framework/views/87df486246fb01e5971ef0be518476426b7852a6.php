@@ -1,58 +1,54 @@
-@extends('backend.layouts.main')
+<?php $__env->startSection('title', ' | 后台模块列表'); ?>
 
-@section('title', ' | 后台账号角色列表')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="row">
         <div class="col-lg-12">
             <div class="main-box">
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">后台账号角色列表</li>
+                            <li class="layui-this" lay-id="add">后台模块列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                        <div style="padding-top:10px; padding-bottom:10px; float:right">
+                            <a href="<?php echo e(route('admin-modules.create')); ?>" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台模块</button></a>
+                        </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>账号ID</th>
-                                    <th>账号名称</th>
-                                    <th>账号邮箱</th>
-                                    <th>账号角色</th>
+                                    <th>模块ID</th>
+                                    <th>名称</th>
+                                    <th>别名</th>
+                                    <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                        @forelse($groups as $group)
+                                    <?php $__empty_1 = true; $__currentLoopData = $modules; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $module): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
-                                            <td>{{ $group->id }}</td>
-                                            <td>{{ $group->name }}</td>
-                                            <td>{{ $group->email }}</td>
-                                            <td>
-                                            @if ($group->roles)
-                                                @foreach($group->roles as $role)
-                                                    {{ $role->alias }}
-                                                @endforeach
-                                            @endif
-                                            </td>
-                                            <td style="text-align: center"><a href="{{ route('admin-groups.edit', ['id' => $group->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $group->id }})">删除</button></td>
+                                            <td><?php echo e($module->id); ?></td>
+                                            <td><?php echo e($module->name); ?></td>
+                                            <td><?php echo e($module->alias); ?></td>
+                                            <td><?php echo e($module->created_at); ?></td>
+                                            <td style="text-align: center"><a href="<?php echo e(route('admin-modules.edit', ['id' => $module->id])); ?>"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del(<?php echo e($module->id); ?>)">删除</button></td>
                                         </tr>
-                                        @empty
-                                        @endforelse
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                             </div>
                         </div>
-                        {!! $groups->render() !!}
+                        <?php echo $modules->render(); ?>
+
                 </div>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('js')
+<?php $__env->startSection('js'); ?>
     <script>
         //Demo
         layui.use('form', function(){
@@ -74,11 +70,11 @@
             layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
-                    url: '/admin/rbac/admin-groups/'+id,
+                    url: '/admin/rbac/admin-modules/'+id,
                     success: function (data) {
                         if (data.code == 1) {
                             layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = "{{ route('admin-groups.index') }}";                    
+                            window.location.href = "<?php echo e(route('admin-modules.index')); ?>";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500},);
                         }
@@ -94,7 +90,7 @@
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
 
-        var succ = "{{ session('succ') ?: '' }}";
+        var succ = "<?php echo e(session('succ') ?: ''); ?>";
 
         if(succ) {
             layer.msg(succ, {icon: 6, time:1500},);
@@ -107,4 +103,5 @@
       form.render();
     });  
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('backend.layouts.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
