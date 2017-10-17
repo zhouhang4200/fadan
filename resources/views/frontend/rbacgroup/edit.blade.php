@@ -3,15 +3,23 @@
 @section('title', '权限 - 修改权限组')
 
 @section('css')
-<style>
-    .layui-form-label {
-        width:65px;
-    }
-</style>
+    <style>
+        .layui-form input {
+            width:800px;
+        }
+        .table {
+            width:800px;
+        }
+        .layui-form-item .layui-input-inline {
+            float: left;
+            width: 135px;
+            margin-right: 10px;
+        }
+    </style>
 @endsection
 
 @section('submenu')
-@include('frontend.rbacgroup.submenu')
+    @include('frontend.rbacgroup.submenu')
 @endsection
 
 @section('main')
@@ -20,30 +28,47 @@
 <input type="hidden" name="_method" value="PUT">
     <div style="width: 40%">
         <div class="layui-form-item">
-            <label class="layui-form-label">权限组名:</label>
+            <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
                 <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $rbacGroup->name }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">备注:</label>
+            <label class="layui-form-label">别名</label>
             <div class="layui-input-block">
-                <input type="text" name="remark" lay-verify="" value="{{ old('remark') ?: $rbacGroup->remark }}" placeholder="备注可为空" autocomplete="off" class="layui-input">
+                <input type="text" name="alias" lay-verify="" value="{{ old('alias') ?: $rbacGroup->alias }}" placeholder="请输入别名" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">权限清单</label>
-            <div class="layui-input-block">
-            @foreach($permissions as $permission)
-                <input type="checkbox" name="permissionIds[]" value="{{ $permission->id }}" {{ in_array($permission->id, $rbacGroup->permissions->pluck('id')->toArray()) ? 'checked' : '' }}  title="{{ $permission->alias }}">
-            @endforeach
+                <div class="layui-input-block">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">权限清单名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="layui-form-item" pane="">
+                                @foreach($permissions as $permission)
+                                <div class="layui-input-inline">
+                                  <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}" {{ in_array($permission->id, $rbacGroup->permissions->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                </div>
+                                @endforeach
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">立即提交</button>
             </div>
         </div>
     </div>
@@ -56,7 +81,7 @@ layui.use('form', function(){
     var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
     var layer = layui.layer;
 
-    var error = "{{ $errors->count() > 0 ? '组名不可为空！' : '' }}";
+    var error = "{{ $errors->count() > 0 ? '组名以及别名不可为空！' : '' }}";
     var missError = "{{ session('missError') ?: '' }}";
 
     if (error) {

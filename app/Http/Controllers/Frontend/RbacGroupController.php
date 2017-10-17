@@ -16,7 +16,7 @@ class RbacGroupController extends Controller
      */
     public function index()
     {
-        $rbacGroups = RbacGroup::where('user_id', Auth::id())->paginate(config('frontend.page'));
+        $rbacGroups = RbacGroup::where('user_id', Auth::id())->whereHas('permissions')->paginate(config('frontend.page'));
 
         return view('frontend.rbacgroup.index', compact('rbacGroups'));
     }
@@ -41,13 +41,20 @@ class RbacGroupController extends Controller
      */
     public function store(Request $request)
     {
+        if (! $request->permissions) {
+
+            return back()->withInput()->with('missError', '请勾选权限！');
+        }
+
         $this->validate($request, RbacGroup::rules(), RbacGroup::messages());
 
-        $permissionIds = $request->permissionIds;
+        $permissionIds = $request->permissions;
 
         if (count($permissionIds) > 0) {
 
-            $data = $request->except('permissionIds');
+            $data['name'] = $request->name;
+
+            $data['alias'] = $request->alias;
 
             $data['user_id'] = Auth::id();
             
@@ -94,13 +101,20 @@ class RbacGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! $request->permissions) {
+
+            return back()->withInput()->with('missError', '请勾选权限！');
+        }
+
         $this->validate($request, RbacGroup::rules(), RbacGroup::messages());
 
-        $permissionIds = $request->permissionIds;
+        $permissionIds = $request->permissions;
 
         if (count($permissionIds) > 0) {
 
-            $data = $request->except('permissionIds');
+            $data['name'] = $request->name;
+
+            $data['alias'] = $request->alias;
 
             $data['user_id'] = Auth::id();
             
@@ -137,8 +151,8 @@ class RbacGroupController extends Controller
 
             $rbacGroup->permissions()->detach();
 
-            return jsonMessages('1', '删除成功!');
+            return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
-        return jsonMessages('2', '删除失败！');
+        return response()->json(['code' => '2', 'message' => '删除失败！']);
     }
 }

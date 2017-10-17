@@ -25,7 +25,12 @@ class UserAmountFlowRepository
                 return $query->where('created_at', '<=', $timeEnd);
             })
             ->orderBy('id', 'desc')
-            ->paginate($pageSize);
+            ->when($pageSize === 0, function ($query) {
+                return $query->limit(10000)->get();
+            })
+            ->when($pageSize, function ($query) use ($pageSize) {
+                return $query->paginate($pageSize);
+            });
 
         return $dataList;
     }

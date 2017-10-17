@@ -127,9 +127,13 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
-        $bool = Permission::find($id)->delete();
+        $permission = Permission::find($id);
+
+        $bool = $permission->delete();
 
         if ($bool) {
+
+            $permission->rbacGroups()->detach($permission->id);
 
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }

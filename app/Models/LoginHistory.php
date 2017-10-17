@@ -67,14 +67,33 @@ class LoginHistory extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['name'] && count($filters['userIds']) == 0) {
+        if ($filters['startDate'] && empty($filters['endDate'])) {
 
-            $query->where('user_id', 0);
+            $query->where('created_at', '>=', $filters['startDate']);
         }
 
-        if ($filters['name'] && count($filters['userIds']) > 0) {
+        if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->whereIn('user_id', $filters['userIds']);
+            $query->where('created_at', '<=', $filters['endDate'] . " 23:59:59");
+        }
+
+        if ($filters['endDate'] && $filters['startDate']) {
+
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
+        }
+
+        return $query->latest('created_at');
+    }
+
+    /**
+     * 查找 显示 登录详情
+     * @var [type]
+     */
+    public static function scopeChildFilter($query, $filters = [])
+    {
+        if ($filters['name']) {
+            
+            $query->where('user_id', $filters['name']);
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
@@ -84,14 +103,14 @@ class LoginHistory extends Model
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
 
-            $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
+            $query->where('created_at', '<=', $filters['endDate'] . " 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
 
-            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
         }
 
-        return $query;
+        return $query->latest('created_at');
     }
 }
