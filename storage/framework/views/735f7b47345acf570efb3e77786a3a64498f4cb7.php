@@ -14,7 +14,8 @@
             height: 30px;
             line-height: 30px;
             text-align: center;
-            border: 1px dotted #ccc;
+            border: 1px solid #ccc;
+            margin-right: 2px;
         }
         .pagination > .active {
             color: #fff;
@@ -41,7 +42,7 @@
             <ul>
                 <li class="<?php echo e(Route::currentRouteName() == 'frontend.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.index')); ?>">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
-                <li class="<?php echo e(substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.asset')); ?>">财务</a><div class="arrow"></div></li>
+                <li class="<?php echo e(substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : ''); ?>"><a href="<?php echo e(route('frontend.finance.asset')); ?>">财务</a><div class="arrow"></div></li>
                 <li class="<?php echo e(in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create']) ? 'current' : ''); ?>"><a href="<?php echo e(route('rbacgroups.index')); ?>">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
                 <li class="<?php echo e(Route::currentRouteName() == 'accounts.index' || Route::currentRouteName() == 'accounts.create' || Route::currentRouteName() == 'loginrecord.index' ? 'current' : ''); ?>"><a href="<?php echo e(route('accounts.index')); ?>">账号</a><div class="arrow"></div></li>

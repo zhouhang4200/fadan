@@ -3,7 +3,7 @@
 @section('title', '财务 - 资产明细')
 
 @section('submenu')
-@include('frontend.asset.submenu')
+@include('frontend.finance.submenu')
 @endsection
 
 @section('main')
