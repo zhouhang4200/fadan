@@ -30,25 +30,25 @@ class LoginController extends Controller
         return view('frontend.login.history', compact('histories', 'startDate', 'endDate'));
     }
 
-    public function childHistory(Request $request)
+    public function child(Request $request)
     {
     	$user = Auth::user();
 
         if ($user->pid == 0) {
 
-            $name = $request->name;
+            $users = $user->children;
 
-            $userIds = User::where('name', 'like', "%{$name}%")->where('pid', $user->id)->pluck('id')->toArray();
+            $name = $request->name;
 
             $startDate = $request->startDate;
 
             $endDate = $request->endDate;
 
-            $filters = compact('name', 'userIds', 'startDate', 'endDate');
+            $filters = compact('name', 'startDate', 'endDate');
 
-            $loginRecords = LoginHistory::filter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+            $histories = LoginHistory::childFilter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
 
-            return view('frontend.login.index', compact('loginRecords', 'name', 'startDate', 'endDate'));
+            return view('frontend.login.child', compact('histories', 'users', 'name', 'startDate', 'endDate'));
         }
 
     }
