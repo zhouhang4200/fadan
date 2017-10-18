@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '权限 - 账号添加权限')
+@section('title', '账号 - 修改子账号分组')
 
 @section('css')
     <style>

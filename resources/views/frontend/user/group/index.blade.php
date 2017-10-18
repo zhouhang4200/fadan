@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '权限 - 账号权限列表')
+@section('title', '账号 - 子账号分组列表')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
