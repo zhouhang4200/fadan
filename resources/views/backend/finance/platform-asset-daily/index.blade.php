@@ -58,7 +58,7 @@
                         <tbody>
                             @foreach ($dataList as $data)
                                 <tr>
-                                    <td>{{ $data->getattributes()['date'] }}</td>
+                                    <td>{{ $data->date }}</td>
                                     <td>{{ $data->amount + 0 }}</td>
                                     <td>{{ $data->managed + 0 }}</td>
                                     <td>{{ $data->balance + 0 }}</td>

@@ -19,4 +19,6 @@ class PlatformAssetDaily extends Model
      * @var string
      */
     protected $primaryKey = 'date';
+
+    protected $casts = ['date' => 'string'];
 }
