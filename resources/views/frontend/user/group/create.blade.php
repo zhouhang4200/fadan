@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '权限 - 添加权限组')
+@section('title', '权限 - 账号添加权限')
 
 @section('css')
     <style>
@@ -23,47 +23,43 @@
 @endsection
 
 @section('main')
-    <form class="layui-form" method="POST" action="{{ route('rbacgroups.store') }}">
+    <form class="layui-form" method="POST" action="{{ route('user-groups.store', ['id' => $childUser->id]) }}">
         {!! csrf_field() !!}
         <div style="width: 40%">
             <div class="layui-form-item">
                 <label class="layui-form-label">名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
+                    <input type="text" name="name" lay-verify="required" value="{{ $childUser->name }}" autocomplete="off" placeholder="" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">别名</label>
+                <label class="layui-form-label">邮箱</label>
                 <div class="layui-input-block">
-                    <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" placeholder="请输入别名" autocomplete="off" class="layui-input">
+                    <input type="text" name="email" lay-verify="required" value="{{ $childUser->email }}" placeholder="" autocomplete="off" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">权限清单</label>
+                <label class="layui-form-label">权限组</label>
                     <div class="layui-input-block">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th class="col-md-1 text-center">模块名</th>
-                            <th class="col-md-1 text-center">权限清单名</th>
+                            <th class="col-md-1 text-center">权限组名</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($modulePermissions as $modulePermission)
                             <tr>
-                                <td>{{ $modulePermission->alias }}</td>
                                 <td>
                                     <div class="layui-form-item" pane="">
-                                    @foreach($modulePermission->permissions as $permission)
+                                    @foreach($groups as $group)
                                     <div class="layui-input-inline">
-                                      <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
+                                      <input type="checkbox" name="groups[]" lay-skin="primary" title="{{ $group->alias }}" value="{{ $group->id }}">
                                     </div>
                                     @endforeach
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -86,11 +82,18 @@
 
         var error = "{{ $errors->count() > 0 ? '组名以及别名不可为空！' : '' }}";
         var missError = "{{ session('missError') ?: '' }}";
+        var createError = "{{ session('createError') ?: '' }}";
+        var masterError = "{{ session('masterError') ?: '' }}";
+
 
         if (error) {
             layer.msg(error, {icon: 5, time:1500},);
         } else if(missError) {
             layer.msg(missError, {icon: 5, time:1500},);
+        } else if(createError) {
+            layer.msg(createError, {icon: 5, time:1500},);
+        } else if(masterError) {
+            layer.msg(masterError, {icon: 5, time:1500},);
         }
 
       //……

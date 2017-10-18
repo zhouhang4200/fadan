@@ -46,20 +46,24 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
+                        <th class="col-md-1 text-center">模块名</th>
                         <th class="col-md-1 text-center">权限清单名</th>
                     </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            @foreach($modulePermissions as $modulePermission)
+                            <td>{{ $modulePermission->alias }}</td>
                             <td>
                                 <div class="layui-form-item" pane="">
-                                @foreach($permissions as $permission)
+                                @foreach($modulePermission->permissions as $permission)
                                 <div class="layui-input-inline">
                                   <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}" {{ in_array($permission->id, $rbacGroup->permissions->pluck('id')->toArray()) ? 'checked' : '' }}>
                                 </div>
                                 @endforeach
                                 </div>
                             </td>
+                            @endforeach
                         </tr>
                     </tbody>
                 </table>

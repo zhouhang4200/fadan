@@ -1,0 +1,184 @@
+<?php
+
+namespace App\Http\Controllers\Frontend;
+
+use Auth;
+use App\Models\User;
+use App\Models\RbacGroup;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class UserGroupController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->pid == 0) {
+
+        	$childUsers = $user->children()->whereHas('rbacGroups')->get();
+
+            $name = $request->name;
+
+            $filters = compact('name', 'startDate', 'endDate');
+
+            $users = User::userGroupFilter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+
+            return view('frontend.user.group.index', compact('name', 'childUsers', 'startDate', 'endDate', 'users'));
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+    	$user = Auth::user();
+
+    	if ($user->pid == 0) {
+
+    		$childUser = User::find($request->id);
+
+    		if ($childUser->pid != $user->id) {
+
+    			return back()->with('masterError', '子账号与当前登录账号不匹配!');
+    		}
+
+	    	$groups = RbacGroup::where('user_id', $user->id)->get();
+	    	
+	        return view('frontend.user.group.create', compact('groups', 'childUser'));
+    	}
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if (Auth::user()->pid == 0) {
+
+    		$user = User::find($request->id);
+
+    		if ($user->pid != Auth::user()->id) {
+
+    			return back()->with('masterError', '子账号与当前登录账号不匹配!');
+    		}
+    		
+    		if (! $request->groups) {
+
+    			return back()->with('missError', '请选择组名!');
+    		}
+
+    		$array = $user->rbacgroups()->sync($request->groups);
+
+    		if ($array['attached'] || $array['detached'] || $array['updated']) {
+
+	            return redirect(route('user-groups.index'))->with('succ', '添加成功!');
+	        }
+	        return back()->with('createFail', '添加失败！');
+    	}
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        if (Auth::user()->pid == 0) {
+
+            $user = User::find($id);
+
+            $groups = RbacGroup::where('user_id', Auth::id())->get();
+
+            return view('frontend.user.group.edit', compact('user', 'groups'));
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        if (Auth::user()->pid == 0) {
+
+            $user = User::find($id);
+
+            if ($user->pid != Auth::user()->id) {
+
+    			return back()->with('masterError', '子账号与当前登录账号不匹配!');
+    		}
+
+            if (! $request->groups) {
+
+    			return back()->with('missError', '请选择组名!');
+    		}
+
+    		if ($request->groups == $user->rbacGroups->pluck('id')->toArray()) {
+
+    			return redirect(route('user-groups.index'))->with('succ', '更新成功!');
+    		}
+
+    		$array = $user->rbacgroups()->sync($request->groups);
+
+            if ($array['attached'] || $array['detached'] || $array['updated']) {
+
+            	return redirect(route('user-groups.index'))->with('succ', '更新成功!');
+            }
+
+            return back()->with('updateError', '更新失败!');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        if (Auth::user()->pid == 0) {
+
+        	$user = User::find($id);
+
+            $bool = $user->delete();
+
+            if ($bool) {
+
+            	$user->rbacGroups()->detach();
+
+                return response()->json(['code' => '1', 'message' => '删除成功']);
+            }
+
+            return response()->json(['code' => '2', 'message' => '删除失败!']);
+        }
+    }
+}

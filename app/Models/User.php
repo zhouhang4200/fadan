@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'type', 'pid'
+        'name', 'email', 'password', 'type', 'pid', 'group_id'
     ];
 
     /**
@@ -69,9 +69,14 @@ class User extends Authenticatable
         return $this->hasMany(LoginHistory::class, 'user_id');
     }
 
-    public function RealNameIdent()
+    public function realNameIdent()
     {
         return $this->belongsTo(RealNameIdent::class, 'user_id');
+    }
+
+    public function rbacGroups()
+    {
+        return $this->belongsToMany(RbacGroup::class, 'user_rbac_groups', 'user_id', 'rbac_group_id');
     }
 
     /**
@@ -114,5 +119,21 @@ class User extends Authenticatable
         }
 
         return $query;
+    }
+
+    /**
+     * 子账号查找
+     * @param  [type] $query   [description]
+     * @param  array  $filters [description]
+     * @return Illuminate\Database\Eloquent\query
+     */
+    public static function scopeUserGroupFilter($query, $filters = [])
+    {
+        if ($filters['name']) {
+
+            $query->where('id', $filters['name']);
+        }
+
+        return $query->whereHas('rbacGroups');
     }
 }

@@ -113,6 +113,7 @@ class PermissionController extends Controller
         $int = $permission->update($data);
 
         if ($int > 0) {
+            
             return redirect(route('permissions.index'))->with('succ', '更新成功!');
         }
 
