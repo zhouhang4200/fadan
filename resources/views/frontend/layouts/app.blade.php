@@ -45,7 +45,7 @@
                 <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : '' }}"><a href="{{ route('frontend.asset') }}">财务</a><div class="arrow"></div></li>
                 <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'user-groups.index']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
-                <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'login.history' ? 'current' : '' }}"><a href="{{ route('users.index') }}">账号</a><div class="arrow"></div></li>
+                <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'login.child' ? 'current' : '' }}"><a href="{{ route('users.index') }}">账号</a><div class="arrow"></div></li>
             </ul>
         </div>
         <div class="user">
