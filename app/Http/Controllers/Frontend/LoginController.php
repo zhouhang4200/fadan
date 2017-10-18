@@ -23,40 +23,39 @@ class LoginController extends Controller
 
         $endDate = $request->endDate;
 
+        if ($user->pid == 0) {
+
+            $name = $request->name;
+
+            $users = $user->children;
+
+            $pid = $user->id;
+
+            if ($name) {
+
+                $filters = compact('name', 'startDate', 'endDate', 'pid');
+
+                $histories = LoginHistory::childFilter($filters)->paginate(config('frontend.page'));
+
+                return view('frontend.login.history', compact('user', 'histories', 'users', 'name', 'startDate', 'endDate'));
+            } else {
+
+                $name = $user->name;
+
+                $filters = compact('startDate', 'endDate');
+
+                $histories = LoginHistory::filter($filters)->where('user_id', $user->id)->paginate(config('frontend.page'));
+
+                return view('frontend.login.history', compact('user', 'name', 'histories', 'users', 'startDate', 'endDate'));
+            }
+
+        }
+
         $filters = compact('startDate', 'endDate');
 
         $histories = LoginHistory::filter($filters)->where('user_id', $user->id)->paginate(config('frontend.page'));
 
-        return view('frontend.login.history', compact('histories', 'startDate', 'endDate'));
+        return view('frontend.login.history', compact('user', 'histories', 'startDate', 'endDate'));
     }
 
-    /**
-     * 子账号登录历史
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function child(Request $request)
-    {
-    	$user = Auth::user();
-
-        if ($user->pid == 0) {
-
-            $users = $user->children;
-
-            $name = $request->name;
-
-            $startDate = $request->startDate;
-
-            $endDate = $request->endDate;
-
-            $pid = $user->id;
-
-            $filters = compact('name', 'startDate', 'endDate', 'pid');
-
-            $histories = LoginHistory::childFilter($filters)->paginate(config('frontend.page'));
-
-            return view('frontend.login.child', compact('histories', 'users', 'name', 'startDate', 'endDate'));
-        }
-
-    }
 }

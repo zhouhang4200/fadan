@@ -14,19 +14,19 @@
 Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
-	// 账号管理
+	// 登录管理
 	Route::prefix('login')->group(function () {
 		// 账号登录记录
-		Route::get('history', 'LoginController@history')->name('login.history');
-		// 子账号登录历史
-		Route::get('child', 'LoginController@child')->name('login.child');		
+		Route::get('history', 'LoginController@history')->name('login.history');	
 	});
-	// 账号管理
+	// 子账号管理
 	Route::resource('users', 'UserController', ['except' => ['show']]);
-	// 权限组
+	// 分组管理
 	Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
-	// 子账号分配组
+	// 子账号分组
 	Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
+	// 我的账号
+	Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
 
 	// 财务
 	route::namespace('Finance')->prefix('finance')->group(function () {

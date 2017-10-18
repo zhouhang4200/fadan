@@ -44,9 +44,8 @@
                 <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
                 <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route('frontend.finance.asset') }}">财务</a><div class="arrow"></div></li>
-                <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'user-groups.index']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
-                <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'login.child' ? 'current' : '' }}"><a href="{{ route('users.index') }}">账号</a><div class="arrow"></div></li>
+                <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'home-accounts.index' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'user-groups.index' ? 'current' : '' ? 'current' : '' }}"><a href="{{ route('login.history') }}">账号</a><div class="arrow"></div></li>
             </ul>
         </div>
         <div class="user">

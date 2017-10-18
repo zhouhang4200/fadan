@@ -7,8 +7,11 @@
     <style>
         .layui-form-item .layui-input-inline {
             float: left;
-            width: 150px;
+            width: 120px;
             margin-right: 10px;
+        }
+        .layui-form-label {
+            width:60px;
         }
     </style>
 @endsection
@@ -19,8 +22,21 @@
 
 @section('main')
     <form class="layui-form" method="" action="">
-        <div class="layui-inline" style="float:left">
+            <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
+            @if($user->pid == 0)
+            <div class="layui-inline">
+                <label class="layui-form-label">搜索选择框</label>
+                <div class="layui-input-inline">
+                <select name="name" lay-verify="" lay-search="">
+                    <option value="">输入名字或直接选择</option>
+                    @foreach($users as $user)
+                    <option value="{{ $user->id }}" {{ $name && $name == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                    @endforeach
+                </select>
+                </div>
+            </div>
+            @endif
                 <label class="layui-form-label">开始时间</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
@@ -81,7 +97,7 @@
 
 @section('js')
     <script>
-         layui.use('laydate', function(){
+         layui.use(['form', 'layedit', 'laydate'], function(){
             var laydate = layui.laydate;
             //常规用法
             laydate.render({
