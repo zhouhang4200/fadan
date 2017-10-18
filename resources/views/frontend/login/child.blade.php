@@ -74,6 +74,7 @@
             </thead>
             <tbody>
             @foreach($histories as $history)
+                @if ($history->user)
                 <tr>
                     <td>{{ $history->id }}</td>
                     <td>{{ $history->user_id }}</td>
@@ -82,6 +83,7 @@
                     <td>{{ $history->city ? $history->city->name : '' }}</td>
                     <td>{{ $history->created_at }}</td>
                 </tr>
+                @endif
             @endforeach
             </tbody>
         </table>

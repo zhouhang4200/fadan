@@ -111,6 +111,8 @@ class LoginHistory extends Model
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
         }
 
-        return $query->latest('created_at');
+        return $query->whereHas('user', function ($query) use ($filters) {
+            $query->where('pid', $filters['pid']);
+        })->latest('created_at');
     }
 }

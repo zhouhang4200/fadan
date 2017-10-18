@@ -43,7 +43,7 @@
                 <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
                 <li class=""><a href="">商品</a><div class="arrow"></div></li>
                 <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.asset' ? 'current' : '' }}"><a href="{{ route('frontend.asset') }}">财务</a><div class="arrow"></div></li>
-                <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
+                <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'user-groups.index']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}">权限</a><div class="arrow"></div></li>
                 <li class=""><a href="">工作台</a><div class="arrow"></div></li>
                 <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'users.create' || Route::currentRouteName() == 'login.history' ? 'current' : '' }}"><a href="{{ route('users.index') }}">账号</a><div class="arrow"></div></li>
             </ul>
@@ -86,21 +86,21 @@
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script>
-$.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
-$('#main-title').text($('title').text());
+    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
+    $('#main-title').text($('title').text());
 
-function logout() {
-    layui.use(['form', 'layedit', 'laydate',], function(){
-        var form = layui.form
-        ,layer = layui.layer;
-        layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
-            $.post('/logout', {}, function(str){
-                window.location.href='/login';
+    function logout() {
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('/logout', {}, function(str){
+                    window.location.href='/login';
+                });
+                layer.close(index);
             });
-            layer.close(index);
         });
-    });
-}
+    }
 </script>
 
 @yield('js')

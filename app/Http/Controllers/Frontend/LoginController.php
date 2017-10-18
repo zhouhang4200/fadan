@@ -30,6 +30,11 @@ class LoginController extends Controller
         return view('frontend.login.history', compact('histories', 'startDate', 'endDate'));
     }
 
+    /**
+     * 子账号登录历史
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function child(Request $request)
     {
     	$user = Auth::user();
@@ -44,9 +49,11 @@ class LoginController extends Controller
 
             $endDate = $request->endDate;
 
-            $filters = compact('name', 'startDate', 'endDate');
+            $pid = $user->id;
 
-            $histories = LoginHistory::childFilter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+            $filters = compact('name', 'startDate', 'endDate', 'pid');
+
+            $histories = LoginHistory::childFilter($filters)->paginate(config('frontend.page'));
 
             return view('frontend.login.child', compact('histories', 'users', 'name', 'startDate', 'endDate'));
         }

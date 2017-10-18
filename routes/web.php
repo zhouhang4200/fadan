@@ -25,6 +25,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::resource('users', 'UserController', ['except' => ['show']]);
 	// 权限组
 	Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
+	// 子账号分配组
+	Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
 
 	// 财务
     Route::get('asset', 'AssetController@index')->name('frontend.asset');

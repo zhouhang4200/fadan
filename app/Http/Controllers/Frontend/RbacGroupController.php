@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
+use App\Models\Module;
 use App\Models\RbacGroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,9 +29,15 @@ class RbacGroupController extends Controller
      */
     public function create()
     {
-        $permissions = Auth::user()->getAllPermissions();
+        $permissionIds = Auth::user()->getAllPermissions()->pluck('id');
 
-        return view('frontend.rbacgroup.create', compact('permissions'));
+        $modulePermissions = Module::where('guard_name', 'web')
+                        ->with(['permissions' => function ($query) use ($permissionIds) {
+                            $query->whereIn('id', $permissionIds);
+                        }])            
+                        ->get();
+
+        return view('frontend.rbacgroup.create', compact('modulePermissions'));
     }
 
     /**
@@ -87,9 +94,15 @@ class RbacGroupController extends Controller
     {
         $rbacGroup = RbacGroup::find($id);
 
-        $permissions = Auth::user()->getAllPermissions();
+        $permissionIds = Auth::user()->getAllPermissions()->pluck('id');
 
-        return view('frontend.rbacgroup.edit', compact('rbacGroup', 'permissions'));
+        $modulePermissions = Module::where('guard_name', 'web')
+                        ->with(['permissions' => function ($query) use ($permissionIds) {
+                            $query->whereIn('id', $permissionIds);
+                        }])            
+                        ->get();
+                       
+        return view('frontend.rbacgroup.edit', compact('rbacGroup', 'modulePermissions'));
     }
 
     /**

@@ -54,6 +54,7 @@ class AdminPermissionController extends Controller
         $res = Permission::create($data);
         
         if (! $res) {
+
             return back()->withInput()->with('createFail', '添加失败！');
         }
         return redirect(route('admin-permissions.index'))->with('succ', '添加成功!');
@@ -107,6 +108,7 @@ class AdminPermissionController extends Controller
         $int = $permission->update($data);
 
         if ($int > 0) {
+            
             return redirect(route('admin-permissions.index'))->with('succ', '更新成功!');
         }
 

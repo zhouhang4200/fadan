@@ -34,7 +34,7 @@
                     </div>
 
                 </div>
-                @include('frontend.layouts.domain')
+                @include('frontend.auth.footer')
             </div>
         </div>
     </form>

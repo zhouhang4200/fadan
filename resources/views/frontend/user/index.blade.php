@@ -85,7 +85,7 @@
                         <div style="text-align: center">
                         <button class="layui-btn layui-btn-normal edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
                         <button class="layui-btn layui-btn-normal delete" onclick="del({{ $user->id }})">删除</button>
-                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('rbacgroups.create') }}" style="color: #fff">权限</a></button>
+                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">权限</a></button>
                         </div>
                     </td>
                 </tr>
@@ -153,12 +153,12 @@
             layer.msg(succ, {icon: 6, time:1500},);
         }
   
-      //……
-      
-      //但是，如果你的HTML是动态生成的，自动渲染就会失效
-      //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
-      form.render();
-    });  
+          //……
+          
+          //但是，如果你的HTML是动态生成的，自动渲染就会失效
+          //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+            form.render();
+        });  
 
     </script>
 @endsection
