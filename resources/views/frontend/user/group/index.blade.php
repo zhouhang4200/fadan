@@ -17,7 +17,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.rbacgroup.submenu')
+    @include('frontend.user.submenu')
 @endsection
 
 @section('main')
@@ -27,7 +27,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">搜索选择框</label>
                     <div class="layui-input-inline">
-                    <select name="name" lay-verify="required" lay-search="">
+                    <select name="name" lay-verify="" lay-search="">
                         <option value="">输入名字或直接选择</option>
                         @foreach($childUsers as $childUser)
                         <option value="{{ $childUser->id }}" {{ $name && $name == $childUser->id ? 'selected' : '' }}>{{ $childUser->name }}</option>

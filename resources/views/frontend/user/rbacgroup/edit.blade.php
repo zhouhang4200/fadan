@@ -26,7 +26,7 @@
 <form class="layui-form" method="POST" action="{{ route('rbacgroups.update', ['id' => $rbacGroup->id]) }}">
 {!! csrf_field() !!}
 <input type="hidden" name="_method" value="PUT">
-    <div style="width: 40%">
+    <div style="width: 100%">
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
@@ -51,8 +51,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
                             @foreach($modulePermissions as $modulePermission)
+                        <tr>
                             <td>{{ $modulePermission->alias }}</td>
                             <td>
                                 <div class="layui-form-item" pane="">
@@ -63,8 +63,8 @@
                                 @endforeach
                                 </div>
                             </td>
-                            @endforeach
                         </tr>
+                            @endforeach
                     </tbody>
                 </table>
             </div>

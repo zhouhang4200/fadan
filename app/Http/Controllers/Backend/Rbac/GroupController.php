@@ -16,7 +16,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $groups = User::where('pid', 0)->whereHas('roles')->latest('id')->paginate(config('backend.page'));
+        $groups = User::where('parent_id', 0)->whereHas('roles')->latest('id')->paginate(config('backend.page'));
 
         return view('backend.group.index', compact('groups'));
     }

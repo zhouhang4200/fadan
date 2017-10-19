@@ -25,7 +25,7 @@
 @section('main')
     <form class="layui-form" method="POST" action="{{ route('rbacgroups.store') }}">
         {!! csrf_field() !!}
-        <div style="width: 40%">
+        <div style="width: 100%">
             <div class="layui-form-item">
                 <label class="layui-form-label">名称</label>
                 <div class="layui-input-block">

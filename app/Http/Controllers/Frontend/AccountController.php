@@ -18,7 +18,7 @@ class AccountController extends Controller
     {
         $user = Auth::user();
 
-        return view('frontend.account.index', compact('user'));
+        return view('frontend.user.account.index', compact('user'));
     }
 
     /**
@@ -63,7 +63,7 @@ class AccountController extends Controller
     {
         $user = Auth::user();
 
-        return view('frontend.account.edit', compact('user'));
+        return view('frontend.user.account.edit', compact('user'));
     }
 
     /**

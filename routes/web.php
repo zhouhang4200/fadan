@@ -27,6 +27,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
 	// 我的账号
 	Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
+	// 实名认证
+	Route::resource('idents', 'IdentController', ['only' => ['create', 'store']]);
 
 	// 财务
 	route::namespace('Finance')->prefix('finance')->group(function () {
