@@ -1,0 +1,556 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"platfr",
+				"platform"
+			],
+			[
+				"platflowre",
+				"platformAmountFlowRepository"
+			],
+			[
+				"mcryp",
+				"Mcrypt3Des"
+			],
+			[
+				"查询",
+				"查询可用数量失败"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/D/www/LaCMS-2.0/database/factories/ModelFactory.php",
+			"settings":
+			{
+				"buffer_size": 2384,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 104.0,
+		"last_filter": "install",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/www/LaCMS-2.0",
+		"/D/www/LaCMS-2.0/database",
+		"/D/www/LaCMS-2.0/database/factories",
+		"/D/www/LaCMS-2.0/database/seeds"
+	],
+	"file_history":
+	[
+		"/D/www/qianshou_market/database/seeds/PlatformAssetTableSeeder.php",
+		"/D/www/qianshou_market/database/migrations/2017_10_18_155801_create_user_amount_flows_table.php",
+		"/D/www/qianshou_market/database/migrations/2017_10_18_153201_create_user_assets_table.php",
+		"/D/www/qianshou_market/database/migrations/2017_10_18_155616_create_user_amount_flows.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/UserController.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/submenu.blade.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/platform-asset-daily/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/PlatformAssetDailyController.php",
+		"/D/www/qianshou_market/app/Models/PlatformAssetDaily.php",
+		"/D/www/qianshou_market/public/index.php",
+		"/D/www/qianshou_market/bootstrap/app.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasTimestamps.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/asset/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/PlatformAssetController.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/platform-asset/index.blade.php",
+		"/D/www/qianshou_market/storage/framework/views/.gitignore",
+		"/D/www/qianshou_market/app/Repositories/Frontend/UserAmountFlowRepository.php",
+		"/D/www/qianshou_market/app/Extensions/Excel/ExportFrontendUserAmountFlow.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/amount-flow/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Finance/AmountFlowController.php",
+		"/D/www/qianshou_market/resources/views/frontend/layouts/app.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Finance/AssetController.php",
+		"/D/www/qianshou_market/resources/views/frontend/asset/submenu.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/AmountFlowController.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/AssetController.php",
+		"/D/www/qianshou_market/app/Http/Controllers/TestController.php",
+		"/D/www/qianshou_market/routes/backend.php",
+		"/D/www/qianshou_market/resources/views/backend/layouts/partials/menu.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/PlatformAmountFlowController.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/platform-amount-flow/index.blade.php",
+		"/D/www/qianshou_market/app/Repositories/Backend/PlatformAmountFlowRepository.php",
+		"/D/www/qianshou_market/app/Repositories/Backend/UserAmountFlowRepository.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/UserAmountFlowController.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/user-amount-flow/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/UserAssetController.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/user-asset/index.blade.php",
+		"/D/www/qianshou_market/app/Repositories/Backend/UserAssetRepository.php",
+		"/D/www/qianshou_market/app/Repositories/Backend/PlatformAssetDailyRepository.php",
+		"/D/www/qianshou_market/app/Extensions/Excel/ExportPlatformAssetDaily.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Finance/PlatformController.php",
+		"/D/www/qianshou_market/app/Extensions/Excel/ExportPlatformAmountFlow.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/platform/flow.blade.php",
+		"/D/www/qianshou_market/config/tradetype.php",
+		"/D/www/qianshou_market/vendor/phpoffice/phpexcel/Classes/PHPExcel/Worksheet.php",
+		"/D/www/qianshou_market/vendor/maatwebsite/excel/src/Maatwebsite/Excel/Classes/LaravelExcelWorksheet.php",
+		"/D/www/qianshou_market/vendor/maatwebsite/excel/src/Maatwebsite/Excel/Files/NewExcelFile.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Unfreeze.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Freeze.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Withdraw.php",
+		"/D/www/qianshou_market/config/excel.php",
+		"/D/www/qianshou_market/composer.json",
+		"/D/www/qianshou_market/resources/views/backend/layouts/main.blade.php",
+		"/D/www/qianshou_market/resources/views/backend/finance/platform/asset.blade.php",
+		"/D/www/qianshou_market/resources/views/backend/layouts/app.blade.php",
+		"/D/www/qianshou_market/resources/views/layouts/main.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/loginrecord/index.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Middleware/RedirectIfAuthenticated.php",
+		"/D/www/qianshou_market/resources/views/frontend/rbacgroup/index.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/rbacgroup/create.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/rbacgroup/edit.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/rbacgroup/submenu.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/asset/flow.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/account/index.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/account/submenu.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/AccountController.php",
+		"/D/www/qianshou_market/resources/views/frontend/account/edit.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/account/show.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/LoginRecordController.php",
+		"/D/www/qianshou_market/resources/views/frontend/account/create.blade.php",
+		"/D/www/qianshou_market/routes/web.php",
+		"/D/www/qianshou_market/resources/views/frontend/asset/index.blade.php",
+		"/D/www/qianshou_market/app/Repositories/Commands/PlatformAssetDailyRepository.php",
+		"/D/www/qianshou_market/app/Console/Commands/PlatformAssetDaily.php",
+		"/D/www/qianshou_market/app/Repositories/PlatformAssetDailyRepository.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/flow.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/platform/asset.blade.php",
+		"/D/www/qianshou_market/resources/views/frontend/finance/index.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Finance/UserController.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Finance/PlatformController.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Traits/UserAmountFlowTrait.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Traits/PlatformAmountFlowTrait.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Recharge.php",
+		"/D/www/qianshou_market/app/Listeners/Registered/CreateUserAsset.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Auth/Events/Registered.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Auth/RegisterController.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Base/Trade.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Base/Asset.php",
+		"/D/www/qianshou_market/app/Providers/EventServiceProvider.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Queue/SerializesModels.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Controller.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Auth/Access/AuthorizesRequests.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Backend/Auth/RegisterController.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RedirectsUsers.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Expend.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Refund.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Consume.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+		"/D/www/qianshou_market/vendor/symfony/console/Application.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Console/Application.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Support/Providers/RouteServiceProvider.php",
+		"/D/www/qianshou_market/app/Providers/RouteServiceProvider.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Routing/ResponseFactory.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Contracts/Routing/ResponseFactory.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Routing/RoutingServiceProvider.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Providers/AssetServiceProvider.php",
+		"/D/www/qianshou_market/config/app.php",
+		"/D/www/qianshou_market/.gitignore",
+		"/D/www/qianshou_market/storage/debugbar/.gitignore",
+		"/C/Users/Buer/Desktop/10月工作.txt",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesUsers.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Auth/AuthServiceProvider.php",
+		"/D/www/qianshou_market/vendor/laravel/framework/src/Illuminate/Foundation/Auth/ThrottlesLogins.php",
+		"/D/www/qianshou_market/resources/views/frontend/auth/login.blade.php",
+		"/D/www/qianshou_market/app/Http/Controllers/Frontend/Auth/LoginController.php",
+		"/D/www/qianshou_market/app/Models/UserAmountFlow.php",
+		"/D/www/qianshou_market/app/Models/PlatformAmountFlow.php",
+		"/D/www/qianshou_market/app/Models/UserAsset.php",
+		"/D/www/qianshou_market/app/Providers/AssetServiceProvider.php",
+		"/D/www/qianshou_market/app/Exceptions/AssetException.php",
+		"/D/www/qianshou_market/app/Extensions/Amount/Recharge.php",
+		"/D/www/qianshou_market/app/Extensions/Asset/Facades/Asset.php",
+		"/D/www/qianshou_market/app/Providers/AppServiceProvider.php",
+		"/C/Windows/System32/drivers/etc/hosts"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/D/www/LaCMS-2.0/database/factories/ModelFactory.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 42.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "lacms2.0.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"application.php",
+				"vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php"
+			],
+			[
+				"application",
+				"vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php"
+			],
+			[
+				"applica",
+				"vendor\\symfony\\console\\Application.php"
+			],
+			[
+				"helpers.php",
+				"vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php"
+			],
+			[
+				"thousandclientmember",
+				"app\\Model\\ThousandClientMember.php"
+			],
+			[
+				"generate-new",
+				"resources\\views\\client-v1\\stock\\generate-new.blade.php"
+			],
+			[
+				"stockcontr",
+				"app\\Http\\Controllers\\ClientV1\\StockController.php"
+			],
+			[
+				"servermodel",
+				"app\\Model\\ServerModel.php"
+			],
+			[
+				"dedicated-servers",
+				"resources\\views\\client-v1\\dedicated-server\\dedicated-servers.blade.php"
+			],
+			[
+				"renew-iframe",
+				"resources\\views\\client-v1\\dedicated-server\\renew-iframe.blade.php"
+			],
+			[
+				"models-iframe",
+				"resources\\views\\client-v1\\dedicated-server\\models-iframe.blade.php"
+			],
+			[
+				"createor",
+				"app\\Publics\\CreateOrder.php"
+			],
+			[
+				"7b2db441e3f75195098a319b84b0355e",
+				"storage\\framework\\views\\7b2db441e3f75195098a319b84b0355e"
+			],
+			[
+				"ordercontroller",
+				"app\\Http\\Controllers\\ClientV1\\OrderController.php"
+			],
+			[
+				"chose-game",
+				"public\\statics\\client-v1\\js\\chose-game.js"
+			],
+			[
+				"store.blade",
+				"resources\\views\\client-v1\\stock\\store.blade.php"
+			],
+			[
+				"account",
+				"resources\\views\\client-v1\\stock\\account.blade.php"
+			],
+			[
+				"voucher.blade",
+				"resources\\views\\client-v1\\stock\\voucher.blade.php"
+			],
+			[
+				"external-report",
+				"resources\\views\\client-v1\\stock\\external-report.blade.php"
+			],
+			[
+				"applerecharge",
+				"config\\applerecharge.php"
+			],
+			[
+				"external-record",
+				"resources\\views\\client-v1\\stock\\external-record.blade.php"
+			],
+			[
+				"stocktrad",
+				"app\\Publics\\Curl\\StockTrad.php"
+			],
+			[
+				"stock",
+				"app\\Http\\Controllers\\ClientV1\\StockController.php"
+			],
+			[
+				"monitor.ba",
+				"resources\\views\\client-v1\\stock\\monitor.blade.php"
+			],
+			[
+				"stockctro",
+				"app\\Http\\Controllers\\ClientV1\\StockController.php"
+			],
+			[
+				"newtransferordertosocket",
+				"app\\Handlers\\Events\\Order\\NewTransferOrderToSocket.php"
+			],
+			[
+				"selfsu",
+				"app\\Publics\\Curl\\SelfSupplyCurl.php"
+			],
+			[
+				"order-details",
+				"resources\\views\\client-v1\\stock\\order-details.blade.php"
+			],
+			[
+				"trading-list",
+				"resources\\views\\client-v1\\stock\\partials\\trading-list.blade.php"
+			],
+			[
+				"trading.blade.ph",
+				"resources\\views\\client-v1\\stock\\trading.blade.php"
+			],
+			[
+				"eloquent",
+				"vendor\\laravel\\framework\\src\\Illuminate\\Auth\\EloquentUserProvider.php"
+			],
+			[
+				"818951b3055073f3af3b6d66184ca3c4",
+				"storage\\framework\\views\\818951b3055073f3af3b6d66184ca3c4"
+			],
+			[
+				"stock-build-details",
+				"resources\\views\\client-v1\\stock\\stock-build-details.blade.php"
+			],
+			[
+				"basecontroller",
+				"app\\Http\\Controllers\\ClientV1\\BaseController.php"
+			],
+			[
+				"faa1e0984e9661571d7e154d72fd30f5",
+				"storage\\framework\\views\\faa1e0984e9661571d7e154d72fd30f5"
+			],
+			[
+				"a4044883848abf26f991ed3aba126f79",
+				"storage\\framework\\views\\a4044883848abf26f991ed3aba126f79"
+			],
+			[
+				"monitor",
+				"resources\\views\\client-v1\\stock\\monitor.blade.php"
+			],
+			[
+				"goodsgroup",
+				"app\\Http\\Controllers\\ClientV1\\Setting\\GoodsGroupController.php"
+			],
+			[
+				"goodsgroupcontroller",
+				"app\\Http\\Controllers\\ClientV1\\Setting\\GoodsGroupController.php"
+			],
+			[
+				"reset-record.blade.php",
+				"resources\\views\\client-v1\\stock\\reset-record.blade.php"
+			],
+			[
+				"homecontroller",
+				"app\\Http\\Controllers\\ClientV1\\HomeController.php"
+			],
+			[
+				"transferordergoodscontroller",
+				"app\\Http\\Controllers\\ClientV1\\Setting\\TransferOrderGoodsController.php"
+			],
+			[
+				"voucher.bla",
+				"resources\\views\\client-v1\\stock\\voucher.blade.php"
+			],
+			[
+				"stock-order",
+				"resources\\views\\client-v1\\financial\\stock-order.blade.php"
+			],
+			[
+				"pluginorder",
+				"app\\Model\\PluginOrder.php"
+			],
+			[
+				"monitor-list",
+				"resources\\views\\client-v1\\stock\\partials\\monitor-list.blade.php"
+			],
+			[
+				"monitor.bl",
+				"resources\\views\\client-v1\\stock\\monitor.blade.php"
+			],
+			[
+				"applerecharge.php",
+				"config\\applerecharge.php"
+			],
+			[
+				"financialcon",
+				"app\\Http\\Controllers\\ClientV1\\FinancialController.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 410.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
