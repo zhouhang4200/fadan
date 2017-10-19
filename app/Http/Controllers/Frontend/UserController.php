@@ -144,9 +144,13 @@ class UserController extends Controller
     {
         if (Auth::user()->pid == 0) {
 
-            $res = User::destroy($id);
+            $user = User::find($id);
 
-            if (! $res) {
+            $user->permissions()->detach();
+
+            $bool = $user->delete();
+
+            if (! $bool) {
 
                 return response()->json(['code' => '2', 'message' => '删除失败！']);
             }
