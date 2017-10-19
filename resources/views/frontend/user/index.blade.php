@@ -31,7 +31,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">搜索选择框</label>
                     <div class="layui-input-inline">
-                    <select name="name" lay-verify="required" lay-search="">
+                    <select name="name" lay-verify="" lay-search="">
                         <option value="">输入名字或直接选择</option>
                         @foreach($children as $child)
                         <option value="{{ $child->id }}" {{ $name && $name == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
