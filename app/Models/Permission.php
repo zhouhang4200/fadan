@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Validation\Rule;
+use Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
+    use RevisionableTrait;
+    
     public function __construct(array $attributes = [])
     {
         $attributes['guard_name'] = $attributes['guard_name'] ?? config('auth.defaults.guard');
@@ -15,6 +18,12 @@ class Permission extends SpatiePermission
 
         $this->setTable(config('permission.table_names.permissions'));
     }
+
+    protected $keepRevisionOf = array(
+        'name', 'alias',
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public function rbacGroups()
     {

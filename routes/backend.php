@@ -19,6 +19,8 @@ Route::namespace('Backend\Auth')->group(function () {
 Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::get('/', 'DashboardController@index')->name('dashboard');
+    // 系统日志
+    Route::resource('system-logs', 'SystemLogController', ['only' => ['index']]);
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
 

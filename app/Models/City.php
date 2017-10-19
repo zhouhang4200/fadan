@@ -3,12 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class City extends Model
 {
+    use RevisionableTrait;
+
     public $timestamps = true;
 
     protected $fillable = ['name'];
+
+    protected $keepRevisionOf = array(
+        'name',
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public function loginHistories()
     {

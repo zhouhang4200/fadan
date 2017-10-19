@@ -126,6 +126,20 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>系统日志</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('system-logs.index') }}" @if($currentRouteName == 'system-logs.index') class="active" @endif>
+                                    系统日志
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li>
                         <a href="#" class="dropdown-toggle">

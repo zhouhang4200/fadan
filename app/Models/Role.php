@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Validation\Rule;
+use Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole
@@ -15,6 +16,12 @@ class Role extends SpatieRole
 
         $this->setTable(config('permission.table_names.roles'));
     }
+
+    protected $keepRevisionOf = array(
+        'name', 'alias'
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public static function rules()
     {

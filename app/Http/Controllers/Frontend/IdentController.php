@@ -26,6 +26,8 @@ class IdentController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+
         return view('frontend.user.ident.create');
     }
 

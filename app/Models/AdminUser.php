@@ -6,12 +6,13 @@ use Auth;
 use App\Models\AdminLoginHistory;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Venturecraft\Revisionable\RevisionableTrait;
 use App\Notifications\AdminResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class AdminUser extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, RevisionableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +31,12 @@ class AdminUser extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $keepRevisionOf = array(
+        'updated_at'
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public static function rules()
     {
