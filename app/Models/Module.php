@@ -4,12 +4,21 @@ namespace App\Models;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
+use App\Extensions\Revisionable\RevisionableTrait;
 
 class Module extends Model
 {
+    use RevisionableTrait;
+    
     public $timestamps = true;
 
     protected $guarded = ['id'];
+
+    protected $keepRevisionOf = array(
+        'name', 'alias'
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public static function rules()
     {

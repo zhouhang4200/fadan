@@ -3,12 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class RbacGroup extends Model
 {
+    use RevisionableTrait;
+
     public $timestamps = true;
 
     protected $guarded = ['id'];
+
+    protected $keepRevisionOf = array(
+        'name', 'alias',
+    );
+
+    protected $revisionCreationsEnabled = true;
 
     public static function rules ()
     {
