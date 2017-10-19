@@ -15,6 +15,9 @@
             width: 135px;
             margin-right: 10px;
         }
+        .layui-form-checkbox span {
+            padding: 0 5px;
+        }
     </style>
 @endsection
 

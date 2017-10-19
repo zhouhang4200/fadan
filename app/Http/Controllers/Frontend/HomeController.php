@@ -11,6 +11,11 @@ use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
+    public function __construct()
+    {
+        // $this->middleware(['permission:home.add.order|home.edit.order']);
+    }
+
     /**
      * Show the application dashboard.
      *
