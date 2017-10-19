@@ -85,7 +85,11 @@
                         <div style="text-align: center">
                         <button class="layui-btn layui-btn-normal edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
                         <button class="layui-btn layui-btn-normal delete" onclick="del({{ $user->id }})">删除</button>
-                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">权限</a></button>
+                        @if($user->rbacGroups->count() == 0)
+                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">添加权限</a></button>
+                        @else
+                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编辑权限</a></button>
+                        @endif
                         </div>
                     </td>
                 </tr>

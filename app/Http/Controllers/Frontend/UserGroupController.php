@@ -83,6 +83,16 @@ class UserGroupController extends Controller
 
     		if ($array['attached'] || $array['detached'] || $array['updated']) {
 
+                $rbacGroups = $user->rbacGroups;
+
+                $permissions = $rbacGroups->map(function ($rbacGroup) {
+
+                    return $rbacGroup->permissions;
+
+                })->flatten();
+
+                $user->permissions()->sync($permissions->pluck('id')->toArray());
+
 	            return redirect(route('user-groups.index'))->with('succ', '添加成功!');
 	        }
 	        return back()->with('createFail', '添加失败！');
@@ -141,19 +151,19 @@ class UserGroupController extends Controller
     			return back()->with('missError', '请选择组名!');
     		}
 
-    		if ($request->groups == $user->rbacGroups->pluck('id')->toArray()) {
+            $array = $user->rbacgroups()->sync($request->groups);
 
-    			return redirect(route('user-groups.index'))->with('succ', '更新成功!');
-    		}
+            $rbacGroups = $user->rbacGroups;
 
-    		$array = $user->rbacgroups()->sync($request->groups);
+            $permissions = $rbacGroups->map(function ($rbacGroup) {
 
-            if ($array['attached'] || $array['detached'] || $array['updated']) {
+                return $rbacGroup->permissions;
+                
+            })->flatten();
 
-            	return redirect(route('user-groups.index'))->with('succ', '更新成功!');
-            }
+            $user->permissions()->sync($permissions->pluck('id')->toArray());
 
-            return back()->with('updateError', '更新失败!');
+            return redirect(route('user-groups.index'))->with('succ', '更新成功!');
         }
     }
 
@@ -169,16 +179,9 @@ class UserGroupController extends Controller
 
         	$user = User::find($id);
 
-            $bool = $user->delete();
+            $user->rbacGroups()->detach();
 
-            if ($bool) {
-
-            	$user->rbacGroups()->detach();
-
-                return response()->json(['code' => '1', 'message' => '删除成功']);
-            }
-
-            return response()->json(['code' => '2', 'message' => '删除失败!']);
+            return response()->json(['code' => '1', 'message' => '删除成功']);
         }
     }
 }
