@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
+use App\Extensions\Revisionable\RevisionableTrait;
 
 class City extends Model
 {

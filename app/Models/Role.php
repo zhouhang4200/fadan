@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Validation\Rule;
-use Venturecraft\Revisionable\RevisionableTrait;
+use App\Extensions\Revisionable\RevisionableTrait;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole

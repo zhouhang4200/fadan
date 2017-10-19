@@ -6,12 +6,11 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
-use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, RevisionableTrait;
+    use Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
