@@ -19,7 +19,7 @@ class RbacGroupController extends Controller
     {
         $rbacGroups = RbacGroup::where('user_id', Auth::id())->whereHas('permissions')->paginate(config('frontend.page'));
 
-        return view('frontend.rbacgroup.index', compact('rbacGroups'));
+        return view('frontend.user.rbacgroup.index', compact('rbacGroups'));
     }
 
     /**
@@ -37,7 +37,7 @@ class RbacGroupController extends Controller
                         }])            
                         ->get();
 
-        return view('frontend.rbacgroup.create', compact('modulePermissions'));
+        return view('frontend.user.rbacgroup.create', compact('modulePermissions'));
     }
 
     /**
@@ -102,7 +102,7 @@ class RbacGroupController extends Controller
                         }])            
                         ->get();
                        
-        return view('frontend.rbacgroup.edit', compact('rbacGroup', 'modulePermissions'));
+        return view('frontend.user.rbacgroup.edit', compact('rbacGroup', 'modulePermissions'));
     }
 
     /**

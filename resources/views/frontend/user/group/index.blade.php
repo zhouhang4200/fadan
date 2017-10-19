@@ -17,7 +17,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.rbacgroup.submenu')
+    @include('frontend.user.submenu')
 @endsection
 
 @section('main')

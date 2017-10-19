@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'type', 'pid', 'group_id'
+        'name', 'email', 'password', 'type', 'parent_id', 'group_id'
     ];
 
     /**
@@ -56,12 +56,12 @@ class User extends Authenticatable
 
     public function children()
     {
-        return $this->hasMany(static::class, 'pid');
+        return $this->hasMany(static::class, 'parent_id');
     }
 
     public function parent()
     {
-        return $this->belongsTo(static::class, 'pid');
+        return $this->belongsTo(static::class, 'parent_id');
     }
 
     public function loginHistories()

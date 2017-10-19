@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 编辑子账号')
+@section('title', '账号 - 修改密码')
 
 @section('submenu')
     @include('frontend.user.submenu')

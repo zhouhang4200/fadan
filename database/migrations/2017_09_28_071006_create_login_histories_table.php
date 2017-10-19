@@ -15,7 +15,7 @@ class CreateLoginHistoriesTable extends Migration
     {
         Schema::create('login_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('pid')->unsigned()->comment('父id');
+            $table->integer('parent_id')->unsigned()->comment('父id');
             $table->integer('user_id')->unsigned()->comment('用户id');
             $table->tinyInteger('user_type')->unsigned()->comment('父：1，子：2');
             $table->bigInteger('ip')->comment('登录ip');

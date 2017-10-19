@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->pid == 0) {
+        if ($user->parent_id == 0) {
 
             $children = $user->children;
 
@@ -31,7 +31,7 @@ class UserController extends Controller
 
             $filters = compact('name', 'startDate', 'endDate');
 
-            $users = User::filter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+            $users = User::filter($filters)->where('parent_id', $user->id)->paginate(config('frontend.page'));
 
             return view('frontend.user.index', compact('name', 'children', 'startDate', 'endDate', 'users'));
         }
@@ -55,7 +55,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->pid == 0) {  
+        if (Auth::user()->parent_id == 0) {  
 
             $this->validate($request, User::rules(), User::messages());
 
@@ -63,7 +63,7 @@ class UserController extends Controller
 
             $data['password'] = bcrypt($request->password);
 
-            $data['pid'] = Auth::id();
+            $data['parent_id'] = Auth::id();
 
             $res = User::create($data);
 
@@ -96,7 +96,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
             $user = User::find($id);
 
@@ -113,7 +113,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
             $user = User::find($id);
 
@@ -142,7 +142,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
             $user = User::find($id);
 

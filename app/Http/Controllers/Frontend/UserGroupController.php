@@ -19,7 +19,7 @@ class UserGroupController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->pid == 0) {
+        if ($user->parent_id == 0) {
 
         	$childUsers = $user->children()->whereHas('rbacGroups')->get();
 
@@ -27,7 +27,7 @@ class UserGroupController extends Controller
 
             $filters = compact('name', 'startDate', 'endDate');
 
-            $users = User::userGroupFilter($filters)->where('pid', $user->id)->paginate(config('frontend.page'));
+            $users = User::userGroupFilter($filters)->where('parent_id', $user->id)->paginate(config('frontend.page'));
 
             return view('frontend.user.group.index', compact('name', 'childUsers', 'startDate', 'endDate', 'users'));
         }
@@ -42,11 +42,11 @@ class UserGroupController extends Controller
     {
     	$user = Auth::user();
 
-    	if ($user->pid == 0) {
+    	if ($user->parent_id == 0) {
 
     		$childUser = User::find($request->id);
 
-    		if ($childUser->pid != $user->id) {
+    		if ($childUser->parent_id != $user->id) {
 
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
@@ -65,11 +65,11 @@ class UserGroupController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
     		$user = User::find($request->id);
 
-    		if ($user->pid != Auth::user()->id) {
+    		if ($user->parent_id != Auth::user()->id) {
 
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
@@ -118,7 +118,7 @@ class UserGroupController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
             $user = User::find($id);
 
@@ -137,11 +137,11 @@ class UserGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
             $user = User::find($id);
 
-            if ($user->pid != Auth::user()->id) {
+            if ($user->parent_id != Auth::user()->id) {
 
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
@@ -175,7 +175,7 @@ class UserGroupController extends Controller
      */
     public function destroy($id)
     {
-        if (Auth::user()->pid == 0) {
+        if (Auth::user()->parent_id == 0) {
 
         	$user = User::find($id);
 

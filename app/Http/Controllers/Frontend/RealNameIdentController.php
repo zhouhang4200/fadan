@@ -26,7 +26,7 @@ class RealNameIdentController extends Controller
      */
     public function ident(Request $request)
     {
-    	$userId = Auth()->user()->pid ?: Auth()->id();
+    	$userId = Auth()->user()->parent_id ?: Auth()->id();
 
     	$this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
 

@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Auth;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AccountController extends Controller
+class IdentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $user = Auth::user();
-
-        return view('frontend.user.account.index', compact('user'));
+        //
     }
 
     /**
@@ -28,7 +24,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-
+        return view('frontend.user.ident.create');
     }
 
     /**
@@ -38,8 +34,8 @@ class AccountController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
-
+    {
+        //
     }
 
     /**
@@ -50,7 +46,7 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**
@@ -61,9 +57,7 @@ class AccountController extends Controller
      */
     public function edit($id)
     {
-        $user = Auth::user();
-
-        return view('frontend.user.account.edit', compact('user'));
+        //
     }
 
     /**
@@ -75,22 +69,7 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        
-        $this->validate($request, User::updateRules($user->id), User::messages());
-
-        $newPassword = $request->password;
-
-        if ($newPassword) {
-
-            $res = $user->update(['password' => bcrypt($newPassword)]);
-
-            if (! $res) {
-
-                return back()->withInput()->with('updateError', '修改密码失败！');
-            }
-        }
-        return redirect(route('home-accounts.index'))->with('succ', '更新成功!');
+        //
     }
 
     /**
@@ -101,6 +80,6 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        
+        //
     }
 }

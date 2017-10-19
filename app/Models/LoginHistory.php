@@ -13,12 +13,12 @@ class LoginHistory extends Model
 
     public function children()
     {
-        return $this->hasMany(static::class, 'pid', 'user_id');
+        return $this->hasMany(static::class, 'parent_id', 'user_id');
     }
 
     public function parent()
     {
-        return $this->belongsTo(static::class, 'pid', 'user_id');
+        return $this->belongsTo(static::class, 'parent_id', 'user_id');
     }
 
     public function user()
@@ -52,7 +52,7 @@ class LoginHistory extends Model
         $detailArray = loginDetail($ip);
         // 获取登录用户详情
         $user              = Auth::user();
-        $data['pid']       = $user->pid;
+        $data['parent_id'] = $user->parent_id;
         $data['user_id']   = $user->id;
         $data['ip']        = $detailArray['ip'];
         $data['city_id']   = $detailArray['city_id'] ?: 0;
@@ -112,7 +112,7 @@ class LoginHistory extends Model
         }
 
         return $query->whereHas('user', function ($query) use ($filters) {
-            $query->where('pid', $filters['pid']);
+            $query->where('parent_id', $filters['pid']);
         })->latest('created_at');
     }
 }
