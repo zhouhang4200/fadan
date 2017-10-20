@@ -51,8 +51,8 @@
                 </div>
             </div>
             <div style="float: left">
-            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-            <button  class="layui-btn layui-btn-normal"><a href="{{ route('users.index') }}" style="color:#fff">返回</a></button></div>
+            <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+            <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('users.index') }}" style="color:#fff">返回</a></button></div>
         </div>
     </form>
     <div class="layui-tab-item layui-show" lay-size="sm">
@@ -83,12 +83,12 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
-                        <button class="layui-btn layui-btn-normal edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
-                        <button class="layui-btn layui-btn-normal delete" onclick="del({{ $user->id }})">删除</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="del({{ $user->id }})">删除</button>
                         @if($user->rbacGroups->count() == 0)
-                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">添加权限</a></button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">添加权限</a></button>
                         @else
-                        <button class="layui-btn layui-btn-normal rbac"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编辑权限</a></button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small rbac"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编辑权限</a></button>
                         @endif
                         </div>
                     </td>

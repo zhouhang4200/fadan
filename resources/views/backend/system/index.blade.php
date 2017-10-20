@@ -31,8 +31,8 @@
                                 </div>
                                 <div style="float: left">
                                     <div class="layui-inline" >
-                                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                                        <button  class="layui-btn layui-btn-normal"><a href="{{ route('system-logs.index') }}" style="color:#fff">返回</a></button>
+                                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+                                        <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('system-logs.index') }}" style="color:#fff">返回</a></button>
                                     </div>
                                 </div>                     
                             </form>

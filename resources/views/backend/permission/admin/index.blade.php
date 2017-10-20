@@ -33,8 +33,8 @@
                                             <td>{{ $permission->name }}</td>
                                             <td>{{ $permission->alias }}</td>
                                             <td>{{ $permission->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('admin-permissions.edit', ['id' => $permission->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $permission->id }})">删除</button></td>
+                                            <td style="text-align: center"><a href="{{ route('admin-permissions.edit', ['id' => $permission->id])  }}"><button class="layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $permission->id }})">删除</button></td>
                                         </tr>
                                     @empty
                                     @endforelse

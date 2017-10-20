@@ -40,8 +40,8 @@
         </div>
         <div style="float: left">
             <div class="layui-inline" >
-                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                <button  class="layui-btn layui-btn-normal"><a href="{{ route('user-groups.index') }}" style="color:#fff">返回</a></button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+                <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('user-groups.index') }}" style="color:#fff">返回</a></button>
             </div>
         </div>
     </form>
@@ -73,7 +73,7 @@
                         {{ $rbacGroup->alias }}
                     @endforeach
                     </td>
-                    <td style="text-align: center"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编缉</a></button><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $user->id }})">删除</button></td>
+                    <td style="text-align: center"><button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编缉</a></button><button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $user->id }})">删除</button></td>
                 </tr>
             @endforeach
             </tbody>
