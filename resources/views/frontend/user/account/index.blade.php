@@ -49,7 +49,7 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
-                        <button class="layui-btn layui-btn-normal edit"><a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" style="color: #fff">修改密码</a></button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" style="color: #fff">修改密码</a></button>
                         </div>
                     </td>
                 </tr>
