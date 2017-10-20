@@ -18,7 +18,7 @@ class AdminPermissionController extends Controller
     {
         $permissions = Permission::where('guard_name', 'admin')->paginate(config('backend.page'));
 
-        return view('backend.permission.admin.index', compact('permissions'));
+        return view('backend.rbac.permission.admin.index', compact('permissions'));
     }
 
     /**
@@ -30,7 +30,7 @@ class AdminPermissionController extends Controller
     {
         $modules = Module::where('guard_name', 'admin')->get();
 
-        return view('backend.permission.admin.create', compact('modules'));
+        return view('backend.rbac.permission.admin.create', compact('modules'));
     }
 
     /**
@@ -83,7 +83,7 @@ class AdminPermissionController extends Controller
 
         $modules = Module::where('guard_name', 'admin')->get();
 
-        return view('backend.permission.admin.edit', compact('permission', 'modules'));
+        return view('backend.rbac.permission.admin.edit', compact('permission', 'modules'));
     }
 
     /**

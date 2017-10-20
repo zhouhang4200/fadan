@@ -67,6 +67,20 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>账号管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('login-record.index') }}" @if($currentRouteName == 'login-record.index') class="active" @endif>
+                                    我的账号
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li @if($currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups' || $currentOneLevelMenu == 'groups' ||$currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'modules' || $currentOneLevelMenu == 'accounts' || $currentOneLevelMenu == 'admin-accounts') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -140,6 +154,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+
 
                     <li>
                         <a href="#" class="dropdown-toggle">

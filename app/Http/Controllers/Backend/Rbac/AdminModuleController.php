@@ -17,7 +17,7 @@ class AdminModuleController extends Controller
     {
         $modules = Module::where('guard_name', 'admin')->paginate(config('frontend.page'));
 
-        return view('backend.module.admin.index', compact('modules'));
+        return view('backend.rbac.module.admin.index', compact('modules'));
     }
 
     /**
@@ -27,7 +27,7 @@ class AdminModuleController extends Controller
      */
     public function create()
     {
-        return view('backend.module.admin.create');
+        return view('backend.rbac.module.admin.create');
     }
 
     /**
@@ -76,7 +76,7 @@ class AdminModuleController extends Controller
     {
         $module = Module::find($id);
 
-        return view('backend.module.admin.edit', compact('module'));
+        return view('backend.rbac.module.admin.edit', compact('module'));
     }
 
     /**

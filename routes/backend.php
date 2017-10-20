@@ -21,6 +21,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard');
     // 系统日志
     Route::resource('system-logs', 'SystemLogController', ['only' => ['index']]);
+    // 账号管理-我的账号
+    Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
 

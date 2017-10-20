@@ -12,6 +12,6 @@ class AdminAccountController extends Controller
     {
     	$users = AdminUser::latest('id')->paginate(config('backend.page'));
 
-    	return view('backend.account.admin.index', compact('users'));
+    	return view('backend.rbac.account.admin.index', compact('users'));
     }
 }

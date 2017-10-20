@@ -6,15 +6,6 @@
 <!--START 主体-->
     <div class="main">
         <div class="wrapper">
-            <div class="left">
-                <div class="column-menu">
-                    <ul class="seller_center_left_menu">
-                        <li class="current"><a href=""> 登录历史列表 </a><div class="arrow"></div></li>
-                        <li><a href=""> 登录历史 </a><div class="arrow"></div></li>
-                    </ul>
-                </div>
-            </div>
-
             <div class="right">
                 <div class="content">
 
@@ -41,7 +32,7 @@
                                 <div style="float: left">
                                     <div class="layui-inline" >
                                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                                        <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('loginrecord.index') }}" style="color:#fff">返回</a></button>
+                                        <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('login-record.index') }}" style="color:#fff">返回</a></button>
                                     </div>
                                 </div>                     
                             </form>

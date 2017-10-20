@@ -12,6 +12,6 @@ class AccountController extends Controller
     {
     	$users = User::where('parent_id', 0)->latest('id')->paginate(config('frontend.page'));
 
-    	return view('backend.account.index', compact('users'));
+    	return view('backend.rbac.account.index', compact('users'));
     }
 }

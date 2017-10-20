@@ -18,7 +18,7 @@ class AdminGroupController extends Controller
     {
         $groups = AdminUser::whereHas('roles')->latest('id')->paginate(config('backend.page'));
 
-        return view('backend.group.admin.index', compact('groups'));
+        return view('backend.rbac.group.admin.index', compact('groups'));
     }
 
     /**
@@ -32,7 +32,7 @@ class AdminGroupController extends Controller
 
         $roles = Role::where('guard_name', 'admin')->get();
 
-        return view('backend.group.admin.create', compact('roles', 'user'));
+        return view('backend.rbac.group.admin.create', compact('roles', 'user'));
     }
 
     /**
@@ -70,7 +70,7 @@ class AdminGroupController extends Controller
     {
         $user = AdminUser::find($id);
 
-        return view('backend.group.show', compact('user'));
+        return view('backend.rbac.group.show', compact('user'));
     }
 
     /**
@@ -85,7 +85,7 @@ class AdminGroupController extends Controller
 
         $roles = Role::where('guard_name', 'admin')->get();
 
-        return view('backend.group.admin.edit', compact('user', 'roles'));
+        return view('backend.rbac.group.admin.edit', compact('user', 'roles'));
     }
 
     /**

@@ -18,7 +18,7 @@ class PermissionController extends Controller
     {
         $permissions = Permission::where('guard_name', 'web')->paginate(config('frontend.page'));
 
-        return view('backend.permission.index', compact('permissions'));
+        return view('backend.rbac.permission.index', compact('permissions'));
     }
 
     /**
@@ -30,7 +30,7 @@ class PermissionController extends Controller
     {
         $modules = Module::where('guard_name', 'web')->get();
 
-        return view('backend.permission.create', compact('modules'));
+        return view('backend.rbac.permission.create', compact('modules'));
     }
 
     /**
@@ -88,7 +88,7 @@ class PermissionController extends Controller
 
         $modules = Module::where('guard_name', 'web')->get();
 
-        return view('backend.permission.edit', compact('permission', 'modules'));
+        return view('backend.rbac.permission.edit', compact('permission', 'modules'));
     }
 
     /**

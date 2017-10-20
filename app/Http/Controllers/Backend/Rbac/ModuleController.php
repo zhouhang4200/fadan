@@ -17,7 +17,7 @@ class ModuleController extends Controller
     {
         $modules = Module::where('guard_name', 'web')->paginate(config('frontend.page'));
 
-        return view('backend.module.index', compact('modules'));
+        return view('backend.rbac.module.index', compact('modules'));
     }
 
     /**
@@ -27,7 +27,7 @@ class ModuleController extends Controller
      */
     public function create()
     {
-        return view('backend.module.create');
+        return view('backend.rbac.module.create');
     }
 
     /**
@@ -75,7 +75,7 @@ class ModuleController extends Controller
     {
         $module = Module::find($id);
 
-        return view('backend.module.edit', compact('module'));
+        return view('backend.rbac.module.edit', compact('module'));
     }
 
     /**

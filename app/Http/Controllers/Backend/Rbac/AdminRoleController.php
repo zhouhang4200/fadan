@@ -19,7 +19,7 @@ class AdminRoleController extends Controller
     {
         $roles = Role::where('guard_name', 'admin')->paginate(config('backend.page'));
 
-        return view('backend.role.admin.index', compact('roles'));
+        return view('backend.rbac.role.admin.index', compact('roles'));
     }
 
     /**
@@ -33,7 +33,7 @@ class AdminRoleController extends Controller
 
         $permissions = Permission::where('guard_name', 'admin')->get()->toArray();
 
-        return view('backend.role.admin.create', compact('modulePermissions', 'permissions'));
+        return view('backend.rbac.role.admin.create', compact('modulePermissions', 'permissions'));
     }
 
     /**
@@ -89,7 +89,7 @@ class AdminRoleController extends Controller
 
         $modulePermissions = Module::where('guard_name', 'admin')->with('permissions')->get();
 
-        return view('backend.role.admin.edit', compact('role', 'modulePermissions'));
+        return view('backend.rbac.role.admin.edit', compact('role', 'modulePermissions'));
     }
 
     /**
