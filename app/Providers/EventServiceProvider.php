@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Registered' => [
             'App\Listeners\Registered\CreateUserAsset',
         ],
+        'Illuminate\Auth\Events\Login' => [
+            'App\Listeners\login\WriteLoginRecord',
+        ],
     ];
 
     /**
