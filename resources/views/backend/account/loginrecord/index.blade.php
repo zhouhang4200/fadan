@@ -3,15 +3,14 @@
 @section('title', '商家后台')
 
 @section('content')
-<!--START 主体-->
-    <div class="main">
-        <div class="wrapper">
-            <div class="right">
-                <div class="content">
-
-                    <div class="path"><span>登录历史记录</span></div>
-
-                    <div class="layui-tab">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box">
+                <div class="main-box-body clearfix">
+                    <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this" lay-id="add">我的账号</li>
+                        </ul>
                         <div class="layui-tab-content">
                         <form class="layui-form" method="" action="">
                                 <div class="layui-inline" style="float:left">
