@@ -19,7 +19,7 @@ class RoleController extends Controller
     {
         $roles = Role::where('guard_name', 'web')->paginate(config('frontend.page'));
 
-        return view('backend.role.index', compact('roles'));
+        return view('backend.rbac.role.index', compact('roles'));
     }
 
     /**
@@ -33,7 +33,7 @@ class RoleController extends Controller
         
         $permissions = Permission::where('guard_name', 'web')->get()->toArray();
 
-        return view('backend.role.create', compact('modulePermissions', 'permissions'));
+        return view('backend.rbac.role.create', compact('modulePermissions', 'permissions'));
     }
 
     /**
@@ -89,7 +89,7 @@ class RoleController extends Controller
 
         $modulePermissions = Module::where('guard_name', 'web')->with('permissions')->get();
 
-        return view('backend.role.edit', compact('role', 'modulePermissions'));
+        return view('backend.rbac.role.edit', compact('role', 'modulePermissions'));
     }
 
     /**

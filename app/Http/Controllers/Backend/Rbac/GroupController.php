@@ -18,7 +18,7 @@ class GroupController extends Controller
     {
         $groups = User::where('parent_id', 0)->whereHas('roles')->latest('id')->paginate(config('backend.page'));
 
-        return view('backend.group.index', compact('groups'));
+        return view('backend.rbac.group.index', compact('groups'));
     }
 
     /**
@@ -32,7 +32,7 @@ class GroupController extends Controller
 
         $roles = Role::where('guard_name', 'web')->get();
 
-        return view('backend.group.create', compact('roles', 'user'));
+        return view('backend.rbac.group.create', compact('roles', 'user'));
     }
 
     /**
@@ -70,7 +70,7 @@ class GroupController extends Controller
     {
         $user = User::find($id);
 
-        return view('backend.group.show', compact('user'));
+        return view('backend.rbac.group.show', compact('user'));
     }
 
     /**
@@ -85,7 +85,7 @@ class GroupController extends Controller
 
         $roles = Role::where('guard_name', 'web')->get();
 
-        return view('backend.group.edit', compact('user', 'roles'));
+        return view('backend.rbac.group.edit', compact('user', 'roles'));
     }
 
     /**
