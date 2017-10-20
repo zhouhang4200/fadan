@@ -366,3 +366,20 @@ body {
 .layui-tab-content {
 	padding: 0;
 }
+
+/* 分页样式 */
+.pagination > li a, .pagination > li span{
+    float: left;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin-right: 2px;
+}
+.pagination > .active span {
+    color: #fff;
+    background: #139ff0;
+    border: 1px solid #139ff0;
+}
+/* 分页样式 */
