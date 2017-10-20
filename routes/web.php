@@ -17,7 +17,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 登录管理
 	Route::prefix('login')->group(function () {
 		// 账号登录记录
-		Route::get('history', 'LoginController@history')->name('login.history');	
+		Route::get('history', 'LoginController@history')->name('login.history');
 	});
 	// 子账号管理
 	Route::resource('users', 'UserController', ['except' => ['show']]);
@@ -33,10 +33,15 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::resource('home-system-logs', 'SystemLogController', ['only' => ['index']]);
 
 	// 财务
-	route::namespace('Finance')->prefix('finance')->group(function () {
+	Route::namespace('Finance')->prefix('finance')->group(function () {
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow');
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
+	});
+
+	// 工作台
+	Route::namespace('Workbench')->prefix('workbench')->group(function () {
+		Route::get('order', 'OrderController@index')->name('frontend.workbench.order');
 	});
 });
 
