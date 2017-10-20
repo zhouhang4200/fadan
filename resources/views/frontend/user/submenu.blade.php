@@ -1,5 +1,8 @@
 <ul class="seller_center_left_menu">
 	<li class="{{ Route::currentRouteName() == 'home-accounts.index' ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}"> 我的账号 </a><div class="arrow"></div></li>
+	@if (Auth::user()->pid == 0)
+    <li class="{{ Route::currentRouteName() == 'home-system-logs.index' ? 'current' : '' }}"><a href="{{ route('home-system-logs.index') }}"> 系统日志 </a><div class="arrow"></div></li>
+    @endif
     <li class="{{ Route::currentRouteName() == 'login.history' ? 'current' : '' }}"><a href="{{ route('login.history') }}"> 登录记录 </a><div class="arrow"></div></li>
     @if (Auth::user()->pid == 0)
     <li class="{{ Route::currentRouteName() == 'idents.create' ? 'current' : '' }}"><a href="{{ route('idents.create') }}"> 实名认证 </a><div class="arrow"></div></li>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Backend\Account;
 
 use Auth;
 use Illuminate\Http\Request;
@@ -24,6 +24,6 @@ class LoginRecordController extends Controller
 
         $loginRecords = AdminLoginHistory::filter($filters)->where('admin_user_id', Auth::id())->paginate(config('frontend.page'));
 
-        return view('backend.loginrecord.index', compact('loginRecords', 'startDate', 'endDate'));
+        return view('backend.account.loginrecord.index', compact('loginRecords', 'startDate', 'endDate'));
     }
 }

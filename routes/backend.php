@@ -21,8 +21,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard');
     // 系统日志
     Route::resource('system-logs', 'SystemLogController', ['only' => ['index']]);
-    // 账号管理-我的账号
-    Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
 
@@ -78,6 +76,13 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('accounts', 'AccountController@index')->name('accounts.index');
         // 后台账号
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
+    });
+
+    Route::namespace('Account')->prefix('account')->group(function () {
+        // 账号管理-我的账号
+        Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
+        // 实名认证
+        Route::resource('admin-idents', 'AdminIdentController', ['only' => ['index', 'show']]);
     });
 
     Route::prefix('order')->group(function (){
