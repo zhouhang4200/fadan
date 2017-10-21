@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 
 class AdminIdentController extends Controller
 {
+    public function __construct()
+    {
+        // $this->middleware('roles:admin.manager');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,15 +23,17 @@ class AdminIdentController extends Controller
     {
         $name = $request->name;
 
+        $status = $request->status;
+
         $startDate = $request->startDate;
 
         $endDate = $request->endDate;
 
-        $filters = compact('name', 'startDate', 'endDate');
+        $filters = compact('name', 'startDate', 'endDate', 'status');
 
-        $idents = RealNameIdent::filter($filters)->where('status', 0)->paginate(config('backend.page'));
+        $idents = RealNameIdent::filter($filters)->paginate(config('backend.page'));
 
-        return view('backend.account.ident.index', compact('idents', 'name', 'startDate', 'endDate'));
+        return view('backend.account.ident.index', compact('idents', 'name', 'status', 'startDate', 'endDate'));
     }
 
     /**
@@ -37,38 +44,8 @@ class AdminIdentController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $ident = RealNameIdent::find($id);
 
-    /**
-     * ajax 审核通过
-     * @param  Request $request [description]
-     * @return string
-     */
-    public function pass(Request $request)
-    {
-        $userId = $request->userId;
-
-        if (RealNameIdent::where('user_id', $userId)->update(['status' => 1])) {
-
-            return jsonMessages(1, '审核通过!');
-        }
-        return jsonMessages(0, '操作异常错误，请重试!');  
-    }
-
-    /**
-     * ajax 审核不通过
-     * @param  Request $request [description]
-     * @return string
-     */
-    public function refuse(Request $request)
-    {
-        $userId = $request->userId;
-
-        if (RealNameIdent::where('user_id', $userId)->update(['status' => 2, 'fail_message' => '请按要求填写资料!'])) {
-            
-            return jsonMessages(2, '审核不通过!');
-        }
-        return jsonMessages(0, '操作异常错误，请重试!');
+        return view('backend.account.ident.show', compact('ident'));
     }
 }
