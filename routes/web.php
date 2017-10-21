@@ -28,7 +28,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 我的账号
 	Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
 	// 实名认证
-	Route::resource('idents', 'IdentController', ['only' => ['create', 'store']]);
+	Route::resource('idents', 'IdentController', ['only' => ['index', 'create', 'store']]);
+	Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 	// 系统日志
 	Route::resource('home-system-logs', 'SystemLogController', ['only' => ['index']]);
 
