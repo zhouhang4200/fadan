@@ -15,11 +15,8 @@ class GoodsTemplateWidget extends Model
         'field_value',
         'field_default_value',
         'field_required',
-        'field_sort',
+        'field_sortord',
+        'created_admin_user_id',
+        'updated_admin_user_id',
     ];
-
-    public function parent()
-    {
-
-    }
 }

@@ -37,7 +37,9 @@ class TemplateWidgetController extends Controller
      */
     public function show(Request $request)
     {
-        return GoodsTemplateWidget::find($request->id)->toArray();
+        $widget = GoodsTemplateWidget::find($request->id)->toArray();
+        $widget['select'] = $this->goodsTemplateWidget->getSelectWidgetByGoodsTemplateId($request->template_id);
+        return $widget;
     }
 
     /**
@@ -58,7 +60,7 @@ class TemplateWidgetController extends Controller
     public function store(Request $request)
     {
         $data = $request->data;
-        $data['admin_user_id'] = Auth::user()->id;
+        $data['created_admin_user_id'] = Auth::user()->id;
         try {
             GoodsTemplateWidget::create($data);
         } catch (Exception $exception) {
@@ -74,11 +76,13 @@ class TemplateWidgetController extends Controller
     public function edit(Request $request)
     {
         try {
-            GoodsTemplateWidget::where('id', $request->id)->update($request->data);
+            $data = $request->data;
+            $data['field_required'] = !isset($data['field_required']) ? 2 : 1;
+            GoodsTemplateWidget::where('id', $data['id'])->update($data);
+            return jsonMessages(1, '修改成功');
         } catch (Exception $exception) {
-            return jsonMessages(0, '添加失败');
-        }
-        return jsonMessages(1, '添加成功');
+           return jsonMessages(0, '修改失败');
+       }
     }
 
     /**

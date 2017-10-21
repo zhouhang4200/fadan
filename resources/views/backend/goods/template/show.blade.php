@@ -53,7 +53,7 @@
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
-                                <form class="layui-form layui-form-pane" action="">
+                                <form class="layui-form layui-form-pane" action="" id="add-widget-form">
                                     <input type="hidden" name="goods_template_id" value="{{ Route::input('templateId')}}">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件类型</label>
@@ -83,7 +83,7 @@
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">排序</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="field_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required">
+                                            <input type="text" name="field_sortord" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required">
                                         </div>
                                     </div>
 
@@ -140,9 +140,9 @@
                 <label class="layui-form-label">@{{ item.field_display_name }}</label>
                 <div class="layui-input-inline">
                     @{{#  if(item.field_name == 'password'){ }}
-                        <input type="password" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.field_default_value }}">
+                        <input type="password" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="">
                     @{{#  } else { }}
-                        <input type="text" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.field_default_value }}">
+                        <input type="text" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="">
                     @{{#  } }}
                 </div>
                 <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
@@ -197,13 +197,33 @@
     @{{#  } }}
 </script>
 <script id="showWidgetTemplate" type="text/html">
-
+    <input type="hidden" name="id" value="@{{ d.id }}">
     <div class="layui-form-item" pane="">
         <label class="layui-form-label">排序</label>
         <div class="layui-input-block">
-            <input type="text" name="field_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.field_sort }}">
+            <input type="text" name="field_sortord" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.field_sortord }}">
         </div>
     </div>
+
+    @{{#  if(d.field_type === 2){ }}
+    <div class="layui-form-item">
+        <label class="layui-form-label">父级组件</label>
+        <div class="layui-input-block">
+            <select name="field_parent_id" lay-filter="change-select">
+                <option value="0">无</option>
+                @{{# if(d.select.length >  0){ }}
+                    @{{#  layui.each(d.select, function(i, v){ }}
+                        @{{# if(d.field_parent_id == v.id){ }}
+                            <option value="@{{ v.id }}" selected>@{{ v.field_display_name }}</option>
+                        @{{#  } else if (v.id != d.id) { }}
+                            <option value="@{{ v.id }}">@{{ v.field_display_name }}</option>
+                        @{{#  } }}
+                    @{{#  }); }}
+                @{{#  }  }}
+            </select>
+        </div>
+    </div>
+    @{{#  } }}
 
     <div class="layui-form-item" pane="">
         <label class="layui-form-label">显示名称</label>
@@ -236,7 +256,7 @@
             @{{#  } }}
         </div>
     </div>
-    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="edit-widget">保存修改</button>
+    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="edit-save">保存修改</button>
 </script>
 <script id="showSelectWidgetTemplate" type="text/html">
     <div class="layui-form-item">
@@ -281,11 +301,13 @@
             $.post('{{ route('goods.template.widget.store') }}', {data:data.field},function (result) {
                 // 添加成功后重新加载模版
                 if (result.code == 1) {
+                    $('#add-widget-form')[0].reset();
                     reloadTemplate();
                 }
                 layer.alert(result.message, {
                     title: '添加结果'
                 });
+
             }, 'json');
             return false;
         });
@@ -300,9 +322,11 @@
             return false;
         });
         // 保存组件修改
-        form.on('submit(edit-widget)', function(data){
+        form.on('submit(edit-save)', function(data){
             $.post('{{ route('goods.template.widget.edit') }}', {id:data.field.id, data:data.field}, function (result) {
-
+                layer.msg(result.message);
+                element.tabChange('widgetTab', 'add');
+                reloadTemplate();
             }, 'json');
             return false;
         });
@@ -349,7 +373,7 @@
         function showWidget(widgetId) {
             element.tabChange('widgetTab', 'edit');
             var getTpl = showWidgetTemplate.innerHTML, view = document.getElementById('show-widget');
-            $.post('{{ route('goods.template.widget.show') }}', {id:widgetId}, function (result) {
+            $.post('{{ route('goods.template.widget.show') }}', {id:widgetId,template_id:"{{ Route::input('templateId') }}"}, function (result) {
                 layTpl(getTpl).render(result, function(html){
                     view.innerHTML = html;
                     layui.form.render()

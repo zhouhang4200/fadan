@@ -23,6 +23,6 @@ class GoodsTemplateWidgetRepository
 
     public function getTemplateAllWidgetByTemplateId($templateId)
     {
-        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('field_sort', 'ASC')->get();
+        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('field_sortord', 'ASC')->get();
     }
 }
