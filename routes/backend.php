@@ -37,7 +37,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 设置分类状态
             Route::post('status', 'ServiceController@status')->name('goods.service.status');
         });
-
         // 游戏
         Route::prefix('game')->group(function (){
             // 列表
@@ -50,20 +49,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('store', 'GameController@store')->name('goods.game.store');
             // 设置分类状态
             Route::post('status', 'GameController@status')->name('goods.game.status');
-
         });
-
-        // 商品分类
-        Route::prefix('category')->group(function (){
-            // 列表
-            Route::get('/{id?}', 'CategoryController@index')->name('goods.category-index');
-            // 保存
-            Route::post('store', 'CategoryController@store')->name('goods.category-store');
-            // 设置分类状态
-            Route::post('status', 'CategoryController@status')->name('goods.category-status');
-
-        });
-        // 商品模版
+        // 模版
         Route::prefix('template')->group(function (){
             // 列表
             Route::get('/', 'TemplateController@index')->name('goods.template.index');
@@ -73,8 +60,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('/', 'TemplateController@store')->name('goods.template.store');
             // 查看
             Route::get('/{templateId}', 'TemplateController@show')->name('goods.template.show');
+            // 配置
+            Route::get('config/{templateId}', 'TemplateController@config')->name('goods.template.config');
             // 删除
             Route::post('destroy{templateId}', 'TemplateController@destroy')->name('goods.template.destroy');
+            // 设置分类状态
+            Route::post('status', 'TemplateController@status')->name('goods.template.status');
+            // 保存修改
+            Route::post('edit', 'TemplateController@edit')->name('goods.template.edit');
 
             Route::prefix('widget')->group(function (){
                 // 获取指定组件

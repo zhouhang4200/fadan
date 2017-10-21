@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Goods;
 
+use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use Auth, Config, \Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,23 +17,37 @@ use App\Models\GoodsTemplateWidget;
 class TemplateWidgetController extends Controller
 {
     /**
+     * @var GoodsTemplateWidgetRepository
+     */
+    private $goodsTemplateWidget;
+
+    /**
+     * TemplateWidgetController constructor.
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     */
+    public function __construct(GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    {
+        $this->goodsTemplateWidget = $goodsTemplateWidgetRepository;
+    }
+
+    /**
      * 获取指定组件
      * @param Request $request
+     * @return mixed
      */
     public function show(Request $request)
     {
-        return GoodsTemplateWidget::where('id', $request->id)->first();
+        return GoodsTemplateWidget::find($request->id)->toArray();
     }
 
     /**
      * 获取指定模版的所有组件
-     * @param Request $request
      * @param  int $templateId 模版ID
      * @return mixed
      */
-    public function showAll(Request $request, $templateId)
+    public function showAll($templateId)
     {
-        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('field_sort', 'ASC')->get();
+        return $this->goodsTemplateWidget->getTemplateAllWidgetByTemplateId($templateId);
     }
 
     /**
@@ -84,10 +99,11 @@ class TemplateWidgetController extends Controller
     /**
      * 获取指定模版ID的所有 select 组件
      * @param Request $request
+     * @return mixed
      */
     public function showSelectWidgetByGoodsTemplateId(Request $request)
     {
-        return GoodsTemplateWidget::where(['goods_template_id' => $request->id, 'field_type' => 2])->get();
+        return $this->goodsTemplateWidget->getSelectWidgetByGoodsTemplateId($request->id);
     }
 
     /**
@@ -97,7 +113,7 @@ class TemplateWidgetController extends Controller
      */
     public function showSelectValueByParentId(Request $request)
     {
-        $widgetValue = GoodsTemplateWidget::where(['field_parent_id' => $request->parent_id])->first();
+        $widgetValue = $this->goodsTemplateWidget->getSelectValueByParentId($request->parent_id);
 
         $valueArr = explode(',', $widgetValue->field_value);
 

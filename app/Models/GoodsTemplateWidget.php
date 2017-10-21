@@ -17,4 +17,9 @@ class GoodsTemplateWidget extends Model
         'field_required',
         'field_sort',
     ];
+
+    public function parent()
+    {
+
+    }
 }

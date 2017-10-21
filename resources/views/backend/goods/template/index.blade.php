@@ -34,23 +34,37 @@
                         <table class="layui-table" lay-size="sm">
                             <thead>
                             <tr>
-                                <th>模版ID</th>
-                                <th>模版名称</th>
-                                <th>状态</th>
+                                <th>ID</th>
+                                <th>服务</th>
+                                <th>游戏</th>
+                                <th>添加人</th>
+                                <th>更新人</th>
                                 <th>添加时间</th>
-                                <th>添加人员</th>
-                                <th width="5%">操作</th>
+                                <th>更新时间</th>
+                                <th>状态</th>
+                                <th width="14%">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($goodsTemplates as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->status }}</td>
+                                    <td>{{ $item->service->name ?? '' }}</td>
+                                    <td>{{ $item->game->name ?? '' }}</td>
+                                    <td>{{ $item->createdAdmin->name ?? '无' }}</td>
+                                    <td>{{ $item->updatedAdmin->name ?? '无' }}</td>
                                     <td>{{ $item->created_at }}</td>
-                                    <td>{{ $item->created_at }}</td>
-                                    <td><a href="{{ route('goods.template.show', ['id' => $item->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a></td>
+                                    <td>{{ $item->updated_at }}</td>
+                                    <td>{{ $item->status == 1 ? '已启用' : '未启用' }}</td>
+                                    <td>
+                                        @if($item->status == 0)
+                                            <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit="" lay-filter="change-status" data-id="{{ $item->id }}" data-status="1">启用</button>
+                                        @else
+                                            <button class="layui-btn layui-btn-mini layui-btn-danger" lay-submit="" lay-filter="change-status" data-id="{{ $item->id }}"  data-status="0">禁用</button>
+                                        @endif
+                                        <button data-route="{{ route('goods.template.show', ['id' => $item->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="edit">编缉</button>
+                                        <a href="{{ route('goods.template.config', ['id' => $item->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">配置</a>
+                                    </td>
                                 </tr>
                             @empty
                             @endforelse
@@ -65,24 +79,86 @@
 
     <div class="add-template" style="display: none;padding: 20px">
         <form class="layui-form layui-form-pane" action="">
-            <input type="hidden" name="admin_user_id" value="{{ Auth::user()->id }}">
+
             <div class="layui-form-item">
-                <label class="layui-form-label">模版名称</label>
+                <label class="layui-form-label">服务</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" lay-verify="required" placeholder="请输入模版名称" autocomplete="off" class="layui-input">
+                    <select name="service_id" lay-verify="required">
+                        @forelse($services as $k => $v)
+                            <option value="{{ $k }}">{{ $v }}</option>
+                        @empty
+                        @endforelse
+                    </select>
                 </div>
             </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">游戏</label>
+                <div class="layui-input-inline">
+                    <select name="game_id" lay-verify="required">
+                        @forelse($games as $k => $v)
+                            <option value="{{ $k }}">{{ $v }}</option>
+                        @empty
+                        @endforelse
+                    </select>
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="save-template">确定添加</button>
             </div>
         </form>
     </div>
+
+    <div id="show-template" style="display: none;padding: 20px">
+
+    </div>
+
 @endsection
 
 @section('js')
-    <script>
-        layui.use('form', function(){
-            var form = layui.form;
+<script id="showTemplate" type="text/html">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="id" value="@{{ d.id }}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务</label>
+            <div class="layui-input-inline">
+                <select name="service_id" lay-verify="required">
+                    @{{#  layui.each(d.services, function(i, v){ }}
+                        @{{#  if(d.service_id == i){ }}
+                            <option value="@{{ i  }}" selected>@{{ v  }}</option>
+                        @{{#  } else { }}
+                            <option value="@{{ i  }}">@{{ v  }}</option>
+                        @{{#  } }}
+                    @{{#  }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">游戏</label>
+            <div class="layui-input-inline">
+                <select name="game_id" lay-verify="required">
+
+                    @{{#  layui.each(d.games, function(i, v){ }}
+                        @{{#  if(d.game_id == i){ }}
+                        <option value="@{{ i  }}" selected>@{{ v  }}</option>
+                        @{{#  } else { }}
+                        <option value="@{{ i  }}">@{{ v  }}</option>
+                        @{{# } }}
+                    @{{#  }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="save-edit">确定修改</button>
+        </div>
+    </form>
+</script>
+<script>
+    layui.use(['form', 'laytpl', 'element'], function(){
+            var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
             //监听提交
             form.on('submit(save-template)', function(data){
                 $.post('{{ route('goods.template.store') }}', {data:data.field}, function (result) {
@@ -91,6 +167,40 @@
                 reload();
                 return false;
             });
+            //修改状态
+            form.on('submit(change-status)', function(data){
+                $.post('{{ route('goods.template.status') }}', {id:data.elem.getAttribute('data-id'), status:data.elem.getAttribute('data-status')}, function (result) {
+                    layer.msg(result.message);
+                }, 'json');
+                reload();
+                return false;
+            });
+            //修改模版
+            form.on('submit(edit)', function(data){
+                var getTpl = showTemplate.innerHTML, view = document.getElementById('show-template');
+                $.get(data.elem.getAttribute('data-route'),function (result) {
+                    layTpl(getTpl).render(result, function(html){
+                        view.innerHTML = html;
+                        layui.form.render()
+                    });
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '添加商品模版',
+                        content: $('#show-template')
+                    });
+                }, 'json');
+                return false;
+            });
+            // 提交修改
+            form.on('submit(save-edit)', function(data){
+                $.post('{{ route('goods.template.edit') }}', {id:data.field.id,data:data.field}, function (result) {
+                    layer.msg(result.message);
+                }, 'json');
+                reload();
+                return false;
+            });
+
             // 添加商品模版
             $('#add-goods-template').on('click', function () {
                 layer.open({
@@ -101,5 +211,5 @@
                 });
             });
         });
-    </script>
+</script>
 @endsection
