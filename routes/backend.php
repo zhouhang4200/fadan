@@ -122,7 +122,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 账号管理-我的账号
         Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
         // 实名认证
+        Route::post('pass', 'PassOrRefuseController@pass')->name('pass-or-refuse.pass');
+
+        Route::post('refuse', 'PassOrRefuseController@refuse')->name('pass-or-refuse.refuse');
+
         Route::resource('admin-idents', 'AdminIdentController', ['only' => ['index', 'show']]);
+
     });
 
     Route::prefix('order')->group(function (){

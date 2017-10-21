@@ -59,6 +59,11 @@ class RealNameIdent extends Model
             $query->where('id', $filters['name']);
         }
 
+        if (is_numeric($filters['status'])) {
+
+            $query->where('status', $filters['status']);
+        }
+
         if ($filters['startDate'] && empty($filters['endDate'])) {
 
             $query->where('created_at', '>=', $filters['startDate']);
@@ -74,6 +79,6 @@ class RealNameIdent extends Model
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
-        return $query;
+        return $query->latest('created_at');
     }
 }

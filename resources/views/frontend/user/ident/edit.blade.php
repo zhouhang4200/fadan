@@ -64,75 +64,75 @@
 
 @section('main')
     <div class = 'other none'>
-    <form class="layui-form" method="POST" action="{{ route('idents.update', ['id' => $ident->id]) }}" enctype="multipart/form-data">
-        {!! csrf_field() !!}
-            <div style="width: 80%" class="ident">
-            <input type="hidden" name="type" value='2' >
-            <input type="hidden" name="_method" value="PUT">
-            <div class='company'>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">营业执照名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="license_name" lay-verify="required" value="{{ old('license_name') ?: $ident->license_name }}" autocomplete="off" placeholder="请输入执照名称" class="layui-input">
+        <form class="layui-form" method="POST" action="{{ route('idents.update', ['id' => $ident->id]) }}" enctype="multipart/form-data">
+            {!! csrf_field() !!}
+                <div style="width: 80%" class="ident">
+                <input type="hidden" name="type" value='2' >
+                <input type="hidden" name="_method" value="PUT">
+                <div class='company'>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">营业执照名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="license_name" lay-verify="required" value="{{ old('license_name') ?: $ident->license_name }}" autocomplete="off" placeholder="请输入执照名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">营业执照号码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="license_number" lay-verify="required" value="{{ old('license_number') ?: $ident->license_number }}" placeholder="请输入营业执照号码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">法人姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="corporation" lay-verify="required" value="{{ old('corporation') ?: $ident->corporation }}" placeholder="请输入法人姓名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">营业执照正面照</label>
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="license_picture">上传图片</button>
+                            <input class="layui-upload-file" type="file" name="license_picture">
+                            <div class="layui-upload-list">
+                                <img class="layui-upload-img" id="demo1" src="{{ $ident->license_picture }}">
+                                <input type="hidden" name="license_picture" value="{{ $ident->license_picture }}">
+                                <p id="demoText"></p>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行开户许可证照片</label>
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="bank_open_account_picture">上传图片</button>
+                            <input class="layui-upload-file" type="file" name="bank_open_account_picture">
+                            <div class="layui-upload-list">
+                                <img class="layui-upload-img" id="demo5" sec="{{  $ident->bank_open_account_picture }}">
+                                <input type="hidden" name="bank_open_account_picture" value="{{ $ident->bank_open_account_picture }}">
+                                <p id="demoText"></p>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代办协议照片</label>
+                        <div class="layui-upload">
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="agency_agreement_picture">上传图片</button>
+                            <input class="layui-upload-file" type="file" name="agency_agreement_picture">
+                            <div class="layui-upload-list">
+                                <img class="layui-upload-img" id="demo6" src="{{ $ident->agency_agreement_picture }}">
+                                <input type="hidden" name="agency_agreement_picture" value="{{ $ident->agency_agreement_picture }}">
+                                <p id="demoText"></p>
+                            </div>
+                        </div> 
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">营业执照号码</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="license_number" lay-verify="required" value="{{ old('license_number') ?: $ident->license_number }}" placeholder="请输入营业执照号码" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">法人姓名</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="corporation" lay-verify="required" value="{{ old('corporation') ?: $ident->corporation }}" placeholder="请输入法人姓名" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">营业执照正面照</label>
-                    <div class="layui-upload">
-                        <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="license_picture">上传图片</button>
-                        <input class="layui-upload-file" type="file" name="license_picture">
-                        <div class="layui-upload-list">
-                            <img class="layui-upload-img" id="demo1" src="{{ $ident->license_picture }}">
-                            <input type="hidden" name="license_picture" value="{{ $ident->license_picture }}">
-                            <p id="demoText"></p>
-                        </div>
-                    </div> 
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">银行开户许可证照片</label>
-                    <div class="layui-upload">
-                        <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="bank_open_account_picture">上传图片</button>
-                        <input class="layui-upload-file" type="file" name="bank_open_account_picture">
-                        <div class="layui-upload-list">
-                            <img class="layui-upload-img" id="demo5" sec="{{  $ident->bank_open_account_picture }}">
-                            <input type="hidden" name="bank_open_account_picture" value="{{ $ident->bank_open_account_picture }}">
-                            <p id="demoText"></p>
-                        </div>
-                    </div> 
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">代办协议照片</label>
-                    <div class="layui-upload">
-                        <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="agency_agreement_picture">上传图片</button>
-                        <input class="layui-upload-file" type="file" name="agency_agreement_picture">
-                        <div class="layui-upload-list">
-                            <img class="layui-upload-img" id="demo6" src="{{ $ident->agency_agreement_picture }}">
-                            <input type="hidden" name="agency_agreement_picture" value="{{ $ident->agency_agreement_picture }}">
-                            <p id="demoText"></p>
-                        </div>
-                    </div> 
-                </div>
-            </div>
 
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">提交</button>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">提交</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
     </div>
     
     <div class='self'>
