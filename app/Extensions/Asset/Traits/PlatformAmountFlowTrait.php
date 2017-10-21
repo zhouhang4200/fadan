@@ -2,11 +2,12 @@
 namespace App\Extensions\Asset\Traits;
 
 use App\Models\PlatformAmountFlow;
+use App\Exceptions\AssetException as Exception;
 
 trait PlatformAmountFlowTrait
 {
     // 写平台流水
-    public function writePlatformAmountFlow()
+    public function createPlatformAmountFlow()
     {
         $platformAmountFlow = new PlatformAmountFlow;
         $platformAmountFlow->user_id              = $this->userId;

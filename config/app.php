@@ -182,6 +182,8 @@ return [
 
         // 资金
         App\Extensions\Asset\Providers\AssetServiceProvider::class,
+        // 订单
+        App\Extensions\Order\Providers\OrderServiceProvider::class,
     ],
 
     /*
@@ -235,6 +237,8 @@ return [
 
         // 资金
         'Asset' => App\Extensions\Asset\Facades\Asset::class,
+        // 订单
+        'Order' => App\Extensions\Order\Facades\Order::class,
     ],
 
 ];
