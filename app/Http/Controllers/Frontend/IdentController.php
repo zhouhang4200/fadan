@@ -13,6 +13,11 @@ class IdentController extends Controller
 {
     protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
 
+    public function __construct()
+    {
+        // $this->middleware('roles:home.manager');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +25,9 @@ class IdentController extends Controller
      */
     public function index()
     {
-        //
+        $ident = RealNameIdent::where('user_id', Auth::id())->first();
+
+        return view('frontend.user.ident.index', compact('ident'));
     }
 
     /**
@@ -36,6 +43,51 @@ class IdentController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit()
+    {
+        $ident = RealNameIdent::where('user_id', Auth::id())->first();
+
+        return view('frontend.user.ident.edit', compact('ident'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $ident = RealNameIdent::where('user_id', Auth::id())->first();
+
+        // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
+
+        $data                              = $request->all();
+        $data['type']                      = $request->type;
+        $data['user_id']                   = $ident->user_id;
+        $data['license_number']            = $request->license_number;
+        $data['corporation']               = $request->corporation;
+        $data['identity_card']             = $request->identity_card;
+        $data['phone_number']              = $request->phone_number;
+        $data['license_picture']           = $request->license_picture;
+        $data['front_card_picture']        = $request->front_card_picture;
+        $data['back_card_picture']         = $request->back_card_picture;
+        $data['hold_card_picture']         = $request->hold_card_picture;
+        $data['bank_open_account_picture'] = $request->bank_open_account_picture;
+        $data['agency_agreement_picture']  = $request->agency_agreement_picture;
+
+        if ($ident->update($data)) {
+
+            return redirect(route('idents.index'))->with('succ', '更新成功!');
+        }
+
+        return back()->withInput()->with('updateError', '更新失败!');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,18 +97,21 @@ class IdentController extends Controller
     {
         $userId = Auth()->user()->parent_id ?: Auth()->id();
 
-        $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
+        // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
 
-        $data                       = $request->all();
-        $data['user_id']            = $userId;
-        $data['license_number']     = $request->license_number;
-        $data['corporation']        = $request->corporation;
-        $data['identity_card']      = $request->identity_card;
-        $data['phone_number']       = $request->phone_number;
-        $data['license_picture']    = $request->license_picture;
-        $data['front_card_picture'] = $request->front_card_picture;
-        $data['back_card_picture']  = $request->back_card_picture;
-        $data['hold_card_picture']  = $request->hold_card_picture;
+        $data                              = $request->all();
+        $data['type']                      = $request->type;
+        $data['user_id']                   = $userId;
+        $data['license_number']            = $request->license_number;
+        $data['corporation']               = $request->corporation;
+        $data['identity_card']             = $request->identity_card;
+        $data['phone_number']              = $request->phone_number;
+        $data['license_picture']           = $request->license_picture;
+        $data['front_card_picture']        = $request->front_card_picture;
+        $data['back_card_picture']         = $request->back_card_picture;
+        $data['hold_card_picture']         = $request->hold_card_picture;
+        $data['bank_open_account_picture'] = $request->bank_open_account_picture;
+        $data['agency_agreement_picture']  = $request->agency_agreement_picture;
 
         if (RealNameIdent::create($data)) {
 
