@@ -4,20 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .layui-form-item .layui-input-inline {
-            float: left;
-            width: 150px;
-            margin-right: 10px;
-        }
-
-        .layui-inline .layui-form-label {
-            width: 60px;
-        }
-        .layui-form-label {
-            width: 55px;
-        }
-    </style>
 @endsection
 
 @section('submenu')
@@ -28,17 +14,13 @@
     <form class="layui-form" method="" action="">
         <div class="layui-inline" style="float:left">
         <div class="layui-form-item">
-              <label class="layui-form-label">开始时间</label>
               <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
               </div>
       
-            
-              <label class="layui-form-label">结束时间</label>
               <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束时间">
               </div>
-            
             </div>
         </div>
         <div style="float: left">

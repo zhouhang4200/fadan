@@ -5,14 +5,7 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        .layui-form-item .layui-input-inline {
-            float: left;
-            width: 120px;
-            margin-right: 10px;
-        }
-        .layui-form-label {
-            width:60px;
-        }
+
     </style>
 @endsection
 
@@ -26,7 +19,6 @@
             <div class="layui-form-item">
             @if($user->pid == 0)
             <div class="layui-inline">
-                <label class="layui-form-label">搜索选择框</label>
                 <div class="layui-input-inline">
                 <select name="name" lay-verify="" lay-search="">
                     <option value="">输入名字或直接选择</option>
@@ -37,22 +29,18 @@
                 </div>
             </div>
             @endif
-                <label class="layui-form-label">开始时间</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
                 </div>
 
-                <label class="layui-form-label">结束时间</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束时间">
                 </div>
             </div>
         </div>
-        <div style="float: left">
-            <div class="layui-inline" >
-                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('login.history') }}" style="color:#fff">返回</a></button>
-            </div>
+        <div class="layui-inline" >
+            <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1">查找</button>
+            <a href="{{ route('login.history') }}"  class="layui-btn layui-btn-normal layui-btn-small">返回</a>
         </div>
     </form>
 

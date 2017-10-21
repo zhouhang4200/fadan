@@ -4,16 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .layui-form-item .layui-input-inline {
-            float: left;
-            width: 120px;
-            margin-right: 10px;
-        }
-        .layui-form-label {
-            width:60px;
-        }
-    </style>
 @endsection
 
 @section('submenu')
@@ -25,7 +15,6 @@
         <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">搜索选择框</label>
                     <div class="layui-input-inline">
                     <select name="name" lay-verify="" lay-search="">
                         <option value="">输入名字或直接选择</option>
@@ -35,19 +24,18 @@
                     </select>
                     </div>
                 </div>
-
             </div>
         </div>
         <div style="float: left">
             <div class="layui-inline" >
-                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('user-groups.index') }}" style="color:#fff">返回</a></button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1">查找</button>
+                <a href="{{ route('user-groups.index') }}" class="layui-btn layui-btn-normal layui-btn-small">返回</a>
             </div>
         </div>
     </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <table class="layui-table">
+    <div class="layui-tab-item layui-show">
+        <table class="layui-table"  lay-size="sm">
             <colgroup>
                 <col width="150">
                 <col width="200">

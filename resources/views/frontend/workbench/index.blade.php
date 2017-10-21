@@ -194,90 +194,89 @@
             </div>
         </div>
     </div>
+    <div class="left-menu" id="left-menu">
+
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-block">
+                    <select name="city" lay-verify="required" lay-search>
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">游戏</label>
+                <div class="layui-input-block">
+                    <select name="city" lay-verify="required" lay-search>
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div><div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div><div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">单选框</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="sex" value="男" title="男">
+                    <input type="radio" name="sex" value="女" title="女" checked>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-bg-blue" lay-submit lay-filter="formDemo">确认下单</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="open-btn block"> 打开下单面板</div>
+        <div class="close-btn none">关闭下单面板</div>
+    </div>
 @endsection
-<div class="left-menu" id="left-menu">
 
-    <form class="layui-form" action="">
-        <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
-            <div class="layui-input-block">
-                <select name="city" lay-verify="required" lay-search>
-                    <option value=""></option>
-                    <option value="0">北京</option>
-                    <option value="1">上海</option>
-                    <option value="2">广州</option>
-                    <option value="3">深圳</option>
-                    <option value="4">杭州</option>
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">游戏</label>
-            <div class="layui-input-block">
-                <select name="city" lay-verify="required" lay-search>
-                    <option value=""></option>
-                    <option value="0">北京</option>
-                    <option value="1">上海</option>
-                    <option value="2">广州</option>
-                    <option value="3">深圳</option>
-                    <option value="4">杭州</option>
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div><div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div><div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
-            <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-
-
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">单选框</label>
-            <div class="layui-input-block">
-                <input type="radio" name="sex" value="男" title="男">
-                <input type="radio" name="sex" value="女" title="女" checked>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn layui-bg-blue" lay-submit lay-filter="formDemo">确认下单</button>
-            </div>
-        </div>
-    </form>
-
-    <div class="open-btn block"> 打开下单面板</div>
-    <div class="close-btn none">关闭下单面板</div>
-</div>
 @section('js')
 <script>
     layui.use(['element', 'form'], function(){

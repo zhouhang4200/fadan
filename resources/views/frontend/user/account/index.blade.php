@@ -4,20 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .layui-form-item .layui-input-inline {
-            float: left;
-            width: 150px;
-            margin-right: 10px;
-        }
-
-        .layui-inline .layui-form-label {
-            width: 60px;
-        }
-        .layui-form-label {
-            width: 55px;
-        }
-    </style>
 @endsection
 
 @section('submenu')
@@ -38,7 +24,7 @@
                 <th>用户名</th>
                 <th>邮箱</th>
                 <th>注册时间</th>
-                <th>操作</th>
+                <th width="5%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -48,9 +34,7 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->created_at }}</td>
                     <td>
-                        <div style="text-align: center">
-                        <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" style="color: #fff">修改密码</a></button>
-                        </div>
+                        <a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-small edit">修改密码</a></button>
                     </td>
                 </tr>
             </tbody>
@@ -68,14 +52,9 @@
         var succ = "{{ session('succ') ?: '' }}";
 
         if(succ) {
-            layer.msg(succ, {icon: 6, time:1500},);
+            layer.msg(succ, {icon: 6, time:1500});
         }
-  
-          //……
-          
-          //但是，如果你的HTML是动态生成的，自动渲染就会失效
-          //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
-            form.render();
+        form.render();
         });  
 
     </script>
