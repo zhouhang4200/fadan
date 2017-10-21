@@ -8,13 +8,13 @@ class GoodsTemplateWidget extends Model
 {
     public $fillable = [
         'goods_template_id',
-        'filed_display_name',
-        'filed_parent_id',
-        'filed_type',
-        'filed_name',
-        'filed_value',
-        'filed_default_value',
-        'filed_required',
-        'filed_sort',
+        'field_display_name',
+        'field_parent_id',
+        'field_type',
+        'field_name',
+        'field_value',
+        'field_default_value',
+        'field_required',
+        'field_sort',
     ];
 }

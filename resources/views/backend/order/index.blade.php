@@ -20,8 +20,8 @@
         @foreach($orders as $item)
             <tr>
                 <td>{{ $item->id }}</td>
-                <td>{{ $item->goodsTemplateValue->pluck('filed_value', 'filed_name')['version'] }}</td>
-                <td>{{ $item->goodsTemplateValue->pluck('filed_value', 'filed_name')['sd'] }}</td>
+                <td>{{ $item->goodsTemplateValue->pluck('field_value', 'field_name')['version'] }}</td>
+                <td>{{ $item->goodsTemplateValue->pluck('field_value', 'field_name')['账号'] }}</td>
                 <td>{{ $item->price }}</td>
             </tr>
         @endforeach

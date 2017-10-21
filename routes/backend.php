@@ -24,6 +24,46 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
 
+        // 服务
+        Route::prefix('service')->group(function (){
+            // 列表
+            Route::get('/', 'ServiceController@index')->name('goods.service.index');
+            // 查看
+            Route::get('/{id}', 'ServiceController@show')->name('goods.service.show');
+            // 修改
+            Route::post('edit', 'ServiceController@edit')->name('goods.service.edit');
+            // 保存
+            Route::post('store', 'ServiceController@store')->name('goods.service.store');
+            // 设置分类状态
+            Route::post('status', 'ServiceController@status')->name('goods.service.status');
+        });
+
+        // 游戏
+        Route::prefix('game')->group(function (){
+            // 列表
+            Route::get('/', 'GameController@index')->name('goods.game.index');
+            // 查看
+            Route::get('/{id}', 'GameController@show')->name('goods.game.show');
+            // 修改
+            Route::post('edit', 'GameController@edit')->name('goods.game.edit');
+            // 保存
+            Route::post('store', 'GameController@store')->name('goods.game.store');
+            // 设置分类状态
+            Route::post('status', 'GameController@status')->name('goods.game.status');
+
+        });
+
+        // 商品分类
+        Route::prefix('category')->group(function (){
+            // 列表
+            Route::get('/{id?}', 'CategoryController@index')->name('goods.category-index');
+            // 保存
+            Route::post('store', 'CategoryController@store')->name('goods.category-store');
+            // 设置分类状态
+            Route::post('status', 'CategoryController@status')->name('goods.category-status');
+
+        });
+        // 商品模版
         Route::prefix('template')->group(function (){
             // 列表
             Route::get('/', 'TemplateController@index')->name('goods.template.index');

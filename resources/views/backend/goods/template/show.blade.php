@@ -58,7 +58,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件类型</label>
                                         <div class="layui-input-block">
-                                            <select name="filed_name" lay-verify="required">
+                                            <select name="field_name" lay-verify="required">
                                                 <option value=""></option>
                                                 @foreach($filedName as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
@@ -75,7 +75,7 @@
                                         <label class="layui-form-label">展示方式</label>
                                         <div class="layui-input-block">
                                             @foreach($filedType as $key => $value)
-                                                <input type="radio" name="filed_type" value="{{ $key }}" title="{{ $value }}" lay-filter="field-type">
+                                                <input type="radio" name="field_type" value="{{ $key }}" title="{{ $value }}" lay-filter="field-type">
                                             @endforeach
                                         </div>
                                     </div>
@@ -83,35 +83,35 @@
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">排序</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="filed_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required">
+                                            <input type="text" name="field_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required">
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">显示名称</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="filed_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required">
+                                            <input type="text" name="field_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required">
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件默认值</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="filed_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input">
+                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input">
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item layui-form-text">
                                         <label class="layui-form-label">组件可选值（多个值之前用 | 分隔，多组之前用 ，分隔）</label>
                                         <div class="layui-input-block">
-                                            <textarea placeholder="请输入内容" class="layui-textarea" name="filed_value" lay-verify="filed_value"></textarea>
+                                            <textarea placeholder="请输入内容" class="layui-textarea" name="field_value" lay-verify="field_value"></textarea>
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">是否必填</label>
                                         <div class="layui-input-block">
-                                            <input type="checkbox"  name="filed_required" lay-skin="switch"  title="开关" value="1">
+                                            <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
                                         </div>
                                     </div>
                                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add-widget">确认添加</button>
@@ -135,14 +135,14 @@
         @{{#  layui.each(d, function(index, item){ }}
 
             <!--输入框-->
-            @{{#  if(item.filed_type === 1){ }}
+            @{{#  if(item.field_type === 1){ }}
                 <div class="layui-form-item">
-                    <label class="layui-form-label">@{{ item.filed_display_name }}</label>
+                    <label class="layui-form-label">@{{ item.field_display_name }}</label>
                     <div class="layui-input-inline">
-                        @{{#  if(item.filed_name == 'password'){ }}
-                            <input type="password" name="@{{ item.filed_name }}"  placeholder="请输入@{{ item.filed_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.filed_default_value }}">
+                        @{{#  if(item.field_name == 'password'){ }}
+                            <input type="password" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.field_default_value }}">
                         @{{#  } else { }}
-                            <input type="text" name="@{{ item.filed_name }}"  placeholder="请输入@{{ item.filed_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.filed_default_value }}">
+                            <input type="text" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="@{{ item.field_default_value }}">
                         @{{#  } }}
                     </div>
                     <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
@@ -151,13 +151,13 @@
             @{{#  } }}
 
             <!--下拉项-->
-            @{{#  if(item.filed_type === 2){ }}
+            @{{#  if(item.field_type === 2){ }}
                 <div class="layui-form-item">
-                    <label class="layui-form-label">@{{ item.filed_display_name }}</label>
+                    <label class="layui-form-label">@{{ item.field_display_name }}</label>
                     <div class="layui-input-inline">
-                        <select name="@{{ item.filed_name }}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.filed_parent_id }}">
-                            @{{#  if(item.filed_parent_id  == 0){ }}
-                                    @{{# var option = (item.filed_value).split("|") }}
+                        <select name="@{{ item.field_name }}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
+                            @{{#  if(item.field_parent_id  == 0){ }}
+                                    @{{# var option = (item.field_value).split("|") }}
                                     @{{#  layui.each(option, function(i, v){ }}
                                         <option value="@{{ i }}">@{{ v }}</option>
                                     @{{#  }); }}
@@ -172,16 +172,16 @@
             @{{#  } }}
 
             <!--单选项-->
-            @{{#  if(item.filed_type === 3){ }}
+            @{{#  if(item.field_type === 3){ }}
                 <div class="layui-form-item" pane="">
-                    <label class="layui-form-label">@{{ item.filed_display_name }}</label>
+                    <label class="layui-form-label">@{{ item.field_display_name }}</label>
                     <div class="layui-input-block" >
-                        @{{# var option = (item.filed_value).split("|") }}
+                        @{{# var option = (item.field_value).split("|") }}
                         @{{#  layui.each(option, function(i, v){ }}
-                            @{{#  if(item.filed_default_value ==  v ){  }}
-                                <input type="radio" name="filed_type" value="@{{ v }}" title="@{{ v }}" checked="">
+                            @{{#  if(item.field_default_value ==  v ){  }}
+                                <input type="radio" name="field_type" value="@{{ v }}" title="@{{ v }}" checked="">
                             @{{#  } else { }}
-                                <input type="radio" name="filed_type" value="@{{ v }}" title="@{{ v }}">
+                                <input type="radio" name="field_type" value="@{{ v }}" title="@{{ v }}">
                              @{{#  } }}
                         @{{#  }); }}
                         <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
@@ -201,38 +201,38 @@
         <div class="layui-form-item" pane="">
             <label class="layui-form-label">排序</label>
             <div class="layui-input-block">
-                <input type="text" name="filed_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.filed_sort }}">
+                <input type="text" name="field_sort" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.field_sort }}">
             </div>
         </div>
 
         <div class="layui-form-item" pane="">
             <label class="layui-form-label">显示名称</label>
             <div class="layui-input-block">
-                <input type="text" name="filed_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required" value="@{{ d.filed_display_name }}">
+                <input type="text" name="field_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required" value="@{{ d.field_display_name }}">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">组件默认值</label>
             <div class="layui-input-block">
-                <input type="text" name="filed_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="@{{ d.filed_default_value }}">
+                <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="@{{ d.field_default_value }}">
             </div>
         </div>
 
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">组件可选值（多个值之前用 | 分隔，多组之前用 ，分隔）</label>
             <div class="layui-input-block">
-                <textarea placeholder="请输入内容" class="layui-textarea" name="filed_value">@{{ d.filed_value }}</textarea>
+                <textarea placeholder="请输入内容" class="layui-textarea" name="field_value">@{{ d.field_value }}</textarea>
             </div>
         </div>
 
         <div class="layui-form-item" pane="">
             <label class="layui-form-label">是否必填</label>
             <div class="layui-input-block">
-                @{{#  if(d.filed_required ==  1 ){  }}
-                    <input type="checkbox"  name="filed_required" lay-skin="switch"  title="开关" value="1" checked="">
+                @{{#  if(d.field_required ==  1 ){  }}
+                    <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1" checked="">
                 @{{#  } else { }}
-                    <input type="checkbox"  name="filed_required" lay-skin="switch"  title="开关" value="1">
+                    <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
                 @{{#  } }}
             </div>
         </div>
@@ -242,11 +242,11 @@
         <div class="layui-form-item">
             <label class="layui-form-label">父级组件</label>
             <div class="layui-input-block">
-                <select name="filed_parent_id" lay-verify="required">
+                <select name="field_parent_id" lay-verify="required">
                 <option value="0">无</option>
                     @{{#  if(d.length > 0){ }}
                         @{{#  layui.each(d, function(i, v){ }}
-                        <option value="@{{ v.id }}">@{{ v.filed_display_name }}</option>
+                        <option value="@{{ v.id }}">@{{ v.field_display_name }}</option>
                         @{{#  }); }}
                     @{{#  } }}
                 </select>
@@ -262,7 +262,7 @@
             var currentWidgetType = 1;
             //自定义验证规则
             form.verify({
-                filed_value: function(value){
+                field_value: function(value){
                     if(currentWidgetType > 1 && value.length == 0){
                         return '这种展示方式必须填入可选值呢！';
                     }

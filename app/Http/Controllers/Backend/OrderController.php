@@ -20,7 +20,7 @@ class OrderController extends Controller
     {
         $orders = Order::where('id', 1)->paginate(20);
 
-        //$orderInfo->goodsTemplateValue->pluck('filed_value','filed_name');
+        //$orderInfo->goodsTemplateValue->pluck('field_value','field_name');
 
         return view('backend.order.index', compact('orders'));
     }

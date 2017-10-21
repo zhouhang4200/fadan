@@ -32,7 +32,7 @@ class TemplateWidgetController extends Controller
      */
     public function showAll(Request $request, $templateId)
     {
-        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('filed_sort', 'ASC')->get();
+        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('field_sort', 'ASC')->get();
     }
 
     /**
@@ -42,8 +42,10 @@ class TemplateWidgetController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->data;
+        $data['admin_user_id'] = Auth::user()->id;
         try {
-            GoodsTemplateWidget::create($request->data);
+            GoodsTemplateWidget::create($data);
         } catch (Exception $exception) {
             return jsonMessages(0, '添加失败');
         }
@@ -85,7 +87,7 @@ class TemplateWidgetController extends Controller
      */
     public function showSelectWidgetByGoodsTemplateId(Request $request)
     {
-        return GoodsTemplateWidget::where(['goods_template_id' => $request->id, 'filed_type' => 2])->get();
+        return GoodsTemplateWidget::where(['goods_template_id' => $request->id, 'field_type' => 2])->get();
     }
 
     /**
@@ -95,9 +97,9 @@ class TemplateWidgetController extends Controller
      */
     public function showSelectValueByParentId(Request $request)
     {
-        $widgetValue = GoodsTemplateWidget::where(['filed_parent_id' => $request->parent_id])->first();
+        $widgetValue = GoodsTemplateWidget::where(['field_parent_id' => $request->parent_id])->first();
 
-        $valueArr = explode(',', $widgetValue->filed_value);
+        $valueArr = explode(',', $widgetValue->field_value);
 
         return response()->json(explode('|', $valueArr[$request->id]));
     }

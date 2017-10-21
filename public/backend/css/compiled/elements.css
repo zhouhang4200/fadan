@@ -6489,15 +6489,15 @@ ul#email-list {
 }
 
 .theme-whbl a, .theme-whbl .fc-state-default, .theme-whbl .jvectormap-zoomin, .theme-whbl .jvectormap-zoomout, .theme-whbl #user-profile .profile-details ul > li > span {
-    color: #1E9FFF;
+    /*color: #1E9FFF;*/
 }
 
 .theme-whbl a:hover, .theme-whbl a:focus, .theme-whbl .widget-users li > .details > .name > a:hover, .theme-whbl .widget-todo .actions > a:hover {
-    color: #1E9FFF;
+    /*color: #1E9FFF;*/
 }
 
 .theme-whbl .table a.table-link:hover {
-    color: #2980b9;
+    /*color: #2980b9;*/
 }
 
 .theme-whbl .pagination > li > a, .theme-whbl .pagination > li > span, .theme-whbl .pagination > li > a:hover, .theme-whbl .pagination > li > span:hover, .theme-whbl .pagination > li > a:focus, .theme-whbl .pagination > li > span:focus, .theme-whbl .pagination > li > a:active, .theme-whbl .pagination > li > span:active {

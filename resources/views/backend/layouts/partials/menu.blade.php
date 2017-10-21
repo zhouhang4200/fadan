@@ -22,13 +22,17 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ url('admin/order') }}" @if($currentRouteName == 'order.index') class="active" @endif>
-                                    商品分类
+                                <a href="{{ url('admin/goods/service') }}" @if($currentRouteName == 'goods.service.index') class="active" @endif>
+                                    服务
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('admin/goods/template') }}" @if($currentRouteName == 'order.goods.template') class="active" @endif>
-                                    商品模版
+                                <a href="{{ url('admin/goods/game') }}" @if($currentRouteName == 'goods.game.index') class="active" @endif>
+                                    游戏
+                                </a>
+                            <li>
+                                <a href="{{ url('admin/goods/template') }}" @if($currentRouteName == 'goods.template.index') class="active" @endif>
+                                    模版
                                 </a>
                             </li>
                         </ul>

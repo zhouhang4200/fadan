@@ -105,7 +105,9 @@
     });
 
     function reload() {
-        setTimeout("window.reload()", 5000)
+        setTimeout(function () {
+            location.reload();
+        }, 900);
     }
     function logout() {
         layui.use(['form', 'layedit', 'laydate',], function(){
