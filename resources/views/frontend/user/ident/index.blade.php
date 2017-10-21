@@ -21,6 +21,10 @@
 @endsection
 
 @section('main')
+    <div style="padding-top:10px; padding-bottom:10px; float:right">
+        <a href="{{ route('idents.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">填写实名认证</button></a>
+    </div>
+
     <div class="layui-tab-item layui-show" lay-size="sm">
         <table class="layui-table">
             <colgroup>
