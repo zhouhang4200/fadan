@@ -38,7 +38,7 @@ abstract class Trade
     abstract public function updateUserAsset();
 
     // 写用户流水
-    abstract public function writeUserAmountFlow();
+    abstract public function createUserAmountFlow();
 
     // 平台前置操作
     public function beforePlatform() {}
@@ -47,8 +47,5 @@ abstract class Trade
     abstract public function updatePlatformAsset();
 
     // 写平台流水
-    abstract public function writePlatformAmountFlow();
-
-    // 后置操作
-    public function after() {}
+    abstract public function createPlatformAmountFlow();
 }
