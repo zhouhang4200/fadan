@@ -9,7 +9,7 @@ class RealNameIdent extends Model
 {
     public $timestamps = true;
 
-    protected $guarded = ['user_id', 'message', 'status'];
+    protected $guarded = [];
 
     public function user()
     {
@@ -44,38 +44,6 @@ class RealNameIdent extends Model
 			'back_card_picture.required'  => '请上传身份证背面照片！',
 			'hold_card_picture.required'  => '请上传手持身份证照片！',
     	];
-    }
-
-    /**
-     * 图片上传
-     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
-     * @param  $path string
-     * @return string
-     */
-	public function uploadImage(UploadedFile $file, $path)
-    {   
-        $extension = $file->getClientOriginalExtension();
-
-        if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
-            exit('只能上传图片!');
-        }
-
-        if (!$file->isValid()) {
-            exit('文件上传出错！');
-        }
-
-        if (!file_exists($path)) {
-            mkdir($path, 0755, true);
-        }
-        $randNum = rand(1, 100000000) . rand(1, 100000000);
-
-        $fileName = time().substr($randNum, 0, 6).'.'.$extension;
-
-        $path = $file->move($path, $fileName);
-
-        $path = strstr($path, '/resources');
-
-        return str_replace('\\', '/', $path);
     }
 
     /**

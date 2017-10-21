@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Frontend;
 use Auth;
 use Redis;
 use Illuminate\Http\Request;
+use App\Models\RealNameIdent;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class IdentController extends Controller
 {
+    protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
+
     /**
      * Display a listing of the resource.
      *
@@ -43,14 +47,6 @@ class IdentController extends Controller
 
         $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
 
-        if (Redis::get("real:name:ident:phone:$request->phone") !== $request->code) {
-            return back()->withInput()->with('codeError', '验证码错误!');
-        }
-
-        if (Redis::get("real:name:ident:user:$userId") > 5) {
-            return back()->withInput()->with('codeError', '超过当天发送最大次数，请明天再注册!');
-        }
-
         $data                       = $request->all();
         $data['user_id']            = $userId;
         $data['license_number']     = $request->license_number;
@@ -62,56 +58,11 @@ class IdentController extends Controller
         $data['back_card_picture']  = $request->back_card_picture;
         $data['hold_card_picture']  = $request->hold_card_picture;
 
-        if ($realNameIdent = RealNameIdent::create($data)) {
+        if (RealNameIdent::create($data)) {
 
-            return redirect('home');
+            return redirect(route('idents.index'));
         }
         return back()->withInput()->with('identError', '注册失败！');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     /**
@@ -121,39 +72,50 @@ class IdentController extends Controller
      */
     public function uploadImages(Request $request)
     {
-        if ($request->hasFile($request->name)) {
+        if ($request->hasFile('file')) {
 
-            $file = $request->file($request->name);
+            $file = $request->file('file');
 
             $path = public_path("/resources/ident/".date('Ymd')."/");
 
-            if ($request->name == 'license_picture') {
+            $imagePath = $this->uploadImage($file, $path);
 
-                $license = $this->uploadImage($file, $path);
-
-                return json_encode($license);
-            }
-
-            if ($request->name == 'front_card_picture') {
-
-                $front = $this->uploadImage($file, $path);
-
-                return json_encode($front);
-            }
-
-            if ($request->name == 'back_card_picture') {
-
-                $back = $this->uploadImage($file, $path);
-
-                return json_encode($back);
-            }
-
-            if ($request->name == 'hold_card_picture') {
-
-                $hold = $this->uploadImage($file, $path);
-
-                return json_encode($hold);
-            }
+            return response()->json(['code' => 1, 'path' => $imagePath]);
         }
+    }
+
+    /**
+     * 图片上传
+     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
+     * @param  $path string
+     * @return string
+     */
+    public function uploadImage(UploadedFile $file, $path)
+    {   
+        $extension = $file->getClientOriginalExtension();
+
+        if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
+
+            return response()->json(['code' => 2, 'path' => $imagePath]);
+        }
+
+        if (! $file->isValid()) {
+
+            return response()->json(['code' => 2, 'path' => $imagePath]);
+        }
+
+        if (!file_exists($path)) {
+
+            mkdir($path, 0755, true);
+        }
+        $randNum = rand(1, 100000000) . rand(1, 100000000);
+
+        $fileName = time().substr($randNum, 0, 6).'.'.$extension;
+
+        $path = $file->move($path, $fileName);
+
+        $path = strstr($path, '/resources');
+
+        return str_replace('\\', '/', $path);
     }
 }
