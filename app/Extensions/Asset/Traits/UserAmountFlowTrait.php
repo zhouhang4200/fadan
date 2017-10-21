@@ -2,11 +2,12 @@
 namespace App\Extensions\Asset\Traits;
 
 use App\Models\UserAmountFlow;
+use App\Exceptions\AssetException as Exception;
 
 trait UserAmountFlowTrait
 {
     // 写用户流水
-    public function writeUserAmountFlow()
+    public function createUserAmountFlow()
     {
         $userAmountFlow                 = new UserAmountFlow;
         $userAmountFlow->user_id        = $this->userId;

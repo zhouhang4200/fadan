@@ -70,6 +70,16 @@ class User extends Authenticatable
         return $this->belongsTo(static::class, 'parent_id');
     }
 
+    // 获取主账号ID
+    public function getPrimaryUserId()
+    {
+        if ($this->parent_id == 0) {
+            return $this->id;
+        } else {
+            return $this->parent()->first()->id;
+        }
+    }
+
     public function loginHistories()
     {
         return $this->hasMany(LoginHistory::class, 'user_id');

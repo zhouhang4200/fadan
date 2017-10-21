@@ -15,17 +15,29 @@ use App\Extensions\Asset\Refund;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\PlatformAsset;
-
 use Carbon\Carbon;
-
 use App\Repositories\Commands\PlatformAssetDailyRepository;
+use Order;
+use App\Extensions\Order\Create;
+use App\Extensions\Order\Receiving;
+use App\Extensions\Order\Delivery;
+use App\Extensions\Order\DeliveryFailure;
+use App\Extensions\Order\AskForAfterService;
+use App\Extensions\Order\AfterServiceComplete;
 
 class TestController extends Controller
 {
     public function index(PlatformAssetDailyRepository $platformAssetDailyRepository)
     {
-        Asset::handle(new Recharge(1000.1234, Recharge::TRADE_SUBTYPE_AUTO, '2017101' . rand(1000, 9999), '自动充值', Auth::user()->id, 888));
-        Asset::handle(new Freeze(850.4312, Freeze::TRADE_SUBTYPE_WITHDRAW, '2017101' . rand(1000, 9999), '提现冻结', Auth::user()->id, 888));
+        $this->testAsset();
+        // $this->testDaily();
+        // $this->testOrder();
+    }
+
+    public function testAsset()
+    {
+        Asset::handle(new Recharge(5000.1234, Recharge::TRADE_SUBTYPE_AUTO, '2017101' . rand(1000, 9999), '自动充值', Auth::user()->id, 888));
+        Asset::handle(new Freeze(1850.4312, Freeze::TRADE_SUBTYPE_WITHDRAW, '2017101' . rand(1000, 9999), '提现冻结', Auth::user()->id, 888));
         Asset::handle(new Withdraw(550.4565, Withdraw::TRADE_SUBTYPE_MANUAL, '2017101' . rand(1000, 9999), '提现成功', Auth::user()->id, 888));
         Asset::handle(new Unfreeze(310.2342, Unfreeze::TRADE_SUBTYPE_WITHDRAW, '2017101' . rand(1000, 9999), '解冻成功', Auth::user()->id, 888));
         Asset::handle(new Consume(220.4903, Consume::TRADE_SUBTYPE_BROKERAGE, '2017101' . rand(1000, 9999), '消费手续费', Auth::user()->id, 888));
@@ -41,7 +53,23 @@ class TestController extends Controller
         $interior = "$platformAsset->amount + $platformAsset->managed + $platformAsset->balance + $platformAsset->frozen = ";
         $interior .= $platformAsset->amount + $platformAsset->managed + $platformAsset->balance + $platformAsset->frozen;
         dump($external, $interior);
+    }
 
-        $platformAssetDailyRepository->scriptrun('2017-10-14', '2017-10-17');
+    public function testDaily()
+    {
+        $platformAssetDailyRepository->scriptrun('2017-10-18', '2017-10-21');
+    }
+
+    public function testOrder()
+    {
+        Order::handle(new Create('123', 1));
+        // Order::handle(new Receiving('123', 1));
+        // Order::handle(new Delivery('123', 1));
+        // Order::handle(new DeliveryFailure('123', 1));
+        // Order::handle(new AskForAfterService('123', 1));
+        // Order::handle(new AfterServiceComplete('123', 1));
+
+        $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
+        dump(unserialize($arr->before), unserialize($arr->after));
     }
 }
