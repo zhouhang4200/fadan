@@ -9,6 +9,6 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return view('frontend.workbench.order.index');
+        return view('frontend.workbench.index');
     }
 }

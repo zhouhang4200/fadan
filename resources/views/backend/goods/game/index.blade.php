@@ -44,7 +44,7 @@
                             </thead>
                             <tbody>
                             @forelse($games as $item)
-                                <tr>
+                                <tr class="{{ $item->status == 0 ? 'layui-bg-red' : '' }}">
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->createdAdmin->name }}</td>

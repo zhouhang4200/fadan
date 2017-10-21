@@ -352,20 +352,6 @@ body {
     padding: 10px 0;
 }
 
-/*重写样式*/
-.layui-tab-title li {
-	line-height: 35px;
-}
-
-.layui-tab-title {
-	height: 35px;
-}
-.layui-tab-title .layui-this:after {
-	height: 36px;
-}
-.layui-tab-content {
-	padding: 0;
-}
 
 /* 分页样式 */
 .pagination > li a, .pagination > li span{

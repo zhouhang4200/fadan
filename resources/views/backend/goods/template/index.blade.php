@@ -47,7 +47,7 @@
                             </thead>
                             <tbody>
                             @forelse($goodsTemplates as $item)
-                                <tr>
+                                <tr class="{{ $item->status == 0 ? 'layui-bg-red' : '' }}">
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->service->name ?? '' }}</td>
                                     <td>{{ $item->game->name ?? '' }}</td>

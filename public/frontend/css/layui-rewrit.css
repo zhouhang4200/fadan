@@ -1,0 +1,90 @@
+/*重写样式*/
+.layui-tab-title li {
+    line-height: 35px;
+}
+
+.layui-tab-title {
+    height: 35px;
+}
+
+.layui-tab-title .layui-this:after {
+    height: 36px;
+}
+
+.layui-tab-content {
+    padding: 0;
+}
+
+.layui-tab-brief > .layui-tab-title .layui-this {
+    color: #1E9FFF;
+}
+
+.layui-tab-brief > .layui-tab-title .layui-this:after, .layui-tab-brief > .layui-tab-more li.layui-this:after {
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid #1E9FFF;
+}
+
+.layui-nav-bar, .layui-nav .layui-this:after, .layui-nav-tree .layui-nav-itemed:after {
+    background-color: #1E9FFF;
+}
+
+.layui-nav-tree .layui-nav-itemed:after {
+    background-color: #1E9FFF;
+}
+
+.layui-form-select dl dd.layui-this {
+    background-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-form-checked, .layui-form-checked:hover {
+    border-color: #1E9FFF;
+}
+
+.layui-form-checked span, .layui-form-checked:hover span {
+    background-color: #1E9FFF;
+}
+
+.layui-form-checked i, .layui-form-checked:hover i {
+    color: #5FB878;
+}
+
+.layui-form-checkbox[lay-skin="primary"]:hover i {
+    border-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-form-checked[lay-skin="primary"] i {
+    border-color: #1E9FFF;
+    background-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-form-onswitch {
+    border-color: #5FB878;
+    background-color: #1E9FFF;
+}
+
+.layui-form-radioed i, .layui-form-radio i:hover {
+    color: #1E9FFF;
+}
+
+.layui-nav-child dd.layui-this {
+    background-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-nav .layui-nav-child dd.layui-this a {
+    background-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-btn {
+    height: 32px;
+    line-height: 32px;
+}
+.layui-input, .layui-textarea, .layui-select {
+    height: 32px;
+}
+

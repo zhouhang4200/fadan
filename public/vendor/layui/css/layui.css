@@ -425,7 +425,7 @@ a cite{font-style: normal; *cursor:pointer;}
 /* 单选框 */
 .layui-form-radio{display: inline-block;
     vertical-align: middle;
-    line-height: 26px;
+    line-height: 36px;
     margin: 0px 10px 2px 0;
     padding-right: 10px;
     cursor: pointer;
