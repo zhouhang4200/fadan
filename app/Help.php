@@ -4,10 +4,10 @@ use App\Models\City;
 use \GuzzleHttp\Client;
 
 if (!function_exists('loginDetail')) {
+
     /**
-     * Get the Debugbar instance
-     *
-     * @return \Barryvdh\Debugbar\LaravelDebugbar
+     * @param $ip
+     * @return array
      */
     function loginDetail($ip)
     {
