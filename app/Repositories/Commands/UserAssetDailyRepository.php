@@ -4,63 +4,84 @@ namespace App\Repositories\Commands;
 use Exception;
 use Carbon\Carbon;
 use DB;
+use App\Models\User;
 use App\Models\UserAmountFlow;
 use App\Models\UserAssetDaily;
 
 class UserAssetDailyRepository
 {
+    private $_settlementedUserIds = [];
+    private $_unsettlementedUserIds = [];
+
+    public function generateAllUserDaily($date)
+    {
+        $return = true;
+
+        foreach (User::all() as $user) {
+            $result = $this->generateUserDaily($date, $user->id);
+            if (!$result) {
+                $return = false;
+            }
+        }
+
+        return $return;
+    }
+
     /**
      * 做日结
      * @param date $date 格式：'2017-10-12'
+     * @param int $userId
      */
-    public function generateDaily($date)
+    public function generateUserDaily($date, $userId)
     {
         $carbonObj = Carbon::parse($date);
         $timeStart = $carbonObj->toDateTimeString();
         $timeEnd   = $carbonObj->addSeconds(86399)->toDateTimeString(); // 当日23:59:59
 
-        $previousDate = Carbon::parse($date)->subDay()->toDateString(); // 前一天的日期
-
         // 判断数据是否存在
-        // $data = UserAssetDaily::where('user_id', $userId)->where()->first();
+        $data = UserAssetDaily::where('date', $date)->where('user_id', $userId)->first();
         if(!empty($data)) {
-            throw new Exception('已做过平台资产日结');
+            $this->_settlementedUserIds[] = $userId;
+            return false;
         }
 
-        // 取平台资金当日最后一笔流水
-        $thatDayLastFlow = PlatformAmountFlow::where('created_at', '<=', $timeEnd)->orderBy('id', 'desc')->first();
+        // 取用户资金当日最后一笔流水
+        $thatDayLastFlow = UserAmountFlow::where('user_id', $userId)->where('created_at', '<=', $timeEnd)->orderBy('id', 'desc')->first();
 
-        // 取平台资金当日统计
-        $thatDayAggregate = PlatformAmountFlow::whereBetween('created_at', [$timeStart, $timeEnd])
+        // 取用户资金当日统计
+        $thatDayAggregate = UserAmountFlow::where('user_id', $userId)->whereBetween('created_at', [$timeStart, $timeEnd])
             ->groupBy('trade_type')
-            ->select(DB::raw('trade_type, SUM(fee) AS amount, COUNT(fee) AS quantity'))
+            ->select(DB::raw('trade_type, SUM(fee) AS amount'))
             ->get()
             ->keyBy('trade_type');
 
-        // 取前一天的报表数据
-        $previousData = PlatformAssetDaily::find($previousDate);
+        $userAssetDaily = new UserAssetDaily;
+        $userAssetDaily->date           = $date;
+        $userAssetDaily->user_id        = $userId;
+        $userAssetDaily->balance        = $thatDayLastFlow->balance ?? 0;
+        $userAssetDaily->frozen         = $thatDayLastFlow->frozen ?? 0;
 
-        $platformAssetDaily = new PlatformAssetDaily;
-        $platformAssetDaily->date                 = $date;
-        $platformAssetDaily->amount               = $thatDayLastFlow->amount ?? 0;
-        $platformAssetDaily->managed              = $thatDayLastFlow->managed ?? 0;
-        $platformAssetDaily->balance              = $thatDayLastFlow->balance ?? 0;
-        $platformAssetDaily->frozen               = $thatDayLastFlow->frozen ?? 0;
-        $platformAssetDaily->today_recharge       = $thatDayAggregate[1]['amount'] ?? 0;
-        $platformAssetDaily->total_recharge       = $thatDayLastFlow->total_recharge ?? 0;
-        $platformAssetDaily->today_withdraw       = abs($thatDayAggregate[2]['amount'] ?? 0);
-        $platformAssetDaily->total_withdraw       = $thatDayLastFlow->total_withdraw ?? 0;
-        $platformAssetDaily->today_consume        = $thatDayAggregate[5]['amount'] ?? 0;
-        $platformAssetDaily->total_consume        = $thatDayLastFlow->total_consume ?? 0;
-        $platformAssetDaily->today_refund         = abs($thatDayAggregate[6]['amount'] ?? 0);
-        $platformAssetDaily->total_refund         = $thatDayLastFlow->total_refund ?? 0;
-        $platformAssetDaily->today_trade_quantity = $thatDayAggregate[8]['quantity'] ?? 0;
-        $platformAssetDaily->total_trade_quantity = $thatDayLastFlow->total_trade_quantity ?? 0;
-        $platformAssetDaily->today_trade_amount   = abs($thatDayAggregate[8]['amount'] ?? 0);
-        $platformAssetDaily->total_trade_amount   = $thatDayLastFlow->total_trade_amount ?? 0;
+        $userAssetDaily->recharge       = $thatDayAggregate[1]['amount'] ?? 0;
+        $userAssetDaily->total_recharge = $thatDayLastFlow->total_recharge ?? 0;
 
-        if (!$platformAssetDaily->save()) {
-            throw new Exception('日结记录保存失败');
+        $userAssetDaily->withdraw       = abs($thatDayAggregate[2]['amount'] ?? 0);
+        $userAssetDaily->total_withdraw = $thatDayLastFlow->total_withdraw ?? 0;
+
+        $userAssetDaily->consume        = abs($thatDayAggregate[5]['amount'] ?? 0);
+        $userAssetDaily->total_consume  = $thatDayLastFlow->total_consume ?? 0;
+
+        $userAssetDaily->refund         = $thatDayAggregate[6]['amount'] ?? 0;
+        $userAssetDaily->total_refund   = $thatDayLastFlow->total_refund ?? 0;
+
+        $userAssetDaily->expend         = abs($thatDayAggregate[7]['amount'] ?? 0);
+        $userAssetDaily->total_expend   = $thatDayLastFlow->total_expend ?? 0;
+
+        $userAssetDaily->income         = $thatDayAggregate[8]['amount'] ?? 0;
+        $userAssetDaily->total_income   = $thatDayLastFlow->total_income ?? 0;
+
+        if (!$userAssetDaily->save()) {
+            $this->_unsettlementedUserIds[] = $userId;
+            return false;
         }
 
         return true;
@@ -82,5 +103,15 @@ class UserAssetDailyRepository
         }
 
         return true;
+    }
+
+    public function getSettlementedUserIds()
+    {
+        return $this->_settlementedUserIds;
+    }
+
+    public function getUnsettlementedUserIds()
+    {
+        return $this->_unsettlementedUserIds;
     }
 }
