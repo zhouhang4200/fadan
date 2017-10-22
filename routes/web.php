@@ -40,6 +40,18 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		Route::resource('home-system-logs', 'SystemLogController', ['only' => ['index']]);
 	});
 
+    // 商品
+    Route::prefix('goods')->group(function () {
+        // 商品列表
+        Route::get('/', 'GoodsController@index')->name('frontend.goods.index');
+        // 添加视图
+        Route::get('create', 'GoodsController@create')->name('frontend.goods.create');
+        // 保存商品
+        Route::post('store', 'GoodsController@export')->name('frontend.goods.store');
+        // 删除商品
+        Route::post('destroy', 'GoodsController@export')->name('frontend.goods.destroy');
+    });
+
 	// 财务
 	Route::namespace('Finance')->prefix('finance')->group(function () {
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
