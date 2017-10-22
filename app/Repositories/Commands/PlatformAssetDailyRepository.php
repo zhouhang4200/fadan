@@ -19,8 +19,6 @@ class PlatformAssetDailyRepository
         $timeStart = $carbonObj->toDateTimeString();
         $timeEnd   = $carbonObj->addSeconds(86399)->toDateTimeString(); // 当日23:59:59
 
-        $previousDate = Carbon::parse($date)->subDay()->toDateString(); // 前一天的日期
-
         // 判断数据是否存在
         $data = PlatformAssetDaily::find($date);
         if(!empty($data)) {
@@ -36,9 +34,6 @@ class PlatformAssetDailyRepository
             ->select(DB::raw('trade_type, SUM(fee) AS amount, COUNT(fee) AS quantity'))
             ->get()
             ->keyBy('trade_type');
-
-        // 取前一天的报表数据
-        $previousData = PlatformAssetDaily::find($previousDate);
 
         $platformAssetDaily = new PlatformAssetDaily;
         $platformAssetDaily->date                 = $date;
