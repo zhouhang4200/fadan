@@ -46,7 +46,7 @@ class UserAssetDailyRepository
         }
 
         // 取用户资金当日最后一笔流水
-        $thatDayLastFlow = UserAmountFlow::where('user_id', $userId)->where('created_at', '<=', $timeEnd)->orderBy('id', 'desc')->first();
+        $thatDayLastFlow = UserAmountFlow::where('user_id', $userId)->where('created_at', '<=', $timeEnd)->orderBy('created_at', 'desc')->first();
 
         // 取用户资金当日统计
         $thatDayAggregate = UserAmountFlow::where('user_id', $userId)->whereBetween('created_at', [$timeStart, $timeEnd])
