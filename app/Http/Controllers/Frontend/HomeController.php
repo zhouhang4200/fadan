@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Auth;
-
+use Auth, Weight;
 use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -23,6 +22,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+
+
+//        return Weight::run([1]);
 //     	$user = Auth::user();
 
 //     	$role = Role::where('name', 'manager')->first();

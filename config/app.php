@@ -184,6 +184,8 @@ return [
         App\Extensions\Asset\Providers\AssetServiceProvider::class,
         // 订单
         App\Extensions\Order\Providers\OrderServiceProvider::class,
+        // 权重
+        App\Extensions\Weight\WeightServiceProvider::class,
     ],
 
     /*
@@ -239,6 +241,8 @@ return [
         'Asset' => App\Extensions\Asset\Facades\Asset::class,
         // 订单
         'Order' => App\Extensions\Order\Facades\Order::class,
+        // 权重
+        'Weight' => App\Extensions\Weight\Facade::class,
     ],
 
 ];
