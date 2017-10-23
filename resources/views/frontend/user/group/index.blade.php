@@ -33,8 +33,6 @@
             </div>
         </div>
     </form>
-
-    <div class="layui-tab-item layui-show">
         <table class="layui-table"  lay-size="sm">
             <colgroup>
                 <col width="150">
