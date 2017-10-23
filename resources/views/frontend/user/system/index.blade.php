@@ -40,6 +40,7 @@
                     <th>创建者</th>
                     <th>创建时间</th>
                     <th>模型</th>
+                    <th>详情</th>
                     <th>字段</th>
                     <th>变更前</th>
                     <th>变更后</th>
@@ -52,6 +53,7 @@
                         <td>系统</td>
                         <td>{{ $systemLog->created_at }}</td>
                         <td>{{  $systemLog->revisionable_type }}</td>
+                        <td>账号：{{  \App\Models\User::find($systemLog->user_id)->name }}</td>
                         <td>{{ $systemLog->key }}</td>
                         <td>{{ $systemLog->old_value }}</td>
                         <td>{{ $systemLog->new_value }}</td>

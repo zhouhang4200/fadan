@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
+use App\Models\User;
 use App\Models\Revision;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,7 +30,13 @@ class SystemLogController extends Controller
 
 	        $filters = compact('startDate', 'endDate');
 
-	        $systemLogs = Revision::userFilter($filters)->paginate(config('backend.page'));
+            $childIds = User::where('parent_id', Auth::id())->pluck('id');
+
+	        $systemLogs = Revision::userFilter($filters)->where(function ($query) use ($childIds) {
+
+                $query->whereIn('user_id', $childIds)->orWhere('user_Id', Auth::id());
+                
+            })->paginate(config('backend.page'));
 
 	        return view('frontend.user.system.index', compact('systemLogs', 'startDate', 'endDate'));
     	}
