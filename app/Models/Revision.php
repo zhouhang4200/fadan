@@ -52,6 +52,6 @@ class Revision extends Model
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
         }
 
-        return $query->latest('created_at')->where('user_Id', Auth::id())->where('user_table', 'users');
+        return $query->latest('created_at')->where('user_table', 'users');
     }
 }
