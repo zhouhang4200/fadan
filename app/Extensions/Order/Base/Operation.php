@@ -34,7 +34,6 @@ abstract class Operation
     public function createLogObject()
     {
         $this->orderHistory = new OrderHistory;
-        $this->orderHistory->order_no      = $this->order->no;
         $this->orderHistory->user_id       = $this->userId;
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;
@@ -66,6 +65,7 @@ abstract class Operation
     // 写操作记录
     public function saveLog()
     {
+        $this->orderHistory->order_no    = $this->order->no;
         $this->orderHistory->after       = serialize($this->order->toArray());
         $this->orderHistory->description = $this->description;
 

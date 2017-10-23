@@ -1,5 +1,4 @@
 <?php
-
 use App\Models\City;
 use \GuzzleHttp\Client;
 
@@ -22,7 +21,7 @@ if (!function_exists('loginDetail')) {
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
-            
+
             $city = City::where('name', $res->city)->first();
 
             return [
@@ -50,5 +49,18 @@ if (!function_exists('jsonMessages')) {
         $data = ['code' => $code, 'message' => $message];
 
         return json_encode($data);
+    }
+}
+
+if (!function_exists('')) {
+
+    function generateOrderNo()
+    {
+        // 14位长度当前的时间 20150709105750
+        $orderdate = date('YmdHis');
+
+        // 今日订单数量
+        $orderquantity = \Redis::incr('thousand:order:quantity:' . date('Ymd'));
+        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
     }
 }
