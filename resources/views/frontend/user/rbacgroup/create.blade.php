@@ -15,6 +15,7 @@
             width: 135px;
             margin-right: 10px;
         }
+
     </style>
 @endsection
 
