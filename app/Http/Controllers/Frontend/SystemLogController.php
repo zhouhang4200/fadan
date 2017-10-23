@@ -10,11 +10,6 @@ use App\Http\Controllers\Controller;
 
 class SystemLogController extends Controller
 {
-	public function __contruct()
-	{
-		// $this->middleware(['role:home.manager']);
-	}
-
     /**
      * Display a listing of the resource.
      *

@@ -88,7 +88,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         });
     });
 
-    Route::namespace('Rbac')->prefix('rbac')->group(function () {
+    Route::middleware(['role:admin.super-manager'])->namespace('Rbac')->prefix('rbac')->group(function () {
         // 前台角色
         Route::resource('roles', 'RoleController', ['except' => ['show']]);
         // 后台角色
@@ -111,14 +111,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
     });
 
-    Route::namespace('Account')->prefix('account')->group(function () {
+    Route::middleware(['role:admin.super-manager|admin.manager'])->namespace('Account')->prefix('account')->group(function () {
         // 账号管理-我的账号
         Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
-        // 实名认证
+        // 实名认证 - 通过
         Route::post('pass', 'PassOrRefuseController@pass')->name('pass-or-refuse.pass');
-
+        // 实名认证 - 拒绝
         Route::post('refuse', 'PassOrRefuseController@refuse')->name('pass-or-refuse.refuse');
-
+        // 实名认证
         Route::resource('admin-idents', 'AdminIdentController', ['only' => ['index', 'show']]);
 
     });
