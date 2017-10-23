@@ -1,16 +1,16 @@
 <?php
-namespace App\Extensions\Order;
+namespace App\Extensions\Order\Operations;
 
 use DB;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 
 // 接单
-class Receiving extends \App\Extensions\Order\Base\Operation
+class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [1];
-    protected $handledStatus    = 2;
-    protected $type             = 2;
+    protected $acceptableStatus = [2];
+    protected $handledStatus    = 3;
+    protected $type             = 3;
 
     /**
      * @param string $orderNo 订单编号

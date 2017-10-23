@@ -1,12 +1,12 @@
 <?php
-namespace App\Extensions\Order;
+namespace App\Extensions\Order\Operations;
 
 // 完成售后
-class AfterServiceComplete extends \App\Extensions\Order\Base\Operation
+class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [5];
-    protected $handledStatus    = 6;
-    protected $type             = 6;
+    protected $acceptableStatus = [6];
+    protected $handledStatus    = 7;
+    protected $type             = 7;
 
     /**
      * @param string $orderNo 订单编号

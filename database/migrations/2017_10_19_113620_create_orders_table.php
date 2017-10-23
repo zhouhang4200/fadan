@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->string('no', 30)->comment('编号');
             $table->string('foreign_order_no')->comment('外部订单号');
             $table->tinyInteger('source')->comment('来源渠道: 1.人工下单 2.淘宝 3.天猫 4.京东 具体看配置文件config(order.source)');
-            $table->tinyInteger('status')->comment('订单状态：1.已创建 2.已接单 3.已发货 4.发货失败 5.售后中 6.售后完成');
+            $table->tinyInteger('status')->comment('订单状态：1.已创建 2.停止抢单，分配中 3.已接单 4.已发货 5.发货失败 6.售后中 7.售后完成 具体看配置文件config(order.status)');
             $table->unsignedInteger('goods_id')->comment('商品ID');
             $table->string('goods_name')->comment('商品名称');
             $table->unsignedInteger('service_id')->comment('服务id：services.id');
