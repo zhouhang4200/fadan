@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use \GuzzleHttp\Client;
+use Illuminate\Support\Facades\Config;
 
 if (!function_exists('loginDetail')) {
 
@@ -50,5 +51,47 @@ if (!function_exists('jsonMessages')) {
         $data = ['code' => $code, 'message' => $message];
 
         return json_encode($data);
+    }
+}
+
+if (!function_exists('receiving')) {
+    /**
+     * 用户接单
+     * @param $userId
+     * @param $orderNo
+     */
+    function receiving($userId, $orderNo)
+    {
+        // 将当前用户ID，写入订单抢单队列中
+        $redis = \App\Services\RedisConnect::order();
+        $redis->lpush(Config::get('rediskey.order.receiving') . $orderNo, $userId);
+    }
+}
+
+if (!function_exists('receivingRecord')) {
+    /**
+     * 用户接单记录
+     * @param $userId
+     * @param $orderNo
+     */
+    function receivingRecord($userId, $orderNo)
+    {
+        // 用户抢单后写入一条记录
+        $redis = \App\Services\RedisConnect::order();
+        $redis->setex(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId, Config::get('rediskey.timeout'), $userId);
+    }
+}
+
+if (!function_exists('receivingRecordExist')) {
+    /**
+     * 用户接单记录是否存在
+     * @param $userId
+     * @param $orderNo
+     */
+    function receivingRecordExist($userId, $orderNo)
+    {
+        // 用户抢单后写入一条记录
+        $redis = \App\Services\RedisConnect::order();
+        return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
     }
 }
