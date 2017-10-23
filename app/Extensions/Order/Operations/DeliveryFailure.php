@@ -1,8 +1,8 @@
 <?php
-namespace App\Extensions\Order;
+namespace App\Extensions\Order\Operations;
 
-// 申请售后服务
-class AskForAfterService extends \App\Extensions\Order\Base\Operation
+// 发货失败
+class DeliveryFailure extends \App\Extensions\Order\Operations\Base\Operation
 {
     protected $acceptableStatus = [3];
     protected $handledStatus    = 5;

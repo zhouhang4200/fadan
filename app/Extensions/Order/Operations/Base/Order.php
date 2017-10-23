@@ -1,5 +1,5 @@
 <?php
-namespace App\Extensions\Order\Base;
+namespace App\Extensions\Order\Operations\Base;
 
 use Exception;
 use App\Exceptions\OrderException;

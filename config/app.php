@@ -183,7 +183,7 @@ return [
         // 资金
         App\Extensions\Asset\Providers\AssetServiceProvider::class,
         // 订单
-        App\Extensions\Order\Providers\OrderServiceProvider::class,
+        App\Extensions\Order\Operations\Providers\OrderServiceProvider::class,
         // 权重
         App\Extensions\Weight\WeightServiceProvider::class,
     ],
@@ -240,7 +240,7 @@ return [
         // 资金
         'Asset' => App\Extensions\Asset\Facades\Asset::class,
         // 订单
-        'Order' => App\Extensions\Order\Facades\Order::class,
+        'Order' => App\Extensions\Order\Operations\Facades\Order::class,
         // 权重
         'Weight' => App\Extensions\Weight\Facade::class,
     ],
