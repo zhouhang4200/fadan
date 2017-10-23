@@ -3,6 +3,7 @@
 @section('title', '账号 - 添加子账号分组')
 
 @section('css')
+    <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
     <style>
         .layui-form input {
             width:800px;

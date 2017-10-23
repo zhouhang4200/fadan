@@ -18,6 +18,12 @@
         .layui-form-checkbox span {
             padding: 0 5px;
         }
+        .layui-form-checked[lay-skin="primary"] i {
+            color: #fff;
+            background-color: #1E9FFF;
+            border-color: #1E9FFF;
+
+        }
     </style>
 @endsection
 
