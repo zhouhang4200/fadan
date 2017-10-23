@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Extensions\Order\Providers;
+namespace App\Extensions\Order\Operations\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +24,7 @@ class OrderServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('order', function ($app) {
-            return new \App\Extensions\Order\Base\Order;
+            return new \App\Extensions\Order\Operations\Base\Order;
         });
     }
 }

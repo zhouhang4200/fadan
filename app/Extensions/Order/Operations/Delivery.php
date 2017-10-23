@@ -1,10 +1,10 @@
 <?php
-namespace App\Extensions\Order;
+namespace App\Extensions\Order\Operations;
 
-// 发货失败
-class DeliveryFailure extends \App\Extensions\Order\Base\Operation
+// 发货
+class Delivery extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [2];
+    protected $acceptableStatus = [3];
     protected $handledStatus    = 4;
     protected $type             = 4;
 

@@ -1,5 +1,5 @@
 <?php
-namespace App\Extensions\Order;
+namespace App\Extensions\Order\Operations;
 
 use App\Exceptions\AssetException as Exception;
 use App\Models\Order;
@@ -7,14 +7,13 @@ use App\Models\User;
 use App\Repositories\Api\GoodsRepository;
 
 // 创建订单
-class Create extends \App\Extensions\Order\Base\Operation
+class Create extends \App\Extensions\Order\Operations\Base\Operation
 {
     protected $handledStatus = 1;
     protected $type          = 1;
 
     /**
      * @param int $userId 用户id
-     * @param string $no 订单号
      * @param string $foreignOrderNO 外部单号
      * @param int $source 来源
      * @param int $goodsId 商品id

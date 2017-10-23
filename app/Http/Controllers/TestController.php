@@ -18,12 +18,13 @@ use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 use Order;
-use App\Extensions\Order\Create;
-use App\Extensions\Order\Receiving;
-use App\Extensions\Order\Delivery;
-use App\Extensions\Order\DeliveryFailure;
-use App\Extensions\Order\AskForAfterService;
-use App\Extensions\Order\AfterServiceComplete;
+use App\Extensions\Order\Operations\Create;
+use App\Extensions\Order\Operations\GrabClose;
+use App\Extensions\Order\Operations\Receiving;
+use App\Extensions\Order\Operations\Delivery;
+use App\Extensions\Order\Operations\DeliveryFailure;
+use App\Extensions\Order\Operations\AskForAfterService;
+use App\Extensions\Order\Operations\AfterServiceComplete;
 
 class TestController extends Controller
 {
@@ -63,11 +64,12 @@ class TestController extends Controller
     public function testOrder()
     {
         // Order::handle(new Create(1, 'taobao-123', 1, 1, 5.8, 12, '备注啊开始了大家分厘卡圣诞节分厘卡'));
-        // Order::handle(new Receiving('2017102315430600000017', 1));
-        // Order::handle(new Delivery('2017102315422700000016', 1));
-        // Order::handle(new DeliveryFailure('2017102315430600000017', 1));
-        Order::handle(new AskForAfterService('2017102315422700000016', 1));
-        Order::handle(new AfterServiceComplete('2017102315422700000016', 1));
+        // Order::handle(new GrabClose('2017102316531000000022', 1));
+        // Order::handle(new Receiving('2017102316531000000022', 1));
+        // Order::handle(new Delivery('2017102316360000000021', 1));
+        // Order::handle(new DeliveryFailure('2017102316531000000022', 1));
+        Order::handle(new AskForAfterService('2017102316360000000021', 1));
+        Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
