@@ -56,7 +56,7 @@ class RealNameIdent extends Model
     {
         if ($filters['name']) {
 
-            $query->where('id', $filters['name']);
+            $query->where('user_id', $filters['name']);
         }
 
         if (is_numeric($filters['status'])) {

@@ -40,9 +40,9 @@
                                         <div class="layui-input-block">
                                             <select name="status" lay-filter="aihao">
                                                 <option value=""></option>
-                                                <option value="0">待审核</option>
-                                                <option value="1">审核通过</option>
-                                                <option value="2">审核不通过</option>
+                                                <option value="0" {{ is_numeric($status) && '0' == $status ? 'selected' : '' }}>待审核</option>
+                                                <option value="1" {{ $status && '1' == $status ? 'selected' : '' }}>审核通过</option>
+                                                <option value="2" {{ $status && '2' == $status ? 'selected' : '' }}>审核不通过</option>
                                             </select>
                                         </div>
                                     </div>
@@ -89,9 +89,9 @@
                                         <td>{{ $ident->user->name }}</td>
                                         <td>{{ $ident->user->email }}</td>
                                         <td>
-                                        @if ($ident->type == 0)
+                                        @if ($ident->status == 0)
                                             待审核
-                                        @elseif ($ident->type == 1)
+                                        @elseif ($ident->status == 1)
                                             审核通过
                                         @else
                                             审核不通过
