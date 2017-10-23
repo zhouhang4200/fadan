@@ -41,7 +41,6 @@
         .ident >.personal>.layui-form-item >.layui-upload >.layui-upload-list >img{
             width: 100%;
             height: 100%;
-            visibility: 
         }
         .ident >.layui-form-item >.layui-input-block{
             margin-left: 170px;
@@ -63,7 +62,8 @@
 @endsection
 
 @section('main')
-    <div class = 'other none'>
+    @if($ident->type == 2)
+    <div class = 'other'>
         <form class="layui-form" method="POST" action="{{ route('idents.update', ['id' => $ident->id]) }}" enctype="multipart/form-data">
             {!! csrf_field() !!}
                 <div style="width: 80%" class="ident">
@@ -106,7 +106,7 @@
                             <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="bank_open_account_picture">上传图片</button>
                             <input class="layui-upload-file" type="file" name="bank_open_account_picture">
                             <div class="layui-upload-list">
-                                <img class="layui-upload-img" id="demo5" sec="{{  $ident->bank_open_account_picture }}">
+                                <img class="layui-upload-img" id="demo5" src="{{  $ident->bank_open_account_picture }}">
                                 <input type="hidden" name="bank_open_account_picture" value="{{ $ident->bank_open_account_picture }}">
                                 <p id="demoText"></p>
                             </div>
@@ -134,7 +134,7 @@
             </div>
         </form>
     </div>
-    
+    @elseif($ident->type == 1)
     <div class='self'>
             <form class="layui-form" method="POST" action="{{ route('idents.update', ['id' => $ident->id]) }}" enctype="multipart/form-data">
                 {!! csrf_field() !!}
@@ -197,6 +197,7 @@
                 </div>
             </form>
     </div>
+    @endif
 @endsection
 <!--START 底部-->
 @section('js')

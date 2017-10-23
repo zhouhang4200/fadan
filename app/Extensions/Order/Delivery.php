@@ -1,10 +1,6 @@
 <?php
 namespace App\Extensions\Order;
 
-use DB;
-use App\Exceptions\OrderException as Exception;
-use App\Models\User;
-
 // 发货
 class Delivery extends \App\Extensions\Order\Base\Operation
 {

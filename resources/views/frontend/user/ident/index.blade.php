@@ -32,7 +32,7 @@
                 <col width="200">
                 <col>
             </colgroup>
-            @if ($ident->type == 1)
+            @if ($ident && $ident->type == 1)
             <thead>
             <tr>
                 <th>用户名</th>
@@ -51,7 +51,7 @@
                     <td style="text-align: center"><button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" style="color: #fff">编缉</a></td>
                 </tr>
             </tbody>
-            @else 
+            @elseif ($ident && $ident->type == 2)
             <thead>
             <tr>
                 <th>用户名</th>

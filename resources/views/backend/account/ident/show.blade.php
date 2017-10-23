@@ -70,7 +70,7 @@
                         <input id="userId" type="hidden" name="userId" value="{{ $ident->user_id}}">
                         <div class="layui-tab-content">
                         @if ($ident->type == 2)
-                            <div class = 'other none'>
+                            <div class = 'other'>
                                     {!! csrf_field() !!}
                                         <div style="width: 80%" class="ident">
                                         <div class='company'>
@@ -95,7 +95,6 @@
                                             <div class="layui-form-item">
                                                 <label class="layui-form-label">营业执照正面照</label>
                                                 <div class="layui-upload">
-                                                    <button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="license_picture">上传图片</button>
                                                     <input class="layui-upload-file" type="file" name="license_picture">
                                                     <div class="layui-upload-list">
                                                         <img class="layui-upload-img" id="demo1" src="{{ $ident->license_picture }}">
@@ -110,7 +109,7 @@
                                                    
                                                     <input class="layui-upload-file" type="file" name="bank_open_account_picture">
                                                     <div class="layui-upload-list">
-                                                        <img class="layui-upload-img" id="demo5" sec="{{  $ident->bank_open_account_picture }}">
+                                                        <img class="layui-upload-img" id="demo5" src="{{  $ident->bank_open_account_picture }}">
                                                         <input type="hidden" name="bank_open_account_picture" value="{{ $ident->bank_open_account_picture }}">
                                                         <p id="demoText"></p>
                                                     </div>

@@ -2,7 +2,6 @@
 
 use App\Models\City;
 use \GuzzleHttp\Client;
-use Illuminate\Support\Facades\Config;
 
 if (!function_exists('loginDetail')) {
 
@@ -93,5 +92,18 @@ if (!function_exists('receivingRecordExist')) {
         // 用户抢单后写入一条记录
         $redis = \App\Services\RedisConnect::order();
         return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
+    }
+}
+
+if (!function_exists('')) {
+
+    function generateOrderNo()
+    {
+        // 14位长度当前的时间 20150709105750
+        $orderdate = date('YmdHis');
+
+        // 今日订单数量
+        $orderquantity = \Redis::incr('thousand:order:quantity:' . date('Ymd'));
+        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
     }
 }

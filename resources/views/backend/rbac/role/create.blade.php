@@ -18,6 +18,12 @@
         .layui-form-checkbox span {
             padding: 0 5px;
         }
+        .layui-form-checked[lay-skin="primary"] i {
+            color: #fff;
+            background-color: #1E9FFF;
+            border-color: #1E9FFF;
+
+        }
     </style>
 @endsection
 
@@ -82,7 +88,7 @@
 
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
-                                            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">立即提交</button>
                                         </div>
                                     </div>
                                 </div>

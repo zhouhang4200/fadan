@@ -1,11 +1,6 @@
 <?php
 namespace App\Extensions\Order;
 
-use DB;
-use App\Exceptions\OrderException as Exception;
-use App\Models\Order;
-use App\Models\User;
-
 // 申请售后服务
 class AskForAfterService extends \App\Extensions\Order\Base\Operation
 {
