@@ -29,9 +29,9 @@ class TestController extends Controller
 {
     public function index(PlatformAssetDailyRepository $platformAssetDailyRepository)
     {
-        $this->testAsset();
+        // $this->testAsset();
         // $this->testDaily();
-        // $this->testOrder();
+        $this->testOrder();
     }
 
     public function testAsset()
@@ -62,12 +62,12 @@ class TestController extends Controller
 
     public function testOrder()
     {
-        Order::handle(new Create('123', 1));
-        // Order::handle(new Receiving('123', 1));
-        // Order::handle(new Delivery('123', 1));
-        // Order::handle(new DeliveryFailure('123', 1));
-        // Order::handle(new AskForAfterService('123', 1));
-        // Order::handle(new AfterServiceComplete('123', 1));
+        // Order::handle(new Create(1, 'taobao-123', 1, 1, 5.8, 12, '备注啊开始了大家分厘卡圣诞节分厘卡'));
+        // Order::handle(new Receiving('2017102315430600000017', 1));
+        // Order::handle(new Delivery('2017102315422700000016', 1));
+        // Order::handle(new DeliveryFailure('2017102315430600000017', 1));
+        Order::handle(new AskForAfterService('2017102315422700000016', 1));
+        Order::handle(new AfterServiceComplete('2017102315422700000016', 1));
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
