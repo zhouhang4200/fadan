@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use Log;
 use Exception;
 
 class ForeignOrderFactory
@@ -12,13 +13,10 @@ class ForeignOrderFactory
 
 	    	$parsers = config('order.parsers');
 
-	        foreach ($parsers as $foreignOrderClass => $channelName) {
+            if ($parsers[$channel]) {
 
-	            if ($channel == $channelName) {
-
-	                return new $foreignOrderClass;
-	            }
-	        }
+                return new $parsers[$channel];
+            }
 
     	} catch (Exception $e) {
 

@@ -33,11 +33,11 @@ return [
         3 => '天猫',
         4 => '京东',
     ],
-
+    
     // 外部订单
     'parsers' => [
-        JdForeignOrder::class    => 'jd',
-        TmallForeignOrder::Class => 'tmall',
-        KamenForeignOrder::Class => 'kamen',
+        'jd' => JdForeignOrder::class,
+        'tmall' => TmallForeignOrder::Class,
+        'kamen' => KamenForeignOrder::Class,
     ],
 ];
