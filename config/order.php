@@ -1,4 +1,9 @@
 <?php
+
+use App\Extensions\Order\ForeignOrder\JdForeignOrder;
+use App\Extensions\Order\ForeignOrder\TmallForeignOrder;
+use App\Extensions\Order\ForeignOrder\KamenForeignOrder;
+
 // 订单
 return [
     'status' => [
@@ -27,5 +32,12 @@ return [
         2 => '淘宝',
         3 => '天猫',
         4 => '京东',
+    ],
+
+    // 外部订单
+    'parsers' => [
+        JdForeignOrder::class    => 'jd',
+        TmallForeignOrder::Class => 'tmall',
+        KamenForeignOrder::Class => 'kamen',
     ],
 ];
