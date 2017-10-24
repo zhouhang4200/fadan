@@ -15,12 +15,10 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'Illuminate\Auth\Events\Registered' => [
             'App\Listeners\Registered\CreateUserAsset',
+            'App\Listeners\Registered\AddDefaultPermission',
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',
-        ],
-        'Illuminate\Auth\Events\Registered' => [
-            'App\Listeners\Registered\AddDefaultPermission',
         ],
     ];
 

@@ -20,16 +20,16 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		Route::get('history', 'LoginController@history')->name('login.history');
 	});
 
-	Route::group(['middleware' => ['role:home.default']], function () {	
+	Route::group(['middleware' => ['role:home.default']], function () {
 		// 我的账号
 		Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
 		// 实名认证
 		Route::resource('idents', 'IdentController', ['except' => ['destroy', 'show']]);
-		
+
 		Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 	});
 
-	Route::group(['middleware' => ['role:home.manager']], function () {	
+	Route::group(['middleware' => ['role:home.manager']], function () {
 		// 子账号管理
 		Route::resource('users', 'UserController', ['except' => ['show']]);
 		// 分组管理
@@ -55,8 +55,11 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 财务
 	Route::namespace('Finance')->prefix('finance')->group(function () {
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
+
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow');
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
+
+        Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily');
 	});
 
 	// 工作台
