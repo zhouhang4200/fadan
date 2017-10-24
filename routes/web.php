@@ -19,8 +19,15 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		// 账号登录记录
 		Route::get('history', 'LoginController@history')->name('login.history');
 	});
-	// 我的账号
-	Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
+
+	Route::group(['middleware' => ['role:home.default']], function () {	
+		// 我的账号
+		Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
+		// 实名认证
+		Route::resource('idents', 'IdentController', ['except' => ['destroy', 'show']]);
+		
+		Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
+	});
 
 	Route::group(['middleware' => ['role:home.manager']], function () {	
 		// 子账号管理
@@ -29,10 +36,6 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
 		// 子账号分组
 		Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
-		// 实名认证
-		Route::resource('idents', 'IdentController', ['except' => ['destroy', 'show']]);
-		
-		Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 		// 系统日志
 		Route::resource('home-system-logs', 'SystemLogController', ['only' => ['index']]);
 	});
