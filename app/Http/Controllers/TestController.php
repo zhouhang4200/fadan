@@ -63,13 +63,13 @@ class TestController extends Controller
 
     public function testOrder()
     {
-        // Order::handle(new Create(1, 'taobao-123', 1, 1, 5.8, 12, '备注啊开始了大家分厘卡圣诞节分厘卡'));
+        Order::handle(new Create(1, 'taobao-123', 1, 1, 5.8, 12, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
         // Order::handle(new GrabClose('2017102316531000000022', 1));
         // Order::handle(new Receiving('2017102316531000000022', 1));
         // Order::handle(new Delivery('2017102316360000000021', 1));
         // Order::handle(new DeliveryFailure('2017102316531000000022', 1));
-        Order::handle(new AskForAfterService('2017102316360000000021', 1));
-        Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
+        // Order::handle(new AskForAfterService('2017102316360000000021', 1));
+        // Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
