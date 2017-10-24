@@ -8,9 +8,7 @@ use App\Extensions\Order\ForeignOrder\ForeignOrderFactory;
 
 class OrderController extends Controller
 {
-    /**
-     *
-     */
+
     public function create()
     {
         ForeignOrderFactory::choose('kamen')->outputOrder([]);

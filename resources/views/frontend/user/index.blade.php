@@ -12,8 +12,7 @@
 
 @section('main')
     <form class="layui-form" method="" action="">
-        <div class="layui-inline" >
-            <div class="layui-form-item" style="float: left">
+        <div class="layui-form-item" >
                 <div class="layui-inline">
                     <div class="layui-input-inline">
                     <select name="name" lay-verify="" lay-search="">
@@ -30,15 +29,19 @@
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
                 </div>
-            </div>
-            <div style="float: left">
-            <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-            <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('users.index') }}" style="color:#fff">返回</a></button></div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+                    <a href="{{ route('users.index') }}"   class="layui-btn layui-btn-normal layui-btn-small">返回</a>
+
+                </div>
+            <a href="{{ route('users.create') }}" class="layui-btn layui-btn-normal layui-inline  fr">添加子账号 </a>
+
         </div>
+
     </form>
     <div class="layui-tab-item layui-show" lay-size="sm">
     <div style="padding-top:10px; padding-bottom:10px; float:right">
-        <a href="{{ route('users.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加子账号</button></a>
+
     </div>
         <table class="layui-table" lay-size="sm">
             <colgroup>

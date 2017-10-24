@@ -17,6 +17,8 @@
         height: 80px;
         margin: 20px 0 20px 20px;
         border: 1px solid #ddd;
+        background-size: 102%;
+        background-image: url('/frontend/images/3.png');
     }
     .info-left{
         flex: 3;
@@ -81,7 +83,7 @@
 
 @section('main')
 <div class="user-info">
-    <img src="" alt="" class="info-img fl">
+    <div src="" alt="" class="info-img fl"></div>
     <div class="info-left">
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -130,8 +132,8 @@
         <li class="layui-this">网站设置</li>
     </ul>
     <div class="layui-tab-content">
-        <div class="layui-tab-item layui-show" lay-size="sm">
-            <table class="layui-table">
+        <div class="layui-tab-item layui-show" >
+            <table class="layui-table" lay-size="sm">
                 <colgroup>
                     <col width="150">
                     <col width="200">

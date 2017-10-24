@@ -61,4 +61,15 @@ class GoodsTemplate extends Model
         }
         return self::where(['service_id' => $serviceId, 'game_id' => $gameId])->first();
     }
+
+    /**
+     * 通知服务ID 与 游戏ID 获取模版ID
+     * @param $serviceId
+     * @param $gameId
+     * @return mixed
+     */
+    public static function getTemplateId($serviceId, $gameId)
+    {
+       return  self::select('id')->where(['service_id' => $serviceId, 'game_id' => $gameId])->value('id');
+    }
 }

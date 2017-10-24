@@ -47,9 +47,9 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         // 添加视图
         Route::get('create', 'GoodsController@create')->name('frontend.goods.create');
         // 保存商品
-        Route::post('store', 'GoodsController@export')->name('frontend.goods.store');
+        Route::post('store', 'GoodsController@store')->name('frontend.goods.store');
         // 删除商品
-        Route::post('destroy', 'GoodsController@export')->name('frontend.goods.destroy');
+        Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy');
     });
 
 	// 财务

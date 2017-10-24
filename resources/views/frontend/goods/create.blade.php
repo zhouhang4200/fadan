@@ -12,7 +12,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
-                <select name="interest" lay-filter="aihao">
+                <select name="service_id" lay-filter="aihao" lay-verify="required">
                     <option value=""></option>
                     @forelse($services as $key => $val)
                         <option value="{{ $key }}">{{ $val }}</option>
@@ -24,7 +24,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">游戏</label>
             <div class="layui-input-block">
-                <select name="interest" lay-filter="aihao">
+                <select name="game_id" lay-filter="aihao" lay-verify="required">
                     <option value=""></option>
                     @forelse($games as $key => $val)
                         <option value="{{ $key }}">{{ $val }}</option>
@@ -36,25 +36,25 @@
         <div class="layui-form-item">
             <label class="layui-form-label">商品名</label>
             <div class="layui-input-block">
-                <input type="text" name="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                <input type="text" name="name" autocomplete="off" placeholder="请输入标题" class="layui-input" lay-verify="required">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">单价</label>
             <div class="layui-input-block">
-                <input type="text" name="title" autocomplete="off" placeholder="请输入单价" class="layui-input">
+                <input type="text" name="price" autocomplete="off" placeholder="请输入单价" class="layui-input" lay-verify="required|number">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">外部ID</label>
             <div class="layui-input-block">
-                <input type="text" name="title" autocomplete="off" placeholder="请输入外部ID" class="layui-input">
+                <input type="text" name="foreign_goods_id" autocomplete="off" placeholder="请输入外部ID" class="layui-input"  lay-verify="required">
             </div>
         </div>
         <div class="layui-form-item" pane="">
             <label class="layui-form-label">是否显示</label>
             <div class="layui-input-block">
-                <input type="checkbox" checked="" name="open" lay-skin="switch" lay-filter="switchTest" title="开关">
+                <input type="checkbox" checked="" name="display" lay-skin="switch" lay-filter="switchTest" title="开关">
             </div>
         </div>
         <div class="layui-form-item">
@@ -66,27 +66,18 @@
 @section('js')
     <script>
         layui.use(['form', 'layedit', 'laydate'], function(){
-            var form = layui.form
-                    ,layer = layui.layer
-                    ,layedit = layui.layedit
-                    ,laydate = layui.laydate;
-
-            //监听指定开关
-            form.on('switch(switchTest)', function(data){
-                layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-                    offset: '6px'
-                });
-            });
+            var form = layui.form, layer = layui.layer;
 
             //监听提交
             form.on('submit(add)', function(data){
-                layer.alert(JSON.stringify(data.field), {
+
+                $.post("{{ route('frontend.goods.store') }}", {data:data.field}, function (result) {
+                layer.alert(result.message, {
                     title: '最终的提交信息'
                 });
+                }, 'json');
                 return false;
             });
-
-
         });
     </script>
 @endsection

@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use \GuzzleHttp\Client;
+use \App\Services\RedisConnect;
 
 if (!function_exists('loginDetail')) {
 
@@ -62,7 +63,7 @@ if (!function_exists('receiving')) {
     function receiving($userId, $orderNo)
     {
         // 将当前用户ID，写入订单抢单队列中
-        $redis = \App\Services\RedisConnect::order();
+        $redis = RedisConnect::order();
         $redis->lpush(Config::get('rediskey.order.receiving') . $orderNo, $userId);
     }
 }
@@ -76,7 +77,7 @@ if (!function_exists('receivingRecord')) {
     function receivingRecord($userId, $orderNo)
     {
         // 用户抢单后写入一条记录
-        $redis = \App\Services\RedisConnect::order();
+        $redis = RedisConnect::order();
         $redis->setex(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId, Config::get('rediskey.timeout'), $userId);
     }
 }
@@ -90,7 +91,7 @@ if (!function_exists('receivingRecordExist')) {
     function receivingRecordExist($userId, $orderNo)
     {
         // 查询是否有抢单记录
-        $redis = \App\Services\RedisConnect::order();
+        $redis = RedisConnect::order();
         return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
     }
 }
@@ -112,3 +113,4 @@ if (!function_exists('generateOrderNo')) {
         return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
 }
+

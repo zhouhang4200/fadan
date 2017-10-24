@@ -8,6 +8,7 @@ class Goods extends Model
 {
     public $fillable = [
         'name',
+        'user_id',
         'display',
         'price',
         'foreign_goods_id',
@@ -21,7 +22,7 @@ class Goods extends Model
      */
     public function service()
     {
-        return $this->hasOne(Service::class, 'service_id', 'id');
+        return $this->hasOne(Service::class, 'id', 'service_id');
     }
 
     /**
@@ -29,6 +30,6 @@ class Goods extends Model
      */
     public function game()
     {
-        return $this->hasOne(Game::class, 'game_id', 'id');
+        return $this->hasOne(Game::class, 'id', 'game_id');
     }
 }

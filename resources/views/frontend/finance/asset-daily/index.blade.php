@@ -22,7 +22,7 @@
     </div>
 </form>
 
-<table class="layui-table">
+<table class="layui-table" lay-size="sm">
     <colgroup>
         <col width="150">
         <col>
