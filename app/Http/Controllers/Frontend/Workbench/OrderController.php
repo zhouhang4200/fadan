@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers\Frontend\Workbench;
 
-use App\Models\Game;
-use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use Order;
+use App\Models\Game;
+use App\Models\Service;
 use App\Extensions\Order\Operations\Create;
 
 class OrderController extends Controller
 {
+
     /**
+     * @param Request $request
+     * @param ServiceRepository $serviceRepository
+     * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
-        $services = Service::where('status', 1)->pluck('name', 'id');
-        $games = Game::where('status', 1)->pluck('name', 'id');
+        $services = $serviceRepository->available();
+        $games = $gameRepository->available();
         return view('frontend.workbench.index', compact('services', 'games'));
     }
 
