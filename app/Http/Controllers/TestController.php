@@ -27,13 +27,16 @@ use App\Extensions\Order\Operations\AskForAfterService;
 use App\Extensions\Order\Operations\AfterServiceComplete;
 use App\Extensions\Order\Operations\TurnBack;
 
+use Artisan;
+
 class TestController extends Controller
 {
     public function index(PlatformAssetDailyRepository $platformAssetDailyRepository)
     {
         // $this->testAsset();
         // $this->testDaily();
-        $this->testOrder();
+        // $this->testOrder();
+        $this->command()();
     }
 
     public function testAsset()
@@ -75,5 +78,10 @@ class TestController extends Controller
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
+    }
+
+    public function command()
+    {
+        $exitCode = Artisan::call('migrate');
     }
 }

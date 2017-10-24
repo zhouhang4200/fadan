@@ -5,37 +5,37 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use Carbon\Carbon;
-use Exception;
+use Log;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 
-class PlatformAssetDaily extends Command
+class DailySettlementPlatformAsset extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'platform:asset-daily {date=yesterday}';
+    protected $signature = 'daily-settlement:platform-asset {date=yesterday}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Platform asset daily';
+    protected $description = 'Platform asset daily settlement.';
 
-    protected $platformAssetDailyRepository;
+    protected $repository;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(PlatformAssetDailyRepository $platformAssetDailyRepository)
+    public function __construct(PlatformAssetDailyRepository $repository)
     {
         parent::__construct();
 
-        $this->platformAssetDailyRepository = $platformAssetDailyRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -53,10 +53,10 @@ class PlatformAssetDaily extends Command
         }
 
         try {
-            $this->platformAssetDailyRepository->generateDaily($dailyDate);
+            $this->repository->generateDaily($dailyDate);
         }
         catch (Exception $e) {
-            echo $e->getMessage();
+            Log::warning('平台资产日结：' . $e->getMessage());
         }
     }
 }
