@@ -23,25 +23,27 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        /**
         $data = '<?xml version="1.0" encoding="utf-8"?><Orders><Order><OrderNo>1130471945</OrderNo><OrderStatus>%e6%9c%aa%e5%a4%84%e7%90%86</OrderStatus><BuyTime>2017-10-23+23%3a59%3a51</BuyTime><BuyNum>1</BuyNum><ProductId>1087715</ProductId><ProductPrice>55.0000</ProductPrice><ProductName>%e7%8e%8b%e8%80%85%e8%8d%a3%e8%80%80+68%e5%85%83</ProductName><ProductType>%e5%9c%a8%e7%ba%bf%e7%9b%b4%e5%82%a8</ProductType><TemplateId>9e5b7ccd-521a-4f46-a688-7aa587593b17</TemplateId><ChargeAccount>lzzzzz88</ChargeAccount><ChargePassword>qqqqqqqq</ChargePassword><ChargeGame>%e7%8e%8b%e8%80%85%e8%8d%a3%e8%80%80</ChargeGame><ChargeRegion>%e5%be%ae%e4%bf%a19%e5%8c%ba-%e5%a5%b3%e5%b8%9d%e5%a8%81%e4%b8%a5</ChargeRegion><ChargeServer></ChargeServer><ChargeType></ChargeType><JSitid>105279</JSitid><GSitid>90347</GSitid><BuyerIp>123.134.14.199</BuyerIp><OrderFrom>5</OrderFrom><RoleName>%7e%7e%e4%ba%ae%e5%8f%94%e3%80%81</RoleName><RemainingNumber>0</RemainingNumber><ContactType>9869933%40qq.com</ContactType><ContactQQ>liangne0921</ContactQQ><UseAccount>%40qq.com%2cw*****4%2c276133%7c</UseAccount><CustomerOrderNo>73212271213328013</CustomerOrderNo></Order></Orders>';
-// dd(ForeignOrderFactory::choose('kamen'));
-        $a =  ForeignOrderFactory::choose('kamen')->outputOrder($data);
+        // dd(ForeignOrderFactory::choose('kamen'));
+        */
+        // $a =  ForeignOrderFactory::choose('kamen')->outputOrder($data);
         
-        dd($a);
+        // dd($a);
 
-//        return Weight::run([1]);
-//     	$user = Auth::user();
+        //  return Weight::run([1]);
+    	// $user = Auth::user();
 
-//     	$role = Role::where('name', 'manager')->first();
+    	// $role = Role::where('name', 'manager')->first();
 
-//     	$role2 = Role::where('name', 'writer')->first();
+    	// $role2 = Role::where('name', 'writer')->first();
 
-//     	$permission = Permission::where('name', 'add accounts')->first();
+    	// $permission = Permission::where('name', 'add accounts')->first();
 
-//     	$permission2 = Permission::where('name', 'edit accounts')->first();
+    	// $permission2 = Permission::where('name', 'edit accounts')->first();
 
-//     	$permission3 = Permission::where('name', 'delete accounts')->first();
-// dd($role);
+    	// $permission3 = Permission::where('name', 'delete accounts')->first();
+        // dd($role);
     	// if (! $role) {
 
 	    	// \App\Models\Permission::create(['name' => 'manager1']);		
@@ -79,7 +81,7 @@ class HomeController extends Controller
 
     	// $bool2 = $user->can(['edit accounts', 'add accounts', 'as accounts']); // false
 
-// dd($bool2);
+        // dd($bool2);
         return view('frontend.index');
     }
 }
