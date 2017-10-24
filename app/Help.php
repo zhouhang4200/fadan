@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\City;
 use \GuzzleHttp\Client;
 
@@ -21,7 +22,7 @@ if (!function_exists('loginDetail')) {
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
-
+            
             $city = City::where('name', $res->city)->first();
 
             return [
@@ -52,15 +53,62 @@ if (!function_exists('jsonMessages')) {
     }
 }
 
-if (!function_exists('')) {
+if (!function_exists('receiving')) {
+    /**
+     * 用户接单
+     * @param $userId
+     * @param $orderNo
+     */
+    function receiving($userId, $orderNo)
+    {
+        // 将当前用户ID，写入订单抢单队列中
+        $redis = \App\Services\RedisConnect::order();
+        $redis->lpush(Config::get('rediskey.order.receiving') . $orderNo, $userId);
+    }
+}
 
+if (!function_exists('receivingRecord')) {
+    /**
+     * 用户接单记录
+     * @param $userId
+     * @param $orderNo
+     */
+    function receivingRecord($userId, $orderNo)
+    {
+        // 用户抢单后写入一条记录
+        $redis = \App\Services\RedisConnect::order();
+        $redis->setex(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId, Config::get('rediskey.timeout'), $userId);
+    }
+}
+
+if (!function_exists('receivingRecordExist')) {
+    /**
+     * 用户接单记录是否存在
+     * @param $userId
+     * @param $orderNo
+     */
+    function receivingRecordExist($userId, $orderNo)
+    {
+        // 查询是否有抢单记录
+        $redis = \App\Services\RedisConnect::order();
+        return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
+    }
+}
+
+if (!function_exists('generateOrderNo')) {
+
+    /**
+     * 生成订单号
+     * @return string
+     */
     function generateOrderNo()
     {
         // 14位长度当前的时间 20150709105750
-        $orderdate = date('YmdHis');
+        $orderDate = date('YmdHis');
 
         // 今日订单数量
-        $orderquantity = \Redis::incr('thousand:order:quantity:' . date('Ymd'));
-        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
+        $redis = \App\Services\RedisConnect::order();
+        $orderQuantity = $redis->incr(Config::get('rediskey.order.quantity') . date('Ymd'));
+        return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
 }
