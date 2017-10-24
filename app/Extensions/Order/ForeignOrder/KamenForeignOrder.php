@@ -13,7 +13,7 @@ class KamenForeignOrder extends ForeignOrder
     	$array = $this->xmlToArray($data);
 
     	$decodeArray =  $this->urldecodeData($array['Order']);
-    	// return $decodeArray;
+    	
     	$model = $this->createForeignOrder($decodeArray);
 
     	if ($model) {
