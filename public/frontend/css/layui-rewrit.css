@@ -87,4 +87,9 @@
 .layui-input, .layui-textarea, .layui-select {
     height: 32px;
 }
-
+/*自定义按钮大小*/
+.layui-btn-custom-mini {
+    height: 26px;
+    line-height: 26px;
+    font-size: 12px;
+}

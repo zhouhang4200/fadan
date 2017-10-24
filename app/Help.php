@@ -89,21 +89,26 @@ if (!function_exists('receivingRecordExist')) {
      */
     function receivingRecordExist($userId, $orderNo)
     {
-        // 用户抢单后写入一条记录
+        // 查询是否有抢单记录
         $redis = \App\Services\RedisConnect::order();
         return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
     }
 }
 
-if (!function_exists('')) {
+if (!function_exists('generateOrderNo')) {
 
+    /**
+     * 生成订单号
+     * @return string
+     */
     function generateOrderNo()
     {
         // 14位长度当前的时间 20150709105750
-        $orderdate = date('YmdHis');
+        $orderDate = date('YmdHis');
 
         // 今日订单数量
-        $orderquantity = \Redis::incr('thousand:order:quantity:' . date('Ymd'));
-        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
+        $redis = \App\Services\RedisConnect::order();
+        $orderQuantity = $redis->incr(Config::get('rediskey.order.quantity') . date('Ymd'));
+        return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
 }

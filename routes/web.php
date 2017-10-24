@@ -46,7 +46,18 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 
 	// 工作台
 	Route::namespace('Workbench')->prefix('workbench')->group(function () {
-		Route::get('order', 'OrderController@index')->name('frontend.workbench.order');
+        // 首页
+        Route::get('/', 'OrderController@index')->name('frontend.workbench.index');
+
+        // 下单
+
+        // 订单操作
+        Route::prefix('order')->group(function (){
+            Route::prefix('operation')->group(function (){
+                // 接单
+                Route::get('receiving/{id}', 'OrderOperationController@receiving')->name('frontend.workbench.order.receiving');
+            });
+        });
 	});
 });
 

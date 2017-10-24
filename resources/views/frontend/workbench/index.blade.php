@@ -195,18 +195,16 @@
         </div>
     </div>
     <div class="left-menu" id="left-menu">
-
         <form class="layui-form" action="">
             <div class="layui-form-item">
                 <label class="layui-form-label">类型</label>
                 <div class="layui-input-block">
                     <select name="city" lay-verify="required" lay-search>
                         <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
+                        @forelse($services as $k => $v)
+                            <option value="{{ $k }}">{{ $v }}</option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
             </div>
@@ -215,11 +213,18 @@
                 <div class="layui-input-block">
                     <select name="city" lay-verify="required" lay-search>
                         <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
+                        @forelse($games as $k => $v)
+                            <option value="{{ $k }}">{{ $v }}</option>
+                        @empty
+                        @endforelse
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">商品</label>
+                <div class="layui-input-block">
+                    <select name="city" lay-verify="required" lay-search>
+                        <option value=""></option>
                     </select>
                 </div>
             </div>
@@ -271,7 +276,6 @@
                 </div>
             </div>
         </form>
-
         <div class="open-btn block"> 打开下单面板</div>
         <div class="close-btn none">关闭下单面板</div>
     </div>

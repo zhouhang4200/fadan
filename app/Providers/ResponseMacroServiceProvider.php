@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Http\Response;
+use Response;
 use Illuminate\Support\ServiceProvider;
 
-class ResponseServiceProvider extends ServiceProvider
+class ResponseMacroServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
@@ -14,8 +14,8 @@ class ResponseServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Response::macro('ajax', function ($status, $message = 'success', $content) {
-            return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, [], JSON_UNESCAPED_UNICODE);
+        Response::macro('ajax', function ($status = 1, $message = 'success', $content= []) {
+            return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
         });
     }
 }

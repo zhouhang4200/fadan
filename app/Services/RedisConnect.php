@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use Redis;
+
 /**
  * redis 连接类
  * Class RedisConnect
@@ -14,6 +16,6 @@ class RedisConnect
      */
     public static function order()
     {
-        return Redis::connect('order');
+        return Redis::connection('order');
     }
 }
