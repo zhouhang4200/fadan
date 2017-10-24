@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use Log;
+use Exception;
 use App\Models\Goods;
 use App\Models\GoodsTemplateWidget;
 use App\Models\ForeignOrder as ForeignOrderModel;
@@ -10,16 +12,23 @@ class KamenForeignOrder extends ForeignOrder
 {
     public function outputOrder($data)
     {
-    	$array = $this->xmlToArray($data);
+        try {
 
-    	$decodeArray =  $this->urldecodeData($array['Order']);
-    	
-    	$model = $this->createForeignOrder($decodeArray);
+        	$array = $this->xmlToArray($data);
 
-    	if ($model) {
+        	$decodeArray =  $this->urldecodeData($array['Order']);
+        	
+        	$model = $this->createForeignOrder($decodeArray);
 
-    		return $this->output($model);
-    	}
+        	if ($model) {
+
+        		return $this->output($model);
+        	}
+            
+        } catch (Exception $e) {
+
+            Log::info('参数格式传入错误!', ['data' => $data]);  
+        }
 
     }
 

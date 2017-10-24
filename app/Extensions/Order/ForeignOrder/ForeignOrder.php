@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use Log;
 use Exception;
 
 abstract class ForeignOrder implements ForeignOrderInterface
@@ -14,7 +15,7 @@ abstract class ForeignOrder implements ForeignOrderInterface
 
         } catch (Exception $e) {
 
-            Log::warning('参数格式传入错误!', ['data' => $data]);          
+            Log::info('参数格式传入错误!', ['data' => $data]);          
         }
     }
 

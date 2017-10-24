@@ -35,7 +35,7 @@ class RedirectIfAuthenticated
 
         if ($request->isMethod('post') && $this->checkLoginError($request)) {
 
-            return redirect('login')->withInput()->with('loginError', '异地登录!');
+            return redirect('/login')->withInput()->with('loginError', '异地登录!');
         }
 
         if ($guard == 'admin' && $request->isMethod('post') && $this->checkAdminLoginError($request)) {

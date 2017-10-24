@@ -15,4 +15,19 @@ class OrderController extends Controller
     {
         ForeignOrderFactory::choose('kamen')->outputOrder([]);
     }
+
+    public function KamenOrder(Request $request)
+    {
+        return ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
+    }
+
+    public function TmallOrder(Request $request)
+    {
+        return ForeignOrderFactory::choose('tmall')->outputOrder($request->data);
+    }
+
+    public function JdOrder(Request $request)
+    {
+        return ForeignOrderFactory::choose('jd')->outputOrder($request->data);
+    }
 }

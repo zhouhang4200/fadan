@@ -147,3 +147,4 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('icons2', 'TemplateController@icons2')->name('template.icons2');
     });
 });
+
