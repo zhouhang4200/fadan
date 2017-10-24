@@ -63,17 +63,17 @@
                                     <td>{{ $data->managed + 0 }}</td>
                                     <td>{{ $data->balance + 0 }}</td>
                                     <td>{{ $data->frozen + 0 }}</td>
-                                    <td>{{ $data->today_recharge + 0 }}</td>
+                                    <td>{{ $data->recharge + 0 }}</td>
                                     <td>{{ $data->total_recharge + 0}}</td>
-                                    <td>{{ $data->today_withdraw + 0}}</td>
+                                    <td>{{ $data->withdraw + 0}}</td>
                                     <td>{{ $data->total_withdraw + 0}}</td>
-                                    <td>{{ $data->today_consume + 0}}</td>
+                                    <td>{{ $data->consume + 0}}</td>
                                     <td>{{ $data->total_consume + 0}}</td>
-                                    <td>{{ $data->today_refund + 0}}</td>
+                                    <td>{{ $data->refund + 0}}</td>
                                     <td>{{ $data->total_refund + 0}}</td>
-                                    <td>{{ $data->today_trade_quantity + 0}}</td>
+                                    <td>{{ $data->trade_quantity + 0}}</td>
                                     <td>{{ $data->total_trade_quantity + 0}}</td>
-                                    <td>{{ $data->today_trade_amount + 0}}</td>
+                                    <td>{{ $data->trade_amount + 0}}</td>
                                     <td>{{ $data->total_trade_amount + 0}}</td>
                                 </tr>
                             @endforeach

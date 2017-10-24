@@ -34,9 +34,9 @@ class TestController extends Controller
     public function index(PlatformAssetDailyRepository $platformAssetDailyRepository)
     {
         // $this->testAsset();
-        // $this->testDaily();
+        $this->testDaily();
         // $this->testOrder();
-        $this->command()();
+        // $this->command()();
     }
 
     public function testAsset()

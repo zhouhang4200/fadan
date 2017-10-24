@@ -26,7 +26,7 @@ class PlatformAssetDailyRepository
         }
 
         // 取平台资金当日最后一笔流水
-        $thatDayLastFlow = PlatformAmountFlow::where('created_at', '<=', $timeEnd)->orderBy('id', 'desc')->first();
+        $thatDayLastFlow = PlatformAmountFlow::where('created_at', '<=', $timeEnd)->orderBy('created_at', 'desc')->first();
 
         // 取平台资金当日统计
         $thatDayAggregate = PlatformAmountFlow::whereBetween('created_at', [$timeStart, $timeEnd])
@@ -41,17 +41,23 @@ class PlatformAssetDailyRepository
         $platformAssetDaily->managed              = $thatDayLastFlow->managed ?? 0;
         $platformAssetDaily->balance              = $thatDayLastFlow->balance ?? 0;
         $platformAssetDaily->frozen               = $thatDayLastFlow->frozen ?? 0;
-        $platformAssetDaily->today_recharge       = $thatDayAggregate[1]['amount'] ?? 0;
+
+        $platformAssetDaily->recharge             = $thatDayAggregate[1]['amount'] ?? 0;
         $platformAssetDaily->total_recharge       = $thatDayLastFlow->total_recharge ?? 0;
-        $platformAssetDaily->today_withdraw       = abs($thatDayAggregate[2]['amount'] ?? 0);
+
+        $platformAssetDaily->withdraw             = abs($thatDayAggregate[2]['amount'] ?? 0);
         $platformAssetDaily->total_withdraw       = $thatDayLastFlow->total_withdraw ?? 0;
-        $platformAssetDaily->today_consume        = $thatDayAggregate[5]['amount'] ?? 0;
+
+        $platformAssetDaily->consume              = $thatDayAggregate[5]['amount'] ?? 0;
         $platformAssetDaily->total_consume        = $thatDayLastFlow->total_consume ?? 0;
-        $platformAssetDaily->today_refund         = abs($thatDayAggregate[6]['amount'] ?? 0);
+
+        $platformAssetDaily->refund               = abs($thatDayAggregate[6]['amount'] ?? 0);
         $platformAssetDaily->total_refund         = $thatDayLastFlow->total_refund ?? 0;
-        $platformAssetDaily->today_trade_quantity = $thatDayAggregate[8]['quantity'] ?? 0;
+
+        $platformAssetDaily->trade_quantity       = $thatDayAggregate[8]['quantity'] ?? 0;
         $platformAssetDaily->total_trade_quantity = $thatDayLastFlow->total_trade_quantity ?? 0;
-        $platformAssetDaily->today_trade_amount   = abs($thatDayAggregate[8]['amount'] ?? 0);
+
+        $platformAssetDaily->trade_amount         = abs($thatDayAggregate[8]['amount'] ?? 0);
         $platformAssetDaily->total_trade_amount   = $thatDayLastFlow->total_trade_amount ?? 0;
 
         if (!$platformAssetDaily->save()) {

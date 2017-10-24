@@ -19,17 +19,17 @@ class CreatePlatformAssetDailiesTable extends Migration
             $table->decimal('managed', 17, 4)->comment('平台托管资金');
             $table->decimal('balance', 17, 4)->comment('用户剩余金额');
             $table->decimal('frozen', 17, 4)->comment('用户冻结金额');
-            $table->decimal('today_recharge', 17, 4)->comment('当日用户加款');
+            $table->decimal('recharge', 17, 4)->comment('当日用户加款');
             $table->decimal('total_recharge', 17, 4)->comment('累计用户加款');
-            $table->decimal('today_withdraw', 17, 4)->comment('当日用户提现');
+            $table->decimal('withdraw', 17, 4)->comment('当日用户提现');
             $table->decimal('total_withdraw', 17, 4)->comment('累计用户提现');
-            $table->decimal('today_consume', 17, 4)->comment('当日用户消费');
+            $table->decimal('consume', 17, 4)->comment('当日用户消费');
             $table->decimal('total_consume', 17, 4)->comment('累计用户消费');
-            $table->decimal('today_refund', 17, 4)->comment('当日退款给用户');
+            $table->decimal('refund', 17, 4)->comment('当日退款给用户');
             $table->decimal('total_refund', 17, 4)->comment('累计退款给用户');
-            $table->unsignedInteger('today_trade_quantity')->comment('当日用户成交次数');
+            $table->unsignedInteger('trade_quantity')->comment('当日用户成交次数');
             $table->unsignedInteger('total_trade_quantity')->comment('累计用户成交次数');
-            $table->decimal('today_trade_amount', 17, 4)->comment('当日用户成交金额');
+            $table->decimal('trade_amount', 17, 4)->comment('当日用户成交金额');
             $table->decimal('total_trade_amount', 17, 4)->comment('累计用户成交金额');
         });
     }
