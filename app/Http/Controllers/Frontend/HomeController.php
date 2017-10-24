@@ -29,7 +29,7 @@ class HomeController extends Controller
         $a =  ForeignOrderFactory::choose('kamen')->outputOrder($data);
         
         dd($a);
-
+        */
         //  return Weight::run([1]);
     	// $user = Auth::user();
 
