@@ -15,12 +15,15 @@ class CreateForeignOrdersTable extends Migration
     {
         Schema::create('foreign_orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInt('channel')->comment('渠道：1，京东；2，天猫；3，卡门')；
+            $table->tinyInteger('channel')->unsigned()->comment('渠道：1，京东；2，天猫；3，卡门');
+            $table->string('channel_name')->comment('渠道名字');
             $table->string('foreign_order_id')->unique()->comment('外部订单号');
+            $table->timestamp('order_time')->comment('订单生成时间');
             $table->string('foreign_goods_id')->comment('外部商品号');
             $table->decimal('single_price', 17, 4)->comment('单价');
             $table->decimal('total_price', 17, 4)->comment('总价');
-            $table->string('contact_way')->comment('联系方式');
+            $table->string('tel')->nullable()->comment('联系方式:手机');
+            $table->string('qq')->nullable()->comment('联系方式:qq');
             $table->text('details')->comment('详情');
             $table->timestamps();
         });
