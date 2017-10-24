@@ -15,4 +15,20 @@ class Goods extends Model
         'game_id',
         'goods_template_id',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'service_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function game()
+    {
+        return $this->hasOne(Game::class, 'game_id', 'id');
+    }
 }

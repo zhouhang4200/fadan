@@ -11,7 +11,7 @@ class UserAmountFlowRepository
 {
     public function getList($tradeNo, $tradeType, $timeStart, $timeEnd, $pageSize = 20)
     {
-        $dataList = UserAmountFlow::where('user_id', Auth::user()->id)
+        $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
                 return $query->where('trade_no', $tradeNo);
             })
