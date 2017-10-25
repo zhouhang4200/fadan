@@ -20,7 +20,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		Route::get('history', 'LoginController@history')->name('login.history');
 	});
 
-	Route::group(['middleware' => ['role:home.default']], function () {
+	Route::group(['middleware' => ['role:home.qiantaichaojiguanliyuan|home.qiantaimorenjuese']], function () {
 		// 我的账号
 		Route::resource('home-accounts', 'AccountController', ['only' => ['index', 'update', 'edit']]);
 		// 实名认证
@@ -29,7 +29,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 	});
 
-	Route::group(['middleware' => ['role:home.manager']], function () {
+	Route::group(['middleware' => ['role:home.qiantaichaojiguanliyuan']], function () {
 		// 子账号管理
 		Route::resource('users', 'UserController', ['except' => ['show']]);
 		// 分组管理
