@@ -188,7 +188,7 @@ return [
         // 权重
         App\Extensions\Weight\WeightServiceProvider::class,
         // ajax 响应
-//        App\Providers\ResponseMacroServiceProvider::class,
+        App\Providers\ResponseMacroServiceProvider::class,
     ],
 
     /*

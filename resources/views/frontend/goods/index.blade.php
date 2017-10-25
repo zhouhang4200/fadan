@@ -26,7 +26,7 @@
                 </select>
             </div>
             <div class="layui-input-inline" style="width: 200px;">
-                <input type="text" class="layui-input" name="foreign_goods_id" placeholder="外部商品ID" value="">
+                <input type="text" class="layui-input" name="foreign_goods_id" placeholder="外部商品ID" value="{{ $foreignGoodsId  }}">
             </div>
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>

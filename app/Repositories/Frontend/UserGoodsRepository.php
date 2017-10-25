@@ -37,4 +37,20 @@ class UserGoodsRepository
         return $dataList;
     }
 
+    /**
+     * 获取商户所有商品
+     * @param $serviceId
+     * @param $gameId
+     * @return mixed
+     */
+    public function allGoods($serviceId, $gameId)
+    {
+        return  Goods::where([
+            'user_id' =>  Auth::user()->getPrimaryUserId(),
+            'service_id' => $serviceId,
+            'game_id' => $gameId,
+            'display' => 1,
+        ])->pluck('name', 'id');
+    }
+
 }

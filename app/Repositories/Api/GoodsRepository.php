@@ -10,4 +10,5 @@ class GoodsRepository
         $goods = Goods::find($goodsId);
         return $goods;
     }
+
 }

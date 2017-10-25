@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories\Backend;
 
-use App\Models\Game;
 use App\Models\GoodsTemplateWidget;
 
 class GoodsTemplateWidgetRepository

@@ -66,8 +66,15 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::namespace('Workbench')->prefix('workbench')->group(function () {
         // 首页
         Route::get('/', 'OrderController@index')->name('frontend.workbench.index');
-
+        // 获取用户所有前台可显示的商品
+        Route::post('goods', 'OrderController@goods')->name('frontend.workbench.goods');
+        // 商品模版
+        Route::post('template', 'OrderController@template')->name('frontend.workbench.template');
+        // 获取子级的值
+        Route::post('child', 'OrderController@widgetChild')->name('frontend.workbench.widget.child');
         // 下单
+        Route::post('order', 'OrderController@order')->name('frontend.workbench.order');
+
 
         // 订单操作
         Route::prefix('order')->group(function (){
