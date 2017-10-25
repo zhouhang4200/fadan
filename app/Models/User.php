@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +21,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'type', 'parent_id', 'group_id'
     ];
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that should be hidden for arrays.
