@@ -20,8 +20,8 @@ class CreateForeignOrdersTable extends Migration
             $table->string('foreign_order_id')->unique()->comment('外部订单号');
             $table->timestamp('order_time')->comment('订单生成时间');
             $table->string('foreign_goods_id')->comment('外部商品号');
-            $table->decimal('single_price', 17, 4)->comment('单价');
-            $table->decimal('total_price', 17, 4)->comment('总价');
+            $table->decimal('single_price', 10, 4)->comment('单价');
+            $table->decimal('total_price', 10, 4)->comment('总价');
             $table->string('tel')->nullable()->comment('联系方式:手机');
             $table->string('qq')->nullable()->comment('联系方式:qq');
             $table->text('details')->comment('详情');
