@@ -6,20 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use Order;
-use App\Models\Game;
-use App\Models\Service;
+use App\Repositories\Frontend\GameRepository;
+use App\Repositories\Frontend\ServiceRepository;
 use App\Extensions\Order\Operations\Create;
 
 class OrderController extends Controller
 {
 
     /**
-     * @param Request $request
      * @param ServiceRepository $serviceRepository
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
+    public function index(ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
         $services = $serviceRepository->available();
         $games = $gameRepository->available();

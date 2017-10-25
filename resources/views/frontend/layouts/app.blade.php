@@ -35,6 +35,7 @@
 <!--END 主体-->
 
 <!--START 底部-->
+<link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
 @include('frontend.layouts.footer')
 <!--END 底部-->
 

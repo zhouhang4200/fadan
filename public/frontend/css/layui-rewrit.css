@@ -109,6 +109,10 @@
     height: 20px;
     line-height: 20px;
 }
+.layui-laydate .layui-this {
+    background-color: #1f9fff !important;
+    color: #fff !important;
+}
 /*自定义按钮大小*/
 .layui-btn-custom-mini {
     height: 26px;

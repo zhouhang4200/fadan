@@ -276,8 +276,8 @@
                 </div>
             </div>
         </form>
-        <div class="open-btn block"> 打开下单面板</div>
-        <div class="close-btn none">关闭下单面板</div>
+        <div class="open-btn layui-hide"> 打开下单面板</div>
+        <div class="close-btn layui-show">关闭下单面板</div>
     </div>
 @endsection
 
