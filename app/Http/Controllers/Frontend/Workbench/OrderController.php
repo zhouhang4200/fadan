@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers\Frontend\Workbench;
 
-use App\Exceptions\CustomException;
-use App\Models\GoodsTemplate;
-use App\Repositories\Frontend\GoodsRepository;
-use App\Repositories\Backend\GoodsTemplateWidgetRepository;
-use App\Repositories\Frontend\UserGoodsRepository;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
-use Illuminate\Support\Facades\Auth;
-use Order;
+use App\Models\GoodsTemplate;
+
+use Order, \Exception;
 use App\Repositories\Frontend\GameRepository;
 use App\Repositories\Frontend\ServiceRepository;
+use App\Repositories\Frontend\UserGoodsRepository;
+use App\Repositories\Backend\GoodsTemplateWidgetRepository;
+
+use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Create;
 
+/**
+ * 工作台
+ * Class OrderController
+ * @package App\Http\Controllers\Frontend\Workbench
+ */
 class OrderController extends Controller
 {
-
     /**
      * @param ServiceRepository $serviceRepository
      * @param GameRepository $gameRepository
@@ -38,25 +42,26 @@ class OrderController extends Controller
      */
     public function order(Request $request)
     {
-        // 原始订单数据
-        $orderData = $request->data;
-
-        $userId = Auth::user()->id; // 下单用户
-        $goodsId = $orderData['goods']; // 商品Id
-        $originalPrice = 0; // 原价
-        $quantity = $orderData['quantity']; // 数量
-        $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
-
-        unset($orderData['amount']);
-        unset($orderData['goods']);
-        unset($orderData['amount']);
-        unset($orderData['foreign_order_no']);
-
         try {
+            // 原始订单数据
+            $orderData = $request->data;
+            $userId = Auth::user()->id; // 下单用户
+            $goodsId = $orderData['goods']; // 商品Id
+            $originalPrice = 0; // 原价
+            $quantity = $orderData['quantity']; // 数量
+            $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
+
+            unset($orderData['amount']);
+            unset($orderData['goods']);
+            unset($orderData['amount']);
+            unset($orderData['foreign_order_no']);
+
             Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
-            response()->ajax(1, '下单成功');
+            return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
-            response()->ajax(0, '下单失败请联系平台工作人员');
+            return response()->ajax(0, '下单失败请联系平台工作人员');
+        } catch (Exception $exception) {
+            return response()->ajax(0, '下单失败请联系平台工作人员');
         }
     }
 
