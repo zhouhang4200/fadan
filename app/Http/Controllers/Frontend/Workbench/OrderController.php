@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -112,5 +113,18 @@ class OrderController extends Controller
         $valueArr = explode(',', $widgetValue->field_value);
 
         return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id])]);
+    }
+
+    /**
+     * 订单列表获取
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     */
+    public function orderList(Request $request, OrderRepository $orderRepository)
+    {
+        $status = $request->status;
+        $orderNO = $request->order_no;
+
+        $orderRepository->dataList($status, $orderNO);
     }
 }
