@@ -19,7 +19,7 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>角色ID</th>
+                                    <th>序号</th>
                                     <th>名称</th>
                                     <th>添加时间</th>
                                     <th>操作</th>

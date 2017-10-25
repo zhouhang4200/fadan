@@ -37,20 +37,14 @@
                             <li class="layui-this" lay-id="add">修改后台角色</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('roles.update', ['id' => $role->id]) }}">
+                            <form class="layui-form" method="POST" action="{{ route('admin-roles.update', ['id' => $role->id]) }}">
                             {!! csrf_field() !!}
                             <input type="hidden" name="_method" value="PUT">
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">角色名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $role->name }}" autocomplete="off" placeholder="请输入角色名" class="layui-input">
-                                        </div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">别名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $role->alias  }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $role->alias  }}" autocomplete="off" placeholder="请输入中文角色名" class="layui-input">
                                         </div>
                                     </div>
 
