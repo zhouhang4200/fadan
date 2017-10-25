@@ -71,8 +71,8 @@ class TemplateController extends Controller
      */
     public function config(Request $request, $id)
     {
-        $filedName = Config::get('goodsTemplate.field_name');
-        $filedType = Config::get('goodsTemplate.field_type');
+        $filedName = Config::get('goods.template.field_name');
+        $filedType = Config::get('goods.template.field_type');
 
         return view('backend.goods.template.show', compact('filedName', 'filedType'));
     }
