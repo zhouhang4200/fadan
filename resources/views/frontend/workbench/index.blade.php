@@ -359,15 +359,9 @@
         });
         // 下单
         form.on('submit(order)', function(data){
-            layer.open({
-                content: JSON.stringify(data.field),
-                success: function(layero, index){
-                    console.log(layero, index);
-                }
-            });
             $.post('{{ route('frontend.workbench.order') }}', {data:data.field}, function (result) {
-
-            });
+                layer.msg(result.message)
+            }, 'json');
             return false;
         });
 

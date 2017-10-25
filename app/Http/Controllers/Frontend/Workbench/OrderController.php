@@ -44,7 +44,7 @@ class OrderController extends Controller
         $userId = Auth::user()->id; // 下单用户
         $goodsId = $orderData['goods']; // 商品Id
         $originalPrice = 0; // 原价
-        $amount = $orderData['amount']; // 数量
+        $quantity = $orderData['quantity']; // 数量
         $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
 
         unset($orderData['amount']);
@@ -53,7 +53,7 @@ class OrderController extends Controller
         unset($orderData['foreign_order_no']);
 
         try {
-            Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $amount, $orderData));
+            Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
             response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
             response()->ajax(0, '下单失败请联系平台工作人员');

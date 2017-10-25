@@ -8,7 +8,7 @@ return [
         'region' => '游戏区',
         'serve' => '服务器',
         'role' => '角色',
-        'amount' => '数量',
+        'quantity' => '数量',
         'foreign_order_no' => '外部订单号',
     ],
     // 字段类型
