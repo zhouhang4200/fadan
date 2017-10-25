@@ -21,10 +21,6 @@
 @endsection
 
 @section('main')
-    <div style="padding-top:10px; padding-bottom:10px; float:right">
-        <a href="{{ route('idents.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">填写实名认证</button></a>
-    </div>
-
     <div class="layui-tab-item layui-show" lay-size="sm">
         <table class="layui-table">
             <colgroup>
@@ -32,7 +28,7 @@
                 <col width="200">
                 <col>
             </colgroup>
-            @if ($ident && $ident->type == 1)
+            @if (! empty($ident) && $ident->type == 1)
             <thead>
             <tr>
                 <th>用户名</th>
@@ -51,7 +47,7 @@
                     <td style="text-align: center"><button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" style="color: #fff">编缉</a></td>
                 </tr>
             </tbody>
-            @elseif ($ident && $ident->type == 2)
+            @elseif (! empty($ident) && $ident->type == 2)
             <thead>
             <tr>
                 <th>用户名</th>

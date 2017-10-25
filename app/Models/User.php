@@ -54,6 +54,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function userAsset()
+    {
+        return $this->hasOne(UserAsset::class);
+    }
+
     public static function messages()
     {
         return [
