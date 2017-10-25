@@ -15,9 +15,9 @@ class OrderUseTime implements AlgorithmInterface
   
         $time = [$startTime, $endTime];
 
-        $succ = OrderSuccess::data($users);
+        $orderSuccess = OrderSuccess::data($users);
 
-        $orderCounts = $succ['ordersSuccessCount'];
+        $orderCounts = $orderSuccess['ordersSuccessCount'];
 
         // $orderCounts = MarketWeight::whereBetween('order_time', $time)->count('order_no');
 
@@ -48,9 +48,9 @@ class OrderUseTime implements AlgorithmInterface
         foreach ($users as $user) {
             $time = 0; $succ = 0;
             // 如果商户的订单成功率大于平均值 或 新用户没有订单数据，则加权重 2
-            if ((isset($succ['businessOrderSuccessAvg'][$user])
-                    && $succ['businessOrderSuccessAvg'][$user] > $succ['ordersSuccessAvg'])
-                || !isset($succ['businessOrderSuccessAvg'][$user])
+            if ((isset($orderSuccess['businessOrderSuccessAvg'][$user])
+                    && $orderSuccess['businessOrderSuccessAvg'][$user] > $orderSuccess['ordersSuccessAvg'])
+                || !isset($orderSuccess['businessOrderSuccessAvg'][$user])
             ) {
                 $succ += 2;
             }
@@ -58,7 +58,7 @@ class OrderUseTime implements AlgorithmInterface
             // 如果用户订单平均耗时，小于总平均耗时， 或 新用户没有订单数据，则加权重 2
             if ((isset($data['businessOrdersUseTimeAvg'][$user])
                     && $data['businessOrdersUseTimeAvg'][$user] < $data['orderUseTimeAvg'])
-                || !isset($succ['businessOrderSuccessAvg'][$user])
+                || !isset($orderSuccess['businessOrderSuccessAvg'][$user])
             ) {
                 $time += 2;
             }
