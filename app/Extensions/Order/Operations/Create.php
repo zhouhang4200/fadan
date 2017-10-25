@@ -58,7 +58,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->service_name            = $this->goods->service->name;
         $this->order->game_id                 = $this->goods->game->id;
         $this->order->game_name               = $this->goods->game->name;
-        $this->order->original_price          = $this->originalPrice;
+        $this->order->original_price          = $this->originalPrice ?: $this->goods->price;
         $this->order->price                   = $this->goods->price;
         $this->order->quantity                = $this->quantity;
         $this->order->original_amount         = bcmul($this->originalPrice, $this->quantity);

@@ -67,7 +67,7 @@ class TestController extends Controller
 
     public function testOrder()
     {
-        Order::handle(new Create(1, 'taobao-123', 1, 2, 5.8, 12, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
+        Order::handle(new Create(1, 'taobao-123', 1, 2, 0, 12, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
         // Order::handle(new GrabClose('2017102414284300000014', 1));
         // Order::handle(new Receiving('2017102414284300000014', 1));
         // Order::handle(new Delivery('2017102316360000000021', 1));
