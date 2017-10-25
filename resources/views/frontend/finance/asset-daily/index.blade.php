@@ -88,10 +88,5 @@ layui.use(['laydate', 'form'], function () {
     laydate.render({elem: '#date-start'});
     laydate.render({elem: '#date-end'});
 });
-
-$('#export').click(function () {
-    var url = "{{ route('frontend.finance.amount-flow.export') }}?" + $('#search-form').serialize();
-    window.location.href = url;
-});
 </script>
 @endsection

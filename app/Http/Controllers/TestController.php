@@ -27,20 +27,20 @@ use App\Extensions\Order\Operations\AskForAfterService;
 use App\Extensions\Order\Operations\AfterServiceComplete;
 use App\Extensions\Order\Operations\TurnBack;
 
-use App\Repositories\Frontend\WithdrawListRepository;
+use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
 use Artisan;
 
 class TestController extends Controller
 {
-    public function index(WithdrawListRepository $repository)
+    public function index(UserWithdrawOrderRepository $repository)
     {
         // $this->testAsset();
         // $this->testDaily();
         // $this->testOrder();
         // $this->command();
 
-        $repository->apply(1234, '没钱了取点钱');
+        $repository->apply(11, '没钱了取点钱');
     }
 
     public function testAsset()

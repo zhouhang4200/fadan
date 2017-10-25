@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 use App\Repositories\Frontend\UserAssetDailyRepository;
-use App\Extensions\Excel\ExportFrontendUserAmountFlow;
 
 class AssetDailyController extends Controller
 {

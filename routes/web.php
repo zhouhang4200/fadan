@@ -60,6 +60,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
 
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily');
+
+        Route::get('widthdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.widthdraw-order');
 	});
 
 	// 工作台
