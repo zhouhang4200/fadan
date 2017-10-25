@@ -55,7 +55,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($modulePermissions as $modulePermission)
+                        @forelse($modulePermissions as $modulePermission)
                             <tr>
                                 <td>{{ $modulePermission->alias }}</td>
                                 <td>
@@ -68,7 +68,8 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                        @endforelse
                         </tbody>
                     </table>
                 </div>

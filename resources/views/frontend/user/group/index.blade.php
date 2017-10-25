@@ -49,7 +49,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($users as $user)
+            @forelse($users as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
@@ -61,7 +61,8 @@
                     </td>
                     <td style="text-align: center"><button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编缉</a></button><button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $user->id }})">删除</button></td>
                 </tr>
-            @endforeach
+            @empty
+            @endforelse
             </tbody>
         </table>
     </div>

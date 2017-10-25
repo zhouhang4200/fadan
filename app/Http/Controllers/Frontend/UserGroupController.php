@@ -93,7 +93,7 @@ class UserGroupController extends Controller
 
                 $user->permissions()->sync($permissions->pluck('id')->toArray());
 
-	            return redirect(route('user-groups.index'))->with('succ', '添加成功!');
+	            return redirect(route('users.index'))->with('succ', '添加成功!');
 	        }
 	        return back()->with('createFail', '添加失败！');
     	}
@@ -163,7 +163,7 @@ class UserGroupController extends Controller
 
             $user->permissions()->sync($permissions->pluck('id')->toArray());
 
-            return redirect(route('user-groups.index'))->with('succ', '更新成功!');
+            return redirect(route('users.index'))->with('succ', '更新成功!');
         }
     }
 

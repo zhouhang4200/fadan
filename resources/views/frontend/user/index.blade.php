@@ -4,6 +4,14 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <style>
+        .user-td td div{
+            text-align: center;width: 320px;
+        }
+        .layui-table tr th {
+            text-align: center;
+        }
+    </style>
 @endsection
 
 @section('submenu')
@@ -56,7 +64,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($users as $user)
+            @forelse($users as $user)
                 <tr class="user-td">
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
@@ -64,17 +72,21 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
-                        <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑</a></button>
-                        <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="del({{ $user->id }})">删除</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('users.edit', ['id' => $user->id]) }}" style="color: #fff">编辑账号</a></button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="del({{ $user->id }})">删除账号</button>
                         @if($user->rbacGroups->count() == 0)
                         <button class="layui-btn layui-btn-normal layui-btn-small rbac"><a href="{{ route('user-groups.create', ['id' => $user->id]) }}" style="color: #fff">添加权限</a></button>
                         @else
                         <button class="layui-btn layui-btn-normal layui-btn-small rbac"><a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" style="color: #fff">编辑权限</a></button>
                         @endif
+                        @if($user->rbacGroups->count() > 0)
+                        <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="delPermission({{ $user->id }})">删除权限</button>
+                        @endif
                         </div>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+            @endforelse
             </tbody>
         </table>
     </div>
@@ -127,6 +139,32 @@
 
             });
         };
+
+        // 删除
+        function delPermission(id)
+        {
+            layui.use(['form', 'layedit', 'laydate',], function(){
+                var form = layui.form
+                ,layer = layui.layer;
+                layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/user-groups/'+id,
+                        success: function (data) {                    
+                            if (data.code == 1) {
+                                layer.msg('删除成功!', {icon: 6, time:1500},);
+                                window.location.href = "{{ route('users.index') }}";                    
+                            } else {
+                                layer.msg('删除失败!', {icon: 5, time:1500},);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });        
+               
+            });
+        };
+
 
         layui.use('form', function(){
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功

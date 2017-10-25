@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use Auth;
 use App\Models\User;
+use App\Models\RbacGroup;
 use App\Models\LoginHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -100,7 +101,9 @@ class UserController extends Controller
 
             $user = User::find($id);
 
-            return view('frontend.user.edit', compact('user'));
+            $groups = RbacGroup::where('user_id', $id)->get();
+
+            return view('frontend.user.edit', compact('user', 'groups'));
         }
     }
 
