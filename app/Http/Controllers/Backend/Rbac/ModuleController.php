@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use Pinyin;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -42,7 +43,7 @@ class ModuleController extends Controller
 
         $data['guard_name'] = 'web';
 
-        $data['name'] = $request->name;
+        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 
@@ -89,7 +90,7 @@ class ModuleController extends Controller
     {
         $this->validate($request, Module::updateRules($id), Module::messages());
 
-        $data['name'] = $request->name;
+        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 

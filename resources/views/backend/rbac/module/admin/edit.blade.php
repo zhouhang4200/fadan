@@ -17,15 +17,9 @@
                             <input type="hidden" name="_method" value="PUT">
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">模块名:</label>
+                                        <label class="layui-form-label">模块名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $module->name }}" autocomplete="off" placeholder="请输入模块名" class="layui-input">
-                                        </div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">别名:</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $module->alias  }}" autocomplete="off" placeholder="请输入别名" class="layui-input">
+                                            <input type="text" name="alias" lay-verify="required" value="{{ old('alias') ?: $module->alias  }}" autocomplete="off" placeholder="请输入中文模块名" class="layui-input">
                                         </div>
                                     </div>
 

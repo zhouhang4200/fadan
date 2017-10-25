@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use Pinyin;
 use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class AdminPermissionController extends Controller
 
         $data['guard_name'] = 'admin';
 
-        $data['name'] = $request->name;
+        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 
@@ -97,7 +98,7 @@ class AdminPermissionController extends Controller
     {
         $this->validate($request, Permission::updateRules($id), Permission::messages());
 
-        $data['name'] = $request->name;
+        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 

@@ -19,9 +19,8 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>模块ID</th>
+                                    <th>序号</th>
                                     <th>名称</th>
-                                    <th>别名</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -30,7 +29,6 @@
                                     @forelse($modules as $module)
                                         <tr>
                                             <td>{{ $module->id }}</td>
-                                            <td>{{ $module->name }}</td>
                                             <td>{{ $module->alias }}</td>
                                             <td>{{ $module->created_at }}</td>
                                             <td style="text-align: center"><a href="{{ route('admin-modules.edit', ['id' => $module->id])  }}"><button class="layui-btn layui-btn-normal layui-btn-small">编缉</button></a>

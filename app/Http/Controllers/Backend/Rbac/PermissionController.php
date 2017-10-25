@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use Pinyin;
 use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -50,7 +51,7 @@ class PermissionController extends Controller
 
         $data['guard_name'] = 'web';
 
-        $data['name'] = $request->name;
+        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 
@@ -102,7 +103,7 @@ class PermissionController extends Controller
     {
         $this->validate($request, Permission::updateRules($id), Permission::messages());
 
-        $data['name'] = $request->name;
+        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 

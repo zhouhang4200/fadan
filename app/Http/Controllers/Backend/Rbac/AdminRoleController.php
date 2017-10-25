@@ -54,7 +54,7 @@ class AdminRoleController extends Controller
 
         $data['guard_name'] = 'admin';
 
-        $data['name'] = 'admin' . Pinyin::permalink($request->alias, '');
+        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 
@@ -109,7 +109,7 @@ class AdminRoleController extends Controller
 
         $this->validate($request, Role::updateRules($id), Role::messages());
 
-        $data['name'] = 'admin' . Pinyin::permalink($request->alias, '');
+        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
 
         $data['alias'] = $request->alias;
 
