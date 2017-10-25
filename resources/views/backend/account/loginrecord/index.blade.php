@@ -2,6 +2,18 @@
 
 @section('title', '商家后台')
 
+@section ('css')
+    <style>
+        .layui-table th, .layui-table td {
+            position: relative;
+            padding: 9px 15px;
+            min-height: 20px;
+            line-height: 20px;
+            font-size: 12px;
+        }
+    </style>
+@endsection 
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -44,7 +56,7 @@
                                     </colgroup>
                                     <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>序号</th>
                                         <th>用户ID</th>
                                         <th>用户名</th>
                                         <th>登录IP</th>
@@ -53,7 +65,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($loginRecords as $loginRecord)
+                                    @forelse($loginRecords as $loginRecord)
                                         <tr>
                                             <td>{{ $loginRecord->id }}</td>
                                             <td>{{ $loginRecord->admin_user_id }}</td>
@@ -62,7 +74,8 @@
                                             <td>{{ $loginRecord->city ? $loginRecord->city->name : '' }}</td>
                                             <td>{{ $loginRecord->created_at }}</td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                    @endforelse
                                     </tbody>
                                 </table>
                                 
