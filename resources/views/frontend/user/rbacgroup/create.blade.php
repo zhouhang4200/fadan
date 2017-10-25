@@ -34,13 +34,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">别名</label>
-                <div class="layui-input-block">
-                    <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" placeholder="请输入别名" autocomplete="off" class="layui-input">
+                    <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" autocomplete="off" placeholder="请输入中文组名" class="layui-input">
                 </div>
             </div>
 

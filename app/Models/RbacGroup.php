@@ -19,19 +19,22 @@ class RbacGroup extends Model
 
     protected $revisionCreationsEnabled = true;
 
+    public function setNameAttribute($value)
+    {
+        return $this->attributes['name'] = trim($value);
+    }
+
     public static function rules ()
     {
     	return [
-            'name' => 'required',
-    		'alias' => 'required',
+            'alias' => 'required',
     	];
     }
 
     public static function messages()
     {
     	return [
-            'name.required' => '请填写组名!',
-    		'alias.required' => '请填写别名!',
+            'alias.required' => '请填写组名!',
     	];
     }
 

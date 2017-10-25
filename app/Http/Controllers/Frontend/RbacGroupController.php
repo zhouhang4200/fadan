@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
+use Pinyin;
 use App\Models\Module;
 use App\Models\RbacGroup;
 use Illuminate\Http\Request;
@@ -59,12 +60,12 @@ class RbacGroupController extends Controller
 
         if (count($permissionIds) > 0) {
 
-            $data['name'] = $request->name;
+            $data['name'] = Pinyin::permalink($request->alias, '');
 
             $data['alias'] = $request->alias;
 
             $data['user_id'] = Auth::id();
-            
+        
             RbacGroup::create($data)->permissions()->sync($permissionIds);  
 
             return redirect(route('rbacgroups.index'))->with('succ', '添加成功!');
@@ -125,7 +126,7 @@ class RbacGroupController extends Controller
 
         if (count($permissionIds) > 0) {
 
-            $data['name'] = $request->name;
+            $data['name'] = Pinyin::permalink($request->alias, '');
 
             $data['alias'] = $request->alias;
 

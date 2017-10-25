@@ -33,7 +33,7 @@
         @foreach($rbacGroups as $rbacGroup)
             <tr class="rbacGroup-td">
                 <td>{{ $rbacGroup->id }}</td>
-                <td>{{ $rbacGroup->name }}</td>
+                <td>{{ $rbacGroup->alias }}</td>
                 <td>
                 @foreach($rbacGroup->permissions as $permission)
                 {{ $permission->alias }} &nbsp;&nbsp;
