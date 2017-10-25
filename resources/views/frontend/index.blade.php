@@ -89,13 +89,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">账号 ：</label>
                 <div class="layui-input-inline">
-                    13123213
+                    {{ $user->name }}
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">账号&nbsp;&nbsp;&nbsp;ID ：</label>
                 <div class="layui-input-inline">
-                    111
+                    {{ $user->id }}
                 </div>
             </div>
 
@@ -104,24 +104,45 @@
             <div class="layui-inline">
                 <label class="layui-form-label">类型 ：</label>
                 <div class="layui-input-inline">
-                    111
+                    @if ($user->parent_id == 0)
+                        主账号
+                    @else
+                        子账号
+                    @endif
                 </div>
             </div>
             <div class="layui-inline" style="width:270px;">
                 <label class="layui-form-label">最后登录 ：</label>
                 <div class="layui-input-inline" style="margin-right:0;">
-                    2017年10月24日11:57:01
+                    {{ $loginHistoryTime }}
                 </div>
             </div>
         </div>
         <div class="layui-form-item icon">
-            <span><i class="layui-icon">&#xe612;</i> 未实名认证</span>
-            <span><i class="layui-icon">&#xe64c;</i> 交易密已设置</span>
+        @if ($ident && $ident->status == 1)
+            <span><i class="layui-icon">&#xe612;</i> 已实名认证</span>
+        @elseif (! $ident && $user->parent_id == 0)
+            <span><i class="layui-icon">&#xe612;</i> <a href="{{ route('idents.create') }}">未实名认证</a></span>
+        @else
+            <span><i class="layui-icon">&#xe612;</i>未实名认证</span>
+        @endif
         </div>
     </div>
     <div class="info-balance ">
-        <div class="available-balance">可用余额： 2017</div>
-        <div class="blocked-balances">冻结余额： 10086</div>
+        <div class="available-balance">可用余额：
+        @if ($user->parent_id == 0) 
+            {{ $user->userAsset ? $user->userAsset->balance : 0 }}
+        @else
+            {{ $user->parent->userAsset ? $user->parent->userAsset->balance : 0 }}
+        @endif
+        </div>
+        <div class="blocked-balances">冻结余额：
+        @if ($user->parent_id == 0)
+            {{ $user->userAsset ? $user->userAsset->frozen : 0 }}
+        @else
+            {{ $user->parent->userAsset ? $user->parent->userAsset->frozen : 0 }}
+        @endif
+         </div>
 
             <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>
             <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额提现</button>

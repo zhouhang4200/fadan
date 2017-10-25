@@ -12,4 +12,9 @@ class UserAsset extends Model
      * @var string
      */
     protected $primaryKey = 'user_id';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
