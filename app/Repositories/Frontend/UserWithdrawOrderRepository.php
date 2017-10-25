@@ -37,28 +37,33 @@ class UserWithdrawOrderRepository
      * 申请提现
      * @return mixed
      */
-    public function apply($fee, $remark)
+    public function store($fee, $remark)
     {
         DB::beginTransaction();
 
+        $withdrawNo = generateOrderNo();
+        $primaryUserId = Auth::user()->getPrimaryUserId();
+
+        // 资产冻结
+        try {
+            Asset::handle(new Freeze($fee, Freeze::TRADE_SUBTYPE_WITHDRAW, $withdrawNo, $remark, $primaryUserId));
+        }
+        catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        // 创建提现单
         $withdraw = new UserWithdrawOrder;
-        $withdraw->no                      = generateOrderNo();
+        $withdraw->no                      = $withdrawNo;
         $withdraw->status                  = 1;
         $withdraw->fee                     = $fee;
         $withdraw->creator_user_id         = Auth::user()->id;
-        $withdraw->creator_primary_user_id = Auth::user()->getPrimaryUserId();
+        $withdraw->creator_primary_user_id = $primaryUserId;
         $withdraw->remark                  = $remark;
 
         if (!$withdraw->save()) {
             DB::rollback();
             throw new Exception('申请失败');
-        }
-
-        try {
-            Asset::handle(new Freeze($fee, Freeze::TRADE_SUBTYPE_WITHDRAW, $withdraw->no, $remark, $withdraw->creator_primary_user_id));
-        }
-        catch (Exception $e) {
-            throw new Exception($e->getMessage());
         }
 
         DB::commit();
