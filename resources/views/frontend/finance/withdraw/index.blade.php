@@ -44,7 +44,6 @@
             <th>状态</th>
             <th>备注</th>
             <th>创建时间</th>
-            <th>更新时间</th>
         </tr>
     </thead>
     <tbody>
@@ -55,7 +54,6 @@
                 <td>{{ config('withdraw.status')[$data->status] }}</td>
                 <td>{{ $data->remark }}</td>
                 <td>{{ $data->created_at }}</td>
-                <td>{{ $data->updated_at }}</td>
             </tr>
         @endforeach
     </tbody>
