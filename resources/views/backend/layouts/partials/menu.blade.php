@@ -65,6 +65,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('finance.user-asset-daily') }}" @if($currentRouteName == 'finance.user-asset-daily') class="active" @endif>
+                                    用户资产日报
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('finance.user-amount-flow') }}" @if($currentRouteName == 'finance.user-amount-flow') class="active" @endif>
                                     用户资金流水
                                 </a>

@@ -1,13 +1,13 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 平台资产日报')
+@section('title', ' | 用户资产日报')
 
 @section('content')
 <div class="main-box">
     <div class="main-box-body clearfix">
         <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
             <ul class="layui-tab-title">
-                <li class="layui-this" lay-id="add">平台资产日报</li>
+                <li class="layui-this" lay-id="add">用户资产日报</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
@@ -27,6 +27,10 @@
                             </div>
 
                             <div class="col-md-2">
+                                <input type="text" class="form-control" placeholder="用户ID" name="user_id" value="{{ $userId }}">
+                            </div>
+
+                            <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
                                 <button class="btn btn-primary" type="button" id="export-flow">导出</button>
                             </div>
@@ -37,20 +41,19 @@
                         <thead>
                         <tr>
                             <th>日期</th>
-                            <th>平台资金</th>
-                            <th>平台托管</th>
-                            <th>用户余额</th>
-                            <th>用户冻结</th>
-                            <th>当日用户加款</th>
-                            <th>累计用户加款</th>
-                            <th>当日用户提现</th>
-                            <th>累计用户提现</th>
-                            <th>当日用户消费</th>
-                            <th>累计用户消费</th>
-                            <th>当日退款给用户</th>
-                            <th>累计退款给用户</th>
-                            <th>当日用户成交次数</th>
-                            <th>累计用户成交次数</th>
+                            <th>用户ID</th>
+                            <th>余额</th>
+                            <th>冻结</th>
+                            <th>当日加款</th>
+                            <th>累计加款</th>
+                            <th>当日提现</th>
+                            <th>累计提现</th>
+                            <th>当日消费</th>
+                            <th>累计消费</th>
+                            <th>当日从平台退款</th>
+                            <th>累计从平台退款</th>
+                            <th>当日成交次数</th>
+                            <th>累计成交次数</th>
                             <th>当日用户成交</th>
                             <th>累计用户成交</th>
                         </tr>
@@ -59,8 +62,7 @@
                             @foreach ($dataList as $data)
                                 <tr>
                                     <td>{{ $data->date }}</td>
-                                    <td>{{ $data->amount + 0 }}</td>
-                                    <td>{{ $data->managed + 0 }}</td>
+                                    <td>{{ $data->user_id }}</td>
                                     <td>{{ $data->balance + 0 }}</td>
                                     <td>{{ $data->frozen + 0 }}</td>
                                     <td>{{ $data->recharge + 0 }}</td>
@@ -71,15 +73,15 @@
                                     <td>{{ $data->total_consume + 0 }}</td>
                                     <td>{{ $data->refund + 0 }}</td>
                                     <td>{{ $data->total_refund + 0 }}</td>
-                                    <td>{{ $data->trade_quantity }}</td>
-                                    <td>{{ $data->total_trade_quantity }}</td>
-                                    <td>{{ $data->trade_amount + 0 }}</td>
-                                    <td>{{ $data->total_trade_amount + 0 }}</td>
+                                    <td>{{ $data->expend + 0 }}</td>
+                                    <td>{{ $data->total_expend + 0 }}</td>
+                                    <td>{{ $data->income + 0 }}</td>
+                                    <td>{{ $data->total_income + 0 }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $dataList->appends(['date_start' => $dateStart, 'date_end' => $dateEnd])->links() }}
+                    {{ $dataList->appends(['user_id' => $userId, 'date_start' => $dateStart, 'date_end' => $dateEnd])->links() }}
                 </div>
             </div>
         </div>

@@ -138,6 +138,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
         Route::get('user-asset', 'UserAssetController@index')->name('finance.user-asset');
 
+        Route::get('user-asset-daily', 'UserAssetDailyController@index')->name('finance.user-asset-daily');
+
         Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
     });
 

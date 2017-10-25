@@ -69,7 +69,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
         // 记录订单详情
         if (!empty($this->details)) {
-            $widget = $this->goods->template->getWidgetPluck();
+            $widget = $this->goods->goodsTemplate->widget->pluck('field_display_name', 'field_name');
 
             foreach ($this->details as $fieldName => $fieldValue) {
                 if (!isset($widget[$fieldName])) continue;
