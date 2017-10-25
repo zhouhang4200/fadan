@@ -11,5 +11,5 @@ interface AlgorithmInterface
      * @param $userId
      * @return mixed
      */
-    public static function compute($userId);
+    public static function compute($users);
 }

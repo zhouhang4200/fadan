@@ -11,8 +11,8 @@ class FailureRate implements AlgorithmInterface
      * @param $userId
      * @return string
      */
-    public static function compute($userId)
+    public static function compute($users)
     {
-        return  '计算失败率';
+        // return  '计算失败率';
     }
 }
