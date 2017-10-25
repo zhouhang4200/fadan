@@ -25,10 +25,6 @@ class Order
             DB::rollBack();
             throw new CustomException($e->getMessage());
         }
-        catch(Exception $e) {
-            DB::rollBack();
-            abort(404);
-        }
 
         DB::commit();
         return true;

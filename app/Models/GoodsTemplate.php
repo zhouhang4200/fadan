@@ -72,4 +72,9 @@ class GoodsTemplate extends Model
     {
        return  self::select('id')->where(['service_id' => $serviceId, 'game_id' => $gameId])->value('id');
     }
+
+    public function widget()
+    {
+        return $this->hasMany(GoodsTemplateWidget::class);
+    }
 }

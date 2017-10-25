@@ -18,18 +18,23 @@ class Goods extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
      */
     public function service()
     {
-        return $this->hasOne(Service::class, 'id', 'service_id');
+        return $this->belongsTo(Service::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
      */
     public function game()
     {
-        return $this->hasOne(Game::class, 'id', 'game_id');
+        return $this->belongsTo(Game::class);
+    }
+
+    public function goodsTemplate()
+    {
+        return $this->belongsTo(GoodsTemplate::class);
     }
 }
