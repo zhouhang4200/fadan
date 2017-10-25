@@ -364,7 +364,6 @@
             }, 'json');
             return false;
         });
-
         // 获取商品流程
         function goods() {
             if (serviceId != 0 && gameId != 0) {
