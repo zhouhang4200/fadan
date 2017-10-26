@@ -27,7 +27,7 @@
 
         <div class="right">
             <div class="content">
-                <div class="path">@yield('title')</div>
+                <div class="path"><span>@yield('title')</span></div>
                 @yield('main')
             </div>
         </div>
