@@ -44,13 +44,8 @@
         </div>
     </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <table class="layui-table">
-            <colgroup>
-                <col width="150">
-                <col width="200">
-                <col>
-            </colgroup>
+    <div class="layui-tab-item layui-show">
+        <table class="layui-table"  lay-size="sm">
             <thead>
             <tr>
                 <th>ID</th>

@@ -26,7 +26,6 @@ io.on('connection', function (socket) {
     })
 });
 
-
 redis.psubscribe('*', function (err, count) {
 });
 

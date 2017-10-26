@@ -21,13 +21,8 @@
 @endsection
 
 @section('main')
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <table class="layui-table">
-            <colgroup>
-                <col width="150">
-                <col width="200">
-                <col>
-            </colgroup>
+    <div class="layui-tab-item layui-show">
+        <table class="layui-table"  lay-size="sm">
             @if (! empty($ident) && $ident->type == 1)
             <thead>
             <tr>
@@ -44,7 +39,7 @@
                     <td>{{ $ident->phone_number }}</td>
                     <td>{{ $ident->identity_card }}</td>
                     <td>{{ $ident->created_at }}</td>
-                    <td style="text-align: center"><button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" style="color: #fff">编缉</a></td>
+                    <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a></td>
                 </tr>
             </tbody>
             @elseif (! empty($ident) && $ident->type == 2)
