@@ -5,7 +5,7 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
 $('#main-title').text($('title').text());
 
-var socket = io('http://s.market.dev');
+var socket = io('http://www.market.com:9090');
 socket.on('notification:NewOrderNotification', function (data) {
     console.log(data);
 });

@@ -1,7 +1,6 @@
 {
     "private": true,
-    "devDependencies": {
-    },
+    "devDependencies": {},
     "dependencies": {
         "ioredis": "^1.12.2",
         "socket.io": "^1.3.7"
