@@ -4,6 +4,11 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <style>
+        .layui-table th, .layui-table td {
+            width: 10%;
+        }
+    </style>
 @endsection
 
 @section('submenu')
