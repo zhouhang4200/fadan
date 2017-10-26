@@ -64,7 +64,7 @@ if (!function_exists('receiving')) {
     {
         // 将当前用户ID，写入订单抢单队列中
         $redis = RedisConnect::order();
-        $redis->lpush(config('rediskey.order.receiving') . $orderNo, $userId);
+        $redis->lpush(config('redis.order.receiving') . $orderNo, $userId);
     }
 }
 
@@ -79,7 +79,7 @@ if (!function_exists('receivingRecord')) {
     function receivingRecord($userId, $orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->setex(config('rediskey.order.receivingRecord') . $orderNo . $userId  , config('rediskey.timeout'), $userId);
+        return $redis->setex(config('redis.order.receivingRecord') . $orderNo . $userId  , config('redis.timeout'), $userId);
     }
 }
 
@@ -91,7 +91,7 @@ if (!function_exists('receivingUserLen')) {
     function receivingUserLen($orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->lLen(config('rediskey.order.receiving') . $orderNo);
+        return $redis->lLen(config('redis.order.receiving') . $orderNo);
     }
 }
 if (!function_exists('receivingUser')) {
@@ -102,7 +102,7 @@ if (!function_exists('receivingUser')) {
     function receivingUser($orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->lrange(config('rediskey.order.receiving') .  (string) $orderNo, 0, receivingUserLen($orderNo) );
+        return $redis->lrange(config('redis.order.receiving') .  (string) $orderNo, 0, receivingUserLen($orderNo) );
     }
 }
 
@@ -116,7 +116,7 @@ if (!function_exists('receivingRecordExist')) {
     function receivingRecordExist($userId, $orderNo)
     {
         $redis = RedisConnect::order();
-        return  $redis->get(config('rediskey.order.receivingRecord') . $orderNo . $userId);
+        return  $redis->get(config('redis.order.receivingRecord') . $orderNo . $userId);
     }
 }
 
@@ -127,7 +127,7 @@ if (!function_exists('waitReceivingGet')) {
     function waitReceivingGet()
     {
         $redis = RedisConnect::order();
-        return $redis->hgetall(config('rediskey.order.waitReceiving'));
+        return $redis->hgetall(config('redis.order.waitReceiving'));
     }
 }
 
@@ -140,7 +140,7 @@ if (!function_exists('waitReceivingDel')) {
     function waitReceivingDel($orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->hdel(config('rediskey.order.waitReceiving'), $orderNo);
+        return $redis->hdel(config('redis.order.waitReceiving'), $orderNo);
     }
 }
 
@@ -153,7 +153,7 @@ if (!function_exists('waitReceivingAdd')) {
     function waitReceivingAdd($orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->hset(config('rediskey.order.waitReceiving'), $orderNo, $orderNo);
+        return $redis->hset(config('redis.order.waitReceiving'), $orderNo, $orderNo);
     }
 }
 
@@ -169,7 +169,7 @@ if (!function_exists('generateOrderNo')) {
 
         // 今日订单数量
         $redis = RedisConnect::order();
-        $orderQuantity = $redis->incr(config('rediskey.order.quantity') . date('Ymd'));
+        $orderQuantity = $redis->incr(config('redis.order.quantity') . date('Ymd'));
         return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
 }

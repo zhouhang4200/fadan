@@ -34,7 +34,7 @@ class Weight
         $originUsers = [];
         $primaryUsers = [];
         foreach ($users as $user) {
-            $primaryUser = Cache::rememberForever(config('rediskey.use.getPrimaryId') . $user, function () use ($user) {
+            $primaryUser = Cache::rememberForever(config('redis.use.getPrimaryId') . $user, function () use ($user) {
                 return User::find($user)->getPrimaryUserId();
             });
             // 将传入的用户ID与它的主账号ID关联
