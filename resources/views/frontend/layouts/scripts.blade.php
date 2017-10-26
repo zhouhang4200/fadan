@@ -11,7 +11,7 @@ socket.on('notification:NewOrderNotification', function (data) {
 });
 
 function logout() {
-    layui.use(['form', 'layedit', 'laydate',], function(){
+    layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
         ,layer = layui.layer;
         layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){

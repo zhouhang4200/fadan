@@ -85,11 +85,9 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list');
 
         // 订单操作
-        Route::prefix('order')->group(function (){
-            Route::prefix('operation')->group(function (){
-                // 接单
-                Route::get('receiving/{id}', 'OrderOperationController@receiving')->name('frontend.workbench.order.receiving');
-            });
+        Route::prefix('order-operation')->group(function (){
+            // 接单
+            Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving');
         });
 	});
 });

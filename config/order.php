@@ -7,7 +7,7 @@ use App\Extensions\Order\ForeignOrder\KamenForeignOrder;
 // 订单
 return [
     'status' => [
-        1 => '已创建',
+        1 => '等待商户接单',
         2 => '停止抢单，分配中',
         3 => '已接单',
         4 => '已发货',
@@ -15,6 +15,7 @@ return [
         6 => '售后中',
         7 => '售后完成',
         8 => '订单完成',
+        9 => '已接单,待分配', // 临时状态不存表
     ],
 
     'operation_type' => [
@@ -42,6 +43,6 @@ return [
         'kamen' => KamenForeignOrder::Class,
     ],
 
-    // 订单分配下线 (最少接单人数)
-    'assignLowerLimit' => 5,
+    // 订单分配下限 (最少接单人数)
+    'assignLowerLimit' => 1,
 ];

@@ -202,12 +202,7 @@
             });
             // 订单操作
             form.on('select(operation)', function (data) {
-                layer.open({
-                    content: '测试回调',
-                    success: function (layero, index) {
-                        console.log(layero, index);
-                    }
-                });
+                eval(data.value + "('" + data.elem.getAttribute('data-no')  + "')");
             });
             // 选择服务
             form.on('select(service)', function (data) {
@@ -311,6 +306,25 @@
                     $('.' + type).html(result);
                     layui.form.render();
                 }, 'json');
+            }
+            // 订单操作：接单
+            function receiving(no) {
+                $.post('{{ route('frontend.workbench.order-operation.receiving') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
+            // 操作提示
+            function notification(type, message) {
+                if (type == 1) {
+                    layer.open({
+                        content: message,
+                        success: function (layero, index) {
+                            console.log(layero, index);
+                        }
+                    });
+                } else {
+                    layer.msg(message)
+                }
             }
             // 点击页码翻页
             $(document).on('click', '.pagination a', function (e) {

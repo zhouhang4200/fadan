@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Services\RedisConnect;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +14,13 @@ class OrderOperationController extends Controller
 {
     /**
      * 接单
-     * @param $orderNo
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return mixed
      */
-    public function receiving($orderNo)
+    public function receiving(Request $request)
     {
+        $orderNo = $request->no;
+
         // 获取当前用户ID
         $currentUserId = Auth::user()->id;
         // 获取主账号
@@ -31,6 +34,7 @@ class OrderOperationController extends Controller
         receiving($currentUserId, $orderNo);
         // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
         receivingRecord($primaryUserId, $orderNo);
+        waitReceivingAdd($orderNo);
         // 提示用户：接单成功等待系统分配
         return response()->ajax();
     }
