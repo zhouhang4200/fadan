@@ -44,7 +44,7 @@
                                                 @endforeach
                                             @endif
                                             </td>
-                                            <td style="text-align: center"><a href="{{ route('groups.edit', ['id' => $group->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <td style="text-align: center"><a href="{{ route('groups.edit', ['id' => $group->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</a>
                                             <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $group->id }})">删除</button></td>
                                         </tr>
                                         @empty

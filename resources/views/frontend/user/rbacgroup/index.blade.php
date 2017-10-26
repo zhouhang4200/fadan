@@ -47,7 +47,7 @@
                 <td>{{ $rbacGroup->created_at }}</td>
                 <td>
                     <div style="text-align: center">
-                    <button class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('rbacgroups.edit', ['id' => $rbacGroup->id]) }}" style="color: #fff">编辑</a></button>
+                    <a href="{{ route('rbacgroups.edit', ['id' => $rbacGroup->id]) }}" class="layui-btn layui-btn-normal layui-btn-small">编辑</a>
                     <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $rbacGroup->id }})">删除</button>
                     </div>
                 </td>

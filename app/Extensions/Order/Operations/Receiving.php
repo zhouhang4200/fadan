@@ -8,7 +8,7 @@ use App\Models\User;
 // 接单
 class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [2];
+    protected $acceptableStatus = [1, 2];
     protected $handledStatus    = 3;
     protected $type             = 3;
 

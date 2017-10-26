@@ -4,13 +4,13 @@
 <script>
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
 
-var socket = io('http://s.market.dev');
+var socket = io('http://www.market.com:9090');
 socket.on('notification:NewOrderNotification', function (data) {
     console.log(data);
 });
 
 function logout() {
-    layui.use(['form', 'layedit', 'laydate',], function(){
+    layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
         ,layer = layui.layer;
         layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){

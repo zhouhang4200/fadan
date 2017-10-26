@@ -78,11 +78,44 @@ class GoodsController extends Controller
         }
     }
 
+    public function edit(ServiceRepository $serviceRepository, GameRepository $gameRepository, $id)
+    {
+        $goods = Goods::find($id);
+        $games = $gameRepository->available();
+        $services = $serviceRepository->available();
+
+        return view('frontend.goods.edit', compact('services', 'games', 'goods'));
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            $data = $request->data;
+            $goods = Goods::find($data['id']);
+
+            $data['user_id'] = Auth::user()->getPrimaryUserId();
+            $data['goods_template_id'] = GoodsTemplate::getTemplateId($data['service_id'], $data['game_id']);
+            $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
+
+            $goods->update($data);
+
+            return response()->ajax('1', '修改成功');
+        } catch (Exception $exception) {
+            return response()->ajax(0, '修改失败');
+        }
+    }
+
     /**
      *
      */
-    public function destroy()
+    public function destroy(Request $request)
     {
+        $int = Goods::destroy($request->id);
 
+        if ($int) {
+            return response()->ajax(['code' => '1', 'message' => '删除成功']);
+        } else {
+            return response()->ajax(['code' => '2', 'message' => '删除失败']);
+        }
     }
 }

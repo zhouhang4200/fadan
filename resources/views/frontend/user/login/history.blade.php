@@ -40,17 +40,12 @@
         </div>
         <div class="layui-inline" >
             <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1">查找</button>
-            <a href="{{ route('login.history') }}"  class="layui-btn layui-btn-normal layui-btn-small">返回</a>
+            <a href="{{ route('login.history') }}" class="layui-btn layui-btn-normal layui-btn-small">返回</a>
         </div>
     </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <table class="layui-table">
-            <colgroup>
-                <col width="150">
-                <col width="200">
-                <col>
-            </colgroup>
+    <div class="layui-tab-item layui-show">
+        <table class="layui-table"  lay-size="sm">
             <thead>
             <tr>
                 <th>ID</th>

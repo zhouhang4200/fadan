@@ -1,3 +1,10 @@
+<?php
+// 获取当前用户ID
+$currentUserId = Auth::user()->id;
+// 获取主账号
+$primaryUserId = Auth::user()->getPrimaryUserId();
+?>
+
 <table class="layui-table" lay-size="sm">
         <thead>
         <tr>
@@ -22,7 +29,8 @@
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
-                <td>{{ $item->status }}</td>
+                <?php $status = receivingRecordExist( $primaryUserId, $item->no) ? 9  : $item->status;  ?>
+                <td>{{ config('order.status')[$status] }}</td>
                 <td>
                     @if($type == 'need')
                         <div class="layui-input-inline">
@@ -59,12 +67,13 @@
                         </div>
                     @elseif($type == 'market')
                         <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation">
+                            <select name="city" lay-verify="required" lay-filter="operation" data-no="{{ $item->no }}">
                                 <option value="">请选择操作</option>
-                                <option value="0">取消订单</option>
-                                <option value="1">订单发货</option>
-                                <option value="1">订单失败</option>
-                                <option value="2">返回集市</option>
+                                @if($item->creator_user_id == $currentUserId || $item->creator_primary_user_id == $primaryUserId)
+                                    <option value="0">取消订单</option>
+                                @elseif (!receivingRecordExist( $primaryUserId, $item->no))
+                                    <option value="receiving">立即接单</option>
+                                @endif
                             </select>
                         </div>
                     @endif

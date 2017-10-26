@@ -48,6 +48,10 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::get('create', 'GoodsController@create')->name('frontend.goods.create');
         // 保存商品
         Route::post('store', 'GoodsController@store')->name('frontend.goods.store');
+        // 编辑视图
+        Route::get('edit/{id}', 'GoodsController@edit')->name('frontend.goods.edit');
+        // 修改商品
+        Route::post('update', 'GoodsController@update')->name('frontend.goods.update');
         // 删除商品
         Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy');
     });
@@ -81,11 +85,9 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list');
 
         // 订单操作
-        Route::prefix('order')->group(function (){
-            Route::prefix('operation')->group(function (){
-                // 接单
-                Route::get('receiving/{id}', 'OrderOperationController@receiving')->name('frontend.workbench.order.receiving');
-            });
+        Route::prefix('order-operation')->group(function (){
+            // 接单
+            Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving');
         });
 	});
 });
