@@ -1,8 +1,14 @@
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
+<script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
 $('#main-title').text($('title').text());
+
+var socket = io('http://s.market.dev');
+socket.on('notification:NewOrderNotification', function (data) {
+    console.log(data);
+});
 
 function logout() {
     layui.use(['form', 'layedit', 'laydate',], function(){

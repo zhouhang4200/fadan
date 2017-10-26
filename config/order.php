@@ -14,6 +14,7 @@ return [
         5 => '发货失败',
         6 => '售后中',
         7 => '售后完成',
+        8 => '订单完成',
     ],
 
     'operation_type' => [
@@ -40,4 +41,7 @@ return [
         'tmall' => TmallForeignOrder::Class,
         'kamen' => KamenForeignOrder::Class,
     ],
+
+    // 订单分配下线 (最少接单人数)
+    'assignLowerLimit' => 5,
 ];

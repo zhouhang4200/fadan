@@ -77,7 +77,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::post('child', 'OrderController@widgetChild')->name('frontend.workbench.widget.child');
         // 下单
         Route::post('order', 'OrderController@order')->name('frontend.workbench.order');
-
+        // 订单列表
+        Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list');
 
         // 订单操作
         Route::prefix('order')->group(function (){

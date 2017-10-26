@@ -70,34 +70,92 @@ if (!function_exists('receiving')) {
 
 if (!function_exists('receivingRecord')) {
     /**
-     * 用户接单记录
+     * 用户接单记录 用主账号ID记录
+     * 用户抢单后写入一条记录
      * @param $userId
      * @param $orderNo
      */
     function receivingRecord($userId, $orderNo)
     {
-        // 用户抢单后写入一条记录
         $redis = RedisConnect::order();
-        $redis->setex(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId, Config::get('rediskey.timeout'), $userId);
+        return $redis->setex(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId, Config::get('rediskey.timeout'), $userId);
+    }
+}
+
+if (!function_exists('receivingUserLen')) {
+    /**
+     * 获取接单用户队列长度
+     * @param $orderNo
+     */
+    function receivingUserLen($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->lLen(Config::get('rediskey.order.receiving') . $orderNo);
+    }
+}
+if (!function_exists('receivingUser')) {
+    /**
+     * 获取接单用户队列所有用户ID
+     * @param $orderNo
+     */
+    function receivingUser($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->lrange(Config::get('rediskey.order.receiving') . $orderNo, 0, receivingUserLen($orderNo) );
     }
 }
 
 if (!function_exists('receivingRecordExist')) {
     /**
-     * 用户接单记录是否存在
+     * 用户接单记录是否存在 用主账号ID记录
      * @param $userId
      * @param $orderNo
      */
     function receivingRecordExist($userId, $orderNo)
     {
-        // 查询是否有抢单记录
         $redis = RedisConnect::order();
         return $redis->get(Config::get('rediskey.order.receivingRecord') . $orderNo . $userId);
     }
 }
 
-if (!function_exists('generateOrderNo')) {
+if (!function_exists('waitReceivingGet')) {
+    /**
+     * 获取 待接单的订单
+     */
+    function waitReceivingGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hGetAll(Config::get('rediskey.order.waitReceiving'));
+    }
+}
 
+if (!function_exists('waitReceivingDel')) {
+    /**
+     * 删除 待接单的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function waitReceivingDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hDel(Config::get('rediskey.order.waitReceiving'), $orderNo);
+    }
+}
+
+if (!function_exists('waitReceivingAdd')) {
+    /**
+     * 添加 待接单的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function waitReceivingAdd($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hSet(Config::get('rediskey.order.waitReceiving'), $orderNo);
+    }
+}
+
+if (!function_exists('generateOrderNo')) {
     /**
      * 生成订单号
      * @return string
@@ -108,7 +166,7 @@ if (!function_exists('generateOrderNo')) {
         $orderDate = date('YmdHis');
 
         // 今日订单数量
-        $redis = \App\Services\RedisConnect::order();
+        $redis = RedisConnect::order();
         $orderQuantity = $redis->incr(Config::get('rediskey.order.quantity') . date('Ymd'));
         return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
