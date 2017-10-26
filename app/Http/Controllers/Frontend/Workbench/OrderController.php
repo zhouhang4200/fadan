@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Events\NotificationEvent;
+use App\Extensions\Asset\Expend;
 use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +11,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\GoodsTemplate;
 
-use Order, \Exception;
+use Order, Asset, DB, \Exception;
 use App\Repositories\Frontend\GameRepository;
 use App\Repositories\Frontend\ServiceRepository;
 use App\Repositories\Frontend\UserGoodsRepository;
@@ -53,7 +55,7 @@ class OrderController extends Controller
         $orders = $orderRepository->dataList($type, $no);
 
         if ($request->ajax()) {
-            if (!in_array($type, ['need' , 'ing', 'finish', 'after-sales', 'market', 'search'])) {
+            if (!in_array($type, ['need' , 'ing', 'finish', 'cancel', 'after-sales', 'market', 'search'])) {
                 return response()->ajax(0, '不存在的类型');
             }
             return response()->json(\View::make('frontend.workbench.order-list', [
@@ -84,10 +86,17 @@ class OrderController extends Controller
             unset($orderData['amount']);
             unset($orderData['foreign_order_no']);
 
-            Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
-
+            DB::beginTransaction();
+            try {
+                $order = Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
+                // 下单扣款
+//                Asset::handle(new Expend($order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $order->no, '下订单', Auth::user()->id, 0));
+            } catch (CustomException $exception) {
+                return response()->ajax(0, $exception->getMessage());
+            }
+            DB::commit();
             // 给所有用户推送新订单消息
-
+            event(new NotificationEvent('NewOrderNotification', $order->toArray()));
             return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');

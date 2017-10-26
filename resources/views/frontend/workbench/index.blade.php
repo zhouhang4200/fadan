@@ -25,7 +25,7 @@
             width: 16px;
             padding: 8px 6px 8px 7px;
             margin-top: -80px;
-            border: solid 1px #2588e5;
+            border: solid 1px #1E9FFF;
             border-right: 0 none;
             position: absolute;
             z-index: 99;
@@ -43,7 +43,7 @@
             width: 16px;
             padding: 8px 6px 8px 7px;
             margin-top: -80px;
-            border: solid 1px #2588e5;
+            border: solid 1px #1E9FFF;
             border-right: 0 none;
             position: absolute;
             z-index: 99;
@@ -53,6 +53,77 @@
             cursor: pointer;
             box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
             border-radius: 0 5px 5px 0;
+        }
+        .prom-wrap {
+            width: 100%;
+            left: 0;
+            bottom: 0;
+        }
+        .fixed {
+            position: fixed;
+        }
+        .prom-inner {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .prom-list {
+            background: white;
+            position: relative;
+            z-index: 100;
+            border: 1px solid #1E9FFF;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 290px;
+            margin: 5px;
+        }
+        .prom-list-header {
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 18px;
+            padding-left: 13px;
+            text-align: left;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .relative {
+            position: relative;
+        }
+        .prom-list-body {
+            padding: 20px 15px;
+            font-size: 13px;
+        }
+        .prom-list-footer {
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #1E9FFF;
+            border-top: 1px solid #1E9FFF;
+        }
+        .prom-list-footer .prom-list-footer-tab.get {
+            border-right: 1px solid #1E9FFF;
+        }
+        .prom-list-footer .prom-list-footer-tab {
+            width: 50%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .prom-list-contents span {
+            width: 48%;
+        }
+        .close-prom {
+            background-color: #1E9FFF;
+            color: white;
+            padding: 2px 6px;
+            top: 6px;
+            right: 6px;
+            line-height: 22px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
         }
     </style>
 @endsection
@@ -64,6 +135,7 @@
             <li class="" lay-id="ing">处理中</li>
             <li class="" lay-id="finish">已完成</li>
             <li class="" lay-id="after-sales">售后中</li>
+            <li class="" lay-id="cancel">已取消</li>
             <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue">12321</span></li>
         </ul>
         <div class="layui-tab-content">
@@ -71,6 +143,7 @@
             <div class="layui-tab-item ing"></div>
             <div class="layui-tab-item finish"></div>
             <div class="layui-tab-item after-sales"></div>
+            <div class="layui-tab-item cancel"></div>
             <div class="layui-tab-item market"></div>
         </div>
     </div>
@@ -123,7 +196,8 @@
 @endsection
 
 @section('js')
-    <script id="goodsTemplate" type="text/html">
+    <script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?v20170927') }}"></script>
+    <script type="text/html" id="goodsTemplate">
         @{{#  layui.each(d, function(index, item){ }}
 
         @{{#  if(item.field_type === 1){ }}
@@ -313,6 +387,37 @@
                     notification(result.status, result.message)
                 }, 'json')
             }
+            // 订单操作：查看
+            function detail(no) {
+                layer.open({
+                    type: 2,
+                    title: '订单详情',
+                    shadeClose: true,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['500px', '600px'],
+                    scrollbar: false,
+                    content: "{{ url('/workbench/order-operation/detail') }}?id=" + no
+                });
+            }
+            // 订单发货
+            function delivery(no) {
+                $.post('{{ route('frontend.workbench.order-operation.delivery') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
+            // 失败订单
+            function fail(no) {
+                $.post('{{ route('frontend.workbench.order-operation.fail') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
+            // 取消订单
+            function cancel(no) {
+                $.post('{{ route('frontend.workbench.order-operation.cancel') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
+
             // 操作提示
             function notification(type, message) {
                 if (type == 1) {
@@ -351,6 +456,18 @@
                 $(".close-btn").addClass("layui-hide").removeClass("layui-show");
                 $(".open-btn").addClass("layui-show").removeClass("layui-hide");
             });
+
+        });
+
+        socket.on('notification:NewOrderNotification', function (data) {
+            var data = {
+                'orderId':2,
+                'gameName':2,
+                'goods':2,
+                'price':2,
+                'remarks':2
+            };
+            orderHub.addData(data);
         });
     </script>
 @endsection
