@@ -31,7 +31,7 @@
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->created_at }}</td>
                                             <td style="text-align: center;">
-                                            @if (! $user->roles->count() > 0)<a href="{{ route('groups.create', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >添加角色</button></a>
+                                            @if (! $user->roles->count() > 0)<a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加角色</a>
                                             @else
                                             <a href="{{ route('groups.show', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
                                             @endif

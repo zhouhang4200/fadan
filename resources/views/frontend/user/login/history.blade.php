@@ -40,7 +40,7 @@
         </div>
         <div class="layui-inline" >
             <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1">查找</button>
-            <a href="{{ route('login.history') }}"  class="layui-btn layui-btn-normal layui-btn-small">返回</a>
+            <a href="{{ route('login.history') }}" class="layui-btn layui-btn-normal layui-btn-small">返回</a>
         </div>
     </form>
 

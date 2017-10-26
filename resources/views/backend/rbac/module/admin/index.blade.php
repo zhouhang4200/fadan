@@ -31,7 +31,7 @@
                                             <td>{{ $module->id }}</td>
                                             <td>{{ $module->alias }}</td>
                                             <td>{{ $module->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('admin-modules.edit', ['id' => $module->id])  }}"><button class="layui-btn layui-btn-normal layui-btn-small">编缉</button></a>
+                                            <td style="text-align: center"><a href="{{ route('admin-modules.edit', ['id' => $module->id])  }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a>
                                             <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $module->id }})">删除</button></td>
                                         </tr>
                                     @empty
