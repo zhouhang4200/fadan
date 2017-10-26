@@ -30,6 +30,8 @@ use App\Extensions\Order\Operations\TurnBack;
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
 use Artisan;
+use App\Models\UserAmountFlow;
+use App\Models\UserWithdrawOrder;
 
 class TestController extends Controller
 {
@@ -40,7 +42,19 @@ class TestController extends Controller
         // $this->testOrder();
         // $this->command();
 
-        $repository->apply(11, '没钱了取点钱');
+        $userAmountFlow = UserAmountFlow::find(1);
+
+        // $withdraw = new UserWithdrawOrder;
+        // $withdraw->no                      = 1;
+        // $withdraw->status                  = 1;
+        // $withdraw->fee                     = 1;
+        // $withdraw->creator_user_id         = 1;
+        // $withdraw->creator_primary_user_id = 1;
+        // $withdraw->remark                  = 1;
+        // $withdraw->save();
+        // $withdraw->userAmountFlows()->save($userAmountFlow);
+
+        dump($userAmountFlow->tradeOrder());
     }
 
     public function testAsset()

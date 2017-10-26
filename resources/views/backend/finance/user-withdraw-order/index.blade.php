@@ -107,7 +107,7 @@ layui.use(['layer'], function () {
     // 完成
     $('.complete').click(function () {
         var id = $(this).data('id');
-        layer.confirm('再次确认！' , function (layerConfirm) {
+        layer.confirm('提现已完成？' , function (layerConfirm) {
             $.post("{{ route('finance.user-widthdraw-order.complete', '') }}/" + id, function (data) {
                 layer.close(layerConfirm);
                 if (data.status === 1) {
@@ -124,7 +124,7 @@ layui.use(['layer'], function () {
     // 拒绝
     $('.refuse').click(function () {
         var id = $(this).data('id');
-        layer.confirm('再次确认！' , function (layerConfirm) {
+        layer.confirm('拒绝提现？' , function (layerConfirm) {
             $.post("{{ route('finance.user-widthdraw-order.refuse', '') }}/" + id, function (data) {
                 layer.close(layerConfirm);
                 if (data.status === 1) {

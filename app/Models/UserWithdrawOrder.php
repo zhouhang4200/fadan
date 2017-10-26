@@ -56,4 +56,14 @@ class UserWithdrawOrder extends Model
 
         DB::commit();
     }
+
+    public function userAmountFlows()
+    {
+        return $this->morphMany(UserAmountFlow::class, 'table');
+    }
+
+    public function platformAmountFlows()
+    {
+        return $this->morphMany(PlatformAmountFlow::class, 'table');
+    }
 }

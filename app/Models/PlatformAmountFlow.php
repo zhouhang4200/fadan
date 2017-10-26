@@ -12,4 +12,14 @@ class PlatformAmountFlow extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    public function userAmountFlows()
+    {
+        return $this->morphMany(UserAmountFlow::class, 'table');
+    }
+
+    public function platformAmountFlows()
+    {
+        return $this->morphMany(PlatformAmountFlow::class, 'table');
+    }
 }
