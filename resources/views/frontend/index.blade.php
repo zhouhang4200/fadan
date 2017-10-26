@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">账号&nbsp;&nbsp;&nbsp;ID ：</label>
+                <label class="layui-form-label">主账号ID ：</label>
                 <div class="layui-input-inline">
                     {{ $user->id }}
                 </div>

@@ -28,17 +28,44 @@ class OrderController extends Controller
     /**
      * @param ServiceRepository $serviceRepository
      * @param GameRepository $gameRepository
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @internal param Request $request
+     * @internal param OrderRepository $orderRepository
      */
     public function index(ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
         $services = $serviceRepository->available();
         $games = $gameRepository->available();
-        return view('frontend.workbench.index', compact('services', 'games'));
+
+        return view('frontend.workbench.index', compact('orders', 'services', 'games', 'type', 'no'));
     }
 
     /**
-     * 下订单
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function orderList(Request $request,  OrderRepository $orderRepository)
+    {
+        $type = $request->input('type', 'need');
+        $no = $request->order_no;
+
+        $orders = $orderRepository->dataList($type, $no);
+
+        if ($request->ajax()) {
+            if (!in_array($type, ['need' , 'ing', 'finish', 'after-sales', 'market', 'search'])) {
+                return response()->ajax(0, '不存在的类型');
+            }
+            return response()->json(\View::make('frontend.workbench.order-list', [
+                'type' => $type,
+                'no' => $no,
+                'orders' => $orders,
+            ])->render());
+        }
+    }
+
+    /**
+     * 下单
      * @param Request $request
      */
     public function order(Request $request)
@@ -58,6 +85,9 @@ class OrderController extends Controller
             unset($orderData['foreign_order_no']);
 
             Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
+
+            // 给所有用户推送新订单消息
+
             return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
@@ -114,17 +144,5 @@ class OrderController extends Controller
 
         return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id])]);
     }
-
-    /**
-     * 订单列表获取
-     * @param Request $request
-     * @param OrderRepository $orderRepository
-     */
-    public function orderList(Request $request, OrderRepository $orderRepository)
-    {
-        $status = $request->status;
-        $orderNO = $request->order_no;
-
-        $orderRepository->dataList($status, $orderNO);
-    }
 }
+

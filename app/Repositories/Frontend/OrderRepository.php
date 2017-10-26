@@ -22,13 +22,31 @@ class OrderRepository
      * @param $orderNO
      * @param int $pageSize
      */
-    public function dataList($status, $orderNO, $pageSize = 20)
+    public function dataList($status, $orderNO, $pageSize = 3)
     {
-        $dataList = Order::where('user_id', Auth::user()->getPrimaryUserId())
-            ->when(!empty($status), function ($query) use ($status) {
-                return $query->where('status', $status);
+        $userId = Auth::user()->id;
+
+        $dataList = Order::when($status == 'need', function ($query) use ($status,$userId) {
+                return $query->where(['creator_user_id' =>  $userId, 'status' => 1])
+                    ->orWhere(['gainer_user_id' =>  $userId, 'status' => 3]);
             })
-            ->when(!empty($orderNO), function ($query) use ($orderNO) {
+            ->when($status == 'ing', function ($query) use ($orderNO, $userId) {
+                return $query->where('status', 3);
+            })
+            ->when($status == 'finish', function ($query) use ($orderNO, $userId) {
+                return $query->whereIn('status', [4, 8])
+                    ->where('creator_user_id',$userId)
+                    ->orWhere('gainer_user_id',$userId);
+            })
+            ->when($status == 'after-sales', function ($query) use ($orderNO, $userId) {
+                return $query->whereIn('status', [6, 7])
+                    ->where('creator_user_id',$userId)
+                    ->orWhere('gainer_user_id',$userId);
+            })
+            ->when($status == 'market', function ($query) use ($orderNO, $userId) {
+                return $query->where('status', 1);
+            })
+            ->when($status == 'search', function ($query) use ($orderNO) {
                 return $query->where('no', $orderNO);
             })
             ->orderBy('id', 'desc')

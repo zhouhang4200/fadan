@@ -19,7 +19,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      * @param string $foreignOrderNO 外部单号
      * @param int $source 来源
      * @param int $goodsId 商品id
-     * @param decimal $originalPrice 原价
+     * @param float $originalPrice 原价
      * @param int $quantity 数量
      * @param array $details 订单详细参数 例：['version' => '版本','account' => '账号','region'  => '区服']
      */
