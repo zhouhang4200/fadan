@@ -145,7 +145,7 @@
          </div>
 
         <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>
-        @inject('withdraw', 'App\Services\Views\WidthdrawService')
+        @inject('withdraw', 'App\Services\Views\WithdrawService')
         {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
     </div>
 </div>

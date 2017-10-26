@@ -51,7 +51,7 @@ abstract class Operation
         $this->order->status = $this->handledStatus;
         if (!$this->order->save()) {
             DB::rollback();
-            throw new Exception('订单状态更新失败');
+            throw new Exception('订单操作失败');
         }
     }
 

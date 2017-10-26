@@ -74,6 +74,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     用户资金流水
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('finance.user-widthdraw-order') }}" @if($currentRouteName == 'finance.user-widthdraw-order') class="active" @endif>
+                                    用户提现管理
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @hasanyrole('admin.super-manager|admin.manager')

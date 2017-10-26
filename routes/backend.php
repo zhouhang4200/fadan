@@ -141,6 +141,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('user-asset-daily', 'UserAssetDailyController@index')->name('finance.user-asset-daily');
 
         Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
+
+        Route::get('user-widthdraw-order', 'UserWithdrawOrderController@index')->name('finance.user-widthdraw-order');
+        Route::post('user-widthdraw-order/complete/{userWithdrawOrder}', 'UserWithdrawOrderController@complete')->name('finance.user-widthdraw-order.complete');
+        Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse');
     });
 
     Route::prefix('template')->group(function (){
@@ -149,4 +153,3 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('icons2', 'TemplateController@icons2')->name('template.icons2');
     });
 });
-

@@ -28,7 +28,7 @@
             <button class="layui-btn layui-btn-normal" type="submit">查询</button>
         </div>
 
-        @inject('withdraw', 'App\Services\Views\WidthdrawService')
+        @inject('withdraw', 'App\Services\Views\WithdrawService')
         {{ $withdraw->button('提现', 'layui-btn layui-btn-normal', 'float:right;') }}
     </div>
 </form>
