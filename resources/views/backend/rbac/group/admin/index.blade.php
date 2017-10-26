@@ -2,6 +2,14 @@
 
 @section('title', ' | 后台账号角色列表')
 
+@section('css')
+    <style>
+        .layui-table th, .layui-table td {
+            width: 10%;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
