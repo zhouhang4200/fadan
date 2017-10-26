@@ -30,7 +30,6 @@ class OrderAssign extends Command
      */
     public function handle()
     {
-
         // 获取所有待分配订单
         foreach (waitReceivingGet() as $orderNo) {
             // 检测是否有用户接单，及接单数是否达到平台设置的下线 是：进行下一步 否：检测下一个订单

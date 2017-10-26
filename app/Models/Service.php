@@ -28,4 +28,9 @@ class Service extends Model
     {
         return $this->hasOne(AdminUser::class, 'id', 'updated_admin_user_id');
     }
+
+    public function goodses()
+    {
+        return $this->hasMany(Goods::class);
+    }
 }

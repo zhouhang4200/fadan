@@ -2,6 +2,17 @@
 
 @section('title', '商品 - 商品列表')
 
+@section('css')
+    <style>
+        .user-td td div{
+            text-align: center;width: 320px;
+        }
+        .layui-table tr th {
+            text-align: center;
+        }
+    </style>
+@endsection
+
 @section('submenu')
     @include('frontend.goods.submenu')
 @endsection
@@ -64,7 +75,8 @@
                 <td>{{ $item->foreign_goods_id }}</td>
                 <td>{{ $item->created_at }}</td>
                 <td>{{ $item->updated_at }}</td>
-                <td>/</td>
+                <td><button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}" style="color: #fff">编辑</a></button>
+                <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="deletes({{ $item->id }})">删除</button></td>
             </tr>
         @empty
             <tr>
@@ -83,6 +95,32 @@
 
 @section('js')
     <script>
+        // 删除
+        function deletes(id)
+        {
+             layui.use(['form', 'layedit', 'laydate',], function(){
+                var form = layui.form
+                ,layer = layui.layer;
+                layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('frontend.goods.destroy') }}",
+                        data:{id: id},
+                        success: function (data) {
+                            if (data.status.code == 1) {
+                                layer.msg('删除成功', {icon: 6, time:1000},);
+                                window.location.href = "{{ route('frontend.goods.index') }}";
+                                
+                            } else {
+                                layer.msg('删除失败', {icon: 5, time:1000},);                  
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+
+            });
+        };
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
                     ,layer = layui.layer
@@ -102,5 +140,6 @@
                 return false;
             });
         });
+
     </script>
 @endsection
