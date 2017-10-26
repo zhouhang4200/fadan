@@ -130,7 +130,7 @@
     </div>
     <div class="info-balance ">
         <div class="available-balance">可用余额：
-        @if ($user->parent_id == 0) 
+        @if ($user->parent_id == 0)
             {{ $user->userAsset ? $user->userAsset->balance : 0 }}
         @else
             {{ $user->parent->userAsset ? $user->parent->userAsset->balance : 0 }}
@@ -144,8 +144,9 @@
         @endif
          </div>
 
-            <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>
-            <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额提现</button>
+        <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>
+        @inject('withdraw', 'App\Services\Views\WidthdrawService')
+        {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
     </div>
 </div>
 <div class="layui-tab">

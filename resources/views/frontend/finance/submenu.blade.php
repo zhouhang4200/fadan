@@ -11,8 +11,8 @@
         <a href="{{ route('frontend.finance.amount-flow') }}">资金流水</a>
         <div class="arrow"></div>
     </li>
-    <li class="{{ Route::currentRouteName() == 'frontend.finance.widthdraw-order' ? 'current' : '' }}">
-        <a href="{{ route('frontend.finance.widthdraw-order') }}">我的提现</a>
+    <li class="{{ Route::currentRouteName() == 'frontend.finance.withdraw-order' ? 'current' : '' }}">
+        <a href="{{ route('frontend.finance.withdraw-order') }}">我的提现</a>
         <div class="arrow"></div>
     </li>
 </ul>

@@ -61,8 +61,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily');
 
-        Route::get('widthdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.widthdraw-order');
-        Route::post('widthdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.widthdraw-order.store');
+        Route::get('withdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.withdraw-order');
+        Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store');
 	});
 
 	// 工作台
