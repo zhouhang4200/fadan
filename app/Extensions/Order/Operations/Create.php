@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Repositories\Api\GoodsRepository;
+use Asset;
+use App\Extensions\Asset\Expend;
 
 // 创建订单
 class Create extends \App\Extensions\Order\Operations\Base\Operation
@@ -75,11 +77,11 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                 if (!isset($widget[$fieldName])) continue;
 
                 $orderDetail = new OrderDetail;
-                $orderDetail->order_no           = $this->order->no;
+                $orderDetail->order_no                = $this->order->no;
+                $orderDetail->field_name              = $fieldName;
+                $orderDetail->field_display_name      = $widget[$fieldName];
+                $orderDetail->filed_value             = $fieldValue;
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
-                $orderDetail->field_name         = $fieldName;
-                $orderDetail->field_display_name = $widget[$fieldName];
-                $orderDetail->filed_value        = $fieldValue;
 
                 if (!$orderDetail->save()) {
                     DB::rollback();
@@ -88,6 +90,22 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
                 $this->order->remark .= "{$widget[$fieldName]}: {$fieldValue}; ";
             }
+        }
+    }
+
+    public function updateAsset()
+    {
+        Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '下订单', $this->order->creator_primary_user_id));
+
+        // 写多态关联
+        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
         }
     }
 

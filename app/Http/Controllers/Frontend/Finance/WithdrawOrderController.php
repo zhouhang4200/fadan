@@ -34,7 +34,7 @@ class WithdrawOrderController extends Controller
         ]);
 
         try {
-            $repository->store($request->fee, trim($request->remark));
+            $repository->store($request->fee, trim($request->remark) ?: config('withdraw.status')[1]);
         }
         catch (Exception $e) {
             return response()->ajax(0, $e->getMessage());

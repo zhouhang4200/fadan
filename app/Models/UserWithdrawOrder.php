@@ -31,6 +31,17 @@ class UserWithdrawOrder extends Model
             throw new Exception('操作失败');
         }
 
+        // 写多态关联
+        if (!$this->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        if (!$this->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
         DB::commit();
     }
 
@@ -54,6 +65,27 @@ class UserWithdrawOrder extends Model
             throw new Exception('操作失败');
         }
 
+        // 写多态关联
+        if (!$this->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        if (!$this->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
         DB::commit();
+    }
+
+    public function userAmountFlows()
+    {
+        return $this->morphMany(UserAmountFlow::class, 'flowable');
+    }
+
+    public function platformAmountFlows()
+    {
+        return $this->morphMany(PlatformAmountFlow::class, 'flowable');
     }
 }

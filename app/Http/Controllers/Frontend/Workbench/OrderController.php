@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend\Workbench;
 
 use App\Events\NotificationEvent;
-use App\Extensions\Asset\Expend;
 use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +10,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\GoodsTemplate;
 
-use Order, Asset, DB, \Exception;
+use Order, Exception;
 use App\Repositories\Frontend\GameRepository;
 use App\Repositories\Frontend\ServiceRepository;
 use App\Repositories\Frontend\UserGoodsRepository;
@@ -86,21 +85,15 @@ class OrderController extends Controller
             unset($orderData['amount']);
             unset($orderData['foreign_order_no']);
 
-            DB::beginTransaction();
             try {
-                $order = Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
-                // 下单扣款
-                Asset::handle(new Expend($order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $order->no, '下订单', Auth::user()->id, 0));
+                Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
-            DB::commit();
             // 给所有用户推送新订单消息
-            event(new NotificationEvent('NewOrderNotification', $order->toArray()));
+            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
             return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
-            return response()->ajax(0, '下单失败请联系平台工作人员');
-        } catch (Exception $exception) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
         }
     }

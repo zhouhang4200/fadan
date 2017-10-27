@@ -66,6 +66,17 @@ class UserWithdrawOrderRepository
             throw new Exception('申请失败');
         }
 
+        // 写多态关联
+        if (!$withdraw->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        if (!$withdraw->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
         DB::commit();
     }
 }

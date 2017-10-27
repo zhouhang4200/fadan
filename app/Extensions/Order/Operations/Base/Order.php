@@ -9,6 +9,8 @@ use DB;
 // 订单
 class Order
 {
+    private $_order;
+
     public function handle(Operation $operation)
     {
         DB::beginTransaction();
@@ -17,7 +19,8 @@ class Order
             $operation->getObject();
             $operation->createLogObject();
             $operation->setAttributes();
-            $operation->save();
+            $this->_order = $operation->save();
+            $operation->updateAsset();
             $operation->setDescription();
             $operation->saveLog();
         }
@@ -27,6 +30,11 @@ class Order
         }
 
         DB::commit();
-        return $operation->getOrder();
+        return true;
+    }
+
+    public function get()
+    {
+        return $this->_order;
     }
 }

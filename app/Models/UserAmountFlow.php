@@ -12,4 +12,9 @@ class UserAmountFlow extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    public function tradeOrder()
+    {
+        return $this->morphTo();
+    }
 }
