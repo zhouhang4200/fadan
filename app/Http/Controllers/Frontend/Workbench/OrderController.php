@@ -92,6 +92,10 @@ class OrderController extends Controller
             }
             // 给所有用户推送新订单消息
             event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+            // 待接单数量加1
+            waitReceivingQuantityAdd();
+            // 待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');

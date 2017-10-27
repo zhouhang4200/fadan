@@ -157,6 +157,56 @@ if (!function_exists('waitReceivingAdd')) {
     }
 }
 
+if (!function_exists('waitReceivingQuantity')) {
+    /**
+     * 获取订单集市 订单数
+     * @return mixed
+     */
+    function marketOrderQuantity()
+    {
+        $redis = RedisConnect::order();
+        return $redis->get(config('redis.order.waitReceivingQuantity'));
+    }
+}
+
+if (!function_exists('waitReceivingQuantityAdd')) {
+    /**
+     * 获取订单集市 订单数 加1
+     * @return mixed
+     */
+    function waitReceivingQuantityAdd()
+    {
+        $redis = RedisConnect::order();
+        return $redis->incr(config('redis.order.waitReceivingQuantity'));
+    }
+}
+
+if (!function_exists('waitReceivingQuantitySub')) {
+    /**
+     * 获取订单集市 订单数 减1
+     * @return mixed
+     */
+    function waitReceivingQuantitySub()
+    {
+        if (marketOrderQuantity() > 0) {
+            $redis = RedisConnect::order();
+            return $redis->decr(config('redis.order.waitReceivingQuantity'));
+        }
+    }
+}
+
+if (!function_exists('socketServer')) {
+    /**
+     * socketServer
+     * @return mixed
+     */
+    function socketServer()
+    {
+        return env('SOCKET_SERVER');
+    }
+}
+
+
 if (!function_exists('generateOrderNo')) {
     /**
      * 生成订单号

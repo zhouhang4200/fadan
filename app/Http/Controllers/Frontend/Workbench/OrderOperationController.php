@@ -1,6 +1,10 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Events\NotificationEvent;
+use App\Exceptions\CustomException;
+use App\Extensions\Order\Operations\Complete;
+use App\Extensions\Order\Operations\TurnBack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -47,7 +51,7 @@ class OrderOperationController extends Controller
      */
     public function detail(Request $request, OrderRepository $orderRepository)
     {
-        $detail = $orderRepository->detail($request->id);
+        $detail = $orderRepository->detail($request->no);
         if ($detail) {
             return view('frontend.workbench.order-detail', compact('detail'));
         }
@@ -84,6 +88,14 @@ class OrderOperationController extends Controller
     public function cancel(Request $request)
     {
         // 调用取消
+        try {
+            // 调用收货
+            Order::handle(new Complete($request->no, Auth::user()->id));
+            // 调用打款，删除自动打款哈希表中订单号
+            return response()->ajax(0, '');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
         // 退款
     }
 
@@ -93,20 +105,36 @@ class OrderOperationController extends Controller
      */
     public function confirm(Request $request)
     {
-        // 调用收货
-
-        // 调用打款，删除自动打款哈希表中订单号
+        try {
+            // 调用收货
+            Order::handle(new Complete($request->no, Auth::user()->id));
+            // 调用打款，删除自动打款哈希表中订单号
+            return response()->ajax(0, '');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
     }
 
     /**
      * 退回订单集市
-     * @param $orderNo
+     * @param Request $request
+     * @return
      */
-    public function return($orderNo)
+    public function return(Request $request)
     {
-        // 调用退回
-
-        // 发通全局订单，取出退回原因
+        try {
+            // 调用退回
+            Order::handle(new TurnBack($request->no, Auth::user()->id));
+            // 给所有用户推送新订单消息
+            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+            // 待接单数量加1
+            waitReceivingQuantityAdd();
+            // 待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            return response()->ajax(0, '');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
     }
 }
 

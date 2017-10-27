@@ -136,7 +136,7 @@
             <li class="" lay-id="finish">已完成</li>
             <li class="" lay-id="after-sales">售后中</li>
             <li class="" lay-id="cancel">已取消</li>
-            <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue">12321</span></li>
+            <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show need"></div>
@@ -299,7 +299,7 @@
             // 下拉框根据父级选择项获取子级的选项
             form.on('select(change-select)', function (data) {
                 var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
-                if ($(subordinate).length > 0) {
+                if ($(subordinate).length > 0 && data.elem.selectedIndex != 0) {
                     $.post('{{ route('frontend.workbench.widget.child') }}', {
                         id: data.elem.selectedIndex,
                         parent_id: data.elem.getAttribute('data-id')
@@ -396,7 +396,7 @@
                     maxmin: true, //开启最大化最小化按钮
                     area: ['500px', '600px'],
                     scrollbar: false,
-                    content: "{{ url('/workbench/order-operation/detail') }}?id=" + no
+                    content: "{{ url('/workbench/order-operation/detail') }}?no=" + no
                 });
             }
             // 订单发货
@@ -458,16 +458,24 @@
             });
 
         });
-
+        // 监听新订单
         socket.on('notification:NewOrderNotification', function (data) {
             var data = {
-                'orderId':2,
-                'gameName':2,
-                'goods':2,
-                'price':2,
-                'remarks':2
+                'orderId':data.no,
+                'gameName':data.game_name,
+                'goods':data.goods_name,
+                'price':data.price,
+                'remarks':1
             };
             orderHub.addData(data);
+        });
+        // 订单数
+        socket.on('notification:MarketOrderQuantity', function (data) {
+            if (data.quantity == 0) {
+                $('.market-order-quantity').addClass('layui-hide');
+            } else {
+                $('.market-order-quantity').removeClass('layui-hide').html(data.quantity);
+            }
         });
     </script>
 @endsection
