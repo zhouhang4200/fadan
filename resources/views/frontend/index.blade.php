@@ -130,18 +130,10 @@
     </div>
     <div class="info-balance ">
         <div class="available-balance">可用余额：
-        @if ($user->parent_id == 0)
-            {{ $user->userAsset ? $user->userAsset->balance : 0 }}
-        @else
-            {{ $user->parent->userAsset ? $user->parent->userAsset->balance : 0 }}
-        @endif
+            {{ $user->userAsset->balance + 0 }}
         </div>
         <div class="blocked-balances">冻结余额：
-        @if ($user->parent_id == 0)
-            {{ $user->userAsset ? $user->userAsset->frozen : 0 }}
-        @else
-            {{ $user->parent->userAsset ? $user->parent->userAsset->frozen : 0 }}
-        @endif
+            {{ $user->userAsset->frozen + 0 }}
          </div>
 
         <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>

@@ -56,7 +56,11 @@ class User extends Authenticatable
 
     public function userAsset()
     {
-        return $this->hasOne(UserAsset::class);
+        if ($this->parent_id == 0) {
+            return $this->hasOne(UserAsset::class);
+        } else {
+            return $this->parent->userAsset();
+        }
     }
 
     public static function messages()
