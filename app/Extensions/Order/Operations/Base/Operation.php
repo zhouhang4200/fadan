@@ -53,7 +53,12 @@ abstract class Operation
             DB::rollback();
             throw new Exception('订单操作失败');
         }
+
+        return $this->order;
     }
+
+    // 更新资产
+    public function updateAsset() {}
 
     // 设置描述
     public function setDescription()

@@ -26,6 +26,7 @@ use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Extensions\Order\Operations\AskForAfterService;
 use App\Extensions\Order\Operations\AfterServiceComplete;
 use App\Extensions\Order\Operations\TurnBack;
+use App\Extensions\Order\Operations\Complete;
 
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
@@ -93,6 +94,7 @@ class TestController extends Controller
         // Order::handle(new AskForAfterService('2017102316360000000021', 1));
         // Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
         // Order::handle(new TurnBack('2017102414284300000014', 2));
+        Order::handle(new Complete('2017102316360000000021', 1));
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
