@@ -62,9 +62,9 @@ class RedirectIfAuthenticated
             
             $loginDetail = loginDetail($request->ip());
 
-            $loginCity = $detailArray['city_id'] ?: 0;
+            $loginCity = $loginDetail['city_id'] ?: 0;
 
-            if ($loginCity != $mostLoginIp) {  
+            if ($loginCity != $mostLoginCityId) {  
 
                 return true;
             }
