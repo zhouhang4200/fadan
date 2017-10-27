@@ -28,7 +28,7 @@ class AddDefaultPermission
     {
         if ($event->user->parent_id == 0) {
             
-            $event->user->assignRole('home.default');
+            $event->user->assignRole('home.qiantaimorenzu');
         }
     }
 }
