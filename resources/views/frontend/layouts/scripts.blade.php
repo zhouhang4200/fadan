@@ -4,7 +4,7 @@
 <script>
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
 
-var socket = io('http://s.market.dev');
+var socket = io('http://www.market.com:9090');
 
 function logout() {
     layui.use(['form', 'layedit', 'laydate'], function(){
