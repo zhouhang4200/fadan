@@ -19,7 +19,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">邮箱</label>
                 <div class="layui-input-block">
-                    <input type="text" name="email" lay-verify="required" value="{{ old('email') ?: $user->email }}" placeholder="请输入" autocomplete="off" class="layui-input">
+                    <input type="text" name="email" lay-verify="required" value="{{ old('email') ?: $user->email }}" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -47,10 +47,13 @@
          layui.use('form', function(){
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
+        var error = "{{ $errors->count() > 0 ? '账号名或邮箱已经存在!' : '' }}";
         var updateFail = "{{ session('updateFail') ?: '' }}";
 
         if(updateFail) {
             layer.msg(updateFail, {icon: 5, time:1500},);
+        } else if (error) {
+            layer.msg(error, {icon: 5, time:1500},);
         }
   
           //……

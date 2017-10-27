@@ -72,7 +72,7 @@ class UserController extends Controller
 
                 return back()->withInput()->with('addError', '添加失败!');
             }
-            return redirect('/users');
+            return redirect('/users')->with('succ', '添加成功!');
         }
     }
 
