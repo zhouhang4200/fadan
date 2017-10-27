@@ -9,6 +9,9 @@ use DB;
 // 资产
 class Asset
 {
+    private $_userAmountFlow;
+    private $_platformAmountFlow;
+
     public function handle(Trade $trade)
     {
         DB::beginTransaction();
@@ -16,10 +19,10 @@ class Asset
         try {
             $trade->beforeUser();
             $trade->updateUserAsset();
-            $trade->createUserAmountFlow();
+            $this->_userAmountFlow = $trade->createUserAmountFlow();
             $trade->beforePlatform();
             $trade->updatePlatformAsset();
-            $trade->createPlatformAmountFlow();
+            $this->_platformAmountFlow = $trade->createPlatformAmountFlow();
         }
         catch (AssetException $e) {
             DB::rollBack();
@@ -28,5 +31,15 @@ class Asset
 
         DB::commit();
         return true;
+    }
+
+    public function getUserAmountFlow()
+    {
+        return $this->_userAmountFlow;
+    }
+
+    public function getPlatformAmountFlow()
+    {
+        return $this->_platformAmountFlow;
     }
 }

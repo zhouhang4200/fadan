@@ -9,7 +9,7 @@ trait UserAmountFlowTrait
     // 写用户流水
     public function createUserAmountFlow()
     {
-        $userAmountFlow                 = new UserAmountFlow;
+        $userAmountFlow = new UserAmountFlow;
         $userAmountFlow->user_id        = $this->userId;
         $userAmountFlow->admin_user_id  = $this->adminUserId;
         $userAmountFlow->trade_type     = $this->type;
@@ -31,6 +31,6 @@ trait UserAmountFlowTrait
             throw new Exception('流水记录失败');
         }
 
-        return true;
+        return $userAmountFlow;
     }
 }

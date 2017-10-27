@@ -33,6 +33,6 @@ trait PlatformAmountFlowTrait
             throw new Exception('流水记录失败');
         }
 
-        return true;
+        return $platformAmountFlow;
     }
 }

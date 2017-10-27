@@ -13,13 +13,8 @@ class PlatformAmountFlow extends Model
      */
     public $timestamps = false;
 
-    public function userAmountFlows()
+    public function tradeOrder()
     {
-        return $this->morphMany(UserAmountFlow::class, 'table');
-    }
-
-    public function platformAmountFlows()
-    {
-        return $this->morphMany(PlatformAmountFlow::class, 'table');
+        return $this->morphTo();
     }
 }
