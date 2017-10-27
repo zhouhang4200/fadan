@@ -29,6 +29,7 @@ use App\Extensions\Order\Operations\TurnBack;
 use App\Extensions\Order\Operations\Complete;
 
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
+use App\Repositories\Api\UserRechargeOrderRepository;
 
 use Artisan;
 use App\Models\UserAmountFlow;
@@ -36,12 +37,14 @@ use App\Models\UserWithdrawOrder;
 
 class TestController extends Controller
 {
-    public function index(UserWithdrawOrderRepository $repository)
+    public function index(UserRechargeOrderRepository $repository)
     {
         // $this->testAsset();
         // $this->testDaily();
-        $this->testOrder();
+        // $this->testOrder();
         // $this->command();
+
+        $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
     }
 
     public function testAsset()
