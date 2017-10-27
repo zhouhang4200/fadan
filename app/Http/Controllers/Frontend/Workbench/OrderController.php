@@ -55,7 +55,7 @@ class OrderController extends Controller
         $orders = $orderRepository->dataList($type, $no);
 
         if ($request->ajax()) {
-            if (!in_array($type, ['need' , 'ing', 'finish', 'cancel', 'after-sales', 'market', 'search'])) {
+            if (!in_array($type, ['need' , 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {
                 return response()->ajax(0, '不存在的类型');
             }
             return response()->json(\View::make('frontend.workbench.order-list', [
@@ -90,7 +90,7 @@ class OrderController extends Controller
             try {
                 $order = Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
                 // 下单扣款
-//                Asset::handle(new Expend($order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $order->no, '下订单', Auth::user()->id, 0));
+                Asset::handle(new Expend($order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $order->no, '下订单', Auth::user()->id, 0));
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
@@ -151,7 +151,7 @@ class OrderController extends Controller
 
         $valueArr = explode(',', $widgetValue->field_value);
 
-        return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id])]);
+        return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id - 1])]);
     }
 }
 

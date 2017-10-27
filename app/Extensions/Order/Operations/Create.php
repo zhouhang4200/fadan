@@ -76,6 +76,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
                 $orderDetail = new OrderDetail;
                 $orderDetail->order_no           = $this->order->no;
+                $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
                 $orderDetail->field_name         = $fieldName;
                 $orderDetail->field_display_name = $widget[$fieldName];
                 $orderDetail->filed_value        = $fieldValue;

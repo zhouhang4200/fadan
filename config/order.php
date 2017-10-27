@@ -8,10 +8,10 @@ use App\Extensions\Order\ForeignOrder\KamenForeignOrder;
 return [
     'status' => [
         1 => '等待商户接单',
-        2 => '停止抢单，分配中',
+        2 => '系统分配中',
         3 => '商户已接单',
         4 => '已发货',
-        5 => '发货失败',
+        5 => '失败订单',
         6 => '售后中',
         7 => '售后完成',
         8 => '订单完成',
