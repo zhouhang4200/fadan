@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use Auth;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 /**
@@ -16,12 +16,20 @@ class OrderController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::where('id', 1)->paginate(20);
+    	$startDate = $request->startDate;
 
-        //$orderInfo->goodsTemplateValue->pluck('field_value','field_name');
+    	$endDate = $request->endDate;
 
-        return view('backend.order.index', compact('orders'));
+    	$status = $request->status;
+
+    	$source = $request->source;
+
+    	$filters = compact('startDate', 'endDate', 'status', 'source');
+
+        $orders = Order::filter($filters)->latest('created_at')->paginate(config('backend.page'));
+
+        return view('backend.order.index', compact('orders', 'status', 'startDate', 'endDate', 'source'));
     }
 }
