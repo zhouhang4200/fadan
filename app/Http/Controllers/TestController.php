@@ -74,13 +74,13 @@ class TestController extends Controller
     {
         // Order::handle(new Create(1, 'taobao-123', 1, 2, 0, 12, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
         // Order::handle(new GrabClose('2017102414284300000014', 1));
-        // Order::handle(new Receiving('2017102714052200000014', 1));
+        // Order::handle(new Receiving('2017102716414000000116', 28));
         // Order::handle(new Delivery('2017102714052200000014', 28));
-        // Order::handle(new DeliveryFailure('2017102316531000000022', 1));
+        Order::handle(new DeliveryFailure('2017102716414000000116', 28));
         // Order::handle(new AskForAfterService('2017102316360000000021', 1));
         // Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
         // Order::handle(new TurnBack('2017102414284300000014', 2));
-        Order::handle(new Complete('2017102714052200000014', 28));
+        // Order::handle(new Complete('2017102714052200000014', 28));
 
         $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         dump(unserialize($arr->before), unserialize($arr->after));
