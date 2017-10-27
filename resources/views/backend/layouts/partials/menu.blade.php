@@ -71,6 +71,20 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li @if($currentRouteName == 'orders.index') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
+                                    订单列表
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
