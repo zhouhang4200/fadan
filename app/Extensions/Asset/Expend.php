@@ -35,7 +35,7 @@ class Expend extends \App\Extensions\Asset\Base\Trade
 
         $afterBalance = bcadd($this->userAsset->balance, $this->fee);
         if ($afterBalance < 0) {
-            throw new Exception('用户剩余金额不足');
+            throw new Exception('您的账号余额不足');
         }
 
         $this->userAsset->balance      = $afterBalance;

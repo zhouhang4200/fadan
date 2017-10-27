@@ -37,6 +37,25 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li @if($currentOneLevelMenu == 'user') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>商户</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('frontend.user.index')}}" @if($currentRouteName == 'frontend.user.index') class="active" @endif>
+                                    商户列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('admin/user/') }}" @if($currentRouteName == 'goods.game.index') class="active" @endif>
+                                    商户权限管理
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>

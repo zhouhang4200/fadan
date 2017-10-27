@@ -84,10 +84,21 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         // 订单列表
         Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list');
 
+
         // 订单操作
         Route::prefix('order-operation')->group(function (){
+            // 订单详情
+            Route::get('detail', 'OrderOperationController@detail')->name('frontend.workbench.order-operation.detail');
             // 接单
             Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving');
+           // 订单发货
+            Route::post('delivery', 'OrderOperationController@delivery')->name('frontend.workbench.order-operation.delivery');
+            // 失败订单
+            Route::post('fail', 'OrderOperationController@fail')->name('frontend.workbench.order-operation.fail');
+            // 取消订单
+            Route::post('cancel', 'OrderOperationController@cancel')->name('frontend.workbench.order-operation.cancel');
+            // 确认收货
+            Route::post('confirm', 'OrderOperationController@confirm')->name('frontend.workbench.order-operation.confirm');
         });
 	});
 });

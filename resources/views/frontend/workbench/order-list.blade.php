@@ -29,54 +29,35 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
-                <?php $status = receivingRecordExist( $primaryUserId, $item->no) ? 9  : $item->status;  ?>
+                <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
                 <td>{{ config('order.status')[$status] }}</td>
                 <td>
-                    @if($type == 'need')
-                        <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation">
-                                <option value="">请选择操作</option>
-                                <option value="0">订单详情</option>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="operation" data-no="{{ $item->no }}">
+                            <option value="">请选择操作</option>
+                            @if(in_array($primaryUserId, [$item->gainer_primary_user_id, $item->creator_primary_user_id])
+                            || in_array($currentUserId, [$item->gainer_user_id, $item->creator_user_id]))
+                                <option value="detail">订单详情</option>
+                            @endif
+
+                            @if($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
+                                <option value="0">取消订单</option>
+                            @endif
+
+                            @if($primaryUserId == $item->gainer_primary_user_id
+                            || $currentUserId == $item->creator_user_id
+                            && $item->status == 3
+                            )
                                 <option value="1">订单发货</option>
                                 <option value="1">订单失败</option>
-                                <option value="2">返回集市</option>
-                            </select>
-                        </div>
-                    @elseif($type == 'ing')
-                        <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation">
-                                <option value="">请选择操作</option>
-                                <option value="0">订单详情</option>
-                            </select>
-                        </div>
-                    @elseif($type == 'finish')
-                        <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation">
-                                <option value="">请选择操作</option>
-                                <option value="0">订单详情</option>
-                                <option value="1">确认收货</option>
-                            </select>
-                        </div>
-                    @elseif($type == 'after-sales')
-                        <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation">
-                                <option value="">请选择操作</option>
-                                <option value="0">订单详情</option>
-                                <option value="1">确认收货</option>
-                            </select>
-                        </div>
-                    @elseif($type == 'market')
-                        <div class="layui-input-inline">
-                            <select name="city" lay-verify="required" lay-filter="operation" data-no="{{ $item->no }}">
-                                <option value="">请选择操作</option>
-                                @if($item->creator_user_id == $currentUserId || $item->creator_primary_user_id == $primaryUserId)
-                                    <option value="0">取消订单</option>
-                                @elseif (!receivingRecordExist( $primaryUserId, $item->no))
-                                    <option value="receiving">立即接单</option>
-                                @endif
-                            </select>
-                        </div>
-                    @endif
+                                <option value="1">返回集市</option>
+                            @endif
+
+                            @if(!receivingRecordExist( $primaryUserId, $item->no) && $primaryUserId != $item->creator_user_id)
+                                <option value="receiving">立即接单</option>
+                            @endif
+                        </select>
+                    </div>
                 </td>
             </tr>
         @empty

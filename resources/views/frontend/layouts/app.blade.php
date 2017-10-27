@@ -33,6 +33,10 @@
         </div>
     </div>
 </div>
+<div class="prom-wrap fixed" id='prom'>
+    <ul class="prom-inner">
+    </ul>
+</div>
 <!--END 主体-->
 
 <!--START 底部-->

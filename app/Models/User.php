@@ -104,6 +104,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function asset()
+    {
+        return $this->hasOne(UserAsset::class, 'user_id');
+    }
+
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token

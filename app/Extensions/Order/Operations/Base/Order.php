@@ -27,6 +27,6 @@ class Order
         }
 
         DB::commit();
-        return true;
+        return $operation->getOrder();
     }
 }

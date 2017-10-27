@@ -88,6 +88,21 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         });
     });
 
+    // 用户
+    Route::namespace('User')->prefix('user')->group(function (){
+        // 用户账号列表
+        Route::namespace('Frontend')->prefix('frontend')->group(function () {
+            Route::get('/', 'UserController@index')->name('frontend.user.index');
+            // 手动加款
+            Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge');
+        });
+        // 后台账号列表
+        Route::namespace('Frontend')->prefix('backend')->group(function () {
+            Route::get('/', 'UserController@index')->name('backend.user.index');
+        });
+    });
+
+
     Route::middleware(['role:admin.super-manager'])->namespace('Rbac')->prefix('rbac')->group(function () {
         // 前台角色
         Route::resource('roles', 'RoleController', ['except' => ['show']]);
@@ -105,7 +120,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::resource('modules', 'ModuleController', ['except' => ['show']]);
         // 后台模块
         Route::resource('admin-modules', 'AdminModuleController', ['except' => ['show']]);
-        // 前台账号
+
         Route::get('accounts', 'AccountController@index')->name('accounts.index');
         // 后台账号
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
@@ -123,10 +138,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     });
 
+    // 订单
     Route::prefix('order')->group(function (){
         Route::get('/', 'OrderController@index')->name('order.index');
     });
 
+    // 财务
     Route::namespace('Finance')->prefix('finance')->group(function () {
         Route::get('platform-asset', 'PlatformAssetController@index')->name('finance.platform-asset');
 

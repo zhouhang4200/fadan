@@ -74,4 +74,12 @@ abstract class Operation
             DB::rollback();
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
 }
