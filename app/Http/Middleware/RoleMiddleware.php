@@ -22,7 +22,7 @@ class RoleMiddleware
 
             if (Request::ajax()) {
 
-                return response()->ajax(0, '未开通相应权限！');
+                return response()->ajax(0, '您未开通相应权限！');
             }
             abort(403);
         }
