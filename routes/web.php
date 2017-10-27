@@ -57,7 +57,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	    });
 	});
 
-	Route::group(['middleware' => ['role:home.qiantaiguanlizu|home.qiantaitixianzu|home.qiantaijiedanzu']], function () {
+	Route::group(['middleware' => ['role:home.qiantaiguanlizu|home.qiantaijiedanzu|home.qiantaitixianzu']], function () {
 		// 财务
 		Route::namespace('Finance')->prefix('finance')->group(function () {
 		    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
@@ -78,7 +78,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	    });
 	});
 
-	Route::group(['middleware' => ['role:home.qiantaiguanlizu|home.qiantaitixianzu|home.qianshoujiedanzu']], function () {
+	Route::group(['middleware' => ['role:home.qiantaiguanlizu|home.qiantaitixianzu|home.qiantaijiedanzu']], function () {
 		// 工作台
 		Route::namespace('Workbench')->prefix('workbench')->group(function () {
 	        // 首页
