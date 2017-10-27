@@ -13,7 +13,7 @@
         }
         .layui-form-item .layui-input-inline {
             float: left;
-            width: 135px;
+            width: 150px;
             margin-right: 10px;
         }
         .layui-form-checked[lay-skin="primary"] span {     

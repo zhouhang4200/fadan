@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Account;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\RealNameIdent;
@@ -19,6 +20,10 @@ class PassOrRefuseController extends Controller
         $userId = $request->userId;
 
         if (RealNameIdent::where('user_id', $userId)->update(['status' => 1])) {
+
+            $roleId = Role::where('name', 'home.qiantaitixianzu')->value('id');
+
+            User::find($userId)->roles()->attach($roleId);
 
             return response()->json(['code' => 1, 'message' => '审核通过!']);
         }
