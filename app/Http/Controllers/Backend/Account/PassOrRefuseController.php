@@ -19,11 +19,16 @@ class PassOrRefuseController extends Controller
     {
         $userId = $request->userId;
 
+        $user = User::find($userId);
+
         if (RealNameIdent::where('user_id', $userId)->update(['status' => 1])) {
 
             $roleId = Role::where('name', 'home.qiantaitixianzu')->value('id');
 
-            User::find($userId)->roles()->attach($roleId);
+            if (! in_array($roleId, $user->roles->pluck('id')->toArray())) {
+
+                $user->roles()->attach($roleId);
+            }
 
             return response()->json(['code' => 1, 'message' => '审核通过!']);
         }

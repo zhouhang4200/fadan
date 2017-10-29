@@ -72,7 +72,6 @@
                         @if ($ident->type == 2)
                             <div class = 'other'>
                             <form class="layui-form">
-                                    {!! csrf_field() !!}
                                         <div style="width: 80%" class="ident">
                                         <div class='company'>
                                             <div class="layui-form-item">
@@ -137,7 +136,7 @@
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="">通过</button>
+                                                <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="pass">通过</button>
                                                 <button class="layui-btn layui-btn-normal" lay-submit="" id="refuse" lay-filter="refuse">拒绝</button>
                                             </div>
                                         </div>
@@ -147,7 +146,6 @@
                         @elseif ($ident->type == 1)
                             <div class='self'>
                                 <form class="layui-form">
-                                    {!! csrf_field() !!}
                                         <div style="width: 80%" class="ident">
                                         <div class='personal'>
                                             <div class="layui-form-item">
@@ -205,7 +203,7 @@
                                     </div>
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
-                                            <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="">通过</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="pass">通过</button>
                                             <button class="layui-btn layui-btn-normal" lay-submit="" id="refuse" lay-filter="refuse">拒绝</button>
                                         </div>
                                     </div>
@@ -227,11 +225,11 @@
             var layer = layui.layer;
             var userId = $('#userId').val();
 
-            $("#pass").click(function () {
+            form.on('submit(pass)', function (data) {
                 $.ajax({
                     url:"{{ route('pass-or-refuse.pass') }}",
                     method:"POST",
-                    data:{'userId': userId, 'token':"{{ csrf_token() }}"},
+                    data:{'userId': userId},
                     success:function (data) {
                         if (data.code == 1) {
                             layer.msg('审核完成，状态：通过！', {icon: 6, time:1500},);
@@ -240,7 +238,8 @@
                             layer.msg(data.message, {icon: 5, time:1500},);
                         }
                     }
-                }) 
+                });
+                return false;
             });
 
             form.on('submit(refuse)', function (data) {
@@ -263,6 +262,7 @@
 
                 return false;
             });
+            
             form.render();
         });  
 

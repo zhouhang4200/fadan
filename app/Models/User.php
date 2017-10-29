@@ -70,6 +70,7 @@ class User extends Authenticatable
         return [
             'name.required' => '请填写账号！',
             'name.unique' => '账号已经存在！',
+            'email.unique' => '邮箱已经存在！',
             'password.required' => '请填写密码',
         ];
     }
