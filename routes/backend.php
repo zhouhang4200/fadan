@@ -139,8 +139,9 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     // 订单
-    Route::prefix('order')->group(function (){
-        Route::get('/', 'OrderController@index')->name('order.index');
+    Route::group([], function () {
+        // 订单列表
+        Route::resource('orders', 'OrderController', ['only' => ['index']]);
     });
 
     // 财务
