@@ -20,7 +20,7 @@ class UserRechargeOrderRepository
      * 创建加款单
      * @return mixed
      */
-    public function store($fee, $userId, $remark, $foreignOrderNo, $wangwang)
+    public function store($fee, $userId, $remark, $foreignOrderNo, $wangwang, $isAuto = true)
     {
         DB::beginTransaction();
 
@@ -31,6 +31,7 @@ class UserRechargeOrderRepository
 
         // 增加余额
         try {
+            $subtype = $isAuto ? Recharge::TRADE_SUBTYPE_AUTO : Recharge::TRADE_SUBTYPE_MANUAL;
             Asset::handle(new Recharge($fee, Recharge::TRADE_SUBTYPE_AUTO, $no, '自动充值', $primaryUserId));
         }
         catch (Exception $e) {
