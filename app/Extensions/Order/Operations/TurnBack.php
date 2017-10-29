@@ -17,4 +17,16 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
         $this->orderNo = $orderNo;
         $this->userId  = $userId;
     }
+
+    public function setAttributes()
+    {
+        $user = User::find($this->userId);
+        if (empty($user)) {
+            DB::rollback();
+            throw new Exception('不存在的创建者');
+        }
+
+        $this->order->gainer_user_id         = null;
+        $this->order->gainer_primary_user_id = null;
+    }
 }

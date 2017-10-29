@@ -27,7 +27,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
         $user = User::find($this->userId);
         if (empty($user)) {
             DB::rollback();
-            throw new Exception('不存在的创建者');
+            throw new Exception('不存在的接单人');
         }
 
         $this->order->gainer_user_id         = $this->userId;
