@@ -13,7 +13,7 @@
                         </ul>
                         <div class="layui-tab-content">
                         <div style="padding-top:10px; padding-bottom:10px; float:right">
-                            <a href="{{ route('admin-roles.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加后台角色</button></a>
+                            <a href="{{ route('admin-roles.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加后台角色</button></a>
                         </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
@@ -31,8 +31,8 @@
                                             <td>{{ $role->id }}</td>
                                             <td>{{ $role->alias }}</td>
                                             <td>{{ $role->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('admin-roles.edit', ['id' => $role->id])  }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a>
-                                            <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $role->id }})">删除</button></td>
+                                            <td style="text-align: center"><a href="{{ route('admin-roles.edit', ['id' => $role->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>
+                                            <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $role->id }})">删除</button></td>
                                         </tr>
                                     @empty
                                     @endforelse

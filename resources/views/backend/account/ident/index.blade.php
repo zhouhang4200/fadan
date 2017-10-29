@@ -100,7 +100,7 @@
                                         <td>{{ $ident->created_at }}</td>
                                         <td>
                                             <div style="text-align: center">
-                                            <button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('admin-idents.show', ['id' => $ident->id]) }}" style="color: #fff">详情</a></button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-mini edit"><a href="{{ route('admin-idents.show', ['id' => $ident->id]) }}" style="color: #fff">详情</a></button>
                                             </div>
                                         </td>
                                     </tr>

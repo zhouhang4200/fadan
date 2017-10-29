@@ -44,8 +44,8 @@
                                                 @endforeach
                                             @endif
                                             </td>
-                                            <td style="text-align: center"><a href="{{ route('admin-groups.edit', ['id' => $group->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-small">编缉</a>
-                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $group->id }})">删除</button></td>
+                                            <td style="text-align: center"><a href="{{ route('admin-groups.edit', ['id' => $group->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">编缉</a>
+                                            <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $group->id }})">删除</button></td>
                                         </tr>
                                         @empty
                                         @endforelse

@@ -13,7 +13,7 @@
                         </ul>
                         <div class="layui-tab-content">
                         <div style="padding-top:10px; padding-bottom:10px; float:right">
-                            <a href="{{ route('permissions.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal">添加前台权限</button></a>
+                            <a href="{{ route('permissions.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加前台权限</button></a>
                         </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
@@ -31,8 +31,8 @@
                                             <td>{{ $permission->id }}</td>
                                             <td>{{ $permission->alias }}</td>
                                             <td>{{ $permission->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('permissions.edit', ['id' => $permission->id])  }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a>
-                                            <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $permission->id }})">删除</button></td>
+                                            <td style="text-align: center"><a href="{{ route('permissions.edit', ['id' => $permission->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>
+                                            <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $permission->id }})">删除</button></td>
                                         </tr>
                                     @empty
                                     @endforelse
