@@ -141,7 +141,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     // 订单
     Route::group([], function () {
         // 订单列表
-        Route::resource('orders', 'OrderController', ['only' => ['index']]);
+        Route::resource('orders', 'OrderController', ['only' => ['index', 'show']]);
     });
 
     // 财务
