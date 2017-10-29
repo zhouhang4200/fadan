@@ -32,7 +32,7 @@ class UserRechargeOrderRepository
         // 增加余额
         try {
             $subtype = $isAuto ? Recharge::TRADE_SUBTYPE_AUTO : Recharge::TRADE_SUBTYPE_MANUAL;
-            Asset::handle(new Recharge($fee, Recharge::TRADE_SUBTYPE_AUTO, $no, '自动充值', $primaryUserId));
+            Asset::handle(new Recharge($fee, $subtype, $no, '自动充值', $primaryUserId));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
