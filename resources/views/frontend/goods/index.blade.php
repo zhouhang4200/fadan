@@ -42,7 +42,7 @@
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
             </div>
-            <button class="layui-btn layui-btn-normal fr" lay-submit="" lay-filter="add-goods">添加商品</button>
+            <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
         </div>
     </form>
 

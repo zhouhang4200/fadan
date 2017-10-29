@@ -153,7 +153,7 @@
                 <label class="layui-form-label">类型</label>
                 <div class="layui-input-block">
                     <select name="service_id" lay-verify="required" lay-search lay-filter="service">
-                        <option value="0">请选择类型</option>
+                        <option value="">请选择类型</option>
                         @forelse($services as $k => $v)
                             <option value="{{ $k }}">{{ $v }}</option>
                         @empty
@@ -165,7 +165,7 @@
                 <label class="layui-form-label">游戏</label>
                 <div class="layui-input-block">
                     <select name="game_id" lay-verify="required" lay-search lay-filter="game">
-                        <option value="0">请选择游戏</option>
+                        <option value="">请选择游戏</option>
                         @forelse($games as $k => $v)
                             <option value="{{ $k }}">{{ $v }}</option>
                         @empty
@@ -176,9 +176,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">商品</label>
                 <div class="layui-input-block">
-                    <select name="goods" lay-verify="required" lay-filter="goods" lay-search id="goods"
-                            placeholder="请选择商品">
-                        <option value="0">请选择商品</option>
+                    <select name="goods" lay-verify="required" lay-search id="goods" lay-filter="goods" >
+                        <option value="">请选择商品</option>
                     </select>
                 </div>
             </div>
@@ -419,6 +418,12 @@
             // 取消订单
             function confirm(no) {
                 $.post('{{ route('frontend.workbench.order-operation.confirm') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
+            // 返回集市
+            function turnBack(no) {
+                $.post('{{ route('frontend.workbench.order-operation.turnBack') }}', {no:no}, function (result) {
                     notification(result.status, result.message)
                 }, 'json')
             }

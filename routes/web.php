@@ -107,6 +107,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	            Route::post('cancel', 'OrderOperationController@cancel')->name('frontend.workbench.order-operation.cancel');
 	            // 确认收货
 	            Route::post('confirm', 'OrderOperationController@confirm')->name('frontend.workbench.order-operation.confirm');
+	            // 返回集市
+                Route::post('turnBack', 'OrderOperationController@turnBack')->name('frontend.workbench.order-operation.turnBack');
 	        });
 		});
 	});

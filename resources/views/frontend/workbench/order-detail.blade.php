@@ -89,7 +89,7 @@
                 <div class="item-content left cm-padding">{{ $order->price }}</div>
             </li>
             <li class="overflow">
-                <div class="item-banner left cm-padding">单价</div>
+                <div class="item-banner left cm-padding">数量</div>
                 <div class="item-content left cm-padding">{{ $order->quantity }}</div>
             </li>
             <li class="overflow">
@@ -103,12 +103,12 @@
                 @if($item->field_name != 'quantity')
                 <li class="overflow">
                     <div class="item-banner left cm-padding">{{ $item->field_display_name }}</div>
-                    <div class="item-content left cm-padding">{{ $item->filed_value }}</div>
+                    <div class="item-content left cm-padding">{{ $item->field_value }}</div>
                 </li>
                 @endif
             @empty
             @endforelse
-            
+
         </ul>
     </div>
 </div>

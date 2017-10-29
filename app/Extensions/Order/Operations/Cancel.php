@@ -1,10 +1,13 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
+use Asset;
+use App\Extensions\Asset\Income;
+
 // 发单后取消订单
 class Cancel extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [1];
+    protected $acceptableStatus = [1, 5];
     protected $handledStatus    = 10;
     protected $type             = 10;
 

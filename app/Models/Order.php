@@ -12,6 +12,11 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_no', 'no');
     }
 
+    public function history()
+    {
+        return $this->hasMany(OrderHistory::class, 'order_no', 'no');
+    }
+
     public function userAmountFlows()
     {
         return $this->morphMany(UserAmountFlow::class, 'flowable');
@@ -30,7 +35,7 @@ class Order extends Model
         }
 
         if ($filters['source']) {
-            
+
             $query->where('status', $filters['source']);
         }
 

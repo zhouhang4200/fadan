@@ -32,4 +32,9 @@ class OrderController extends Controller
 
         return view('backend.order.index', compact('orders', 'status', 'startDate', 'endDate', 'source'));
     }
+
+    public function show(Order $order)
+    {
+        return view('backend.order.show', compact('order'));
+    }
 }
