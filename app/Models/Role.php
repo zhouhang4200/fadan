@@ -31,7 +31,7 @@ class Role extends SpatieRole
     public static function rules()
     {
     	return [
-    		'alias' => 'required|unique:roles',
+    		'alias' => 'required|max:191|unique:roles',
     	];
     }
 

@@ -28,7 +28,7 @@ class Module extends Model
     public static function rules()
     {
     	return [
-    		'alias' => 'required|unique:modules',
+    		'alias' => 'required|max:191|unique:modules',
     	];
     }
 
