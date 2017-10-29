@@ -42,7 +42,7 @@
                     <a href="{{ route('users.index') }}"   class="layui-btn layui-btn-normal layui-btn-small">返回</a>
 
                 </div>
-            <a href="{{ route('users.create') }}" class="layui-btn layui-btn-normal layui-inline  fr">添加子账号 </a>
+            <a href="{{ route('users.create') }}" class="layui-btn layui-btn-normal layui-inline layui-btn-small fr">添加子账号 </a>
 
         </div>
 
@@ -75,15 +75,15 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
-                            <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-small edit">编辑账号</a>
-                            <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="del({{ $user->id }})">删除账号</button>
+                            <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini edit">编辑账号</a>
+                            <button class="layui-btn layui-btn-normal layui-btn-mini delete" onclick="del({{ $user->id }})">删除账号</button>
                         @if($user->rbacGroups->count() == 0)
-                            <a href="{{ route('user-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-small rbac">添加权限</a>
+                            <a href="{{ route('user-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini rbac">添加权限</a>
                         @else
-                            <a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-small rbac">编辑权限</a>
+                            <a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini rbac">编辑权限</a>
                         @endif
                         @if($user->rbacGroups->count() > 0)
-                            <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="delPermission({{ $user->id }})">删除权限</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-mini delete" onclick="delPermission({{ $user->id }})">删除权限</button>
                         @endif
                         </div>
                     </td>

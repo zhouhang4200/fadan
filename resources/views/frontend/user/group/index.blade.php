@@ -60,8 +60,8 @@
                     @endforeach
                     </td>
                     <td style="text-align: center">
-                        <a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a>
-                        <button class="layui-btn layui-btn-normal layui-btn-small" onclick="del({{ $user->id }})">删除</button>
+                        <a href="{{ route('user-groups.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>
+                        <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $user->id }})">删除</button>
                     </td>
                 </tr>
             @empty

@@ -81,7 +81,7 @@
                     @if ($ident->status == 1)
                         <td>完成</td>
                     @else
-                        <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a></td>
+                        <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a></td>
                     @endif
                 </tr>
             </tbody>
