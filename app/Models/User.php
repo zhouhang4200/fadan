@@ -43,6 +43,7 @@ class User extends Authenticatable
     {
         return [
             'name' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ];
     }
@@ -51,6 +52,7 @@ class User extends Authenticatable
     {
         return [
             'name' => ['required', Rule::unique('users')->ignore($id),],
+            'email' => ['required', Rule::unique('users')->ignore($id),],
         ];
     }
 
