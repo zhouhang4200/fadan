@@ -19,7 +19,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th width="13%">操作</th>
         </tr>
         </thead>
-        <tbody id="need">
+        <tbody>
         @forelse($orders as $item)
             <tr>
                 <td>{{ $item->no }}</td>
@@ -40,17 +40,25 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                                 <option value="detail">订单详情</option>
                             @endif
 
-                            @if($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
-                                <option value="0">取消订单</option>
+                            @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
+                            && $item->status == 1)
+                                <option value="tankBack">收回订单</option>
                             @endif
 
-                            @if($primaryUserId == $item->gainer_primary_user_id
-                            || $currentUserId == $item->creator_user_id
-                            && $item->status == 3
-                            )
-                                <option value="1">订单发货</option>
-                                <option value="1">订单失败</option>
-                                <option value="1">返回集市</option>
+                            @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
+                            && $item->status == 4)
+                                <option value="confirm">确认收货</option>
+                            @endif
+
+                            @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
+                            && $item->status == 5)
+                                <option value="cancel">取消订单</option>
+                            @endif
+
+                            @if(($primaryUserId == $item->gainer_primary_user_id || $currentUserId == $item->creator_user_id) && $item->status == 3)
+                                <option value="delivery">订单发货</option>
+                                <option value="fail">订单失败</option>
+                                <option value="return">返回集市</option>
                             @endif
 
                             @if(!receivingRecordExist( $primaryUserId, $item->no) && $primaryUserId != $item->creator_user_id)

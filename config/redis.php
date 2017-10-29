@@ -12,6 +12,8 @@ return [
         'receiving' => 'order:receiving:',
         // 接单记录 生成的key示例：order:receiving:20170800383838383123(123是用户ID：主账号)
         'receivingRecord' => 'order:receiving:record:',
+        // 待接单数量
+        'waitReceivingQuantity' => 'order:wait:receiving:quantity',
     ],
     // 用户模型
     'user' => [

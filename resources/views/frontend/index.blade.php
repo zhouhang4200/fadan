@@ -121,6 +121,8 @@
         <div class="layui-form-item icon">
         @if ($ident && $ident->status == 1)
             <span><i class="layui-icon">&#xe612;</i> 已实名认证</span>
+        @elseif ($ident && $ident->status == 2)
+            <span><i class="layui-icon">&#xe612;</i> 实名认证未通过</span>
         @elseif (! $ident && $user->parent_id == 0)
             <span><i class="layui-icon">&#xe612;</i> <a href="{{ route('idents.create') }}">未实名认证</a></span>
         @else
@@ -143,10 +145,14 @@
 </div>
 <div class="layui-tab">
     <ul class="layui-tab-title">
-        <li class="layui-this">网站设置</li>
+        <li class="layui-this">昨日接单数据</li>
+        <li class="">网站设置</li>
     </ul>
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show" >
+
+        </div>
+        <div class="layui-tab-item" >
             <table class="layui-table" lay-size="sm">
                 <colgroup>
                     <col width="150">
@@ -173,8 +179,10 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
 @endsection

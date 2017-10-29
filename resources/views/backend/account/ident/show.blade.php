@@ -71,6 +71,7 @@
                         <div class="layui-tab-content">
                         @if ($ident->type == 2)
                             <div class = 'other'>
+                            <form class="layui-form">
                                     {!! csrf_field() !!}
                                         <div style="width: 80%" class="ident">
                                         <div class='company'>
@@ -127,17 +128,25 @@
                                                     </div>
                                                 </div> 
                                             </div>
+                                            <div class="layui-form-item">
+                                            <label class="layui-form-label">拒绝原因</label>
+                                                <div class="layui-input-block">
+                                                <input type="text" id="ident-message" name="message" lay-verify="" value="{{ $ident->message }}" autocomplete="off" placeholder="如果不通过，请输入拒绝原因" class="layui-input">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn layui-btn-normal" id="pass" lay-filter="">通过</button>
-                                                <button class="layui-btn layui-btn-normal" id="refuse" lay-filter="">拒绝</button>
+                                                <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="">通过</button>
+                                                <button class="layui-btn layui-btn-normal" lay-submit="" id="refuse" lay-filter="refuse">拒绝</button>
                                             </div>
                                         </div>
                                     </div>
+                                </form>
                             </div>
                         @elseif ($ident->type == 1)
                             <div class='self'>
+                                <form class="layui-form">
                                     {!! csrf_field() !!}
                                         <div style="width: 80%" class="ident">
                                         <div class='personal'>
@@ -186,15 +195,21 @@
                                                     </div>
                                                 </div> 
                                             </div>
+                                            <div class="layui-form-item">
+                                            <label class="layui-form-label">拒绝原因</label>
+                                                <div class="layui-input-block">
+                                                <input type="text" id="ident-message" name="message" lay-verify="" value="{{ $ident->message }}" autocomplete="off" placeholder="如果不通过，请输入拒绝原因" class="layui-input">
+                                                </div>
+                                            </div>
                                         </div>
-
                                     </div>
-                                <div class="layui-form-item">
-                                    <div class="layui-input-block">
-                                        <button class="layui-btn layui-btn-normal" id="pass" lay-filter="">通过</button>
-                                        <button class="layui-btn layui-btn-normal" id="refuse" lay-filter="">拒绝</button>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" id="pass" lay-filter="">通过</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" id="refuse" lay-filter="refuse">拒绝</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         @endif
                     </div>
@@ -216,7 +231,7 @@
                 $.ajax({
                     url:"{{ route('pass-or-refuse.pass') }}",
                     method:"POST",
-                    data:{'userId': userId, 'token':"{{ csrf_token() }}" },
+                    data:{'userId': userId, 'token':"{{ csrf_token() }}"},
                     success:function (data) {
                         if (data.code == 1) {
                             layer.msg('审核完成，状态：通过！', {icon: 6, time:1500},);
@@ -228,11 +243,13 @@
                 }) 
             });
 
-            $("#refuse").click(function () {
+            form.on('submit(refuse)', function (data) {
+                var message = data.field.message;
+
                 $.ajax({
                     method:'POST',
                     url:"{{ route('pass-or-refuse.refuse') }}",
-                    data:{'userId': userId},
+                    data:{'userId': userId, 'message': message},
                     success:function (data) {
                         if (data.code == 1) {
                             layer.msg('审核完成， 状态：不通过！', {icon: 6, time:1500},);
@@ -243,8 +260,9 @@
                         
                     }
                 });
-            });
 
+                return false;
+            });
             form.render();
         });  
 

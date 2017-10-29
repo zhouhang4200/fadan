@@ -28,36 +28,51 @@ class OrderRepository
         $userId = Auth::user()->id;
         $primaryUserId = Auth::user()->getPrimaryUserId();
 
-        $dataList = Order::when($status == 'need', function ($query) use ($status, $userId) {
-            return $query->where(['creator_user_id' => $userId, 'status' => 1])
-                ->orWhere(['gainer_user_id' => $userId, 'status' => 3]);
-        })
-            ->when($status == 'ing', function ($query) use ($userId, $primaryUserId) {
-                return $query->where(['creator_user_id' =>  $userId, 'status => 3'])
-                    ->orWhere(['creator_primary_user_id' =>  $primaryUserId, 'status => 3'])
-                    ->orWhere(['gainer_user_id' =>  $userId, 'status => 3'])
-                    ->orWhere(['gainer_primary_user_id' =>  $primaryUserId, 'status => 3']);
+        $dataList = Order::when($status == 'need', function ($query) use ($primaryUserId) {
+                return $query->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' => $primaryUserId, 'status' =>4]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 4]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' => $primaryUserId, 'status' =>5]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 5]);
+                });
             })
-            ->when($status == 'finish', function ($query) use ($userId, $primaryUserId) {
-                return $query->where(['creator_user_id' =>  $userId, 'status => 8'])
-                    ->orWhere(['creator_primary_user_id' =>  $primaryUserId, 'status => 8'])
-                    ->orWhere(['gainer_user_id' =>  $userId, 'status => 8'])
-                    ->orWhere(['gainer_primary_user_id' =>  $primaryUserId, 'status => 8']);
+            ->when($status == 'ing', function ($query) use ($primaryUserId) {
+                return $query->orWhere(function ($query) use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' =>  $primaryUserId, 'status' => 3]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 3]);
+                });
             })
-            ->when($status == 'after-sales', function ($query) use ($userId, $primaryUserId) {
-                return $query->where(['creator_user_id' =>  $userId, 'status => 6'])
-                    ->orWhere(['creator_primary_user_id' =>  $primaryUserId, 'status => 6'])
-                    ->orWhere(['gainer_user_id' =>  $userId, 'status => 6'])
-                    ->orWhere(['gainer_primary_user_id' =>  $primaryUserId, 'status => 6']);
+            ->when($status == 'finish', function ($query) use ($primaryUserId) {
+                return $query->orWhere(function ($query) use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' =>  $primaryUserId, 'status' => 8]);
+                })->orWhere(function ($query)  use ( $primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 8]);
+                })->orWhere(function ($query) use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' =>  $primaryUserId, 'status' => 7]);
+                })->orWhere(function ($query)  use ( $primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 7]);
+                });
+            })
+            ->when($status == 'after-sales', function ($query) use ($primaryUserId) {
+                return $query->orWhere(function ($query) use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' =>  $primaryUserId, 'status' => 6]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 6]);
+                });
             })
             ->when($status == 'search', function ($query) use ($orderNo) {
                 return $query->where('no', $orderNo);
             })
-            ->when($status == 'cancel', function ($query) use ($userId, $primaryUserId) {
-                return $query->where(['creator_user_id' =>  $userId, 'status => 10'])
-                    ->orWhere(['creator_primary_user_id' =>  $primaryUserId, 'status => 10'])
-                    ->orWhere(['gainer_user_id' =>  $userId, 'status => 10'])
-                    ->orWhere(['gainer_primary_user_id' =>  $primaryUserId, 'status => 10']);
+            ->when($status == 'cancel', function ($query) use ($primaryUserId) {
+                return $query->orWhere(function ($query) use ($primaryUserId) {
+                    $query->where(['creator_primary_user_id' =>  $primaryUserId, 'status' => 10]);
+                })->orWhere(function ($query)  use ($primaryUserId) {
+                    $query->where(['gainer_primary_user_id' => $primaryUserId, 'status' => 10]);
+                });
             })
             ->when($status == 'market', function ($query) use ($orderNo, $userId) {
                 return $query->where('status', 1);
@@ -87,7 +102,7 @@ class OrderRepository
                 ->where('status', '>', 2);
         })->orWhere(function ($query)  use ($orderNo) {
             $query->where(['gainer_primary_user_id' => Auth::user()->id, 'no' => $orderNo])
-                ->where('status', '>', 2);;
-        })->first();
+                ->where('status', '>', 2);
+        })->with('detail')->first();
     }
 }

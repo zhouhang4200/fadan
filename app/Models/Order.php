@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 
-    public function goodsTemplateValue()
+    public function detail()
     {
-        return $this->hasMany(GoodsTemplateValue::class);
+        return $this->hasMany(OrderDetail::class, 'order_no', 'no');
     }
 
     public function userAmountFlows()

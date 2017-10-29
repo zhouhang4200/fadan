@@ -1,6 +1,7 @@
 <?php
 namespace App\Extensions\Weight;
 
+use App\Exceptions\CustomException;
 use App\Models\User;
 use Config;
 use Illuminate\Support\Facades\Cache;
@@ -76,7 +77,7 @@ class Weight
         try {
             $userId = 0;
             $randNum = mt_rand(1, array_sum($this->afterSum));
-            $tmpWeight = 0; // 10
+            $tmpWeight = 0;
             foreach ($this->afterSum as $user => $weight) {
                 if ($randNum <= $weight + $tmpWeight) {
                     $userId = $user;
@@ -86,7 +87,7 @@ class Weight
                 }
             }
             return $userId;
-        } catch (\Exception $exception) {
+        } catch (CustomException $exception) {
 
         }
     }
