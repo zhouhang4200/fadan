@@ -20,9 +20,10 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
         $this->orderNo = $orderNo;
         $this->userId  = $userId;
     }
+
     public function updateAsset()
     {
-        Asset::handle(new Income($this->order->amount, Income::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '订单失败退款', $this->order->creator_primary_user_id));
+        Asset::handle(new Income($this->order->amount, Income::TRADE_SUBTYPE_CANCLE, $this->order->no, '取消订单退款', $this->order->creator_primary_user_id));
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {

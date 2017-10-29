@@ -12,7 +12,10 @@ class Income extends \App\Extensions\Asset\Base\Trade
 {
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
-    const TRADE_SUBTYPE_ORDER_MARKET = 1; // 订单集市收入
+    const TRADE_SUBTYPE_ORDER_MARKET     = 1; // 订单集市收入
+    const TRADE_SUBTYPE_DELIVERY_FAILURE = 2; // 发货失败退款
+    const TRADE_SUBTYPE_AFTER_SERVICE    = 3; // 售后退款
+    const TRADE_SUBTYPE_CANCLE           = 4; // 取消订单退款
 
     protected $userAsset;
     protected $platformAsset;
