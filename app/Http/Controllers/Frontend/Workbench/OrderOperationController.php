@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
-use App\Extensions\Order\Operations\Cancel;
 use Order;
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
+use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\Complete;
 use App\Extensions\Order\Operations\Delivery;
 use App\Extensions\Order\Operations\DeliveryFailure;
@@ -96,22 +96,6 @@ class OrderOperationController extends Controller
     }
 
     /**
-     * 收回订单
-     * @param Request $request
-     */
-    public function takeBack(Request $request)
-    {
-        try {
-            // 调用失败订单
-            Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
-            // 调用打款，删除自动打款哈希表中订单号
-            return response()->ajax(1, '操作成功');
-        } catch (CustomException $exception) {
-            return response()->ajax(0, $exception->getMessage());
-        }
-    }
-
-    /**
      * 取消订单
      * @param Request $request
      */
@@ -120,6 +104,10 @@ class OrderOperationController extends Controller
         try {
             // 调用取消
             Order::handle(new Cancel($request->no, Auth::user()->id));
+            // 待接单数量加1
+            waitReceivingQuantitySub();
+            // 待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
@@ -148,7 +136,7 @@ class OrderOperationController extends Controller
      * @param Request $request
      * @return
      */
-    public function return(Request $request)
+    public function turnBack(Request $request)
     {
         try {
             // 调用退回

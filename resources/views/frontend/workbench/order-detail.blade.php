@@ -89,7 +89,7 @@
                 <div class="item-content left cm-padding">{{ $order->price }}</div>
             </li>
             <li class="overflow">
-                <div class="item-banner left cm-padding">单价</div>
+                <div class="item-banner left cm-padding">数量</div>
                 <div class="item-content left cm-padding">{{ $order->quantity }}</div>
             </li>
             <li class="overflow">

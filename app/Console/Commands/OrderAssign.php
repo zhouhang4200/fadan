@@ -45,10 +45,12 @@ class OrderAssign extends Command
                 $userId = Weight::run(receivingUser($orderNo));
                 // 分配订单
                 try {
-                    echo $orderNo;
                     Order::handle(new Receiving($orderNo, $userId));
-                    // 发送通知
-                    event(new NotificationEvent('NewOrderNotification', ['a' => 1]));
+                    waitReceivingDel($orderNo);
+                    // 待接单数量加1
+                    waitReceivingQuantitySub();
+                    // 待接单数量
+                    event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                 } catch (CustomException $exception) {
                     Log::alert($exception);
                 }
