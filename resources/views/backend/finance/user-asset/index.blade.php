@@ -54,7 +54,7 @@
                                     <td class="total-income">{{ $data->total_income + 0}}</td>
                                     <td>{{ $data->created_at }}</td>
                                     <td>{{ $data->updated_at }}</td>
-                                    <td><button class="btn btn-primary btn-sm account-checking" type="button">对账</button></td>
+                                    <td><button class="layui-btn layui-btn-mini layui-btn-normal account-checking" type="button">对账</button></td>
                                 </tr>
                             @endforeach
                         </tbody>
