@@ -39,9 +39,11 @@ class PassOrRefuseController extends Controller
     {
         $userId = $request->userId;
 
-        if (RealNameIdent::where('user_id', $userId)->update(['status' => 2, 'message' => '请按要求填写资料!'])) {
+        $message = $request->message;
+
+        if (RealNameIdent::where('user_id', $userId)->update(['status' => 2, 'message' => $message])) {
             
-            return response()->json(['code' => 1, 'message' => '审核通过!']);
+            return response()->json(['code' => 1, 'message' => '审核不通过!']);
         }
         return response()->json(['code' => 2, 'message' => '操作异常错误，请重试!']);  
     }
