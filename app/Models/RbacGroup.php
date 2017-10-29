@@ -27,7 +27,7 @@ class RbacGroup extends Model
     public static function rules ()
     {
     	return [
-            'alias' => 'required',
+            'alias' => 'required|max:191',
     	];
     }
 

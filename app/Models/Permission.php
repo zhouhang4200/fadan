@@ -43,7 +43,7 @@ class Permission extends SpatiePermission
     public static function rules()
     {
     	return [
-    		'alias' => 'required|unique:permissions',
+    		'alias' => 'required|max:191|unique:permissions',
     	];
     }
 

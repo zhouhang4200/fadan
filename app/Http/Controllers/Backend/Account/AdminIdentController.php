@@ -33,6 +33,8 @@ class AdminIdentController extends Controller
 
         $idents = RealNameIdent::filter($filters)->paginate(config('backend.page'));
 
+        // dd($idents);
+
         return view('backend.account.ident.index', compact('idents', 'name', 'status', 'startDate', 'endDate'));
     }
 

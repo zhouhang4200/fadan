@@ -19,11 +19,11 @@ class RealNameIdent extends Model
     public static function rules()
     {
     	return [
-			'license_name'       => 'required',
-			'license_number'     => 'required',
-			'corporation'        => 'required',
-			'identity_card'      => 'required',
-			'phone_number'       => 'required',
+			'license_name'       => 'required|max:100',
+			'license_number'     => 'required|max:100',
+			'corporation'        => 'required|max:50',
+			'identity_card'      => 'required|max:100',
+			'phone_number'       => 'required|max:50',
 			'license_picture'    => 'required',
 			'front_card_picture' => 'required',
 			'back_card_picture'  => 'required',

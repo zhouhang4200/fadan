@@ -41,7 +41,7 @@ class AdminUser extends Authenticatable
     public static function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:admin_users',
+            'name' => 'required|string|max:191|unique:admin_users',
             'password' => 'required|string|min:6|confirmed',
         ];
     }

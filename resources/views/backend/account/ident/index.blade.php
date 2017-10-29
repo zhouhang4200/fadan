@@ -30,7 +30,7 @@
                                             <select name="name" lay-verify="" lay-search="">
                                                 <option value="">输入名字或直接选择</option>
                                                 @foreach($idents as $ident)
-                                                <option value="{{ $ident->user_id }}" {{ $name && $name == $ident->user_id ? 'selected' : '' }}>{{ $ident->user->name }}</option>
+                                                <option value="{{ $ident->user_id }}" {{ $name && $name == $ident->user_id ? 'selected' : '' }}>{{ $ident->user ? $ident->user->name : '' }}</option>
                                                 @endforeach
                                             </select>                                                                              
                                         </div>
@@ -83,11 +83,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($idents as $ident)
+                                @forelse($idents as $ident)
                                     <tr class="ident-td">
                                         <td>{{ $ident->id }}</td>
-                                        <td>{{ $ident->user->name }}</td>
-                                        <td>{{ $ident->user->email }}</td>
+                                        <td>{{ $ident->user ? $ident->user->name : '' }}</td>
+                                        <td>{{ $ident->user ? $ident->user->email : '' }}</td>
                                         <td>
                                         @if ($ident->status == 0)
                                             待审核
@@ -104,7 +104,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                @endforelse
                                 </tbody>
                             </table>
                             </div>
