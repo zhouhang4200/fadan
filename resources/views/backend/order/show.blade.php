@@ -15,11 +15,12 @@
                     <div class="layui-tab-content">
                         <div>
                             @foreach ($order->detail as $item)
-                                <p>{{ $item->field_display_name }}: {{ $item->field_value }}</p>
+                                <p>{{ $item->field_display_name }}：{{ $item->field_value }}</p>
                             @endforeach
                         </div>
 
                         <div class="layui-tab-item layui-show">
+                            操作记录：
                             <table class="layui-table" lay-size="sm">
                                 <thead>
                                     <tr>

@@ -80,7 +80,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->order_no                = $this->order->no;
                 $orderDetail->field_name              = $fieldName;
                 $orderDetail->field_display_name      = $widget[$fieldName];
-                $orderDetail->filed_value             = $fieldValue;
+                $orderDetail->field_value             = $fieldValue;
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
                 if (!$orderDetail->save()) {
