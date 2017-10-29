@@ -99,7 +99,6 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	        Route::prefix('order-operation')->group(function (){
 	            // 订单详情
 	            Route::get('detail', 'OrderOperationController@detail')->name('frontend.workbench.order-operation.detail');
-	            
 	            // 订单发货
 	            Route::post('delivery', 'OrderOperationController@delivery')->name('frontend.workbench.order-operation.delivery');
 	            // 失败订单
@@ -120,7 +119,6 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 		});
 	});
 });
-
 
 Route::namespace('Frontend\Auth')->group(function () {
 	 // 登录

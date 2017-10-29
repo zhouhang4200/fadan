@@ -1,9 +1,13 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Extensions\Order\Operations\Cancel;
+use Order;
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Complete;
+use App\Extensions\Order\Operations\Delivery;
+use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Extensions\Order\Operations\TurnBack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,9 +55,9 @@ class OrderOperationController extends Controller
      */
     public function detail(Request $request, OrderRepository $orderRepository)
     {
-        $detail = $orderRepository->detail($request->no);
-        if ($detail) {
-            return view('frontend.workbench.order-detail', compact('detail'));
+        $order = $orderRepository->detail($request->no);
+        if ($order) {
+            return view('frontend.workbench.order-detail', compact('order'));
         }
     }
 
@@ -64,21 +68,47 @@ class OrderOperationController extends Controller
     public function delivery(Request $request)
     {
         // 调用发货
+        try {
+            // 调用收货
+            Order::handle(new Delivery($request->no, Auth::user()->id));
+            // 向卡门发送通知
+            return response()->ajax(1, '操作成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
 
-        // 向卡门发送通知
     }
 
     /**
      * 失败订单
      * @param Request $request
      */
-    public function failure(Request $request)
+    public function fail(Request $request)
     {
-        // 调用失败订单
+        try {
+            // 调用失败订单
+            Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
+            // 调用打款，删除自动打款哈希表中订单号
+            return response()->ajax(1, '操作成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+    }
 
-        // 向卡门发通知
-
-        // 退款
+    /**
+     * 收回订单
+     * @param Request $request
+     */
+    public function takeBack(Request $request)
+    {
+        try {
+            // 调用失败订单
+            Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
+            // 调用打款，删除自动打款哈希表中订单号
+            return response()->ajax(1, '操作成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
     }
 
     /**
@@ -87,16 +117,14 @@ class OrderOperationController extends Controller
      */
     public function cancel(Request $request)
     {
-        // 调用取消
         try {
-            // 调用收货
-            Order::handle(new Complete($request->no, Auth::user()->id));
+            // 调用取消
+            Order::handle(new Cancel($request->no, Auth::user()->id));
             // 调用打款，删除自动打款哈希表中订单号
-            return response()->ajax(0, '');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
-        // 退款
     }
 
     /**
@@ -109,7 +137,7 @@ class OrderOperationController extends Controller
             // 调用收货
             Order::handle(new Complete($request->no, Auth::user()->id));
             // 调用打款，删除自动打款哈希表中订单号
-            return response()->ajax(0, '');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -125,13 +153,14 @@ class OrderOperationController extends Controller
         try {
             // 调用退回
             Order::handle(new TurnBack($request->no, Auth::user()->id));
-            // 给所有用户推送新订单消息
-            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
             // 待接单数量加1
             waitReceivingQuantityAdd();
-            // 待接单数量
+            // 待接单数量刷新
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-            return response()->ajax(0, '');
+            // 给所有用户推送新订单消息
+            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+            // 返回操作成功
+            return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }

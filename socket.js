@@ -3,7 +3,7 @@ var io = require('socket.io')(app);
 var Redis = require('ioredis');
 var redis = new Redis({
     port: 6379, // 端口
-    host: '10.0.2.180', // 地址
+    host: '127.0.0.1', // 地址
     family: 4, // ip类型
     db: 0 // 数据库
 });

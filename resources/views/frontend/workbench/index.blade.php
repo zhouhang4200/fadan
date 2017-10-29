@@ -361,7 +361,6 @@
             }
             // 获取url 参数
             function getQueryString(url, variable) {
-                var name, value;
                 var str = url; //取得整个地址栏
                 var num = str.indexOf("?");
                 str = str.substr(num + 1); //取得所有参数   stringvar.substr(start [, length ]
@@ -417,6 +416,12 @@
                     notification(result.status, result.message)
                 }, 'json')
             }
+            // 取消订单
+            function confirm(no) {
+                $.post('{{ route('frontend.workbench.order-operation.confirm') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
 
             // 操作提示
             function notification(type, message) {
@@ -460,14 +465,14 @@
         });
         // 监听新订单
         socket.on('notification:NewOrderNotification', function (data) {
-            var data = {
+            var notification = {
                 'orderId':data.no,
                 'gameName':data.game_name,
                 'goods':data.goods_name,
                 'price':data.price,
                 'remarks':1
             };
-            orderHub.addData(data);
+            orderHub.addData(notification);
         });
         // 订单数
         socket.on('notification:MarketOrderQuantity', function (data) {

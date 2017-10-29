@@ -143,10 +143,14 @@
 </div>
 <div class="layui-tab">
     <ul class="layui-tab-title">
-        <li class="layui-this">网站设置</li>
+        <li class="layui-this">昨日接单数据</li>
+        <li class="">网站设置</li>
     </ul>
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show" >
+
+        </div>
+        <div class="layui-tab-item" >
             <table class="layui-table" lay-size="sm">
                 <colgroup>
                     <col width="150">
@@ -173,8 +177,10 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
 @endsection

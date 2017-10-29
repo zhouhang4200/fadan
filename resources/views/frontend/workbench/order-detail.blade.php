@@ -51,7 +51,7 @@
     <div class="cm-padding">
         <div class="bg-white cm-border overflow order-in">
             <div class="left cm-padding" style="width: 50%">
-                <p>下单时间<br><span>{{ $detail->created_at }}</span></p>
+                <p>下单时间<br><span>{{ $order->created_at }}</span></p>
             </div>
             <div class="left cm-padding" style="border:none">
                 <p>
@@ -63,58 +63,52 @@
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
                 <div class="item-banner left cm-padding">状态</div>
-                <div class="item-content left cm-padding"> {{ config('order.status')[$detail->status] }}</div>
+                <div class="item-content left cm-padding"> {{ config('order.status')[$order->status] }}</div>
             </li>
         </ul>
 
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
                 <div class="item-banner left cm-padding">订单</div>
-                <div class="item-content left cm-padding">{{ $detail->no }}</div>
+                <div class="item-content left cm-padding">{{ $order->no }}</div>
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">类型</div>
-                <div class="item-content left cm-padding">{{ $detail->service_name }}</div>
+                <div class="item-content left cm-padding">{{ $order->service_name }}</div>
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">游戏</div>
-                <div class="item-content left cm-padding">{{ $detail->game_name }}</div>
+                <div class="item-content left cm-padding">{{ $order->game_name }}</div>
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">商品</div>
-                <div class="item-content left cm-padding">{{ $detail->goods_name }}</div>
+                <div class="item-content left cm-padding">{{ $order->goods_name }}</div>
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">单价</div>
-                <div class="item-content left cm-padding">{{ $detail->price }}</div>
+                <div class="item-content left cm-padding">{{ $order->price }}</div>
+            </li>
+            <li class="overflow">
+                <div class="item-banner left cm-padding">单价</div>
+                <div class="item-content left cm-padding">{{ $order->quantity }}</div>
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">总价</div>
-                <div class="item-content left cm-padding">{{ $detail->amount }}</div>
+                <div class="item-content left cm-padding">{{ $order->amount }}</div>
             </li>
         </ul>
 
         <ul class="bg-white cm-border cm-item overflow cm-margin">
-            <li class="overflow">
-                <div class="item-banner left cm-padding">千手订单号</div>
-                <div class="item-content left cm-padding"></div>
-            </li>
-            <li class="overflow">
-                <div class="item-banner left cm-padding">类型</div>
-                <div class="item-content left cm-padding"></div>
-            </li>
-            <li class="overflow">
-                <div class="item-banner left cm-padding">商品名</div>
-                <div class="item-content left cm-padding"></div>
-            </li>
-            <li class="overflow">
-                <div class="item-banner left cm-padding">单价</div>
-                <div class="item-content left cm-padding"></div>
-            </li>
-            <li class="overflow">
-                <div class="item-banner left cm-padding">总价</div>
-                <div class="item-content left cm-padding"></div>
-            </li>
+            @forelse($order->detail as $item)
+                @if($item->field_name != 'quantity')
+                <li class="overflow">
+                    <div class="item-banner left cm-padding">{{ $item->field_display_name }}</div>
+                    <div class="item-content left cm-padding">{{ $item->filed_value }}</div>
+                </li>
+                @endif
+            @empty
+            @endforelse
+            
         </ul>
     </div>
 </div>

@@ -39,12 +39,13 @@ class OrderAssign extends Command
     {
         // 获取所有待分配订单
         foreach (waitReceivingGet() as $orderNo) {
-            // 检测是否有用户接单，及接单数是否达到平台设置的下线 是：进行下一步 否：检测下一个订单
+            // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
             if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
                 // 取出所有用户, 获取所有接单用户的权重值
                 $userId = Weight::run(receivingUser($orderNo));
                 // 分配订单
                 try {
+                    echo $orderNo;
                     Order::handle(new Receiving($orderNo, $userId));
                     // 发送通知
                     event(new NotificationEvent('NewOrderNotification', ['a' => 1]));

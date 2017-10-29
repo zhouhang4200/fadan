@@ -103,6 +103,6 @@ class OrderRepository
         })->orWhere(function ($query)  use ($orderNo) {
             $query->where(['gainer_primary_user_id' => Auth::user()->id, 'no' => $orderNo])
                 ->where('status', '>', 2);
-        })->first();
+        })->with('detail')->first();
     }
 }
