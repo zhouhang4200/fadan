@@ -285,7 +285,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 300 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
@@ -317,7 +317,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 60 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
@@ -348,7 +348,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 60 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
@@ -379,7 +379,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 60 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
@@ -410,7 +410,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 60 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
@@ -441,7 +441,7 @@
                 ,
                 url: "{{ route('ident.upload-images') }}" //接口
                     ,
-                size: 60 //限制文件大小，单位 KB
+                size: 3000 //限制文件大小，单位 KB
                     ,
                 accept: 'file' //普通文件
                     ,
