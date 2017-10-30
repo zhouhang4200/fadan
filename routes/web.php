@@ -60,13 +60,18 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	Route::group(['middleware' => ['role:home.qiantaiguanlizu|home.qiantaijiedanzu|home.qiantaitixianzu']], function () {
 		// 财务
 		Route::namespace('Finance')->prefix('finance')->group(function () {
+			// 我的资产
 		    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset');
 
+		    // 资金流水
 		    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow');
+		    // 资金流水导出
 		    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
 
+		    // 资产日报
 	        Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily');
 
+	        // 我的提现
 	        Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store');
 		});
 	});
