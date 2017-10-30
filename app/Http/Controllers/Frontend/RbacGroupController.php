@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
-use Pinyin;
 use App\Models\Module;
 use App\Models\RbacGroup;
 use Illuminate\Http\Request;
@@ -60,9 +59,7 @@ class RbacGroupController extends Controller
 
         if (count($permissionIds) > 0) {
 
-            $data['name'] = Pinyin::permalink($request->alias, '');
-
-            $data['alias'] = $request->alias;
+            $data['name'] = $request->name;
 
             $data['user_id'] = Auth::id();
         
@@ -126,9 +123,7 @@ class RbacGroupController extends Controller
 
         if (count($permissionIds) > 0) {
 
-            $data['name'] = Pinyin::permalink($request->alias, '');
-
-            $data['alias'] = $request->alias;
+            $data['name'] = $request->name;
 
             $data['user_id'] = Auth::id();
             

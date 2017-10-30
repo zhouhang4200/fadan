@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
-use Pinyin;
 use App\Models\Role;
 use App\Models\Module;
 use App\Models\Permission;
@@ -54,7 +53,7 @@ class RoleController extends Controller
 
         $data['guard_name'] = 'web';
 
-        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
+        $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 
@@ -109,7 +108,7 @@ class RoleController extends Controller
         
         $this->validate($request, Role::updateRules($id), Role::messages());
 
-        $data['name'] = 'home.' . Pinyin::permalink($request->alias, '');
+        $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 

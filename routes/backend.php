@@ -103,7 +103,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
 
-    Route::middleware(['role:admin.super-manager'])->namespace('Rbac')->prefix('rbac')->group(function () {
+    Route::namespace('Rbac')->prefix('rbac')->group(function () {
         // 前台角色
         Route::resource('roles', 'RoleController', ['except' => ['show']]);
         // 后台角色
@@ -126,7 +126,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
     });
 
-    Route::middleware(['role:admin.super-manager|admin.manager'])->namespace('Account')->prefix('account')->group(function () {
+    Route::namespace('Account')->prefix('account')->group(function () {
         // 账号管理-我的账号
         Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
         // 实名认证 - 通过
