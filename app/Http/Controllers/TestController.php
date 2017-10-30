@@ -41,10 +41,10 @@ class TestController extends Controller
     {
         // $this->testAsset();
         // $this->testDaily();
-        // $this->testOrder();
+        $this->testOrder();
         // $this->command();
 
-        $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
+        // $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
     }
 
     public function testAsset()
@@ -80,8 +80,8 @@ class TestController extends Controller
         // Order::handle(new Receiving('2017102716414000000116', 28));
         // Order::handle(new Delivery('2017102714052200000014', 28));
         // Order::handle(new DeliveryFailure('2017102716414000000116', 28));
-        Order::handle(new AskForAfterService('2017102316360000000021', 1));
-        Order::handle(new AfterServiceComplete('2017102316360000000021', 1));
+        // Order::handle(new AskForAfterService('123', 3, '啦啦啦'));
+        Order::handle(new AfterServiceComplete('123', 888, 5, '退5块钱'));
         // Order::handle(new TurnBack('2017102414284300000014', 2));
         // Order::handle(new Complete('2017102714052200000014', 28));
 

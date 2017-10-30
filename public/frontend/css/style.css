@@ -356,7 +356,7 @@ body {
 /* 分页样式 */
 .pagination > li a, .pagination > li span{
     float: left;
-    width: 30px;
+    min-width: 30px;
     height: 30px;
     line-height: 30px;
     text-align: center;
