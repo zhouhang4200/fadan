@@ -31,15 +31,16 @@ class Role extends SpatieRole
     public static function rules()
     {
     	return [
-            'name' => 'required|max:190|unique:roles',
-    		'alias' => 'required|max:190',
+            'name' => 'required|string|max:190|unique:roles',
+    		'alias' => 'required|string|max:190',
     	];
     }
 
     public static function updateRules($id)
     {
         return [
-            'name' => ['required', Rule::unique('roles')->ignore($id),],
+            'name' => ['required', Rule::unique('roles')->ignore($id), 'string', 'max:190'],
+            'alias' => 'required|string|max:190',
         ];
     }
 

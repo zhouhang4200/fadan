@@ -51,8 +51,9 @@ class User extends Authenticatable
     public static function updateRules($id)
     {
         return [
-            'name' => ['required', Rule::unique('users')->ignore($id),],
-            'email' => ['required', Rule::unique('users')->ignore($id),],
+            'name' => ['required', Rule::unique('users')->ignore($id), 'string', 'max:191',],
+            'email' => ['required', Rule::unique('users')->ignore($id), 'string', 'max:191',],
+            'password' => 'required|string|min:6|confirmed',
         ];
     }
 

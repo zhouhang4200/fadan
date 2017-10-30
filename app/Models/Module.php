@@ -28,6 +28,7 @@ class Module extends Model
     public static function rules()
     {
     	return [
+            'name' => 'required|max:191|unique:modules',
     		'alias' => 'required|max:191|unique:modules',
     	];
     }
@@ -35,7 +36,8 @@ class Module extends Model
     public static function updateRules($id)
     {
         return [
-            'alias' => ['required', Rule::unique('modules')->ignore($id),],
+            'name' => ['required', Rule::unique('modules')->ignore($id), 'string', 'max:100',],
+            'alias' => ['required', Rule::unique('modules')->ignore($id), 'string', 'max:100',],
         ];
     }
 

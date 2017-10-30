@@ -30,6 +30,12 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">权限名</label>
                                         <div class="layui-input-block">
+                                            <input type="text" name="name" lay-verify="required"  value="{{ old('name') ?: $permission->name  }}" autocomplete="off" placeholder="请输入英文权限名" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">中文权限名</label>
+                                        <div class="layui-input-block">
                                             <input type="text" name="alias" lay-verify="required"  value="{{ old('alias') ?: $permission->alias  }}" autocomplete="off" placeholder="请输入中文权限名" class="layui-input">
                                         </div>
                                     </div>
@@ -54,7 +60,7 @@
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
 
-        var error = "{{ $errors->count() > 0 ? '用户名或别名已经存在！' : '' }}";
+        var error = "{{ $errors->count() > 0 ? '用户名或别名已经存在或字符过长！' : '' }}";
         var updateFail = "{{ session('updateFail') ?: '' }}";
 
         if (error) {
