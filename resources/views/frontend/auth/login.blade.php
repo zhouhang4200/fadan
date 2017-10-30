@@ -52,9 +52,9 @@
             var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
 
             if (error) {
-                layer.msg(error, {icon: 5, time:1500},);
+                layer.msg(error, {icon: 5, time:1500});
             } else if(loginError) {
-                layer.msg(loginError, {icon: 5, time:1500},);
+                layer.msg(loginError, {icon: 5, time:1500});
             }
 
             //监听提交

@@ -176,7 +176,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">商品</label>
                 <div class="layui-input-block">
-                    <select name="goods" lay-verify="required" lay-search id="goods" lay-filter="goods" >
+                    <select name="goods" lay-verify="required" lay-search id="goods" lay-filter="goods">
                         <option value="">请选择商品</option>
                     </select>
                 </div>
@@ -265,12 +265,13 @@
                     layer = layui.layer,
                     layTpl = layui.laytpl,
                     element = layui.element;
-            var serviceId = 0, gameId = 0;
+            var serviceId = 0, gameId = 0, currentUrl, currentType;
             // 打开工作台时加载订单列表
             getOrder('{{ route('frontend.workbench.order-list') }}', 'need');
             // 切换订单状态
             element.on('tab(order-list)', function () {
                 var type = this.getAttribute('lay-id');
+                $('.' + type).empty();
                 getOrder('{{ route('frontend.workbench.order-list') }}', type);
             });
             // 订单操作
@@ -333,6 +334,7 @@
                             // 加载商品
                             $.each(result.content.goods, function (i, v) {
                                 $('#goods').append('<option value="' + i + '">' + v + '</option>');
+                                layui.form.render();
                             });
                             // 加载模版
                             template();
@@ -343,7 +345,7 @@
             }
             // 清空商品栏
             function clearGoods() {
-                $('#goods').empty().append('<option value="0">请选择商品</option>');
+                $('#goods').empty().append('<option value="">请选择商品</option>');
             }
             // 加载模版
             function template() {
@@ -374,6 +376,8 @@
             // 获取订单
             function getOrder(url, type) {
                 type = type || 'need';
+                currentUrl = url;
+                currentType = type;
                 $.post(url, {type: type}, function (result) {
                     $('.' + type).html(result);
                     layui.form.render();
@@ -427,7 +431,11 @@
                     notification(result.status, result.message)
                 }, 'json')
             }
-
+            function afterSales(no) {
+                $.post('{{ route('frontend.workbench.order-operation.after-sales') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            }
             // 操作提示
             function notification(type, message) {
                 if (type == 1) {
@@ -437,6 +445,7 @@
                             console.log(layero, index);
                         }
                     });
+                    getOrder(currentUrl, currentType);
                 } else {
                     layer.msg(message)
                 }
@@ -455,6 +464,9 @@
                     $('.left-menu').css('padding', '75px 20px 10px 0');
                 }
             });
+            $('#prom').on('click', '.windows-receiving', function () {
+                receiving($(this).attr('data-no'));
+            });
             // 下单面板开关
             $(".open-btn").click(function () {
                 $("#left-menu").animate({left: "0"});
@@ -470,14 +482,16 @@
         });
         // 监听新订单
         socket.on('notification:NewOrderNotification', function (data) {
-            var notification = {
-                'orderId':data.no,
-                'gameName':data.game_name,
-                'goods':data.goods_name,
-                'price':data.price,
-                'remarks':1
-            };
-            orderHub.addData(notification);
+            if(data.creator_user_id != '{{ Auth::user()->id }}') {
+                var notification = {
+                    'orderId':data.no,
+                    'gameName':data.game_name,
+                    'goods':data.goods_name,
+                    'price':data.price,
+                    'remarks':1
+                };
+                orderHub.addData(notification);
+            }
         });
         // 订单数
         socket.on('notification:MarketOrderQuantity', function (data) {

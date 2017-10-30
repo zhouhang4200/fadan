@@ -33,8 +33,8 @@ class CreateOrdersTable extends Migration
             $table->string('remark')->comment('备注说明');
             $table->unsignedInteger('creator_user_id')->comment('订单创建者（主账号或子账号id）');
             $table->unsignedInteger('creator_primary_user_id')->comment('订单创建者主账号id');
-            $table->unsignedInteger('gainer_user_id')->nullable()->comment('接单者（主账号或子账号id）');
-            $table->unsignedInteger('gainer_primary_user_id')->nullable()->comment('接单者主账号id');
+            $table->unsignedInteger('gainer_user_id')->default(0)->comment('接单者（主账号或子账号id）');
+            $table->unsignedInteger('gainer_primary_user_id')->default(0)->comment('接单者主账号id');
             $table->datetime('created_at');
             $table->datetime('updated_at');
             $table->unique('no');

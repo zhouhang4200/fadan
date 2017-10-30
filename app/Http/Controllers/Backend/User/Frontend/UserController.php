@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\User\Frontend;
 
 use App\Exceptions\CustomException;
+use App\Repositories\Api\UserRechargeOrderRepository;
 use Illuminate\Http\Request;
 
 use Asset, Auth;
@@ -24,13 +25,14 @@ class UserController extends Controller
     }
 
     /**
-     * 手动加款
      * @param Request $request
+     * @param UserRechargeOrderRepository $userRechargeOrderRepository
+     * @return mixed
      */
-    public function recharge(Request $request)
+    public function recharge(Request $request, UserRechargeOrderRepository $userRechargeOrderRepository)
     {
         try {
-            Asset::handle(new Recharge($request->amount, Recharge::TRADE_SUBTYPE_MANUAL, generateOrderNo(), '手动加款', $request->id, Auth::user()->id));
+            $userRechargeOrderRepository->store($request->amount, $request->id, '手动加款', generateOrderNo(), '', false);
             return response()->ajax(1, '加款成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());

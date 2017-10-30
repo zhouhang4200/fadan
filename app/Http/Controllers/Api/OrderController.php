@@ -28,4 +28,8 @@ class OrderController extends Controller
     {
         return ForeignOrderFactory::choose('jd')->outputOrder($request->data);
     }
+    public function test(Request $request)
+    {
+        \Log::alert(json_encode($request->all()));
+    }
 }

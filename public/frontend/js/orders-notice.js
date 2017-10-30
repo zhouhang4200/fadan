@@ -2,10 +2,11 @@ var orderHub = {
     count:0,
     timer:[],
     addData:function(data){ //新的订单
+        // '<div class="text_center prom-list-header relative">集市新订单 <span class="absolute close-prom">关闭通知</span></div>'+
         var _this=this;
         _this.count++;
         var temp=$('<li class="fr prom-list relative animated fadeInRight" data-id='+data.orderId+'>'+
-            '<div class="text_center prom-list-header relative">集市新订单 <span class="absolute close-prom">关闭通知</span></div>'+
+            '<div class="text_center prom-list-header relative">集市新订单 </div>'+
             '<div class="prom-list-body">'+
             '<p>订单号：'+ data.orderId +'<br>'+
             '游戏:'+ data.gameName +
@@ -16,7 +17,7 @@ var orderHub = {
             '</div>'+
             '</div>'+
             '<div class="prom-list-footer overflow text_center">'+
-            '<div class="prom-list-footer-tab get get-order fl"  data-count="'+_this.count+'" data-remarks="'+data.remarks+'">'+
+            '<div class="prom-list-footer-tab get get-order fl windows-receiving" data-no="' + data.orderId  +  '"  data-count="'+_this.count+'" data-remarks="'+data.remarks+'">'+
             '接单(<span style="color:red" class="time" id="count'+_this.count+'">5</span>)'+
             '</div>'+
             '<div class="prom-list-footer-tab ignore fl" data-count="'+_this.count+'">'+
@@ -33,14 +34,14 @@ var orderHub = {
     setCount:function(count){
         var _this=this;
         var time=$('#count'+count).text();
-        _this.timer[count]=setInterval(function(){
+       _this.timer[count]=setInterval(function(){
             time--;
             $('#count'+count).text(time);
             if(time==0){
                 $('#count'+count).parents('.prom-list').remove();
                 clearInterval(_this.timer[count]);
             }
-        },1000)
+       },1000)
     },
     ignoreOrder:function(self,count){
         var _this=this;

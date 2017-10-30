@@ -2,6 +2,8 @@
 namespace App\Extensions\Order\Operations;
 
 // 接单后，转回集市
+use App\Models\User;
+
 class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
 {
     protected $acceptableStatus = [3];
@@ -26,7 +28,7 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
             throw new Exception('不存在的创建者');
         }
 
-        $this->order->gainer_user_id         = null;
-        $this->order->gainer_primary_user_id = null;
+        $this->order->gainer_user_id         = 0;
+        $this->order->gainer_primary_user_id = 0;
     }
 }

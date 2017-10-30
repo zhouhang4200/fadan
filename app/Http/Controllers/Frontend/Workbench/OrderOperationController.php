@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Extensions\Order\Operations\AskForAfterService;
 use Order;
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
@@ -44,7 +45,7 @@ class OrderOperationController extends Controller
         // 加入待分配订单
         waitReceivingAdd($orderNo);
         // 提示用户：接单成功等待系统分配
-        return response()->ajax();
+        return response()->ajax(1, '抢单成功,等待系统分配');
     }
 
     /**
@@ -76,7 +77,6 @@ class OrderOperationController extends Controller
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
-
     }
 
     /**
@@ -147,6 +147,22 @@ class OrderOperationController extends Controller
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             // 给所有用户推送新订单消息
             event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+            // 返回操作成功
+            return response()->ajax(0, '操作成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @internal param array $middleware
+     */
+    public function afterSales(Request $request)
+    {
+        try {
+            // 调用退回
+            Order::handle(new AskForAfterService($request->no, Auth::user()->id));
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {

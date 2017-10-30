@@ -21,7 +21,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         </thead>
         <tbody>
         @forelse($orders as $item)
-            <tr>
+            <tr data-no="{{ $item->no }}">
                 <td>{{ $item->no }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
@@ -35,7 +35,6 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
                             <option value="">请选择操作</option>
-                            @if($item->gainer_primary_user_id != $primaryUserId)
                                 @if(in_array($primaryUserId, [$item->gainer_primary_user_id, $item->creator_primary_user_id])
                                 || in_array($currentUserId, [$item->gainer_user_id, $item->creator_user_id]))
                                     <option value="detail">订单详情</option>
@@ -48,6 +47,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
 
                                 @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
                                 && $item->status == 4)
+                                    <option value="afterSales">申请售后</option>
                                     <option value="confirm">确认收货</option>
                                 @endif
 
@@ -60,7 +60,6 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                                 @if(!receivingRecordExist( $primaryUserId, $item->no) && $primaryUserId != $item->creator_user_id)
                                     <option value="receiving">立即接单</option>
                                 @endif
-                            @endif
                         </select>
                     </div>
                 </td>
