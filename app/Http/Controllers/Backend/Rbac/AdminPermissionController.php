@@ -41,6 +41,11 @@ class AdminPermissionController extends Controller
      */
     public function store(Request $request)
     {
+        if (! $request->module_id) {
+
+            return back()->withInput()->with('missModule', '请选择模块!');
+        }
+
         $this->validate($request, Permission::rules(), Permission::messages());
 
         $data['guard_name'] = 'admin';
@@ -95,6 +100,11 @@ class AdminPermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! $request->module_id) {
+
+            return back()->withInput()->with('missModule', '请选择模块!');
+        }
+        
         $this->validate($request, Permission::updateRules($id), Permission::messages());
 
         $data['name'] = $request->name;

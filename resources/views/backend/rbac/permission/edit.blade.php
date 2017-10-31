@@ -62,11 +62,14 @@
 
         var error = "{{ $errors->count() > 0 ? '用户名或别名已经存在或字符过长！' : '' }}";
         var updateFail = "{{ session('updateFail') ?: '' }}";
+        var missModule = "{{ session('missModule') ?: '' }}";
 
         if (error) {
             layer.msg(error, {icon: 5, time:1500},);
         } else if(updateFail) {
             layer.msg(updateFail, {icon: 5, time:1500},);
+        } else if(missModule) {
+            layer.msg(missModule, {icon: 5, time:1500},);
         }
   
       //……
