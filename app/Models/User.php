@@ -53,7 +53,6 @@ class User extends Authenticatable
         return [
             'name' => ['required', Rule::unique('users')->ignore($id), 'string', 'max:191',],
             'email' => ['required', Rule::unique('users')->ignore($id), 'string', 'max:191',],
-            'password' => 'required|string|min:6|confirmed',
         ];
     }
 

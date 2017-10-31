@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',
         ],
+        'Illuminate\Auth\Events\Logined' => [
+            'App\Listeners\Logined\WriteLoginSession',
+        ],
     ];
 
     /**
