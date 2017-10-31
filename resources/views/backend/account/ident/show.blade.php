@@ -232,10 +232,10 @@
                     data:{'userId': userId},
                     success:function (data) {
                         if (data.code == 1) {
-                            layer.msg('审核完成，状态：通过！', {icon: 6, time:1500},);
+                            layer.msg('审核完成，状态：通过！', {icon: 6, time:1500});
                             window.location.href = "{{ route('admin-idents.index') }}";
                         } else {
-                            layer.msg(data.message, {icon: 5, time:1500},);
+                            layer.msg(data.message, {icon: 5, time:1500});
                         }
                     }
                 });
@@ -251,10 +251,10 @@
                     data:{'userId': userId, 'message': message},
                     success:function (data) {
                         if (data.code == 1) {
-                            layer.msg('审核完成， 状态：不通过！', {icon: 6, time:1500},);
+                            layer.msg('审核完成， 状态：不通过！', {icon: 6, time:1500});
                              window.location.href = "{{ route('admin-idents.index') }}";
                         } else {
-                            layer.msg(data.message, {icon: 5, time:1500},);
+                            layer.msg(data.message, {icon: 5, time:1500});
                         }
                         
                     }
