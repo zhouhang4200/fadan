@@ -6,8 +6,8 @@ Route::namespace('Backend\Auth')->group(function () {
     Route::post('login', 'LoginController@login');
     Route::post('logout', 'LoginController@logout')->name('admin.logout');
     // 注册
-    Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
-    Route::post('register', 'RegisterController@register');
+    // Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
+    // Route::post('register', 'RegisterController@register');
     // 密码找回
     Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
@@ -20,7 +20,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::get('/', 'DashboardController@index')->name('dashboard');
     // 系统日志
-    Route::resource('system-logs', 'SystemLogController', ['only' => ['index']]);
+    // Route::resource('system-logs', 'SystemLogController', ['only' => ['index']]);
+    Route::get('system-logs', 'SystemLogController@index')->name('system-logs.index');
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
 

@@ -106,7 +106,7 @@ class AdminGroupController extends Controller
 
         if ($request->roles == $user->roles->pluck('id')->toArray()) {
             
-            return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
+            return redirect(route('admin-groups.index'))->with('succ', '修改账号角色成功!');
         }
 
         $array = $user->roles()->sync($request->roles);
