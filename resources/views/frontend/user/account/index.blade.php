@@ -46,15 +46,15 @@
 @section('js')
     <script>
         layui.use('form', function(){
-        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
-        var layer = layui.layer;
+            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            var layer = layui.layer;
 
-        var succ = "{{ session('succ') ?: '' }}";
+            var succ = "{{ session('succ') ?: '' }}";
 
-        if(succ) {
-            layer.msg(succ, {icon: 6, time:1500});
-        }
-        form.render();
+            if(succ) {
+                layer.msg(succ, {icon: 6, time:1500});
+            }
+            form.render();
         });  
 
     </script>
