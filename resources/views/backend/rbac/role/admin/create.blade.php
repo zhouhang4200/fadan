@@ -45,6 +45,12 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">角色名</label>
                                         <div class="layui-input-block">
+                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入英文角色名" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">中文角色名</label>
+                                        <div class="layui-input-block">
                                             <input type="text" name="alias" lay-verify="required" value="{{ old('alias') }}" autocomplete="off" placeholder="请输入中文角色名" class="layui-input">
                                         </div>
                                     </div>

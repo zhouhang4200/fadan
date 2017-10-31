@@ -21,6 +21,7 @@
                                 <tr>
                                     <th>序号</th>
                                     <th>名称</th>
+                                    <th>中文名称</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -29,6 +30,7 @@
                                     @forelse($permissions as $permission)
                                         <tr>
                                             <td>{{ $permission->id }}</td>
+                                            <td>{{ $permission->name }}</td>
                                             <td>{{ $permission->alias }}</td>
                                             <td>{{ $permission->created_at }}</td>
                                             <td style="text-align: center"><a href="{{ route('admin-permissions.edit', ['id' => $permission->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>

@@ -16,8 +16,7 @@ class CreateRbacGroupsTable extends Migration
         Schema::create('rbac_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->tinyInteger('user_id')->unsigned()->comment('user_id');
-            $table->string('name')->comment('名称');
-            $table->string('alias')->comment('别名');
+            $table->string('name')->comment('中文名称');
             $table->timestamps();
         });
     }

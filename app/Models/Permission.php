@@ -43,22 +43,25 @@ class Permission extends SpatiePermission
     public static function rules()
     {
     	return [
-    		'alias' => 'required|max:191|unique:permissions',
+            'name' => 'required|string|max:150|unique:permissions',
+    		'alias' => 'required|string|max:150',
     	];
     }
 
     public static function updateRules($id)
     {
         return [
-            'alias' => ['required', Rule::unique('permissions')->ignore($id),],
+            'name' => ['required', Rule::unique('permissions')->ignore($id),'string', 'max:150'],
+            'alias' => 'required|string|max:150',
         ];
     }
 
     public static function messages()
     {
     	return [
-    		'alias.required' => '别名必须填写!',
-    		'alias.unique' => '别名已经存在',
+    		'alias.required' => '中文名必须填写!',
+            'name.required' => '名称已经存在',
+            'name.unique' => '名称已经存在',
     	];
     }
 }

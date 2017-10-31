@@ -49,7 +49,8 @@ class AdminUser extends Authenticatable
     public static function updateRules($id)
     {
         return [
-            'name' => ['required', Rule::unique('admin_users')->ignore($id),],
+            'name' => ['required', Rule::unique('admin_users')->ignore($id), 'string', 'max:190', ],
+            'password' => 'required|string|min:6|confirmed',
         ];
     }
 

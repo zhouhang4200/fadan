@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
-use Pinyin;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,7 +42,7 @@ class AdminModuleController extends Controller
 
         $data['guard_name'] = 'admin';
 
-        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
+        $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 
@@ -91,7 +90,7 @@ class AdminModuleController extends Controller
     {
         $this->validate($request, Module::updateRules($id), Module::messages());
 
-        $data['name'] = 'admin.' . Pinyin::permalink($request->alias, '');
+        $data['name'] = $request->name;
 
         $data['alias'] = $request->alias;
 

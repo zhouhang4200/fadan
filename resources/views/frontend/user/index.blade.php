@@ -170,16 +170,15 @@
 
 
         layui.use('form', function(){
-        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
-        var layer = layui.layer;
+            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            var layer = layui.layer;
 
-        var succ = "{{ session('succ') ?: '' }}";
+            var succ = "{{ session('succ') ?: '' }}";
 
-        if(succ) {
-            layer.msg(succ, {icon: 6, time:1500},);
-        }
-  
-          //……
+            if(succ) {
+                layer.msg(succ, {icon: 6, time:1500},);
+            }  
+              //……
           
           //但是，如果你的HTML是动态生成的，自动渲染就会失效
           //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();

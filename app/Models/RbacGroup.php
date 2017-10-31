@@ -14,7 +14,7 @@ class RbacGroup extends Model
     protected $guarded = ['id'];
 
     protected $keepRevisionOf = array(
-        'name', 'alias',
+        'name',
     );
 
     protected $revisionCreationsEnabled = true;
@@ -27,14 +27,14 @@ class RbacGroup extends Model
     public static function rules ()
     {
     	return [
-            'alias' => 'required|max:191',
+            'name' => 'required|string|max:191',
     	];
     }
 
     public static function messages()
     {
     	return [
-            'alias.required' => '请填写组名!',
+            'name.required' => '请填写组名!',
     	];
     }
 

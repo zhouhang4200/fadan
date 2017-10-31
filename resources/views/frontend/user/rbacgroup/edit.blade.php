@@ -34,7 +34,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input type="text" name="alias" lay-verify="title" value="{{ old('alias') ?: $rbacGroup->alias }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
+                <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $rbacGroup->name }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
             </div>
         </div>
 

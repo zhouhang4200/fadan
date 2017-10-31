@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Hash;
+use Redis;
 use Closure;
 use Carbon\Carbon;
 use App\Models\User;
@@ -22,6 +23,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        
         if (Auth::guard($guard)->check()) {
 
             if ($guard == 'admin') {
@@ -30,7 +32,7 @@ class RedirectIfAuthenticated
             }
             return redirect('/');
         }
-
+           
         if ($request->isMethod('post') && $this->checkLoginError($request)) {
 
             return redirect('/login')->withInput()->with('loginError', '异地登录!');

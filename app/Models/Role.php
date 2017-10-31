@@ -31,22 +31,25 @@ class Role extends SpatieRole
     public static function rules()
     {
     	return [
-    		'alias' => 'required|max:191|unique:roles',
+            'name' => 'required|string|max:190|unique:roles',
+    		'alias' => 'required|string|max:190',
     	];
     }
 
     public static function updateRules($id)
     {
         return [
-            'alias' => ['required', Rule::unique('roles')->ignore($id),],
+            'name' => ['required', Rule::unique('roles')->ignore($id), 'string', 'max:190'],
+            'alias' => 'required|string|max:190',
         ];
     }
 
     public static function messages()
     {
     	return [
-    		'alias.required' => '别名必须填写!',
-    		'alias.unique' => '别名已经存在',
+            'name.required' => '名称必须填写!',
+    		'alias.required' => '中文名别名必须填写!',
+    		'name.unique' => '中文名别名已经存在!',
     	];
     }
 }
