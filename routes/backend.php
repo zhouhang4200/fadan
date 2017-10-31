@@ -171,8 +171,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('admin-modules/{id}/edit', 'AdminModuleController@edit')->name('admin-modules.edit');
         Route::put('admin-modules/{id}', 'AdminModuleController@update')->name('admin-modules.update');
         Route::delete('admin-modules/{id}', 'AdminModuleController@destroy')->name('admin-modules.destroy');
-
-        Route::get('accounts', 'AccountController@index')->name('accounts.index');
         // 后台账号
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index');
     });
@@ -184,9 +182,9 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('pass', 'PassOrRefuseController@pass')->name('pass-or-refuse.pass');
         // 实名认证 - 拒绝
         Route::post('refuse', 'PassOrRefuseController@refuse')->name('pass-or-refuse.refuse');
-        // 实名认证
-        // Route::resource('admin-idents', 'AdminIdentController', ['only' => ['index', 'show']]);
+        // 实名认证列表
         Route::get('admin-idents', 'AdminIdentController@index')->name('admin-idents.index');
+        // 实名认证详情
         Route::get('admin-idents/{id}', 'AdminIdentController@show')->name('admin-idents.show');
 
     });
@@ -194,29 +192,34 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     // 订单
     Route::group([], function () {
         // 订单列表
-        // Route::resource('orders', 'OrderController', ['only' => ['index', 'show']]);
         Route::get('orders', 'OrderController@index')->name('orders.index');
+        // 订单详情
         Route::get('orders/{id}', 'OrderController@show')->name('orders.show');
     });
 
     // 财务
     Route::namespace('Finance')->prefix('finance')->group(function () {
+        // 当前资产
         Route::get('platform-asset', 'PlatformAssetController@index')->name('finance.platform-asset');
-
+        // 资金流水
         Route::get('platform-amount-flow', 'PlatformAmountFlowController@index')->name('finance.platform-amount-flow');
+        // 资金流水导出
         Route::get('platform-amount-flow/export', 'PlatformAmountFlowController@export')->name('finance.platform-amount-flow.export');
-
+        // 资产日报
         Route::get('platform-asset-daily', 'PlatformAssetDailyController@index')->name('finance.platform-asset-daily');
+        // 资产日报导出
         Route::get('platform-asset-daily/export', 'PlatformAssetDailyController@export')->name('finance.platform-asset-daily.export');
-
+        // 用户资产
         Route::get('user-asset', 'UserAssetController@index')->name('finance.user-asset');
-
+        // 用户资产日报
         Route::get('user-asset-daily', 'UserAssetDailyController@index')->name('finance.user-asset-daily');
-
+        // 用户资产流水
         Route::get('user-amount-flow', 'UserAmountFlowController@index')->name('finance.user-amount-flow');
-
+        // 用户提现列表
         Route::get('user-widthdraw-order', 'UserWithdrawOrderController@index')->name('finance.user-widthdraw-order');
+        // 用户提现通过
         Route::post('user-widthdraw-order/complete/{userWithdrawOrder}', 'UserWithdrawOrderController@complete')->name('finance.user-widthdraw-order.complete');
+        // 用户提现拒绝
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse');
     });
 
