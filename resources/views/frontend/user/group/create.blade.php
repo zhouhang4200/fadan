@@ -58,7 +58,7 @@
                                     <div class="layui-form-item" pane="">
                                     @foreach($groups as $group)
                                     <div class="layui-input-inline">
-                                      <input type="checkbox" name="groups[]" lay-skin="primary" title="{{ $group->alias }}" value="{{ $group->id }}">
+                                      <input type="checkbox" name="groups[]" lay-skin="primary" title="{{ $group->name }}" value="{{ $group->id }}">
                                     </div>
                                     @endforeach
                                     </div>

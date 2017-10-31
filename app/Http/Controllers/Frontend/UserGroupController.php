@@ -52,7 +52,7 @@ class UserGroupController extends Controller
     		}
 
 	    	$groups = RbacGroup::where('user_id', $user->id)->get();
-	    	
+
 	        return view('frontend.user.group.create', compact('groups', 'childUser'));
     	}
     }

@@ -29,12 +29,6 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">确认密码</label>
-                <div class="layui-input-block">
-                    <input type="password" name="password_confirmation" value="" lay-verify="" placeholder="不填写则为原密码" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">提交</button>
             </div>

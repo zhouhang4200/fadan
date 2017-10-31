@@ -59,7 +59,7 @@
                                     <div class="layui-form-item" pane="">
                                     @foreach($groups as $group)
                                     <div class="layui-input-inline">
-                                      <input type="checkbox" name="groups[]" lay-skin="primary" title="{{ $group->alias }}" value="{{ $group->id }}" {{ $user->rbacGroups && in_array($group->id, $user->rbacGroups->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                      <input type="checkbox" name="groups[]" lay-skin="primary" title="{{ $group->name }}" value="{{ $group->id }}" {{ $user->rbacGroups && in_array($group->id, $user->rbacGroups->pluck('id')->toArray()) ? 'checked' : '' }}>
                                     </div>
                                     @endforeach
                                     </div>

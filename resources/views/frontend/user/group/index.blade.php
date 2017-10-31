@@ -56,7 +56,7 @@
                     <td>{{ $user->email }}</td>
                     <td>
                     @foreach($user->rbacGroups as $rbacGroup)
-                        {{ $rbacGroup->alias }}
+                        {{ $rbacGroup->name }}
                     @endforeach
                     </td>
                     <td style="text-align: center">

@@ -59,19 +59,27 @@
             </colgroup>
             <thead>
             <tr>
-                <th>用户ID</th>
-                <th>用户名</th>
+                <th style="width:7%">账号id</th>
+                <th>账号名</th>
                 <th>邮箱</th>
+                <th>权限组</th>
                 <th>注册时间</th>
                 <th>操作</th>
             </tr>
             </thead>
             <tbody>
             @forelse($users as $user)
-                <tr class="user-td">
+                <tr class="user-td" style="text-align: center">
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    <td>
+                    @forelse($user->rbacGroups as $name)
+                        {{ $name->name }}&nbsp;&nbsp;
+                    @empty
+                    --
+                    @endforelse
+                    </td>
                     <td>{{ $user->created_at }}</td>
                     <td>
                         <div style="text-align: center">
