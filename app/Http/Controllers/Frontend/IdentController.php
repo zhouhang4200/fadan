@@ -34,6 +34,13 @@ class IdentController extends Controller
     {
         $user = Auth::user();
 
+        $has = RealNameIdent::where('user_id', Auth::id())->first();
+
+        if ($has) {
+
+            return back()->with('hasError', '您已经填写过实名认证， 请勿重复填写!');
+        }
+
         return view('frontend.user.ident.create');
     }
 
@@ -58,9 +65,15 @@ class IdentController extends Controller
     {
         $ident = RealNameIdent::where('user_id', Auth::id())->first();
 
+        if ($ident->status == 1) {
+
+            return back()->with('passError', '您已经通过实名认证');
+        }
+
         // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
 
-        $data                              = $request->except('name');
+        $data                              = $request->all();
+        $data['name']                      = $request->name;
         $data['bank_name']                 = $request->bank_name;
         $data['bank_number']               = $request->bank_number;
         $data['type']                      = $request->type;
@@ -92,6 +105,13 @@ class IdentController extends Controller
      */
     public function store(Request $request)
     {
+        $has = RealNameIdent::where('user_id', Auth::id())->first();
+
+        if ($has) {
+
+            return back()->with('hasError', '您已经填写过实名认证， 请勿重复填写!');
+        }
+
         $userId = Auth()->user()->parent_id ?: Auth()->id();
 
         // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());

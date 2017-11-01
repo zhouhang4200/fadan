@@ -25,12 +25,6 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">邮箱:</label>
-                <div class="layui-input-block">
-                    <input type="text" name="email" lay-verify="email" value="{{ old('email') }}" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
                 <label class="layui-form-label">密码:</label>
                 <div class="layui-input-block">
                     <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">

@@ -33,7 +33,7 @@
 
     <div class="layui-tab-item layui-show" lay-size="sm">
 
-        <table class="layui-table" lay-size="sm">
+        <table class="layui-table" lay-size="sm" style="text-align:center;">
             <thead>
             <tr>
                     <th>序号</th>

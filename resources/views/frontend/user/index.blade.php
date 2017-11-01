@@ -61,7 +61,6 @@
             <tr>
                 <th style="width:7%">账号id</th>
                 <th>账号名</th>
-                <th>邮箱</th>
                 <th>权限组</th>
                 <th>注册时间</th>
                 <th>操作</th>
@@ -72,7 +71,6 @@
                 <tr class="user-td" style="text-align: center">
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
                     <td>
                     @forelse($user->rbacGroups as $name)
                         {{ $name->name }}&nbsp;&nbsp;

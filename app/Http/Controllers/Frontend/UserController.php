@@ -58,11 +58,13 @@ class UserController extends Controller
     {
         if (Auth::user()->parent_id == 0) {  
 
-            $this->validate($request, User::rules(), User::messages());
+            $this->validate($request, User::sonRules(), User::messages());
 
             $data = $request->all();
 
             $data['password'] = bcrypt($request->password);
+
+            $data['email'] = Auth::id() . 'email' . rand(1, 100000000) . '@qq.com';
 
             $data['parent_id'] = Auth::id();
 

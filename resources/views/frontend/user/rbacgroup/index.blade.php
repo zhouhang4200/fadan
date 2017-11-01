@@ -6,7 +6,7 @@
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
         .layui-table th, .layui-table td {
-            width: 10%;
+            text-align:center;
         }
     </style>
 @endsection
@@ -20,15 +20,10 @@
         <a href="{{ route('rbacgroups.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加权限组</button></a>
     </div>
     <table class="layui-table" lay-size="sm">
-        <colgroup>
-            <col width="150">
-            <col width="200">
-            <col>
-        </colgroup>
         <thead>
         <tr>
-            <th>序号</th>
-            <th>组名</th>
+            <th style="width:5%">序号</th>
+            <th style="width:7%">组名</th>
             <th>权限名</th>
             <th>注册时间</th>
             <th>操作</th>
