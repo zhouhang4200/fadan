@@ -13,11 +13,6 @@ class IdentController extends Controller
 {
     protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-    public function __construct()
-    {
-        // $this->middleware('roles:home.manager');
-    }
-
     /**
      * Display a listing of the resource.
      *

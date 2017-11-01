@@ -8,11 +8,6 @@ use App\Http\Controllers\Controller;
 
 class SystemLogController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('role:admin.super-manager|admin.manager');
-    }
-
     /**
      * Display a listing of the resource.
      *
