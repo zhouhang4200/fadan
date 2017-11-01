@@ -245,9 +245,18 @@
 @section('js')
     <script>
         //普通图片上传
-       layui.use('upload', function () {
+       layui.use(['form', 'upload', 'layedit', 'laydate'], function () {
             var $ = layui.jquery,
-                upload = layui.upload;
+            upload = layui.upload,
+            form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit;
+
+            var error = "{{ $errors->count() > 0 ? '请上传相关照片!' : '' }}";
+
+            if(error) {
+                layer.msg(error, {icon: 5, time:1500},);
+            }
 
             //普通图片上传
             var uploadInst = upload.render({

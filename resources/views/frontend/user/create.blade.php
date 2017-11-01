@@ -51,7 +51,7 @@
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
 
-            var error = "{{ $errors->count() > 0 ? '账号名或邮箱已经存在!' : '' }}";
+            var error = "{{ $errors->count() > 0 ? '账号名已经存在!' : '' }}";
             var addError = "{{ session('addError') ?: '' }}";
 
             if (error) {

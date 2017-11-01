@@ -70,7 +70,12 @@ class IdentController extends Controller
             return back()->with('passError', '您已经通过实名认证');
         }
 
-        // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
+        if ($request->type == 1) {
+
+            $this->validate($request, RealNameIdent::personalRules(), RealNameIdent::messages());
+        } else {
+            $this->validate($request, RealNameIdent::companyRules(), RealNameIdent::messages());
+        }
 
         $data                              = $request->all();
         $data['name']                      = $request->name;
@@ -114,7 +119,12 @@ class IdentController extends Controller
 
         $userId = Auth()->user()->parent_id ?: Auth()->id();
 
-        // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
+        if ($request->type == 1) {
+
+            $this->validate($request, RealNameIdent::personalRules(), RealNameIdent::messages());
+        } else {
+            $this->validate($request, RealNameIdent::companyRules(), RealNameIdent::messages());
+        }
         
         $data                              = $request->all();
         $data['type']                      = $request->type;

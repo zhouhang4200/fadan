@@ -254,68 +254,30 @@
 <!--START 底部-->
 @section('js')
     <script>
-    layui.use(['form', 'layedit', 'laydate'], function(){
-      var form = layui.form
-      ,layer = layui.layer,
-      layedit = layui.layedit;
+        layui.use(['form', 'layedit', 'laydate'], function(){
+             var form = layui.form
+            ,layer = layui.layer,
+            layedit = layui.layedit;
 
-//  个人企业切换
-//  
-    $("#other").click(function(){
-        $('.other').removeClass('none');
-        $('.self').addClass('none');
-        console.log(1111)
-    })
+            var error = "{{ $errors->count() > 0 ? '请上传相关照片!' : '' }}";
 
-    $("#self").click(function(){
-        $('.self').removeClass('none');
-        $('.other').addClass('none');
-    })
+            if(error) {
+                layer.msg(error, {icon: 5, time:1500},);
+            }
 
+        //  个人企业切换
+        //  
+            $("#other").click(function(){
+                $('.other').removeClass('none');
+                $('.self').addClass('none');
+                console.log(1111)
+            })
 
-    //监听指定开关
-    // form.on('radio(personal)', function(data){
-    //     var one = data.value;
-
-    //   if (this.checked == ture) {
-    //     $(".two").addClass("none")
-    //     $(".one").removeClass("none")
-    //   }
-    //     console.log(this.checked);
-    // }); 
-
-    // form.on('radio(company)', function(data){
-    //     var one = data.value;
-
-    //     $('.personal').addClass('none');
-
-    //     if (one == 2) {
-
-    //     }
-    //     // console.log(this.value);
-    // }); 
-
-    // console.log($('.layui-input-block radio').value);
-    // //自定义验证规则
-    // form.verify({
-    //     personal: function(value){
-    //         if(currentWidgetType > 1 && value.length == 0){
-    //             return '这种展示方式必须填入可选值呢！';
-    //         }
-    //     }
-
-    //     company: function(value){
-    //         if(currentWidgetType > 1 && value.length == 0){
-    //             return '这种展示方式必须填入可选值呢！';
-    //         }
-    //     }
-    // });
-
-    //监听指定开关
-    // form.on('radio(company)', function(data){
-    //      $('.personal').display();
-    // });
-});
+            $("#self").click(function(){
+                $('.self').removeClass('none');
+                $('.other').addClass('none');
+            })
+        });
         //普通图片上传
        layui.use('upload', function () {
             var $ = layui.jquery,

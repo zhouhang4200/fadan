@@ -16,22 +16,34 @@ class RealNameIdent extends Model
     	return $this->belongsTo(User::class);
     }
 
-    public static function rules()
+    public static function personalRules()
     {
     	return [
             'name'               => 'required|max:50',
-            'bank_name'          => 'required|max:50',
-            'bank_number'        => 'required|max:190',
-            'license_name'       => 'required|max:50',
-            'license_number'     => 'required|max:50',
-            'corporation'        => 'required|max:50',
-            'identity_card'      => 'required|max:50',
+            'bank_name'          => 'required|max:190',
+            'bank_number'        => 'required|max:50',
             'phone_number'       => 'required|max:50',
-            'license_picture'    => 'required',
+            'identity_card'      => 'required|max:50',
             'front_card_picture' => 'required',
             'back_card_picture'  => 'required',
 			'hold_card_picture'  => 'required',
     	];
+    }
+
+    public static function companyRules()
+    {
+        return [
+            'name'                      => 'required|max:50',
+            'bank_name'                 => 'required|max:190',
+            'bank_number'               => 'required|max:50',
+            'license_name'              => 'required|max:50',
+            'license_number'            => 'required|max:50',
+            'corporation'               => 'required|max:50',
+            'phone_number'              => 'required|max:50',
+            'license_picture'           => 'required',
+            'bank_open_account_picture' => 'required',
+            'agency_agreement_picture'  => 'required',
+        ];
     }
 
     public static function messages()
