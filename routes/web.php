@@ -28,8 +28,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 实名认证
 	// Route::resource('idents', 'IdentController', ['except' => ['destroy', 'show']]);
 	Route::get('idents', 'IdentController@index')->name('idents.index')->middleware('permission:idents.index');
-	Route::get('idents/create', 'IdentController@create')->name('idents.create')->middleware('permission:');
-	Route::post('idents', 'IdentController@store')->name('idents.store')->middleware('permission:idents.create');
+	Route::get('idents/create', 'IdentController@create')->name('idents.create')->middleware('permission:idents.create');
+	Route::post('idents', 'IdentController@store')->name('idents.store')->middleware('permission:idents.store');
 	Route::get('idents/{id}/edit', 'IdentController@edit')->name('idents.edit')->middleware('permission:idents.edit');
 	Route::put('idents/{id}', 'IdentController@update')->name('idents.update')->middleware('permission:idents.update');
 	Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images')->middleware('permission:ident.upload-images');

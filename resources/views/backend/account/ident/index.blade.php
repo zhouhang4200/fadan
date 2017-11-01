@@ -46,20 +46,20 @@
                                             </select>
                                         </div>
                                     </div>
-                                  <div class="layui-inline">
+                                    <div class="layui-inline">
                                         <label class="layui-form-label">开始时间</label>
                                         <div class="layui-input-inline">
                                             <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="年-月-日">
                                         </div>
-                                  </div>
+                                    </div>
      
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">结束时间</label>
-                                        <div class="layui-input-inline">
-                                            <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">结束时间</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="年-月-日">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 <div style="float: left;margin:0 0 15px 100px;">
                                 <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                 <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('admin-idents.index') }}" style="color:#fff">返回</a></button></div>
@@ -74,8 +74,11 @@
                                 </colgroup>
                                 <thead>
                                 <tr>
-                                    <th>序号id</th>
-                                    <th>用户名</th>
+                                    <th style="width:5%">序号</th>
+                                    <th style="width:7%">用户名</th>
+                                    <th>真实姓名</th>
+                                    <th>开户银行名称</th>
+                                    <th>银行卡号</th>
                                     <th>邮箱</th>
                                     <th>状态</th>
                                     <th>申请认证时间</th>
@@ -87,6 +90,9 @@
                                     <tr class="ident-td">
                                         <td>{{ $ident->id }}</td>
                                         <td>{{ $ident->user ? $ident->user->name : '' }}</td>
+                                        <td>{{ $ident->name }}</td>
+                                        <td>{{ $ident->bank_name }}</td>
+                                        <td>{{ $ident->bank_number }}</td>
                                         <td>{{ $ident->user ? $ident->user->email : '' }}</td>
                                         <td>
                                         @if ($ident->status == 0)

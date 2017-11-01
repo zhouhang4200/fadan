@@ -83,6 +83,30 @@
             <input type="hidden" name="type" value='2' >
             <div class='company'>
                 <div class="layui-form-item">
+                <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="required" value="{{ old('name')}}" autocomplete="off" placeholder="请输入个人真实姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="phone_number" lay-verify="required|phone|number" value="{{ old('phone_number') }}" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户银行卡号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bank_number" lay-verify="required" value="{{ old('bank_number') }}" autocomplete="off" placeholder="请输入开户银行卡号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户银行名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bank_name" lay-verify="required" value="{{ old('bank_name') }}" autocomplete="off" placeholder="请输入详细银行名称如XX行XX支行" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">营业执照名称</label>
                     <div class="layui-input-block">
                         <input type="text" name="license_name" lay-verify="required" value="{{ old('license_name') }}" autocomplete="off" placeholder="请输入执照名称" class="layui-input">
@@ -154,15 +178,33 @@
                     <input type="hidden" name="type" value='1' >
                     <div class='personal'>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">身份证号码</label>
+                            <label class="layui-form-label">真实姓名</label>
                             <div class="layui-input-block">
-                                <input type="text" name="identity_card" lay-verify="required|identity" value="{{ old('identity_card') }}" placeholder="请输入身份证号码" autocomplete="off" class="layui-input">
+                                <input type="text" name="name" lay-verify="required" value="{{ old('name')}}" autocomplete="off" placeholder="请输入个人真实姓名" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">手机号</label>
                             <div class="layui-input-block">
                                 <input type="text" name="phone_number" lay-verify="required|phone|number" value="{{ old('phone_number') }}" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开户银行卡号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="bank_number" lay-verify="required" value="{{ old('bank_number') }}" autocomplete="off" placeholder="请输入开户银行卡号" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开户银行名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="bank_name" lay-verify="required" value="{{ old('bank_name') }}" autocomplete="off" placeholder="请输入详细银行名称如XX行XX支行" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">身份证号码</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="identity_card" lay-verify="required|identity" value="{{ old('identity_card') }}" placeholder="请输入身份证号码" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">

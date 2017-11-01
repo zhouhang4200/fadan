@@ -16,6 +16,9 @@ class CreateRealNameIdentsTable extends Migration
         Schema::create('real_name_idents', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->comment('用户id');
+            $table->string('name')->nullable()->comment('真实姓名');
+            $table->string('bank_name')->nullable()->comment('开户银行名称');
+            $table->string('bank_number')->nullable()->comment('开户银行卡号');
             $table->string('license_name')->nullable()->comment('营业执照名称');
             $table->string('license_number')->nullable()->comment('营业执照号码');
             $table->string('corporation')->nullable()->comment('法人代表');

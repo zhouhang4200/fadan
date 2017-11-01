@@ -60,7 +60,9 @@ class IdentController extends Controller
 
         // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
 
-        $data                              = $request->all();
+        $data                              = $request->except('name');
+        $data['bank_name']                 = $request->bank_name;
+        $data['bank_number']               = $request->bank_number;
         $data['type']                      = $request->type;
         $data['user_id']                   = $ident->user_id;
         $data['license_number']            = $request->license_number;
@@ -93,9 +95,12 @@ class IdentController extends Controller
         $userId = Auth()->user()->parent_id ?: Auth()->id();
 
         // $this->validate($request, RealNameIdent::rules(), RealNameIdent::messages());
-
+        
         $data                              = $request->all();
         $data['type']                      = $request->type;
+        $data['name']                      = $request->name;
+        $data['bank_name']                 = $request->bank_name;
+        $data['bank_number']               = $request->bank_number;
         $data['user_id']                   = $userId;
         $data['license_number']            = $request->license_number;
         $data['corporation']               = $request->corporation;

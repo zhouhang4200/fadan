@@ -27,8 +27,11 @@
             <thead>
             <tr>
                 <th>用户名</th>
+                <th>姓名</th>
                 <th>电话</th>
                 <th>身份证号</th>
+                <th>开户银行</th>
+                <th>银行卡号</th>
                 <th>申请认证时间</th>
                 <th>审核状态</th>
                 @if($ident->status == 2)
@@ -39,9 +42,12 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $ident->user->name }}</td>
+                    <td>{{ $ident->user ? $ident->user->name : '' }}</td>
+                    <td>{{ $ident->name }}</td>
                     <td>{{ $ident->phone_number }}</td>
                     <td>{{ $ident->identity_card }}</td>
+                    <td>{{ $ident->bank_name }}</td>
+                    <td>{{ $ident->bank_number }}</td>
                     <td>{{ $ident->created_at }}</td>
                     <td>{{ config('frontend.status')[$ident->status] }}</td>
                     @if($ident->status == 2)
@@ -58,6 +64,10 @@
             <thead>
             <tr>
                 <th>用户名</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>开户银行</th>
+                <th>银行卡号</th>
                 <th>法人</th>
                 <th>营业执照号</th>
                 <th>申请认证时间</th>
@@ -71,6 +81,10 @@
             <tbody>
                 <tr>
                     <td>{{ $ident->user->name }}</td>
+                    <td>{{ $ident->name }}</td>
+                    <td>{{ $ident->phone_number }}</td>
+                    <td>{{ $ident->bank_name }}</td>
+                    <td>{{ $ident->bank_number }}</td>
                     <td>{{ $ident->corporation }}</td>
                     <td>{{ $ident->license_number }}</td>
                     <td>{{ $ident->created_at }}</td>
