@@ -20,6 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::namespace('Api')->group(function () {
 
     Route::post('kamen', 'OrderController@KamenOrder');
-    Route::post('test', 'OrderController@test');
+    Route::any('test', 'OrderController@test');
 });
 

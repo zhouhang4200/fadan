@@ -63,7 +63,7 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
 	Route::get('home-system-logs', 'SystemLogController@index')->name('home-system-logs.index')->middleware('permission:home-system-logs.index');
 
     // 商品
-    Route::prefix('goods')->group(function () {
+    Route::prefix('goods')->namespace('Goods')->group(function () {
         // 商品列表
         Route::get('/', 'GoodsController@index')->name('frontend.goods.index')->middleware('permission:frontend.goods.index');
         // 添加视图
@@ -76,6 +76,11 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
         Route::post('update', 'GoodsController@update')->name('frontend.goods.update')->middleware('permission:frontend.goods.update');
         // 删除商品
         Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy')->middleware('permission:frontend.goods.destroy');
+
+        // 商品权限
+        Route::prefix('auth')->group(function () {
+            Route::get('/', 'GoodsAuthController@index')->name('frontend.goods.auth.index')->middleware('permission:frontend.goods.auth.index');
+        });
     });
 
 

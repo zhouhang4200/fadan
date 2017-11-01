@@ -12,7 +12,7 @@
 }
 
 .layui-tab-content {
-    padding: 0;
+    padding: 15px 0 0 0;
 }
 
 .layui-tab-brief > .layui-tab-title .layui-this {
@@ -96,7 +96,6 @@
 .layui-form-radio i {
     margin-right: 8px;
     font-size: 19px;
-    color: #c2c2c2;
 }
 .layui-form-radio {
     line-height: 0;
@@ -118,4 +117,10 @@
     height: 26px;
     line-height: 26px;
     font-size: 12px;
+}
+.layui-form-label {
+    padding: 2px 15px;
+}
+.layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio {
+    margin-top: 10px;
 }
