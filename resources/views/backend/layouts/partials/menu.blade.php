@@ -184,7 +184,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
-                    @can('admin-accounts.index' || 'admin-modules.index' || 'admin-permissions.index' || 'admin-roles.index' || 'admin-groups.index')
+                    @if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))
                     <li @if($currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups'  ||$currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'admin-accounts') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -229,7 +229,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
-                    @endcan
+                    @endif
                     @can('system-logs.index')
                     <li @if($currentOneLevelMenu == 'system-logs') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
