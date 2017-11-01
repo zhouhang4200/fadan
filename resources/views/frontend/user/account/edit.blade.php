@@ -11,13 +11,13 @@
         {!! csrf_field() !!}
         <input type="hidden" name="_method" value="PUT">
             <div class="layui-form-item">
-                <label class="layui-form-label">账号</label>
+                <label class="layui-form-label">账号(不可更改)</label>
                 <div class="layui-input-block">
                     <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $user->name }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">邮箱</label>
+                <label class="layui-form-label">邮箱(不可更改)</label>
                 <div class="layui-input-block">
                     <input type="text" name="email" lay-verify="email" value="{{ old('email') ?: $user->email }}" placeholder="请输入" autocomplete="off" class="layui-input">
                 </div>
@@ -25,7 +25,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="password" value="" lay-verify="pass" placeholder="不填写则为原密码" autocomplete="off" class="layui-input">
+                    <input type="password" name="password" value="" lay-verify="" placeholder="不填写则为原密码" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
