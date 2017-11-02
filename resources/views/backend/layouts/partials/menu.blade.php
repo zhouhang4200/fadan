@@ -88,22 +88,6 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
-                @can('orders.index')
-                    <li @if($currentRouteName == 'orders.index') class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>订单管理</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
-                                    订单列表
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
                     <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -162,6 +146,22 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
+                @can('orders.index')
+                    <li @if($currentRouteName == 'orders.index') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
+                                    订单列表
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
           
                     <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
