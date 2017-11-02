@@ -109,7 +109,7 @@ class User extends Authenticatable
 
     public function realNameIdent()
     {
-        return $this->belongsTo(RealNameIdent::class, 'user_id');
+        return $this->hasOne(RealNameIdent::class, 'user_id');
     }
 
     public function rbacGroups()

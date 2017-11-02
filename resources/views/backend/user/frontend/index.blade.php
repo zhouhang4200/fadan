@@ -38,7 +38,6 @@
                                     <th>注册时间</th>
                                     <th>最后登录时间</th>
                                     <th>实名认证</th>
-                                    <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -51,8 +50,17 @@
                                         <td>{{ $user->asset->frozen ?? 0 }}</td>
                                         <td>{{ $user->created_at }}</td>
                                         <td>{{ $user->updated_at }}</td>
-                                        <td>{{ $user->status }}</td>
-                                        <td>{{ $user->status }}</td>
+                                        <td>
+                                        @if ($user->realNameIdent && $user->realNameIdent->status === 0)
+                                            待审核
+                                        @elseif ($user->realNameIdent && $user->realNameIdent->status === 1)
+                                            审核通过
+                                        @elseif ($user->realNameIdent && $user->realNameIdent->status === 2)
+                                            审核不通过
+                                        @else 
+                                            --
+                                        @endif
+                                        </td>
                                         <td style="text-align: center;">
                                             @if (! $user->roles->count() > 0)
                                                 <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
