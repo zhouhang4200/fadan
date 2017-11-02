@@ -30,6 +30,7 @@ class UserGoodsRepository
             ->when(!empty($foreignGoodsId), function ($query) use ($foreignGoodsId) {
                 return $query->where('foreign_goods_id', '>=', $foreignGoodsId);
             })
+            ->orderBy('sortord')
             ->when($pageSize, function ($query) use ($pageSize) {
                 return $query->paginate($pageSize);
             });

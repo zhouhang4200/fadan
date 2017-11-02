@@ -47,13 +47,9 @@
     </form>
 
     <table class="layui-table" lay-size="sm">
-        <colgroup>
-            <col width="150">
-            <col>
-        </colgroup>
         <thead>
         <tr>
-            <th>商品ID</th>
+            <th width="6%">商品ID</th>
             <th>类型</th>
             <th>游戏</th>
             <th>商品名</th>
