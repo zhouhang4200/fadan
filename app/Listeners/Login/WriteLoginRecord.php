@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\login;
+namespace App\Listeners\Login;
 
 use Illuminate\Http\Request;
 use App\Models\LoginHistory;
