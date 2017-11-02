@@ -7,7 +7,9 @@
        /* .layui-inline {
             width:220px !important;
         }*/
-
+        .layui-table th, td{
+            text-align: center;
+        }
     </style>
 @endsection
 
@@ -67,15 +69,10 @@
                         </form>
                         <div class="layui-tab-item layui-show" lay-size="sm">
                             <table class="layui-table" lay-size="sm">
-                                <colgroup>
-                                    <col width="150">
-                                    <col width="200">
-                                    <col>
-                                </colgroup>
                                 <thead>
                                 <tr>
                                     <th style="width:5%">序号</th>
-                                    <th style="width:7%">用户名</th>
+                                    <th>用户名</th>
                                     <th>真实姓名</th>
                                     <th>开户银行名称</th>
                                     <th>银行卡号</th>

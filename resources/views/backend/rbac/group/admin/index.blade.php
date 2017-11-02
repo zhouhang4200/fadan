@@ -2,14 +2,6 @@
 
 @section('title', ' | 后台账号角色列表')
 
-@section('css')
-    <style>
-        .layui-table th, .layui-table td {
-            width: 10%;
-        }
-    </style>
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -24,11 +16,11 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>账号ID</th>
-                                    <th>账号名称</th>
-                                    <th>账号邮箱</th>
-                                    <th>账号角色</th>
-                                    <th>操作</th>
+                                    <th style="width:8%">序号</th>
+                                    <th style="width:15%">账号名称</th>
+                                    <th style="width:15%">账号邮箱</th>
+                                    <th style="text-align: center">账号角色</th>
+                                    <th style="width:15%; text-align: center">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -37,7 +29,7 @@
                                             <td>{{ $group->id }}</td>
                                             <td>{{ $group->name }}</td>
                                             <td>{{ $group->email }}</td>
-                                            <td>
+                                            <td style="text-align: center">
                                             @if ($group->roles)
                                                 @foreach($group->roles as $role)
                                                     {{ $role->alias }}

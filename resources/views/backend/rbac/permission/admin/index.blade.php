@@ -19,11 +19,11 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>序号</th>
+                                    <th style="width:8%">序号</th>
                                     <th>名称</th>
                                     <th>中文名称</th>
-                                    <th>添加时间</th>
-                                    <th>操作</th>
+                                    <th style="width:15%">添加时间</th>
+                                    <th style="width:15%; text-align: center">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>

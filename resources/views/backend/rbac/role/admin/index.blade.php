@@ -19,11 +19,11 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>序号</th>
+                                    <th style="width:8%">序号</th>
                                     <th>名称</th>
                                     <th>中文名称</th>
-                                    <th>添加时间</th>
-                                    <th>操作</th>
+                                    <th style="width:15%">添加时间</th>
+                                    <th style="text-align: center; width:15%">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -33,7 +33,7 @@
                                             <td>{{ $role->name }}</td>
                                             <td>{{ $role->alias }}</td>
                                             <td>{{ $role->created_at }}</td>
-                                            <td style="text-align: center"><a href="{{ route('admin-roles.edit', ['id' => $role->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>
+                                            <td  style="text-align: center"><a href="{{ route('admin-roles.edit', ['id' => $role->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a>
                                             <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $role->id }})">删除</button></td>
                                         </tr>
                                     @empty

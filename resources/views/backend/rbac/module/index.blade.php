@@ -2,6 +2,14 @@
 
 @section('title', ' | 前台模块列表')
 
+@section('css')
+    <style>
+        .layui-table th, td{
+            text-align:center;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">

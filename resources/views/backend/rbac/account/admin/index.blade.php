@@ -16,11 +16,11 @@
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>账号ID</th>
+                                    <th style="width:8%">序号</th>
                                     <th>账号名称</th>
                                     <th>账号邮箱</th>
                                     <th>添加时间</th>
-                                    <th>操作</th>
+                                    <th style="text-align: center">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>

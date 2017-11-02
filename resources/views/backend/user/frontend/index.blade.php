@@ -38,7 +38,7 @@
                                     <th>注册时间</th>
                                     <th>最后登录时间</th>
                                     <th>实名认证</th>
-                                    <th>操作</th>
+                                    <th style="text-align: center">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>

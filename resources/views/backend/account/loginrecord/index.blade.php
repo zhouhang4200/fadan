@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', '商家后台')
+@section('title', '我的账号')
 
 @section ('css')
     <style>
@@ -10,6 +10,7 @@
             min-height: 20px;
             line-height: 20px;
             font-size: 12px;
+            text-align: center;
         }
     </style>
 @endsection 
@@ -56,7 +57,7 @@
                                     </colgroup>
                                     <thead>
                                     <tr>
-                                        <th>序号</th>
+                                        <th style="width:7%">序号</th>
                                         <th>用户ID</th>
                                         <th>用户名</th>
                                         <th>登录IP</th>

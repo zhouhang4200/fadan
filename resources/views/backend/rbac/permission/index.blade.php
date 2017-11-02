@@ -23,7 +23,7 @@
                                     <th>名称</th>
                                     <th>中文名称</th>
                                     <th>添加时间</th>
-                                    <th>操作</th>
+                                    <th style="text-align: center">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
