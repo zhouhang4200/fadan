@@ -223,4 +223,3 @@ if (!function_exists('generateOrderNo')) {
         return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
     }
 }
-

@@ -18,6 +18,10 @@ return [
     // 用户模型
     'user' => [
         // 获取主账号ID 生成key示例 user:get:primary:id:1
-        'getPrimaryId' => 'user:get:primary:id:'
+        'getPrimaryId' => 'user:get:primary:id:',
+        // users登录账号 sessionid
+        'loginSession' => 'users:id:',
+        // admin_users 登录账号 sessionid
+        'adminLoginSession' => 'admin_users:id:',
     ]
 ];

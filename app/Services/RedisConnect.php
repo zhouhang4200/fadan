@@ -18,4 +18,13 @@ class RedisConnect
     {
         return Redis::connection('order');
     }
+
+        /**
+     * 订单相关
+     * @return mixed
+     */
+    public static function session()
+    {
+        return Redis::connection('sessions');
+    }
 }

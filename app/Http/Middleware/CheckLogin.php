@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Auth;
 use Redis;
 use Closure;
+use App\Services\RedisConnect;
 
 class CheckLogin
 {
@@ -19,15 +20,28 @@ class CheckLogin
     {
         $user = Auth::user();
 
-        $sessionId = Redis::get($table . ':' . $user->id);
+        $redis = RedisConnect::session();
 
-        if ($sessionId) {
-            Redis::del($sessionId);
-            Redis::del($table . ':' . $user->id);
+        if ($table ==  'users') {
+
+            $sessionId = $redis->get(config('redis.user')['loginSession']);    
+        } else {
+            $sessionId = $redis->get(config('redis.user')['adminLoginSession']);  
         }
 
-        Redis::set($table . ':' . $user->id, session()->getId());
+        if ($sessionId) {
 
+            $redis->del($sessionId);
+
+            $redis->del($table . ':' . $user->id);
+        }
+
+        if ($table ==  'users') {
+
+            $sessionId = $redis->set(config('redis.user')['loginSession'], session()->getId());    
+        } else {
+            $sessionId = $redis->set(config('redis.user')['adminLoginSession'], session()->getId());  
+        }
         return $next($request);
     }
 }
