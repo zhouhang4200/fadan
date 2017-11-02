@@ -19,7 +19,7 @@
             <li class="{{ in_array(Route::currentRouteName(), ['login.history']) ? 'current' : '' }}"><a href="{{ route('login.history') }}"> 登录记录 </a><div class="arrow"></div></li>
         @endcan
         @can('users.index')
-            <li class="{{ in_array(Route::currentRouteName(), ['users.index', 'users.create', 'users.edit']) ? 'current' : '' }}"><a href="{{ route('users.index') }}"> 子账号管理 </a><div class="arrow"></div></li>
+            <li class="{{ in_array(Route::currentRouteName(), ['users.index', 'users.create', 'users.edit', 'user-groups.create']) ? 'current' : '' }}"><a href="{{ route('users.index') }}"> 子账号管理 </a><div class="arrow"></div></li>
         @endcan
         @can('rbacgroups.index')
             <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create', 'rbacgroups.edit']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}"> 权限组管理 </a><div class="arrow"></div></li>
