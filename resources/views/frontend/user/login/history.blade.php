@@ -1,11 +1,9 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 历史记录')
+@section('title', '账号 - 登录记录')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-
     </style>
 @endsection
 
@@ -17,14 +15,15 @@
     <form class="layui-form" method="" action="">
             <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
-            @if($user->pid == 0)
+            @if($user->parent_id == 0)
             <div class="layui-inline">
                 <div class="layui-input-inline">
                 <select name="name" lay-verify="" lay-search="">
-                    <option value="">输入名字或直接选择</option>
-                    @foreach($users as $user)
+                    <option value="">输入子账号名字或直接选择</option>
+                    @forelse($users as $user)
                     <option value="{{ $user->id }}" {{ $name && $name == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                    @endforeach
+                    @empty
+                    @endforelse
                 </select>
                 </div>
             </div>
@@ -45,12 +44,11 @@
     </form>
 
     <div class="layui-tab-item layui-show">
-        <table class="layui-table"  lay-size="sm">
+        <table class="layui-table"lay-size="sm">
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>用户ID</th>
-                <th>用户名</th>
+            <tr style="text-aliag:center">
+                <th style="width:7%">序号</th>
+                <th>账号</th>
                 <th>登录IP</th>
                 <th>登录城市</th>
                 <th>登录时间</th>
@@ -60,7 +58,6 @@
             @foreach($histories as $history)
                 <tr>
                     <td>{{ $history->id }}</td>
-                    <td>{{ $history->user_id }}</td>
                     <td>{{ $history->user->name }}</td>
                     <td>{{ long2ip($history->ip) }}</td>
                     <td>{{ $history->city ? $history->city->name : '' }}</td>
@@ -70,11 +67,19 @@
             </tbody>
         </table>
     </div>
-
-    {!! $histories->appends([
+    
+    @if (isset($name)) 
+        {!! $histories->appends([
+        'name' => $name,
         'startDate' => $startDate,
         'endDate' => $endDate,
-    ])->render() !!}
+        ])->render() !!}
+    @else 
+        {!! $histories->appends([
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ])->render() !!}
+    @endif
 
 @endsection
 
