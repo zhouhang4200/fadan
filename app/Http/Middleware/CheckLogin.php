@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
+use Redis;
 use Closure;
 
 class CheckLogin
@@ -15,16 +17,16 @@ class CheckLogin
      */
     public function handle($request, Closure $next, $table = null)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
 
-        $sessionId = \Redis::get($table . ':' . $user->id);
+        $sessionId = Redis::get($table . ':' . $user->id);
 
         if ($sessionId) {
-            \Redis::del($sessionId);
-            \Redis::del($table . ':' . $user->id);
+            Redis::del($sessionId);
+            Redis::del($table . ':' . $user->id);
         }
 
-        \Redis::set($table . ':' . $user->id, session()->getId());
+        Redis::set($table . ':' . $user->id, session()->getId());
 
         return $next($request);
     }
