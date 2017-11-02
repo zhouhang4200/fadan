@@ -11,6 +11,7 @@
 @endsection
 
 @section('content')
+
     <form method="POST" action="{{ route('register') }}"  class="layui-form">
     {!! csrf_field() !!}
         <div class="header">
@@ -27,7 +28,7 @@
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item">
-                        <input type="email" name="email" required="" lay-verify="required" placeholder="请输入邮箱" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <input type="email" name="email" required="" lay-verify="email" placeholder="请输入邮箱" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item ">
@@ -62,34 +63,23 @@
             var form = layui.form
             ,layer = layui.layer;
           
+            var GeetestError = "{{ $errors->count() > 0  && array_key_exists('geetest_challenge', $errors->toArray()) ? '请正确完成验证码操作!' : '' }}";
             var errorName = "{{ $errors->count() > 0 && array_key_exists('name', $errors->toArray()) && $errors->toArray()['name'] ? '用户名已经存在!' : '' }}";
             var errorPassword = "{{ $errors->count() > 0 && array_key_exists('password', $errors->toArray()) && $errors->toArray()['password'] ? '请按要求填写密码!' : '' }}";
             var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
             var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱已经存在!' : '' }}";
 
-            if (errorName) {
+            if (GeetestError) {
+                layer.msg(GeetestError, {icon: 5, time:1500},);
+            }else if (errorName) {
                 layer.msg(errorName, {icon: 5, time:1500},);
             } else if(errorPassword) {
                 layer.msg(errorPassword, {icon: 5, time:1500},);
             } else if (errorEmail) {
                 layer.msg(errorEmail, {icon: 5, time:1500},);
-            }else if (loginError) {
+            } else if (loginError) {
                 layer.msg(loginError, {icon: 5, time:1500},);
             }
-
-            //监听提交
-            // form.on('submit(formDemo)', function(data){
-                // var token=$('meta[name="_token"]').attr('content');
-                // $.ajax({
-                //     url: "{{ route('login') }}",
-                //     data: {'_token':token} ,
-                //     type: "post",
-                //     dataType: "json",
-                //     success: function (data) {
-                //         console.log(1);
-                //     },
-                // });
-            // }); 
         });
     </script>
 @endsection
