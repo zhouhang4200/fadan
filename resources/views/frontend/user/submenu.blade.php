@@ -1,5 +1,6 @@
 <ul class="seller_center_left_menu">
 	<li class="{{ in_array(Route::currentRouteName(), ['home-accounts.index', 'home-accounts.edit']) ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}"> 我的账号 </a><div class="arrow"></div></li>
+    <li class="{{ in_array(Route::currentRouteName(), ['login.history']) ? 'current' : '' }}"><a href="{{ route('login.history') }}"> 登录记录 </a><div class="arrow"></div></li>
     @if(Auth::user()->parent_id == 0)
             @if(App\Models\RealNameIdent::where('user_id', Auth::id())->first())
                 @can('idents.index')

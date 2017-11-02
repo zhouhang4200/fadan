@@ -40,15 +40,12 @@ class LoginController extends Controller
                 return view('frontend.user.login.history', compact('user', 'histories', 'users', 'name', 'startDate', 'endDate'));
             } else {
 
-                $name = $user->name;
-
                 $filters = compact('startDate', 'endDate');
 
                 $histories = LoginHistory::filter($filters)->where('user_id', $user->id)->paginate(config('frontend.page'));
 
                 return view('frontend.user.login.history', compact('user', 'name', 'histories', 'users', 'startDate', 'endDate'));
             }
-
         }
 
         $filters = compact('startDate', 'endDate');
