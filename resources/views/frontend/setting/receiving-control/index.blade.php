@@ -39,33 +39,6 @@
                 <div class="whitelist-user-box"></div>
             </div>
             <div class="layui-tab-item">
-                <form class="layui-form" id="search-form">
-                    <div class="layui-form-item">
-                        <div class="layui-input-inline">
-                            <select name="service_id">
-                                <option value="">所有类型</option>
-                                @foreach ($services as $key => $value)
-                                    <option value="{{ $key }}" {{ $key == $serviceId ? 'selected' : '' }}>{{ $value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="layui-input-inline">
-                            <select name="game_id">
-                                <option value="">所有游戏</option>
-                                @foreach ($games as $key => $value)
-                                    <option value="{{ $key }}" {{ $key == $gameId ? 'selected' : '' }}>{{ $value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="layui-input-inline" style="width: 200px;">
-                            <input type="text" class="layui-input" name="other_user_id" placeholder="用户ID" value="{{ $otherUserId  }}">
-                        </div>
-                        <div class="layui-input-inline" style="width: 200px;">
-                            <button class="layui-btn layui-btn-normal" type="submit">查询</button>
-                        </div>
-                        <button class="layui-btn layui-btn-normal fr"  data-type="1" lay-submit lay-filter="user-add">添加用户ID</button>
-                    </div>
-                </form>
                 <div class="whitelist-category-box"></div>
             </div>
         </div>
@@ -155,9 +128,19 @@
 
             element.on('tab(whitelist)', function(){
                 white = this.getAttribute('lay-id');
+                if (white == 1) {
+                    loadUserList('');
+                } else {
+                    loadCategoryList('');
+                }
             });
             element.on('tab(blacklist)', function(){
                 black = this.getAttribute('lay-id');
+                if (black == 1) {
+                    loadUserList('');
+                } else {
+                    loadCategoryList('');
+                }
             });
             //监听控制方式
             form.on('radio(control)', function(data){

@@ -22,7 +22,7 @@
         <div class="layui-input-inline" style="width: 200px;">
             <button class="layui-btn layui-btn-normal" type="submit">查询</button>
         </div>
-        <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加用户ID</a>
+        <button class="layui-btn layui-btn-normal fr" >添加用户ID</button>
     </div>
 </form>
 
@@ -34,19 +34,20 @@
         <th>备注</th>
         <th>添加时间</th>
         <th>更新时间</th>
-        <th>操作</th>
+        <th width="7%">操作</th>
     </tr>
     </thead>
     <tbody>
-    @forelse($controlUserList as $item)
+    @forelse($controlCategoryList as $item)
         <tr>
             <td>{{ $item->id }}</td>
             <td>{{ $item->other_user_id }}</td>
             <td>{{ $item->remark }}</td>
             <td>{{ $item->created_at }}</td>
             <td>{{ $item->updated_at }}</td>
-            <td><button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}" style="color: #fff">编辑</a></button>
-                <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="deletes({{ $item->id }})">删除</button></td>
+            <td>
+                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="delete-catgory">删除</button>
+            </td>
         </tr>
     @empty
         <tr>
@@ -56,7 +57,4 @@
     </tbody>
 </table>
 
-{{ $controlUserList->appends([
-'type' => $type,
-'other_user_id' => $otherUserId,
-])->links() }}
+{{ $controlUserList->appends(['type' => $type, 'service_id' => $serviceId, '' => ,'other_user_id' => $otherUserId,])->links() }}

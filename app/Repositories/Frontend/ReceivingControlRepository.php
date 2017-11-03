@@ -40,12 +40,13 @@ class ReceivingControlRepository
     /**
      * 类别列表
      * @param integer $type 1 白名单 2 黑名单
+     * @param integer $otherUserId  用户ID
      * @param integer $serviceId  服务ID
      * @param integer$gameId 游戏ID
      * @param int $pageSize 分页数
      * @return mixed
      */
-    public function categoryList($type, $serviceId = 0, $gameId = 0, $pageSize = 20)
+    public function categoryList($type, $otherUserId, $serviceId = 0, $gameId = 0, $pageSize = 20)
     {
         return UserReceivingCategoryControl::where('user_id', Auth::user()->getPrimaryUserId())
             ->when($serviceId, function ($query) use ($serviceId) {

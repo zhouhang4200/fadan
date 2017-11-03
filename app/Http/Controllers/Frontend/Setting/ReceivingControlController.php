@@ -82,6 +82,10 @@ class ReceivingControlController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getControlUser(Request $request)
     {
         $type = $request->input('type', 1);
@@ -101,8 +105,28 @@ class ReceivingControlController extends Controller
         }
     }
 
-    public function getCategory(Request $request)
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getControlCategory(Request $request)
     {
+        $type = $request->input('type', 1);
+        $gameId = $request->input('game_id');
+        $serviceId = $request->input('service_id');
+        $otherUserId = $request->input('other_user_id');
 
+        $controlCategoryList = $this->receivingControlRepository->categoryList($type, $otherUserId, $serviceId, $gameId);
+
+        if ($request->ajax()) {
+            if (!in_array($type, [1 , 2])) {
+                return response()->ajax(0, '不存在的类型');
+            }
+            return response()->json(\View::make('frontend.setting.receiving-control.control-category-list', [
+                'controlCategoryList' => $controlCategoryList,
+                'type' => $type,
+                'otherUserId' => $otherUserId
+            ])->render());
+        }
     }
 }
