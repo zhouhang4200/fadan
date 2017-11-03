@@ -77,12 +77,19 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
         // 删除商品
         Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy')->middleware('permission:frontend.goods.destroy');
 
-        // 商品权限
-        Route::prefix('auth')->group(function () {
-            Route::get('/', 'GoodsAuthController@index')->name('frontend.goods.auth.index')->middleware('permission:frontend.goods.auth.index');
-        });
     });
 
+    // 用户设置
+    Route::namespace('Setting')->prefix('setting')->group(function () {
+        // 接单权限
+        Route::prefix('receiving-control')->group(function () {
+            Route::get('/', 'ReceivingControlController@index')->name('frontend.setting.receiving-control.index')->middleware('permission:frontend.setting.receiving-control.index');
+            Route::get('get-control-user', 'ReceivingControlController@getControlUser')->name('frontend.setting.receiving-control.get-control-user')->middleware('permission:frontend.setting.receiving-control.get-control-user');
+            Route::get('get-control-category', 'ReceivingControlController@getControlCategory')->name('frontend.setting.receiving-control.get-control-category')->middleware('permission:frontend.setting.receiving-control.get-control-category');
+            Route::post('add-user', 'ReceivingControlController@addUser')->name('frontend.setting.receiving-control.add-user')->middleware('permission:frontend.setting.receiving-control.add-user');
+            Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category')->middleware('permission:frontend.setting.receiving-control.add-category');
+        });
+    });
 
 	// 财务
 	Route::namespace('Finance')->prefix('finance')->group(function () {

@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserReceivingCategoryControl extends Model
+{
+    public $fillable = [
+        'user_id',
+        'other_user_id',
+        'service_id',
+        'game_id',
+        'remark',
+        'type',
+    ];
+}

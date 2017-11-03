@@ -4,8 +4,6 @@
 	        <a href="{{ route('frontend.goods.index') }}">商品列表</a>
 	        <div class="arrow"></div>
 	    </li>
-	@endcan
-	@can('frontend.goods.auth.index')
 		<li class="{{ substr(Route::currentRouteName(), 0, 19) == 'frontend.goods.auth' ? 'current' : '' }}">
 			<a href="{{ route('frontend.goods.auth.index') }}">接单权限</a>
 			<div class="arrow"></div>
