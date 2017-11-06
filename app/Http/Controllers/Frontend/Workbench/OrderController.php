@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Workbench;
 use App\Events\NotificationEvent;
 use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -18,6 +19,7 @@ use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 
 use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Create;
+use Union\UnionPaginator;
 
 /**
  * 工作台

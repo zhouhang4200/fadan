@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -32,11 +33,9 @@ class ReceivingControlController extends Controller
 
     /**
      * @param Request $request
-     * @param ServiceRepository $serviceRepository
-     * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request,ServiceRepository $serviceRepository, GameRepository $gameRepository)
+    public function index(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
         $gameId = $request->game_id;
         $serviceId = $request->service_id;
@@ -54,9 +53,8 @@ class ReceivingControlController extends Controller
         $receivingControl = isset(Auth::user()->getUserSetting()['receiving_control']) ?
             Auth::user()->getUserSetting()['receiving_control'] : 0;
 
-        return view('frontend.setting.receiving-control.index', compact(
-            'gameId', 'serviceId', 'otherUserId', 'services', 'games',
-            'userWitheList', 'userBlacklist', 'receivingControl'));
+        return view('frontend.setting.receiving-control.index', compact('services', 'games',
+            'gameId', 'serviceId', 'otherUserId', 'userWitheList', 'userBlacklist', 'receivingControl'));
     }
 
     /**
@@ -65,6 +63,9 @@ class ReceivingControlController extends Controller
      */
     public function addUser(Request $request)
     {
+        if (!in_array($request->data['type'], [1 , 2]) || !is_numeric($request->data['other_user_id'])) {
+            return response()->ajax(0, '添加失败');
+        }
         try {
             $this->receivingControlRepository->addUser($request->data['type'], $request->data['other_user_id'], $request->data['remark']);
             return response()->ajax(1, '添加成功');
@@ -79,12 +80,24 @@ class ReceivingControlController extends Controller
      */
     public function addCategory(Request $request)
     {
-
+        if (!in_array($request->data['type'], [1 , 2]) || !is_numeric($request->data['other_user_id'])) {
+            return response()->ajax(0, '添加失败');
+        }
+        try {
+            $this->receivingControlRepository->addCategory($request->data['type'],
+                $request->data['service_id'],
+                $request->data['game_id'],
+                $request->data['other_user_id'],
+                $request->data['remark']);
+            return response()->ajax(1, '添加成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getControlUser(Request $request)
     {
@@ -95,7 +108,7 @@ class ReceivingControlController extends Controller
 
         if ($request->ajax()) {
             if (!in_array($type, [1 , 2])) {
-                return response()->ajax(0, '不存在的类型');
+                return response()->ajax(0, '添加失败');
             }
             return response()->json(\View::make('frontend.setting.receiving-control.control-user-list', [
                 'controlUserList' => $controlUserList,
@@ -107,15 +120,19 @@ class ReceivingControlController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getControlCategory(Request $request)
+    public function getControlCategory(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
         $type = $request->input('type', 1);
         $gameId = $request->input('game_id');
         $serviceId = $request->input('service_id');
         $otherUserId = $request->input('other_user_id');
 
+        $services = $serviceRepository->available();
+        $games  = $gameRepository->available();
+
+        // 获取数据
         $controlCategoryList = $this->receivingControlRepository->categoryList($type, $otherUserId, $serviceId, $gameId);
 
         if ($request->ajax()) {
@@ -125,8 +142,40 @@ class ReceivingControlController extends Controller
             return response()->json(\View::make('frontend.setting.receiving-control.control-category-list', [
                 'controlCategoryList' => $controlCategoryList,
                 'type' => $type,
-                'otherUserId' => $otherUserId
+                'gameId' => $gameId,
+                'serviceId' => $serviceId,
+                'otherUserId' => $otherUserId,
+                'services' => $services,
+                'games' => $games,
             ])->render());
         }
     }
+
+    /**
+     * @param Request $request
+     */
+    public function deleteControlUser(Request $request)
+    {
+        try {
+            $this->receivingControlRepository->deleteUser($request->id);
+            return response()->ajax(1, '删除成功');
+        } catch (CustomException $customException) {
+            return response()->ajax(0, $customException->getMessage());
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function  deleteControlCategory(Request $request)
+    {
+        try {
+            $this->receivingControlRepository->deleteCategory($request->id);
+            return response()->ajax(1, '删除成功');
+        } catch (CustomException $customException) {
+            return response()->ajax(0, $customException->getMessage());
+        }
+    }
+
 }

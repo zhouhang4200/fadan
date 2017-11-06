@@ -18,7 +18,14 @@ class UserRechargeOrderRepository
 
     /**
      * 创建加款单
+     * @param $fee
+     * @param $userId
+     * @param $remark
+     * @param $foreignOrderNo
+     * @param $wangwang
+     * @param bool $isAuto
      * @return mixed
+     * @throws Exception
      */
     public function store($fee, $userId, $remark, $foreignOrderNo, $wangwang, $isAuto = true)
     {

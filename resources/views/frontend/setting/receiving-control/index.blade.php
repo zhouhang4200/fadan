@@ -76,42 +76,30 @@
     </div>
 
     <div id="category-add" style="display: none;padding: 20px">
-        <form class="layui-form" action="" id="user-add-form">
+        <form class="layui-form" action="" id="category-add-form">
+            <input type="hidden" name="type" value="">
             <div class="layui-form-item">
-                <label class="layui-form-label">服务</label>
-                <div class="layui-input-inline">
-                    <select name="service_id" lay-verify="required">
-                        @{{#  layui.each(d.services, function(i, v){ }}
-                        @{{#  if(d.service_id == i){ }}
-                        <option value="@{{ i  }}" selected>@{{ v  }}</option>
-                        @{{#  } else { }}
-                        <option value="@{{ i  }}">@{{ v  }}</option>
-                        @{{#  } }}
-                        @{{#  }); }}
-                    </select>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">游戏</label>
-                <div class="layui-input-inline">
-                    <select name="game_id" lay-verify="required">
-
-                        @{{#  layui.each(d.games, function(i, v){ }}
-                        @{{#  if(d.game_id == i){ }}
-                        <option value="@{{ i  }}" selected>@{{ v  }}</option>
-                        @{{#  } else { }}
-                        <option value="@{{ i  }}">@{{ v  }}</option>
-                        @{{# } }}
-                        @{{#  }); }}
-                    </select>
-                </div>
+                <select name="service_id" lay-verify="required">
+                    @foreach ($services as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="layui-form-item">
-                <input type="text" name="title" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+                <select name="game_id" lay-verify="required">
+                    @foreach ($games as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="user-add-save">确定添加</button>
+                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="category-add-save">确定添加</button>
                 <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
             </div>
         </form>
@@ -129,28 +117,27 @@
             element.on('tab(whitelist)', function(){
                 white = this.getAttribute('lay-id');
                 if (white == 1) {
-                    loadUserList('');
+                    loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
                 } else {
-                    loadCategoryList('');
+                    loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type)
                 }
             });
             element.on('tab(blacklist)', function(){
                 black = this.getAttribute('lay-id');
                 if (black == 1) {
-                    loadUserList('');
+                    loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
                 } else {
-                    loadCategoryList('');
+                    loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type)
                 }
             });
             //监听控制方式
             form.on('radio(control)', function(data){
-                if (data.value == 0) {
-                    type = data.value;
+                type = data.value;
+                if (type == 0) {
                     layer.msg('已经关闭接单控制，平台所有用户可接您的订单');
                     $('#blacklist').addClass('layui-hide');
                     $('#whitelist').addClass('layui-hide');
-                } else if(data.value == 1) {
-                    type = data.value;
+                } else if(type == 1) {
                     if (white == 1) {
                         loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
                     } else {
@@ -160,7 +147,6 @@
                     $('#blacklist').addClass('layui-hide');
                     $('#whitelist').removeClass('layui-hide');
                 } else {
-                    type = data.value;
                     if (black == 1) {
                         loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}' + '?type=' + type);
                     } else {
@@ -184,11 +170,13 @@
                 return false;
             });
             // 按类别添加
-            form.on('submit(category-add)', function () {
+            form.on('submit(category-add)', function (data) {
+                var title = data.elem.getAttribute('data-type') == 1 ? '用户接单白名单添加' : '用户接单黑名单添加';
+                $('#category-add-form > input[name=type]').val(data.elem.getAttribute('data-type'));
                 layer.open({
                     type: 1,
                     shade: 0.2,
-                    title: '添加商品模版',
+                    title: title,
                     content: $('#category-add')
                 });
                 return false;
@@ -198,29 +186,81 @@
                 $.post('{{ route('frontend.setting.receiving-control.add-user') }}', {data:data.field}, function (result) {
                     layer.closeAll();
                     layer.msg(result.message);
+                    if (result.status == 1) {
+                        loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
+                    }
                 }, 'json');
+                return false;
+            });
+            // 保存按类别添加的数据
+            form.on('submit(category-add-save)', function (data) {
+                $.post('{{ route('frontend.setting.receiving-control.add-category') }}', {data:data.field}, function (result) {
+                    layer.closeAll();
+                    layer.msg(result.message);
+                    if (result.status == 1) {
+                        loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type);
+                    }
+                }, 'json');
+                return false;
+            });
+            // 删除用户名单中的用户ID
+            form.on('submit(delete-user)', function (data) {
+                layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
+                    $.post('{{ route('frontend.setting.receiving-control.delete-control-user') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
+                    }, 'json');
+                });
+                return false;
+            });
+            // 删除分类中的用户ID
+            form.on('submit(delete-category)', function (data) {
+                layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
+                    $.post('{{ route('frontend.setting.receiving-control.delete-control-category') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type);
+                    }, 'json');
+                });
                 return false;
             });
             // 按用户加载数据
             function loadUserList(url) {
                 $.get(url, function (result) {
                    if (type == 1) {
-                       $('.whitelist-user-box').html(result)
+                       $('.whitelist-user-box').html(result);
+                       layui.form.render();
                    } else {
-                       $('.blacklist-user-box').html(result)
+                       $('.blacklist-user-box').html(result);
+                       layui.form.render();
                    }
                 }, 'json');
+
             }
             // 按类别加载数据
             function loadCategoryList(url) {
                 $.get(url, function (result) {
                     if (type == 1) {
-                        $('.whitelist-category-box').html(result)
+                        $('.whitelist-category-box').html(result);
+                        layui.form.render();
                     } else {
-                        $('.blacklist-category-box').html(result)
+                        $('.blacklist-category-box').html(result);
+                        layui.form.render();
                     }
                 }, 'json');
             }
+            // 按用户搜索
+            form.on('submit(user-search)', function (data) {
+                var par = '?type=' + type + '&other_user_id=' + data.field.other_user_id;
+                loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}' + par);
+                return false;
+            });
+            // 按类型搜索
+            form.on('submit(category-search)', function (data) {
+                var par = '?type=' + type + '&other_user_id=' + data.field.other_user_id
+                        + '&server_id=' + data.field.other_user_id  + '&game_id=' + data.field.game_id;
+                loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}' + par);
+                return false;
+            });
             // 取消按钮
             $('.cancel').click(function () {
                 layer.closeAll();
@@ -233,10 +273,8 @@
                 } else {
                     loadCategoryList($(this).attr('href'))
                 }
-//                getOrder($(this).attr('href'), getQueryString($(this).attr('href'), "type"));
                 return false;
             });
         });
-
     </script>
 @endsection

@@ -146,6 +146,9 @@
             border-radius: 3px;
             font-size: 14px;
         }
+        .header .user {
+            right: 116px;
+        }
     </style>
     <!--END 样式表-->
 </head>
@@ -408,7 +411,6 @@
                 });
             }, 'json');
         }
-
         // 获取订单
         function getOrder(url, type) {
             type = type || 'need';

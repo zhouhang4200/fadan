@@ -95,7 +95,7 @@ class ReceivingControlRepository
      * @return mixed
      * @throws CustomException
      */
-    public function categoryAdd($type, $serviceId, $gameId, $otherUserId, $remark = '')
+    public function addCategory($type, $serviceId, $gameId, $otherUserId, $remark = '')
     {
         if (!$otherUserId || !in_array($type, [1, 2]) || !$serviceId || !$gameId) {
             throw new CustomException('添加失败');
@@ -108,6 +108,30 @@ class ReceivingControlRepository
                 'type' => $type,
                 'remark' => $remark,
             ]);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function deleteUser($id)
+    {
+        try {
+            UserReceivingUserControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+        } catch (CustomException $customException) {
+            return $customException->getMessage();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function deleteCategory($id)
+    {
+        try {
+            UserReceivingCategoryControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+        } catch (CustomException $customException) {
+            return $customException->getMessage();
         }
     }
 }

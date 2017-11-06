@@ -88,6 +88,8 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
             Route::get('get-control-category', 'ReceivingControlController@getControlCategory')->name('frontend.setting.receiving-control.get-control-category')->middleware('permission:frontend.setting.receiving-control.get-control-category');
             Route::post('add-user', 'ReceivingControlController@addUser')->name('frontend.setting.receiving-control.add-user')->middleware('permission:frontend.setting.receiving-control.add-user');
             Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category')->middleware('permission:frontend.setting.receiving-control.add-category');
+            Route::post('delete-control-user', 'ReceivingControlController@deleteControlUser')->name('frontend.setting.receiving-control.delete-control-user')->middleware('permission:frontend.setting.receiving-control.delete-control-user');
+            Route::post('delete-control-category', 'ReceivingControlController@deleteControlCategory')->name('frontend.setting.receiving-control.delete-control-category')->middleware('permission:frontend.setting.receiving-control.delete-control-category');
         });
     });
 
