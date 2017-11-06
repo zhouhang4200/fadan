@@ -35,14 +35,22 @@ use Artisan;
 use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
 
+use App\Http\Controllers\AppController;
+
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
         // $this->testAsset();
         // $this->testDaily();
-        $this->testOrder();
+        // $this->testOrder();
         // $this->command();
+        // 
+        $app = new AppController;
+
+        $data = $app->run('version', ['game_id' => 151]);
+
+        dd($data);
 
         // $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
     }

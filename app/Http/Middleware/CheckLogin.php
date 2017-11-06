@@ -24,9 +24,9 @@ class CheckLogin
 
         if ($table ==  'users') {
 
-            $sessionId = $redis->get(config('redis.user')['loginSession']);
+            $sessionId = $redis->get(config('redis.user')['loginSession']);    
         } else {
-            $sessionId = $redis->get(config('redis.user')['adminLoginSession']);
+            $sessionId = $redis->get(config('redis.user')['adminLoginSession']);  
         }
 
         if ($sessionId) {
@@ -38,9 +38,9 @@ class CheckLogin
 
         if ($table ==  'users') {
 
-            $sessionId = $redis->set(config('redis.user')['loginSession'], session()->getId());
+            $sessionId = $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());    
         } else {
-            $sessionId = $redis->set(config('redis.user')['adminLoginSession'], session()->getId());
+            $sessionId = $redis->set(config('redis.user')['adminLoginSession'] . $user->id, session()->getId());  
         }
         return $next($request);
     }
