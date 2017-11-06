@@ -370,6 +370,18 @@ body {
 }
 /* 分页样式 */
 
+/* 提示样式 */
+.explanation {
+	padding: 11px 13px;
+	margin-bottom: 15px;
+	color: #707070;
+	border-radius: 5px;
+	background-color: #f5faff;
+	border: 1px dashed #62b3ff;
+	width: calc(100% - 28px);
+	height: 100%;
+}
+
 /*公用样式*/
 li{list-style: none}
 a{text-decoration: none}

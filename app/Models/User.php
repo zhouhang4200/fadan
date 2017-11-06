@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cache, Auth;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -39,6 +40,9 @@ class User extends Authenticatable
 
     protected $revisionCreationsEnabled = true;
 
+    /**
+     * @return array
+     */
     public static function rules()
     {
         return [
@@ -48,6 +52,9 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function sonRules()
     {
         return [
@@ -56,6 +63,10 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * @param $id
+     * @return array
+     */
     public static function updateRules($id)
     {
         return [
@@ -63,6 +74,21 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * 获取用户设置缓存
+     * @return \Illuminate\Cache\CacheManager|mixed
+     */
+    public static function getUserSetting()
+    {
+//        Cache::forget(config('redis.user.setting') . Auth::user()->getPrimaryUserId());
+        return  Cache::rememberForever(config('redis.user.setting') . Auth::user()->getPrimaryUserId(), function() {
+            return UserSetting::where('user_id', Auth::user()->getPrimaryUserId())->pluck('option', 'value')->toArray();
+        });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function userAsset()
     {
         if ($this->parent_id == 0) {
@@ -72,6 +98,9 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * @return array
+     */
     public static function messages()
     {
         return [
@@ -82,11 +111,17 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function children()
     {
         return $this->hasMany(static::class, 'parent_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function parent()
     {
         return $this->belongsTo(static::class, 'parent_id');
@@ -102,16 +137,25 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function loginHistories()
     {
         return $this->hasMany(LoginHistory::class, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function realNameIdent()
     {
         return $this->hasOne(RealNameIdent::class, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function rbacGroups()
     {
         return $this->belongsToMany(RbacGroup::class, 'user_rbac_groups', 'user_id', 'rbac_group_id');
@@ -138,9 +182,9 @@ class User extends Authenticatable
 
     /**
      * 子账号查找
-     * @param  [type] $query   [description]
-     * @param  array  $filters [description]
-     * @return Illuminate\Database\Eloquent\query
+     * @param $query
+     * @param array $filters
+     * @return mixed
      */
     public static function scopeFilter($query, $filters = [])
     {
@@ -169,9 +213,9 @@ class User extends Authenticatable
 
     /**
      * 子账号查找
-     * @param  [type] $query   [description]
-     * @param  array  $filters [description]
-     * @return Illuminate\Database\Eloquent\query
+     * @param $query
+     * @param array $filters
+     * @return mixed
      */
     public static function scopeUserGroupFilter($query, $filters = [])
     {

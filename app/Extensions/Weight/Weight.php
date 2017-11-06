@@ -69,6 +69,16 @@ class Weight
     }
 
     /**
+     * 手动调整权重值
+     */
+    private function manualAdjustment()
+    {
+        // a=>10  b=>10 1c=>0
+        // (30 - 10)*50 / 100 -50
+
+    }
+
+    /**
      * 根据权重获取最后商户ID
      * @return int|string
      */
