@@ -27,7 +27,7 @@ class OrderTestData extends Command
      *
      * @var string
      */
-    protected $description = 'Order TestData.';
+    protected $description = '生成测试数据';
 
     /**
      * Execute the console command.
