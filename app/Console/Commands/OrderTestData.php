@@ -46,6 +46,7 @@ class OrderTestData extends Command
             $date = $date->format("Y-m-d");
             // 100 个用户
             for ($a = 1; $a<=100; $a++) {
+                $data = [];
                 // 每个用户二百单 1 是 发单人 接单人则加1
                 for ($j = 1; $j <= 500; $j ++) {
                     $data[] = [
