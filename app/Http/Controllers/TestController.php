@@ -34,11 +34,19 @@ use App\Repositories\Api\UserRechargeOrderRepository;
 use Artisan;
 use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
+use App\Models\Order as OrderModel;
 
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        $order = OrderModel::find(19524);
+
+        // dd($order->created_at);
+        $carbon = new Carbon;
+
+        $a = $carbon->diffInMinutes($order->created_at);
+        dd($a);
         // $this->testAsset();
         // $this->testDaily();
         // $this->testOrder();
