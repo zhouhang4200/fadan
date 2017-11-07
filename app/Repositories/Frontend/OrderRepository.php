@@ -38,12 +38,15 @@ class OrderRepository
 
         if ($userId == $primaryUserId && $status != 'market') { // 主账号默认看发出去的订单
             $query->where('creator_primary_user_id', $userId);
+            $query->from(DB::raw('orders force index (creator_primary_user_id_status_index)'));
         } else if ($type == 1 && $status != 'market') { // 子账号接单方
             $query->where('gainer_user_id', $userId);
-        } else if ($type == 2 && $status != 'market') { // 发单方
+            $query->from(DB::raw('orders force index (gainer_user_id_status_index)'));
+        } else if ($type == 2 && $status != 'market') { // 子账号发单方
             $query->where('creator_user_id', $userId);
+            $query->from(DB::raw('orders force index (creator_user_id_status_index)'));
         }
-
+        // 按订单状态过滤
         if ($status == 'need') {
             $query->whereIn('status', [3, 5]);
         } elseif ($status == 'ing') {
@@ -57,7 +60,7 @@ class OrderRepository
         } elseif ($status == 'market') {
             $query->where('status', 1);
         }
-
+        // 除去订单集市订单所有订单按ID倒序
         if ($status != 'market') {
             $query->orderBy('id', 'desc');
         }

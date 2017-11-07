@@ -36,35 +36,45 @@ class OrderTestData extends Command
      */
     public function handle()
     {
-        for ($i =1; $i<=10000; $i++) {
-            $data = [];
-            for ($a = 1; $a<=1000; $a++) {
-                $data[] = [
-                    "no" => generateOrderNo(),
-                    "foreign_order_no" => generateOrderNo(),
-                    "source" => 1,
-                    "status" => rand(1, 11),
-                    "goods_id" => rand(1, 3999),
-                    "goods_name" => str_random(30),
-                    "service_id" => rand(1, 11),
-                    "service_name" => rand(1, 11),
-                    "game_id" => rand(1, 11),
-                    "game_name" => rand(1, 11),
-                    "original_price" => rand(1, 11),
-                    "price" => rand(1, 66),
-                    "quantity" => rand(1, 4),
-                    "original_amount" => rand(1, 4),
-                    "amount" => rand(1, 4),
-                    "remark" => rand(1, 4),
-                    "creator_user_id" => rand(1, 10),
-                    "creator_primary_user_id" => rand(10, 20),
-                    "gainer_user_id" => rand(1, 10),
-                    "gainer_primary_user_id" => rand(1, 20),
-                    "created_at" => date('Y-m-d H:i:s'),
-                    "updated_at" => date('Y-m-d H:i:s'),
-                ];
+        $begin = new \DateTime( '2017-01-01' );
+        $end = (new \DateTime( '2017-12-31' ))->modify( '+1 day' );
+
+        $interval = new \DateInterval('P1D');
+        $dateRange = new \DatePeriod($begin, $interval ,$end);
+
+        foreach($dateRange as $date){
+            $date = $date->format("Y-m-d");
+            // 100 个用户
+            for ($a = 1; $a<=100; $a++) {
+                // 每个用户二百单 1 是 发单人 接单人则加1
+                for ($j = 1; $j <= 500; $j ++) {
+                    $data[] = [
+                        "no" => generateOrderNo(),
+                        "foreign_order_no" => generateOrderNo(),
+                        "source" => rand(1, 4),
+                        "status" => rand(1, 10),
+                        "goods_id" => rand(1, 3999),
+                        "goods_name" => str_random(30),
+                        "service_id" => rand(1, 11),
+                        "service_name" => rand(1, 11),
+                        "game_id" => rand(1, 11),
+                        "game_name" => rand(1, 11),
+                        "original_price" => rand(1, 11),
+                        "price" => rand(1, 66),
+                        "quantity" => rand(1, 4),
+                        "original_amount" => rand(1, 4),
+                        "amount" => rand(1, 4),
+                        "remark" => rand(1, 4),
+                        "creator_user_id" => $a,
+                        "creator_primary_user_id" => $a,
+                        "gainer_user_id" => $a+1,
+                        "gainer_primary_user_id" => $a+1,
+                        "created_at" => $date,
+                        "updated_at" => $date,
+                    ];
+                }
+                \DB::table('orders')->insert($data);
             }
-            \DB::table('orders')->insert($data);
         }
     }
 }

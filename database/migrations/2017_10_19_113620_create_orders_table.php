@@ -44,6 +44,10 @@ class CreateOrdersTable extends Migration
             $table->index('service_id');
             $table->index('game_id');
             $table->index('goods_id');
+            $table->index(['creator_user_id', 'status']);
+            $table->index(['creator_primary_user_id', 'status']);
+            $table->index(['gainer_user_id', 'status']);
+            $table->index(['gainer_primary_user_id', 'status']);
         });
     }
 
