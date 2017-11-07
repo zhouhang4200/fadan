@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use Carbon\Carbon;
 use App\Extensions\Order\Operations\AskForAfterService;
 use Order;
 use App\Events\NotificationEvent;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\Frontend\OrderRepository;
+use App\Models\Order as OrderModel;
 
 /**
  * Class OrderOperationController
@@ -42,8 +44,12 @@ class OrderOperationController extends Controller
         receiving($currentUserId, $orderNo);
         // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
         receivingRecord($primaryUserId, $orderNo);
-        // 加入待分配订单
-        waitReceivingAdd($orderNo);
+        // 加入待分配订单, $data 订单创建时间
+        $order = OrderModel::where('no', $orderNo)->first();
+
+        $data = json_encode($order->created_at);
+        
+        waitReceivingAdd($orderNo, $data);
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
     }
@@ -141,12 +147,24 @@ class OrderOperationController extends Controller
         try {
             // 调用退回
             Order::handle(new TurnBack($request->no, Auth::user()->id));
-            // 待接单数量加1
-            waitReceivingQuantityAdd();
-            // 待接单数量刷新
-            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-            // 给所有用户推送新订单消息
-            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+
+            $carbon = new Carbon;
+
+            $order = OrderModel::where('no', $request->no)->first();
+
+            $minutes = $carbon->diffInMinutes($order->created_at);
+
+            if ($minutes >= 40) {
+                // 超过40分钟失败
+                OrderModel::where('no', $request->no)->update(['status' => 4]);
+            } else {
+                // 待接单数量加1
+                waitReceivingQuantityAdd();
+                // 待接单数量刷新
+                event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                // 给所有用户推送新订单消息
+                event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));          
+            }
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {

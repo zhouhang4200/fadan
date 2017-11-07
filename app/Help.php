@@ -150,10 +150,11 @@ if (!function_exists('waitReceivingAdd')) {
      * @param $orderNo
      * @return mixed
      */
-    function waitReceivingAdd($orderNo)
+    function waitReceivingAdd($orderNo, $json)
     {
         $redis = RedisConnect::order();
-        return $redis->hset(config('redis.order.waitReceiving'), $orderNo, $orderNo);
+        
+        return $redis->hset(config('redis.order.waitReceiving'), $orderNo, $json);
     }
 }
 

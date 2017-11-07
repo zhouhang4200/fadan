@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
+use App\Models\Order as OrderModel;
 use Illuminate\Console\Command;
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
@@ -38,10 +40,28 @@ class OrderAssign extends Command
     public function handle()
     {
         \Log::alert('1');
+
+        $carbon = new Carbon;
+
         // 获取所有待分配订单
-        foreach (waitReceivingGet() as $orderNo) {
+        foreach (waitReceivingGet() as $orderNo => $data) {
+            // 保存创建时间的json
+            $data = json_decode($data);
+            // 检测40分钟订单无人操作 
+            $time = Carbon::parse($data->date);
+
+            $minutes = $carbon->diffInMinutes($time);
+
+            if ($minutes >= 40) {
+
+                OrderModel::where('no', $orderNo)->update(['status' => 4]);
+
+                waitReceivingDel($orderNo);
+            }
+
             // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
             if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
+
                 // 取出所有用户, 获取所有接单用户的权重值
                 $userId = Weight::run(receivingUser($orderNo));
                 // 分配订单
