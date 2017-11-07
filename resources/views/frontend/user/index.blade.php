@@ -4,14 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .user-td td div{
-            text-align: center;width: 320px;
-        }
-        .layui-table tr th {
-            text-align: center;
-        }
-    </style>
 @endsection
 
 @section('submenu')
@@ -52,18 +44,14 @@
 
     </div>
         <table class="layui-table" lay-size="sm">
-            <colgroup>
-                <col width="150">
-                <col width="200">
-                <col>
-            </colgroup>
             <thead>
             <tr>
                 <th style="width:7%">账号id</th>
                 <th>账号名</th>
+                <th>类型</th>
                 <th>权限组</th>
-                <th>注册时间</th>
-                <th>操作</th>
+                <th width="15%">注册时间</th>
+                <th width="27%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -71,6 +59,7 @@
                 <tr class="user-td" style="text-align: center">
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
+                    <td>{{ config('user.type')[$user->type ]}}</td>
                     <td>
                     @forelse($user->rbacGroups as $name)
                         {{ $name->name }}&nbsp;&nbsp;
@@ -80,7 +69,6 @@
                     </td>
                     <td>{{ $user->created_at }}</td>
                     <td>
-                        <div style="text-align: center">
                             <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini edit">编辑账号</a>
                             <button class="layui-btn layui-btn-normal layui-btn-mini delete" onclick="del({{ $user->id }})">删除账号</button>
                         @if($user->rbacGroups->count() == 0)
@@ -91,7 +79,6 @@
                         @if($user->rbacGroups->count() > 0)
                             <button class="layui-btn layui-btn-normal layui-btn-mini delete" onclick="delPermission({{ $user->id }})">删除权限</button>
                         @endif
-                        </div>
                     </td>
                 </tr>
             @empty

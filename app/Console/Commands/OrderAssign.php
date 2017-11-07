@@ -73,7 +73,7 @@ class OrderAssign extends Command
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                 } catch (CustomException $exception) {
-                    Log::alert($exception);
+                    Log::alert($exception->getMessage());
                 }
             } else {
                 continue;

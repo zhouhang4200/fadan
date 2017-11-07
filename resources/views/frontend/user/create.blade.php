@@ -17,24 +17,32 @@
 @section('main')
     <form class="layui-form" method="POST" action="{{ route('users.store') }}">
         {!! csrf_field() !!}
-        <div style="width: 40%">
+        <div>
             <div class="layui-form-item">
                 <label class="layui-form-label">账号:</label>
-                <div class="layui-input-block">
+                <div class="layui-input-inline">
                     <input type="text" name="name" lay-verify="required|length" value="{{ old('name') }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">密码:</label>
-                <div class="layui-input-block">
+                <div class="layui-input-inline">
                     <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">确认密码:</label>
-                <div class="layui-input-block">
+                <div class="layui-input-inline">
                     <input type="password" name="password_confirmation" lay-verify="required" placeholder="请确认密码" autocomplete="off" class="layui-input">
                 </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="type" value="1" title="接单"  checked="">
+                    <input type="radio" name="type" value="2" title="发单">
+                </div>
+                <div class="layui-form-mid layui-word-aux">设置为接单：则工作台显您接的单，发单：则工作显示您发出的单</div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
