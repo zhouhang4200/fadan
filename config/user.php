@@ -1,5 +1,4 @@
 <?php
-
 return [
   'setting' => [
       // 接单控制

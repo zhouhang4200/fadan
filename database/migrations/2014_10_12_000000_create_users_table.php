@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('has_session')->nullable()->comment('登录时的session');
+            $table->tinyInteger('online')->default(0)->comment('是否在线：0 否 1 是');
             $table->timestamp('deleted_at')->nullable()->comment('软删除字段');
             $table->rememberToken();
             $table->timestamps();
