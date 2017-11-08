@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->tinyInteger('online')->default(0)->comment('是否在线：0 否 1 是');
+            $table->tinyInteger('type')->default(1)->comment('1 接单 2 发单');
             $table->timestamp('deleted_at')->nullable()->comment('软删除字段');
             $table->rememberToken();
             $table->timestamps();

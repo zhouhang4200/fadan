@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '商品 - 接单设置')
+@section('title', '设置 - 接单设置')
 
 @section('css')
 
@@ -22,14 +22,14 @@
         <div class="layui-form-item" pane>
             <label class="layui-form-label">控制方式</label>
             <div class="layui-input-block"  >
-                <input type="radio" name="control" value="0" title="不开启" checked lay-filter="control" @if($receivingControl == 0) @endif>
-                <input type="radio" name="control" value="1" title="白名单" lay-filter="control" @if($receivingControl == 1) @endif>
-                <input type="radio" name="control" value="2" title="黑名单"lay-filter="control" @if($receivingControl == 2) @endif>
+                <input type="radio" name="control" value="0" title="不开启"  lay-filter="control" @if($receivingControl == 0) checked @endif>
+                <input type="radio" name="control" value="1" title="白名单" lay-filter="control" @if($receivingControl == 1) checked @endif>
+                <input type="radio" name="control" value="2" title="黑名单"lay-filter="control" @if($receivingControl == 2) checked  @endif>
             </div>
         </div>
     </form>
 
-    <div class="layui-tab layui-hide  @if($receivingControl == 1) layui-show  @endif" lay-filter="whitelist" id="whitelist">
+    <div class="layui-tab  @if($receivingControl != 1) layui-hide  @endif" lay-filter="whitelist" id="whitelist">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="1">用户接单白名单</li>
             <li lay-id="2">商品接单白名单</li>
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div class="layui-tab layui-hide @if($receivingControl == 2) layui-show  @endif" lay-filter="blacklist" id="blacklist">
+    <div class="layui-tab @if($receivingControl != 2)  layui-hide  @endif" lay-filter="blacklist" id="blacklist">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="1">用户接单黑名单</li>
             <li lay-id="2">商品接单黑名单</li>
@@ -134,6 +134,7 @@
             form.on('radio(control)', function(data){
                 type = data.value;
                 if (type == 0) {
+                    setControlMode('0');
                     layer.msg('已经关闭接单控制，平台所有用户可接您的订单');
                     $('#blacklist').addClass('layui-hide');
                     $('#whitelist').addClass('layui-hide');
@@ -143,6 +144,7 @@
                     } else {
                         loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type)
                     }
+                    setControlMode('1');
                     layer.msg('已经切换为白名单模式');
                     $('#blacklist').addClass('layui-hide');
                     $('#whitelist').removeClass('layui-hide');
@@ -152,6 +154,7 @@
                     } else {
                         loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}' + '?type=' + type)
                     }
+                    setControlMode('2');
                     layer.msg('已经切换为黑名单模式');
                     $('#whitelist').addClass('layui-hide');
                     $('#blacklist').removeClass('layui-hide');
@@ -223,31 +226,7 @@
                 });
                 return false;
             });
-            // 按用户加载数据
-            function loadUserList(url) {
-                $.get(url, function (result) {
-                   if (type == 1) {
-                       $('.whitelist-user-box').html(result);
-                       layui.form.render();
-                   } else {
-                       $('.blacklist-user-box').html(result);
-                       layui.form.render();
-                   }
-                }, 'json');
 
-            }
-            // 按类别加载数据
-            function loadCategoryList(url) {
-                $.get(url, function (result) {
-                    if (type == 1) {
-                        $('.whitelist-category-box').html(result);
-                        layui.form.render();
-                    } else {
-                        $('.blacklist-category-box').html(result);
-                        layui.form.render();
-                    }
-                }, 'json');
-            }
             // 按用户搜索
             form.on('submit(user-search)', function (data) {
                 var par = '?type=' + type + '&other_user_id=' + data.field.other_user_id;
@@ -265,6 +244,36 @@
             $('.cancel').click(function () {
                 layer.closeAll();
             });
+            // 按用户加载数据
+            function loadUserList(url) {
+                $.get(url, function (result) {
+                    if (type == 1) {
+                        $('.whitelist-user-box').html(result);
+                        layui.form.render();
+                    } else {
+                        $('.blacklist-user-box').html(result);
+                        layui.form.render();
+                    }
+                }, 'json');
+
+            }
+            // 按类别加载数据
+            function loadCategoryList(url) {
+                $.get(url, function (result) {
+                    if (type == 1) {
+                        $('.whitelist-category-box').html(result);
+                        layui.form.render();
+                    } else {
+                        $('.blacklist-category-box').html(result);
+                        layui.form.render();
+                    }
+                }, 'json');
+            }
+            // 设置控制方式
+            function setControlMode(model) {
+                $.post('{{ route('frontend.setting.receiving-control.control-mode') }}', {model:model},function (result) {
+                }, 'json');
+            }
             // 点击页码翻页
             $(document).on('click', '.pagination a', function (e) {
                 e.preventDefault();

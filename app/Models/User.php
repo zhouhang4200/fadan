@@ -82,7 +82,7 @@ class User extends Authenticatable
     {
 //        Cache::forget(config('redis.user.setting') . Auth::user()->getPrimaryUserId());
         return  Cache::rememberForever(config('redis.user.setting') . Auth::user()->getPrimaryUserId(), function() {
-            return UserSetting::where('user_id', Auth::user()->getPrimaryUserId())->pluck('option', 'value')->toArray();
+            return UserSetting::where('user_id', Auth::user()->getPrimaryUserId())->pluck('value', 'option')->toArray();
         });
     }
 

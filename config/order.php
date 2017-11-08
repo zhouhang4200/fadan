@@ -48,4 +48,7 @@ return [
 
     // 订单分配下限 (最少接单人数)
     'assignLowerLimit' => 1,
+
+    // api 自动下单风控值
+    'apiRiskRate' => '0.98',
 ];

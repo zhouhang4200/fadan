@@ -23,5 +23,7 @@ return [
         'loginSession' => 'users:id:',
         // admin_users 登录账号 sessionid
         'adminLoginSession' => 'admin_users:id:',
+        // 获取用户设置 生成key示例 user:setting:id:1
+        'setting' => 'user:setting:id:'
     ]
 ];

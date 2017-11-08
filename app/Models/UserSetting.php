@@ -11,5 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserSetting extends Model
 {
-    //
+    public $fillable = [
+      'user_id',
+      'option',
+      'value',
+    ];
 }

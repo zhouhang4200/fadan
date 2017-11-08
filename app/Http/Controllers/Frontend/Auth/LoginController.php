@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Models\LoginHistory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -97,6 +99,18 @@ class LoginController extends Controller
     }
 
     /**
+     * 登录后更改用户是否在线字段
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        User::where('id', Auth::user()->id)->update(['online' => 1]);
+    }
+
+    /**
      * Log the user out of the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -104,6 +118,8 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        User::where('id', Auth::user()->id)->update(['online' => 0]);
+
         $this->guard()->logout();
 
         $request->session()->invalidate();

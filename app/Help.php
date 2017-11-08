@@ -207,6 +207,16 @@ if (!function_exists('socketServer')) {
     }
 }
 
+if (!function_exists('refreshUserSetting')) {
+    /**
+     * 刷新用户的设置缓存
+     * @return mixed
+     */
+    function refreshUserSetting()
+    {
+        return Cache::forget(config('redis.user.setting') . Auth::user()->getPrimaryUserId());
+    }
+}
 
 if (!function_exists('generateOrderNo')) {
     /**

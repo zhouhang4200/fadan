@@ -90,6 +90,12 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
             Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category')->middleware('permission:frontend.setting.receiving-control.add-category');
             Route::post('delete-control-user', 'ReceivingControlController@deleteControlUser')->name('frontend.setting.receiving-control.delete-control-user')->middleware('permission:frontend.setting.receiving-control.delete-control-user');
             Route::post('delete-control-category', 'ReceivingControlController@deleteControlCategory')->name('frontend.setting.receiving-control.delete-control-category')->middleware('permission:frontend.setting.receiving-control.delete-control-category');
+            Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode')->middleware('permission:frontend.setting.receiving-control.control-mode');
+        });
+        // api 风控设置
+        Route::prefix('api-risk-management')->group(function () {
+            Route::get('/', 'ApiRiskManagementController@index')->name('frontend.setting.api-risk-management.index')->middleware('permission:frontend.setting.api-risk-management.index');
+            Route::post('set', 'ApiRiskManagementController@set')->name('frontend.setting.api-risk-management.set')->middleware('permission:frontend.setting.api-risk-management.set');
         });
     });
 
@@ -126,7 +132,6 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
         Route::post('order', 'OrderController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
         // 订单列表
         Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
-
 
         // 订单操作
         Route::prefix('order-operation')->group(function (){

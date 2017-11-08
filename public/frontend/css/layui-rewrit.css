@@ -124,3 +124,6 @@
 .layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio {
     margin-top: 10px;
 }
+.layui-form-mid {
+    line-height: 8px;
+}

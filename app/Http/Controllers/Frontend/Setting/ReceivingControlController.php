@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
+use App\Models\UserSetting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,27 @@ class ReceivingControlController extends Controller
 
         return view('frontend.setting.receiving-control.index', compact('services', 'games',
             'gameId', 'serviceId', 'otherUserId', 'userWitheList', 'userBlacklist', 'receivingControl'));
+    }
+
+    /**
+     * 设置控制模式
+     * @param Request $request
+     */
+    public function controlMode(Request $request)
+    {
+        if (in_array($request->model, config('user.setting.receiving_control'))) {
+            // 写入或更新设置数据
+            UserSetting::updateOrCreate(['user_id' => Auth::user()->getPrimaryUserId(), 'option' => 'receiving_control'], [
+                'option' => 'receiving_control',
+                'value' => $request->model,
+                'user_id' => Auth::user()->id,
+            ]);
+            // 刷新用户设置缓存
+            refreshUserSetting();
+            return response()->ajax(1, '设置成功');
+        }
+        return response()->ajax(0, '非法参数');
+
     }
 
     /**
@@ -177,5 +199,4 @@ class ReceivingControlController extends Controller
             return response()->ajax(0, $customException->getMessage());
         }
     }
-
 }
