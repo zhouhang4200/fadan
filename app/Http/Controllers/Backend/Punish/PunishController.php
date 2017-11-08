@@ -88,7 +88,7 @@ class PunishController extends Controller
         // 今日订单数量
         $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
 
-        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
+        return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
     }
 
     /**
