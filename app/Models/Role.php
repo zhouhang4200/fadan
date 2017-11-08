@@ -8,6 +8,8 @@ use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole
 {
+    use RevisionableTrait;
+    
     public function __construct(array $attributes = [])
     {
     	$attributes['guard_name'] = $attributes['guard_name'] ?? config('auth.defaults.guard');

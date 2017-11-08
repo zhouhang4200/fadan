@@ -248,7 +248,24 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
                     @endcan
-
+                    @can('punishes.index')
+                    <li @if($currentOneLevelMenu == 'punishes') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>违规管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                        @can('punishes.index')
+                            <li>
+                                <a href="{{ route('punishes.index') }}" @if($currentRouteName == 'punishes.index') class="active" @endif>
+                                    违规列表
+                                </a>
+                            </li>
+                        @endcan
+                        </ul>
+                    </li>
+                    @endcan
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -273,6 +290,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    
                 </ul>
             </div>
         </div>

@@ -223,9 +223,20 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse')->middleware('permission:finance.user-widthdraw-order.refuse');
     });
 
-    Route::prefix('template')->group(function (){
+    Route::prefix('template')->group(function () {
         Route::get('form', 'TemplateController@form')->name('template.form');
         Route::get('icons1', 'TemplateController@icons1')->name('template.icons1');
         Route::get('icons2', 'TemplateController@icons2')->name('template.icons2');
+    });
+
+    // 违规管理
+    Route::namespace('Punish')->prefix('punish')->group(function () {
+        Route::get('punishes', 'PunishController@index')->name('punishes.index')->middleware('permission:punishes.index');
+        Route::get('punishes/create', 'PunishController@create')->name('punishes.create')->middleware('permission:punishes.create');
+        Route::post('punishes', 'PunishController@store')->name('punishes.store')->middleware('permission:punishes.store');
+        Route::get('punishes/{id}', 'PunishController@show')->name('punishes.show')->middleware('permission:punishes.show');
+        Route::get('punishes/{id}/edit', 'PunishController@edit')->name('punishes.edit')->middleware('permission:punishes.edit');
+        Route::put('punishes/{id}', 'PunishController@update')->name('punishes.update')->middleware('permission:punishes.update');
+        Route::delete('punishes/{id}', 'PunishController@destroy')->name('punishes.destroy')->middleware('permission:punishes.destroy');
     });
 });
