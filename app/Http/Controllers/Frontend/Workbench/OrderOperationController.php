@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Workbench;
 use Carbon\Carbon;
 use App\Extensions\Order\Operations\AskForAfterService;
 use Order;
+use App\Models\Punish;
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Cancel;
@@ -30,6 +31,20 @@ class OrderOperationController extends Controller
      */
     public function receiving(Request $request)
     {
+        $deadline = Punish::where('user_id', Auth::id())->where('type', 0)->oldest('deadline')->value('deadline');
+
+        if ($deadline) {
+
+            $time = Carbon::parse($deadline);
+
+            $int = (new Carbon)->diffInSeconds($time, false);
+
+            if ($int < 0) {
+
+                return response()->ajax(0, '您已超过违规罚款截止日期，请先交违规罚款');
+            }
+        }
+
         $orderNo = $request->no;
         // 获取当前用户ID
         $currentUserId = Auth::user()->id;
