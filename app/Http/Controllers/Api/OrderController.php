@@ -32,11 +32,12 @@ class OrderController extends Controller
                 //  用站点ID找到主账号与子账号随机分配一个用户
                 $masterUserId = SiteInfo::where('kamen_site_id', $orderData['kamen_site_id'])->first();
 
-                $subUserId = User::where('parent_id', $masterUserId->user_id)->pluck('id');
+                $subUserId = User::where('parent_id', $masterUserId->user_id)->pluck('id')->toArray();
+
                 if ($subUserId) {
                     $userId = $subUserId[rand(0, count($subUserId) - 1)];
                 } else {
-                    $userId = $masterUserId;
+                    $userId = $masterUserId->user_id;
                 }
 
                 // 原始订单数据
