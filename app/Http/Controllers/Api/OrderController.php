@@ -23,6 +23,7 @@ class OrderController extends Controller
 
     public function KamenOrder(Request $request)
     {
+        $request->setTrustedProxies(array('100.116.252/16'));
         if (in_array($request->getClientIp(), ['120.26.205.22', '116.205.13.50'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
@@ -64,6 +65,7 @@ class OrderController extends Controller
                 return 'fail1';
             }
         }
+        dd($request->getClientIp());
     }
 
     public function TmallOrder(Request $request)

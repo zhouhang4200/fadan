@@ -93,9 +93,9 @@ class KamenForeignOrder extends ForeignOrder
 
 		$has = ForeignOrderModel::where('foreign_order_id', $decodeArray['CustomerOrderNo'])->first();
 
-//		if (! $has) {
+		if (! $has) {
 			return ForeignOrderModel::create($data);
-//		}
+		}
 
 		return false;
     }
