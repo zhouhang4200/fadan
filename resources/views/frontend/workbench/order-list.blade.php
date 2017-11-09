@@ -41,6 +41,12 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                                 @endif
 
                                 @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
+                                  && in_array($item->status, [11]))
+                                    <option value="payment">支付订单</option>
+                                    <option value="cancel">取消订单</option>
+                                @endif
+
+                                @if(($primaryUserId == $item->creator_primary_user_id || $currentUserId == $item->creator_user_id)
                                 && in_array($item->status, [1, 5]))
                                     <option value="cancel">取消订单</option>
                                 @endif

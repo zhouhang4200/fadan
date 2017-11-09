@@ -157,6 +157,8 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
             Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('permission:frontend.workbench.order-operation.after-sales');
 			// 接单
         	Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('permission:frontend.workbench.order-operation.receiving');
+        	// 支付
+            Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
         });
 	});
 });

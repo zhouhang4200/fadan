@@ -427,6 +427,12 @@
                 notification(result.status, result.message)
             }, 'json')
         }
+        // 订单操作：支付
+        function payment(no) {
+            $.post('{{ route('frontend.workbench.order-operation.payment') }}', {no:no}, function (result) {
+                notification(result.status, result.message)
+            }, 'json')
+        }
         // 订单操作：查看
         function detail(no) {
             layer.open({

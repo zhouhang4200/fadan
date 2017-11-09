@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Extensions\Order\Operations\Payment;
 use Carbon\Carbon;
 use App\Extensions\Order\Operations\AskForAfterService;
 use Order;
@@ -203,5 +204,28 @@ class OrderOperationController extends Controller
             return response()->ajax(0, $exception->getMessage());
         }
     }
+
+    /**
+     * 支付订单
+     * @param Request $request
+     */
+    public function payment(Request $request)
+    {
+        try {
+            // 调用退回
+            Order::handle(new Payment($request->no, Auth::user()->id));
+            // 给所有用户推送新订单消息
+            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+            // 待接单数量加1
+            waitReceivingQuantityAdd();
+            // 待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 返回操作成功
+            return response()->ajax(0, '操作成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+    }
+
 }
 
