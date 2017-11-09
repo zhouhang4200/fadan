@@ -1,22 +1,24 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
-use Carbon\Carbon;
-use App\Extensions\Order\Operations\AskForAfterService;
 use Order;
+use Carbon\Carbon;
 use App\Models\Punish;
-use App\Events\NotificationEvent;
-use App\Exceptions\CustomException;
-use App\Extensions\Order\Operations\Cancel;
-use App\Extensions\Order\Operations\Complete;
-use App\Extensions\Order\Operations\Delivery;
-use App\Extensions\Order\Operations\DeliveryFailure;
-use App\Extensions\Order\Operations\TurnBack;
+use App\Models\SiteInfo;
 use Illuminate\Http\Request;
+use App\Services\KamenOrderApi;
+use App\Events\NotificationEvent;
+use App\Models\Order as OrderModel;
+use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\Frontend\OrderRepository;
-use App\Models\Order as OrderModel;
+use App\Extensions\Order\Operations\Cancel;
+use App\Extensions\Order\Operations\Complete;
+use App\Extensions\Order\Operations\Delivery;
+use App\Extensions\Order\Operations\TurnBack;
+use App\Extensions\Order\Operations\DeliveryFailure;
+use App\Extensions\Order\Operations\AskForAfterService;
 
 /**
  * Class OrderOperationController
@@ -94,8 +96,20 @@ class OrderOperationController extends Controller
             // 调用收货
             Order::handle(new Delivery($request->no, Auth::user()->id));
             // 向卡门发送通知
+            $order = OrderModel::where('no', $request->no)->first();
+
+            $masterUser = Auth::user()->getPrimaryUserId();
+
+            $has = SiteInfo::where('user_id', $masterUser)->first();
+
+            if ($order->foreignOrder && $has) {
+
+                KamenOrderApi::share()->success($request->no, $order->foreignOrder->kamen_order_id);
+            }
             return response()->ajax(1, '操作成功');
+
         } catch (CustomException $exception) {
+
             return response()->ajax(0, $exception->getMessage());
         }
     }
@@ -110,8 +124,20 @@ class OrderOperationController extends Controller
             // 调用失败订单
             Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
             // 调用打款，删除自动打款哈希表中订单号
+            $order = OrderModel::where('no', $request->no)->first();
+
+            $masterUser = Auth::user()->getPrimaryUserId();
+
+            $has = SiteInfo::where('user_id', $masterUser)->first();
+
+            if ($order->foreignOrder && $has) {
+
+                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_id);
+            }
             return response()->ajax(1, '操作成功');
+
         } catch (CustomException $exception) {
+
             return response()->ajax(0, $exception->getMessage());
         }
     }

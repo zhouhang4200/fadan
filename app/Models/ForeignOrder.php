@@ -16,7 +16,7 @@ class ForeignOrder extends Model
         'total_price',
         'tel',
         'details',
-        'qq'
+        'qq',
     ];
 
     public function getDetailsAttribute($value)
@@ -27,5 +27,10 @@ class ForeignOrder extends Model
     public function setDetailsAttribute($value)
     {
         return $this->attributes['details'] = json_encode($value);
+    }
+
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'foreign_order_no', 'foreign_order_id');
     }
 }

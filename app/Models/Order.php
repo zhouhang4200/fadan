@@ -58,4 +58,9 @@ class Order extends Model
     {
         return $this->hasOne(Punish::class, 'order_id', 'no');
     }
+
+    public function foreignOrder()
+    {
+        return $this->belongsTo(ForeignOrder::class, 'foreign_order_no', 'foreign_order_id');
+    }
 }

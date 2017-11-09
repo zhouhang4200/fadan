@@ -28,6 +28,7 @@ use App\Extensions\Order\Operations\AskForAfterService;
 use App\Extensions\Order\Operations\AfterServiceComplete;
 use App\Extensions\Order\Operations\TurnBack;
 use App\Extensions\Order\Operations\Complete;
+use App\Models\ForeignOrder;
 
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 use App\Repositories\Api\UserRechargeOrderRepository;
@@ -41,15 +42,21 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-        dd(TmallOrderApi::getOrder(2,87413047090907895));
+        // dd(TmallOrderApi::getOrder(2,87413047090907895));
 
-        $order = OrderModel::find(19524);
+        // $order = OrderModel::find(2);
+
+        // dd($order->foreignOrder);
+        // 
+        // $foreignOrder = ForeignOrder::find(20);
+
+        // dd($foreignOrder->order);
 
         // dd($order->created_at);
-        $carbon = new Carbon;
+        // $carbon = new Carbon;
 
-        $a = $carbon->diffInMinutes($order->created_at);
-        dd($a);
+        // $a = $carbon->diffInMinutes($order->created_at);
+        // dd($a);
         // $this->testAsset();
         // $this->testDaily();
         // $this->testOrder();

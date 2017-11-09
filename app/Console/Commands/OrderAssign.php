@@ -64,6 +64,7 @@ class OrderAssign extends Command
 
                 // 取出所有用户, 获取所有接单用户的权重值
                 $userId = Weight::run(receivingUser($orderNo));
+
                 // 分配订单
                 try {
                     Order::handle(new Receiving($orderNo, $userId));
