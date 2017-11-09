@@ -86,7 +86,7 @@ class KamenForeignOrder extends ForeignOrder
 		$data['foreign_goods_id'] = $decodeArray['ProductId'];
 		$data['single_price']     = $price;
 		$data['total_price']      = $totalPrice;
-		$data['contact']          = $wangWang;
+		$data['wang_wang']          = $wangWang;
 		$data['tel']              = $decodeArray['ContactType'] ?: '';
 		$data['qq']               = $decodeArray['ContactQQ'] ?: '';
 		$data['details']          = $this->saveDetails($decodeArray);

@@ -76,7 +76,7 @@ class OrderRepository
         })->orWhere(function ($query)  use ($orderNo) {
             $query->where(['gainer_primary_user_id' => Auth::user()->id, 'no' => $orderNo])
                 ->where('status', '>', 2);
-        })->with('detail')->first();
+        })->with(['detail', 'foreignOrder'])->first();
     }
 
     /**

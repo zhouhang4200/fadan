@@ -14,6 +14,7 @@ class ForeignOrder extends Model
         'foreign_goods_id',
         'single_price',
         'total_price',
+        'wang_wang',
         'tel',
         'details',
         'qq'
