@@ -28,7 +28,12 @@ use App\Extensions\Order\Operations\AskForAfterService;
 use App\Extensions\Order\Operations\AfterServiceComplete;
 use App\Extensions\Order\Operations\TurnBack;
 use App\Extensions\Order\Operations\Complete;
+<<<<<<< HEAD
 use App\Models\ForeignOrder;
+=======
+use App\Extensions\Order\Operations\Payment;
+use App\Extensions\Order\Operations\Cancel;
+>>>>>>> cbf28ee26880f2c29ab9454e7746c40210cd153c
 
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 use App\Repositories\Api\UserRechargeOrderRepository;
@@ -44,6 +49,7 @@ class TestController extends Controller
     {
         // dd(TmallOrderApi::getOrder(2,87413047090907895));
 
+<<<<<<< HEAD
         // $order = OrderModel::find(2);
 
         // dd($order->foreignOrder);
@@ -51,6 +57,9 @@ class TestController extends Controller
         // $foreignOrder = ForeignOrder::find(20);
 
         // dd($foreignOrder->order);
+=======
+        // $order = OrderModel::find(19524);
+>>>>>>> cbf28ee26880f2c29ab9454e7746c40210cd153c
 
         // dd($order->created_at);
         // $carbon = new Carbon;
@@ -59,9 +68,9 @@ class TestController extends Controller
         // dd($a);
         // $this->testAsset();
         // $this->testDaily();
-        // $this->testOrder();
+        $this->testOrder();
         // $this->command();
-        // 
+        //
         // $app = new AppController;
 
         // $data = $app->run('version', ['game_id' => 151]);
@@ -99,18 +108,20 @@ class TestController extends Controller
 
     public function testOrder()
     {
-        // Order::handle(new Create(1, 'taobao-123', 1, 2, 0, 12, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
+        // Order::handle(new Create(1, 'taobao-123', 1, 4, 0, 111, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
+        // Order::handle(new Payment('2017110914374600000001', 1));
         // Order::handle(new GrabClose('2017102414284300000014', 1));
         // Order::handle(new Receiving('2017102716414000000116', 28));
         // Order::handle(new Delivery('2017102714052200000014', 28));
         // Order::handle(new DeliveryFailure('2017102716414000000116', 28));
         // Order::handle(new AskForAfterService('123', 3, '啦啦啦'));
-        Order::handle(new AfterServiceComplete('123', 888, 5, '退5块钱'));
+        // Order::handle(new AfterServiceComplete('123', 888, 5, '退5块钱'));
         // Order::handle(new TurnBack('2017102414284300000014', 2));
         // Order::handle(new Complete('2017102714052200000014', 28));
+        Order::handle(new Cancel('2017110914425000000004', 1));
 
-        $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
-        dump(unserialize($arr->before), unserialize($arr->after));
+        // $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
+        // dump(unserialize($arr->before), unserialize($arr->after));
     }
 
     public function command()

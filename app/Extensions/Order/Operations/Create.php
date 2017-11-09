@@ -122,5 +122,9 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
     {
         $sourceName = config('order.source')[$this->source];
         $this->description = "用户[{$this->userId}]从[{$sourceName}]渠道创建了订单";
+
+        if ($this->order->status == 1) {
+            $this->description .= "并付款";
+        }
     }
 }

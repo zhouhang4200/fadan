@@ -7,7 +7,7 @@ use App\Extensions\Asset\Income;
 // 发单后取消订单
 class Cancel extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [1, 5];
+    protected $acceptableStatus = [1, 5, 11];
     protected $handledStatus    = 10;
     protected $type             = 10;
 
@@ -23,17 +23,20 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
 
     public function updateAsset()
     {
-        Asset::handle(new Income($this->order->amount, Income::TRADE_SUBTYPE_CANCLE, $this->order->no, '取消订单退款', $this->order->creator_primary_user_id));
+        // 如果订单初始状态不是11(待支付)，则已支付过，需要退款
+        if (unserialize($this->orderHistory->before)['status'] != 11) {
+            Asset::handle(new Income($this->order->amount, Income::TRADE_SUBTYPE_CANCLE, $this->order->no, '取消订单退款', $this->order->creator_primary_user_id));
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
-            throw new Exception('操作失败');
-        }
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                DB::rollback();
+                throw new Exception('操作失败');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
-            throw new Exception('操作失败');
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                DB::rollback();
+                throw new Exception('操作失败');
+            }
         }
     }
 }

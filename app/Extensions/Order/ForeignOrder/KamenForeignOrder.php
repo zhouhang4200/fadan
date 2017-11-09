@@ -16,9 +16,7 @@ class KamenForeignOrder extends ForeignOrder
     {
         try {
 
-        	$array = $this->xmlToArray($data);
-
-        	$decodeArray =  $this->urldecodeData($array['Order']);
+        	$decodeArray =  $this->urldecodeData($data);
 
         	$model = $this->createForeignOrder($decodeArray);
 
@@ -86,7 +84,7 @@ class KamenForeignOrder extends ForeignOrder
 		$data['foreign_goods_id'] = $decodeArray['ProductId'];
 		$data['single_price']     = $price;
 		$data['total_price']      = $totalPrice;
-		$data['contact']          = $wangWang;
+		$data['wang_wang']          = $wangWang;
 		$data['tel']              = $decodeArray['ContactType'] ?: '';
 		$data['qq']               = $decodeArray['ContactQQ'] ?: '';
 		$data['details']          = $this->saveDetails($decodeArray);
@@ -130,31 +128,31 @@ class KamenForeignOrder extends ForeignOrder
     protected function saveDetails($decodeArray)
     {
     	return [
-			"OrderNo" => $decodeArray['OrderNo'],
-			"OrderStatus" => $decodeArray['OrderStatus'],
-			"BuyTime" => $decodeArray['OrderStatus'],
-			"quantity" => $decodeArray['BuyNum'],
-			"ProductId" => $decodeArray['ProductId'],
-			"ProductPrice" => $decodeArray['ProductPrice'],
-			"ProductName" => $decodeArray['ProductName'],
-			"ProductType" => $decodeArray['ProductType'],
-			"TemplateId" => $decodeArray['TemplateId'],
-			"account" => $decodeArray['ChargeAccount'],
-			"password" => $decodeArray['ChargePassword'],
-			"ChargeGame" => $decodeArray['ChargeGame'],
-			"region" => $decodeArray['ChargeRegion'],
-			"serve" => $decodeArray['ChargeServer'],
-			"ChargeType" => $decodeArray['ChargeType'],
-			"JSitid" => $decodeArray['JSitid'],
-			"GSitid" => $decodeArray['GSitid'],
-			"BuyerIp" => $decodeArray['BuyerIp'],
-			"OrderFrom" => $decodeArray['OrderFrom'],
-			"role" => $decodeArray['RoleName'],
-			"RemainingNumber" => $decodeArray['RemainingNumber'],
-			"ContactType" => $decodeArray['ContactType'],
-			"ContactQQ" => $decodeArray['ContactQQ'],
-			"UseAccount" => $decodeArray['UseAccount'],
-			"foreign_order_no" => $decodeArray['CustomerOrderNo'],
+			"OrderNo" => $decodeArray['OrderNo'] ?? '',
+			"OrderStatus" => $decodeArray['OrderStatus'] ?? '',
+			"BuyTime" => $decodeArray['OrderStatus'] ?? '',
+			"quantity" => $decodeArray['BuyNum'] ?? '',
+			"ProductId" => $decodeArray['ProductId'] ?? '',
+			"ProductPrice" => $decodeArray['ProductPrice'] ?? '',
+			"ProductName" => $decodeArray['ProductName'] ?? '',
+			"ProductType" => $decodeArray['ProductType'] ?? '',
+			"TemplateId" => $decodeArray['TemplateId'] ?? '',
+			"account" => $decodeArray['ChargeAccount'] ?? '',
+			"password" => $decodeArray['ChargePassword'] ?? '',
+			"ChargeGame" => $decodeArray['ChargeGame'] ?? '',
+			"region" => $decodeArray['ChargeRegion'] ?? '',
+			"serve" => $decodeArray['ChargeServer'] ?? '',
+			"ChargeType" => $decodeArray['ChargeType'] ?? '',
+			"JSitid" => $decodeArray['JSitid'] ?? '',
+			"GSitid" => $decodeArray['GSitid'] ?? '',
+			"BuyerIp" => $decodeArray['BuyerIp'] ?? '',
+			"OrderFrom" => $decodeArray['OrderFrom'] ?? '',
+			"role" => $decodeArray['OrderFrom'] ?? '',
+			"RemainingNumber" => $decodeArray['RemainingNumber'] ?? '',
+			"ContactType" => $decodeArray['ContactType'] ?? '',
+			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',
+			"UseAccount" => $decodeArray['UseAccount'] ?? '',
+			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? '',
 		];
     }
 
