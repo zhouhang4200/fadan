@@ -101,8 +101,10 @@
                                             <td>{{ $punish->type == 1 ? '已支付' : '未支付' }}</td>
                                             <td>{{ $punish->created_at }}</td>
                                             <td>
+                                            @if($punish->type == 0)
                                                 <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.edit', ['punish' => $punish->id]) }}">编辑</a>
                                                 <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $punish->id }})">删除</button>
+                                            @endif
                                                 <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
                                             </td>
                                         </tr>
