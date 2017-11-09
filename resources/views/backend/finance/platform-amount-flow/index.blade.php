@@ -88,7 +88,7 @@
                                     <td>{{ config('tradetype.platform_sub')[$data->trade_subtype] ?? $data->trade_subtype }}</td>
                                     <td>{{ $data->trade_no }}</td>
                                     <td>{{ $data->fee + 0}}</td>
-                                    <td>{{ $data->remark + 0}}</td>
+                                    <td>{{ $data->remark}}</td>
                                     <td>{{ $data->amount + 0}}</td>
                                     <td>{{ $data->managed + 0}}</td>
                                     <td>{{ $data->balance + 0}}</td>
