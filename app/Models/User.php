@@ -226,4 +226,9 @@ class User extends Authenticatable
 
         return $query->whereHas('rbacGroups');
     }
+
+    public function punishes()
+    {
+        return $this->hasMany(Punish::class);
+    }
 }

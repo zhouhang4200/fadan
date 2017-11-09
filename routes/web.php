@@ -62,6 +62,12 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
 	// Route::resource('home-system-logs', 'SystemLogController', ['only' => ['index']]);
 	Route::get('home-system-logs', 'SystemLogController@index')->name('home-system-logs.index')->middleware('permission:home-system-logs.index');
 
+	// 违规管理
+	Route::prefix('punish')->namespace('Punish')->group(function () {
+		Route::get('home-punishes', 'PunishController@index')->name('home-punishes.index')->middleware('permission:home-punishes.index');
+		Route::post('home-punishes/payment', 'PunishController@payment')->name('home-punishes.payment');
+	});
+
     // 商品
     Route::prefix('goods')->namespace('Goods')->group(function () {
         // 商品列表

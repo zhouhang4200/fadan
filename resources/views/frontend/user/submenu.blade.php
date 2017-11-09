@@ -11,7 +11,6 @@
                 <li class="{{ in_array(Route::currentRouteName(), ['idents.index', 'idents.create', 'idents.edit']) ? 'current' : '' }}"><a href="{{ route('idents.create') }}"> 实名认证 </a><div class="arrow"></div></li>
                 @endcan
             @endif
-
         @can('home-system-logs.index')
             <li class="{{ in_array(Route::currentRouteName(), ['home-system-logs.index']) ? 'current' : '' }}"><a href="{{ route('home-system-logs.index') }}"> 系统日志 </a><div class="arrow"></div></li>
         @endcan

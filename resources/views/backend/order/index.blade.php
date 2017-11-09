@@ -34,8 +34,8 @@
                                         <div class="layui-input-inline">
                                             <select name="source" lay-verify="" lay-search="">
                                                 <option value="">输入名字或直接选择</option>
-                                                @foreach(config('order.source') as $id => $source)
-                                                <option value="{{ $id }}">{{ $source }}</option>
+                                                @foreach(config('order.source') as $id => $sourceItem)
+                                                <option value="{{ $id }}" {{ $source == $id ? 'selected' : '' }}>{{ $sourceItem }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -46,8 +46,8 @@
                                             <div class="layui-input-inline">
                                                 <select name="status" lay-verify="" lay-search="">
                                                     <option value="">输入名字或直接选择</option>
-                                                    @foreach(config('order.status') as $id => $status)
-                                                    <option value="{{ $id }}">{{ $status }}</option>
+                                                    @foreach(config('order.status') as $id => $statusItem)
+                                                    <option value="{{ $id }}" {{ $status == $id ? 'selected' : '' }}>{{ $statusItem }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

@@ -53,4 +53,9 @@ class Order extends Model
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
     }
+
+    public function punish()
+    {
+        return $this->hasOne(Punish::class, 'order_id', 'no');
+    }
 }

@@ -76,9 +76,7 @@
 
 
 @section('submenu')
-<ul class="seller_center_left_menu">
-    <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
-</ul>
+    @include('frontend.submenu')
 @endsection
 
 @section('main')
