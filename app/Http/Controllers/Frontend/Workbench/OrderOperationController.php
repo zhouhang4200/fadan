@@ -99,9 +99,7 @@ class OrderOperationController extends Controller
             // 向卡门发送通知
             $order = OrderModel::where('no', $request->no)->first();
 
-            $masterUser = Auth::user()->getPrimaryUserId();
-
-            $has = SiteInfo::where('user_id', $masterUser)->first();
+            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
 
             if ($order->foreignOrder && $has) {
 
@@ -127,9 +125,7 @@ class OrderOperationController extends Controller
             // 调用打款，删除自动打款哈希表中订单号
             $order = OrderModel::where('no', $request->no)->first();
 
-            $masterUser = Auth::user()->getPrimaryUserId();
-
-            $has = SiteInfo::where('user_id', $masterUser)->first();
+            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
 
             if ($order->foreignOrder && $has) {
 
