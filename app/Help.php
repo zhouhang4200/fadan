@@ -217,6 +217,25 @@ if (!function_exists('refreshUserSetting')) {
         return Cache::forget(config('redis.user.setting') . Auth::user()->getPrimaryUserId());
     }
 }
+if (!function_exists('getClientIp')) {
+    /**
+     * 刷新用户的设置缓存
+     * @return mixed
+     */
+    function getClientIp()
+    {
+        $ip = '';
+        if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }elseif(isset($_SERVER['HTTP_CLIENT_IP'])){
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }else{
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        $ipArr = explode(',', $ip);
+        return $ipArr[0];
+    }
+}
 
 if (!function_exists('generateOrderNo')) {
     /**
