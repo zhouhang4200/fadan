@@ -40,19 +40,36 @@ class OrderRepository
             $query->from(DB::raw('orders force index (orders_creator_user_id_status_index)'));
         }
         // 按订单状态过滤
-        if ($status == 'need') {
-            $query->whereIn('status', [11, 3, 5]);
-        } elseif ($status == 'ing') {
-            $query->where('status', 3);
-        } elseif ($status == 'finish') {
-            $query->whereIn('status', [4, 7, 8]);
-        } elseif ($status == 'after-sales') {
-            $query->where('status', 6);
-        } elseif ($status == 'cancel') {
-            $query->where('status', 10);
-        } elseif ($status == 'market') {
-            $query->where('status', 1);
+        if ($type == 1) { // 接单方
+            if ($status == 'need') {
+                $query->where('status', 3);
+            } elseif ($status == 'ing') {
+                $query->where('status', 4);
+            } elseif ($status == 'finish') {
+                $query->whereIn('status', [7, 8]);
+            } elseif ($status == 'after-sales') {
+                $query->where('status', 6);
+            } elseif ($status == 'cancel') {
+                $query->where('status', 10);
+            } elseif ($status == 'market') {
+                $query->where('status', 1);
+            }
+        } else {
+            if ($status == 'need') {
+                $query->whereIn('status', [11, 3, 5]);
+            } elseif ($status == 'ing') {
+                $query->whereIn('status', [3, 4]);
+            } elseif ($status == 'finish') {
+                $query->whereIn('status', [7, 8]);
+            } elseif ($status == 'after-sales') {
+                $query->where('status', 6);
+            } elseif ($status == 'cancel') {
+                $query->where('status', 10);
+            } elseif ($status == 'market') {
+                $query->where('status', 1);
+            }
         }
+
         // 除去订单集市订单所有订单按ID倒序
         if ($status != 'market') {
             $query->orderBy('id', 'desc');
