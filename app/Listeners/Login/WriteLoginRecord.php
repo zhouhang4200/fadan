@@ -31,11 +31,11 @@ class WriteLoginRecord
     {
         if ($event->user->getTable() == 'admin_users') {
 
-            AdminLoginHistory::writeLoginHistory(request()->ip());
+            AdminLoginHistory::writeLoginHistory(getClientIp());
 
         } else {
 
-            LoginHistory::writeLoginHistory(request()->ip());
+            LoginHistory::writeLoginHistory(getClientIp());
         }
     }
 }
