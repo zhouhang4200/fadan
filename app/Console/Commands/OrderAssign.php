@@ -39,46 +39,49 @@ class OrderAssign extends Command
      */
     public function handle()
     {
-        \Log::alert('1');
+        for ($i = 1; $i<=60; $i++) {
+            sleep(1);
+            \Log::alert(date('Y-m-d H:i:s'));
+            $carbon = new Carbon;
 
-        $carbon = new Carbon;
+            // 获取所有待分配订单
+            foreach (waitReceivingGet() as $orderNo => $data) {
+                // 保存创建时间的json
+                $data = json_decode($data);
+                // 检测40分钟订单无人操作
+                $time = Carbon::parse($data->date);
 
-        // 获取所有待分配订单
-        foreach (waitReceivingGet() as $orderNo => $data) {
-            // 保存创建时间的json
-            $data = json_decode($data);
-            // 检测40分钟订单无人操作 
-            $time = Carbon::parse($data->date);
+                $minutes = $carbon->diffInMinutes($time);
 
-            $minutes = $carbon->diffInMinutes($time);
+                if ($minutes >= 40) {
 
-            if ($minutes >= 40) {
+                    OrderModel::where('no', $orderNo)->update(['status' => 4]);
 
-                OrderModel::where('no', $orderNo)->update(['status' => 4]);
-
-                waitReceivingDel($orderNo);
-            }
-
-            // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
-            if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
-
-                // 取出所有用户, 获取所有接单用户的权重值
-                $userId = Weight::run(receivingUser($orderNo));
-
-                // 分配订单
-                try {
-                    Order::handle(new Receiving($orderNo, $userId));
                     waitReceivingDel($orderNo);
-                    // 待接单数量加1
-                    waitReceivingQuantitySub();
-                    // 待接单数量
-                    event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-                } catch (CustomException $exception) {
-                    Log::alert($exception->getMessage());
                 }
-            } else {
-                continue;
+
+                // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
+                if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
+
+                    // 取出所有用户, 获取所有接单用户的权重值
+                    $userId = Weight::run(receivingUser($orderNo));
+
+                    // 分配订单
+                    try {
+                        Order::handle(new Receiving($orderNo, $userId));
+                        waitReceivingDel($orderNo);
+                        // 待接单数量加1
+                        waitReceivingQuantitySub();
+                        // 待接单数量
+                        event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                    } catch (CustomException $exception) {
+                        Log::alert($exception->getMessage());
+                    }
+                } else {
+                    continue;
+                }
             }
         }
+
     }
 }
