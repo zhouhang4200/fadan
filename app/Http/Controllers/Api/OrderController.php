@@ -49,7 +49,7 @@ class OrderController extends Controller
 
                 $result = Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
 
-                if ($result) {
+                if (Order::get()->status == 11) {
                     // 给所有用户推送新订单消息
                     event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
                     // 待接单数量加1
@@ -59,7 +59,7 @@ class OrderController extends Controller
                     // 更新订单状态
                     return 'success';
                 } else {
-                    return 'fail';
+                    return 'success';
                 }
             } else {
                 return 'fail1';

@@ -41,7 +41,7 @@ class OrderRepository
         }
         // 按订单状态过滤
         if ($status == 'need') {
-            $query->whereIn('status', [3, 5]);
+            $query->whereIn('status', [11, 3, 5]);
         } elseif ($status == 'ing') {
             $query->where('status', 3);
         } elseif ($status == 'finish') {
