@@ -11,6 +11,16 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_no', 'no');
     }
 
+    /**
+     * 外部订单
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function foreignOrder()
+    {
+        return $this->hasOne(ForeignOrder::class, 'foreign_order_id', 'foreign_order_no');
+
+    }
+
     public function history()
     {
         return $this->hasMany(OrderHistory::class, 'order_no', 'no');

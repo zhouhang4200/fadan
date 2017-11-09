@@ -23,7 +23,7 @@ class OrderController extends Controller
 
     public function KamenOrder(Request $request)
     {
-        if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50'])) {
+        if (in_array(getClientIp(), ['127.0.0.1','120.26.205.22', '116.205.13.50'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
 
@@ -46,10 +46,9 @@ class OrderController extends Controller
                 $quantity = $orderData['quantity']; // 数量
                 $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
 
+                Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData));
 
-                $result = Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
-
-                if (Order::get()->status == 11) {
+                if (Order::get()->status != 11) {
                     // 给所有用户推送新订单消息
                     event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
                     // 待接单数量加1
