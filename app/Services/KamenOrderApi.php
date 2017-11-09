@@ -64,7 +64,7 @@ class KamenOrderApi
             self::findKmOrderId($orderId);
         }
 
-        $param =  'SiteId=90347&OrderNo=' . $this->kmOrderId . '&OrderStatus=' . strtolower(urlencode('成功'))
+        $param =  'SiteId=105714&OrderNo=' . $this->kmOrderId . '&OrderStatus=' . strtolower(urlencode('成功'))
             . '&Charger=vipqd_10---订单集市&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
         $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
@@ -84,7 +84,7 @@ class KamenOrderApi
     public  function fail($kmOrderId)
     {
         try {
-            $param = 'SiteId=90347&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
+            $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
                 . '&Charger=vipqd_10---订单集市&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
