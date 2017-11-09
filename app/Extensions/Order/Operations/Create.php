@@ -1,6 +1,7 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
+use App\Exceptions\CustomException;
 use DB;
 use App\Exceptions\AssetException as Exception;
 use App\Models\User;
@@ -14,7 +15,7 @@ use App\Extensions\Asset\Expend;
 class Create extends \App\Extensions\Order\Operations\Base\Operation
 {
     protected $handledStatus = 1;
-    protected $type          = 1;
+    protected $type = 1;
 
     /**
      * @param int $userId 用户id
@@ -27,13 +28,13 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      */
     public function __construct($userId, $foreignOrderNO, $source, $goodsId, $originalPrice, $quantity, $details)
     {
-        $this->userId         = $userId;
+        $this->userId = $userId;
         $this->foreignOrderNO = $foreignOrderNO;
-        $this->source         = $source;
-        $this->goodsId        = $goodsId;
-        $this->originalPrice  = $originalPrice;
-        $this->quantity       = $quantity;
-        $this->details        = $details;
+        $this->source = $source;
+        $this->goodsId = $goodsId;
+        $this->originalPrice = $originalPrice;
+        $this->quantity = $quantity;
+        $this->details = $details;
     }
 
     // 获取订单
@@ -51,23 +52,23 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
         $user = User::find($this->userId);
 
-        $this->order->no                      = generateOrderNo();
-        $this->order->foreign_order_no        = $this->foreignOrderNO;
-        $this->order->source                  = $this->source;
-        $this->order->goods_id                = $this->goodsId;
-        $this->order->goods_name              = $this->goods->name;
-        $this->order->service_id              = $this->goods->service->id;
-        $this->order->service_name            = $this->goods->service->name;
-        $this->order->game_id                 = $this->goods->game->id;
-        $this->order->game_name               = $this->goods->game->name;
-        $this->order->original_price          = $this->originalPrice ?: $this->goods->price;
-        $this->order->price                   = $this->goods->price;
-        $this->order->quantity                = $this->quantity;
-        $this->order->original_amount         = bcmul($this->originalPrice, $this->quantity);
-        $this->order->amount                  = bcmul($this->goods->price, $this->quantity);
-        $this->order->creator_user_id         = $this->userId;
+        $this->order->no = generateOrderNo();
+        $this->order->foreign_order_no = $this->foreignOrderNO;
+        $this->order->source = $this->source;
+        $this->order->goods_id = $this->goodsId;
+        $this->order->goods_name = $this->goods->name;
+        $this->order->service_id = $this->goods->service->id;
+        $this->order->service_name = $this->goods->service->name;
+        $this->order->game_id = $this->goods->game->id;
+        $this->order->game_name = $this->goods->game->name;
+        $this->order->original_price = $this->originalPrice ?: $this->goods->price;
+        $this->order->price = $this->goods->price;
+        $this->order->quantity = $this->quantity;
+        $this->order->original_amount = bcmul($this->originalPrice, $this->quantity);
+        $this->order->amount = bcmul($this->goods->price, $this->quantity);
+        $this->order->creator_user_id = $this->userId;
         $this->order->creator_primary_user_id = $user->getPrimaryUserId();
-        $this->order->remark                  = '';
+        $this->order->remark = '';
 
         // 记录订单详情
         if (!empty($this->details)) {
@@ -77,10 +78,10 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                 if (!isset($widget[$fieldName])) continue;
 
                 $orderDetail = new OrderDetail;
-                $orderDetail->order_no                = $this->order->no;
-                $orderDetail->field_name              = $fieldName;
-                $orderDetail->field_display_name      = $widget[$fieldName];
-                $orderDetail->field_value             = $fieldValue;
+                $orderDetail->order_no = $this->order->no;
+                $orderDetail->field_name = $fieldName;
+                $orderDetail->field_display_name = $widget[$fieldName];
+                $orderDetail->field_value = $fieldValue;
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
                 if (!$orderDetail->save()) {
@@ -95,7 +96,14 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
     public function updateAsset()
     {
-        Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '下订单', $this->order->creator_primary_user_id));
+        try {
+            Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '下订单', $this->order->creator_primary_user_id));
+
+        } catch (CustomException $customException) {
+            $this->order->status = 11;
+            $this->order->save();
+            return false;
+        }
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {

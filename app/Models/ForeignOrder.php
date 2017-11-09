@@ -6,7 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ForeignOrder extends Model
 {
-    protected $fillable = ['channel', 'channel_name', 'order_time', 'foreign_order_id', 'foreign_goods_id', 'single_price', 'total_price', 'tel', 'details', 'qq'];
+    protected $fillable = ['channel',
+        'channel_name',
+        'order_time',
+        'kamen_order_id',
+        'foreign_order_id',
+        'foreign_goods_id',
+        'single_price',
+        'total_price',
+        'tel',
+        'details',
+        'qq'
+    ];
 
     public function getDetailsAttribute($value)
     {

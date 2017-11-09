@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TmallOrderApi;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -40,6 +41,8 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        dd(TmallOrderApi::getOrder(2,87413047090907895));
+
         $order = OrderModel::find(19524);
 
         // dd($order->created_at);

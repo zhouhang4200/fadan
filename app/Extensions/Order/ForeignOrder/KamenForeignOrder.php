@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use App\Services\TmallOrderApi;
+use App\Models\SiteInfo;
 use Log;
 use Exception;
 use App\Models\Goods;
@@ -17,17 +19,19 @@ class KamenForeignOrder extends ForeignOrder
         	$array = $this->xmlToArray($data);
 
         	$decodeArray =  $this->urldecodeData($array['Order']);
-        	
+
         	$model = $this->createForeignOrder($decodeArray);
 
         	if ($model) {
-
-        		return $this->output($model);
+                $outputData = $this->output($model);
+                $outputData['price'] = $model->details->ProductPrice;
+                $outputData['kamen_site_id'] = $model->details->JSitid;
+        		return $outputData;
         	}
             
         } catch (Exception $e) {
 
-            Log::info('参数格式传入错误!', ['data' => $data]);  
+            Log::info('参数格式传入错误!', [ $e->getMessage(), 'data' => $data]);
         }
 
     }
@@ -58,45 +62,61 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function createForeignOrder($decodeArray)
     {
-		$data['channel']          = 3;
-		$data['channel_name']     = '卡门';
+        // 如果进货站点为天猫店，则去取订单的天猫订单信息
+        $siteInfo  = SiteInfo::where('kamen_site_id', $decodeArray['JSitid'])->first();
+        $price = 0; $totalPrice = 0; $wangWang = '';
+
+        if ($siteInfo && $siteInfo->channel == 3) {
+            $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);
+            $price = $tmallOrderInfo['price'];
+            $totalPrice = $tmallOrderInfo['payment'];
+            $wangWang = $tmallOrderInfo['wang_wang'];
+            $decodeArray['ProductPrice'] = $price;
+        } else {
+            $price = $decodeArray['ProductPrice'];
+            $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);;
+        }
+
+
+		$data['channel']          =  $siteInfo->channel;
+		$data['channel_name']     =  $siteInfo->name;
+		$data['kamen_order_id']   =  $decodeArray['OrderNo'];
 		$data['foreign_order_id'] = $decodeArray['CustomerOrderNo'];
 		$data['order_time']       = $decodeArray['BuyTime'];
 		$data['foreign_goods_id'] = $decodeArray['ProductId'];
-		$data['single_price']     = $decodeArray['ProductPrice'];
-		$data['total_price']      = bcdiv($decodeArray['ProductPrice'], $decodeArray['BuyNum'], 4);
+		$data['single_price']     = $price;
+		$data['total_price']      = $totalPrice;
+		$data['contact']          = $wangWang;
 		$data['tel']              = $decodeArray['ContactType'] ?: '';
 		$data['qq']               = $decodeArray['ContactQQ'] ?: '';
 		$data['details']          = $this->saveDetails($decodeArray);
 
 		$has = ForeignOrderModel::where('foreign_order_id', $decodeArray['CustomerOrderNo'])->first();
 
-		if (! $has) {
-
+//		if (! $has) {
 			return ForeignOrderModel::create($data);
-		}
+//		}
 
 		return false;
     }
 
     protected function output(ForeignOrderModel $model)
     {
-    	$goodsTemplateId = Goods::where('foreign_goods_id', $model->foreign_goods_id)->value('goods_template_id');
+    	$goods = Goods::where('foreign_goods_id', $model->foreign_goods_id)->first();
 
-    	if ($goodsTemplateId) {
-
-    		$fieldNames = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)->pluck('field_name');
+    	if ($goods) {
+            $data = [];
+            // 商品ID
+            $data['goods_id'] = $goods->id;
+    		$fieldNames = GoodsTemplateWidget::where('goods_template_id', $goods->goods_template_id)->pluck('field_name');
 
     		if ($fieldNames->count() > 0) {
 
     			foreach ($fieldNames as $key => $fieldName) {
 
     				if ($fieldName == 'version') {
-
     					$data['version'] = $this->version($model->details->region);
-
-    				} else {
-
+    				}  else {
     					$data[$fieldName] = $model->details->$fieldName ?: '';
     				}
     			}
@@ -113,7 +133,7 @@ class KamenForeignOrder extends ForeignOrder
 			"OrderNo" => $decodeArray['OrderNo'],
 			"OrderStatus" => $decodeArray['OrderStatus'],
 			"BuyTime" => $decodeArray['OrderStatus'],
-			"number" => $decodeArray['BuyTime'],
+			"quantity" => $decodeArray['BuyNum'],
 			"ProductId" => $decodeArray['ProductId'],
 			"ProductPrice" => $decodeArray['ProductPrice'],
 			"ProductName" => $decodeArray['ProductName'],
@@ -134,7 +154,7 @@ class KamenForeignOrder extends ForeignOrder
 			"ContactType" => $decodeArray['ContactType'],
 			"ContactQQ" => $decodeArray['ContactQQ'],
 			"UseAccount" => $decodeArray['UseAccount'],
-			"CustomerOrderNo" => $decodeArray['CustomerOrderNo'],
+			"foreign_order_no" => $decodeArray['CustomerOrderNo'],
 		];
     }
 
@@ -152,5 +172,16 @@ class KamenForeignOrder extends ForeignOrder
 
     		return '';
     	}
+    }
+
+    /**
+     * 如果是自营天猫店则获取天猫订单售价
+     * @param $kamenSite
+     * @param $orderId
+     * @return array
+     */
+    protected function tmallOrderInfo($kamenSite, $orderId)
+    {
+        return TmallOrderApi::getOrder($kamenSite, $orderId);
     }
 }

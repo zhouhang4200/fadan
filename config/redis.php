@@ -25,5 +25,7 @@ return [
         'adminLoginSession' => 'admin_users:id:',
         // 获取用户设置 生成key示例 user:setting:id:1
         'setting' => 'user:setting:id:'
-    ]
+    ],
+    // 自有天猫订单token
+    'tmallStoreToken' => 'tmallStoreToken:'
 ];
