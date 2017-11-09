@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\KamenOrderApi;
 use App\Services\TmallOrderApi;
 use Illuminate\Http\Request;
 
@@ -47,6 +48,8 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        dd(KamenOrderApi::share()->fail('1147113456'));
+
         // dd(TmallOrderApi::getOrder(2,87413047090907895));
         // $time = '2017-11-09 16:32:50';
         // $carbon = Carbon::parse($time);

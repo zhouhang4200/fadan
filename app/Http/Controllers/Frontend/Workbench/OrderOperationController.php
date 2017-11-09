@@ -103,7 +103,7 @@ class OrderOperationController extends Controller
 
             if ($order->foreignOrder && $has) {
 
-                KamenOrderApi::share()->success($request->no, $order->foreignOrder->kamen_order_id);
+                KamenOrderApi::share()->success($order->foreignOrder->kamen_order_id);
             }
             return response()->ajax(1, '操作成功');
 

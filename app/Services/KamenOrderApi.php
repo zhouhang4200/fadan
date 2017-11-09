@@ -52,20 +52,13 @@ class KamenOrderApi
 
     /**
      * 更新订单状态 为成功
-     * @param int $orderId
      * @param int $kmOrderId
      * @return string
      */
-    public function success($orderId= 0, $kmOrderId = 0)
+    public function success($kmOrderId)
     {
-        if ($kmOrderId) {
-            $this->kmOrderId = $kmOrderId;
-        } else {
-            self::findKmOrderId($orderId);
-        }
-
-        $param =  'SiteId=105714&OrderNo=' . $this->kmOrderId . '&OrderStatus=' . strtolower(urlencode('成功'))
-            . '&Charger=vipqd_10---订单集市&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+        $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
+            . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
         $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
 
@@ -85,7 +78,7 @@ class KamenOrderApi
     {
         try {
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---订单集市&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
 
@@ -94,7 +87,8 @@ class KamenOrderApi
             // 发送请求
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-            return $response->getBody()->getContents();
+            $result =  $response->getBody()->getContents();
+            return $result;
         } catch(\Exception $e){
             return false;
         }
