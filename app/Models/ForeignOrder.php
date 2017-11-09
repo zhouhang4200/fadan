@@ -9,8 +9,8 @@ class ForeignOrder extends Model
     protected $fillable = ['channel',
         'channel_name',
         'order_time',
-        'kamen_order_id',
-        'foreign_order_id',
+        'kamen_order_no',
+        'foreign_order_no',
         'foreign_goods_id',
         'single_price',
         'total_price',
@@ -27,11 +27,11 @@ class ForeignOrder extends Model
 
     public function setDetailsAttribute($value)
     {
-        return $this->attributes['details'] = json_encode($value);
+        return $this->attributes['details'] = json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 
     public function order()
     {
-        return $this->hasOne(Order::class, 'foreign_order_no', 'foreign_order_id');
+        return $this->hasOne(Order::class, 'foreign_order_no', 'foreign_order_no');
     }
 }

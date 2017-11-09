@@ -61,6 +61,6 @@ class Order extends Model
 
     public function foreignOrder()
     {
-        return $this->belongsTo(ForeignOrder::class, 'foreign_order_no', 'foreign_order_id');
+        return $this->belongsTo(ForeignOrder::class, 'foreign_order_no', 'foreign_order_no');
     }
 }

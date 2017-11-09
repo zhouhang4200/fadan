@@ -22,23 +22,13 @@ class KamenForeignOrder extends ForeignOrder
 
         	if ($model) {
                 $outputData = $this->output($model);
-                $outputData['price'] = $model->details->ProductPrice;
-                $outputData['kamen_site_id'] = $model->details->JSitid;
+
         		return $outputData;
         	}
             
         } catch (Exception $e) {
-
             Log::info('参数格式传入错误!', [ $e->getMessage(), 'data' => $data]);
         }
-
-    }
-
-    public function xmlToArray($xml)
-    {    
-        libxml_disable_entity_loader(true);
-
-        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);     
     }
 
     public function urldecodeData($array)
@@ -70,26 +60,26 @@ class KamenForeignOrder extends ForeignOrder
             $totalPrice = $tmallOrderInfo['payment'];
             $wangWang = $tmallOrderInfo['wang_wang'];
             $decodeArray['ProductPrice'] = $price;
+            $decodeArray['total_price'] = $totalPrice;
         } else {
             $price = $decodeArray['ProductPrice'];
             $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);;
         }
 
-
 		$data['channel']          =  $siteInfo->channel;
 		$data['channel_name']     =  $siteInfo->name;
-		$data['kamen_order_id']   =  $decodeArray['OrderNo'];
-		$data['foreign_order_id'] = $decodeArray['CustomerOrderNo'];
+		$data['kamen_order_no']   =  $decodeArray['OrderNo'];
+		$data['foreign_order_no'] = $decodeArray['CustomerOrderNo'];
 		$data['order_time']       = $decodeArray['BuyTime'];
 		$data['foreign_goods_id'] = $decodeArray['ProductId'];
 		$data['single_price']     = $price;
 		$data['total_price']      = $totalPrice;
-		$data['wang_wang']          = $wangWang;
+		$data['wang_wang']        = $wangWang;
 		$data['tel']              = $decodeArray['ContactType'] ?: '';
 		$data['qq']               = $decodeArray['ContactQQ'] ?: '';
 		$data['details']          = $this->saveDetails($decodeArray);
 
-		$has = ForeignOrderModel::where('foreign_order_id', $decodeArray['CustomerOrderNo'])->first();
+		$has = ForeignOrderModel::where('foreign_order_no', $decodeArray['CustomerOrderNo'])->first();
 
 		if (! $has) {
 			return ForeignOrderModel::create($data);
@@ -100,8 +90,15 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function output(ForeignOrderModel $model)
     {
-    	$goods = Goods::where('foreign_goods_id', $model->foreign_goods_id)->first();
+        // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
+        $goods = Goods::where([
+            'foreign_goods_id' => $model->foreign_goods_id,
+            'quantity' =>$model->details->quantity,
+        ])->first();
 
+        if (!$goods) {
+            $goods = Goods::where('foreign_goods_id', $model->foreign_goods_id)->first();
+        }
     	if ($goods) {
             $data = [];
             // 商品ID
@@ -118,10 +115,17 @@ class KamenForeignOrder extends ForeignOrder
     					$data[$fieldName] = $model->details->$fieldName ?: '';
     				}
     			}
+    			// 如果与数量匹配则将下单数量改为1
+    			if ($goods->quantity != 0) {
+                    $data['quantity'] = 1;
+                    $data['price'] = $model->details->total_price;
+                } else {
+                    $data['price'] = $model->details->ProductPrice;
+                }
+                $data['kamen_site_id'] = $model->details->JSitid;
     			return $data;
     		}
     	}
-
     	return '无';
     }
 
@@ -153,6 +157,7 @@ class KamenForeignOrder extends ForeignOrder
 			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',
 			"UseAccount" => $decodeArray['UseAccount'] ?? '',
 			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? '',
+			"total_price" => $decodeArray['total_price'] ?? '',
 		];
     }
 

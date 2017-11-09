@@ -103,7 +103,7 @@ class OrderOperationController extends Controller
 
             if ($order->foreignOrder && $has) {
 
-                KamenOrderApi::share()->success($order->foreignOrder->kamen_order_id);
+                KamenOrderApi::share()->success($order->foreignOrder->kamen_order_no);
             }
             return response()->ajax(1, '操作成功');
 
@@ -128,13 +128,11 @@ class OrderOperationController extends Controller
             $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
 
             if ($order->foreignOrder && $has) {
-
-                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_id);
+                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_no);
             }
             return response()->ajax(1, '操作成功');
 
         } catch (CustomException $exception) {
-
             return response()->ajax(0, $exception->getMessage());
         }
     }
