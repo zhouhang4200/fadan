@@ -41,6 +41,7 @@ class OrderAssign extends Command
      */
     public function handle()
     {
+        \Log::alert(date('Y-m-d H:i:s'));
         for ($i = 1; $i<=60; $i++) {
             sleep(1);
             $carbon = new Carbon;
