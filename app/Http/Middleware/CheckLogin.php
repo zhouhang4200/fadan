@@ -22,25 +22,29 @@ class CheckLogin
 
         $redis = RedisConnect::session();
 
-        if ($table ==  'users') {
+        if ($table == 'users') {
 
-            $sessionId = $redis->get(config('redis.user')['loginSession']);    
-        } else {
-            $sessionId = $redis->get(config('redis.user')['adminLoginSession']);  
-        }
+            $sessionId = $redis->get(config('redis.user')['loginSession'] . $user->id);
 
-        if ($sessionId) {
+            if ($sessionId) {
 
-            $redis->del($sessionId);
+                $redis->del($sessionId);
 
-            $redis->del($table . ':' . $user->id);
-        }
+                $redis->del($redis->get(config('redis.user')['loginSession'] . $user->id));
+            }
+            $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());
 
-        if ($table ==  'users') {
+        } elseif ($table == 'admin_users') {
 
-            $sessionId = $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());    
-        } else {
-            $sessionId = $redis->set(config('redis.user')['adminLoginSession'] . $user->id, session()->getId());  
+            $sessionId = $redis->get(config('redis.user')['adminLoginSession'] . $user->id);  
+
+            if ($sessionId) {
+
+                $redis->del($sessionId);
+
+                $redis->del($redis->get(config('redis.user')['adminLoginSession'] . $user->id));
+            }
+            $redis->set(config('redis.user')['adminLoginSession'] . $user->id, session()->getId());   
         }
         return $next($request);
     }
