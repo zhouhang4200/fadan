@@ -197,7 +197,7 @@ class OrderOperationController extends Controller
                 // 给所有用户推送新订单消息
                 event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
                 // 重写放入订单集市
-                waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(), 'created_date' => Order::get()->created_at]));
+                waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
             }
             // 返回操作成功
             return response()->ajax(0, '操作成功');
