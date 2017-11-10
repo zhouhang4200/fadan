@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Punish;
 
 use Redis;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Punish;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,7 +44,9 @@ class PunishController extends Controller
      */
     public function create()
     {
-        return view('backend.punish.create');
+        $users = User::where('parent_id', 0)->get();
+
+        return view('backend.punish.create', compact('users'));
     }
 
     /**
