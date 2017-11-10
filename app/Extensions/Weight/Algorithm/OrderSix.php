@@ -3,7 +3,7 @@
 namespace App\Extensions\Weight\Algorithm;
 
 use Carbon\Carbon;
-use App\Models\MarketWeight;
+use App\Models\Weight;
 
 class OrderSix implements AlgorithmInterface
 {
@@ -16,7 +16,7 @@ class OrderSix implements AlgorithmInterface
 
         $time = [$startTime, $endTime];
 
-    	$sixOrders =  MarketWeight::select(\DB::raw('gainer_user_id,  count(1) as orders_equal_or_less_than_six'))
+    	$sixOrders =  Weight::select(\DB::raw('gainer_user_id,  count(1) as orders_equal_or_less_than_six'))
             ->where('status', 1)
             ->where('order_money', '<=', 6)
             ->whereIn('gainer_user_id', $users)

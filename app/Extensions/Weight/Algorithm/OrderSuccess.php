@@ -3,7 +3,7 @@
 namespace App\Extensions\Weight\Algorithm;
 
 use Carbon\Carbon;
-use App\Models\MarketWeight;
+use App\Models\Weight;
 
 class OrderSuccess implements AlgorithmInterface
 {
@@ -21,12 +21,12 @@ class OrderSuccess implements AlgorithmInterface
         $businessOrderSuccessAvg = [];
 
         // 所有商户订单总数
-        $ordersCount = MarketWeight::whereIn('gainer_user_id', $users)
+        $ordersCount = Weight::whereIn('gainer_user_id', $users)
             ->whereBetween('order_time', $time)
             ->count();
 
         // 所有商户成功订单总数
-        $ordersSuccessCount = MarketWeight::where('status', 1)
+        $ordersSuccessCount = Weight::where('status', 1)
             ->whereIn('gainer_user_id', $users)
             ->whereBetween('order_time', $time)
             ->count();
@@ -35,14 +35,14 @@ class OrderSuccess implements AlgorithmInterface
             // 计算成功订单平均值
             $ordersSuccessAvg = bcdiv($ordersSuccessCount, $ordersCount, 4);
             // 获取商户的订单数,按商户ID分组
-            $businessOrdersCount = MarketWeight::select(\DB::raw('gainer_user_id, count(1) as orders_count'))
+            $businessOrdersCount = Weight::select(\DB::raw('gainer_user_id, count(1) as orders_count'))
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)
                 ->groupBy('gainer_user_id')
                 ->pluck('orders_count', 'gainer_user_id')
                 ->toArray();
             // 获取商户的成功订单数,按商户ID分组
-            $businessSuccessOrdersCount = MarketWeight::select(\DB::raw('gainer_user_id, count(1) as orders_success_count'))
+            $businessSuccessOrdersCount = Weight::select(\DB::raw('gainer_user_id, count(1) as orders_success_count'))
                 ->where('status', 1)
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)
@@ -89,12 +89,12 @@ class OrderSuccess implements AlgorithmInterface
         $businessOrderSuccessAvg = [];
 
         // 所有商户订单总数
-        $ordersCount = MarketWeight::whereIn('gainer_user_id', $users)
+        $ordersCount = Weight::whereIn('gainer_user_id', $users)
             ->whereBetween('order_time', $time)
             ->count();
 
         // 所有商户成功订单总数
-        $ordersSuccessCount = MarketWeight::where('status', 1)
+        $ordersSuccessCount = Weight::where('status', 1)
             ->whereIn('gainer_user_id', $users)
             ->whereBetween('order_time', $time)
             ->count();
@@ -103,14 +103,14 @@ class OrderSuccess implements AlgorithmInterface
             // 计算成功订单平均值
             $ordersSuccessAvg = bcdiv($ordersSuccessCount, $ordersCount, 4);
             // 获取商户的订单数,按商户ID分组
-            $businessOrdersCount = MarketWeight::select(\DB::raw('gainer_user_id, count(1) as orders_count'))
+            $businessOrdersCount = Weight::select(\DB::raw('gainer_user_id, count(1) as orders_count'))
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)
                 ->groupBy('gainer_user_id')
                 ->pluck('orders_count', 'gainer_user_id')
                 ->toArray();
             // 获取商户的成功订单数,按商户ID分组
-            $businessSuccessOrdersCount = MarketWeight::select(\DB::raw('gainer_user_id, count(1) as orders_success_count'))
+            $businessSuccessOrdersCount = Weight::select(\DB::raw('gainer_user_id, count(1) as orders_success_count'))
                 ->where('status', 1)
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)

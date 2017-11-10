@@ -3,7 +3,7 @@
 namespace App\Extensions\Weight\Algorithm;
 
 use Carbon\Carbon;
-use App\Models\MarketWeight;
+use App\Models\Weight;
 
 class OrderUseTime implements AlgorithmInterface
 {
@@ -19,7 +19,7 @@ class OrderUseTime implements AlgorithmInterface
 
         $orderCounts = $orderSuccess['ordersSuccessCount'];
 
-        // $orderCounts = MarketWeight::whereBetween('order_time', $time)->count('order_no');
+        // $orderCounts = Weight::whereBetween('order_time', $time)->count('order_no');
 
         $orderUseTimeAvg = 0;
 
@@ -27,14 +27,14 @@ class OrderUseTime implements AlgorithmInterface
 
         if ($orderCounts) {
             // 商户所有成功订单的总耗时
-            $ordersUseTimeCount = MarketWeight::where('status', 1)
+            $ordersUseTimeCount = Weight::where('status', 1)
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)
                 ->sum('order_use_time');
             // 计算订单的平均耗时
             $orderUseTimeAvg = bcdiv($ordersUseTimeCount, $orderCounts);
             // 获取商户的订单的耗时,按商户ID分组
-            $businessOrdersUseTimeAvg = MarketWeight::select(\DB::raw('gainer_user_id, (sum(order_use_time) / count(1)) as order_use_time_avg'))
+            $businessOrdersUseTimeAvg = Weight::select(\DB::raw('gainer_user_id, (sum(order_use_time) / count(1)) as order_use_time_avg'))
                 ->where('status', 1)
                 ->whereIn('gainer_user_id', $users)
                 ->whereBetween('order_time', $time)
