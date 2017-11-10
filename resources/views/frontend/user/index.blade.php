@@ -4,6 +4,11 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <style>
+        .layui-table tr th , td {
+            text-align: center;
+        } 
+    </style>
 @endsection
 
 @section('submenu')
@@ -47,11 +52,11 @@
             <thead>
             <tr>
                 <th style="width:7%">账号id</th>
-                <th>账号名</th>
+                <th style="width:10%">账号名</th>
                 <th>类型</th>
                 <th>权限组</th>
                 <th width="15%">注册时间</th>
-                <th width="27%">操作</th>
+                <th width="40%">操作</th>
             </tr>
             </thead>
             <tbody>

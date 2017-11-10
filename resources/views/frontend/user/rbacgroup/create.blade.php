@@ -45,7 +45,8 @@
                         <thead>
                         <tr>
                             <th class="col-md-1 text-center">模块名</th>
-                            <th class="col-md-1 text-center">权限清单名</th>
+                            <th class="col-md-1 text-center" style="
+    width: 668px;">权限清单名</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -53,13 +54,13 @@
                             <tr>
                                 <td>{{ $modulePermission->alias }}</td>
                                 <td>
-                                    <div class="layui-form-item" pane="">
+                                    
                                     @foreach($modulePermission->permissions as $permission)
-                                    <div class="layui-input-inline">
+                                    <div class="layui-input-inline" style="width:240px">
                                       <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
                                     </div>
                                     @endforeach
-                                    </div>
+                                    
                                 </td>
                             </tr>
                         @empty

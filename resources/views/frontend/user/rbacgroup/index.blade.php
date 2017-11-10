@@ -25,8 +25,8 @@
             <th style="width:5%">序号</th>
             <th style="width:7%">组名</th>
             <th>权限名</th>
-            <th>注册时间</th>
-            <th>操作</th>
+            <th style="width:10%">注册时间</th>
+            <th style="width:12%">操作</th>
         </tr>
         </thead>
         <tbody>
