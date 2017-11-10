@@ -40,6 +40,6 @@ class CreateUserWithdrawOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('withdraw_lists');
+        Schema::dropIfExists('user_withdraw_orders');
     }
 }

@@ -2,7 +2,6 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Exceptions\CustomException;
-use DB;
 use App\Exceptions\AssetException as Exception;
 use App\Models\User;
 use App\Models\Order;
@@ -85,7 +84,6 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
                 if (!$orderDetail->save()) {
-                    DB::rollback();
                     throw new Exception('详情记录失败');
                 }
 
@@ -98,8 +96,8 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
     {
         try {
             Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '下订单', $this->order->creator_primary_user_id));
-
-        } catch (CustomException $customException) {
+        }
+        catch (CustomException $customException) {
             $this->order->status = 11;
             $this->order->save();
             return false;
@@ -107,12 +105,10 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
     }

@@ -1,9 +1,9 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
-use DB;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
+use App\Models\Weight;
 
 // 接单
 class Receiving extends \App\Extensions\Order\Operations\Base\Operation
@@ -26,7 +26,6 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
     {
         $user = User::find($this->userId);
         if (empty($user)) {
-            DB::rollback();
             throw new Exception('不存在的接单人');
         }
 
@@ -37,5 +36,22 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
     public function setDescription()
     {
         $this->description = "订单已分配到用户[{$this->userId}]";
+    }
+
+    public function saveWeight()
+    {
+        $weight = new Weight;
+        $weight->order_no                = $this->order->no;
+        $weight->order_money             = $this->order->amount;
+        $weight->creator_user_id         = $this->order->creator_user_id;
+        $weight->creator_primary_user_id = $this->order->creator_primary_user_id;
+        $weight->order_time              = $this->order->created_at;
+        $weight->gainer_user_id          = $this->order->gainer_user_id;
+        $weight->gainer_primary_user_id  = $this->order->gainer_primary_user_id;
+        $weight->order_in_time           = $this->order->updated_at;
+
+        if (!$weight->save()) {
+            throw new Exception('权重凭证保存失败');
+        }
     }
 }

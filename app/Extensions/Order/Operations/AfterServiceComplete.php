@@ -32,12 +32,10 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
             throw new Exception('操作失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
             throw new Exception('操作失败');
         }
 
@@ -47,12 +45,10 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
             throw new Exception('操作失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
             throw new Exception('操作失败');
         }
     }

@@ -48,7 +48,7 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-        dd(KamenOrderApi::share()->fail('1147113456'));
+        // dd(KamenOrderApi::share()->fail('1147113456'));
 
         // dd(TmallOrderApi::getOrder(2,87413047090907895));
         // $time = '2017-11-09 16:32:50';
@@ -60,7 +60,7 @@ class TestController extends Controller
         // $order = OrderModel::find(2);
 
         // dd($order->foreignOrder);
-        // 
+        //
         // $foreignOrder = ForeignOrder::find(20);
 
         // dd($foreignOrder->order);
@@ -75,7 +75,7 @@ class TestController extends Controller
         // dd($a);
         // $this->testAsset();
         // $this->testDaily();
-        // $this->testOrder();
+        $this->testOrder();
         // $this->command();
         //
         // $app = new AppController;
@@ -108,7 +108,7 @@ class TestController extends Controller
         dump($external, $interior);
     }
 
-    public function testDaily()
+    public function testDaily(PlatformAssetDailyRepository $platformAssetDailyRepository)
     {
         $platformAssetDailyRepository->scriptrun('2017-10-18', '2017-10-21');
     }
@@ -116,16 +116,16 @@ class TestController extends Controller
     public function testOrder()
     {
         // Order::handle(new Create(1, 'taobao-123', 1, 4, 0, 111, ['account' => 'buer2202@163.com', 'version' => '1.0', 'region' => '微信71区']));
-        // Order::handle(new Payment('2017110914374600000001', 1));
-        // Order::handle(new GrabClose('2017102414284300000014', 1));
-        // Order::handle(new Receiving('2017102716414000000116', 28));
-        // Order::handle(new Delivery('2017102714052200000014', 28));
-        // Order::handle(new DeliveryFailure('2017102716414000000116', 28));
-        // Order::handle(new AskForAfterService('123', 3, '啦啦啦'));
-        // Order::handle(new AfterServiceComplete('123', 888, 5, '退5块钱'));
-        // Order::handle(new TurnBack('2017102414284300000014', 2));
-        // Order::handle(new Complete('2017102714052200000014', 28));
-        Order::handle(new Cancel('2017110914425000000004', 1));
+        // Order::handle(new Payment('2017111015303300000002', 1));
+        // Order::handle(new GrabClose('2017111017452700000007', 1));
+        // Order::handle(new Receiving('2017111017452700000007', 1));
+        // Order::handle(new Delivery('2017111015492400000005', 1));
+        Order::handle(new DeliveryFailure('2017111017452700000007', 1, "我去你妹"));
+        // Order::handle(new AskForAfterService('2017111015492400000005', 1, '啦啦啦'));
+        // Order::handle(new AfterServiceComplete('2017111015492400000005', 888, 5, '退5块钱'));
+        // Order::handle(new TurnBack('2017111015492400000005', 2));
+        // Order::handle(new Complete('2017111015492400000005', 28));
+        // Order::handle(new Cancel('2017111017411200000006', 1));
 
         // $arr = \App\Models\OrderHistory::orderBy('id', 'desc')->first();
         // dump(unserialize($arr->before), unserialize($arr->after));

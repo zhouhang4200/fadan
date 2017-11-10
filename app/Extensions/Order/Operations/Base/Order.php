@@ -1,7 +1,6 @@
 <?php
 namespace App\Extensions\Order\Operations\Base;
 
-use Exception;
 use App\Exceptions\OrderException;
 use App\Exceptions\CustomException;
 use DB;
@@ -23,6 +22,7 @@ class Order
             $operation->updateAsset();
             $operation->setDescription();
             $operation->saveLog();
+            $operation->saveWeight();
         }
         catch (OrderException $e) {
             DB::rollBack();

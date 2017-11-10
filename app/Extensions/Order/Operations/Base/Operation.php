@@ -1,7 +1,6 @@
 <?php
 namespace App\Extensions\Order\Operations\Base;
 
-use DB;
 use App\Exceptions\OrderException as Exception;
 use App\Models\Order;
 use App\Models\OrderHistory;
@@ -23,9 +22,11 @@ abstract class Operation
     public function getObject()
     {
         $this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
+        if (empty($this->order)) {
+            throw new Exception('订单不存在');
+        }
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
-            DB::rollback();
             throw new Exception('订单状态不允许');
         }
     }
@@ -50,7 +51,6 @@ abstract class Operation
     {
         $this->order->status = $this->handledStatus;
         if (!$this->order->save()) {
-            DB::rollback();
             throw new Exception('订单操作失败');
         }
 
@@ -76,9 +76,11 @@ abstract class Operation
 
         if (!$this->orderHistory->save()) {
             throw new Exception('操作记录失败');
-            DB::rollback();
         }
     }
+
+    // 保存权重依据
+    public function saveWeight() {}
 
     /**
      * @return mixed

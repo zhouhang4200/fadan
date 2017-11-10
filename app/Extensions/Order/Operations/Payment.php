@@ -1,8 +1,6 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
-use App\Exceptions\CustomException;
-use DB;
 use App\Exceptions\AssetException as Exception;
 use App\Models\User;
 use App\Models\Order;
@@ -34,12 +32,10 @@ class Payment extends \App\Extensions\Order\Operations\Base\Operation
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
     }

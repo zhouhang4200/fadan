@@ -3,6 +3,7 @@ namespace App\Extensions\Order\Operations;
 
 use Asset;
 use App\Extensions\Asset\Income;
+use App\Exceptions\OrderException as Exception;
 
 // 发单后取消订单
 class Cancel extends \App\Extensions\Order\Operations\Base\Operation
@@ -29,12 +30,10 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
 
             // 写多态关联
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                DB::rollback();
                 throw new Exception('操作失败');
             }
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                DB::rollback();
                 throw new Exception('操作失败');
             }
         }

@@ -3,6 +3,7 @@ namespace App\Extensions\Order\Operations;
 
 use Asset;
 use App\Extensions\Asset\Income;
+use App\Exceptions\OrderException as Exception;
 
 // 设置完成
 class Complete extends \App\Extensions\Order\Operations\Base\Operation
@@ -27,12 +28,10 @@ class Complete extends \App\Extensions\Order\Operations\Base\Operation
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            DB::rollback();
             throw new Exception('申请失败');
         }
     }
