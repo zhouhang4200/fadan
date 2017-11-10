@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MarketWeight extends Model
+class Weight extends Model
 {
     protected $dates = [
         'order_time',
