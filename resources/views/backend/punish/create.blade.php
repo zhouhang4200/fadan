@@ -58,13 +58,19 @@
                                                 </select>
                                             </div>
                                     </div>
-                                    
-                                    <div class="layui-form-item">
+
+                                    <div class="layui-input-item">
                                         <label class="layui-form-label">订单号</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="order_id" lay-verify="required" value="{{ old('order_id') }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
-                                        </div>
+                                            <div class="layui-input-block">
+                                                <select name="order_id" lay-verify="required" lay-search="">
+                                                    <option value="">输入或直接选择</option>
+                                                    @foreach($orders as $order)
+                                                    <option value="{{ $order }}">{{ $order }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                     </div>
+
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">缴费金额</label>
                                         <div class="layui-input-block">

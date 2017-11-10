@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Punish;
 
 use Redis;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Punish;
@@ -46,7 +47,13 @@ class PunishController extends Controller
     {
         $users = User::where('parent_id', 0)->get();
 
-        return view('backend.punish.create', compact('users'));
+        $start = Carbon::now()->startOfDay()->toDateTimeString();
+
+        $end = Carbon::now()->toDateTimeString();
+
+        $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
+
+        return view('backend.punish.create', compact('users', 'orders'));
     }
 
     /**
