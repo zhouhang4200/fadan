@@ -180,9 +180,14 @@ class OrderOperationController extends Controller
 
             $carbon = new Carbon;
             $minutes = $carbon->diffInMinutes(Order::get()->created_at);
-            if ($minutes >= 2) {
+            if ($minutes >= 10) {
                 // 超过40分钟失败
                 Order::handle(new Cancel($request->no, 0));
+                $has = SiteInfo::where('user_id', Order::get()->creator_primary_user_id)->first();
+
+                if (Order::get()->foreignOrder && $has) {
+                    KamenOrderApi::share()->fail(Order::get()->foreignOrder->kamen_order_no);
+                }
                 waitReceivingQuantitySub();
             } else {
                 // 待接单数量加1
