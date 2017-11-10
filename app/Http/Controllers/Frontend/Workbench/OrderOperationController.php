@@ -62,12 +62,6 @@ class OrderOperationController extends Controller
         receiving($currentUserId, $orderNo);
         // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
         receivingRecord($primaryUserId, $orderNo);
-        // 加入待分配订单, $data 订单创建时间
-        $order = OrderModel::where('no', $orderNo)->first();
-
-        $data = json_encode($order->created_at);
-        
-        waitReceivingAdd($orderNo, $data);
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
     }
@@ -185,14 +179,11 @@ class OrderOperationController extends Controller
             Order::handle(new TurnBack($request->no, Auth::user()->id));
 
             $carbon = new Carbon;
-
-            $order = OrderModel::where('no', $request->no)->first();
-
-            $minutes = $carbon->diffInMinutes($order->created_at);
-
+            $minutes = $carbon->diffInMinutes(Order::get()->created_at);
             if ($minutes >= 40) {
                 // 超过40分钟失败
-                OrderModel::where('no', $request->no)->update(['status' => 4]);
+                Order::handle(new Cancel($request->no, 0));
+                waitReceivingQuantitySub();
             } else {
                 // 待接单数量加1
                 waitReceivingQuantityAdd();

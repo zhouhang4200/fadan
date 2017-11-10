@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Workbench;
 
 use App\Events\NotificationEvent;
 use App\Repositories\Frontend\OrderRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -96,6 +97,8 @@ class OrderController extends Controller
             event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
             // 待接单数量加1
             waitReceivingQuantityAdd();
+            // 写入待分配订单hash
+            waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
             // 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             return response()->ajax(1, '下单成功');

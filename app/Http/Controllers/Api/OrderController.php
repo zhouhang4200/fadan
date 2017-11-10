@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Extensions\Order\Operations\Create;
 use App\Models\SiteInfo;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Order, Exception;
 use App\Events\NotificationEvent;
@@ -55,6 +56,8 @@ class OrderController extends Controller
                     waitReceivingQuantityAdd();
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                    // 写入待分配订单hash
+                    waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
                     // 更新订单状态
                     return 'success';
                 } else {
