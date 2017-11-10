@@ -26,12 +26,14 @@
         .layui-form-label {
             width: 100px;
         }
+
+        .layui-select-title {
+            margin-bottom: 20px;
+        }
     </style>
 @endsection
 
 @section('content')
-
-
 
     <div class="row">
         <div class="col-lg-12">
@@ -45,12 +47,18 @@
                             <form class="layui-form" method="POST" action="{{ route('punishes.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
-                                    <div class="layui-form-item">
+                                    <div class="layui-input-item">
                                         <label class="layui-form-label">用户id</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="user_id" lay-verify="required" value="{{ old('user_id') }}" autocomplete="off" placeholder="请输入用户id" class="layui-input">
-                                        </div>
+                                            <div class="layui-input-block">
+                                                <select name="user_id" lay-verify="required" lay-search="">
+                                                    <option value="">输入或直接选择</option>
+                                                    @foreach($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->id }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                     </div>
+                                    
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">订单号</label>
                                         <div class="layui-input-block">
