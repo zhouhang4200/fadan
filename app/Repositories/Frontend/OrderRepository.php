@@ -26,7 +26,7 @@ class OrderRepository
 
         $query = Order::select(['id','no','source','status','goods_id','goods_name','service_id','service_name',
             'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
-            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id'
+            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         ]);
 
         if ($userId == $primaryUserId && $status != 'market') { // 主账号
