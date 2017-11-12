@@ -54,7 +54,7 @@ class OrderAssign extends Command
                 $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
-                if ($minutes >= 40) {
+                if ($minutes >= 20) {
                     Order::handle(new Cancel($orderNo, 0));
                     waitReceivingQuantitySub();
                     waitReceivingDel($orderNo);
