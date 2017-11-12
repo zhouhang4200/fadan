@@ -30,7 +30,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
                 <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
-                <td>{{ config('order.status')[$status] }}</td>
+                <td>{{ config('order.status')[$status]  }}</td>
                 <td>
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
@@ -63,7 +63,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                                     <option value="turnBack">返回集市</option>
                                 @endif
 
-                                @if(!receivingRecordExist( $primaryUserId, $item->no) && $primaryUserId != $item->creator_user_id)
+                                @if(!receivingRecordExist($primaryUserId, $item->no) && $primaryUserId != $item->creator_primary_user_id)
                                     <option value="receiving">立即接单</option>
                                 @endif
                         </select>

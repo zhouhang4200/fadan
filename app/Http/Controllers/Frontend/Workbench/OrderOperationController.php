@@ -180,7 +180,8 @@ class OrderOperationController extends Controller
 
             $carbon = new Carbon;
             $minutes = $carbon->diffInMinutes(Order::get()->created_at);
-            if ($minutes >= 10) {
+
+            if ($minutes >= 40) {
                 // 超过40分钟失败
                 Order::handle(new Cancel($request->no, 0));
                 $has = SiteInfo::where('user_id', Order::get()->creator_primary_user_id)->first();

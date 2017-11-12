@@ -13,19 +13,14 @@
             position: relative;
             min-width: 1200px;
             width: auto;
-            padding: 0 116px;
+            padding: 0 30px;
             margin: auto;
             zoom: 1;
-        }
-        .main .content {
-            padding: 25px 15px 0 31px;
         }
         .right-content {
             height: 800px;
             background-color: #fff;
-            position: relative;
-            left: 275px;
-            top: 0;
+            position: inherit;
         }
         .left-menu {
             width: 265px;
@@ -37,7 +32,7 @@
             z-index: 99;
             top: 0;
             bottom: 0;
-            left: 0;
+            left: -296px;
             box-shadow: 0 0 10px 0 rgba(100, 100, 100, 0.5);
             min-height: 650px;
         }
@@ -52,7 +47,7 @@
             position: absolute;
             z-index: 99;
             top: 50%;
-            right: -30px;
+            right: -37px;
             font-size: 14px;
             cursor: pointer;
             box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
@@ -69,7 +64,7 @@
             position: absolute;
             z-index: 99;
             top: 50%;
-            right: -30px;
+            right: -31px;
             font-size: 14px;
             cursor: pointer;
             box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
@@ -147,7 +142,7 @@
             font-size: 14px;
         }
         .header .user {
-            right: 116px;
+            right: 30px;
         }
     </style>
     <!--END 样式表-->
@@ -160,8 +155,9 @@
 <!--START 主体-->
 <div class="main">
     <div class="workbench-wrapper">
+        @can('frontend.workbench.order')
         <div class="left-menu" id="left-menu">
-            <form class="layui-form" action="">
+            <form class="layui-form " action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">类型</label>
                     <div class="layui-input-block">
@@ -202,10 +198,10 @@
                     </div>
                 </div>
             </form>
-            {{--<div class="open-btn layui-hide"> 打开下单面板</div>--}}
-            {{--<div class="close-btn layui-show">关闭下单面板</div>--}}
+            <div class="open-btn"> 打开下单面板</div>
+            <div class="close-btn layui-hide">关闭下单面板</div>
         </div>
-
+        @endcan
         <div class="right-content">
             <div class="content">
                 <div class="path"><span>工作台</span></div>
@@ -486,7 +482,6 @@
                 layer.open({
                     content: message,
                     success: function (layero, index) {
-                        console.log(layero, index);
                     }
                 });
                 getOrder(currentUrl, currentType);
@@ -500,10 +495,10 @@
             getOrder($(this).attr('href'), getQueryString($(this).attr('href'), "type"));
             return false;
         });
-        $(window).resize(function() {
-            $(".right-content").width($(window).width()-275)
-        });
-        $(".right-content").width($(window).width()-275);
+//        $(window).resize(function() {
+//            $(".right-content").width($(window).width()-275)
+//        });
+//        $(".right-content").width($(window).width()-275);
         $('#prom').on('click', '.windows-receiving', function () {
             receiving($(this).attr('data-no'));
         });
