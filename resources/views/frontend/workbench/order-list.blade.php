@@ -30,7 +30,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
                 <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
-                <td>{{ config('order.status')[$status]  }}</td>
+                <td>{{ $item->gainer_primary_user_id == $primaryUserId ? '您已接单' : config('order.status')[$status]  }}</td>
                 <td>
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
