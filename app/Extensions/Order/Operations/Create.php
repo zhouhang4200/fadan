@@ -23,6 +23,11 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
     protected $price = 0;
 
     /**
+     * 原单价
+     * @var float|int
+     */
+    protected $originalPrice = 0;
+    /**
      * 商品
      * @var
      */
@@ -74,7 +79,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->service_name = $this->goods->service->name;
         $this->order->game_id = $this->goods->game->id;
         $this->order->game_name = $this->goods->game->name;
-        $this->order->original_price = $this->originalPrice ?: $this->goods->price;
+        $this->order->original_price = $this->originalPrice;
         $this->order->price = $price;
         $this->order->quantity = $this->quantity;
         $this->order->original_amount = bcmul($this->originalPrice, $this->quantity);
@@ -145,6 +150,9 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      */
     protected function setPrice($userSetting)
     {
+        if ($this->originalPrice <= 0) {
+            $this->originalPrice = $this->goods->price;
+        }
         // 如果商品转出价高与订单原价。并却商品没有设置请允许卖本转单。转用风控系统数x订单销售单价
         if ($this->goods->price > $this->originalPrice && $this->goods->loss == 0) {
             // 获取用户设置的风控值，没有侧取平台设置的统一值
