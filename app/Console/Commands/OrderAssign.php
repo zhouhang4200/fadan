@@ -43,7 +43,7 @@ class OrderAssign extends Command
     {
 //        \Log::alert(date('Y-m-d H:i:s'));
         for ($i = 1; $i<=60; $i++) {
-//            sleep(1);
+            sleep(1);
             $carbon = new Carbon;
 
             // 获取所有待分配订单
@@ -52,7 +52,7 @@ class OrderAssign extends Command
                 // 保存创建时间的json
                 $data = json_decode($data);
                 $time = Carbon::parse($data->created_date);
-                $minutes = $carbon->diffInMinutes($time, false);
+                $minutes = $carbon->diffInMinutes($time);
 
                 if ($minutes >= 40) {
                     Order::handle(new Cancel($orderNo, 0));
