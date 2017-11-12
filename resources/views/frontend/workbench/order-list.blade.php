@@ -16,6 +16,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th>单价</th>
             <th>总价</th>
             <th>状态</th>
+            <th>下单时间</th>
             <th width="13%">操作</th>
         </tr>
         </thead>
@@ -31,6 +32,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 <td>{{ $item->amount }}</td>
                 <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
                 <td>{{ $item->gainer_primary_user_id == $primaryUserId ? '您已接单' : config('order.status')[$status]  }}</td>
+                <td>{{ $item->created_at }}</td>
                 <td>
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
