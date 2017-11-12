@@ -90,18 +90,22 @@ class OrderController extends Controller
 
             try {
                 Order::handle(new Create($userId, $foreignOrderNO, 1, $goodsId, $originalPrice, $quantity, $orderData));
+                if (Order::get()->status != 11) {
+                    // 给所有用户推送新订单消息
+                    event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+                    // 待接单数量加1
+                    waitReceivingQuantityAdd();
+                    // 写入待分配订单hash
+                    waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
+                    // 待接单数量
+                    event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                    return response()->ajax(1, '下单成功');
+                } else {
+                    return response()->ajax(0, '下单失败您的余额不足');
+                }
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
-            // 给所有用户推送新订单消息
-            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
-            // 待接单数量加1
-            waitReceivingQuantityAdd();
-            // 写入待分配订单hash
-            waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
-            // 待接单数量
-            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-            return response()->ajax(1, '下单成功');
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
         }
