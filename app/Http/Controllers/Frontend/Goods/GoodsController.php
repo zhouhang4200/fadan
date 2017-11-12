@@ -70,7 +70,6 @@ class GoodsController extends Controller
         try {
             $goodsData['user_id'] = Auth::user()->getPrimaryUserId();
             $goodsData['goods_template_id'] = GoodsTemplate::getTemplateId($goodsData['service_id'], $goodsData['game_id']);
-            $goodsData['display'] = (isset($goodsData['display']) && $goodsData['display'] == 'on') ? 1 : 0;
             Goods::create($goodsData);
             return response()->ajax('1', '添加成功');
         } catch (Exception $exception) {
@@ -95,7 +94,6 @@ class GoodsController extends Controller
 
             $data['user_id'] = Auth::user()->getPrimaryUserId();
             $data['goods_template_id'] = GoodsTemplate::getTemplateId($data['service_id'], $data['game_id']);
-            $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
 
             $goods->update($data);
 

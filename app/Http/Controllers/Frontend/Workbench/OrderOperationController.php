@@ -43,7 +43,6 @@ class OrderOperationController extends Controller
             $int = (new Carbon)->diffInSeconds($time, false);
 
             if ($int < 0) {
-
                 return response()->ajax(0, '您已超过违规罚款截止日期，请先交违规罚款');
             }
         }
@@ -115,7 +114,7 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用失败订单
-            Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
+            Order::handle(new DeliveryFailure($request->no, Auth::user()->id, $request->remark));
             // 调用打款，删除自动打款哈希表中订单号
             $order = OrderModel::where('no', $request->no)->first();
 
@@ -176,7 +175,7 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用退回
-            Order::handle(new TurnBack($request->no, Auth::user()->id));
+            Order::handle(new TurnBack($request->no, Auth::user()->id, $request->remark));
 
             $carbon = new Carbon;
             $minutes = $carbon->diffInMinutes(Order::get()->created_at);

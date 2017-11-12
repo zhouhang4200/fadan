@@ -22,6 +22,7 @@ class CreateGoodsTable extends Migration
             $table->integer('game_id')->comment('游戏ID');
             $table->string('foreign_goods_id')->comment('外部商品号');
             $table->integer('goods_template_id')->comment('商品关联的模版ID');
+            $table->tinyInteger('loss')->default(0)->comment('是否允许亏本转单 0 否 1 是');
             $table->tinyInteger('display')->default(0)->comment('是否在前台显示 0 不显示 1 显示');
             $table->timestamps();
             $table->index('goods_template_id');

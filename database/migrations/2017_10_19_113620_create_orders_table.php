@@ -30,6 +30,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('quantity')->comment('数量');
             $table->decimal('original_amount', 10, 4)->comment('订单原总额');
             $table->decimal('amount', 10, 4)->comment('订单总额');
+            $table->decimal('real_price', 10, 4)->comment('实际订单总额');
             $table->string('remark')->comment('备注说明');
             $table->unsignedInteger('creator_user_id')->comment('订单创建者（主账号或子账号id）');
             $table->unsignedInteger('creator_primary_user_id')->comment('订单创建者主账号id');
@@ -37,7 +38,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('gainer_primary_user_id')->default(0)->comment('接单者主账号id');
             $table->datetime('created_at');
             $table->datetime('updated_at');
-            $table->unique('no');
+            $table->index('no');
             $table->index('foreign_order_no');
             $table->index('source');
             $table->index('status');

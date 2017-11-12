@@ -41,9 +41,9 @@ class OrderAssign extends Command
      */
     public function handle()
     {
-        \Log::alert(date('Y-m-d H:i:s'));
+//        \Log::alert(date('Y-m-d H:i:s'));
         for ($i = 1; $i<=60; $i++) {
-            sleep(1);
+//            sleep(1);
             $carbon = new Carbon;
 
             // 获取所有待分配订单
@@ -66,7 +66,7 @@ class OrderAssign extends Command
                         // 将订单改为不可接单
                         Order::handle(new GrabClose($orderNo));
                         // 取出所有用户, 获取所有接单用户的权重值y
-                        $userId = Weight::run(receivingUser($orderNo));
+                        $userId = Weight::run(receivingUser($orderNo), $orderNo);
                         // 分配订单
                         try {
                             Order::handle(new Receiving($orderNo, $userId));

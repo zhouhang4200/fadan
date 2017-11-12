@@ -449,9 +449,16 @@
         }
         // 失败订单
         function fail(no) {
-            $.post('{{ route('frontend.workbench.order-operation.fail') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.prompt({
+                formType: 2,
+                title: '请输入失败原因',
+                area: ['200', '100']
+            }, function(value, index, elem){
+                $.post('{{ route('frontend.workbench.order-operation.fail') }}', {no:no,remark:value}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json');
+                layer.close(index);
+            });
         }
         // 取消订单
         function cancel(no) {
@@ -467,9 +474,16 @@
         }
         // 返回集市
         function turnBack(no) {
-            $.post('{{ route('frontend.workbench.order-operation.turnBack') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.prompt({
+                formType: 2,
+                title: '请输入返回集市原因',
+                area: ['200', '100']
+            }, function(value, index, elem){
+                $.post('{{ route('frontend.workbench.order-operation.turnBack') }}', {no:no,remark:value}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json');
+                layer.close(index);
+            });
         }
         function afterSales(no) {
             $.post('{{ route('frontend.workbench.order-operation.after-sales') }}', {no:no}, function (result) {

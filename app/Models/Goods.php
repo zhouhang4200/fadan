@@ -14,6 +14,8 @@ class Goods extends Model
         'foreign_goods_id',
         'service_id',
         'game_id',
+        'sortord',
+        'loss',
         'goods_template_id',
     ];
 

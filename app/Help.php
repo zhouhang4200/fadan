@@ -105,6 +105,17 @@ if (!function_exists('receivingUser')) {
         return $redis->lrange(config('redis.order.receiving') .  (string) $orderNo, 0, receivingUserLen($orderNo) );
     }
 }
+if (!function_exists('receivingUserDel')) {
+    /**
+     * 删除接单用户队列所有用户ID
+     * @param $orderNo
+     */
+    function receivingUserDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->del(config('redis.order.receiving') . $orderNo);
+    }
+}
 
 if (!function_exists('receivingRecordExist')) {
     /**
@@ -117,6 +128,20 @@ if (!function_exists('receivingRecordExist')) {
     {
         $redis = RedisConnect::order();
         return  $redis->get(config('redis.order.receivingRecord') . $orderNo . $userId);
+    }
+}
+
+if (!function_exists('receivingRecordDelete')) {
+    /**
+     * 删除用户接单记录
+     * @param $userId
+     * @param $orderNo
+     * @return int
+     */
+    function receivingRecordDelete($userId, $orderNo)
+    {
+        $redis = RedisConnect::order();
+        return  $redis->del(config('redis.order.receivingRecord') . $orderNo . $userId);
     }
 }
 

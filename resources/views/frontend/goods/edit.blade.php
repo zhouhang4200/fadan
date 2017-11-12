@@ -7,7 +7,7 @@
 @endsection
 
 @section('main')
-    <form class="layui-form layui-form-pane" action="">
+    <form class="layui-form" action="">
     <input type="hidden" name="id" value="{{ $goods->id }}">
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
@@ -51,10 +51,25 @@
                 <input type="text" name="foreign_goods_id" value="{{ old('foreign_goods_id') ?: $goods->foreign_goods_id }}" autocomplete="off" placeholder="请输入外部ID" class="layui-input"  lay-verify="required">
             </div>
         </div>
-        <div class="layui-form-item" pane="">
-            <label class="layui-form-label">是否显示</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">显示排序</label>
             <div class="layui-input-block">
-                <input type="checkbox" {{ $goods->display == 1 ? 'checked' : '' }} name="display" lay-skin="switch" lay-filter="switchTest" title="开关">
+                <input type="text" name="sortord" value="{{ old('sortord') ?: $goods->sortord }}" autocomplete="off" placeholder="请输入显示排序" class="layui-input"  lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">允许亏本转单</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="loss" value="0" title="否" {{ $goods->loss == 0 ? 'checked' : '' }}>
+                <input type="radio" name="loss" value="1" title="是" {{ $goods->loss == 1 ? 'checked' : '' }}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">如果设置为"是"则API的风控设置就无效</div>
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">在工作台显示</label>
+            <div class="layui-input-block">
+                <input type="radio" name="display" value="1" title="是" {{ $goods->display == 1 ? 'checked' : '' }}>
+                <input type="radio" name="display" value="0" title="否" {{ $goods->display == 0 ? 'checked' : '' }}>
             </div>
         </div>
         <div class="layui-form-item">
@@ -70,12 +85,8 @@
 
             //监听提交
             form.on('submit(update)', function(data){
-
                 $.post("{{ route('frontend.goods.update') }}", {data:data.field}, function (result) {
-                    layer.alert(result.message, {
-                        title: '最终的提交信息'
-                    });
-                    window.location.href="{{ route('frontend.goods.index') }}";
+                    layer.alert(result.message);
                 }, 'json');
                 return false;
             });

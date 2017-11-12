@@ -7,7 +7,7 @@
 @endsection
 
 @section('main')
-    <form class="layui-form layui-form-pane" action="">
+    <form class="layui-form" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
@@ -50,10 +50,25 @@
                 <input type="text" name="foreign_goods_id" autocomplete="off" placeholder="请输入外部ID" class="layui-input"  lay-verify="required">
             </div>
         </div>
-        <div class="layui-form-item" pane="">
-            <label class="layui-form-label">是否显示</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">显示排序</label>
             <div class="layui-input-block">
-                <input type="checkbox" checked="" name="display" lay-skin="switch" lay-filter="switchTest" title="开关">
+                <input type="text" name="sortord" value="999" autocomplete="off" placeholder="请输入显示排序" class="layui-input"  lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">允许亏本转单</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="loss" value="0" title="否" checked>
+                <input type="radio" name="loss" value="1" title="是">
+            </div>
+            <div class="layui-form-mid layui-word-aux">如果设置为"是"则API的风控设置就无效</div>
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">在工作台显示</label>
+            <div class="layui-input-block">
+                <input type="radio" name="display" value="1" title="是">
+                <input type="radio" name="display" value="0" title="否">
             </div>
         </div>
         <div class="layui-form-item">

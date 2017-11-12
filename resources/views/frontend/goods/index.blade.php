@@ -71,8 +71,8 @@
                 <td>{{ $item->foreign_goods_id }}</td>
                 <td>{{ $item->created_at }}</td>
                 <td>{{ $item->updated_at }}</td>
-                <td><button class="layui-btn layui-btn-normal layui-btn-small edit"><a href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}" style="color: #fff">编辑</a></button>
-                <button class="layui-btn layui-btn-normal layui-btn-small delete" onclick="deletes({{ $item->id }})">删除</button></td>
+                <td><a class="layui-btn layui-btn-normal layui-btn-small edit"  href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}">编辑</a>
+                <button class="layui-btn layui-btn-normal layui-btn-small delete" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button></td>
             </tr>
         @empty
             <tr>
@@ -91,32 +91,6 @@
 
 @section('js')
     <script>
-        // 删除
-        function deletes(id)
-        {
-             layui.use(['form', 'layedit', 'laydate',], function(){
-                var form = layui.form
-                ,layer = layui.layer;
-                layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('frontend.goods.destroy') }}",
-                        data:{id: id},
-                        success: function (data) {
-                            if (data.status.code == 1) {
-                                layer.msg('删除成功', {icon: 6, time:1000},);
-                                window.location.href = "{{ route('frontend.goods.index') }}";
-                                
-                            } else {
-                                layer.msg('删除失败', {icon: 5, time:1000},);                  
-                            }
-                        }
-                    });
-                    layer.close(index);
-                });
-
-            });
-        };
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
                     ,layer = layui.layer
@@ -135,7 +109,27 @@
                 window.location.href =  "{{ route('frontend.goods.create') }}";
                 return false;
             });
-        });
 
+            form.on('submit(delete-goods)', function (data) {
+                layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('frontend.goods.destroy') }}",
+                        data:{id: data.elem.getAttribute('data-id')},
+                        success: function (data) {
+                            if (data.status.code == 1) {
+                                layer.msg('删除成功', {icon: 6, time:1000});
+                                setTimeout(function () {
+                                    window.location.href = "{{ route('frontend.goods.index') }}";
+                                }, 1000);
+                            } else {
+                                layer.msg('删除失败', {icon: 5, time:1000});
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            });
+        });
     </script>
 @endsection
