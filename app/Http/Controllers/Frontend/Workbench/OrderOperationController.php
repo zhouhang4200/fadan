@@ -143,6 +143,8 @@ class OrderOperationController extends Controller
             waitReceivingQuantitySub();
             // 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 删除待分配中订单
+            waitReceivingDel($request->no);
             // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
