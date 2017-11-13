@@ -4,7 +4,25 @@ $currentUserId = Auth::user()->id;
 // 获取主账号
 $primaryUserId = Auth::user()->getPrimaryUserId();
 ?>
-
+<div class="search" style="float: right;margin: 8px 0">
+    <div class="layui-inline">
+        <select name="search_type" lay-verify="">
+            <option value="">请选择搜索类型</option>
+            <option value="1" @if($searchType == 1) selected  @endif>千手订单号</option>
+            <option value="2" @if($searchType == 2) selected  @endif>外部订单号</option>
+            <option value="3" @if($searchType == 3) selected  @endif>充值账号</option>
+            <option value="4" @if($searchType == 4) selected  @endif>订单备注</option>
+        </select>
+    </div>
+    <div class="layui-inline">
+        <div class="layui-input-inline" style="width: 300px;">
+            <input type="text" name="search_content" autocomplete="off" class="layui-input" lay-verify="" value="{{ $searchContent }}">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search">搜索</button>
+    </div>
+</div>
 <table class="layui-table" lay-size="sm">
         <thead>
         <tr>
@@ -23,7 +41,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         <tbody>
         @forelse($orders as $item)
             <tr data-no="{{ $item->no }}">
-                <td>{{ $item->no }}</td>
+                <td>千手：{{ $item->no }}<br>外部：{{ $item->foreign_order_no }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
                 <td>{{ $item->goods_name }}</td>

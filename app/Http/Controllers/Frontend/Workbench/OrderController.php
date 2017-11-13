@@ -53,6 +53,8 @@ class OrderController extends Controller
     {
         $type = $request->input('type', 'need');
         $no = $request->order_no;
+        $searchType = $request->input('search_type', 0);
+        $searchContent = $request->input('search_content');
 
         $orders = $orderRepository->dataList($type, $no);
 
@@ -64,6 +66,8 @@ class OrderController extends Controller
                 'type' => $type,
                 'no' => $no,
                 'orders' => $orders,
+                'searchType' => $searchType,
+                'searchContent' => $searchContent,
             ])->render());
         }
     }
