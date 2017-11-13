@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="/backend/css/compiled/custom.css">
     <link rel="stylesheet" type="text/css" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/globale.css">
+    <link rel="stylesheet" type="text/css" href="/backend/css/layui-rewrit.css">
     @yield('css')
 
     <!--[if lt IE 9]>

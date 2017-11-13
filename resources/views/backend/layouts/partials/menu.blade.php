@@ -14,6 +14,66 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <span>后台首页</span>
                         </a>
                     </li>
+                    @can('orders.index')
+                        <li @if($currentRouteName == 'orders.index') class="open active" @endif>
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>订单管理</span>
+                                <i class="fa fa-chevron-circle-right drop-icon"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
+                                        订单列表
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+                    <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>商户</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            @can('frontend.user.index')
+                                <li>
+                                    <a href="{{ route('frontend.user.index')}}" @if($currentRouteName == 'frontend.user.index') class="active" @endif>
+                                        商户列表
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('modules.index')
+                                <li>
+                                    <a href="{{ route('modules.index') }}" @if($currentRouteName == 'modules.index') class="active" @endif>
+                                        模块列表
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('permissions.index')
+                                <li>
+                                    <a href="{{ route('permissions.index') }}" @if($currentRouteName == 'permissions.index') class="active" @endif>
+                                        权限列表
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('roles.index')
+                                <li>
+                                    <a href="{{ route('roles.index') }}" @if($currentRouteName == 'roles.index') class="active" @endif>
+                                        角色列表
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('groups.index')
+                                <li>
+                                    <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
+                                        商户权限列表
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
                     <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -44,50 +104,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>商户</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
-                        @can('frontend.user.index')
-                            <li>
-                                <a href="{{ route('frontend.user.index')}}" @if($currentRouteName == 'frontend.user.index') class="active" @endif>
-                                    商户列表
-                                </a>
-                            </li>
-                        @endcan
-                        @can('modules.index')
-                            <li>
-                                <a href="{{ route('modules.index') }}" @if($currentRouteName == 'modules.index') class="active" @endif>
-                                    模块列表
-                                </a>
-                            </li>
-                        @endcan
-                        @can('permissions.index')
-                            <li>
-                                <a href="{{ route('permissions.index') }}" @if($currentRouteName == 'permissions.index') class="active" @endif>
-                                    权限列表
-                                </a>
-                            </li>
-                        @endcan
-                        @can('roles.index')
-                            <li>
-                                <a href="{{ route('roles.index') }}" @if($currentRouteName == 'roles.index') class="active" @endif>
-                                    角色列表
-                                </a>
-                            </li>
-                        @endcan
-                        @can('groups.index')
-                            <li>
-                                <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
-                                    商户权限列表
-                                </a>
-                            </li>
-                        @endcan
-                        </ul>
-                    </li>
+
                     <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -146,22 +163,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
-                @can('orders.index')
-                    <li @if($currentRouteName == 'orders.index') class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>订单管理</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
-                                    订单列表
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
+
           
                     <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
