@@ -381,9 +381,7 @@
         });
         // 搜索
         form.on('submit(search)', function (data) {
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            });
+
             getOrder('{{ route('frontend.workbench.order-list') }}', 'search', data.field.search_type, data.field.search_content);
         });
         // 获取商品流程
@@ -428,9 +426,11 @@
         }
         // 获取订单
         function getOrder(url, type, searchType, searchContent) {
+            console.log(searchType);
             type = type || 'need';
             searchType = searchType || '';
             searchContent = searchContent || '';
+            console.log(searchType);
             currentUrl = url;
             currentType = type;
             $.post(url, {type: type, search_type:searchType, search_content:searchContent}, function (result) {
