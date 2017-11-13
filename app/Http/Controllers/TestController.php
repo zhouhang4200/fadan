@@ -43,12 +43,13 @@ use Artisan;
 use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
 use App\Models\Order as OrderModel;
+use App\Models\UserReceivingUserControl;
 
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-         dd(KamenOrderApi::share()->fail('1148054917'));
+         // dd(KamenOrderApi::share()->fail('1148054917'));
 
         // dd(TmallOrderApi::getOrder(2,87413047090907895));
         // $time = '2017-11-09 16:32:50';
@@ -56,7 +57,13 @@ class TestController extends Controller
         // $bool = (new Carbon)->gte($carbon);
         // $bool2 = (new Carbon)->lte($carbon);
         // dd($bool2);
+        $bool = whoCanReceiveOrder(23, 3, 1, 1);
 
+        if ($bool) {
+            dd('yes');
+        } else {
+            dd('no');
+        }
         // $order = OrderModel::find(2);
 
         // dd($order->foreignOrder);
