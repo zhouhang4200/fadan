@@ -74,7 +74,6 @@
 </style>
 @endsection
 
-
 @section('submenu')
     @include('frontend.submenu')
 @endsection
@@ -141,7 +140,7 @@
         {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
     </div>
 </div>
-<div class="layui-tab">
+<div class="layui-tab layui-hide">
     <ul class="layui-tab-title">
         <li class="layui-this">昨日接单数据</li>
         <li class="">网站设置</li>
