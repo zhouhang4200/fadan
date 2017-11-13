@@ -2,7 +2,10 @@
 
 use App\Models\City;
 use \GuzzleHttp\Client;
+use App\Models\UserSetting;
 use \App\Services\RedisConnect;
+use App\Models\UserReceivingUserControl;
+use App\Models\UserReceivingCategoryControl;
 
 if (!function_exists('loginDetail')) {
 
@@ -276,5 +279,89 @@ if (!function_exists('generateOrderNo')) {
         $redis = RedisConnect::order();
         $orderQuantity = $redis->incr(config('redis.order.quantity') . date('Ymd'));
         return $orderDate . str_pad($orderQuantity, 8, 0, STR_PAD_LEFT);
+    }
+}
+
+if (!function_exists('whoCanReceiveOrder')) {
+    /**
+     * 用户黑白名单，谁能接单
+     * @return bool
+     */
+    function whoCanReceiveOrder($sendUserId, $receiveUserId, $serviceId = '', $gameId = '')
+    {
+        // 0,未设置， 1白名单， 2黑名单
+        $type = UserSetting::where('user_id', $sendUserId)->value('value');
+
+        $whiteReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
+                        ->where('type', 1)
+                        ->pluck('other_user_id');
+
+        $blackReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
+                    ->where('type', 2)
+                    ->pluck('other_user_id');
+
+        $whiteGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                                ->where('type', 1)
+                                ->where('game_id', $gameId)
+                                ->where('service_id', $serviceId)
+                                ->where('other_user_id', $receiveUserId)
+                                ->first();
+
+        $hasWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                                ->where('service_id', $serviceId)
+                                ->where('game_id', $gameId)
+                                ->where('type', 1)
+                                ->first();
+
+        $blackGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                                ->where('type', 2)
+                                ->where('game_id', $gameId)
+                                ->where('service_id', $serviceId)
+                                ->where('other_user_id', $receiveUserId)
+                                ->first();
+
+        $hasBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                                ->where('service_id', $serviceId)
+                                ->where('game_id', $gameId)
+                                ->where('type', 2)
+                                ->first();
+
+        if ($type === '0' || ! $type) {
+
+            return true;
+
+        } elseif ($type === '1') {     
+
+            if (
+                ($whiteReceiveUserIds && $whiteReceiveUserIds->contains($receiveUserId) && $hasWhite && $whiteGameReceiveUser)
+                || 
+                ($whiteReceiveUserIds && $whiteReceiveUserIds->contains($receiveUserId) && ! $hasWhite)
+                ||
+                (! $whiteReceiveUserIds && $whiteGameReceiveUser)
+                ||
+                (! $whiteReceiveUserIds && ! $hasWhite)
+            ) {
+                return true;
+            }
+
+            return false;
+
+        } elseif ($type === '2') {
+
+            if (
+                ($blackReceiveUserIds && ! $blackReceiveUserIds->contains($receiveUserId) && ! $hasBlack)
+                || 
+                ($blackReceiveUserIds && ! $blackReceiveUserIds->contains($receiveUserId) && $hasBlack && ! $blackGameReceiveUser)
+                || 
+                (! $blackReceiveUserIds && ! $hasBlack)
+                ) {
+                return true;
+            }
+
+            return false;
+        } else {
+
+            return true;
+        }
     }
 }
