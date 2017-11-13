@@ -23,7 +23,7 @@
         </div>
         <div class="user">
             <div class="operation">
-                <a href="{{ route('frontend.setting.receiving-control.index') }}"><i class="iconfont icon-shezhi"></i>设置</a>
+                <a href="{{ route('frontend.setting.receiving-control.index') }}"><i class="iconfont icon-shezhi"></i>设置 【 主账号ID：{{ Auth::user()->getPrimaryUserId() }} 】</a>
                 <a href="javascript:(logout())" ><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
             </div>
         </div>
