@@ -93,7 +93,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">主账号ID ：</label>
                 <div class="layui-input-inline">
-                    {{ $user->id }}
+                    {{ Auth::user()->getPrimaryUserId() }}
                 </div>
             </div>
 

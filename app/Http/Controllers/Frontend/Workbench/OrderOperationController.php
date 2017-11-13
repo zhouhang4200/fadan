@@ -43,7 +43,6 @@ class OrderOperationController extends Controller
             $int = (new Carbon)->diffInSeconds($time, false);
 
             if ($int < 0) {
-
                 return response()->ajax(0, '您已超过违规罚款截止日期，请先交违规罚款');
             }
         }
@@ -62,12 +61,6 @@ class OrderOperationController extends Controller
         receiving($currentUserId, $orderNo);
         // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
         receivingRecord($primaryUserId, $orderNo);
-        // 加入待分配订单, $data 订单创建时间
-        $order = OrderModel::where('no', $orderNo)->first();
-
-        $data = json_encode($order->created_at);
-        
-        waitReceivingAdd($orderNo, $data);
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
     }
@@ -121,7 +114,7 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用失败订单
-            Order::handle(new DeliveryFailure($request->no, Auth::user()->id));
+            Order::handle(new DeliveryFailure($request->no, Auth::user()->id, $request->remark));
             // 调用打款，删除自动打款哈希表中订单号
             $order = OrderModel::where('no', $request->no)->first();
 
@@ -150,6 +143,8 @@ class OrderOperationController extends Controller
             waitReceivingQuantitySub();
             // 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 删除待分配中订单
+            waitReceivingDel($request->no);
             // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
@@ -182,24 +177,29 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用退回
-            Order::handle(new TurnBack($request->no, Auth::user()->id));
+            Order::handle(new TurnBack($request->no, Auth::user()->id, $request->remark));
 
             $carbon = new Carbon;
-
-            $order = OrderModel::where('no', $request->no)->first();
-
-            $minutes = $carbon->diffInMinutes($order->created_at);
+            $minutes = $carbon->diffInMinutes(Order::get()->created_at);
 
             if ($minutes >= 40) {
                 // 超过40分钟失败
-                OrderModel::where('no', $request->no)->update(['status' => 4]);
+                Order::handle(new Cancel($request->no, 0));
+                $has = SiteInfo::where('user_id', Order::get()->creator_primary_user_id)->first();
+
+                if (Order::get()->foreignOrder && $has) {
+                    KamenOrderApi::share()->fail(Order::get()->foreignOrder->kamen_order_no);
+                }
+                waitReceivingQuantitySub();
             } else {
                 // 待接单数量加1
                 waitReceivingQuantityAdd();
                 // 待接单数量刷新
                 event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                 // 给所有用户推送新订单消息
-                event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));          
+                event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
+                // 重写放入订单集市
+                waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
             }
             // 返回操作成功
             return response()->ajax(0, '操作成功');

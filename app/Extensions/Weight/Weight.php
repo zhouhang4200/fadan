@@ -27,9 +27,10 @@ class Weight
     /**
      * 调用算法计算用户的权重
      * @param $users
+     * @param $orderNo 订单号
      * @return int|string
      */
-    public function run(array $users)
+    public function run(array $users, $orderNo)
     {
         // 将所有用户主账号ID缓存起来最后弹出的是传入进来的下单用户的id
         $originUsers = [];
@@ -43,7 +44,10 @@ class Weight
             // 将所有传入的ID 存入新的数组，用于计算权重
             $primaryUsers[] = $primaryUser;
         }
-
+        // 初始化用户的权重值
+        foreach ($primaryUsers as $v) {
+            $this->afterComputeWeight[][$v] = 10;
+        }
         // 获取所有算法
         $algorithms = Config::get('weight.algorithm');
         // 调用算法计算用户的权重
@@ -65,7 +69,7 @@ class Weight
             }
         }
         // 返回最终的商户ID
-        return $originUsers[$this->getUserId()];
+        return $originUsers[$this->getUserId($orderNo)];
     }
 
     /**
@@ -80,10 +84,12 @@ class Weight
 
     /**
      * 根据权重获取最后商户ID
+     * @param $orderNo
      * @return int|string
      */
-    protected function getUserId()
+    protected function getUserId($orderNo)
     {
+        \Log::alert(\GuzzleHttp\json_encode($this->afterSum ));
         try {
             $userId = 0;
             $randNum = mt_rand(1, array_sum($this->afterSum));
@@ -96,6 +102,14 @@ class Weight
                     $tmpWeight += $weight;
                 }
             }
+            // 删除用户接单记录
+            foreach ($this->afterSum as $user => $weight) {
+                if ($user != $userId) {
+                    receivingRecordDelete($user, $orderNo);
+                }
+            }
+            // 删除所有用户接单列队
+            receivingUserDel($orderNo);
             return $userId;
         } catch (CustomException $exception) {
 

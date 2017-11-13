@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Extensions\Order\Operations\Cancel;
+use App\Extensions\Order\Operations\GrabClose;
 use Carbon\Carbon;
 use App\Models\Order as OrderModel;
 use Illuminate\Console\Command;
@@ -39,45 +41,48 @@ class OrderAssign extends Command
      */
     public function handle()
     {
+//        \Log::alert(date('Y-m-d H:i:s'));
         for ($i = 1; $i<=60; $i++) {
             sleep(1);
             $carbon = new Carbon;
 
             // 获取所有待分配订单
             foreach (waitReceivingGet() as $orderNo => $data) {
+
                 // 保存创建时间的json
                 $data = json_decode($data);
-                // 检测40分钟订单无人操作
-                $time = Carbon::parse($data->date);
-
+                $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
-                if ($minutes >= 40) {
-
-                    OrderModel::where('no', $orderNo)->update(['status' => 4]);
-
+                if ($minutes >= 20) {
+                    Order::handle(new Cancel($orderNo, 0));
+                    waitReceivingQuantitySub();
                     waitReceivingDel($orderNo);
-                }
-
-                // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
-                if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
-
-                    // 取出所有用户, 获取所有接单用户的权重值
-                    $userId = Weight::run(receivingUser($orderNo));
-
-                    // 分配订单
-                    try {
-                        Order::handle(new Receiving($orderNo, $userId));
-                        waitReceivingDel($orderNo);
-                        // 待接单数量加1
-                        waitReceivingQuantitySub();
-                        // 待接单数量
-                        event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-                    } catch (CustomException $exception) {
-                        Log::alert($exception->getMessage());
-                    }
                 } else {
-                    continue;
+                    // 可接单时间与当前时间的差
+                    $minutes = $carbon->diffInMinutes(Carbon::parse($data->receiving_date), false);
+                    // 检测是否有人接单并且可接单时间大于等于了一分钟了: 是则将订单改为不可接单，然后分配订单。否有则加一分钟，重新写入hash表中
+                    if (receivingUserLen($orderNo) && $minutes >= 1) {
+                        // 将订单改为不可接单
+                        Order::handle(new GrabClose($orderNo));
+                        // 取出所有用户, 获取所有接单用户的权重值y
+                        $userId = Weight::run(receivingUser($orderNo), $orderNo);
+                        // 分配订单
+                        try {
+                            Order::handle(new Receiving($orderNo, $userId));
+                            waitReceivingDel($orderNo);
+                            // 待接单数量减1
+                            waitReceivingQuantitySub();
+                            // 待接单数量
+                            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                        } catch (CustomException $exception) {
+                            Log::alert($exception->getMessage());
+                        }
+                    } else {
+                        // 将接单时间更新
+                        waitReceivingAdd($orderNo, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(), 'created_date' => $data->created_date]));
+                        continue;
+                    }
                 }
             }
         }

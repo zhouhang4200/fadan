@@ -26,11 +26,15 @@ class OrderRepository
 
         $query = Order::select(['id','no','source','status','goods_id','goods_name','service_id','service_name',
             'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
-            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id'
+            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         ]);
 
-        if ($userId == $primaryUserId && $status != 'market') { // 主账号默认看发出去的订单
-            $query->where('creator_primary_user_id', $userId);
+        if ($userId == $primaryUserId && $status != 'market') { // 主账号
+            if ($type == 1) {
+                $query->where('gainer_primary_user_id', $userId); // 接单
+            } else {
+                $query->where('creator_primary_user_id', $userId); // 发单
+            }
             $query->from(DB::raw('orders force index (orders_creator_primary_user_id_status_index)'));
         } else if ($type == 1 && $status != 'market') { // 子账号接单方
             $query->where('gainer_user_id', $userId);

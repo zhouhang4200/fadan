@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Extensions\Order\Operations\Create;
 use App\Models\SiteInfo;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Order, Exception;
 use App\Events\NotificationEvent;
@@ -26,7 +27,6 @@ class OrderController extends Controller
         if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
-
             if (isset($orderData['price'])) {
                 $userId = 0;
                 //  用站点ID找到主账号与子账号随机分配一个用户
@@ -55,6 +55,8 @@ class OrderController extends Controller
                     waitReceivingQuantityAdd();
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+                    // 写入待分配订单hash
+                    waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
                     // 更新订单状态
                     return 'success';
                 } else {

@@ -78,10 +78,11 @@ class User extends Authenticatable
      * 获取用户设置缓存
      * @return \Illuminate\Cache\CacheManager|mixed
      */
-    public static function getUserSetting()
+    public function getUserSetting()
     {
-        return  Cache::rememberForever(config('redis.user.setting') . Auth::user()->getPrimaryUserId(), function() {
-            return UserSetting::where('user_id', Auth::user()->getPrimaryUserId())->pluck('value', 'option')->toArray();
+        $userPrimaryId = $this->getPrimaryUserId();
+        return  Cache::rememberForever(config('redis.user.setting') . $this->getPrimaryUserId(), function() use($userPrimaryId) {
+            return UserSetting::where('user_id', $userPrimaryId)->pluck('value', 'option')->toArray();
         });
     }
 
@@ -132,7 +133,7 @@ class User extends Authenticatable
         if ($this->parent_id == 0) {
             return $this->id;
         } else {
-            return $this->parent()->first()->id;
+            return $this->parent_id;
         }
     }
 

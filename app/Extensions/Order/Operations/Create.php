@@ -17,6 +17,23 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
     protected $type = 1;
 
     /**
+     * 商品单价
+     * @var float
+     */
+    protected $price = 0;
+
+    /**
+     * 原单价
+     * @var float|int
+     */
+    protected $originalPrice = 0;
+    /**
+     * 商品
+     * @var
+     */
+    protected $goods;
+
+    /**
      * @param int $userId 用户id
      * @param string $foreignOrderNO 外部单号
      * @param int $source 来源
@@ -51,6 +68,8 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
 
         $user = User::find($this->userId);
 
+        $price = $this->setPrice($user->getUserSetting());
+
         $this->order->no = generateOrderNo();
         $this->order->foreign_order_no = $this->foreignOrderNO;
         $this->order->source = $this->source;
@@ -60,11 +79,11 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->service_name = $this->goods->service->name;
         $this->order->game_id = $this->goods->game->id;
         $this->order->game_name = $this->goods->game->name;
-        $this->order->original_price = $this->originalPrice ?: $this->goods->price;
-        $this->order->price = $this->goods->price;
+        $this->order->original_price = $this->originalPrice;
+        $this->order->price = $price;
         $this->order->quantity = $this->quantity;
         $this->order->original_amount = bcmul($this->originalPrice, $this->quantity);
-        $this->order->amount = bcmul($this->goods->price, $this->quantity);
+        $this->order->amount = bcmul($price, $this->quantity);
         $this->order->creator_user_id = $this->userId;
         $this->order->creator_primary_user_id = $user->getPrimaryUserId();
         $this->order->remark = '';
@@ -122,5 +141,25 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         if ($this->order->status == 1) {
             $this->description .= "并付款";
         }
+    }
+
+    /**
+     * 设置商品价格
+     * @param $userSetting
+     * @return string
+     */
+    protected function setPrice($userSetting)
+    {
+        if ($this->originalPrice <= 0) {
+            $this->originalPrice = $this->goods->price;
+        }
+        // 如果商品转出价高与订单原价。并却商品没有设置请允许卖本转单。转用风控系统数x订单销售单价
+        if ($this->goods->price > $this->originalPrice && $this->goods->loss == 0) {
+            // 获取用户设置的风控值，没有侧取平台设置的统一值
+            $riskRate = isset($userSetting['api_risk_rate']) ?
+                $userSetting['api_risk_rate'] : config('order.apiRiskRate');
+            return bcmul($riskRate, $this->originalPrice);
+        }
+        return $this->goods->price;
     }
 }

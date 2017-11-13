@@ -51,13 +51,14 @@ class AccountController extends Controller
 
         if ($newPassword) {
 
-            $res = $user->update(['password' => bcrypt($newPassword)]);
+            $res = $user->update(['type' => $request->type, 'password' => bcrypt($newPassword)]);
 
             if (! $res) {
 
                 return back()->withInput()->with('updateError', '修改密码失败！');
             }
         }
+        $user->update(['type' => $request->type]);
         return redirect(route('home-accounts.index'))->with('succ', '更新成功!');
     }
 }
