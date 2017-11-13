@@ -32,7 +32,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     @endcan
                     <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
+                            <i class="fa fa-users"></i>
                             <span>商户</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
@@ -76,7 +76,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     </li>
                     <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
+                            <i class="fa fa-copy"></i>
                             <span>商品</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
@@ -107,7 +107,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
                     <li @if($currentOneLevelMenu == 'finance') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
+                            <i class="fa  fa-money"></i>
                             <span>财务</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
