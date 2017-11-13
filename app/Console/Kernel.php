@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('Order:Assign')->everyMinute();
+         $schedule->command('daily-settlement:user-asset')->daily();
+         $schedule->command('daily-settlement:platform-asset')->daily();
     }
 
     /**
