@@ -30,6 +30,25 @@
         .layui-select-title {
             margin-bottom: 20px;
         }
+        .layui-input-item .layui-input{
+            width:492px;
+        }
+        .layui-input-block .layui-input{
+            width:492px;
+        }
+        .layui-textarea {
+            width:492px;
+            height:300px;
+        }
+        dd .layui-select-tips {
+            width:492px;
+        }
+        .layui-anim .layui-anim-upbit{
+            width:492px;
+        }
+        .layui-form-select dl {
+            min-width: 492px;
+        }
     </style>
 @endsection
 
@@ -46,7 +65,7 @@
                         <div class="layui-tab-content">
                             <form class="layui-form" method="POST" action="{{ route('punishes.store') }}">
                             {!! csrf_field() !!}
-                                <div style="width: 40%">
+                                <div>
                                     <div class="layui-input-item">
                                         <label class="layui-form-label">用户id</label>
                                             <div class="layui-input-block">
@@ -86,7 +105,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">备注说明</label>
                                         <div class="layui-input-block">
-                                            <textarea placeholder="请输入内容" name="remark" lay-verify="required" class="layui-textarea" style="width:801px">{{ old('remark') }}</textarea>
+                                            <textarea placeholder="请输入内容" name="remark" lay-verify="required" class="layui-textarea">{{ old('remark') }}</textarea>
                                         </div>
                                     </div>
 
