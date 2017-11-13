@@ -9,6 +9,7 @@
     @include('frontend.layouts.links')
     @yield('css')
     <!--END 样式表-->
+    @include('frontend.layouts.scripts')
 </head>
 <body>
 <!--START 顶部菜单-->
@@ -39,12 +40,10 @@
 <!--END 主体-->
 
 <!--START 底部-->
-<link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
 @include('frontend.layouts.footer')
 <!--END 底部-->
 
 <!--START 脚本-->
-@include('frontend.layouts.scripts')
 @yield('js')
 <!--END 脚本-->
 </body>

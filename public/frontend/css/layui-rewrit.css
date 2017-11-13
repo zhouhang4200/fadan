@@ -1,129 +1,129 @@
 /*重写样式*/
 .layui-tab-title li {
-    line-height: 35px;
+    line-height: 35px !important;
 }
 
 .layui-tab-title {
-    height: 35px;
+    height: 35px !important;
 }
 
 .layui-tab-title .layui-this:after {
-    height: 36px;
+    height: 36px !important;
 }
 
 .layui-tab-content {
-    padding: 15px 0 0 0;
+    padding: 15px 0 0 0 !important;
 }
 
 .layui-tab-brief > .layui-tab-title .layui-this {
-    color: #1E9FFF;
+    color: #1E9FFF !important;
 }
 
 .layui-tab-brief > .layui-tab-title .layui-this:after, .layui-tab-brief > .layui-tab-more li.layui-this:after {
-    border: none;
-    border-radius: 0;
-    border-bottom: 2px solid #1E9FFF;
+    border: none !important;
+    border-radius: 0 !important;
+    border-bottom: 2px solid #1E9FFF !important;
 }
 
 .layui-nav-bar, .layui-nav .layui-this:after, .layui-nav-tree .layui-nav-itemed:after {
-    background-color: #1E9FFF;
+    background-color: #1E9FFF !important;
 }
 
 .layui-nav-tree .layui-nav-itemed:after {
-    background-color: #1E9FFF;
+    background-color: #1E9FFF !important;
 }
 
 .layui-form-select dl dd.layui-this {
-    background-color: #1E9FFF;
-    color: #fff;
+    background-color: #1E9FFF !important;
+    color: #fff !important;
 }
 
 .layui-form-checked, .layui-form-checked:hover {
-    border-color: #1E9FFF;
+    border-color: #1E9FFF !important;
 }
 
 .layui-form-checked span, .layui-form-checked:hover span {
-    background-color: #1E9FFF;
+    background-color: #1E9FFF !important;
 }
 
 .layui-form-checked i, .layui-form-checked:hover i {
-    color: #5FB878;
+    color: #5FB878 !important;
 }
 
 .layui-form-checkbox[lay-skin="primary"]:hover i {
-    border-color: #1E9FFF;
-    color: #fff;
+    border-color: #1E9FFF !important;
+    color: #fff !important;
 }
 
 .layui-form-checked[lay-skin="primary"] i {
-    border-color: #1E9FFF;
-    background-color: #1E9FFF;
-    color: #fff;
+    border-color: #1E9FFF !important;
+    background-color: #1E9FFF !important;
+    color: #fff !important;
 }
 
 .layui-form-onswitch {
-    border-color: #5FB878;
-    background-color: #1E9FFF;
+    border-color: #5FB878 !important;
+    background-color: #1E9FFF !important;
 }
 
 .layui-form-radioed i, .layui-form-radio i:hover {
-    color: #1E9FFF;
+    color: #1E9FFF !important;
 }
 
 .layui-nav-child dd.layui-this {
-    background-color: #1E9FFF;
-    color: #fff;
+    background-color: #1E9FFF !important;
+    color: #fff !important;
 }
 
 .layui-nav .layui-nav-child dd.layui-this a {
-    background-color: #1E9FFF;
-    color: #fff;
+    background-color: #1E9FFF !important;
+    color: #fff !important;
 }
 
 .layui-btn {
-    height: 32px;
-    line-height: 32px;
+    height: 32px  !important;
+    line-height: 32px  !important;
 }
 .layui-input, .layui-textarea, .layui-select {
-    height: 32px;
+    height: 32px  !important;
 }
 
 .layui-form-pane .layui-form-label {
-    height: 32px;
-    line-height: 16px;
+    height: 32px  !important;
+    line-height: 16px  !important;
 }
 
 .layui-form-radio i {
-    margin-right: 8px;
-    font-size: 19px;
+    margin-right: 8px  !important;
+    font-size: 19px  !important;
 }
 .layui-form-radio {
-    line-height: 0;
-    margin:  0;
+    line-height: 0  !important;
+    margin:  0  !important;
 }
 .layui-input-block {
-    min-height: 32px;
+    min-height: 32px !important;
 }
 .layui-form-switch {
-    height: 20px;
-    line-height: 20px;
+    height: 20px  !important;
+    line-height: 20px  !important;
 }
 .layui-laydate .layui-this {
-    background-color: #1f9fff !important;
-    color: #fff !important;
+    background-color: #1f9fff  !important;
+    color: #fff  !important;
 }
 /*自定义按钮大小*/
 .layui-btn-custom-mini {
-    height: 26px;
-    line-height: 26px;
-    font-size: 12px;
+    height: 26px  !important;
+    line-height: 26px  !important;
+    font-size: 12px  !important;
 }
 .layui-form-label {
-    padding: 2px 15px;
+    padding: 2px 15px  !important;
 }
 .layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio {
-    margin-top: 10px;
+    margin-top: 10px  !important;
 }
 .layui-form-mid {
-    line-height: 8px;
+    line-height: 8px  !important;
 }
