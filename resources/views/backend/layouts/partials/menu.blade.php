@@ -174,7 +174,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         <ul class="submenu">
                             <li>
                                 <a href="{{ route('login-record.index') }}" @if($currentRouteName == 'login-record.index') class="active" @endif>
-                                    我的账号
+                                    登录记录
                                 </a>
                             </li>
                         @can('admin-idents.index')
