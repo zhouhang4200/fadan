@@ -3,6 +3,7 @@
 @section('title', '注册')
 
 @section('css')
+<link rel="stylesheet" href="/frontend/css/login.css">
     <style>
         .input-container input {
             height:40px;
