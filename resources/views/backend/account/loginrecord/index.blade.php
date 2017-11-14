@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', '我的账号')
+@section('title', '登录记录')
 
 @section ('css')
     <style>
@@ -22,7 +22,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">我的账号</li>
+                            <li class="layui-this" lay-id="add">登录记录</li>
                         </ul>
                         <div class="layui-tab-content">
                         <form class="layui-form" method="" action="">

@@ -3,7 +3,7 @@
 Route::namespace('Backend\Auth')->group(function () {
     // 登录
     Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
-    Route::post('login', 'LoginController@login');
+    Route::post('login', 'LoginController@login')->name('admin.post.login');
     Route::post('logout', 'LoginController@logout')->name('admin.logout');
     // 注册
     Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
@@ -177,7 +177,7 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
 
     Route::namespace('Account')->prefix('account')->group(function () {
         // 账号管理-我的账号
-        Route::get('login-history', 'LoginRecordController@index')->name('login-record.index')->middleware('permission:login-record.index');
+        Route::get('login-history', 'LoginRecordController@index')->name('login-record.index');
         // 实名认证 - 通过
         Route::post('pass', 'PassOrRefuseController@pass')->name('pass-or-refuse.pass')->middleware('permission:pass-or-refuse.pass');
         // 实名认证 - 拒绝
