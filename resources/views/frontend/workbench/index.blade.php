@@ -8,7 +8,6 @@
     <!--START 样式表-->
     @include('frontend.layouts.links')
     <style>
-
         .wrapper {
             position: relative;
             min-width: 1200px;
@@ -144,6 +143,9 @@
         .header .user {
             right: 30px;
         }
+        .layui-tab-content {
+            padding: 0 !important;
+        }
     </style>
     <!--END 样式表-->
 </head>
@@ -156,7 +158,7 @@
 <div class="main">
     <div class="workbench-wrapper">
         @can('frontend.workbench.order')
-        <div class="left-menu" id="left-menu">
+            <div class="left-menu" id="left-menu">
             <form class="layui-form " action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">类型</label>
@@ -204,7 +206,8 @@
         @endcan
         <div class="right-content">
             <div class="content">
-                <div class="path"><span>工作台</span></div>
+                <div class="path"><span>工作台</span>
+                </div>
                 <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
                     <ul class="layui-tab-title">
                         <li class="layui-this" lay-id="need">急需处理</li>
@@ -213,7 +216,9 @@
                         <li class="" lay-id="after-sales">售后中</li>
                         <li class="" lay-id="cancel">已取消</li>
                         <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
+                        {{--<li class="" lay-id="search">搜索结果</li>--}}
                     </ul>
+
                     <div class="layui-tab-content">
                         <div class="layui-tab-item layui-show need"></div>
                         <div class="layui-tab-item ing"></div>
@@ -221,6 +226,7 @@
                         <div class="layui-tab-item after-sales"></div>
                         <div class="layui-tab-item cancel"></div>
                         <div class="layui-tab-item market"></div>
+                        {{--<div class="layui-tab-item search"></div>--}}
                     </div>
                 </div>
             </div>
@@ -317,9 +323,15 @@
         getOrder('{{ route('frontend.workbench.order-list') }}', 'need');
         // 切换订单状态
         element.on('tab(order-list)', function () {
-            var type = this.getAttribute('lay-id');
-            $('.' + type).empty();
-            getOrder('{{ route('frontend.workbench.order-list') }}', type);
+            try {
+                var type = this.getAttribute('lay-id');
+                if (type) {
+                    $('.' + type).empty();
+                    getOrder('{{ route('frontend.workbench.order-list') }}', type);
+                }
+            } catch (e) {
+
+            }
         });
         // 订单操作
         form.on('select(operation)', function (data) {
@@ -367,6 +379,11 @@
             }, 'json');
             return false;
         });
+        // 搜索
+        form.on('submit(search)', function (data) {
+
+            getOrder('{{ route('frontend.workbench.order-list') }}', 'search', data.field.search_type, data.field.search_content);
+        });
         // 获取商品流程
         function goods() {
             if (serviceId != 0 && gameId != 0) {
@@ -408,12 +425,24 @@
             }, 'json');
         }
         // 获取订单
-        function getOrder(url, type) {
+        function getOrder(url, type, searchType, searchContent) {
             type = type || 'need';
+            searchType = searchType || '';
+            searchContent = searchContent || '';
             currentUrl = url;
             currentType = type;
-            $.post(url, {type: type}, function (result) {
-                $('.' + type).html(result);
+            $.post(url, {type: type, search_type:searchType, search_content:searchContent}, function (result) {
+                if (type == 'search') {
+                    element.tabDelete('order-list', 'search');
+                    element.tabAdd('order-list', {
+                        title: '搜索结果',
+                        id: 'search',
+                        content: result
+                    });
+                    element.tabChange('order-list', 'search'); //切换到：用户管理
+                } else {
+                    $('.' + type).html(result);
+                }
                 layui.form.render();
             }, 'json');
         }

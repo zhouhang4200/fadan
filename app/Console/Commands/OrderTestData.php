@@ -36,19 +36,20 @@ class OrderTestData extends Command
      */
     public function handle()
     {
-        $begin = new \DateTime( '2017-01-01' );
-        $end = (new \DateTime( '2017-12-31' ))->modify( '+1 day' );
+        $begin = new \DateTime( '2021-01-01' );
+        $end = (new \DateTime( '2021-12-31' ))->modify( '+1 day' );
 
         $interval = new \DateInterval('P1D');
         $dateRange = new \DatePeriod($begin, $interval ,$end);
 
         foreach($dateRange as $date){
-            $date = $date->format("Y-m-d");
+            $dateTime = $date->format("Y-m-d");
+            $year = $date->format("Y");
             // 100 个用户
             for ($a = 1; $a<=100; $a++) {
                 $data = [];
                 // 每个用户二百单 1 是 发单人 接单人则加1
-                for ($j = 1; $j <= 500; $j ++) {
+                for ($j = 1; $j <= 200; $j ++) {
                     $data[] = [
                         "no" => generateOrderNo(),
                         "foreign_order_no" => generateOrderNo(),
@@ -70,11 +71,11 @@ class OrderTestData extends Command
                         "creator_primary_user_id" => $a,
                         "gainer_user_id" => $a+1,
                         "gainer_primary_user_id" => $a+1,
-                        "created_at" => $date,
-                        "updated_at" => $date,
+                        "created_at" => $dateTime,
+                        "updated_at" => $dateTime,
                     ];
                 }
-                \DB::table('orders')->insert($data);
+                \DB::table('orders_p')->insert($data);
             }
         }
     }

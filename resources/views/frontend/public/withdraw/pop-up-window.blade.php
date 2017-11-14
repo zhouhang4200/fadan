@@ -1,12 +1,13 @@
 <button id="withdraw" class="{{ $domClass }}" type="button" style="{{ $domStyle }}">{{ $bottomText }}</button>
+
 <div id="withdraw-box" style="display: none;padding: 20px 60px 20px 0;">
-    <div class="layui-form-item">
+    <div class="layui-form-item" style="margin-bottom: 15px;">
         <label class="layui-form-label">提现金额</label>
         <div class="layui-input-block">
             <input type="text" name="fee" class="layui-input" placeholder="可提现金额 {{ Auth::user()->userAsset->balance }}">
         </div>
     </div>
-    <div class="layui-form-item">
+    <div class="layui-form-item" style="margin-bottom: 15px;">
         <label class="layui-form-label">备注说明</label>
         <div class="layui-input-block">
             <input type="text" name="remark" class="layui-input" placeholder="可留空">
@@ -22,6 +23,7 @@
 </div>
 
 <script>
+
 layui.use(['layer'], function () {
     var layer = layui.layer;
 });

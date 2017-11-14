@@ -127,3 +127,9 @@
 .layui-form-mid {
     line-height: 8px  !important;
 }
+.layui-btn-mini {
+    height: 22px !important;
+    line-height: 22px !important;
+    padding: 0 5px !important;
+    font-size: 12px !important;
+}

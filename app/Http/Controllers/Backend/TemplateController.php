@@ -13,13 +13,13 @@ class TemplateController extends Controller
         return view('backend.template.form');
     }
 
-    public function icon1()
+    public function icons1()
     {
-        return view('backend.template.icon1');
+        return view('backend.template.icons1');
     }
 
-    public function icon2()
+    public function icons2()
     {
-        return view('backend.template.icon2');
+        return view('backend.template.icons2');
     }
 }

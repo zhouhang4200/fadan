@@ -2,6 +2,9 @@
 namespace App\Extensions\Asset\Base;
 
 // 交易
+use App\Exceptions\AssetException;
+use App\Exceptions\CustomException;
+
 abstract class Trade
 {
     // 1.加款 2.提现 3.冻结 4.解冻 5.消费 6.退款 7.支出 8.收入
@@ -23,12 +26,17 @@ abstract class Trade
 
     public function __construct($fee, $subtype, $no = '', $remark  = '', $userId, $adminUserId = 0)
     {
+        if ($fee <= 0) {
+            throw new AssetException('金额不合法');
+        }
         $this->userId      = $userId;
         $this->adminUserId = $adminUserId;
         $this->fee         = $fee;
         $this->subtype     = $subtype;
         $this->no          = $no;
         $this->remark      = $remark;
+
+
     }
 
     // 用户前置操作
