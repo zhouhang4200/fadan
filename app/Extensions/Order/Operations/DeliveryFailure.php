@@ -56,7 +56,7 @@ class DeliveryFailure extends \App\Extensions\Order\Operations\Base\Operation
             $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
 
             if ($this->order->foreignOrder && $has) {
-                KamenOrderApi::share()->fail($this->foreignOrder->kamen_order_no);
+                KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
             }
         }
     }
