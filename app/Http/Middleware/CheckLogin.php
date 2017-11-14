@@ -21,7 +21,7 @@ class CheckLogin
         $user = Auth::user();
 
         $redis = RedisConnect::session();
-
+ 
         if ($table == 'users') {
 
             $sessionId = $redis->get(config('redis.user')['loginSession'] . $user->id);

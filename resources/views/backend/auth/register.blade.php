@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('backend.layouts.auth')
 
 @section('title', '注册')
 
