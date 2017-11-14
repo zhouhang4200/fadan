@@ -63,7 +63,7 @@ class RbacGroupController extends Controller
 
             $data['user_id'] = Auth::id();
         
-            RbacGroup::create($data)->permissions()->sync($permissionIds);  
+            RbacGroup::create($data)->permissions()->sync($permissionIds);   
 
             return redirect(route('rbacgroups.index'))->with('succ', '添加成功!');
         }

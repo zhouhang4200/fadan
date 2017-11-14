@@ -6,8 +6,8 @@ Route::namespace('Backend\Auth')->group(function () {
     Route::post('login', 'LoginController@login');
     Route::post('logout', 'LoginController@logout')->name('admin.logout');
     // 注册
-    // Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
-    // Route::post('register', 'RegisterController@register');
+    Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
+    Route::post('register', 'RegisterController@register');
     // 密码找回
     Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
@@ -238,5 +238,7 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
         Route::get('punishes/{id}/edit', 'PunishController@edit')->name('punishes.edit')->middleware('permission:punishes.edit');
         Route::put('punishes/{id}', 'PunishController@update')->name('punishes.update')->middleware('permission:punishes.update');
         Route::delete('punishes/{id}', 'PunishController@destroy')->name('punishes.destroy')->middleware('permission:punishes.destroy');
+        Route::post('punishes/user', 'PunishController@orders')->name('punishes.user')->middleware('permission:punishes.user');
+
     });
 });

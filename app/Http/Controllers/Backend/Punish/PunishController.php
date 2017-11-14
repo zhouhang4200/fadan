@@ -47,8 +47,8 @@ class PunishController extends Controller
     {
         $users = User::where('parent_id', 0)->get();
 
-        $start = Carbon::now()->startOfDay()->toDateTimeString();
-
+        $start = Carbon::now()->subDays(2)->startOfDay()->toDateTimeString();
+        
         $end = Carbon::now()->toDateTimeString();
 
         $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
@@ -169,5 +169,14 @@ class PunishController extends Controller
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
         return response()->json(['code' => '2', 'message' => '删除失败!']);
+    }
+
+    public function orders(Request $request)
+    {
+        $userId = $request->id;
+
+        $orders = Order::where('gainer_primary_user_id', $userId)->pluck('no');
+
+        return response()->json(['orders' => $orders]);
     }
 }

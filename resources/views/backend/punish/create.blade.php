@@ -69,25 +69,29 @@
                                     <div class="layui-input-item">
                                         <label class="layui-form-label">用户id</label>
                                             <div class="layui-input-block">
-                                                <select name="user_id" lay-verify="required" lay-search="">
+                                                <select name="user_id" lay-filter="userId" lay-verify="required" lay-search="">
                                                     <option value="">输入或直接选择</option>
-                                                    @foreach($users as $user)
+                                                    @forelse($users as $user)
                                                     <option value="{{ $user->id }}">{{ $user->id }}</option>
-                                                    @endforeach
+                                                    @empty
+                                                    @endforelse
                                                 </select>
                                             </div>
                                     </div>
 
-                                    <div class="layui-input-item">
+                                    <div class="layui-input-item" >
                                         <label class="layui-form-label">订单号</label>
-                                            <div class="layui-input-block">
-                                                <select name="order_id" lay-verify="required" lay-search="">
-                                                    <option value="">输入或直接选择</option>
-                                                    @foreach($orders as $order)
-                                                    <option value="{{ $order }}">{{ $order }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                        <div class="layui-input-block" >
+                                            <select name="order_id" lay-verify="required" lay-search="" id='orders'>
+                                                <option value="" >输入或直接选择</option>
+                                                @forelse($orders as $order)
+                                                <option value="{{ $order }}">{{ $order }}</option>
+                                                @empty
+                                                @endforelse
+
+                                            </select>
+                                        </div>
+                                        
                                     </div>
 
                                     <div class="layui-form-item">
@@ -142,9 +146,22 @@
             } else if(createFail) {
                 layer.msg(createFail, {icon: 5, time:1500},);
             }
+
+            // 
+            form.on('select(userId)', function (data) {
+                var userId = data.value;
+                $.post('{{ route('punishes.user') }}', {id:userId}, function(result){
+
+                        var length = result.orders.length;
+                        var str = '';                          
+                        result.orders.forEach(function(item, index){
+                            str += '<option value="'+item+'">'+ item+'</option>';
+                        })    
+                        console.log(str); 
+                        
+                    }, 'json');
+            });
           form.render();
     });  
-
-
     </script>
 @endsection
