@@ -2,7 +2,9 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Exceptions\OrderException as Exception;
+use App\Models\SiteInfo;
 use App\Models\Weight;
+use App\Services\KamenOrderApi;
 
 // 发货
 class Delivery extends \App\Extensions\Order\Operations\Base\Operation
@@ -31,6 +33,15 @@ class Delivery extends \App\Extensions\Order\Operations\Base\Operation
 
         if (!$weight->save()) {
             throw new Exception('权重凭证保存失败');
+        }
+    }
+
+    public function after()
+    {
+        // 向卡门发送通知
+        $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
+        if ($this->order->foreignOrder && $has) {
+            KamenOrderApi::share()->success($this->order->foreignOrder->kamen_order_no);
         }
     }
 }

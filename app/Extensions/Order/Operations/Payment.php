@@ -1,6 +1,7 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
+use App\Events\NotificationEvent;
 use App\Exceptions\AssetException as Exception;
 use App\Models\User;
 use App\Models\Order;
@@ -38,11 +39,27 @@ class Payment extends \App\Extensions\Order\Operations\Base\Operation
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
             throw new Exception('申请失败');
         }
+        $this->runAfter = true;
     }
 
     // 设置描述
     public function setDescription()
     {
         $this->description = "用户[{$this->userId}]支付了待付款订单";
+    }
+
+    /**
+     * 付款成功后向所有用推送新订单通知
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            // 给所有用户推送新订单消息
+            event(new NotificationEvent('NewOrderNotification', $this->order->toArray()));
+            // 待接单数量加1
+            waitReceivingQuantityAdd();
+            // 更新前台待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+        }
     }
 }

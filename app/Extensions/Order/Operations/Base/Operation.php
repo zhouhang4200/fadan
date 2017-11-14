@@ -17,6 +17,8 @@ abstract class Operation
     protected $acceptableStatus;    // 可接受的状态
     protected $handledStatus;       // 操作后状态
     protected $description;         // 操作说明
+    protected $runAfter = false;    // 是否执行after方法
+
 
     // 获取订单
     public function getObject()
@@ -81,6 +83,11 @@ abstract class Operation
 
     // 保存权重依据
     public function saveWeight() {}
+
+    /**
+     * 后续操作
+     */
+    public function after() {}
 
     /**
      * @return mixed

@@ -66,7 +66,7 @@ class OrderOperationController extends Controller
     }
 
     /**
-     * 订单操作
+     * 订单详情查看
      * @param Request $request
      * @param OrderRepository $orderRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -87,21 +87,10 @@ class OrderOperationController extends Controller
     {
         // 调用发货
         try {
-            // 调用收货
+            // 调用发货
             Order::handle(new Delivery($request->no, Auth::user()->id));
-            // 向卡门发送通知
-            $order = OrderModel::where('no', $request->no)->first();
-
-            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
-
-            if ($order->foreignOrder && $has) {
-
-                KamenOrderApi::share()->success($order->foreignOrder->kamen_order_no);
-            }
             return response()->ajax(1, '操作成功');
-
         } catch (CustomException $exception) {
-
             return response()->ajax(0, $exception->getMessage());
         }
     }
@@ -115,16 +104,7 @@ class OrderOperationController extends Controller
         try {
             // 调用失败订单
             Order::handle(new DeliveryFailure($request->no, Auth::user()->id, $request->remark));
-            // 调用打款，删除自动打款哈希表中订单号
-            $order = OrderModel::where('no', $request->no)->first();
-
-            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
-
-            if ($order->foreignOrder && $has) {
-                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_no);
-            }
             return response()->ajax(1, '操作成功');
-
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -139,19 +119,6 @@ class OrderOperationController extends Controller
         try {
             // 调用取消
             Order::handle(new Cancel($request->no, Auth::user()->id));
-            // 待接单数量加1
-            waitReceivingQuantitySub();
-            // 待接单数量
-            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-            // 删除待分配中订单
-            waitReceivingDel($request->no);
-            // 失败卡门站点
-            $order = OrderModel::where('no', $request->no)->first();
-            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
-            if ($order->foreignOrder && $has) {
-                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_no);
-            }
-            // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
@@ -167,7 +134,6 @@ class OrderOperationController extends Controller
         try {
             // 调用收货
             Order::handle(new Complete($request->no, Auth::user()->id));
-            // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
@@ -184,29 +150,6 @@ class OrderOperationController extends Controller
         try {
             // 调用退回
             Order::handle(new TurnBack($request->no, Auth::user()->id, $request->remark));
-
-            $carbon = new Carbon;
-            $minutes = $carbon->diffInMinutes(Order::get()->created_at);
-
-            if ($minutes >= 40) {
-                // 超过40分钟失败
-                Order::handle(new Cancel($request->no, 0));
-                $has = SiteInfo::where('user_id', Order::get()->creator_primary_user_id)->first();
-
-                if (Order::get()->foreignOrder && $has) {
-                    KamenOrderApi::share()->fail(Order::get()->foreignOrder->kamen_order_no);
-                }
-                waitReceivingQuantitySub();
-            } else {
-                // 待接单数量加1
-                waitReceivingQuantityAdd();
-                // 待接单数量刷新
-                event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-                // 给所有用户推送新订单消息
-                event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
-                // 重写放入订单集市
-                waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
-            }
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {
@@ -240,12 +183,6 @@ class OrderOperationController extends Controller
         try {
             // 调用退回
             Order::handle(new Payment($request->no, Auth::user()->id));
-            // 给所有用户推送新订单消息
-            event(new NotificationEvent('NewOrderNotification', Order::get()->toArray()));
-            // 待接单数量加1
-            waitReceivingQuantityAdd();
-            // 待接单数量
-            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {

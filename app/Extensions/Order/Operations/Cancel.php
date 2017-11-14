@@ -1,6 +1,9 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
+use App\Events\NotificationEvent;
+use App\Models\SiteInfo;
+use App\Services\KamenOrderApi;
 use Asset;
 use App\Extensions\Asset\Income;
 use App\Exceptions\OrderException as Exception;
@@ -36,6 +39,28 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
                 throw new Exception('操作失败');
             }
+        }
+        $this->runAfter = true;
+    }
+
+    /**
+     * 取消之后的操作
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            // 待接单数量减1
+            waitReceivingQuantitySub();
+            // 通知前端待接单数量的变化
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 删除待分配中订单
+            waitReceivingDel($this->order->no);
+            // 失败卡门站点
+            $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
+            if ($this->order->foreignOrder && $has) {
+                KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
+            }
+            // 调用打款，删除自动打款哈希表中订单号
         }
     }
 }

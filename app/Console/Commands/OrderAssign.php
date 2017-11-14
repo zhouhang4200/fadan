@@ -62,7 +62,10 @@ class OrderAssign extends Command
                     // 可接单时间与当前时间的差
                     $minutes = $carbon->diffInMinutes(Carbon::parse($data->receiving_date), false);
                     // 检测是否有人接单并且可接单时间大于等于了一分钟了: 是则将订单改为不可接单，然后分配订单。否有则加一分钟，重新写入hash表中
-                    if (receivingUserLen($orderNo) && $minutes >= 1) {
+//                    if (receivingUserLen($orderNo) && $minutes >= 1) {
+
+                    // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
+                    if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
                         // 将订单改为不可接单
                         Order::handle(new GrabClose($orderNo));
                         // 取出所有用户, 获取所有接单用户的权重值y

@@ -13,8 +13,46 @@ use App\Extensions\Asset\Expend;
 // 创建订单
 class Create extends \App\Extensions\Order\Operations\Base\Operation
 {
+    /**
+     * @var int
+     */
     protected $handledStatus = 1;
+
+    /**
+     * @var int
+     */
     protected $type = 1;
+
+    /**
+     * @var string
+     */
+    protected $foreignOrderNO;
+
+    /**
+     * @var int
+     */
+    protected $source;
+
+    /**
+     * @var int
+     */
+    protected $goodsId;
+
+    /**
+     * 原单价
+     * @var float|int
+     */
+    protected $originalPrice = 0;
+
+    /**
+     * @var int
+     */
+    protected $quantity = 0;
+
+    /**
+     * @var array
+     */
+    protected $details;
 
     /**
      * 商品单价
@@ -22,11 +60,6 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      */
     protected $price = 0;
 
-    /**
-     * 原单价
-     * @var float|int
-     */
-    protected $originalPrice = 0;
     /**
      * 商品
      * @var
