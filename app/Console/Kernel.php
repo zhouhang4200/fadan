@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        'App\Console\Commands\DailySettlementPlatformAsset',
+        'App\Console\Commands\DailySettlementUserAsset',
         'App\Console\Commands\OrderAssign',
         'App\Console\Commands\OrderTestData',
     ];

@@ -145,6 +145,12 @@ class OrderOperationController extends Controller
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
             // 删除待分配中订单
             waitReceivingDel($request->no);
+            // 失败卡门站点
+            $order = OrderModel::where('no', $request->no)->first();
+            $has = SiteInfo::where('user_id', $order->creator_primary_user_id)->first();
+            if ($order->foreignOrder && $has) {
+                KamenOrderApi::share()->fail($order->foreignOrder->kamen_order_no);
+            }
             // 调用打款，删除自动打款哈希表中订单号
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
