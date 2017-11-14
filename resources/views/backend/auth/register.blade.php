@@ -46,7 +46,7 @@
                     </div>
                     <div class="register-and-forget-password">
                         <a class="register" target="_blank" href="{{ route('admin.login') }}">登录</a>
-                        <a class="forget-password" href="{{ route('admin.password.reset') }}">忘记密码？</a>
+                        <a class="forget-password" href="{{ route('admin.password.request') }}">忘记密码？</a>
                         <div class="layui-clear"></div>
                     </div>
                 </div>
