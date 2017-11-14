@@ -28,8 +28,10 @@ class CreateUserAsset
      */
     public function handle(Registered $event)
     {
-        $userAsset = new UserAsset;
-        $userAsset->user_id = $event->user->id;
-        $userAsset->save();
+        if ($event->user->getTable() == 'users') {
+            $userAsset = new UserAsset;
+            $userAsset->user_id = $event->user->id;
+            $userAsset->save();
+        }
     }
 }
