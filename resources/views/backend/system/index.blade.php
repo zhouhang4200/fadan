@@ -51,7 +51,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                     @foreach($systemLogs as $systemLog)
+                                     @forelse($systemLogs as $systemLog)
                                         <tr>
                                             <td>{{ $systemLog->id }}</td>
                                             <td>系统</td>
@@ -62,7 +62,8 @@
                                             <td>{{ $systemLog->old_value }}</td>
                                             <td>{{ $systemLog->new_value }}</td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                    @endforelse
                                 </tbody>
                             </table>
                             </div>
