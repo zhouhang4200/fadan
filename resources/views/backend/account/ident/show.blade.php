@@ -20,8 +20,6 @@
             width: 500px;
             height: 300px;
             margin-left: 170px;
-            background-size: cover !important;
-            background-position: center !important;
         }
 
         .ident > .company > .layui-form-item > .layui-upload > .layui-upload-list > img {
@@ -46,12 +44,13 @@
             width: 500px;
             height: 300px;
             margin-left: 170px;
+            background-size: cover !important;
+            background-position: center !important;
         }
 
         .ident > .personal > .layui-form-item > .layui-upload > .layui-upload-list > img {
             width: 100%;
             height: 100%;
-            visibility:
         }
 
         .ident > .layui-form-item > .layui-input-block {
@@ -175,7 +174,7 @@
                                                                name="bank_open_account_picture">
                                                         <div class="layui-upload-list"
                                                              style="background-image: url({{ $ident->bank_open_account_picture }})">
-                                                            <img class="layui-upload-img" id="demo5" src="">
+                                                            <img class="layui-upload-img" id="demo5">
                                                             <input type="hidden" name="bank_open_account_picture"
                                                                    value="{{ $ident->bank_open_account_picture }}">
                                                             <p id="demoText"></p>
@@ -189,7 +188,7 @@
                                                         <input class="layui-upload-file" type="file"
                                                                name="agency_agreement_picture">
                                                         <div class="layui-upload-list" style="background-image: url({{ $ident->agency_agreement_picture }})">
-                                                            <img class="layui-upload-img" id="demo6" src="">
+                                                            <img class="layui-upload-img" id="demo6">
                                                             <input type="hidden" name="agency_agreement_picture"
                                                                    value="{{ $ident->agency_agreement_picture }}">
                                                             <p id="demoText"></p>
