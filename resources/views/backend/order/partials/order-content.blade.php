@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="main-box clearfix" style="border: 1px solid #ddd">
                         <header class="main-box-header clearfix">
                             <h2 class="pull-left">订单号: {{ $content->no }} &nbsp;&nbsp;
@@ -40,7 +40,7 @@
                                 <div class="col-md-3 col-sm-6 col-xs-12">
                                     <div class="invoice-summary-item">
                                         <span>服务</span>
-                                        <div>{{ $content->servie_name }}</div>
+                                        <div>{{ $content->service_name }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6 col-xs-12">
@@ -95,7 +95,7 @@
                                 <h2></h2>
                                 <table class="table table-striped table-hover">
                                     <tbody>
-                                    @forelse($order->detail as $item)
+                                    @forelse($content->detail as $item)
                                         @if($item->field_name != 'quantity')
                                             <tr>
                                                 <td class="text-left" width="20%">
@@ -115,11 +115,6 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="main-box clearfix" style="border: 1px solid #ddd">
-
                     </div>
                 </div>
             </div>

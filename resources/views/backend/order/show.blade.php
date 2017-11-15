@@ -22,8 +22,8 @@
                                 <li lay-id="record">订单日志</li>
                             </ul>
                             <div class="layui-tab-content">
-                                <div class="layui-tab-item layui-show"></div>
-                                <div class="layui-tab-item"></div>
+                                <div class="layui-tab-item layui-show content"></div>
+                                <div class="layui-tab-item record"></div>
                             </div>
                         </div>
 
@@ -43,12 +43,12 @@
         element.on('tab(detail)', function(elem){
             var action = $(this).attr('lay-id');
             if (action == 'content') {
-                $.post('{{ route('orders.content') }}', {id:'{{ Route::input('id') }}'},function(){
-
-                });
+                $.post('{{ route('orders.content') }}', {id:'{{ Route::input('id') }}'},function(result){
+                    $('.content').html(result);
+                }, 'json')
             } else {
-                $.post('{{ route('orders.record') }}', {id:'{{ Route::input('id') }}'},function(){
-
+                $.post('{{ route('orders.record') }}', {id:'{{ Route::input('id') }}'},function(result){
+                    layer.msg(result.message);
                 });
             }
 

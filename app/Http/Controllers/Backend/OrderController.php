@@ -76,7 +76,7 @@ class OrderController extends Controller
      */
     public function content(Request $request)
     {
-        return response()->json(View::make('backend.order', [
+        return response()->json(View::make('backend.order.partials.order-content', [
             'content' => Order::with('detail')->find($request->id),
         ])->render());
     }

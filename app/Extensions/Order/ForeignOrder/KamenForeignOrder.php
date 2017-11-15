@@ -91,13 +91,21 @@ class KamenForeignOrder extends ForeignOrder
     protected function output(ForeignOrderModel $model)
     {
         // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
+        $siteId = $model->details->JSitid;
+
+        $userId = SiteInfo::where('kamen_site_id', $siteId)->value('user_id');
+
         $goods = Goods::where([
+            'user_id' => $userId,
             'foreign_goods_id' => $model->foreign_goods_id,
             'quantity' =>$model->details->quantity,
         ])->first();
 
         if (!$goods) {
-            $goods = Goods::where('foreign_goods_id', $model->foreign_goods_id)->first();
+            $goods = Goods::where([
+                'user_id' => $userId,
+                'foreign_goods_id' =>  $model->foreign_goods_id,
+            ])->first();
         }
     	if ($goods) {
             $data = [];
