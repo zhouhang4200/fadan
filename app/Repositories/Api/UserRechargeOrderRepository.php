@@ -24,10 +24,11 @@ class UserRechargeOrderRepository
      * @param $foreignOrderNo
      * @param $wangwang
      * @param bool $isAuto
+     * @param integer $adminUserId
      * @return mixed
      * @throws Exception
      */
-    public function store($fee, $userId, $remark, $foreignOrderNo, $wangwang, $isAuto = true)
+    public function store($fee, $userId, $remark, $foreignOrderNo, $wangwang, $isAuto = true, $adminUserId = 0)
     {
         DB::beginTransaction();
 
@@ -39,7 +40,7 @@ class UserRechargeOrderRepository
         // 增加余额
         try {
             $subtype = $isAuto ? Recharge::TRADE_SUBTYPE_AUTO : Recharge::TRADE_SUBTYPE_MANUAL;
-            Asset::handle(new Recharge($fee, $subtype, $no, '自动充值', $primaryUserId));
+            Asset::handle(new Recharge($fee, $subtype, $no, '自动充值', $primaryUserId, $adminUserId));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());

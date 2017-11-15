@@ -1,7 +1,4 @@
 <html>
-<header>
-
-</header>
 <style>
     html, body {
         background-color: #eee;
@@ -59,23 +56,30 @@
                 </p>
             </div>
         </div>
-        @if(isset($order->foreignOrder->channel))
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
-                @if($order->foreignOrder->channel == 3)
-                    <div class="item-banner left cm-padding">旺旺</div>
-                    <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid= {{ $order->foreignOrder->wang_wang }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title=" {{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
-                @endif
+                <div class="item-banner left cm-padding">{{ Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id ? '接单商家ID' : '发单商家ID'}}</div>
+                <div class="item-content left cm-padding">{{ Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id ? $order->gainer_primary_user_id == 0 ? '' : $order->gainer_primary_user_id : $order->creator_primary_user_id }}</div>
             </li>
-        </ul>
-        @endif
-        <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
                 <div class="item-banner left cm-padding">状态</div>
                 <div class="item-content left cm-padding"> {{ config('order.status')[$order->status] }}</div>
             </li>
         </ul>
-
+        @if(isset($order->foreignOrder->channel))
+        <ul class="bg-white cm-border cm-item overflow cm-margin">
+            @if($order->foreignOrder->channel == 3)
+            <li class="overflow">
+                <div class="item-banner left cm-padding">店铺</div>
+                <div class="item-content left cm-padding">{{ $order->foreignOrder->channel_name }}</div>
+            </li>
+            <li class="overflow">
+                <div class="item-banner left cm-padding">旺旺</div>
+                <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid= {{ $order->foreignOrder->wang_wang }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title=" {{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
+            </li>
+            @endif
+        </ul>
+        @endif
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
                 <div class="item-banner left cm-padding">订单</div>

@@ -45,6 +45,7 @@ class OrderController extends Controller
                 $originalPrice = $orderData['price']; // 原单价
                 $quantity = $orderData['quantity']; // 数量
                 $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
+                $wangWang = !empty($orderData['wang_wang']) ? $orderData['wang_wang'] : ''; // 天猫订单旺旺号
 
                 Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData));
 
@@ -55,8 +56,12 @@ class OrderController extends Controller
                     waitReceivingQuantityAdd();
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
-                    // 写入待分配订单hash
-                    waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
+                    // 写入待分配订单hash 如果订单有旺旺号则一同写入待分配hash中，以达到同一旺旺下的订单在指定时间内分配给同一商户
+                    waitReceivingAdd(Order::get()->no,
+                        Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
+                        Order::get()->created_at->toDateTimeString(),
+                        $wangWang
+                    );
                     // 更新订单状态
                     return 'success';
                 } else {

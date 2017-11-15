@@ -49,7 +49,7 @@ class OrderController extends Controller
      * @param OrderRepository $orderRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function orderList(Request $request,  OrderRepository $orderRepository)
+    public function orderList(Request $request, OrderRepository $orderRepository)
     {
         $type = $request->input('type', 'need');
         $no = $request->order_no;
@@ -59,7 +59,7 @@ class OrderController extends Controller
         $orders = $orderRepository->dataList($type, $no);
 
         if ($request->ajax()) {
-            if (!in_array($type, ['need' , 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {
+            if (!in_array($type, ['need', 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {
                 return response()->ajax(0, '不存在的类型');
             }
             return response()->json(\View::make('frontend.workbench.order-list', [
@@ -100,7 +100,10 @@ class OrderController extends Controller
                     // 待接单数量加1
                     waitReceivingQuantityAdd();
                     // 写入待分配订单hash
-                    waitReceivingAdd(Order::get()->no, json_encode(['receiving_date' => Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(), 'created_date' => Order::get()->created_at->toDateTimeString()]));
+                    waitReceivingAdd(Order::get()->no,
+                        Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
+                        Order::get()->created_at->toDateTimeString()
+                    );
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                     return response()->ajax(1, '下单成功');

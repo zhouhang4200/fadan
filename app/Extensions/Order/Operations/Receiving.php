@@ -1,6 +1,7 @@
 <?php
 namespace App\Extensions\Order\Operations;
 
+use App\Events\NotificationEvent;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Weight;
@@ -52,6 +53,18 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 
         if (!$weight->save()) {
             throw new Exception('权重凭证保存失败');
+        }
+        $this->runAfter = true;
+    }
+
+    public function after()
+    {
+        if ($this->runAfter) {
+            waitReceivingDel($this->order->no);
+            // 待接单数量减1
+            waitReceivingQuantitySub();
+            // 待接单数量
+            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
         }
     }
 }

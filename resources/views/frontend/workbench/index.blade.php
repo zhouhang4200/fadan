@@ -465,7 +465,7 @@
                 title: '订单详情',
                 shadeClose: true,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['500px', '600px'],
+                area: ['600px', '630px'],
                 scrollbar: false,
                 content: "{{ url('/workbench/order-operation/detail') }}?no=" + no
             });

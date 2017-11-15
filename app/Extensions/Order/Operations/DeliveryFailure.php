@@ -2,7 +2,9 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Exceptions\OrderException as Exception;
+use App\Models\SiteInfo;
 use App\Models\Weight;
+use App\Services\KamenOrderApi;
 
 // 发货失败
 class DeliveryFailure extends \App\Extensions\Order\Operations\Base\Operation
@@ -40,6 +42,22 @@ class DeliveryFailure extends \App\Extensions\Order\Operations\Base\Operation
 
         if (!$weight->save()) {
             throw new Exception('权重凭证保存失败');
+        }
+        $this->runAfter = true;
+    }
+
+    /**
+     * 如果是千手自营还需向卡门发送失败通知
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            // 调用打款，删除自动打款哈希表中订单号
+            $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
+
+            if ($this->order->foreignOrder && $has) {
+                KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
+            }
         }
     }
 }

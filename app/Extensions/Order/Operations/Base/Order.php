@@ -23,6 +23,7 @@ class Order
             $operation->setDescription();
             $operation->saveLog();
             $operation->saveWeight();
+            $operation->after();
         }
         catch (OrderException $e) {
             DB::rollBack();
