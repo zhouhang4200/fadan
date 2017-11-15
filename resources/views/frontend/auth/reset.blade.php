@@ -15,7 +15,9 @@
     {!! csrf_field() !!}
         <div class="header">
             <div class="content">
-                <div style="font-size: 23px;color:#2196f3;font-weight: 400">千手 · 订单集市</div>
+                <a href="">
+                    <span class="logo"></span>
+                </a>
             </div>
         </div>
         <div class="main">

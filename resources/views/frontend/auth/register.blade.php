@@ -16,7 +16,9 @@
     {!! csrf_field() !!}
         <div class="header">
             <div class="content">
-                <div style="font-size: 23px;color:#2196f3;font-weight: 400">千手 · 订单集市</div>
+                <a href="">
+                    <span class="logo"></span>
+                </a>
             </div>
         </div>
         <div class="main">
@@ -28,8 +30,16 @@
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item">
-                        <input type="email" name="email" required="" lay-verify="email" placeholder="请输入邮箱" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
-                        <i class="layui-icon icon">&#xe612;</i>
+                        <input type="email" name="email" required="" lay-verify="required|email" placeholder="请输入邮箱 (用于找回密码)" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <i class="layui-icon icon">&#xe64c;</i>
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="text" name="qq" required="" lay-verify="required|number" placeholder="请输入QQ" value="{{ old('qq') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <i class="layui-icon icon">&#xe63a;</i>
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="text" name="phone" required="" lay-verify="required|phone" placeholder="请输入手机号" value="{{ old('phone') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <i class="layui-icon icon">&#xe63b;</i>
                     </div>
                     <div class="layui-form-item ">
                         <input type="password" name="password" required="" lay-verify="required" placeholder="请输入最少6位数密码" autocomplete="off" class="layui-input layui-form-danger">
@@ -70,11 +80,16 @@
             var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱已经存在!' : '' }}";
 
             if (GeetestError) {
-                layer.msg(GeetestError, {icon: 5, time:1500});            }else if (errorName) {
-                layer.msg(errorName, {icon: 5, time:1500});            } else if(errorPassword) {
-                layer.msg(errorPassword, {icon: 5, time:1500});            } else if (errorEmail) {
-                layer.msg(errorEmail, {icon: 5, time:1500});            } else if (loginError) {
-                layer.msg(loginError, {icon: 5, time:1500});            }
+                layer.msg(GeetestError, {icon: 5, time: 1500});
+            } else if (errorName) {
+                layer.msg(errorName, {icon: 5, time: 1500});
+            } else if (errorPassword) {
+                layer.msg(errorPassword, {icon: 5, time: 1500});
+            } else if (errorEmail) {
+                layer.msg(errorEmail, {icon: 5, time: 1500});
+            } else if (loginError) {
+                layer.msg(loginError, {icon: 5, time: 1500});
+            }
         });
     </script>
 @endsection
