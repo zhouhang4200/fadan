@@ -262,7 +262,7 @@
             var error = "{{ $errors->count() > 0 ? '请上传相关照片!' : '' }}";
 
             if(error) {
-                layer.msg(error, {icon: 5, time:1500},);
+                layer.msg(error, {icon: 5, time:1500});
             }
 
         //  个人企业切换
@@ -469,9 +469,6 @@
                 error: function () {
                 }
             });
-
-
-
         });
     </script>
 @endsection
