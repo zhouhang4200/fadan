@@ -29,20 +29,22 @@ class OrderRepository
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         ]);
 
-        if ($userId == $primaryUserId && $status != 'market') { // 主账号
+//        if ($userId == $primaryUserId && $status != 'market') { // 主账号
+        if ( $status != 'market') { // 主账号
             if ($type == 1) {
-                $query->where('gainer_primary_user_id', $userId); // 接单
+                $query->where('gainer_primary_user_id', $primaryUserId); // 接单
             } else {
-                $query->where('creator_primary_user_id', $userId); // 发单
+                $query->where('creator_primary_user_id', $primaryUserId); // 发单
             }
-            $query->from(DB::raw('orders force index (orders_creator_primary_user_id_status_index)'));
-        } else if ($type == 1 && $status != 'market') { // 子账号接单方
-            $query->where('gainer_user_id', $userId);
-            $query->from(DB::raw('orders force index (orders_gainer_user_id_status_index)'));
-        } else if ($type == 2 && $status != 'market') { // 子账号发单方
-            $query->where('creator_user_id', $userId);
-            $query->from(DB::raw('orders force index (orders_creator_user_id_status_index)'));
         }
+//            $query->from(DB::raw('orders force index (orders_creator_primary_user_id_status_index)'));
+//        } else if ($type == 1 && $status != 'market') { // 子账号接单方
+//            $query->where('gainer_user_id', $userId);
+//            $query->from(DB::raw('orders force index (orders_gainer_user_id_status_index)'));
+//        } else if ($type == 2 && $status != 'market') { // 子账号发单方
+//            $query->where('creator_user_id', $userId);
+//            $query->from(DB::raw('orders force index (orders_creator_user_id_status_index)'));
+//        }
         // 按订单状态过滤
         if ($type == 1) { // 接单方
             if ($status == 'need') {
