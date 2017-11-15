@@ -28,8 +28,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('Order:Assign')->everyMinute();
-         $schedule->command('daily-settlement:user-asset')->daily();
-         $schedule->command('daily-settlement:platform-asset')->daily();
+         $schedule->command('daily-settlement:user-asset')->dailyAt('13:00');
+         $schedule->command('daily-settlement:platform-asset')->dailyAt('13:00');
     }
 
     /**

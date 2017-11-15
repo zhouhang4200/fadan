@@ -18,10 +18,10 @@
                     <form class="layui-form">
                         <div class="row">
                             <div class="form-group col-xs-2">
-                                <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" value="{{ $startDate }}"">
+                                <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" value="{{ $startDate }}">
                             </div>
                             <div class="form-group col-xs-2">
-                                <input type="text" name="start_date" id="endDate" autocomplete="off" class="layui-input" value="{{ $startDate }}"">
+                                <input type="text" name="start_date" id="endDate" autocomplete="off" class="layui-input" value="{{ $endDate }}">
                             </div>
                             <div class="form-group col-xs-2">
                                 <select  name="status"  lay-search="">
