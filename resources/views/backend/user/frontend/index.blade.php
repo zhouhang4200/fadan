@@ -62,12 +62,12 @@
                                         @endif
                                         </td>
                                         <td style="text-align: center;">
-                                            @if (! $user->roles->count() > 0)
-                                                <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
-                                            @else
-                                                <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
-                                            @endif
+                                            <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
+                                            <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
+                                            <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
+                                            @can('frontend.user.recharge')
                                                 <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="recharge-windows" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动加款</button>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
@@ -113,9 +113,7 @@
 @endsection
 
 @section('js')
-
-    <script>
-        //Demo
+   <script>
         layui.use(['form', 'laytpl', 'element'], function(){
             var form = layui.form, layer = layui.layer;
 

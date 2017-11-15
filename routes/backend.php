@@ -96,6 +96,10 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
             Route::get('/', 'UserController@index')->name('frontend.user.index')->middleware('permission:frontend.user.index');
             // 手动加款
             Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
+            // 用户资料
+            Route::get('show/{userId}', 'UserController@show')->name('frontend.user.show')->middleware('permission:frontend.user.show');
+            // 实名认证
+            Route::get('authentication/{userId}', 'UserController@authentication')->name('frontend.user.authentication')->middleware('permission:frontend.user.authentication');
         });
         // 后台账号列表
         Route::namespace('Frontend')->prefix('backend')->group(function () {

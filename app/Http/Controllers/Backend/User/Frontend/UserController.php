@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Backend\User\Frontend;
 
 use App\Exceptions\CustomException;
+use App\Models\RealNameIdent;
 use App\Repositories\Api\UserRechargeOrderRepository;
 use Illuminate\Http\Request;
 
-use Asset, Auth;
+use Asset, Auth, View;
 use App\Models\User;
 use App\Extensions\Asset\Recharge;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,25 @@ class UserController extends Controller
     	$users = User::where('parent_id', 0)->latest('id')->with('asset')->paginate(config('frontend.page'));
 
     	return view('backend.user.frontend.index', compact('users', 'name'));
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show($id)
+    {
+        return view('backend.user.frontend.show');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function authentication($userId)
+    {
+        return view('backend.user.frontend.authentication')->with([
+            'authentication' => RealNameIdent::where('user_id', $userId)->first(),
+        ]);
     }
 
     /**
