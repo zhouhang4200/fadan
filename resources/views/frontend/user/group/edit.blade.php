@@ -92,15 +92,15 @@
             var updateError = "{{ session('updateError') ?: '' }}";
 
             if (error) {
-                layer.msg(error, {icon: 5, time:1500},);
+                layer.msg(error, {icon: 5, time:1500});
             } else if(missError) {
-                layer.msg(missError, {icon: 5, time:1500},);
+                layer.msg(missError, {icon: 5, time:1500});
             } else if(createError) {
-                layer.msg(createError, {icon: 5, time:1500},);
+                layer.msg(createError, {icon: 5, time:1500});
             } else if(masterError) {
-                layer.msg(masterError, {icon: 5, time:1500},);
+                layer.msg(masterError, {icon: 5, time:1500});
             } else if(updateError) {
-                layer.msg(updateError, {icon: 5, time:1500},);
+                layer.msg(updateError, {icon: 5, time:1500});
             }
 
             //……

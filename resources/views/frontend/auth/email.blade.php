@@ -50,10 +50,8 @@
             var succ = "{{ session('status') ? '发送成功!' : '' }}";
 
             if (error) {
-                layer.msg(error, {icon: 5, time:2000},);
-            } else if (succ) {
-                layer.msg(succ, {icon: 6, time:2000},);
-            }
+                layer.msg(error, {icon: 5, time:2000});            } else if (succ) {
+                layer.msg(succ, {icon: 6, time:2000});            }
 
             //监听提交
             // form.on('submit(formDemo)', function(data){

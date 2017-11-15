@@ -116,13 +116,13 @@
             var passError = "{{ session('passError') ?: '' }}";
 
             if(succ) {
-                layer.msg(succ, {icon: 6, time:1500},);
+                layer.msg(succ, {icon: 6, time:1500});
             } else if(updateError) {
-                layer.msg(updateError, {icon: 5, time:1500},);
+                layer.msg(updateError, {icon: 5, time:1500});
             } else if(hasError) {
-                layer.msg(hasError, {icon: 5, time:1500},);
+                layer.msg(hasError, {icon: 5, time:1500});
             } else if(passError) {
-                layer.msg(passError, {icon: 5, time:1500},);
+                layer.msg(passError, {icon: 5, time:1500});
             }
             form.render();
         });

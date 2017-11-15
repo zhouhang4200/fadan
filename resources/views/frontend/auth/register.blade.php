@@ -70,16 +70,11 @@
             var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱已经存在!' : '' }}";
 
             if (GeetestError) {
-                layer.msg(GeetestError, {icon: 5, time:1500},);
-            }else if (errorName) {
-                layer.msg(errorName, {icon: 5, time:1500},);
-            } else if(errorPassword) {
-                layer.msg(errorPassword, {icon: 5, time:1500},);
-            } else if (errorEmail) {
-                layer.msg(errorEmail, {icon: 5, time:1500},);
-            } else if (loginError) {
-                layer.msg(loginError, {icon: 5, time:1500},);
-            }
+                layer.msg(GeetestError, {icon: 5, time:1500});            }else if (errorName) {
+                layer.msg(errorName, {icon: 5, time:1500});            } else if(errorPassword) {
+                layer.msg(errorPassword, {icon: 5, time:1500});            } else if (errorEmail) {
+                layer.msg(errorEmail, {icon: 5, time:1500});            } else if (loginError) {
+                layer.msg(loginError, {icon: 5, time:1500});            }
         });
     </script>
 @endsection

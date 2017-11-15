@@ -63,10 +63,8 @@
             var addError = "{{ session('addError') ?: '' }}";
 
             if (error) {
-                layer.msg(error, {icon: 5, time:1500},);
-            } else if(addError) {
-                layer.msg(addError, {icon: 5, time:1500},);
-            }
+                layer.msg(error, {icon: 5, time:1500});            } else if(addError) {
+                layer.msg(addError, {icon: 5, time:1500});            }
 
             form.verify({
                 length: [

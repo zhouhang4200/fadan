@@ -110,12 +110,9 @@
         var missError = "{{ session('missError') ?: '' }}";
 
         if (error) {
-            layer.msg(error, {icon: 5, time:1500},);
-        } else if(createFail) {
-            layer.msg(createFail, {icon: 5, time:1500},);
-        } else if(missError) {
-            layer.msg(missError, {icon: 5, time:1500},);
-        }
+            layer.msg(error, {icon: 5, time:1500});        } else if(createFail) {
+            layer.msg(createFail, {icon: 5, time:1500});        } else if(missError) {
+            layer.msg(missError, {icon: 5, time:1500});        }
   
       //……
       

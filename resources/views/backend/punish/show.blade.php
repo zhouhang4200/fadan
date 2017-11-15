@@ -106,10 +106,8 @@
             var createFail = "{{ session('createFail') ?: '' }}";
 
             if (error) {
-                layer.msg(error, {icon: 5, time:1500},);
-            } else if(createFail) {
-                layer.msg(createFail, {icon: 5, time:1500},);
-            }
+                layer.msg(error, {icon: 5, time:1500});            } else if(createFail) {
+                layer.msg(createFail, {icon: 5, time:1500});            }
           form.render();
         });  
 

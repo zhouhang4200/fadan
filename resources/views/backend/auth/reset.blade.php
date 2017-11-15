@@ -59,10 +59,8 @@
             var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱填写错误!' : '' }}";
 
             if(errorEmail) {
-                layer.msg(errorEmail, {icon: 5, time:1500},);
-            } else if (errorPassword) {
-                layer.msg(errorPassword, {icon: 5, time:1500},);
-            }
+                layer.msg(errorEmail, {icon: 5, time:1500});            } else if (errorPassword) {
+                layer.msg(errorPassword, {icon: 5, time:1500});            }
 
             //监听提交
             // form.on('submit(formDemo)', function(data){

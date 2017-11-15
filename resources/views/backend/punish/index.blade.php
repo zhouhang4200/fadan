@@ -155,11 +155,9 @@
                     url: '/admin/punish/punishes/'+id,
                     success: function (data) {
                         if (data.code == 1) {
-                            layer.msg('删除成功!', {icon: 6, time:1500},);
-                            window.location.href = "{{ route('punishes.index') }}";                    
+                            layer.msg('删除成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
                         } else {
-                            layer.msg('删除失败!', {icon: 5, time:1500},);
-                        }
+                            layer.msg('删除失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);

@@ -128,11 +128,9 @@
                         url: '/users/'+id,
                         success: function (data) {
                             if (data.code == 1) {
-                                layer.msg(data.message, {icon: 6, time:1000},);
-                                window.location.href = "{{ route('users.index') }}";
+                                layer.msg(data.message, {icon: 6, time:1000});                                window.location.href = "{{ route('users.index') }}";
                             } else {
-                                layer.msg('删除失败', {icon: 5, time:1500},);
-                            }
+                                layer.msg('删除失败', {icon: 5, time:1500});                            }
                         }
                     });
                     layer.close(index);
@@ -153,11 +151,9 @@
                         url: '/user-groups/'+id,
                         success: function (data) {                    
                             if (data.code == 1) {
-                                layer.msg('删除成功!', {icon: 6, time:1500},);
-                                window.location.href = "{{ route('users.index') }}";                    
+                                layer.msg('删除成功!', {icon: 6, time:1500});                                window.location.href = "{{ route('users.index') }}";                    
                             } else {
-                                layer.msg('删除失败!', {icon: 5, time:1500},);
-                            }
+                                layer.msg('删除失败!', {icon: 5, time:1500});                            }
                         }
                     });
                     layer.close(index);
@@ -174,8 +170,7 @@
             var succ = "{{ session('succ') ?: '' }}";
 
             if(succ) {
-                layer.msg(succ, {icon: 6, time:1500},);
-            }  
+                layer.msg(succ, {icon: 6, time:1500});            }  
               //……
           
           //但是，如果你的HTML是动态生成的，自动渲染就会失效

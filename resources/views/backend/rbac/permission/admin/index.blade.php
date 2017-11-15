@@ -63,11 +63,9 @@
                         url: '/admin/rbac/permissions/'+id,
                         success: function (data) {
                             if (data.code == 1) {
-                                layer.msg('删除成功!', {icon: 6, time:1500},);
-                                window.location.href = "{{ route('admin-permissions.index') }}";                    
+                                layer.msg('删除成功!', {icon: 6, time:1500});                                window.location.href = "{{ route('admin-permissions.index') }}";                    
                             } else {
-                                layer.msg('删除失败!', {icon: 5, time:1500},);
-                            }
+                                layer.msg('删除失败!', {icon: 5, time:1500});                            }
                         }
                     });
                     layer.close(index);
@@ -83,8 +81,7 @@
             var succ = "{{ session('succ') ?: '' }}";
 
             if(succ) {
-                layer.msg(succ, {icon: 6, time:1500},);
-            }
+                layer.msg(succ, {icon: 6, time:1500});            }
 
             //监听提交
             form.on('submit(formDemo)', function(data){

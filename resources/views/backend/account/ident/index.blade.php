@@ -151,8 +151,7 @@
         var succ = "{{ session('succ') ?: '' }}";
 
         if(succ) {
-            layer.msg(succ, {icon: 6, time:1500},);
-        }
+            layer.msg(succ, {icon: 6, time:1500});        }
   
           //……
           

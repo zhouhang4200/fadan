@@ -104,12 +104,9 @@
         var missRole = "{{ session('missRole') ?: '' }}";
 
         if (error) {
-            layer.msg(error, {icon: 5, time:1500},);
-        } else if(storeError) {
-            layer.msg(storeError, {icon: 5, time:1500},);
-        } else if(missRole) {
-            layer.msg(missRole, {icon: 5, time:1500},);
-        }
+            layer.msg(error, {icon: 5, time:1500});        } else if(storeError) {
+            layer.msg(storeError, {icon: 5, time:1500});        } else if(missRole) {
+            layer.msg(missRole, {icon: 5, time:1500});        }
   
       //……
       

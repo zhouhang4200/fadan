@@ -46,7 +46,7 @@
             var updateFail = "{{ session('updateFail') ?: '' }}";
 
             if(updateFail) {
-                layer.msg(updateFail, {icon: 5, time:1500},);
+                layer.msg(updateFail, {icon: 5, time:1500});
             }
             form.verify({
                 length: [
