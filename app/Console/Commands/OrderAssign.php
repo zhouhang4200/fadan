@@ -54,13 +54,11 @@ class OrderAssign extends Command
                 $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
-                if ($minutes >= 20) {
+                if ($minutes >= 40) {
                     Order::handle(new Cancel($orderNo, 0));
-                    waitReceivingQuantitySub();
-                    waitReceivingDel($orderNo);
                 } else {
                     // 可接单时间与当前时间的差
-                    $minutes = $carbon->diffInMinutes(Carbon::parse($data->receiving_date), false);
+//                    $minutes = $carbon->diffInMinutes(Carbon::parse($data->receiving_date), false);
                     // 检测是否有人接单并且可接单时间大于等于了一分钟了: 是则将订单改为不可接单，然后分配订单。否有则加一分钟，重新写入hash表中
 //                    if (receivingUserLen($orderNo) && $minutes >= 1) {
 
@@ -73,11 +71,6 @@ class OrderAssign extends Command
                         // 分配订单
                         try {
                             Order::handle(new Receiving($orderNo, $userId));
-                            waitReceivingDel($orderNo);
-                            // 待接单数量减1
-                            waitReceivingQuantitySub();
-                            // 待接单数量
-                            event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                         } catch (CustomException $exception) {
                             Log::alert($exception->getMessage());
                         }
