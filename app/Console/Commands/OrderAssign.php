@@ -45,7 +45,7 @@ class OrderAssign extends Command
         \Log::alert(date('Y-m-d H:i:s'));
 
         for ($i = 1; $i<=60; $i++) {
-//            sleep(1);
+            sleep(1);
             $carbon = new Carbon;
 
             // 获取所有待分配订单
