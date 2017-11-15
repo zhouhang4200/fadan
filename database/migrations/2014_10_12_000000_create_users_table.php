@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->tinyInteger('parent_id')->unsigned()->default(0)->comment('父id');
             $table->string('name')->unique();
+            $table->string('nickname');
             $table->string('email')->unique();
             $table->string('password');
             $table->tinyInteger('online')->default(0)->comment('是否在线：0 否 1 是');

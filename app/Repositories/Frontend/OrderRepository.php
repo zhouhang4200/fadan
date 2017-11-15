@@ -89,41 +89,23 @@ class OrderRepository
      */
     public function detail($orderNo)
     {
-        return Order::orWhere(function ($query) use ($orderNo) {
-            $query->where(['creator_user_id' => Auth::user()->id, 'no' => $orderNo]);
-        })->orWhere(function ($query)  use ($orderNo) {
-            $query->where(['creator_primary_user_id' => Auth::user()->id, 'no' => $orderNo]);
-        })->orWhere(function ($query)  use ($orderNo) {
-            $query->where(['gainer_user_id' => Auth::user()->id, 'no' => $orderNo])
+//        return Order::orWhere(function ($query) use ($orderNo) {
+//            $query->where(['creator_user_id' => Auth::user()->id, 'no' => $orderNo]);
+//        })->orWhere(function ($query)  use ($orderNo) {
+//            $query->where(['creator_primary_user_id' => Auth::user()->id, 'no' => $orderNo]);
+//        })->orWhere(function ($query)  use ($orderNo) {
+//            $query->where(['gainer_user_id' => Auth::user()->id, 'no' => $orderNo])
+//                ->where('status', '>', 2);
+//        })->orWhere(function ($query)  use ($orderNo) {
+//            $query->where(['gainer_primary_user_id' => Auth::user()->id, 'no' => $orderNo])
+//                ->where('status', '>', 2);
+        $primaryUserId = Auth::user()->getPrimaryUserId();
+        return Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
+            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo])
                 ->where('status', '>', 2);
-        })->orWhere(function ($query)  use ($orderNo) {
-            $query->where(['gainer_primary_user_id' => Auth::user()->id, 'no' => $orderNo])
+        })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
+            $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo])
                 ->where('status', '>', 2);
         })->with(['detail', 'foreignOrder'])->first();
-    }
-
-    /**
-     * 解决Laravel union 时不能分页问题
-     * @param $query
-     * @param int $perPage
-     * @return LengthAwarePaginator
-     */
-    public function paginate($query, $perPage = 15)
-    {
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-
-        $statement = $query->toSql();
-        foreach($query->getBindings() as $binding) {
-            $statement = str_replace_first('?', gettype($binding) === "string" ? DB::connection()->getPdo()->quote($binding) : $binding, $statement);
-        }
-        $statement = str_replace('*', 'id', $statement);
-        $count = collect(\DB::select('SELECT COUNT(*) as aggregate FROM (' . $statement . ') as items'))->pluck('aggregate')->get(0);
-
-        return new LengthAwarePaginator(
-            $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get(),
-            $count,
-            $perPage,
-            $currentPage
-        );
     }
 }

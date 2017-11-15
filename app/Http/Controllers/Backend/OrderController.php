@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Repositories\Backend\GameRepository;
-use App\Repositories\Backend\ServiceRepository;
-use Auth;
+use Auth, View;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Repositories\Backend\GameRepository;
+use App\Repositories\Backend\ServiceRepository;
 
 /**
  * Class OrderController
@@ -64,6 +65,28 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        return view('backend.order.show', compact('order'));
+        return view('backend.order.show');
+    }
+
+    /**
+     * 查看订单内容
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function content(Request $request)
+    {
+        return response()->json(View::make('backend.order', [
+            'content' => Order::with('detail')->find($request->id),
+        ])->render());
+    }
+
+    /**
+     * 订单操作记录
+     * @param Request $request
+     */
+    public function record(Request $request)
+    {
+
     }
 }

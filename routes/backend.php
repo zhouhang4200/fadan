@@ -195,6 +195,10 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
         Route::get('orders', 'OrderController@index')->name('orders.index')->middleware('permission:orders.index');
         // 订单详情
         Route::get('orders/{id}', 'OrderController@show')->name('orders.show')->middleware('permission:orders.show');
+        // 订单内容
+        Route::post('orders/content', 'OrderController@content')->name('orders.content')->middleware('permission:orders.content');
+        // 订单操作记录
+        Route::post('orders/record', 'OrderController@record')->name('orders.record')->middleware('permission:orders.record');
     });
 
     // 财务
