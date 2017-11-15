@@ -74,7 +74,7 @@
                             <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
-                                    <th>订单号</th>
+                                    <th width="19%">订单号</th>
                                     <th>来源</th>
                                     <th>状态</th>
                                     <th>商品</th>
@@ -85,8 +85,8 @@
                                     <th>售价</th>
                                     <th>数量</th>
                                     <th>总额</th>
-                                    <th>发单人(子账号)</th>
-                                    <th>接单人(子账号)</th>
+                                    <th>发单人</th>
+                                    <th>接单人</th>
                                     <th>下单时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -105,11 +105,11 @@
                                         <td>{{ $order->price }}</td>
                                         <td>{{ $order->quantity }}</td>
                                         <td>{{ $order->amount }}</td>
-                                        <td> {{ $order->creator_primary_user_id }}({{  $order->creator_user_id }})</td>
-                                        <td>{{ $order->gainer_primary_user_id }}({{  $order->gainer_user_id }})</td>
+                                        <td> {{ $order->creator_primary_user_id }}</td>
+                                        <td>{{ $order->gainer_primary_user_id }}</td>
                                         <td>{{ $order->created_at }}</td>
                                         <td>
-                                            <a type="button" class="layui-btn layui-btn-normal layui-btn-mini " href="{{ route('orders.show', ['order' => $order->id]) }}">详情</a>
+                                            <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('orders.show', ['order' => $order->id]) }}">详情</a>
                                         </td>
                                     </tr>
                                 @empty
