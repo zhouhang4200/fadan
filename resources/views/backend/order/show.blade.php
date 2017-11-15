@@ -7,6 +7,7 @@
         <div class="col-lg-12">
             <ol class="breadcrumb">
                 <li class=""><span>首页</span></li>
+                <li class=""><a href="{{ route('orders.index') }}"><span>订单列表</span></a></li>
                 <li class="active"><span>订单详情</span></li>
             </ol>
         </div>
@@ -40,19 +41,24 @@
     layui.use(['layer', 'element'], function () {
         var element = layui.element;
 
+        getContent();
+
         element.on('tab(detail)', function(elem){
             var action = $(this).attr('lay-id');
             if (action == 'content') {
-                $.post('{{ route('orders.content') }}', {id:'{{ Route::input('id') }}'},function(result){
-                    $('.content').html(result);
-                }, 'json')
+                getContent();
             } else {
                 $.post('{{ route('orders.record') }}', {id:'{{ Route::input('id') }}'},function(result){
-                    layer.msg(result.message);
-                });
+                    $('.record').html(result);
+                }, 'json');
             }
-
         });
+        // 获取订单内容
+        function getContent() {
+            $.post('{{ route('orders.content') }}', {id:'{{ Route::input('id') }}'},function(result){
+                $('.content').html(result);
+            }, 'json')
+        }
     });
 </script>
 @endsection

@@ -84,9 +84,12 @@ class OrderController extends Controller
     /**
      * 订单操作记录
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function record(Request $request)
     {
-
+        return response()->json(View::make('backend.order.partials.order-record', [
+            'record' => Order::with('history')->find($request->id),
+        ])->render());
     }
 }
