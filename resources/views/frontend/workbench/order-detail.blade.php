@@ -75,7 +75,7 @@
             </li>
             <li class="overflow">
                 <div class="item-banner left cm-padding">旺旺</div>
-                <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid= {{ $order->foreignOrder->wang_wang }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title=" {{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
+                <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{$order->foreignOrder->wang_wang}}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="{{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
             </li>
             @endif
         </ul>
