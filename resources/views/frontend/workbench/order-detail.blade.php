@@ -1,7 +1,4 @@
 <html>
-<header>
-
-</header>
 <style>
     html, body {
         background-color: #eee;
@@ -59,6 +56,16 @@
                 </p>
             </div>
         </div>
+        <ul class="bg-white cm-border cm-item overflow cm-margin">
+            <li class="overflow">
+                <div class="item-banner left cm-padding">{{ Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id ? '接单商家ID' : '发单商家ID'}}</div>
+                <div class="item-content left cm-padding">{{ Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id ? $order->gainer_primary_user_id == 0 ? '' : $order->gainer_primary_user_id : $order->creator_primary_user_id }}</div>
+            </li>
+            <li class="overflow">
+                <div class="item-banner left cm-padding">状态</div>
+                <div class="item-content left cm-padding"> {{ config('order.status')[$order->status] }}</div>
+            </li>
+        </ul>
         @if(isset($order->foreignOrder->channel))
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
@@ -69,13 +76,6 @@
             </li>
         </ul>
         @endif
-        <ul class="bg-white cm-border cm-item overflow cm-margin">
-            <li class="overflow">
-                <div class="item-banner left cm-padding">状态</div>
-                <div class="item-content left cm-padding"> {{ config('order.status')[$order->status] }}</div>
-            </li>
-        </ul>
-
         <ul class="bg-white cm-border cm-item overflow cm-margin">
             <li class="overflow">
                 <div class="item-banner left cm-padding">订单</div>
