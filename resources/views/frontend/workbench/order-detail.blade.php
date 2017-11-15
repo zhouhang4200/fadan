@@ -68,12 +68,16 @@
         </ul>
         @if(isset($order->foreignOrder->channel))
         <ul class="bg-white cm-border cm-item overflow cm-margin">
+            @if($order->foreignOrder->channel == 3)
             <li class="overflow">
-                @if($order->foreignOrder->channel == 3)
-                    <div class="item-banner left cm-padding">旺旺</div>
-                    <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid= {{ $order->foreignOrder->wang_wang }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title=" {{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
-                @endif
+                <div class="item-banner left cm-padding">店铺</div>
+                <div class="item-content left cm-padding">{{ $order->foreignOrder->channel_name }}</div>
             </li>
+            <li class="overflow">
+                <div class="item-banner left cm-padding">旺旺</div>
+                <div class="item-content left cm-padding"><a href="http://www.taobao.com/webww/ww.php?ver=3&touid= {{ $order->foreignOrder->wang_wang }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title=" {{ $order->foreignOrder->wang_wang }}"> {{ $order->foreignOrder->wang_wang }}</a> </div>
+            </li>
+            @endif
         </ul>
         @endif
         <ul class="bg-white cm-border cm-item overflow cm-margin">
