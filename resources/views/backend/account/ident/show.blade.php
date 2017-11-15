@@ -159,7 +159,6 @@
                                                                name="license_picture">
                                                         <div class="layui-upload-list"
                                                              style="background-image: url({{ $ident->license_picture }})">
-                                                            <img class="layui-upload-img" id="demo1">
                                                             <input type="hidden" name="license_picture"
                                                                    value="{{ $ident->license_picture }}">
                                                             <p id="demoText"></p>
@@ -174,7 +173,6 @@
                                                                name="bank_open_account_picture">
                                                         <div class="layui-upload-list"
                                                              style="background-image: url({{ $ident->bank_open_account_picture }})">
-                                                            <img class="layui-upload-img" id="demo5">
                                                             <input type="hidden" name="bank_open_account_picture"
                                                                    value="{{ $ident->bank_open_account_picture }}">
                                                             <p id="demoText"></p>
@@ -188,7 +186,6 @@
                                                         <input class="layui-upload-file" type="file"
                                                                name="agency_agreement_picture">
                                                         <div class="layui-upload-list" style="background-image: url({{ $ident->agency_agreement_picture }})">
-                                                            <img class="layui-upload-img" id="demo6">
                                                             <input type="hidden" name="agency_agreement_picture"
                                                                    value="{{ $ident->agency_agreement_picture }}">
                                                             <p id="demoText"></p>
@@ -275,8 +272,7 @@
                                                     <div class="layui-upload">
 
                                                         <div class="layui-upload-list" style="background-image: url({{ $ident->front_card_picture }})">
-                                                            <img class="layui-upload-img" id="demo2"
-                                                                 src="">
+
                                                             <input type="hidden" name="front_card_picture"
                                                                    value="{{ $ident->front_card_picture }}">
                                                             <p id="demoText"></p>
@@ -288,7 +284,6 @@
                                                     <div class="layui-upload">
 
                                                         <div class="layui-upload-list" style="background-image: url({{ $ident->back_card_picture }})">
-                                                            <img class="layui-upload-img" id="demo3" src="">
                                                             <input type="hidden" name="back_card_picture"
                                                                    value="{{ $ident->back_card_picture }}">
                                                             <p id="demoText"></p>
@@ -300,8 +295,7 @@
                                                     <div class="layui-upload">
 
                                                         <div class="layui-upload-list" style="background-image: url({{ $ident->hold_card_picture }})">
-                                                            <img class="layui-upload-img" id="demo4"
-                                                                 src="">
+
                                                             <input type="hidden" name="hold_card_picture"
                                                                    value="{{ $ident->hold_card_picture }}">
                                                             <p id="demoText"></p>
