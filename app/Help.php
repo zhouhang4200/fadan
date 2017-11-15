@@ -173,16 +173,24 @@ if (!function_exists('waitReceivingDel')) {
 }
 
 if (!function_exists('waitReceivingAdd')) {
+
     /**
      * 添加 待接单的订单
-     * @param $orderNo
+     * @param integer $orderNo 订单号
+     * @param string $receivingDate 可接单时间
+     * @param string $createdDate 订单创建时间
+     * @param string $wangWang 关联的旺旺
      * @return mixed
      */
-    function waitReceivingAdd($orderNo, $json)
+    function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '')
     {
         $redis = RedisConnect::order();
         
-        return $redis->hset(config('redis.order.waitReceiving'), $orderNo, $json);
+        return $redis->hset(config('redis.order.waitReceiving'), $orderNo, json_encode([
+            'receiving_date' => $receivingDate,
+            'created_date' => $createdDate,
+            'wang_wang' => $wangWang,
+        ]));
     }
 }
 
@@ -363,5 +371,41 @@ if (!function_exists('whoCanReceiveOrder')) {
 
             return true;
         }
+    }
+}
+
+
+if (!function_exists('wangWangToUserId')) {
+    /**
+     * 记录某个旺旺号的订单分配到的了那商户
+     * @param $wangWang
+     * @param $userId
+     */
+    function wangWangToUserId($wangWang, $userId)
+    {
+        $redis = RedisConnect::order();
+        $redis->setex(config('redis.order.wangWangToUserId') . $wangWang, config('redis.order.wangWangToUserIdRecordTime'), $userId);
+    }
+}
+if (!function_exists('wangWangGetUserId')) {
+    /**
+     * 获取某个旺旺号关联的商户D
+     * @param $wangWang
+     */
+    function wangWangGetUserId($wangWang)
+    {
+        $redis = RedisConnect::order();
+        return $redis->get(config('redis.order.wangWangToUserId') . $wangWang);
+    }
+}
+if (!function_exists('wangWangDeleteUserId')) {
+    /**
+     * 删除某个旺旺号关联的商户D
+     * @param $wangWang
+     */
+    function wangWangDeleteUserId($wangWang)
+    {
+        $redis = RedisConnect::order();
+        $redis->del(config('redis.order.wangWangToUserId') . $wangWang);
     }
 }

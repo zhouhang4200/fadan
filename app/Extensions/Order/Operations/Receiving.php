@@ -60,7 +60,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
     public function after()
     {
         if ($this->runAfter) {
-            waitReceivingDel($this->order->on);
+            waitReceivingDel($this->order->no);
             // 待接单数量减1
             waitReceivingQuantitySub();
             // 待接单数量

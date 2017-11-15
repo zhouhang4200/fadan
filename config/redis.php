@@ -4,6 +4,10 @@ return [
     'timeout' => '36000',
     // 订单相关
     'order' => [
+        // 记录某个旺旺号的订单分配到的了那商户
+        'wangWangToUserId' => 'order:wangWangToUserId:',
+        // 记录某个旺旺号的订单分配到的了那商户，有效时间 30 分钟
+        'wangWangToUserIdRecordTime' => 1800,
         // 订单号自增数量
         'quantity' => 'order:quantity:',
         // 待接单哈希表

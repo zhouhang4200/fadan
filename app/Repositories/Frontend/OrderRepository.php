@@ -24,7 +24,7 @@ class OrderRepository
         $type = Auth::user()->type; // 账号类型是接单还是发单
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
 
-        $query = Order::select(['id','no','source','status','goods_id','goods_name','service_id','service_name',
+        $query = Order::select(['id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id','service_name',
             'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         ]);

@@ -123,6 +123,7 @@ class KamenForeignOrder extends ForeignOrder
                     $data['price'] = $model->details->ProductPrice;
                 }
                 $data['kamen_site_id'] = $model->details->JSitid;
+                $data['wang_wang'] = $model->wang_wang;
     			return $data;
     		}
     	}

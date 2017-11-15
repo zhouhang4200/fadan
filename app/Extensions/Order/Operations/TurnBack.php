@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Weight;
 use App\Services\KamenOrderApi;
 use Carbon\Carbon;
+use Illuminate\Contracts\Logging\Log;
 
 // 接单后，转回集市
 class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
@@ -57,6 +58,7 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
         if (!$weight->save()) {
             throw new Exception('权重凭证保存失败');
         }
+        $this->runAfter = true;
     }
 
     /**
@@ -65,6 +67,7 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
     public function after()
     {
         if ($this->runAfter) {
+
             $carbon = new Carbon;
             $minutes = $carbon->diffInMinutes($this->order->created_at);
 
@@ -83,14 +86,17 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
                 // 待接单数量刷新
                 event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
                 // 给所有用户推送新订单消息
-                event(new NotificationEvent('NewOrderNotification', $this->order->get()->toArray()));
+                event(new NotificationEvent('NewOrderNotification', $this->order->toArray()));
                 // 重写放入订单集市
-                waitReceivingAdd($this->order->no, json_encode([
-                    'receiving_date' => Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(),
-                    'created_date' => Order::get()->created_at->toDateTimeString()
-                ]));
+                waitReceivingAdd($this->order->no,
+                    Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(),
+                    $this->order->created_at->toDateTimeString()
+                );
+            }
+            // 如果订单存旺旺并关取了商户ID则删除关联关系
+            if ($this->order->foreignOrder && $this->order->foreignOrder->wang_wang) {
+                wangWangDeleteUserId($this->order->foreignOrder->wang_wang);
             }
         }
-
     }
 }
