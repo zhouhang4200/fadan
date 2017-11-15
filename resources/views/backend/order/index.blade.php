@@ -82,8 +82,8 @@
                                     <th>游戏</th>
                                     <th>原售价</th>
                                     <th>原总额</th>
-                                    <th>售价</th>
                                     <th>数量</th>
+                                    <th>售价</th>
                                     <th>总额</th>
                                     <th>发单人</th>
                                     <th>接单人</th>
@@ -102,8 +102,8 @@
                                         <td>{{ $order->game_name }}</td>
                                         <td>{{ $order->original_price }}</td>
                                         <td>{{ $order->original_amount }}</td>
-                                        <td>{{ $order->price }}</td>
                                         <td>{{ $order->quantity }}</td>
+                                        <td>{{ $order->price }}</td>
                                         <td>{{ $order->amount }}</td>
                                         <td> {{ $order->creator_primary_user_id }}</td>
                                         <td>{{ $order->gainer_primary_user_id }}</td>
