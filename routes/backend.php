@@ -197,6 +197,8 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
     Route::group([], function () {
         // 订单列表
         Route::get('orders', 'OrderController@index')->name('orders.index')->middleware('permission:orders.index');
+        // 外部订单
+        Route::get('foreign', 'OrderController@foreign')->name('orders.foreign')->middleware('permission:orders.foreign');
         // 订单详情
         Route::get('orders/{id}', 'OrderController@show')->name('orders.show')->middleware('permission:orders.show');
         // 订单内容

@@ -24,7 +24,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <ul class="submenu">
                                 <li>
                                     <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
-                                        订单列表
+                                        集市订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('orders.foreign') }}" @if($currentRouteName == 'orders.foreign') class="active" @endif>
+                                        外部订单
                                     </a>
                                 </li>
                             </ul>

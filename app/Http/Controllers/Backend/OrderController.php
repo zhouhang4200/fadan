@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Repositories\Backend\ForeignOrderRepository;
 use Auth, View;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -91,5 +92,38 @@ class OrderController extends Controller
         return response()->json(View::make('backend.order.partials.order-record', [
             'record' => Order::with('history')->find($request->id),
         ])->render());
+    }
+
+    /**
+     * 外部订单
+     * @param Request $request
+     * @param ForeignOrderRepository $foreignOrderRepository
+     * @return mixed
+     */
+    public function foreign(Request $request, ForeignOrderRepository $foreignOrderRepository)
+    {
+        $startDate = $request->input('start_date', date('Y-m-d'));
+
+        $orders = $foreignOrderRepository->dataList(
+            $startDate,
+            $request->end_date,
+            $request->source_id,
+            $request->channel_name,
+            $request->kamen_order_no,
+            $request->foreign_goods_id,
+            $request->foreign_order_no
+            );
+
+        return view('backend.order.foreign')->with([
+            'orders' => $orders,
+            'channel' => \DB::table('site_info')->pluck('name', 'id')->toArray(),
+            'startDate' => $startDate,
+            'endDate' => $request->end_date,
+            'sourceId' => $request->source_id,
+            'channelName' => $request->channel_name,
+            'kamenOrderNo' => $request->kamen_order_no,
+            'foreignGoodsId' => $request->foreign_goods_id,
+            'foreignOrderNo' => $request->foreign_order_no,
+        ]);
     }
 }
