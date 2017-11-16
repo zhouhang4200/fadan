@@ -472,9 +472,13 @@
         }
         // 订单发货
         function delivery(no) {
-            $.post('{{ route('frontend.workbench.order-operation.delivery') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.confirm('您确定订单完成要发货吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('{{ route('frontend.workbench.order-operation.delivery') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json');
+                layer.close(index);
+            });
+
         }
         // 失败订单
         function fail(no) {
@@ -495,11 +499,13 @@
                 notification(result.status, result.message)
             }, 'json')
         }
-        // 取消订单
+        // 确认收货
         function confirm(no) {
-            $.post('{{ route('frontend.workbench.order-operation.confirm') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.confirm('您确定要"确认收货"吗?', {icon: 3, title:'提示'}, function(index) {
+                $.post('{{ route('frontend.workbench.order-operation.confirm') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            });
         }
         // 返回集市
         function turnBack(no) {
