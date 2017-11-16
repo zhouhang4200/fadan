@@ -26,7 +26,7 @@ class OrderAssignTemp extends Command
      *
      * @var string
      */
-    protected $signature = 'Order:Assign {no} {user}';
+    protected $signature = 'Order:AssignTemp {no} {user}';
 
     /**
      * The console command description.
