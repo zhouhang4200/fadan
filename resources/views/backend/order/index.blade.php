@@ -80,13 +80,13 @@
                                     <th>商品</th>
                                     <th>服务</th>
                                     <th>游戏</th>
-                                    <th>原售价</th>
+                                    <th>原单价</th>
                                     <th>原总额</th>
                                     <th>数量</th>
-                                    <th>售价</th>
+                                    <th>单价</th>
                                     <th>总额</th>
-                                    <th>发单人</th>
-                                    <th>接单人</th>
+                                    <th>发单</th>
+                                    <th>接单</th>
                                     <th>下单时间</th>
                                     <th>操作</th>
                                 </tr>
