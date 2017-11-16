@@ -4,9 +4,41 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Extensions\Revisionable\RevisionableTrait;
 
+/**
+ * Class RealNameIdent
+ * @package App\Models
+ */
 class RealNameIdent extends Model
 {
+    use RevisionableTrait;
+
+    /**
+     * 开启监听
+     * @var bool
+     */
+    protected $revisionCreationsEnabled = true;
+
+    /**
+     * 自动清除记录
+     * @var bool
+     */
+    protected $revisionCleanup = true;
+
+    /**
+     * 保存多少条记录
+     * @var int
+     */
+    protected $historyLimit = 50000;
+
+    /**
+     * 不监听的字段
+     * @var array
+     */
+    protected $dontKeepRevisionOf = ['id'];
+
+
     public $timestamps = true;
 
     protected $guarded = [];
@@ -63,9 +95,9 @@ class RealNameIdent extends Model
 
     /**
      * 子账号查找
-     * @param  [type] $query   [description]
-     * @param  array  $filters [description]
-     * @return Illuminate\Database\Eloquent\query
+     * @param $query
+     * @param array $filters
+     * @return mixed
      */
     public static function scopeFilter($query, $filters = [])
     {

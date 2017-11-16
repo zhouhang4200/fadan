@@ -9,10 +9,36 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Extensions\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, SoftDeletes;
+    use Notifiable, HasRoles, SoftDeletes,  RevisionableTrait;
+
+    /**
+     * 开启监听
+     * @var bool
+     */
+    protected $revisionCreationsEnabled = true;
+
+    /**
+     * 自动清除记录
+     * @var bool
+     */
+    protected $revisionCleanup = true;
+
+    /**
+     * 保存多少条记录
+     * @var int
+     */
+    protected $historyLimit = 50000;
+
+    /**
+     * 不监听的字段
+     * @var array
+     */
+    protected $keepRevisionOf = ['id', 'type'];
+
 
     /**
      * The attributes that are mass assignable.
@@ -33,12 +59,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    protected $keepRevisionOf = array(
-        'updated_at'
-    );
-
-    protected $revisionCreationsEnabled = true;
 
     /**
      * @return array

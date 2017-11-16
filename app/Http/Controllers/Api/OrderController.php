@@ -24,7 +24,7 @@ class OrderController extends Controller
 
     public function KamenOrder(Request $request)
     {
-        if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50'])) {
+        if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50', '127.0.0.1'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
             if (isset($orderData['price'])) {

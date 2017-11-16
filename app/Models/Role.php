@@ -9,6 +9,24 @@ use Spatie\Permission\Models\Role as SpatieRole;
 class Role extends SpatieRole
 {
     use RevisionableTrait;
+
+    /**
+     * 开启监听
+     * @var bool
+     */
+    protected $revisionCreationsEnabled = true;
+
+    /**
+     * 自动清除记录
+     * @var bool
+     */
+    protected $revisionCleanup = true;
+
+    /**
+     * 保存多少条记录
+     * @var int
+     */
+    protected $historyLimit = 50000;
     
     public function __construct(array $attributes = [])
     {
@@ -19,11 +37,6 @@ class Role extends SpatieRole
         $this->setTable(config('permission.table_names.roles'));
     }
 
-    protected $keepRevisionOf = array(
-        'name', 'alias'
-    );
-
-    protected $revisionCreationsEnabled = true;
 
     public function setNameAttribute($value)
     {

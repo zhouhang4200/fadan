@@ -3,9 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Extensions\Revisionable\RevisionableTrait;
 
 class Game extends Model
 {
+    use RevisionableTrait;
+
+    /**
+     * 开启监听
+     * @var bool
+     */
+    protected $revisionCreationsEnabled = true;
+
+    /**
+     * 自动清除记录
+     * @var bool
+     */
+    protected $revisionCleanup = true;
+
+    /**
+     * 保存多少条记录
+     * @var int
+     */
+    protected $historyLimit = 50000;
+
     public $fillable = [
       'name',
       'sortord',

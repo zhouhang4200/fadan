@@ -66,7 +66,7 @@ class OrderAssign extends Command
 //                    if (receivingUserLen($orderNo) && $minutes >= 1) {
                     $userId = 0;
                     // 如果该订单旺旺在三十分钟分内下过单则找出之前的订单分给哪个商户，直接将该单分给该商户
-                    if (!empty($data->wang_wang)) {
+                    if ($data->wang_wang) {
                         $userId = wangWangGetUserId($data->wang_wang);
                     }
 

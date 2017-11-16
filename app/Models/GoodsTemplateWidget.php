@@ -3,9 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Extensions\Revisionable\RevisionableTrait;
 
 class GoodsTemplateWidget extends Model
 {
+    use RevisionableTrait;
+
+    /**
+     * 开启监听
+     * @var bool
+     */
+    protected $revisionCreationsEnabled = true;
+
+    /**
+     * 自动清除记录
+     * @var bool
+     */
+    protected $revisionCleanup = true;
+
+    /**
+     * 保存多少条记录
+     * @var int
+     */
+    protected $historyLimit = 50000;
+
+    /**
+     * @var array
+     */
     public $fillable = [
         'goods_template_id',
         'field_display_name',
