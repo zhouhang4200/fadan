@@ -47,7 +47,7 @@
                                 <tr class="{{ $item->status == 0 ? 'layui-bg-red' : '' }}">
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->name }}</td>
-                                    <td>{{ $item->createdAdmin->name }}</td>
+                                    <td>{{ $item->createdAdmin->name ?? '无' }}</td>
                                     <td>{{ $item->updatedAdmin->name ?? '无' }}</td>
                                     <td>{{ $item->created_at }}</td>
                                     <td>{{ $item->updated_at }}</td>
