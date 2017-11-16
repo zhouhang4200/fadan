@@ -237,6 +237,7 @@
     <ul class="prom-inner">
     </ul>
 </div>
+<div id="audio"></div>
 <!--END 主体-->
 
 @include('frontend.layouts.scripts')
@@ -573,6 +574,7 @@
                 'price':data.price,
                 'remarks':1
             };
+            $('#audio').html('<audio autoplay="autoplay"><source src="/frontend/audio/new-order.mp3" type="audio/mpeg"/></audio>');
             orderHub.addData(notification);
         }
     });
