@@ -46,13 +46,13 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">QQ</label>
                                             <div class="layui-input-block">
-                                                <input type="text" name="qq" required  lay-verify="number" autocomplete="off" class="layui-input" value="{{ $user->qq }}">
+                                                <input type="text" name="qq" disabled readonly  autocomplete="off" class="layui-input" value="{{ $user->qq }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">手机</label>
                                             <div class="layui-input-block">
-                                                <input type="text" name="phone"   lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->phone }}">
+                                                <input type="text" name="phone" disabled readonly   lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->phone }}">
                                             </div>
                                         </div>
 
