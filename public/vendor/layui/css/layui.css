@@ -438,7 +438,7 @@ a cite{font-style: normal; *cursor:pointer;}
 
 /* 表单方框风格 */.layui-form-pane .layui-form-label{width: 110px; padding: 8px 15px; height: 36px; line-height: 20px; border: 1px solid #e6e6e6; border-radius: 2px 0 0 2px; text-align: center; background-color: #FBFBFB; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; box-sizing: border-box;}
 .layui-form-pane .layui-input-inline{margin-left: -1px;}
-.layui-form-pane .layui-input-block{margin-left: 110px; left: -1px;}
+.layui-form-pane .layui-input-block{margin-left: 110px; left: 10px;}
 .layui-form-pane .layui-input{border-radius: 0 2px 2px 0;}
 .layui-form-pane .layui-form-text .layui-form-label{float: none; width: 100%; border-right: 1px solid #e6e6e6; border-radius: 2px; box-sizing: border-box; text-align: left;}
 .layui-form-pane .layui-form-text .layui-input-inline{display: block; margin: 0; top: -1px; clear: both;}
