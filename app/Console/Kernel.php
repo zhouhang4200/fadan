@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DailySettlementPlatformAsset',
         'App\Console\Commands\DailySettlementUserAsset',
         'App\Console\Commands\OrderAssign',
+        'App\Console\Commands\OrderAssignTemp',
         'App\Console\Commands\OrderTestData',
     ];
 
