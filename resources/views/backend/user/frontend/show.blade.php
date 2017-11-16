@@ -26,62 +26,58 @@
                                 <div class="layui-tab-item layui-show detail">
                                     <form class="layui-form" action="">
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">输入框</label>
+                                            <label class="layui-form-label">千手ID</label>
                                             <div class="layui-input-block">
-                                                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                                <input type="text" name="id" required disabled readonly  lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->id }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">密码框</label>
-                                            <div class="layui-input-inline">
-                                                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">选择框</label>
+                                            <label class="layui-form-label">名字</label>
                                             <div class="layui-input-block">
-                                                <select name="city" lay-verify="required">
-                                                    <option value=""></option>
-                                                    <option value="0">北京</option>
-                                                    <option value="1">上海</option>
-                                                    <option value="2">广州</option>
-                                                    <option value="3">深圳</option>
-                                                    <option value="4">杭州</option>
-                                                </select>
+                                                <input type="text" name="name" disabled readonly  lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->name }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">复选框</label>
+                                            <label class="layui-form-label">Email</label>
                                             <div class="layui-input-block">
-                                                <input type="checkbox" name="like[write]" title="写作">
-                                                <input type="checkbox" name="like[read]" title="阅读" checked>
-                                                <input type="checkbox" name="like[dai]" title="发呆">
+                                                <input type="text" name="email" disabled readonly  lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->name }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">开关</label>
+                                            <label class="layui-form-label">QQ</label>
                                             <div class="layui-input-block">
-                                                <input type="checkbox" name="switch" lay-skin="switch">
+                                                <input type="text" name="qq" required  lay-verify="number" autocomplete="off" class="layui-input" value="{{ $user->qq }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">单选框</label>
+                                            <label class="layui-form-label">手机</label>
                                             <div class="layui-input-block">
-                                                <input type="radio" name="sex" value="男" title="男">
-                                                <input type="radio" name="sex" value="女" title="女" checked>
+                                                <input type="text" name="phone"   lay-verify="" autocomplete="off" class="layui-input" value="{{ $user->phone }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">类型</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" name="type" value="1" title="发单" @if($user->type == 1) checked @endif>
+                                                <input type="radio" name="type" value="2" title="接单" @if($user->type == 2) checked @endif>
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">别名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="nickname"   placeholder="可写原千手ID用户识别"  autocomplete="off" class="layui-input" value="{{ $user->nickname }}">
                                             </div>
                                         </div>
                                         <div class="layui-form-item layui-form-text">
-                                            <label class="layui-form-label">文本域</label>
+                                            <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
-                                                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                                <textarea name="remark" placeholder="请输入内容" class="layui-textarea">{{ $user->remark }}</textarea>
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit lay-filter="save">立即提交</button>
                                             </div>
                                         </div>
                                     </form>
@@ -105,8 +101,14 @@
         var form = layui.form;
 
         //监听提交
-        form.on('submit(formDemo)', function(data){
-            layer.msg(JSON.stringify(data.field));
+        form.on('submit(save)', function(data){
+            $.post("{{ route('frontend.user.edit') }}", {
+                id:data.field.id,
+                type:data.field.type,
+                nickname:data.field.nickname,
+                remark:data.field.remark}, function (result) {
+                 layer.msg(result.message);
+            }, 'json');
             return false;
         });
     });

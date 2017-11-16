@@ -84,12 +84,19 @@
     height: 32px  !important;
 }
 
+.layui-form-pane .layui-form-label {
+    height: 32px  !important;
+    line-height: 16px  !important;
+}
 
 .layui-form-radio i {
     margin-right: 8px  !important;
     font-size: 19px  !important;
 }
-
+.layui-form-radio {
+    line-height: 0  !important;
+    margin:  0  !important;
+}
 .layui-input-block {
     min-height: 32px !important;
 }
@@ -108,24 +115,17 @@
     font-size: 12px  !important;
 }
 .layui-form-label {
-    /*height: 32px  !important;*/
-    line-height: 16px  !important;
+    padding: 2px 15px  !important;
 }
-.layui-form .layui-form-pane .layui-form-label {
-    height: 32px  !important;
-    line-height: 16px  !important;
-}
-.layui-form-pane  .layui-form-radio {
-    line-height: 0  !important;
-    margin:  0  !important;
-}
-.layui-form-pane .layui-form-label {
-    height: 32px;
-}
-
 .layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio {
     margin-top: 10px  !important;
 }
-/*.layui-form-mid {*/
-/*line-height: 8px  !important;*/
-/*}*/
+.layui-form-mid {
+    line-height: 8px  !important;
+}
+.layui-btn-mini {
+    height: 22px !important;
+    line-height: 22px !important;
+    padding: 0 5px !important;
+    font-size: 12px !important;
+}

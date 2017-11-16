@@ -106,7 +106,7 @@
                                         <td>{{ $order->price }}</td>
                                         <td>{{ $order->amount }}</td>
                                         <td> {{ $order->creator_primary_user_id }}</td>
-                                        <td>{{ $order->gainer_primary_user_id }}</td>
+                                        <td>{{ $order->gainerUser->nickname ?? $order->gainer_primary_user_id }}</td>
                                         <td>{{ $order->created_at }}</td>
                                         <td>
                                             <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('orders.show', ['order' => $order->id]) }}">详情</a>

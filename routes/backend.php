@@ -94,6 +94,8 @@ Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->gr
         // 用户账号列表
         Route::namespace('Frontend')->prefix('frontend')->group(function () {
             Route::get('/', 'UserController@index')->name('frontend.user.index')->middleware('permission:frontend.user.index');
+            // 更新用户资料
+            Route::post('edit', 'UserController@edit')->name('frontend.user.edit')->middleware('permission:frontend.user.edit');
             // 手动加款
             Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
             // 用户资料

@@ -115,4 +115,22 @@ class Order extends Model
     {
         return $this->belongsTo(ForeignOrder::class, 'foreign_order_no', 'foreign_order_no');
     }
+
+    /**
+     * 发单人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creatorUser()
+    {
+        return $this->hasOne(User::class, 'id', 'creator_primary_user_id');
+    }
+
+    /**
+     * 接单人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function gainerUser()
+    {
+        return $this->hasOne(User::class, 'id', 'gainer_primary_user_id');
+    }
 }

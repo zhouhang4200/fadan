@@ -90,7 +90,7 @@ class OrderController extends Controller
     public function record(Request $request)
     {
         return response()->json(View::make('backend.order.partials.order-record', [
-            'record' => Order::with('history')->find($request->id),
+            'record' => Order::with(['history', 'creatorUser', 'gainerUser'])->find($request->id),
         ])->render());
     }
 

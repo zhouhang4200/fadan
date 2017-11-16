@@ -31,7 +31,26 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return view('backend.user.frontend.show');
+        return view('backend.user.frontend.show')->with([
+            'user' => User::find($id),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function edit(Request $request)
+    {
+        try {
+            User::where('id', $request->id)->update([
+                'type' => $request->type,
+                'nickname' => $request->nickname,
+                'remark' => $request->remark,
+            ]);
+            return response()->ajax(1, '更新成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(1, $exception->getMessage());
+        }
     }
 
     /**
