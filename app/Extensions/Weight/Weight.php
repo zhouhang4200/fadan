@@ -69,7 +69,12 @@ class Weight
             }
         }
         // 返回最终的商户ID
-        return $originUsers[$this->getUserId($orderNo)];
+        if (!isset($originUsers[$this->getUserId($orderNo)])) {
+            \Log::alert(json_encode([$orderNo, $originUsers]));
+            return array_pop($originUsers);
+        } else {
+            return $originUsers[$this->getUserId($orderNo)];
+        }
     }
 
     /**
@@ -89,7 +94,7 @@ class Weight
      */
     protected function getUserId($orderNo)
     {
-        \Log::alert(\GuzzleHttp\json_encode($this->afterSum ));
+        \Log::alert(json_encode([$orderNo, $this->afterSum]));
         try {
             $userId = 0;
             $randNum = mt_rand(1, array_sum($this->afterSum));
@@ -112,7 +117,7 @@ class Weight
             receivingUserDel($orderNo);
             return $userId;
         } catch (CustomException $exception) {
-
+            \Log::alert(json_encode(['error-get-user', $orderNo, $this->afterSum]));
         }
     }
 
