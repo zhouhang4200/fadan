@@ -42,6 +42,6 @@ class OrderAssignTemp extends Command
      */
     public function handle()
     {
-        Order::handle(new Receiving($this->argument('ni'), $this->argument('user')));
+        Order::handle(new Receiving($this->argument('no'), $this->argument('user')));
     }
 }
