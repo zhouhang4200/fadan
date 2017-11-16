@@ -32,7 +32,7 @@ class ForeignOrderRepository
                              $kamenOrderNo = '',
                              $foreignGoodsId = '',
                              $foreignOrderNo = '',
-                             $pageSize = 15)
+                             $pageSize = 20)
     {
         $query = ForeignOrder::when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=',  $startDate);
