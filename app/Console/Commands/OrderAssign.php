@@ -85,12 +85,13 @@ class OrderAssign extends Command
 
                     // 检测是否有用户接单，及接单数是否达到平台设置的下限 是：进行下一步 否：检测下一个订单
                     if (receivingUserLen($orderNo) >= config('order.assignLowerLimit')) {
-                        // 将订单改为不可接单
-                        Order::handle(new GrabClose($orderNo));
-                        // 取出所有用户, 获取所有接单用户的权重值y
-                        $userId = Weight::run(receivingUser($orderNo), $orderNo);
-                        // 分配订单
+
                         try {
+                            // 将订单改为不可接单
+                            Order::handle(new GrabClose($orderNo));
+                            // 取出所有用户, 获取所有接单用户的权重值y
+                            $userId = Weight::run(receivingUser($orderNo), $orderNo);
+                            // 分配订单
                             Order::handle(new Receiving($orderNo, $userId));
                             // 记录相同旺旺的订单分配到了哪个商户
                             if ($data->wang_wang) {
@@ -98,7 +99,8 @@ class OrderAssign extends Command
                             }
                             continue;
                         } catch (CustomException $exception) {
-                            Log::alert($exception->getMessage());
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . '-' . $orderNo);
                             continue;
                         }
                     } else {

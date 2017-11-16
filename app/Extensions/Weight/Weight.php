@@ -77,7 +77,7 @@ class Weight
      */
     private function manualAdjustment()
     {
-        // a=>10  b=>10 1c=>0
+        // a=>10  b=>10 c=>10
         // (30 - 10)*50 / 100 -50
 
     }
