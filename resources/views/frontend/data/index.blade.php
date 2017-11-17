@@ -5,7 +5,7 @@
 @section('css')
     <style>
         .layui-form-label {
-            width:65px;
+            width:200px;
             text-align: left;
         }
     </style>
@@ -37,11 +37,11 @@
 
     <div class="layui-tab-item layui-show" style="margin-top: 30px;">
         <table class="layui-table" lay-size="sm">
-        <div  style="float: left"><label class="layui-form-label">发单+接单</label></div>
+        <div  style="float: left"><label class="layui-form-label">发单+接单数量和占比</label></div>
             <thead>
             <tr>
-                <th>来源</th>
-                <th>订单数</th>
+                <th style="width:12px">来源</th>
+                <th style="width:12px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -56,32 +56,32 @@
             </tr>
             </thead>
             <tbody>
-            @if($alls && $game)
+            @if($datas && $mostGame)
                 <tr>
                     <td>所有</td>
-                    <td>{{ $alls->orderCount }}</td>
-                    <td>{{ $alls->waite }} ({{ @bcdiv($alls->waite, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->fenpei }} ({{ @bcdiv($alls->fenpei, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->jiedan }} ({{ @bcdiv($alls->jiedan, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->fahuo }} ({{ @bcdiv($alls->fahuo, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->shibai }} ({{ @bcdiv($alls->shibai, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->shouhou }} ({{ @bcdiv($alls->shouhou, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->shouhouwancheng }} ({{ @bcdiv($alls->shouhouwancheng, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->dingdanwancheng }} ({{ @bcdiv($alls->dingdanwancheng, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->quxiao }} ({{ @bcdiv($alls->quxiao, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $alls->weifukuan }} ({{ @bcdiv($alls->weifukuan, $alls->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $game->game_name }} ({{ @bcdiv($game->count, $alls->orderCount, 3) * 100 }}%)</td>
+                    <td>{{ $datas->total }}</td>
+                    <td>{{ $datas->waite_user_receive }} ({{ @bcdiv($datas->waite_user_receive, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->distributing }} ({{ @bcdiv($datas->distributing, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->received }} ({{ @bcdiv($datas->received, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->sended }} ({{ @bcdiv($datas->sended, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->failed }} ({{ @bcdiv($datas->failed, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->after_saling }} ({{ @bcdiv($datas->after_saling, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->after_saled }} ({{ @bcdiv($datas->after_saled, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->successed }} ({{ @bcdiv($datas->successed, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->canceled }} ({{ @bcdiv($datas->canceled, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $datas->waite_pay }} ({{ @bcdiv($datas->waite_pay, $datas->total, 3) * 100 }}%)</td>
+                    <td>{{ $mostGame->most_game_name }} ({{ $mostGame->total }}, {{ @bcdiv($mostGame->total, $datas->total, 3) * 100 }}%)</td>
                 </tr>
             @endif
             </tbody>
         </table>
 
         <table class="layui-table" lay-size="sm">
-        <label class="layui-form-label">发单+接单</label>
+        <label class="layui-form-label">发单+接单数量和占比</label>
             <thead>
             <tr>
-                <th>来源</th>
-                <th>订单数</th>
+                <th style="width:12px">来源</th>
+                <th style="width:12px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -96,21 +96,226 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($datas as $k => $data)
+            @if ($resourceGame)
+            @forelse($sourceDatas as $k => $sourceData)
                 <tr>
-                    <td>{{ config('order.source')[$data->source] }}</td>
-                    <td>{{ $data->statusCount }}</td>
-                    <td>{{ $data->waite }} ({{ @bcdiv($data->waite, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->fenpei }} ({{ @bcdiv($data->fenpei, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->jiedan }} ({{ @bcdiv($data->jiedan, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->fahuo }} ({{ @bcdiv($data->fahuo, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->shibai }} ({{ @bcdiv($data->shibai, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->shouhou }} ({{ @bcdiv($data->shouhou, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->shouhouwancheng }} ({{ @bcdiv($data->shouhouwancheng, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->dingdanwancheng }} ({{ @bcdiv($data->dingdanwancheng, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->quxiao }} ({{ @bcdiv($data->quxiao, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $data->weifukuan }} ({{ @bcdiv($data->weifukuan, $data->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $resourceGame[$k]->game_name }} ({{ @bcdiv($resourceGame[$k]->max, $data->orderCount, 3) * 100 }}%)</td>
+                    <td>{{ config('order.source')[$sourceData->source] }}</td>
+                    <td>{{ $sourceData->total }}</td>
+                    <td>{{ $sourceData->waite_user_receive }} ({{ @bcdiv($sourceData->waite_user_receive, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->distributing }} ({{ @bcdiv($sourceData->distributing, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->received }} ({{ @bcdiv($sourceData->received, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->sended }} ({{ @bcdiv($sourceData->sended, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->failed }} ({{ @bcdiv($sourceData->failed, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->after_saling }} ({{ @bcdiv($sourceData->after_saling, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->after_saled }} ({{ @bcdiv($sourceData->after_saled, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->successed }} ({{ @bcdiv($sourceData->successed, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->canceled }} ({{ @bcdiv($sourceData->canceled, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sourceData->waite_pay }} ({{ @bcdiv($sourceData->waite_pay, $sourceData->total, 3) * 100 }}%)</td>
+                    <td>{{ $resourceGame[$k]->most_game_name }} ({{ $resourceGame[$k]->max }}, {{ @bcdiv($resourceGame[$k]->max, $sourceData->total, 3) * 100 }}%)</td>
+                </tr>
+            @empty
+            @endforelse
+            @endif
+            </tbody>
+        </table>
+
+        <table class="layui-table" lay-size="sm">
+        <label class="layui-form-label">接单数量和占比</label>
+            <thead>
+            <tr>
+                <th style="width:12px">来源</th>
+                <th style="width:12px">订单数</th>
+                <th>等待商户接单</th>
+                <th>系统分配中</th>
+                <th>商户已接单</th>
+                <th>已发货</th>
+                <th>已失败</th>
+                <th>售后中</th>
+                <th>售后完成</th>
+                <th>订单完成</th>
+                <th>已取消</th>
+                <th>未付款</th>
+                <th>最多游戏</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if($receiveGame)
+            @forelse($receiveDatas as $k => $receiveData)
+                <tr>
+                    <td>{{ config('order.source')[$receiveData->source] }}</td>
+                    <td>{{ $receiveData->total }}</td>
+                    <td>{{ $receiveData->waite_user_receive }} ({{ @bcdiv($receiveData->waite_user_receive, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->distributing }} ({{ @bcdiv($receiveData->distributing, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->received }} ({{ @bcdiv($receiveData->received, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->sended }} ({{ @bcdiv($receiveData->sended, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->failed }} ({{ @bcdiv($receiveData->failed, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->after_saling }} ({{ @bcdiv($receiveData->after_saling, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->after_saled }} ({{ @bcdiv($receiveData->after_saled, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->successed }} ({{ @bcdiv($receiveData->successed, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->canceled }} ({{ @bcdiv($receiveData->canceled, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveData->waite_pay }} ({{ @bcdiv($receiveData->waite_pay, $receiveData->total, 3) * 100 }}%)</td>
+                    <td>{{ $receiveGame[$k]->most_game_name }} ({{ $receiveGame[$k]->max }}, {{ @bcdiv($receiveGame[$k]->max, $receiveData->total, 3) * 100 }}%)</td>                            
+                </tr>
+            @empty
+            @endforelse
+            @endif
+            </tbody>
+        </table>
+
+        <table class="layui-table" lay-size="sm">
+        <label class="layui-form-label">发单数量和占比</label>
+            <thead>
+            <tr>
+                <th style="width:12px">来源</th>
+                <th style="width:12px">订单数</th>
+                <th>等待商户接单</th>
+                <th>系统分配中</th>
+                <th>商户已接单</th>
+                <th>已发货</th>
+                <th>已失败</th>
+                <th>售后中</th>
+                <th>售后完成</th>
+                <th>订单完成</th>
+                <th>已取消</th>
+                <th>未付款</th>
+                <th>最多游戏</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if($sendGame)
+            @forelse($sendDatas as $k => $sendData)
+                <tr>
+                    <td>{{ config('order.source')[$sendData->source] }}</td>
+                    <td>{{ $sendData->total }}</td>
+                    <td>{{ $sendData->waite_user_receive }} ({{ @bcdiv($sendData->waite_user_receive, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->distributing }} ({{ @bcdiv($sendData->distributing, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->received }} ({{ @bcdiv($sendData->received, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->sended }} ({{ @bcdiv($sendData->sended, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->failed }} ({{ @bcdiv($sendData->failed, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->after_saling }} ({{ @bcdiv($sendData->after_saling, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->after_saled }} ({{ @bcdiv($sendData->after_saled, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->successed }} ({{ @bcdiv($sendData->successed, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->canceled }} ({{ @bcdiv($sendData->canceled, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendData->waite_pay }} ({{ @bcdiv($sendData->waite_pay, $sendData->total, 3) * 100 }}%)</td>
+                    <td>{{ $sendGame[$k]->most_game_name }} ({{ $sendGame[$k]->max }}, {{ @bcdiv($sendGame[$k]->max, $sendData->total, 3) * 100 }}%)</td>                         
+                </tr>
+            @empty
+            @endforelse
+            @endif
+            </tbody>
+        </table>
+
+
+        <table class="layui-table" lay-size="sm">
+        <label class="layui-form-label">发单+接单下的金额统计</label>
+            <thead>
+            <tr>
+                <th>来源</th>
+                <th>总金额</th>
+                <th>等待商户接单</th>
+                <th>系统分配中</th>
+                <th>商户已接单</th>
+                <th>已发货</th>
+                <th>已失败</th>
+                <th>售后中</th>
+                <th>售后完成</th>
+                <th>订单完成</th>
+                <th>已取消</th>
+                <th>未付款</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if($moneyDatas && $moneyDatas->total)
+                <tr>
+                    <td>所有</td>
+                    <td>{{ $moneyDatas->total }}</td>
+                    <td>{{ $moneyDatas->waite_user_receive }}</td>
+                    <td>{{ $moneyDatas->distributing }}</td>
+                    <td>{{ $moneyDatas->received }}</td>
+                    <td>{{ $moneyDatas->sended }}</td>
+                    <td>{{ $moneyDatas->failed }}</td>
+                    <td>{{ $moneyDatas->after_saling }}</td>
+                    <td>{{ $moneyDatas->after_saled }}</td>
+                    <td>{{ $moneyDatas->successed }}</td>
+                    <td>{{ $moneyDatas->canceled }}</td>
+                    <td>{{ $moneyDatas->waite_pay }}</td>                         
+                </tr>
+            @endif
+            </tbody>
+        </table>
+
+         <table class="layui-table" lay-size="sm">
+        <label class="layui-form-label">发单+接单下的金额统计</label>
+            <thead>
+            <tr>
+                <th>来源</th>
+                <th>总金额</th>
+                <th>等待商户接单</th>
+                <th>系统分配中</th>
+                <th>商户已接单</th>
+                <th>已发货</th>
+                <th>已失败</th>
+                <th>售后中</th>
+                <th>售后完成</th>
+                <th>订单完成</th>
+                <th>已取消</th>
+                <th>未付款</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse($sourceMoneyDatas as $k => $sourceMoneyData)
+                <tr>
+                    <td>{{ config('order.source')[$sourceMoneyData->source] }}</td>
+                    <td>{{ $sourceMoneyData->total }}</td>
+                    <td>{{ $sourceMoneyData->waite_user_receive }}</td>
+                    <td>{{ $sourceMoneyData->distributing }}</td>
+                    <td>{{ $sourceMoneyData->received }}</td>
+                    <td>{{ $sourceMoneyData->sended }}</td>
+                    <td>{{ $sourceMoneyData->failed }}</td>
+                    <td>{{ $sourceMoneyData->after_saling }}</td>
+                    <td>{{ $sourceMoneyData->after_saled }}</td>
+                    <td>{{ $sourceMoneyData->successed }}</td>
+                    <td>{{ $sourceMoneyData->canceled }}</td>
+                    <td>{{ $sourceMoneyData->waite_pay }}</td>                        
+                </tr>
+            @empty
+            @endforelse
+            </tbody>
+        </table>
+
+         <table class="layui-table" lay-size="sm">
+        <label class="layui-form-label">接单下的金额统计</label>
+            <thead>
+            <tr>
+                <th>来源</th>
+                <th>总金额</th>
+                <th>等待商户接单</th>
+                <th>系统分配中</th>
+                <th>商户已接单</th>
+                <th>已发货</th>
+                <th>已失败</th>
+                <th>售后中</th>
+                <th>售后完成</th>
+                <th>订单完成</th>
+                <th>已取消</th>
+                <th>未付款</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse($receiveMoneyDatas as $k => $receiveMoneyData)
+                <tr>
+                    <td>{{ config('order.source')[$receiveMoneyData->source] }}</td>
+                    <td>{{ $receiveMoneyData->total }}</td>
+                    <td>{{ $receiveMoneyData->waite_user_receive }}</td>
+                    <td>{{ $receiveMoneyData->distributing }}</td>
+                    <td>{{ $receiveMoneyData->received }}</td>
+                    <td>{{ $receiveMoneyData->sended }}</td>
+                    <td>{{ $receiveMoneyData->failed }}</td>
+                    <td>{{ $receiveMoneyData->after_saling }}</td>
+                    <td>{{ $receiveMoneyData->after_saled }}</td>
+                    <td>{{ $receiveMoneyData->successed }}</td>
+                    <td>{{ $receiveMoneyData->canceled }}</td>
+                    <td>{{ $receiveMoneyData->waite_pay }}</td>                        
                 </tr>
             @empty
             @endforelse
@@ -118,11 +323,11 @@
         </table>
 
         <table class="layui-table" lay-size="sm">
-        <label class="layui-form-label">接单</label>
+        <label class="layui-form-label">发单下的金额统计</label>
             <thead>
             <tr>
                 <th>来源</th>
-                <th>订单数</th>
+                <th>总金额</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -133,71 +338,30 @@
                 <th>订单完成</th>
                 <th>已取消</th>
                 <th>未付款</th>
-                <th>最多游戏</th>
             </tr>
             </thead>
             <tbody>
-            @forelse($dataReceives as $k => $dataReceive)
+            @forelse($sendMoneyDatas as $k => $sendMoneyData)
                 <tr>
-                    <td>{{ config('order.source')[$dataReceive->source] }}</td>
-                    <td>{{ $dataReceive->statusCount }}</td>
-                    <td>{{ $dataReceive->waite }} ({{ @bcdiv($dataReceive->waite, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->fenpei }} ({{ @bcdiv($dataReceive->fenpei, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->jiedan }} ({{ @bcdiv($dataReceive->jiedan, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->fahuo }} ({{ @bcdiv($dataReceive->fahuo, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->shibai }} ({{ @bcdiv($dataReceive->shibai, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->shouhou }} ({{ @bcdiv($dataReceive->shouhou, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->shouhouwancheng }} ({{ @bcdiv($dataReceive->shouhouwancheng, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->dingdanwancheng }} ({{ @bcdiv($dataReceive->dingdanwancheng, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->quxiao }} ({{ @bcdiv($dataReceive->quxiao, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataReceive->weifukuan }} ({{ @bcdiv($dataReceive->weifukuan, $dataReceive->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $receiveGame[$k]->game_name }} ({{ @bcdiv($receiveGame[$k]->max, $dataReceive->orderCount, 3) * 100 }}%)</td>                           
+                    <td>{{ config('order.source')[$sendMoneyData->source] }}</td>
+                    <td>{{ $sendMoneyData->total }}</td>
+                    <td>{{ $sendMoneyData->waite_user_receive }}</td>
+                    <td>{{ $sendMoneyData->distributing }}</td>
+                    <td>{{ $sendMoneyData->received }}</td>
+                    <td>{{ $sendMoneyData->sended }}</td>
+                    <td>{{ $sendMoneyData->failed }}</td>
+                    <td>{{ $sendMoneyData->after_saling }}</td>
+                    <td>{{ $sendMoneyData->after_saled }}</td>
+                    <td>{{ $sendMoneyData->successed }}</td>
+                    <td>{{ $sendMoneyData->canceled }}</td>
+                    <td>{{ $sendMoneyData->waite_pay }}</td>                        
                 </tr>
             @empty
             @endforelse
             </tbody>
         </table>
 
-        <table class="layui-table" lay-size="sm">
-        <label class="layui-form-label">发单</label>
-            <thead>
-            <tr>
-                <th>来源</th>
-                <th>订单数</th>
-                <th>等待商户接单</th>
-                <th>系统分配中</th>
-                <th>商户已接单</th>
-                <th>已发货</th>
-                <th>已失败</th>
-                <th>售后中</th>
-                <th>售后完成</th>
-                <th>订单完成</th>
-                <th>已取消</th>
-                <th>未付款</th>
-                <th>最多游戏</th>
-            </tr>
-            </thead>
-            <tbody>
-            @forelse($dataSends as $k => $dataSend)
-                <tr>
-                    <td>{{ config('order.source')[$dataSend->source] }}</td>
-                    <td>{{ $dataSend->statusCount }}</td>
-                    <td>{{ $dataSend->waite }} ({{ @bcdiv($dataSend->waite, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->fenpei }} ({{ @bcdiv($dataSend->fenpei, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->jiedan }} ({{ @bcdiv($dataSend->jiedan, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->fahuo }} ({{ @bcdiv($dataSend->fahuo, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->shibai }} ({{ @bcdiv($dataSend->shibai, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->shouhou }} ({{ @bcdiv($dataSend->shouhou, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->shouhouwancheng }} ({{ @bcdiv($dataSend->shouhouwancheng, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->dingdanwancheng }} ({{ @bcdiv($dataSend->dingdanwancheng, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->quxiao }} ({{ @bcdiv($dataSend->quxiao, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $dataSend->weifukuan }} ({{ @bcdiv($dataSend->weifukuan, $dataSend->orderCount, 3) * 100 }}%)</td>
-                    <td>{{ $sendGame[$k]->game_name }} ({{ @bcdiv($sendGame[$k]->max, $dataSend->orderCount, 3) * 100 }}%)</td>                         
-                </tr>
-            @empty
-            @endforelse
-            </tbody>
-        </table>
+
     </div>
 
 @endsection

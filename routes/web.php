@@ -164,7 +164,7 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
 
 	Route::namespace('Data')->prefix('data')->group(function () {
 		// 日常数据
-		Route::get('index', 'DataController@index')->name('data.index');
+		Route::get('index', 'DataController@index')->name('data.index')->middleware('permission:data.index');
 	});
 });
 
