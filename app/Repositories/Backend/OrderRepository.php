@@ -73,7 +73,7 @@ class OrderRepository
                     '接单',
                     '下单时间',
                 ));
-                $order->chunk(1, function ($items) use ($sheet) {
+                $order->chunk(1000, function ($items) use ($sheet) {
                     $orders = $items->toArray();
                     foreach ($orders as $k => &$v) {
                         if ($v['status']) {
