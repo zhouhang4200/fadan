@@ -161,6 +161,11 @@ Route::middleware(['auth:web', 'check:users'])->namespace('Frontend')->group(fun
             Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
         });
 	});
+
+	Route::namespace('Data')->prefix('data')->group(function () {
+		// 日常数据
+		Route::get('index', 'DataController@index')->name('data.index')->middleware('permission:data.index');
+	});
 });
 
 Route::namespace('Frontend\Auth')->group(function () {
