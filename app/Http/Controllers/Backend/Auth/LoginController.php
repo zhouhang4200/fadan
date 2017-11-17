@@ -75,7 +75,9 @@ class LoginController extends Controller
     {
         $redis = RedisConnect::session();
 
-        if ($redis->get(config('redis.user')['adminLoginSession'] . $user->id)) {
+        $sessionId = $redis->get(config('redis.user')['adminLoginSession'] . $user->id);
+        
+        if ($sessionId) {
 
             $redis->del($sessionId);
 
