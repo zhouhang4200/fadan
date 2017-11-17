@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '首页 - 日常数据')
+@section('title', '首页 - 经营数据 - 当前数据默认为昨日数据，只能查看今日之前的数据')
 
 @section('css')
     <style>
@@ -21,11 +21,11 @@
 
             <div class="layui-form-item">               
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
+                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始日期">
                 </div>
 
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束时间">
+                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束日期">
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
             <thead>
             <tr>
                 <th style="width:12px">来源</th>
-                <th style="width:12px">订单数</th>
+                <th style="width:20px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -81,7 +81,7 @@
             <thead>
             <tr>
                 <th style="width:12px">来源</th>
-                <th style="width:12px">订单数</th>
+                <th style="width:20px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -124,7 +124,7 @@
             <thead>
             <tr>
                 <th style="width:12px">来源</th>
-                <th style="width:12px">订单数</th>
+                <th style="width:20px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
@@ -167,7 +167,7 @@
             <thead>
             <tr>
                 <th style="width:12px">来源</th>
-                <th style="width:12px">订单数</th>
+                <th style="width:20px">订单数</th>
                 <th>等待商户接单</th>
                 <th>系统分配中</th>
                 <th>商户已接单</th>
