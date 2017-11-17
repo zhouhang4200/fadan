@@ -58,8 +58,6 @@ class Weight
         if (!$this->afterComputeWeight) {
             return 'error';
         }
-        // 记录计算后的值
-        \Log::alert(json_encode(['计算后的值',  $orderNo, $this->afterComputeWeight], JSON_UNESCAPED_UNICODE));
 
         // 将相同商户权重值相加
         foreach ($this->afterComputeWeight as $v) {
@@ -71,6 +69,10 @@ class Weight
                 }
             }
         }
+        // 记录计算后的值
+        \Log::alert(json_encode(['订单号' =>  $orderNo, '调算法后' => $this->afterComputeWeight, '相加后' => $this->afterSum],
+            JSON_UNESCAPED_UNICODE));
+
         // 返回最终的商户ID
         if (!isset($originUsers[$this->getUserId($orderNo)])) {
             \Log::alert(json_encode(['下标越界',  $orderNo, $originUsers], JSON_UNESCAPED_UNICODE));
@@ -97,7 +99,6 @@ class Weight
      */
     protected function getUserId($orderNo)
     {
-        \Log::alert(json_encode([$orderNo, $this->afterSum]));
         try {
             $userId = 0;
             $randNum = mt_rand(1, array_sum($this->afterSum));
@@ -120,7 +121,7 @@ class Weight
             receivingUserDel($orderNo);
             return $userId;
         } catch (CustomException $exception) {
-            \Log::alert(json_encode(['error-get-user', $orderNo, $this->afterSum]));
+            \Log::alert(json_encode(['计算用户权重异常', $orderNo, $this->afterSum]));
         }
     }
 
