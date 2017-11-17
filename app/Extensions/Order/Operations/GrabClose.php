@@ -4,7 +4,7 @@ namespace App\Extensions\Order\Operations;
 // 关闭抢单
 class GrabClose  extends \App\Extensions\Order\Operations\Base\Operation
 {
-    protected $acceptableStatus = [1];
+    protected $acceptableStatus = [1, 2];
     protected $handledStatus    = 2;
     protected $type             = 2;
 

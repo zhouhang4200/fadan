@@ -70,7 +70,7 @@ class Weight
         }
         // 返回最终的商户ID
         if (!isset($originUsers[$this->getUserId($orderNo)])) {
-            \Log::alert(json_encode([$orderNo, $originUsers]));
+            \Log::alert(json_encode(['下标越界',  $orderNo, $originUsers]));
             return array_pop($originUsers);
         } else {
             return $originUsers[$this->getUserId($orderNo)];

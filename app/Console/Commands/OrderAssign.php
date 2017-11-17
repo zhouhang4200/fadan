@@ -11,6 +11,7 @@ use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Receiving;
 
+use League\Flysystem\Exception;
 use Log, Config, Weight, Order;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -89,6 +90,13 @@ class OrderAssign extends Command
                         try {
                             // 将订单改为不可接单
                             Order::handle(new GrabClose($orderNo));
+                        } catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
+                            continue;
+                        }
+
+                        try {
                             // 取出所有用户, 获取所有接单用户的权重值y
                             $userId = Weight::run(receivingUser($orderNo), $orderNo);
                             // 分配订单
@@ -100,7 +108,7 @@ class OrderAssign extends Command
                             continue;
                         } catch (CustomException $exception) {
                             waitReceivingDel($orderNo);
-                            Log::alert($exception->getMessage() . '-' . $orderNo);
+                            Log::alert($exception->getMessage() . '- 分配订单失败 -' . $orderNo);
                             continue;
                         }
                     } else {
