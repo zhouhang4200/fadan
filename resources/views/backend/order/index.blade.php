@@ -63,7 +63,7 @@
                             </div>
                             <div class="form-group col-xs-2">
                                 <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
-                                <button type="submit" class="layui-btn layui-btn-normal">导出</button>
+                                <button lay-submit lay-filter="export" class="layui-btn layui-btn-normal">导出</button>
                             </div>
                         </div>
                     </form>
@@ -171,6 +171,14 @@
         });
         laydate.render({
             elem: '#endDate'
+        });
+
+        form.on('submit(export)', function(data){
+    
+            // console.log(data.field);
+            // console.log(data.form);
+            // console.log(111);
+            return false;
         });
     });
 </script>

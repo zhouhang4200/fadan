@@ -228,17 +228,17 @@
             @if($moneyDatas && $moneyDatas->total)
                 <tr>
                     <td>所有</td>
-                    <td>{{ $moneyDatas->total }}</td>
-                    <td>{{ $moneyDatas->waite_user_receive }}</td>
-                    <td>{{ $moneyDatas->distributing }}</td>
-                    <td>{{ $moneyDatas->received }}</td>
-                    <td>{{ $moneyDatas->sended }}</td>
-                    <td>{{ $moneyDatas->failed }}</td>
-                    <td>{{ $moneyDatas->after_saling }}</td>
-                    <td>{{ $moneyDatas->after_saled }}</td>
-                    <td>{{ $moneyDatas->successed }}</td>
-                    <td>{{ $moneyDatas->canceled }}</td>
-                    <td>{{ $moneyDatas->waite_pay }}</td>                         
+                    <td>{{ number_format($moneyDatas->total, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->waite_user_receive, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->distributing, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->received, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->sended, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->failed, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->after_saling, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->after_saled, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->successed, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->canceled, 2) }}</td>
+                    <td>{{ number_format($moneyDatas->waite_pay, 2) }}</td>                         
                 </tr>
             @endif
             </tbody>
@@ -266,17 +266,17 @@
             @forelse($sourceMoneyDatas as $k => $sourceMoneyData)
                 <tr>
                     <td>{{ config('order.source')[$sourceMoneyData->source] }}</td>
-                    <td>{{ $sourceMoneyData->total }}</td>
-                    <td>{{ $sourceMoneyData->waite_user_receive }}</td>
-                    <td>{{ $sourceMoneyData->distributing }}</td>
-                    <td>{{ $sourceMoneyData->received }}</td>
-                    <td>{{ $sourceMoneyData->sended }}</td>
-                    <td>{{ $sourceMoneyData->failed }}</td>
-                    <td>{{ $sourceMoneyData->after_saling }}</td>
-                    <td>{{ $sourceMoneyData->after_saled }}</td>
-                    <td>{{ $sourceMoneyData->successed }}</td>
-                    <td>{{ $sourceMoneyData->canceled }}</td>
-                    <td>{{ $sourceMoneyData->waite_pay }}</td>                        
+                    <td>{{ number_format($sourceMoneyData->total, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->waite_user_receive, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->distributing, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->received, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->sended, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->failed, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->after_saling, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->after_saled, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->successed, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->canceled, 2) }}</td>
+                    <td>{{ number_format($sourceMoneyData->waite_pay, 2) }}</td>                        
                 </tr>
             @empty
             @endforelse
@@ -305,17 +305,17 @@
             @forelse($receiveMoneyDatas as $k => $receiveMoneyData)
                 <tr>
                     <td>{{ config('order.source')[$receiveMoneyData->source] }}</td>
-                    <td>{{ $receiveMoneyData->total }}</td>
-                    <td>{{ $receiveMoneyData->waite_user_receive }}</td>
-                    <td>{{ $receiveMoneyData->distributing }}</td>
-                    <td>{{ $receiveMoneyData->received }}</td>
-                    <td>{{ $receiveMoneyData->sended }}</td>
-                    <td>{{ $receiveMoneyData->failed }}</td>
-                    <td>{{ $receiveMoneyData->after_saling }}</td>
-                    <td>{{ $receiveMoneyData->after_saled }}</td>
-                    <td>{{ $receiveMoneyData->successed }}</td>
-                    <td>{{ $receiveMoneyData->canceled }}</td>
-                    <td>{{ $receiveMoneyData->waite_pay }}</td>                        
+                    <td>{{ number_format($receiveMoneyData->total, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->waite_user_receive, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->distributing, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->received, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->sended, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->failed, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->after_saling, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->after_saled, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->successed, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->canceled, 2) }}</td>
+                    <td>{{ number_format($receiveMoneyData->waite_pay, 2) }}</td>                        
                 </tr>
             @empty
             @endforelse
@@ -344,17 +344,17 @@
             @forelse($sendMoneyDatas as $k => $sendMoneyData)
                 <tr>
                     <td>{{ config('order.source')[$sendMoneyData->source] }}</td>
-                    <td>{{ $sendMoneyData->total }}</td>
-                    <td>{{ $sendMoneyData->waite_user_receive }}</td>
-                    <td>{{ $sendMoneyData->distributing }}</td>
-                    <td>{{ $sendMoneyData->received }}</td>
-                    <td>{{ $sendMoneyData->sended }}</td>
-                    <td>{{ $sendMoneyData->failed }}</td>
-                    <td>{{ $sendMoneyData->after_saling }}</td>
-                    <td>{{ $sendMoneyData->after_saled }}</td>
-                    <td>{{ $sendMoneyData->successed }}</td>
-                    <td>{{ $sendMoneyData->canceled }}</td>
-                    <td>{{ $sendMoneyData->waite_pay }}</td>                        
+                    <td>{{ number_format($sendMoneyData->total, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->waite_user_receive, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->distributing, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->received, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->sended, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->failed, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->after_saling, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->after_saled, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->successed, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->canceled, 2) }}</td>
+                    <td>{{ number_format($sendMoneyData->waite_pay, 2) }}</td>                        
                 </tr>
             @empty
             @endforelse
