@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
+use App\Models\User;
 use App\Models\Module;
 use App\Models\RbacGroup;
 use Illuminate\Http\Request;
@@ -144,7 +145,22 @@ class RbacGroupController extends Controller
             if ($int > 0) {
 
                 $rbacGroup->permissions()->sync($permissionIds);  
-            }        
+            }   
+
+            $children = User::where('parent_id', Auth::id())->get();
+
+            foreach ($children as $child) {
+
+                $rbacGroups = $child->rbacGroups;
+
+                $permissions = $rbacGroups->map(function ($rbacGroup) {
+
+                    return $rbacGroup->permissions;
+                    
+                })->flatten();
+
+                $child->permissions()->sync($permissions->pluck('id')->toArray());
+            }
 
             return redirect(route('rbacgroups.index'))->with('succ', '修改成功!');
         }
@@ -170,7 +186,22 @@ class RbacGroupController extends Controller
 
             $rbacGroup->permissions()->detach();
 
-            UserRbacGroup::where('rbac_group_id', $id)->delete();          
+            UserRbacGroup::where('rbac_group_id', $id)->delete();
+
+            $children = User::where('parent_id', Auth::id())->get();
+
+            foreach ($children as $child) {
+
+                $rbacGroups = $child->rbacGroups;
+
+                $permissions = $rbacGroups->map(function ($rbacGroup) {
+
+                    return $rbacGroup->permissions;
+                    
+                })->flatten();
+
+                $child->permissions()->detach();
+            }          
 
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
