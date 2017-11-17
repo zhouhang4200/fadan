@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Repositories\Backend\ForeignOrderRepository;
+use App\Repositories\Backend\OrderRepository;
 use Auth, View;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -17,6 +18,16 @@ use App\Repositories\Backend\ServiceRepository;
  */
 class OrderController extends Controller
 {
+    protected  $order;
+
+    /**
+     * OrderController constructor.
+     * @param OrderRepository $orderRepository
+     */
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->order = $orderRepository;
+    }
 
     /**
      * @param Request $request
@@ -36,11 +47,17 @@ class OrderController extends Controller
     	$gainerPrimaryUserId= $request->input('gainer_primary_user_id');
         $no = $request->input('no');
         $foreignOrderNo = $request->input('foreign_order_no');
+        $export = $request->input('export', 0);
 
     	$filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
             'gainerPrimaryUserId', 'no', 'foreignOrderNo');
 
-        $orders = Order::filter($filters)->latest('created_at')->paginate(config('backend.page'));
+        // 订单导出
+        if ($export) {
+            return $this->order->export($filters);
+        }
+        // 订单列表
+        $orders = $this->order->dataList($filters);
 
         return view('backend.order.index')->with([
             'orders' => $orders,
@@ -57,6 +74,7 @@ class OrderController extends Controller
             'gainerPrimaryUserId' => $gainerPrimaryUserId,
             'no' => $no,
             'foreignOrderNo' => $foreignOrderNo,
+            'fullUrl' => $request->fullUrl()
         ]);
     }
 
