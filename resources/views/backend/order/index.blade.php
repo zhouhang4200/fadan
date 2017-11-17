@@ -172,14 +172,6 @@
         laydate.render({
             elem: '#endDate'
         });
-
-        form.on('submit(export)', function(data){
-    
-            // console.log(data.field);
-            // console.log(data.form);
-            // console.log(111);
-            return false;
-        });
     });
 </script>
 @endsection
