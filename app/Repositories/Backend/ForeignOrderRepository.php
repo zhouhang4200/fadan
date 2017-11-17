@@ -35,7 +35,7 @@ class ForeignOrderRepository
                              $pageSize = 20)
     {
         $query = ForeignOrder::when(!empty($startDate), function ($query) use ($startDate) {
-            return $query->where('created_at', '>=',  $startDate);
+            return $query->where('created_at', '>=', $startDate);
         })->when(!empty($endDate), function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate);
         })->when(!empty($source), function ($query) use ($source) {
@@ -43,7 +43,7 @@ class ForeignOrderRepository
         })->when(!empty($channelName), function ($query) use ($channelName) {
             return $query->where('channel_name', $channelName);
         })->when(!empty($kamenOrderNo), function ($query) use ($kamenOrderNo) {
-            return  $query->where('kamen_order_no', $kamenOrderNo);
+            return $query->where('kamen_order_no', $kamenOrderNo);
         })->when(!empty($foreignGoodsId), function ($query) use ($foreignGoodsId) {
             return $query->where('foreign_goods_id', $foreignGoodsId);
         })->when(!empty($foreignOrderNo), function ($query) use ($foreignOrderNo) {

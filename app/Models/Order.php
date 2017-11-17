@@ -119,8 +119,6 @@ class Order extends Model
                 $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
             }
         }
-
-
     }
 
     /**
@@ -157,5 +155,10 @@ class Order extends Model
     public function gainerUser()
     {
         return $this->hasOne(User::class, 'id', 'gainer_primary_user_id');
+    }
+
+    public function getStatus()
+    {
+        return config('order.status')[$this->status];
     }
 }
