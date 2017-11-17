@@ -63,7 +63,7 @@
                             </div>
                             <div class="form-group col-xs-2">
                                 <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
-                                <button lay-submit lay-filter="export" class="layui-btn layui-btn-normal">导出</button>
+                                <button type="submit" class="layui-btn layui-btn-normal">导出</button>
                             </div>
                         </div>
                     </form>
