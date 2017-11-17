@@ -180,6 +180,8 @@ class UserGroupController extends Controller
         	$user = User::find($id);
 
             $user->rbacGroups()->detach();
+            
+            $user->permissions()->detach();
 
             return response()->json(['code' => '1', 'message' => '删除成功']);
         }
