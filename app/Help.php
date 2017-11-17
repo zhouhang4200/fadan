@@ -298,41 +298,44 @@ if (!function_exists('whoCanReceiveOrder')) {
     function whoCanReceiveOrder($sendUserId, $receiveUserId, $serviceId = '', $gameId = '')
     {
         // 0,未设置， 1白名单， 2黑名单
-        $type = UserSetting::where('user_id', $sendUserId)->value('value');
+        $type = UserSetting::where('user_id', $sendUserId)->where('option', 'receiving_control')->value('value');
 
-        $whiteReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
+        if ($type) {
+
+            $whiteReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
                         ->where('type', 1)
                         ->pluck('other_user_id');
 
-        $blackReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
-                    ->where('type', 2)
-                    ->pluck('other_user_id');
+            $blackReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
+                        ->where('type', 2)
+                        ->pluck('other_user_id');
 
-        $whiteGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                                ->where('type', 1)
-                                ->where('game_id', $gameId)
-                                ->where('service_id', $serviceId)
-                                ->where('other_user_id', $receiveUserId)
-                                ->first();
+            $whiteGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                        ->where('type', 1)
+                        ->where('game_id', $gameId)
+                        ->where('service_id', $serviceId)
+                        ->where('other_user_id', $receiveUserId)
+                        ->first();
 
-        $hasWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                                ->where('service_id', $serviceId)
-                                ->where('game_id', $gameId)
-                                ->where('type', 1)
-                                ->first();
+            $hasWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                        ->where('service_id', $serviceId)
+                        ->where('game_id', $gameId)
+                        ->where('type', 1)
+                        ->first();
 
-        $blackGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                                ->where('type', 2)
-                                ->where('game_id', $gameId)
-                                ->where('service_id', $serviceId)
-                                ->where('other_user_id', $receiveUserId)
-                                ->first();
+            $blackGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                        ->where('type', 2)
+                        ->where('game_id', $gameId)
+                        ->where('service_id', $serviceId)
+                        ->where('other_user_id', $receiveUserId)
+                        ->first();
 
-        $hasBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                                ->where('service_id', $serviceId)
-                                ->where('game_id', $gameId)
-                                ->where('type', 2)
-                                ->first();
+            $hasBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                        ->where('service_id', $serviceId)
+                        ->where('game_id', $gameId)
+                        ->where('type', 2)
+                        ->first();
+        }
 
         if ($type === '0' || ! $type) {
 
