@@ -22,7 +22,7 @@ class Weight
      * 将所有权重值相加
      * @var
      */
-    public $afterSum;
+    public $afterSum = [];
 
     /**
      * 调用算法计算用户的权重
@@ -36,7 +36,7 @@ class Weight
         $originUsers = [];
         $primaryUsers = [];
         foreach ($users as $user) {
-            $primaryUser = Cache::rememberForever(config('redis.use.getPrimaryId') . $user, function () use ($user) {
+            $primaryUser = Cache::rememberForever(config('redis.user.getPrimaryId') . $user, function () use ($user) {
                 return User::find($user)->getPrimaryUserId();
             });
             // 将传入的用户ID与它的主账号ID关联
@@ -58,6 +58,9 @@ class Weight
         if (!$this->afterComputeWeight) {
             return 'error';
         }
+        // 记录计算后的值
+        \Log::alert(json_encode(['计算后的值',  $orderNo, $this->afterComputeWeight], JSON_UNESCAPED_UNICODE));
+
         // 将相同商户权重值相加
         foreach ($this->afterComputeWeight as $v) {
             foreach ($v as $i => $j) {
@@ -70,7 +73,7 @@ class Weight
         }
         // 返回最终的商户ID
         if (!isset($originUsers[$this->getUserId($orderNo)])) {
-            \Log::alert(json_encode(['下标越界',  $orderNo, $originUsers]));
+            \Log::alert(json_encode(['下标越界',  $orderNo, $originUsers], JSON_UNESCAPED_UNICODE));
             return array_pop($originUsers);
         } else {
             return $originUsers[$this->getUserId($orderNo)];
