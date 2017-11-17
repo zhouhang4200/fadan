@@ -16,7 +16,7 @@ Route::namespace('Backend\Auth')->group(function () {
 });
 
 
-Route::middleware(['auth:admin', 'check:admin_users'])->namespace('Backend')->group(function () {
+Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::get('/', 'DashboardController@index')->name('dashboard');
     // 系统日志

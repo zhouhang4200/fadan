@@ -63,7 +63,7 @@ class DataController extends Controller
 			    $resourceGame = DB::select("select source, most_game_name, max(count) as max from (select sum(most_game_amount) as count, most_game_name, source from user_order_details where user_id = '$masterUser' and time between '$start' and '$end' and type = '3' and source != '0' group by source,most_game_name order by source, count desc) a group by source");
 
 			    $resourceGame = collect($resourceGame);
-			    
+
 			    // 接单 ， 分渠道
 			    $receiveDatas = UserOrderDetail::where('user_id', $masterUser)
 			    		->whereBetween('time', [$start, $end])

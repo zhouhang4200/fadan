@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Auth;
 use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\RedisConnect;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,20 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         User::where('id', Auth::user()->id)->update(['online' => 1]);
+
+        $user = Auth::user();
+
+        $redis = RedisConnect::session();
+
+        $sessionId = $redis->get(config('redis.user')['loginSession'] . $user->id);
+
+        if ($sessionId) {
+
+            $redis->del($sessionId);
+
+            $redis->del($redis->get(config('redis.user')['loginSession'] . $user->id));
+        }
+        $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());
     }
 
     /**
