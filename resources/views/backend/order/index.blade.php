@@ -63,7 +63,7 @@
                             </div>
                             <div class="form-group col-xs-2">
                                 <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
-                                <button type="submit" class="layui-btn layui-btn-normal">导出</button>
+                                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal" >导出</a>
                             </div>
                         </div>
                     </form>
