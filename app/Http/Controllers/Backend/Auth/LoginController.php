@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Auth;
 
 use Auth;
 use Illuminate\Http\Request;
+use App\Services\RedisConnect;
 use App\Models\AdminLoginHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -62,7 +63,26 @@ class LoginController extends Controller
     protected function guard()
     {
         return Auth::guard('admin');
-    }   
+    } 
+
+    /**
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        $redis = RedisConnect::session();
+
+        if ($redis->get(config('redis.user')['adminLoginSession'] . $user->id)) {
+
+            $redis->del($sessionId);
+
+            $redis->del($redis->get(config('redis.user')['adminLoginSession'] . $user->id));
+        }
+        $redis->set(config('redis.user')['adminLoginSession'] . $user->id, session()->getId());
+    }  
 
     /**
      * Log the user out of the application.
