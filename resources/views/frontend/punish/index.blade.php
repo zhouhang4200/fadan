@@ -155,6 +155,7 @@
     </div>
     
     {!! $punishes->appends([
+        'type' => $type,
         'startDate' => $startDate,
         'endDate' => $endDate,
     ])->render() !!}

@@ -6,10 +6,20 @@ use Auth;
 use App\Models\Module;
 use App\Models\RbacGroup;
 use Illuminate\Http\Request;
+use App\Models\UserRbacGroup;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Traits\RefreshesPermissionCache;
 
 class RbacGroupController extends Controller
 {
+    use RefreshesPermissionCache;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::bootRefreshesPermissionCache();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +45,7 @@ class RbacGroupController extends Controller
                         ->with(['permissions' => function ($query) use ($permissionIds) {
                             $query->whereIn('id', $permissionIds);
                         }])            
-                        ->get();
+                        ->get();      
 
         return view('frontend.user.rbacgroup.create', compact('modulePermissions'));
     }
@@ -66,7 +76,7 @@ class RbacGroupController extends Controller
             RbacGroup::create($data)->permissions()->sync($permissionIds);   
 
             return redirect(route('rbacgroups.index'))->with('succ', '添加成功!');
-        }
+        }     
 
         return back()->withInput()->with('missError', '请勾选权限名!');
     }
@@ -98,7 +108,7 @@ class RbacGroupController extends Controller
                         ->with(['permissions' => function ($query) use ($permissionIds) {
                             $query->whereIn('id', $permissionIds);
                         }])            
-                        ->get();
+                        ->get();       
                        
         return view('frontend.user.rbacgroup.edit', compact('rbacGroup', 'modulePermissions'));
     }
@@ -134,7 +144,7 @@ class RbacGroupController extends Controller
             if ($int > 0) {
 
                 $rbacGroup->permissions()->sync($permissionIds);  
-            }
+            }        
 
             return redirect(route('rbacgroups.index'))->with('succ', '修改成功!');
         }
@@ -159,6 +169,8 @@ class RbacGroupController extends Controller
         if ($bool) {
 
             $rbacGroup->permissions()->detach();
+
+            UserRbacGroup::where('rbac_group_id', $id)->delete();          
 
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
