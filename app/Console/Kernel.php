@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderTestData',
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
+        'App\Console\Commands\Test',
     ];
 
     /**

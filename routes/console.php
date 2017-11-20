@@ -24,3 +24,8 @@ Artisan::command('Order:AssignTemp', function () {
 Artisan::command('Order:TestData', function () {
     $this->comment(\App\Console\Commands\OrderTestData::class);
 })->describe('Order TestData');
+
+
+Artisan::command('Test', function () {
+    $this->comment(\App\Console\Commands\Test::class);
+})->describe('Test');

@@ -30,7 +30,7 @@ class WeightServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
         $this->app->bind('weight', function ($app) {
-            return new \App\Extensions\Weight\Weight();
+            return new \App\Extensions\Weight\Weight;
         });
     }
 
