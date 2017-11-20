@@ -20,8 +20,6 @@ class OrderRepository
      */
     public function dataList($status, $searchType, $searchContent, $pageSize = 15)
     {
-        \Log::alert($status .'-' .$searchType. '-' . $searchContent);
-
         $userId = Auth::user()->id; // 当前登录账号
         $type = Auth::user()->type; // 账号类型是接单还是发单
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
