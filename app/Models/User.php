@@ -37,7 +37,7 @@ class User extends Authenticatable
      * 不监听的字段
      * @var array
      */
-    protected $dontKeepRevisionOf = ['id', 'type'];
+    protected $dontKeepRevisionOf = ['id', 'type', 'remember_token'];
 
 
     /**

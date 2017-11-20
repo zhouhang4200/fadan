@@ -56,7 +56,15 @@
                                             <td>{{ $systemLog->id }}</td>
                                             <td>系统</td>
                                             <td>{{ $systemLog->created_at }}</td>
-                                            <td>表: {{ $systemLog->user_table ?: 'undefind' }} 用户: {{ $systemLog->user_table == 'admin_users' ? \App\Models\AdminUser::find($systemLog->user_id)->name :  \App\Models\User::find($systemLog->user_id)->name }}</td>
+                                            <td>表: {{ $systemLog->user_table ?: 'undefind' }} 用户: 
+                                                @if($systemLog->user_table && $systemLog->user_table == 'admin_users')
+                                                    {{ \App\Models\AdminUser::find($systemLog->user_id)->name }}
+                                                @elseif($systemLog->user_table && $systemLog->user_table == 'users')
+                                                    {{ \App\Models\User::find($systemLog->user_id)->name }}
+                                                @else
+                                                    undefind
+                                                @endif
+                                            </td>
                                             <td>{{  $systemLog->revisionable_type }}</td>
                                             <td>{{ $systemLog->key }}</td>
                                             <td>{{ $systemLog->old_value }}</td>
