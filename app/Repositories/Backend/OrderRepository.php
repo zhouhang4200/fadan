@@ -16,7 +16,7 @@ class OrderRepository
      */
     public function dataList($filter, $pageSize = 15)
     {
-        return Order::filter($filter)->paginate($pageSize);
+        return Order::filter($filter)->orderB('id', 'desc')->paginate($pageSize);
     }
 
     /**
