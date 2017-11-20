@@ -56,7 +56,7 @@ class OrderController extends Controller
         $searchType = $request->input('search_type', 0);
         $searchContent = $request->input('search_content');
 
-        $orders = $orderRepository->dataList($type, $no);
+        $orders = $orderRepository->dataList($type, $searchType, $searchContent);
 
         if ($request->ajax()) {
             if (!in_array($type, ['need', 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {

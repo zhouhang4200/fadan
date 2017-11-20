@@ -12,30 +12,6 @@ use App\Extensions\Revisionable\RevisionableTrait;
 class Order extends Model
 {
     /**
-     * 开启监听
-     * @var bool
-     */
-    protected $revisionCreationsEnabled = true;
-
-    /**
-     * 自动清除记录
-     * @var bool
-     */
-    protected $revisionCleanup = true;
-
-    /**
-     * 保存多少条记录
-     * @var int
-     */
-    protected $historyLimit = 50000;
-
-    /**
-     * 不监听的字段
-     * @var array
-     */
-    protected $dontKeepRevisionOf = ['id'];
-
-    /**
      * 订单详情
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

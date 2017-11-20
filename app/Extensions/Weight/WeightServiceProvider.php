@@ -23,24 +23,15 @@ class WeightServiceProvider extends \Illuminate\Support\ServiceProvider
     }
 
     /**
-     * Register the service provider.
+     * Register the application services.
+     *
+     * @return void
      */
     public function register()
     {
-        $this->app->singleton(Weight::class, function () {
-            return new Weight();
+        $this->app->bind('weight', function ($app) {
+            return new \App\Extensions\Weight\Weight();
         });
-
-        $this->app->alias(Weight::class, 'weight');
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [Weight::class, 'weight'];
-    }
 }

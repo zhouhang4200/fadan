@@ -63,7 +63,7 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['total_price'] = $totalPrice;
         } else {
             $price = $decodeArray['ProductPrice'];
-            $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);;
+            $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);
         }
 
 		$data['channel']          =  $siteInfo->channel;

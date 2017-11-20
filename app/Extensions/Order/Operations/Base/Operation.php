@@ -29,7 +29,8 @@ abstract class Operation
         }
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
-            throw new Exception('订单状态不允许');
+            \Log::alert('订单：' .$this->order->no . '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus);
+            throw new Exception('订单状态不允许更改');
         }
     }
 

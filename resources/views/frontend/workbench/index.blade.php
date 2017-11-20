@@ -216,7 +216,6 @@
                         <li class="" lay-id="after-sales">售后中</li>
                         <li class="" lay-id="cancel">已取消</li>
                         <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
-                        {{--<li class="" lay-id="search">搜索结果</li>--}}
                     </ul>
 
                     <div class="layui-tab-content">
@@ -226,7 +225,6 @@
                         <div class="layui-tab-item after-sales"></div>
                         <div class="layui-tab-item cancel"></div>
                         <div class="layui-tab-item market"></div>
-                        {{--<div class="layui-tab-item search"></div>--}}
                     </div>
                 </div>
             </div>
@@ -327,8 +325,14 @@
             try {
                 var type = this.getAttribute('lay-id');
                 if (type) {
-                    $('.' + type).empty();
+//                    $('.' + type).empty();
+//                        $('.search').empty();
+//                        element.tabDelete('order-list', 'search');
+                    if (type == 'search') {
+                        return false;
+                    }
                     getOrder('{{ route('frontend.workbench.order-list') }}', type);
+                    return false;
                 }
             } catch (e) {
 
@@ -382,7 +386,6 @@
         });
         // 搜索
         form.on('submit(search)', function (data) {
-
             getOrder('{{ route('frontend.workbench.order-list') }}', 'search', data.field.search_type, data.field.search_content);
         });
         // 获取商品流程
@@ -428,10 +431,11 @@
         // 获取订单
         function getOrder(url, type, searchType, searchContent) {
             type = type || 'need';
-            searchType = searchType || '';
-            searchContent = searchContent || '';
+            searchType = type == 'search' ?  searchType : '';
+            searchContent = type  == 'search' ?  searchContent : '';
             currentUrl = url;
             currentType = type;
+
             $.post(url, {type: type, search_type:searchType, search_content:searchContent}, function (result) {
                 if (type == 'search') {
                     element.tabDelete('order-list', 'search');

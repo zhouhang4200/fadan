@@ -14,12 +14,14 @@ class OrderRepository
 {
     /**
      * @param $status
-     * @param $orderNo
+     * @param $searchType
+     * @param $searchContent
      * @param int $pageSize
-     * @return LengthAwarePaginator
      */
-    public function dataList($status, $orderNo, $pageSize = 15)
+    public function dataList($status, $searchType, $searchContent, $pageSize = 15)
     {
+        \Log::alert($status .'-' .$searchType. '-' . $searchContent);
+
         $userId = Auth::user()->id; // 当前登录账号
         $type = Auth::user()->type; // 账号类型是接单还是发单
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
@@ -36,6 +38,8 @@ class OrderRepository
             } else {
                 $query->where('creator_primary_user_id', $primaryUserId); // 发单
             }
+        } else {
+            $query->orderBy('id', 'desc');
         }
 //            $query->from(DB::raw('orders force index (orders_creator_primary_user_id_status_index)'));
 //        } else if ($type == 1 && $status != 'market') { // 子账号接单方
@@ -46,6 +50,7 @@ class OrderRepository
 //            $query->from(DB::raw('orders force index (orders_creator_user_id_status_index)'));
 //        }
         // 按订单状态过滤
+
         if ($type == 1) { // 接单方
             if ($status == 'need') {
                 $query->where('status', 3);
@@ -59,6 +64,14 @@ class OrderRepository
                 $query->where('status', 10);
             } elseif ($status == 'market') {
                 $query->where('status', 1);
+            } elseif ($status == 'search' && $searchType == 1) { // 按集市订单号搜索
+                $query->where('no', $searchContent);
+            } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
+                $query->where('foreign_order_no', $searchContent);
+            } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
+
+            } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
+
             }
         } else {
             if ($status == 'need') {
@@ -73,13 +86,17 @@ class OrderRepository
                 $query->where('status', 10);
             } elseif ($status == 'market') {
                 $query->where('status', 1);
+            } elseif ($status == 'search' && $searchType == 1) { // 按集市订单号搜索
+                $query->where('no', $searchContent);
+            } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
+                $query->where('foreign_order_no', $searchContent);
+            } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
+
+            } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
+
             }
         }
 
-        // 除去订单集市订单所有订单按ID倒序
-        if ($status != 'market') {
-            $query->orderBy('id', 'desc');
-        }
         return $query->paginate($pageSize);
     }
 

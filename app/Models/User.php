@@ -13,7 +13,7 @@ use App\Extensions\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, SoftDeletes, RevisionableTrait;
+    use Notifiable, HasRoles, SoftDeletes,  RevisionableTrait;
 
     /**
      * 开启监听
@@ -37,7 +37,7 @@ class User extends Authenticatable
      * 不监听的字段
      * @var array
      */
-    protected $dontKeepRevisionOf = ['id', 'type', 'remember_token'];
+    protected $keepRevisionOf = ['id', 'type'];
 
 
     /**

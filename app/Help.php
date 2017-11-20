@@ -412,3 +412,25 @@ if (!function_exists('wangWangDeleteUserId')) {
         $redis->del(config('redis.order.wangWangToUserId') . $wangWang);
     }
 }
+if (!function_exists('orderAssignSwitchGet')) {
+    /**
+     * 获取订单分配开关状态
+     */
+    function orderAssignSwitchGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->get(config('redis.order.orderAssignSwitch')) ?? 1;
+    }
+}
+if (!function_exists('orderAssignSwitchSet')) {
+
+    /**
+     * 设置订单分配开关状态
+     * @param $status
+     */
+    function orderAssignSwitchSet($status)
+    {
+        $redis = RedisConnect::order();
+        return $redis->set(config('redis.order.orderAssignSwitch'), $status);
+    }
+}

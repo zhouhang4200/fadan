@@ -3,7 +3,7 @@ namespace App\Extensions\Weight;
 
 use App\Exceptions\CustomException;
 use App\Models\User;
-use Config;
+use App\Models\UserWeight;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -27,7 +27,7 @@ class Weight
     /**
      * 调用算法计算用户的权重
      * @param $users
-     * @param $orderNo 订单号
+     * @param integer $orderNo 订单号
      * @return int|string
      */
     public function run(array $users, $orderNo)
@@ -49,7 +49,7 @@ class Weight
             $this->afterComputeWeight[][$v] = 10;
         }
         // 获取所有算法
-        $algorithms = Config::get('weight.algorithm');
+        $algorithms = config('weight.algorithm');
         // 调用算法计算用户的权重
         foreach ($algorithms as $algorithm) {
             $this->afterComputeWeight[] =  $algorithm::compute($primaryUsers);
@@ -73,12 +73,13 @@ class Weight
         \Log::alert(json_encode(['订单号' =>  $orderNo, '调算法后' => $this->afterComputeWeight, '相加后' => $this->afterSum],
             JSON_UNESCAPED_UNICODE));
 
+        $receivingUserId = $this->getUserId($orderNo);
         // 返回最终的商户ID
-        if (!isset($originUsers[$this->getUserId($orderNo)])) {
+        if (!isset($originUsers[$receivingUserId])) {
             \Log::alert(json_encode(['下标越界',  $orderNo, $originUsers], JSON_UNESCAPED_UNICODE));
             return array_pop($originUsers);
         } else {
-            return $originUsers[$this->getUserId($orderNo)];
+            return $originUsers[$receivingUserId];
         }
     }
 
@@ -87,9 +88,23 @@ class Weight
      */
     private function manualAdjustment()
     {
-        // a=>10  b=>10 c=>10
-        // (30 - 10)*50 / 100 -50
+        // 获取总的权重
+        $weightTotal = array_sum($this->afterSum);
 
+        // 计算出权限的百分比, 遍历找到用户是否需要加权重，是否开始计算 否则跳过
+        foreach ($this->afterSum as $user => $weight) {
+            $addWeightPercent = UserWeight::where('user_id', $user)->firist();
+            if ($addWeightPercent) {
+                $currentWeight = $weightTotal - $weight;
+                // 当前用户百分比
+                $currentUserPercent = bcmul(bcdiv($weight, $weightTotal, 4), 100);
+                // 增加后的百分比
+                $finalPercent  = bcadd($currentUserPercent, $addWeightPercent->weight_percent);
+                // 计算加了百分比后的权重
+                $this->afterSum[$user] =  bcdiv(bcmul($currentWeight, $finalPercent), bcsub(100, $finalPercent));
+            }
+        }
+        return $this->afterSum;
     }
 
     /**
@@ -99,9 +114,13 @@ class Weight
      */
     protected function getUserId($orderNo)
     {
+        // 调用手动调整的值
+//        $usersWeight =  $this->manualAdjustment();
+        $usersWeight =  $this->afterSum;
+
         try {
             $userId = 0;
-            $randNum = mt_rand(1, array_sum($this->afterSum));
+            $randNum = mt_rand(1, array_sum($usersWeight));
             $tmpWeight = 0;
             foreach ($this->afterSum as $user => $weight) {
                 if ($randNum <= $weight + $tmpWeight) {
@@ -112,16 +131,18 @@ class Weight
                 }
             }
             // 删除用户接单记录
-            foreach ($this->afterSum as $user => $weight) {
+            foreach ($usersWeight as $user => $weight) {
                 if ($user != $userId) {
                     receivingRecordDelete($user, $orderNo);
                 }
             }
             // 删除所有用户接单列队
             receivingUserDel($orderNo);
+            \Log::alert($orderNo .' 接单ID ' . $userId);
+
             return $userId;
         } catch (CustomException $exception) {
-            \Log::alert(json_encode(['计算用户权重异常', $orderNo, $this->afterSum]));
+            \Log::alert(json_encode(['计算用户权重异常', $orderNo, $usersWeight]));
         }
     }
 

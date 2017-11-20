@@ -27,6 +27,7 @@ class OrderController extends Controller
         if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50', '127.0.0.1'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
+
             if (isset($orderData['price'])) {
                 $userId = 0;
                 //  用站点ID找到主账号与子账号随机分配一个用户
