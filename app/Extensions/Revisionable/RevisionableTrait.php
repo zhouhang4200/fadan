@@ -183,7 +183,7 @@ trait RevisionableTrait
                     'key' => $key,
                     'old_value' => array_get($this->originalData, $key),
                     'new_value' => $this->updatedData[$key],
-                    'user_table' => \Auth::user()->getTable(),
+                    'user_table' => $this->getUser() ? $this->getUser()->getTable() : '',
                     'user_id' => $this->getSystemUserId(),
                     'created_at' => new \DateTime(),
                     'updated_at' => new \DateTime(),
@@ -226,7 +226,7 @@ trait RevisionableTrait
                 'key' => self::CREATED_AT,
                 'old_value' => null,
                 'new_value' => $this->{self::CREATED_AT},
-                'user_table' => \Auth::user()->getTable(),
+                'user_table' => $this->getUser() ? $this->getUser()->getTable() : '',
                 'user_id' => $this->getSystemUserId(),
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
@@ -254,7 +254,7 @@ trait RevisionableTrait
                 'key' => $this->getDeletedAtColumn(),
                 'old_value' => null,
                 'new_value' => $this->{$this->getDeletedAtColumn()},
-                'user_table' => \Auth::user()->getTable(),
+                'user_table' => $this->getUser() ? $this->getUser()->getTable() : '',
                 'user_id' => $this->getSystemUserId(),
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
@@ -279,6 +279,28 @@ trait RevisionableTrait
                 return ($class::check()) ? $class::getUser()->id : null;
             } elseif (\Auth::check()) {
                 return \Auth::user()->getAuthIdentifier();
+            }
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Attempt to find the user id of the currently logged in user
+     * Supports Cartalyst Sentry/Sentinel based authentication, as well as stock Auth
+     **/
+    public function getUser()
+    {
+        try {
+            if (class_exists($class = '\SleepingOwl\AdminAuth\Facades\AdminAuth')
+                || class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry')
+                || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel')
+            ) {
+                return ($class::check()) ? $class::getUser() : null;
+            } elseif (\Auth::check()) {
+                return \Auth::user();
             }
         } catch (\Exception $e) {
             return null;

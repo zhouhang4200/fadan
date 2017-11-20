@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -82,5 +83,17 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         return view('frontend.auth.register');
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+
     }
 }
