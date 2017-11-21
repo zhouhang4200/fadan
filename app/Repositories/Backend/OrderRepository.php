@@ -74,6 +74,7 @@ class OrderRepository
                     '天猫单价',
                     '天猫总价',
                     '渠道',
+                    '渠道名',
                     '状态',
                     '原因',
                     '下单时间',
@@ -90,11 +91,11 @@ class OrderRepository
                             $v['source'] = config('order.source')[$v['source']];
                         }
                         $reason = '';
-                        if (isset($v['history']['description'])) {
+                        if (isset($v['history'])) {
                             if (in_array($v['status'], [5, 10])) {
-                                $count = count($v['history']);
-                                $temp = explode(',', $v['history'][$count]['description']);
-                                $reason = $temp[1] ?? '-';
+                                $count = count($v['history']) - 1;
+                                $temp = explode('，', $v['history'][$count]['description']);
+                                $reason = $temp[1] ?? '';
                             }
                         }
                         // 订单详情
@@ -102,7 +103,7 @@ class OrderRepository
                         $data[] = [
                             $v['creator_primary_user_id'],
                             $v['gainer_primary_user_id'],
-                            $v['gainerUser']['nickname'] ?? '',
+                            $v['gainer_user']['nickname'] ?? '',
                             $v['no'],
                             $v['foreign_order_no'],
                             $v['game_name'],
@@ -114,7 +115,8 @@ class OrderRepository
                             $v['amount'],
                             $v['original_price'],
                             $v['original_amount'],
-                            $v['foreignOrder']['channel_name'] ?? '',
+                            $v['source'],
+                            $v['foreign_order']['channel_name'] ?? '',
                             $status,
                             $reason,
                             $v['created_at']
