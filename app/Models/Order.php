@@ -132,9 +132,4 @@ class Order extends Model
     {
         return $this->hasOne(User::class, 'id', 'gainer_primary_user_id');
     }
-
-    public function getStatus()
-    {
-        return config('order.status')[$this->status];
-    }
 }
