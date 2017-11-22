@@ -122,6 +122,12 @@
                             'source' => $source,
                             'startDate' => $startDate,
                             'endDate' => $endDate,
+                            'serviceId' => $serviceId,
+                            'gameId' => $gameId,
+                            'creatorPrimaryUserId' => $creatorPrimaryUserId,
+                            'gainerPrimaryUserId' => $gainerPrimaryUserId,
+                            'no' => $no,
+                            'foreignOrderNo' => $foreignOrderNo,
                         ])->render() !!}
                     </div>
                 </div>
