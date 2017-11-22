@@ -27,6 +27,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         <thead>
         <tr>
             <th>订单号</th>
+            <th>旺旺号</th>
             <th>类型</th>
             <th>游戏</th>
             <th>商品</th>
@@ -42,6 +43,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         @forelse($orders as $item)
             <tr data-no="{{ $item->no }}">
                 <td>千手：{{ $item->no }}<br>外部：{{ $item->foreign_order_no }}</td>
+                <td>{{ $item->wang_wang ?: '' }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
                 <td>{{ $item->goods_name }}</td>

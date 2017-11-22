@@ -24,10 +24,11 @@ class OrderRepository
         $type = Auth::user()->type; // 账号类型是接单还是发单
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
 
-        $query = Order::select(['id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id','service_name',
-            'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
-            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
-        ]);
+        $query = Order::select(['orders.id','orders.no', 'orders.foreign_order_no', 'orders.source','orders.status','orders.goods_id','orders.goods_name','orders.service_id','orders.service_name',
+                'orders.game_id','orders.game_name','orders.original_price','orders.price','orders.quantity','orders.original_amount','orders.amount','orders.remark',
+                'orders.creator_user_id','orders.creator_primary_user_id','orders.gainer_user_id','orders.gainer_primary_user_id','orders.created_at', 'foreign_orders.wang_wang'
+            ])
+            ->leftJoin('foreign_orders', 'foreign_orders.foreign_order_no', 'orders.foreign_order_no');
 
 //        if ($userId == $primaryUserId && $status != 'market') { // 主账号
         if ( $status != 'market') { // 主账号
