@@ -15,6 +15,7 @@
                             <form class="layui-form" method="POST" action="{{ route('admin-permissions.store') }}">
                             {!! csrf_field() !!}
                                 <div style="width: 40%">
+                                    <div class="layui-form-item">
                                     <div class="layui-inline">
                                         <label class="layui-form-label">模块</label>
                                         <div class="layui-input-block">
@@ -25,6 +26,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                    </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">权限名</label>
