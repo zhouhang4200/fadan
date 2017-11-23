@@ -26,7 +26,7 @@
                 <div class="input-container">
                     <div class="title">注册</div>
                     <div class="layui-form-item">
-                        <input type="text" name="name" required="" lay-verify="required" placeholder="请输入账号" value="{{ old('name') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <input type="text" name="name" required="" lay-verify="required" placeholder="请输入账号名 (可写中文)" value="{{ old('name') }}" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item">
