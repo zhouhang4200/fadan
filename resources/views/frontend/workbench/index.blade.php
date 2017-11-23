@@ -325,11 +325,11 @@
             try {
                 var type = this.getAttribute('lay-id');
                 if (type) {
-//                    $('.' + type).empty();
-//                        $('.search').empty();
-//                        element.tabDelete('order-list', 'search');
+                    $('.search').empty();
                     if (type == 'search') {
                         return false;
+                    } else {
+                        element.tabDelete('order-list', 'search');
                     }
                     getOrder('{{ route('frontend.workbench.order-list') }}', type);
                     return false;
