@@ -120,14 +120,14 @@
                         {!! $orders->appends([
                             'status' => $status,
                             'source' => $source,
-                            'startDate' => $startDate,
-                            'endDate' => $endDate,
-                            'serviceId' => $serviceId,
-                            'gameId' => $gameId,
-                            'creatorPrimaryUserId' => $creatorPrimaryUserId,
-                            'gainerPrimaryUserId' => $gainerPrimaryUserId,
+                            'start_date' => $startDate,
+                            'end_date' => $endDate,
+                            'service_id' => $serviceId,
+                            'game_id' => $gameId,
+                            'creator_primary_user_id' => $creatorPrimaryUserId,
+                            'gainer_primary_user_id' => $gainerPrimaryUserId,
                             'no' => $no,
-                            'foreignOrderNo' => $foreignOrderNo,
+                            'foreign_order_no' => $foreignOrderNo,
                         ])->render() !!}
                     </div>
                 </div>
