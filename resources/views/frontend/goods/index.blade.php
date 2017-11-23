@@ -21,7 +21,7 @@
     <form class="layui-form" id="search-form">
         <div class="layui-form-item">
             <div class="layui-input-inline" style="width: 100px;">
-                <select name="service_id">
+                <select name="service_id" lay-search>
                     <option value="">所有类型</option>
                     @foreach ($services as $key => $value)
                         <option value="{{ $key }}" {{ $key == $serviceId ? 'selected' : '' }}>{{ $value }}</option>
@@ -29,7 +29,7 @@
                 </select>
             </div>
             <div class="layui-input-inline" style="width: 100px;">
-                <select name="game_id">
+                <select name="game_id" lay-search>
                     <option value="">所有游戏</option>
                     @foreach ($games as $key => $value)
                         <option value="{{ $key }}" {{ $key == $gameId ? 'selected' : '' }}>{{ $value }}</option>
