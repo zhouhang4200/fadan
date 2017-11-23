@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\WriteUserOrderMoney',
         'App\Console\Commands\Test',
         'App\Console\Commands\UserWeightUpdate',
+        'App\Console\Commands\OrderConfirm',
     ];
 
     /**

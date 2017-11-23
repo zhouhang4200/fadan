@@ -57,10 +57,16 @@ class OrderOperationController extends Controller
             // 提示用户：您已经接过该单
             return response()->ajax(0, '您已经接过该单');
         }
-        // 接单后，将当前接单用户的ID写入相关的订单号的队列中
-        receiving($currentUserId, $orderNo);
         // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
         receivingRecord($primaryUserId, $orderNo);
+        // 获取订单
+        $order = OrderModel::where('no', $orderNo)->first();
+
+        // 检测是否允许接单，允许则写入队列中否则不写入
+        if (whoCanReceiveOrder($order->creator_primary_user_id, $primaryUserId, $order->service_id, $order->game_id)) {
+            // 接单后，将当前接单用户的ID写入相关的订单号的队列中
+            receiving($currentUserId, $orderNo);
+        }
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
     }
@@ -89,6 +95,8 @@ class OrderOperationController extends Controller
         try {
             // 调用发货
             Order::handle(new Delivery($request->no, Auth::user()->id));
+            // 写入自动确认队列
+            waitConfirmAdd($request->no, time());
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
@@ -104,6 +112,8 @@ class OrderOperationController extends Controller
         try {
             // 调用失败订单
             Order::handle(new DeliveryFailure($request->no, Auth::user()->id, $request->remark));
+            // 商家失败后直接取消订单
+            Order::handle(new Cancel($request->no, 0, 0));
             return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());

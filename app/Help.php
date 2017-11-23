@@ -291,8 +291,13 @@ if (!function_exists('generateOrderNo')) {
 }
 
 if (!function_exists('whoCanReceiveOrder')) {
+
     /**
      * 用户黑白名单，谁能接单
+     * @param $sendUserId
+     * @param $receiveUserId
+     * @param string $serviceId
+     * @param string $gameId
      * @return bool
      */
     function whoCanReceiveOrder($sendUserId, $receiveUserId, $serviceId = '', $gameId = '')
@@ -300,78 +305,51 @@ if (!function_exists('whoCanReceiveOrder')) {
         // 0,未设置， 1白名单， 2黑名单
         $type = UserSetting::where('user_id', $sendUserId)->where('option', 'receiving_control')->value('value');
 
-        if ($type) {
-
-            $whiteReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
-                        ->where('type', 1)
-                        ->pluck('other_user_id');
-
-            $blackReceiveUserIds = UserReceivingUserControl::where('user_id', $sendUserId)
-                        ->where('type', 2)
-                        ->pluck('other_user_id');
-
-            $whiteGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                        ->where('type', 1)
-                        ->where('game_id', $gameId)
-                        ->where('service_id', $serviceId)
-                        ->where('other_user_id', $receiveUserId)
-                        ->first();
-
-            $hasWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                        ->where('service_id', $serviceId)
-                        ->where('game_id', $gameId)
-                        ->where('type', 1)
-                        ->first();
-
-            $blackGameReceiveUser = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                        ->where('type', 2)
-                        ->where('game_id', $gameId)
-                        ->where('service_id', $serviceId)
-                        ->where('other_user_id', $receiveUserId)
-                        ->first();
-
-            $hasBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                        ->where('service_id', $serviceId)
-                        ->where('game_id', $gameId)
-                        ->where('type', 2)
-                        ->first();
-        }
-
-        if ($type === '0' || ! $type) {
-
+        //  如果用户设置为不开启，或没有设置则直接返回true
+        if ($type == 0 || !$type) {
             return true;
+        } else if ($type == 1) { // 开启了白名单
 
-        } elseif ($type === '1') {     
+            // 查找接单用户是否在白名单中
+            $existWhite = UserReceivingUserControl::where('user_id', $sendUserId)
+                        ->where(['type' => 1, 'other_user_id' => $receiveUserId])->first();
 
-            if (
-                ($whiteReceiveUserIds && $whiteReceiveUserIds->contains($receiveUserId) && $hasWhite && $whiteGameReceiveUser)
-                || 
-                ($whiteReceiveUserIds && $whiteReceiveUserIds->contains($receiveUserId) && ! $hasWhite)
-                ||
-                (! $whiteReceiveUserIds && $whiteGameReceiveUser)
-                ||
-                (! $whiteReceiveUserIds && ! $hasWhite)
-            ) {
+            // 获取商品是否单独设置了白名单
+            $categoryWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                        ->where('service_id', $serviceId)
+                        ->where('game_id', $gameId)
+                        ->where('type', 1)
+                        ->pluck('other_user_id')
+                        ->toArray();
+
+            if ($existWhite && !$categoryWhite) { // 如果在白名单中，并且商品没有有单独设置白名单
                 return true;
+            } elseif ($existWhite && $categoryWhite) { // 如果在白名单中，并且商品没有有单独设置白名单
+                if (in_array($receiveUserId, $categoryWhite)) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        } else if ($type == 2) {
+
+            // 查找接单用户是否在白名单中
+            $existBlack = UserReceivingUserControl::where('user_id', $sendUserId)
+                ->where(['type' => 2, 'other_user_id' => $receiveUserId])->first();
+
+            if ($existBlack) {
+                return false;
             }
 
-            return false;
+            $categoryBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
+                ->where('service_id', $serviceId)
+                ->where('game_id', $gameId)
+                ->where('type', 2)
+                ->pluck('other_user_id');
 
-        } elseif ($type === '2') {
-
-            if (
-                ($blackReceiveUserIds && ! $blackReceiveUserIds->contains($receiveUserId) && ! $hasBlack)
-                || 
-                ($blackReceiveUserIds && ! $blackReceiveUserIds->contains($receiveUserId) && $hasBlack && ! $blackGameReceiveUser)
-                || 
-                (! $blackReceiveUserIds && ! $hasBlack)
-                ) {
-                return true;
+            if (in_array($receiveUserId, $categoryBlack)) {
+                return false;
             }
-
-            return false;
-        } else {
-
             return true;
         }
     }
@@ -432,5 +410,46 @@ if (!function_exists('orderAssignSwitchSet')) {
     {
         $redis = RedisConnect::order();
         return $redis->set(config('redis.order.orderAssignSwitch'), $status);
+    }
+}
+
+if (!function_exists('waitConfirm')) {
+
+    /**
+     * 获取所有 待确认订单
+     */
+    function waitConfirm()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.waitConfirm'));
+    }
+}
+
+
+if (!function_exists('waitConfirmDel')) {
+    /**
+     * 删除 待确认收货订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function waitConfirmDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.waitConfirm'), $orderNo);
+    }
+}
+
+if (!function_exists('waitConfirmAdd')) {
+
+    /**
+     * 添加 待确认收货的订单
+     * @param integer $orderNo 订单号
+     * @param integer $sendDate 发货时间
+     * @return mixed
+     */
+    function waitConfirmAdd($orderNo, $sendDate)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hset(config('redis.order.waitConfirm'), $orderNo, $sendDate);
     }
 }

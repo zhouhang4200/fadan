@@ -53,8 +53,9 @@ class DeliveryFailure extends \App\Extensions\Order\Operations\Base\Operation
     {
         if ($this->runAfter) {
             // 调用打款，删除自动打款哈希表中订单号
-            $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
 
+            // 失败卡门订单
+            $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
             if ($this->order->foreignOrder && $has) {
                 KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
             }

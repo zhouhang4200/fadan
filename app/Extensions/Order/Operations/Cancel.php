@@ -62,7 +62,6 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
             if ($this->order->foreignOrder && $has) {
                 KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
             }
-            // 调用打款，删除自动打款哈希表中订单号
         }
     }
 }

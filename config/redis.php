@@ -20,6 +20,8 @@ return [
         'receivingRecord' => 'order:receiving:record:',
         // 待接单数量
         'waitReceivingQuantity' => 'order:wait:receiving:quantity',
+        // 待确认收货的订单
+        'waitConfirm' => 'order:wait:confirm',
     ],
     // 用户模型
     'user' => [
