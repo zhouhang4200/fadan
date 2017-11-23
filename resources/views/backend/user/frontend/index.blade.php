@@ -32,6 +32,7 @@
                                 <thead>
                                 <tr>
                                     <th>账号ID</th>
+                                    <th>别名</th>
                                     <th>账号名称</th>
                                     <th>可用余额</th>
                                     <th>冻结余额</th>
@@ -45,6 +46,7 @@
                                 @forelse($users as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
+                                        <td>{{ $user->nickname }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->asset->balance ?? 0 }}</td>
                                         <td>{{ $user->asset->frozen ?? 0 }}</td>
