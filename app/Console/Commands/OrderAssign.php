@@ -122,7 +122,7 @@ class OrderAssign extends Command
                     }
                 }
             }
-            Log::alert(date('Y-m-d H:i:s'));
+//            Log::alert(date('Y-m-d H:i:s'));
             sleep(1);
         }
     }
