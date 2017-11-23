@@ -64,7 +64,7 @@
         <div class="col-lg-12">
             <ol class="breadcrumb">
                 <li class=""><span>首页</span></li>
-                <li class=""><a href="{{ route('orders.index') }}"><span>用户列表</span></a></li>
+                <li class=""><a href="{{ route('frontend.user.index') }}"><span>用户列表</span></a></li>
                 <li class="active"><span>用户资料</span></li>
             </ol>
         </div>
