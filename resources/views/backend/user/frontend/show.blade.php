@@ -86,7 +86,6 @@
                                 <div class="layui-tab-item authentication"></div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

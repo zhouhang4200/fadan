@@ -16,6 +16,7 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Registered' => [
             'App\Listeners\Registered\CreateUserAsset',
             'App\Listeners\Registered\AddDefaultPermission',
+            'App\Listeners\Registered\UserWeightInit',
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',

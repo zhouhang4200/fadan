@@ -18,11 +18,13 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
     /**
      * @param string $orderNo 订单编号
      * @param int $userId 操作人id
+     * @param int $adminUserId 操作管理员 id
      */
-    public function __construct($orderNo, $userId)
+    public function __construct($orderNo, $userId, $adminUserId = 0)
     {
         $this->orderNo = $orderNo;
         $this->userId  = $userId;
+        $this->adminUserId = $adminUserId;
     }
 
     public function updateAsset()

@@ -7,7 +7,7 @@
         <div class="col-lg-12">
             <ol class="breadcrumb">
                 <li class=""><span>首页</span></li>
-                <li class="active"><span>订单列表</span></li>
+                <li class="active"><span>平台订单</span></li>
             </ol>
         </div>
     </div>
@@ -109,7 +109,7 @@
                                         <td>{{ $order->gainerUser->nickname ?? $order->gainer_primary_user_id }}</td>
                                         <td>{{ $order->created_at }}</td>
                                         <td>
-                                            <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('orders.show', ['order' => $order->id]) }}">详情</a>
+                                            <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('order.platform.content', ['id' => $order->id]) }}">详情</a>
                                         </td>
                                     </tr>
                                 @empty
@@ -163,6 +163,7 @@
             </div>
         </form>
     </div>
+
 @endsection
 
 @section('js')
@@ -178,6 +179,7 @@
         laydate.render({
             elem: '#endDate'
         });
+
     });
 </script>
 @endsection

@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
         'App\Console\Commands\Test',
+        'App\Console\Commands\UserWeightUpdate',
     ];
 
     /**
@@ -31,9 +32,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('Order:Assign')->everyMinute();
         $schedule->command('daily-settlement:user-asset')->dailyAt('13:00');
         $schedule->command('daily-settlement:platform-asset')->dailyAt('13:00');
+        $schedule->command('UserWeightUpdate')->dailyAt('12:01');
         $schedule->command('write:orders')->daily();
         $schedule->command('write:user-order-moneys')->daily();
     }

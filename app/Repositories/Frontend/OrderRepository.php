@@ -116,8 +116,7 @@ class OrderRepository
 //                ->where('status', '>', 2);
         $primaryUserId = Auth::user()->getPrimaryUserId();
         return Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
-            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo])
-                ->where('status', '>', 2);
+            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
         })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
             $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo])
                 ->where('status', '>', 2);

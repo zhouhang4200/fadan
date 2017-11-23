@@ -98,6 +98,9 @@
 <script src="/backend/js/pace.min.js"></script>
 <script src="/backend/js/helper.js"></script>
 <script src="/vendor/layui/layui.js"></script>
+<script src="/backend/js/classie.js"></script>
+<script src="/backend/js/modalEffects.js"></script>
+<script src="/backend/js/jquery.modalEffects.js"></script>
 <script>
     $.ajaxSetup({
         headers: {

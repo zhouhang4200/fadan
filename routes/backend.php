@@ -102,6 +102,15 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('show/{userId}', 'UserController@show')->name('frontend.user.show')->middleware('permission:frontend.user.show');
             // 实名认证
             Route::get('authentication/{userId}', 'UserController@authentication')->name('frontend.user.authentication')->middleware('permission:frontend.user.authentication');
+            // 权重
+            Route::prefix('weight')->group(function () {
+                // 用户权重列表
+                Route::get('/', 'WeightController@index')->name('frontend.user.weight.index')->middleware('permission:frontend.user.weight.index');
+                // 查看
+                Route::get('/{id}', 'WeightController@show')->name('frontend.user.weight.show')->middleware('permission:frontend.user.weight.show');
+                // 修改用户权重
+                Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
+            });
         });
         // 后台账号列表
         Route::namespace('Frontend')->prefix('backend')->group(function () {
@@ -196,17 +205,25 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     // 订单
-    Route::group([], function () {
-        // 订单列表
-        Route::get('orders', 'OrderController@index')->name('orders.index')->middleware('permission:orders.index');
+    Route::namespace('Order')->prefix('order')->group(function () {
+        // 平台订单
+        Route::prefix('platform')->group(function () {
+            // 订单列表
+            Route::get('/', 'PlatformController@index')->name('order.platform.index')->middleware('permission:order.platform.index');
+            // 订单内容
+            Route::get('content/{id}', 'PlatformController@content')->name('order.platform.content')->middleware('permission:order.platform.content');
+            // 订单操作记录
+            Route::get('record/{id}', 'PlatformController@record')->name('order.platform.record')->middleware('permission:order.platform.record');
+            // 申请退款
+            Route::get('refund-application', 'PlatformController@refundApplication')->name('order.platform.refund-application')->middleware('permission:order.platform.refund-application');
+            // 修改状态
+            Route::post('change-status', 'PlatformController@changeStatus')->name('order.platform.change-status')->middleware('permission:order.platform.change-status');
+        });
         // 外部订单
-        Route::get('foreign', 'OrderController@foreign')->name('orders.foreign')->middleware('permission:orders.foreign');
-        // 订单详情
-        Route::get('orders/{id}', 'OrderController@show')->name('orders.show')->middleware('permission:orders.show');
-        // 订单内容
-        Route::post('orders/content', 'OrderController@content')->name('orders.content')->middleware('permission:orders.content');
-        // 订单操作记录
-        Route::post('orders/record', 'OrderController@record')->name('orders.record')->middleware('permission:orders.record');
+        Route::prefix('foreign')->group( function () {
+            // 订单列表
+            Route::get('/', 'ForeignController@index')->name('order.foreign.index')->middleware('permission:order.platform.index');
+        });
     });
 
     // 财务

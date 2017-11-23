@@ -44,34 +44,25 @@ class Weight
             // 将所有传入的ID 存入新的数组，用于计算权重
             $primaryUsers[] = $primaryUser;
         }
-        // 初始化用户的权重值
-        foreach ($primaryUsers as $v) {
-            $this->afterComputeWeight[][$v] = 10;
-        }
-        // 获取所有算法
-        $algorithms = config('weight.algorithm');
-        // 调用算法计算用户的权重
-        foreach ($algorithms as $algorithm) {
-            $this->afterComputeWeight[] =  $algorithm::compute($primaryUsers);
-        }
-        //
-        if (!$this->afterComputeWeight) {
-            return 'error';
+        // 获取所有用户权重数据
+        $allUserWeight = UserWeight::whereIn('user_id', $primaryUsers)->get();
+
+        // 计算每一个用户最终权重值
+        foreach($allUserWeight as $item) {
+
+            $percent = $item->less_than_six_percent + $item->success_percent + $item->use_time_percent;
+
+            // 判断手动加的百分比是否在有效期
+            $currentDate = strtotime(date('Y-m-d'));
+            if ($currentDate >= strtotime($item->start_date)  && $currentDate <= strtotime($item->end_date)) {
+                $percent +=  $item->manual_percent;
+            }
+            // 得到当前用户最终的权重值，四舍五入
+            $this->afterSum[$item->user_id] = round($item->weight + bcmul($item->weight, bcdiv($percent, 100)));
         }
 
-        // 将相同商户权重值相加
-        foreach ($this->afterComputeWeight as $v) {
-            foreach ($v as $i => $j) {
-                if (isset($this->afterSum[$i])) {
-                    $this->afterSum[$i] += $j;
-                } else {
-                    $this->afterSum[$i] = $j;
-                }
-            }
-        }
         // 记录计算后的值
-        \Log::alert(json_encode(['订单号' =>  $orderNo, '调算法后' => $this->afterComputeWeight, '相加后' => $this->afterSum],
-            JSON_UNESCAPED_UNICODE));
+        \Log::alert(json_encode(['订单号' =>  $orderNo, '权重值' => $this->afterSum], JSON_UNESCAPED_UNICODE));
 
         $receivingUserId = $this->getUserId($orderNo);
         // 返回最终的商户ID
@@ -114,13 +105,9 @@ class Weight
      */
     protected function getUserId($orderNo)
     {
-        // 调用手动调整的值
-//        $usersWeight =  $this->manualAdjustment();
-        $usersWeight =  $this->afterSum;
-
         try {
             $userId = 0;
-            $randNum = mt_rand(1, array_sum($usersWeight));
+            $randNum = mt_rand(1, array_sum($this->afterSum));
             $tmpWeight = 0;
             foreach ($this->afterSum as $user => $weight) {
                 if ($randNum <= $weight + $tmpWeight) {
@@ -131,7 +118,7 @@ class Weight
                 }
             }
             // 删除用户接单记录
-            foreach ($usersWeight as $user => $weight) {
+            foreach ($this->afterSum as $user => $weight) {
                 if ($user != $userId) {
                     receivingRecordDelete($user, $orderNo);
                 }
@@ -142,8 +129,7 @@ class Weight
 
             return $userId;
         } catch (CustomException $exception) {
-            \Log::alert(json_encode(['计算用户权重异常', $orderNo, $usersWeight]));
+            \Log::alert(json_encode(['计算用户权重异常', $orderNo, $this->afterSum]));
         }
     }
-
 }

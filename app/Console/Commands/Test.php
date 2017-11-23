@@ -32,8 +32,7 @@ class Test extends Command
      */
     public function handle()
     {
-        for ($i =1; $i<=9;$i++) {
-            $userId = app('weight')->run([1,39], 123);
-        }
+        for ($i = 1; $i <=100; $i++)
+            app('weight')->run([8072,8073], $i);
     }
 }

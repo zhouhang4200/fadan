@@ -14,8 +14,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <span>后台首页</span>
                         </a>
                     </li>
-                    @can('orders.index')
-                        <li @if($currentRouteName == 'orders.index') class="open active" @endif>
+                    @can('order.platform.index')
+                        <li @if(in_array($currentRouteName, [
+                        'order.platform.index',
+                        'order.platform.content',
+                        'order.platform.record',
+                        'order.foreign.index',
+                        ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>订单管理</span>
@@ -23,12 +28,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </a>
                             <ul class="submenu">
                                 <li>
-                                    <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
-                                        集市订单
+                                    <a href="{{ route('order.platform.index') }}" @if($currentRouteName == 'order.platform.index') class="active" @endif>
+                                        平台订单
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('orders.foreign') }}" @if($currentRouteName == 'orders.foreign') class="active" @endif>
+                                    <a href="{{ route('order.foreign.index') }}" @if($currentRouteName == 'order.foreign.index') class="active" @endif>
                                         外部订单
                                     </a>
                                 </li>
@@ -77,6 +82,14 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     </a>
                                 </li>
                             @endcan
+                            @can('frontend.user.weight.index')
+                                <li>
+                                    <a href="{{ route('frontend.user.weight.index') }}" @if($currentRouteName == 'frontend.user.weight.index') class="active" @endif>
+                                        商户权重列表
+                                    </a>
+                                </li>
+                            @endcan
+
                         </ul>
                     </li>
                     <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
