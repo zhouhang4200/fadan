@@ -329,6 +329,8 @@ if (!function_exists('whoCanReceiveOrder')) {
                     return true;
                 }
                 return false;
+            } elseif (in_array($receiveUserId, $categoryWhite)) { // 如果在商品白名单中，则可以接单
+                return true;
             }
             return false;
         } else if ($type == 2) {

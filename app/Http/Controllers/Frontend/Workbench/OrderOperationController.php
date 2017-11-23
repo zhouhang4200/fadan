@@ -57,15 +57,17 @@ class OrderOperationController extends Controller
             // 提示用户：您已经接过该单
             return response()->ajax(0, '您已经接过该单');
         }
-        // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
-        receivingRecord($primaryUserId, $orderNo);
         // 获取订单
         $order = OrderModel::where('no', $orderNo)->first();
 
         // 检测是否允许接单，允许则写入队列中否则不写入
         if (whoCanReceiveOrder($order->creator_primary_user_id, $primaryUserId, $order->service_id, $order->game_id)) {
+            // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
+            receivingRecord($primaryUserId, $orderNo);
             // 接单后，将当前接单用户的ID写入相关的订单号的队列中
             receiving($currentUserId, $orderNo);
+        } else {
+            return response()->ajax(1, "此订单您无权接单，请联系商家（$order->creator_primary_user_id）");
         }
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
