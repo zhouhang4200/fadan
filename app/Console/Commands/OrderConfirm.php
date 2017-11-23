@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exceptions\CustomException;
+use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\Complete;
 use Illuminate\Console\Command;
 use Log, Config, Order;
@@ -32,10 +33,10 @@ class OrderConfirm extends Command
     public function handle()
     {
         // 查出所有已经发货订单
-       $order =  \App\Models\Order::where('status', 4)->get();
+       $order =  \App\Models\Order::where('status',5)->get();
         // 写入待确认收货
         foreach ($order as $item) {
-            waitConfirmAdd($item->no, strtotime($item->updated_at));
+            Order::handle(new Cancel($item->no, 0, 0));
         }
         die;
 
