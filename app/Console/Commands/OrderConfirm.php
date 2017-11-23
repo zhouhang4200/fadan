@@ -32,14 +32,6 @@ class OrderConfirm extends Command
 
     public function handle()
     {
-        // 查出所有已经发货订单
-       $order =  \App\Models\Order::where('status',5)->get();
-        // 写入待确认收货
-        foreach ($order as $item) {
-            Order::handle(new Cancel($item->no, 0, 0));
-        }
-        die;
-
         while (1) {
             // 获取所有待确认收货的订单
             foreach (waitConfirm() as $orderNo => $deliveryDate) {
