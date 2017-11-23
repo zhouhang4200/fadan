@@ -67,7 +67,7 @@ class OrderOperationController extends Controller
             // 接单后，将当前接单用户的ID写入相关的订单号的队列中
             receiving($currentUserId, $orderNo);
         } else {
-            return response()->ajax(1, "此订单您无权接单，请联系商家（$order->creator_primary_user_id）");
+            return response()->ajax(1, "此订单您无权接单，请联系商家（" . $order->creator_primary_user_id . "）");
         }
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
