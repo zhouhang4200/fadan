@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Services;
-use GuzzleHttp\Client;
 
+use GuzzleHttp\Client;
 
 /**
  * Class KamenOrderApi
@@ -92,14 +92,5 @@ class KamenOrderApi
         } catch(\Exception $e){
             return false;
         }
-    }
-
-    /**
-     * 通知千手订单号找到对应卡门订单
-     * @param $qsOrderId
-     */
-    private function findKmOrderId($qsOrderId)
-    {
-
     }
 }
