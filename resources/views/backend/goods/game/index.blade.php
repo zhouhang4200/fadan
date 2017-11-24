@@ -25,17 +25,19 @@
                 <header class="main-box-header clearfix">
                     <div class="filter-block pull-left">
                         <form class="layui-form">
-                            <div class="layui-form-item" style="float: left">
+                            <div class="row">
+                                <div class="form-group col-xs-8">
                                     <select name="name" lay-verify="" lay-search="">
                                         <option value="">输入名字或直接选择</option>
                                         @foreach($allGames as $game)
                                             <option value="{{ $game->name }}" {{ $name && $name == $game->name ? 'selected' : '' }}>{{ $game->name ?: '' }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="form-group col-xs-1">
+                                    <button type="submit" class="layui-btn layui-btn-normal layui-btn-small pull-left">搜索</button>
+                                </div>
                             </div>
-                            <button type="submit" class="layui-btn layui-btn-normal layui-btn-small">搜索</button>
-                            <button class="layui-btn layui-btn-normal layui-btn-small"><a
-                                        href="{{ route('goods.game.index') }}" style="color:#fff">返回</a></button>
                         </form>
                     </div>
                     <div class="filter-block pull-right">
