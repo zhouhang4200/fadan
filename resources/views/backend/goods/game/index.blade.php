@@ -27,7 +27,6 @@
                         <form class="layui-form">
                             <div class="layui-form-item" style="float: left">
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">选择游戏名</label>
                                     <div class="layui-input-block">
                                         <select name="name" lay-verify="" lay-search="">
                                             <option value="">输入名字或直接选择</option>
