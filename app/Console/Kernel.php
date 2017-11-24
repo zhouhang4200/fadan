@@ -33,9 +33,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('daily-settlement:user-asset')->dailyAt('12:01');
-        $schedule->command('daily-settlement:platform-asset')->dailyAt('12:01');
-        $schedule->command('UserWeightUpdate')->dailyAt('12:01');
+        $schedule->command('daily-settlement:user-asset')->daily();
+        $schedule->command('daily-settlement:platform-asset')->daily();;
+        $schedule->command('UserWeightUpdate')->daily();
         $schedule->command('write:orders')->daily();
         $schedule->command('write:user-order-moneys')->daily();
     }
