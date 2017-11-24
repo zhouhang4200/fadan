@@ -16,11 +16,16 @@ class GameController extends Controller
     {
         $name = $request->name;
 
+        $allGames = Game::get();
+
+        $filters = compact('name');
+
         $games = Game::with(['createdAdmin', 'updatedAdmin'])
+            ->filter($filters)
             ->orderBy('sortord')
             ->paginate(30);
 
-        return view('backend.goods.game.index', compact('games', 'name'));
+        return view('backend.goods.game.index', compact('games', 'name', 'allGames'));
     }
 
     /**

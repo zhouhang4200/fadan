@@ -2,6 +2,14 @@
 
 @section('title', ' | 游戏')
 
+@section('css')
+    <style>
+        .layui-form .layui-form-item .layui-form-label {
+            width: 105px;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -16,11 +24,22 @@
             <div class="main-box">
                 <header class="main-box-header clearfix">
                     <div class="filter-block pull-left">
-                        <form class="form-inline" role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name"  placeholder="输入游戏名称" value="{{ $name }}">
+                        <form class="layui-form" method="" action="">
+                            <div class="layui-form-item" style="float: left">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">选择游戏名</label>
+                                    <div class="layui-input-block">
+                                        <select name="name" lay-verify="" lay-search="">
+                                            <option value="">输入名字或直接选择</option>
+                                            @foreach($allGames as $game)
+                                            <option value="{{ $game->name }}" {{ $name && $name == $game->name ? 'selected' : '' }}>{{ $game->name ?: '' }}</option>
+                                            @endforeach
+                                        </select>                                                                              
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-success">搜索</button>
+                            <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('goods.game.index') }}" style="color:#fff">返回</a></button></div>
                         </form>
                     </div>
                     <div class="filter-block pull-right">
