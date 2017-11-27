@@ -18,7 +18,7 @@
                     <div class="filter-block pull-left">
                         <form class="form-inline" role="form">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="user_id"  placeholder="用户ID" value="{{ $userId }}">
+                                <input type="text" class="form-control" name="user_id"  placeholder="用户ID" value="{{ $userId ?: '' }}">
                             </div>
                             <button type="submit" class="btn btn-success">搜索</button>
                         </form>
@@ -45,7 +45,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse($userWeight as $item)
+                            @forelse($userWeights as $item)
                                 <tr>
                                     <td>{{ $item->user_id }}</td>
                                     <td>{{ $item->name }}</td>
@@ -79,7 +79,7 @@
                             @endforelse
                             </tbody>
                         </table>
-                        {{ $userWeight->appends(['user_id' => $userId])->links() }}
+                        {{ $userWeights->appends(['user_id' => $userId])->links() }}
                     </div>
                 </div>
             </div>

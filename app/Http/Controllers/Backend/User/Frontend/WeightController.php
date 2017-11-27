@@ -16,14 +16,14 @@ class WeightController extends Controller
      */
     public function index(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
         $userId = $request->user_id;
 
-        $userWeight = UserWeight::with(['createdAdmin', 'updatedAdmin'])->paginate(30);
+        $filters = compact('userId');
+
+        $userWeights = UserWeight::with(['createdAdmin', 'updatedAdmin'])->filter($filters)->paginate(30);
 
         return view('backend.user.weight.index')->with([
-            'userWeight' => $userWeight,
+            'userWeights' => $userWeights,
             'userId' => $userId,
         ]);
     }

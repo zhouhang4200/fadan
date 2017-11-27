@@ -41,4 +41,13 @@ class UserWeight extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public static function scopeFilter($query, $filters = [])
+    {
+        if ($filters['userId']) {
+            
+            $query->where('user_id', $filters['userId']);
+        }
+        return $query;
+    }
 }
