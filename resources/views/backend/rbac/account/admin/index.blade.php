@@ -31,10 +31,11 @@
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->created_at }}</td>
                                             <td style="text-align: center;">
+                                                <a href="{{ route('admin-accounts.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">修改密码</a>
                                             @if (! $user->roles->count() > 0)
-                                                <a href="{{ route('admin-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加角色</a>
+                                                <a href="{{ route('admin-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
                                             @else
-                                                <a href="{{ route('admin-groups.show', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
+                                                <a href="{{ route('admin-groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini" >查看角色</a>
                                             @endif
                                             </td>
                                         </tr>
@@ -56,6 +57,11 @@
         //Demo
         layui.use('form', function(){
             var form = layui.form;
+            var succ = "{{ session('succ') ?: '' }}";
+
+            if(succ) {
+                layer.msg(succ, {icon: 6, time:1500});
+            }
 
             //监听提交
             form.on('submit(formDemo)', function(data){
