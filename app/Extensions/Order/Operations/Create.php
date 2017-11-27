@@ -183,6 +183,12 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      */
     protected function setPrice($userSetting)
     {
+        // 如果商品没有设置价格则直接用风控价格x订单单价
+        if ($this->goods->price == 0) {
+            $riskRate = isset($userSetting['api_risk_rate']) ?
+                $userSetting['api_risk_rate'] : config('order.apiRiskRate');
+            return bcmul($riskRate, $this->originalPrice);
+        }
         if ($this->originalPrice <= 0) {
             $this->originalPrice = $this->goods->price;
         }

@@ -29,6 +29,8 @@ class OrderController extends Controller
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
 
             if (isset($orderData['price'])) {
+                // 单价用支付金额计算
+                $price = bcdiv($orderData['total'], $orderData['quantity']);
                 $userId = 0;
                 //  用站点ID找到主账号与子账号随机分配一个用户
                 $masterUserId = SiteInfo::where('kamen_site_id', $orderData['kamen_site_id'])->first();
@@ -43,7 +45,7 @@ class OrderController extends Controller
 
                 // 原始订单数据
                 $goodsId = $orderData['goods_id']; // 商品Id
-                $originalPrice = $orderData['price']; // 原单价
+                $originalPrice = $price; // 原单价
                 $quantity = $orderData['quantity']; // 数量
                 $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
                 $wangWang = !empty($orderData['wang_wang']) ? $orderData['wang_wang'] : ''; // 天猫订单旺旺号
