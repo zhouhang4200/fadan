@@ -49,6 +49,7 @@ class ForeignOrderRepository
         })->when(!empty($foreignOrderNo), function ($query) use ($foreignOrderNo) {
             return $query->where('foreign_order_no', $foreignOrderNo);
         });
+        $query->orderBy('id', 'desc');
         return $query->paginate($pageSize);
     }
 }
