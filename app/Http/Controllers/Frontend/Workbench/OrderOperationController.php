@@ -165,6 +165,7 @@ class OrderOperationController extends Controller
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {
+            \Log::alert($exception->getMessage());
             return response()->ajax(0, $exception->getMessage());
         }
     }
