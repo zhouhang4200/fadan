@@ -136,8 +136,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('child', 'OrderController@widgetChild')->name('frontend.workbench.widget.child')->middleware('permission:frontend.workbench.widget.child');
         // 下单
         Route::post('order', 'OrderController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
+
         // 订单列表
-        Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
+        Route::group(['middleware'=>'throttle:60,1'],function(){
+            Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
+        });
 
         // 订单操作
         Route::prefix('order-operation')->group(function (){
