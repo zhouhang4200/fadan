@@ -262,6 +262,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     // 违规管理
     Route::namespace('Punish')->prefix('punish')->group(function () {
+        // 违规列表和违规增删改查
         Route::get('punishes', 'PunishController@index')->name('punishes.index')->middleware('permission:punishes.index');
         Route::get('punishes/create', 'PunishController@create')->name('punishes.create')->middleware('permission:punishes.create');
         Route::post('punishes', 'PunishController@store')->name('punishes.store')->middleware('permission:punishes.store');
@@ -270,6 +271,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::put('punishes/{id}', 'PunishController@update')->name('punishes.update')->middleware('permission:punishes.update');
         Route::delete('punishes/{id}', 'PunishController@destroy')->name('punishes.destroy')->middleware('permission:punishes.destroy');
         Route::post('punishes/user', 'PunishController@orders')->name('punishes.user')->middleware('permission:punishes.user');
-
+        // 违规类型添加
+        Route::get('punish-types', 'PunishTypeController@index')->name('punish-types.index')->middleware('permission:punish-types.index');
+        Route::get('punish-types/create', 'PunishTypeController@create')->name('punish-types.create')->middleware('permission:punish-types.create');
+        Route::post('punish-types', 'PunishTypeController@store')->name('punish-types.store')->middleware('permission:punish-types.store');
+        Route::get('punish-types/{id}/edit', 'PunishTypeController@edit')->name('punish-types.edit')->middleware('permission:punish-types.edit');
+        Route::put('punish-types/{id}', 'PunishTypeController@update')->name('punish-types.update')->middleware('permission:punish-types.update');
+        Route::delete('punish-types/{id}', 'PunishTypeController@destroy')->name('punish-types.destroy')->middleware('permission:punish-types.destroy');
     });
 });

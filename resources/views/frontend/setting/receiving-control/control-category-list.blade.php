@@ -43,8 +43,8 @@
     @forelse($controlCategoryList as $item)
         <tr>
             <td>{{ $item->id }}</td>
-            <td>{{ $item->id }}</td>
-            <td>{{ $item->id }}</td>
+            <td>{{ $item->type == 1 ? '白名单' : '黑名单' }}</td>
+            <td>{{ $item->game ? $item->game->name : '' }}</td>
             <td>{{ $item->other_user_id }}</td>
             <td>{{ $item->remark }}</td>
             <td>{{ $item->created_at }}</td>

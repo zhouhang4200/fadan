@@ -65,4 +65,9 @@ class Game extends Model
         }
         return $query;
     }
+
+    public function UserReceivingCategoryControls()
+    {
+        return $this->hasMany(UserReceivingCategoryControl::class);
+    }
 }

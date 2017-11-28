@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\Models\Game;
 use App\Exceptions\CustomException;
 use App\Models\UserSetting;
 use Illuminate\Http\JsonResponse;
@@ -164,7 +165,7 @@ class ReceivingControlController extends Controller
             return response()->json(\View::make('frontend.setting.receiving-control.control-category-list', [
                 'controlCategoryList' => $controlCategoryList,
                 'type' => $type,
-                'gameId' => $gameId,
+                'gameId' => Game::find($gameId),
                 'serviceId' => $serviceId,
                 'otherUserId' => $otherUserId,
                 'services' => $services,
