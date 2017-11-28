@@ -64,6 +64,8 @@ class KamenForeignOrder extends ForeignOrder
         } else {
             $price = $decodeArray['ProductPrice'];
             $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);
+            $decodeArray['ProductPrice'] = $price;
+            $decodeArray['total_price'] = $totalPrice;
         }
 
 		$data['channel']          =  $siteInfo->channel;
@@ -75,8 +77,8 @@ class KamenForeignOrder extends ForeignOrder
 		$data['single_price']     = $price;
 		$data['total_price']      = $totalPrice;
 		$data['wang_wang']        = $wangWang;
-		$data['tel']              = $decodeArray['ContactType'] ?: '';
-		$data['qq']               = $decodeArray['ContactQQ'] ?: '';
+		$data['tel']              = $decodeArray['ContactType'] ?? '';
+		$data['qq']               = $decodeArray['ContactQQ'] ?? '';
 		$data['details']          = $this->saveDetails($decodeArray);
 
 		$has = ForeignOrderModel::where('foreign_order_no', $decodeArray['CustomerOrderNo'])->first();
@@ -130,6 +132,7 @@ class KamenForeignOrder extends ForeignOrder
                 } else {
                     $data['price'] = $model->details->ProductPrice;
                 }
+                $data['total'] = $model->details->total_price;
                 $data['kamen_site_id'] = $model->details->JSitid;
                 $data['wang_wang'] = $model->wang_wang;
     			return $data;
@@ -160,7 +163,7 @@ class KamenForeignOrder extends ForeignOrder
 			"GSitid" => $decodeArray['GSitid'] ?? '',
 			"BuyerIp" => $decodeArray['BuyerIp'] ?? '',
 			"OrderFrom" => $decodeArray['OrderFrom'] ?? '',
-			"role" => $decodeArray['OrderFrom'] ?? '',
+			"role" => $decodeArray['RoleName'] ?? '',
 			"RemainingNumber" => $decodeArray['RemainingNumber'] ?? '',
 			"ContactType" => $decodeArray['ContactType'] ?? '',
 			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',

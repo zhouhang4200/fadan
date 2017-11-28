@@ -63,6 +63,7 @@
                             <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
+                                    <th>时间</th>
                                     <th>来源</th>
                                     <th>店铺名</th>
                                     <th>卡门单号</th>
@@ -76,6 +77,7 @@
                                 <tbody>
                                 @forelse($orders as $order)
                                     <tr>
+                                        <td>{{ $order->created_at }}</td>
                                         <td>{{ config('order.source')[$order->channel] }}</td>
                                         <td>{{ $order->channel_name }}</td>
                                         <td>{{ $order->kamen_order_no }}</td>
