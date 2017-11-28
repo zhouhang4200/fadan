@@ -46,7 +46,8 @@ class ForeignController extends Controller
             $request->channel_name,
             $request->kamen_order_no,
             $request->foreign_goods_id,
-            $request->foreign_order_no
+            $request->foreign_order_no,
+            $request->wang_wang
             );
 
         return view('backend.order.foreign.index')->with([
@@ -59,6 +60,7 @@ class ForeignController extends Controller
             'kamenOrderNo' => $request->kamen_order_no,
             'foreignGoodsId' => $request->foreign_goods_id,
             'foreignOrderNo' => $request->foreign_order_no,
+            'wangWang' => $request->wang_wang,
         ]);
     }
 }

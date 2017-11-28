@@ -26,6 +26,7 @@ class UserWithdrawOrderRepository
             ->when($pageSize === 0, function ($query) {
                 return $query->limit(10000)->get();
             })
+            ->with('user')
             ->when($pageSize, function ($query) use ($pageSize) {
                 return $query->paginate($pageSize);
             });

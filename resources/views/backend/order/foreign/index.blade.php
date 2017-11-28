@@ -50,6 +50,9 @@
                                 <input type="text" class="layui-input" name="foreign_order_no"  placeholder="外部订单号" value="{{ $foreignOrderNo }}">
                             </div>
                             <div class="form-group col-xs-2">
+                                <input type="text" class="layui-input" name="wang_wang"  placeholder="旺旺" value="{{ $wangWang }}">
+                            </div>
+                            <div class="form-group col-xs-2">
                                 <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
                                 <button type="submit" class="layui-btn layui-btn-normal">导出</button>
                             </div>
@@ -72,6 +75,8 @@
                                     <th>旺旺</th>
                                     <th>单价</th>
                                     <th>总价</th>
+                                    <th>平台订单号</th>
+                                    <th>平台接单商户ID</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -86,6 +91,8 @@
                                         <td>{{ $order->wang_wang }}</td>
                                         <td>{{ $order->single_price }}</td>
                                         <td>{{ $order->total_price }}</td>
+                                        <td>{{ $order->order->no }}</td>
+                                        <td>{{ $order->order->gainer_primary_user_id }}</td>
                                     </tr>
                                 @empty
                                 @endforelse
