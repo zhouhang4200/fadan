@@ -128,13 +128,6 @@ class OrderAssign extends Command
                         continue;
                     }
                 }
-                unset($userId);
-                unset($data);
-                unset($carbon);
-                unset($currentAfter);
-                unset($exception);
-                unset($currentTim);
-                unset($orderNo);
             }
 //            sleep(1);
         }
