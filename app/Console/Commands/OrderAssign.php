@@ -45,6 +45,13 @@ class OrderAssign extends Command
 
             // 获取所有待分配订单
             foreach (waitReceivingGet() as $orderNo => $data) {
+
+                // 分配的所有内存
+                $useTotalMemory = memory_get_usage(true);
+                // 实际使用的所有内存
+                $useMemory = memory_get_usage(false);
+                \Log::alert(['分配的所有内存' => $useTotalMemory, '实际使用的所有内存'  => $useMemory]);
+
                 $carbon = new Carbon;
                 // 保存创建时间的json
                 $data = json_decode($data);
@@ -126,5 +133,11 @@ class OrderAssign extends Command
 //            Log::alert(date('Y-m-d H:i:s'));
             sleep(1);
         }
+    }
+
+    protected function convert($size)
+    {
+        $unit = array('b','kb','mb','gb','tb','pb');
+        return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
     }
 }
