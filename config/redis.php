@@ -22,6 +22,8 @@ return [
         'waitReceivingQuantity' => 'order:wait:receiving:quantity',
         // 待确认收货的订单
         'waitConfirm' => 'order:wait:confirm',
+        // 数据类型队列，用与检测 是否可以进行下一次订单分配
+        'assignStatus' => 'order:assign:status',
     ],
     // 用户模型
     'user' => [

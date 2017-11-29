@@ -254,7 +254,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     <li @if($currentOneLevelMenu == 'system-logs') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>系统日志</span>
+                            <span>系统管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">

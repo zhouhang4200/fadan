@@ -455,3 +455,28 @@ if (!function_exists('waitConfirmAdd')) {
         return $redis->hset(config('redis.order.waitConfirm'), $orderNo, $sendDate);
     }
 }
+
+if (!function_exists('assignStatusGet')) {
+
+    /**
+     * 获取 是否可以开始执行分单
+     * @return mixed
+     */
+    function assignStatusGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->rpop(config('redis.order.assignStatus'));
+    }
+}
+
+if (!function_exists('assignStatusAdd')) {
+
+    /**
+     * 当一次分单执行完则向队列写入一条数据
+     */
+    function assignStatusAdd()
+    {
+        $redis = RedisConnect::order();
+        return $redis->lpush(config('redis.order.assignStatus'), 1);
+    }
+}
