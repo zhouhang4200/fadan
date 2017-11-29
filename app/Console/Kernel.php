@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('write:orders')->daily();
         $schedule->command('write:user-order-moneys')->daily();
         // 自动确认收货
-        $schedule->command('Order:Confirm')->everyMinute();
+//        $schedule->command('Order:Confirm')->everyMinute();
     }
 
     /**
