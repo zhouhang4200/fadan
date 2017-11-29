@@ -38,8 +38,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('UserWeightUpdate')->daily();
         $schedule->command('write:orders')->daily();
         $schedule->command('write:user-order-moneys')->daily();
-        // 自动确认收货
-//        $schedule->command('Order:Confirm')->everyMinute();
+        // 自动确认收货 每五分钟运行一次
+        $schedule->command('Order:Confirm')->everyFiveMinutes();
     }
 
     /**
