@@ -42,9 +42,10 @@ class OrderAssign extends Command
     public function handle()
     {
         while (orderAssignSwitchGet()) {
-            $carbon = new Carbon;
+
             // 获取所有待分配订单
             foreach (waitReceivingGet() as $orderNo => $data) {
+                $carbon = new Carbon;
                 // 保存创建时间的json
                 $data = json_decode($data);
                 $time = Carbon::parse($data->created_date);
