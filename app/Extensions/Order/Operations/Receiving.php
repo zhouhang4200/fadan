@@ -2,6 +2,7 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Events\NotificationEvent;
+use App\Exceptions\CustomException;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Weight;
@@ -65,6 +66,12 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
             waitReceivingQuantitySub();
             // 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 删除接单
+            try {
+                receivingUserDel($this->order->no);
+            } catch (CustomException $exception) {
+                \Log::alert($exception->getMessage() . '删除接单队列');
+            }
         }
     }
 }
