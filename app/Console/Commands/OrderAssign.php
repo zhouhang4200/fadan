@@ -74,62 +74,68 @@ class OrderAssign extends Command
                     }
 
                     if ($userId) {
-
-                        // 分配订单
                         try {
                             // 将订单改为不可接单
                             Order::handle(new GrabClose($orderNo));
+                        }catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . '更改状态失败');
+                            continue;
+                        }
+                        // 分配订单
+                        try {
                             Order::handle(new Receiving($orderNo, $userId));
                             continue;
                         } catch (CustomException $exception) {
                             waitReceivingDel($orderNo);
-                            Log::alert($exception->getMessage());
+                            Log::alert($exception->getMessage() . ' 分配订单失败');
+                            continue;
+                        }
+                    } else {
+                        $currentTim = strtotime(date('Y-m-d H:i:s'));
+                        $currentAfter = strtotime(date('Y-m-d H:i:s', $currentTim)) + 10;
+                        // 可接单时间与当前时间的差
+                        $minutes = bcsub(strtotime($data->receiving_date), $currentTim, 0);
+
+                        // 如果有用户接单，则进行可接单时间判断，如果没有则增加可接单时间
+                        if (receivingUserLen($orderNo)) {
+                            if ($minutes <= 0) {
+                                try {
+                                    // 将订单改为不可接单
+                                    Order::handle(new GrabClose($orderNo));
+                                } catch (CustomException $exception) {
+                                    waitReceivingDel($orderNo);
+                                    Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
+                                    continue;
+                                }
+
+                                try {
+                                    // 取出所有用户, 获取所有接单用户的权重值
+                                    $userId = app('weight')->run(receivingUser($orderNo), $orderNo);
+                                    // 分配订单
+                                    Order::handle(new Receiving($orderNo, $userId));
+                                    // 记录相同旺旺的订单分配到了哪个商户
+                                    if ($data->wang_wang) {
+                                        wangWangToUserId($data->wang_wang, $userId);
+                                    }
+                                    continue;
+                                } catch (CustomException $exception) {
+                                    waitReceivingDel($orderNo);
+                                    Log::alert($exception->getMessage() . '- 分配订单失败 -' . $orderNo);
+                                    continue;
+                                }
+                            }
+                        } else {
+                            // 将可接单时间更新
+                            waitReceivingAdd($orderNo,
+                                date('Y-m-d H:i:s', $currentAfter),
+                                $data->created_date,
+                                $data->wang_wang
+                            );
                             continue;
                         }
                     }
 
-                    $currentTim = strtotime(date('Y-m-d H:i:s'));
-                    $currentAfter = strtotime(date('Y-m-d H:i:s', $currentTim)) + 10;
-                    // 可接单时间与当前时间的差
-                    $minutes = bcsub(strtotime($data->receiving_date), $currentTim, 0);
-
-                    // 如果有用户接单，则进行可接单时间判断，如果没有则增加可接单时间
-                    if (receivingUserLen($orderNo)) {
-                        if ($minutes <= 0) {
-                            try {
-                                // 将订单改为不可接单
-                                Order::handle(new GrabClose($orderNo));
-                            } catch (CustomException $exception) {
-                                waitReceivingDel($orderNo);
-                                Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
-                                continue;
-                            }
-
-                            try {
-                                // 取出所有用户, 获取所有接单用户的权重值
-                                $userId = app('weight')->run(receivingUser($orderNo), $orderNo);
-                                // 分配订单
-                                Order::handle(new Receiving($orderNo, $userId));
-                                // 记录相同旺旺的订单分配到了哪个商户
-                                if ($data->wang_wang) {
-                                    wangWangToUserId($data->wang_wang, $userId);
-                                }
-                                continue;
-                            } catch (CustomException $exception) {
-                                waitReceivingDel($orderNo);
-                                Log::alert($exception->getMessage() . '- 分配订单失败 -' . $orderNo);
-                                continue;
-                            }
-                        }
-                    } else {
-                        // 将可接单时间更新
-                        waitReceivingAdd($orderNo,
-                            date('Y-m-d H:i:s', $currentAfter),
-                            $data->created_date,
-                            $data->wang_wang
-                        );
-                        continue;
-                    }
                 }
             }
 //            sleep(1);
