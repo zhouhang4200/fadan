@@ -73,10 +73,11 @@ class OrderAssign extends Command
                     }
 
                     if ($userId) {
-                        // 将订单改为不可接单
-                        Order::handle(new GrabClose($orderNo));
+
                         // 分配订单
                         try {
+                            // 将订单改为不可接单
+                            Order::handle(new GrabClose($orderNo));
                             Order::handle(new Receiving($orderNo, $userId));
                             continue;
                         } catch (CustomException $exception) {
