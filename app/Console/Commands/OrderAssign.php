@@ -61,6 +61,7 @@ class OrderAssign extends Command
                     try {
                         Order::handle(new Cancel($orderNo, 0));
                     } catch (Exception $exception) {
+                        waitReceivingDel($orderNo);
                         Log::alert($exception->getMessage() . '- 重复取消 -' . $orderNo);
                     }
                     continue;
@@ -81,6 +82,7 @@ class OrderAssign extends Command
                             Order::handle(new Receiving($orderNo, $userId));
                             continue;
                         } catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
                             Log::alert($exception->getMessage());
                             continue;
                         }
