@@ -60,7 +60,7 @@ class OrderAssign extends Command
                 if ($minutes >= 40) {
                     try {
                         Order::handle(new Cancel($orderNo, 0));
-                    } catch (Exception $exception) {
+                    } catch (CustomException $exception) {
                         waitReceivingDel($orderNo);
                         Log::alert($exception->getMessage() . '- 重复取消 -' . $orderNo);
                     }
