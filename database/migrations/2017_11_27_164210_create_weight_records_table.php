@@ -21,8 +21,9 @@ class CreateWeightRecordsTable extends Migration
             $table->integer('before_weight_value')->comment('用户扣除和增加之前的权重值');
             $table->tinyInteger('ratio')->comment('扣除或增加权重的系数，正负数，如-10，即为-10*0.01*权重值');
             $table->integer('after_weight_value')->comment('用户扣除和增加之后的权重值');
-            $table->string('voucher')->default('')->comment('凭证照片');
-            $table->text('remark')->comment('备注');
+            $table->tinyInteger('type')->unsigned()->comment('类型，0，默认，1，成功，2，申诉');
+            $table->string('voucher')->nullable()->comment('凭证照片');
+            $table->text('remark')->nullable()->comment('备注');
             $table->timestamps();
         });
     }

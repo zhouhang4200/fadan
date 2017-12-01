@@ -271,12 +271,16 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::put('punishes/{id}', 'PunishController@update')->name('punishes.update')->middleware('permission:punishes.update');
         Route::delete('punishes/{id}', 'PunishController@destroy')->name('punishes.destroy')->middleware('permission:punishes.destroy');
         Route::post('punishes/user', 'PunishController@orders')->name('punishes.user')->middleware('permission:punishes.user');
-        // 违规类型添加
-        Route::get('punish-types', 'PunishTypeController@index')->name('punish-types.index')->middleware('permission:punish-types.index');
-        Route::get('punish-types/create', 'PunishTypeController@create')->name('punish-types.create')->middleware('permission:punish-types.create');
-        Route::post('punish-types', 'PunishTypeController@store')->name('punish-types.store')->middleware('permission:punish-types.store');
-        Route::get('punish-types/{id}/edit', 'PunishTypeController@edit')->name('punish-types.edit')->middleware('permission:punish-types.edit');
-        Route::put('punish-types/{id}', 'PunishTypeController@update')->name('punish-types.update')->middleware('permission:punish-types.update');
-        Route::delete('punish-types/{id}', 'PunishTypeController@destroy')->name('punish-types.destroy')->middleware('permission:punish-types.destroy');
+        // 图片上传地址
+        Route::post('punishes/upload-images', 'PunishController@uploadImages')->name('punishes.upload-images')->middleware('permission:punishes.upload-images');
+        // 奖惩管理
+        Route::post('execute/sub-money', 'ExecuteController@subMoney')->name('execute.sub-money')->middleware('permission:execute.sub-money');
+        Route::post('execute/add-money', 'ExecuteController@addMoney')->name('execute.add-money')->middleware('permission:execute.add-money');
+        Route::post('execute/add-weight', 'ExecuteController@addWeight')->name('execute.add-weight')->middleware('permission:execute.add-weight');
+        Route::post('execute/sub-weight', 'ExecuteController@subWeight')->name('execute.sub-weight')->middleware('permission:execute.sub-weight');
+        Route::post('execute/forbidden', 'ExecuteController@forbidden')->name('execute.forbidden')->middleware('permission:execute.forbidden');
+        // 后台详情里面的操作
+        Route::post('execute/pass', 'ExecuteController@pass')->name('execute.pass')->middleware('permission:execute.pass');
+        Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');  
     });
 });

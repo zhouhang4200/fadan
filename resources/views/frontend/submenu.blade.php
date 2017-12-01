@@ -6,6 +6,6 @@
     @endif
 
     @can('home-punishes.index')
-        <li class="{{ Route::currentRouteName() == 'home-punishes.index' ? 'current' : '' }}"><a href="{{ route('home-punishes.index') }}">违规记录</a><div class="arrow"></div></li>
+        <li class="{{ Route::currentRouteName() == 'home-punishes.index' ? 'current' : '' }}"><a href="{{ route('home-punishes.index') }}">奖惩记录</a><div class="arrow"></div></li>
     @endcan
 </ul>

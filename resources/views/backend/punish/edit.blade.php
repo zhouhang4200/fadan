@@ -26,6 +26,9 @@
         .layui-form-label {
             width: 100px;
         }
+        .layui-input-block .layui-select-title input .layui-input .layui-unselect{
+            width:370px;
+        }
     </style>
 @endsection
 
@@ -59,19 +62,30 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">缴费金额</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="money" lay-verify="required" value="{{ old('money') ?: $punish->money }}" autocomplete="off" placeholder="请输入金额" class="layui-input">
-                                        </div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">截止时间</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" class="layui-input" lay-verify="required" value="{{ explode(' ', $punish->deadline)[0] }}" name="deadline" id="test1" placeholder="点击选择日期">
+                                            <select name="money">
+                                                <option value="">请选择金额</option>
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="50">50</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">备注说明</label>
                                         <div class="layui-input-block">
                                             <textarea placeholder="请输入内容" name="remark" lay-verify="required" class="layui-textarea" style="width:801px">{{ old('remark') ?: $punish->remark }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">凭证图片</label>
+                                        <div class="layui-input-block">
+                                            <ul style="width:700px">
+                                            @forelse($punish->voucher as $k => $voucherItem)
+                                                <li id="voucher{{ $k+1 }}" style="float:left;width:200px;height:200px;background-image: url('{{ $voucherItem }}');background-size: cover !important;background-position: center !important;margin-right:3px;">
+                                                </li>
+                                            @empty
+                                            @endforelse
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">

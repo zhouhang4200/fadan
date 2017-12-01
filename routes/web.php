@@ -65,7 +65,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 违规管理
 	Route::prefix('punish')->namespace('Punish')->group(function () {
 		Route::get('home-punishes', 'PunishController@index')->name('home-punishes.index')->middleware('permission:home-punishes.index');
-		Route::post('home-punishes/payment', 'PunishController@payment')->name('home-punishes.payment');
+		Route::post('home-punishes/payment', 'PunishController@payment')->name('home-punishes.payment'); // 付款
+		Route::post('home-punishes/complain', 'PunishController@complain')->name('home-punishes.complain'); //申诉
 	});
 
     // 商品

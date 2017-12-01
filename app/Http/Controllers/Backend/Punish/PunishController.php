@@ -6,12 +6,14 @@ use Redis;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
-use App\Models\Punish;
 use Illuminate\Http\Request;
+use App\Models\PunishOrReward;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PunishController extends Controller
 {
+    protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +21,7 @@ class PunishController extends Controller
      */
     public function index(Request $request)
     {
-        $userIds = Punish::where('type', 0)->pluck('user_id');
+        $userIds = PunishOrReward::pluck('user_id')->unique();
 
         $users = User::whereIn('id', $userIds)->get();
 
@@ -29,13 +31,15 @@ class PunishController extends Controller
 
         $type = $request->type;
 
+        $status = $request->status;
+
         $userId = $request->user_id;
 
-        $filters = compact('startDate', 'endDate', 'type', 'userId');
+        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status');
 
-        $punishes = Punish::filter($filters)->latest('created_at')->paginate(config('backend.page'));
+        $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
 
-        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes'));
+        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status'));
     }
 
     /**
@@ -43,18 +47,18 @@ class PunishController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        $users = User::where('parent_id', 0)->get();
+    // public function create()
+    // {
+    //     $users = User::where('parent_id', 0)->get();
 
-        $start = Carbon::now()->subDays(2)->startOfDay()->toDateTimeString();
+    //     $start = Carbon::now()->subDays(2)->startOfDay()->toDateTimeString();
         
-        $end = Carbon::now()->toDateTimeString();
+    //     $end = Carbon::now()->toDateTimeString();
 
-        $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
+    //     $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
 
-        return view('backend.punish.create', compact('users', 'orders'));
-    }
+    //     return view('backend.punish.create', compact('users', 'orders'));
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -62,30 +66,30 @@ class PunishController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $orderNo = static::createOrderId();
+    // public function store(Request $request)
+    // {
+    //     $orderNo = static::createOrderId();
 
-        $data = $request->all();
+    //     $data = $request->all();
 
-        $data['type'] = 0;
+    //     $data['type'] = 0;
 
-        $data['deadline'] = $request->deadline . ' 23:59:59';
+    //     $data['deadline'] = $request->deadline . ' 23:59:59';
 
-        $data['order_no'] = $orderNo;
+    //     $data['order_no'] = $orderNo;
 
-        $this->validate($request, Punish::rules(), Punish::messages());
+    //     $this->validate($request, PunishOrReward::rules(), PunishOrReward::messages());
 
-        $res = Punish::create($data);
+    //     $res = PunishOrReward::create($data);
         
-        if (! $res) {
+    //     if (! $res) {
 
-            return back()->withInput()->with('createFail', '添加失败！');
-        }
-        return redirect(route('punishes.index'))->with('succ', '添加成功!');
+    //         return back()->withInput()->with('createFail', '添加失败！');
+    //     }
+    //     return redirect(route('punishes.index'))->with('succ', '添加成功!');
 
 
-    }
+    // }
 
     /**
      * 获取订单号
@@ -109,7 +113,7 @@ class PunishController extends Controller
      */
     public function show($id)
     {
-        $punish = Punish::find($id);
+        $punish = PunishOrReward::find($id);
 
         return view('backend.punish.show', compact('punish'));
     }
@@ -120,12 +124,12 @@ class PunishController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $punish = Punish::find($id);
+    // public function edit($id)
+    // {
+    //     $punish = PunishOrReward::find($id);
 
-        return view('backend.punish.edit', compact('punish'));
-    }
+    //     return view('backend.punish.edit', compact('punish'));
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -134,25 +138,25 @@ class PunishController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $this->validate($request, Punish::rules($id), Punish::messages());
+    // public function update(Request $request, $id)
+    // {
+    //     $this->validate($request, PunishOrReward::rules($id), PunishOrReward::messages());
 
-        $data = $request->all();
+    //     $data['money'] = $request->money;
 
-        $data['deadline'] = $request->deadline . ' 23:59:59';
+    //     $data['remark'] = $request->remark;
 
-        $punish = Punish::find($id);
+    //     $punish = PunishOrReward::find($id);
 
-        $int = $punish->update($data);
+    //     $int = $punish->update($data);
 
-        if ($int > 0) {
+    //     if ($int > 0) {
 
-            return redirect(route('punishes.index'))->with('succ', '更新成功!');
-        }
+    //         return redirect(route('punishes.index'))->with('succ', '更新成功!');
+    //     }
 
-        return back()->withInput()->with('updateFail', '更新失败!');
-    }
+    //     return back()->withInput()->with('updateFail', '更新失败!');
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -162,7 +166,7 @@ class PunishController extends Controller
      */
     public function destroy($id)
     {
-        $bool = Punish::find($id)->delete();
+        $bool = PunishOrReward::where('id', $id)->delete();
 
         if ($bool) {
 
@@ -178,5 +182,59 @@ class PunishController extends Controller
         $orders = Order::where('gainer_primary_user_id', $userId)->pluck('no');
 
         return response()->json(['orders' => $orders]);
+    }
+
+    /**
+     * 点击图片 ajax 上传
+     * @param  Illuminate\Http\Request
+     * @return json
+     */
+    public function uploadImages(Request $request)
+    {
+        if ($request->hasFile('file')) {
+
+            $file = $request->file('file');
+
+            $path = public_path("/resources/punish/".date('Ymd')."/");
+
+            $imagePath = $this->uploadImage($file, $path);
+
+            return response()->json(['code' => 1, 'path' => $imagePath]);
+        }
+    }
+
+    /**
+     * 图片上传
+     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
+     * @param  $path string
+     * @return string
+     */
+    public function uploadImage(UploadedFile $file, $path)
+    {   
+        $extension = $file->getClientOriginalExtension();
+
+        if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
+
+            return response()->json(['code' => 2, 'path' => $imagePath]);
+        }
+
+        if (! $file->isValid()) {
+
+            return response()->json(['code' => 2, 'path' => $imagePath]);
+        }
+
+        if (!file_exists($path)) {
+
+            mkdir($path, 0755, true);
+        }
+        $randNum = rand(1, 100000000) . rand(1, 100000000);
+
+        $fileName = time().substr($randNum, 0, 6).'.'.$extension;
+
+        $path = $file->move($path, $fileName);
+
+        $path = strstr($path, '/resources');
+
+        return str_replace('\\', '/', $path);
     }
 }

@@ -17,6 +17,7 @@ class CreateUserWeightsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->comment('用户ID');
             $table->integer('weight')->comment('用户权重');
+            $table->integer('ratio')->default(0)->comment('奖惩权重率');
             $table->integer('less_than_six_percent')->default(0)->comment('小于6元订单，订单数量大于等于50单，增加的权重百分比');
             $table->integer('success_percent')->default(0)->comment('成功订单大于平台平均值，增加的权重百分比');
             $table->integer('use_time_percent')->default(0)->comment('订单用时小于平台平均值，增加的权重百分比');

@@ -3,9 +3,9 @@ namespace App\Http\Controllers\Frontend\Workbench;
 
 use Order;
 use Carbon\Carbon;
-use App\Models\Punish;
 use App\Models\SiteInfo;
 use Illuminate\Http\Request;
+use App\Models\PunishOrReward;
 use App\Services\KamenOrderApi;
 use App\Events\NotificationEvent;
 use App\Models\Order as OrderModel;
@@ -34,7 +34,9 @@ class OrderOperationController extends Controller
      */
     public function receiving(Request $request)
     {
-        $deadline = Punish::where('user_id', Auth::id())->where('type', 0)->oldest('deadline')->value('deadline');
+        $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->whereIn('status', ['3', '9', '10'])->oldest('deadline')->value('deadline');
+
+        $forbidden = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 5)->oldest('deadline')->value('deadline');
 
         if ($deadline) {
 
@@ -44,6 +46,17 @@ class OrderOperationController extends Controller
 
             if ($int < 0) {
                 return response()->ajax(0, '您已超过违规罚款截止日期，请先交违规罚款');
+            }
+        }
+
+        if ($forbidden) {
+
+            $time = Carbon::parse($deadline);
+
+            $int = (new Carbon)->diffInSeconds($time, false);
+
+            if ($int > 0) {
+                return response()->ajax(0, '您已被禁止接单一天!');
             }
         }
 

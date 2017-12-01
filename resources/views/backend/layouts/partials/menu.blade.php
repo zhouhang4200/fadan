@@ -272,21 +272,14 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     <li @if($currentOneLevelMenu == 'punishes' || $currentOneLevelMenu == 'punish-types') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>违规管理</span>
+                            <span>奖惩管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
                         @can('punishes.index')
                             <li>
                                 <a href="{{ route('punishes.index') }}" @if($currentRouteName == 'punishes.index') class="active" @endif>
-                                    违规列表
-                                </a>
-                            </li>
-                        @endcan
-                        @can('punishes.index')
-                            <li>
-                                <a href="{{ route('punish-types.index') }}" @if($currentRouteName == 'punish-types.index') class="active" @endif>
-                                    奖惩类型列表
+                                    奖惩列表
                                 </a>
                             </li>
                         @endcan

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Order;
 
+use App\Models\PunishType;
 use App\Exceptions\CustomException;
 use App\Extensions\Order\Operations\Cancel;
 use App\Repositories\Backend\ForeignOrderRepository;
@@ -58,6 +59,9 @@ class PlatformController extends Controller
         $filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
             'gainerPrimaryUserId', 'no', 'foreignOrderNo');
 
+        // 奖惩列表
+        $punishTypes = PunishType::get();
+
         // 订单导出
         if ($export) {
             return $this->order->export($filters);
@@ -80,7 +84,8 @@ class PlatformController extends Controller
             'gainerPrimaryUserId' => $gainerPrimaryUserId,
             'no' => $no,
             'foreignOrderNo' => $foreignOrderNo,
-            'fullUrl' => $request->fullUrl()
+            'fullUrl' => $request->fullUrl(),
+            'punishTypes' => $punishTypes,
         ]);
     }
 

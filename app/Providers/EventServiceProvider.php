@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',
         ],
+        'App\Events\Punish' => [
+            'App\Listeners\Punish\SendMessage',
+        ],
     ];
 
     /**

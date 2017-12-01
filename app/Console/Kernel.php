@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\Test',
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
+        'App\Console\Commands\AutoPunishUsers',
     ];
 
     /**
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('UserWeightUpdate')->daily();
         $schedule->command('write:orders')->daily();
         $schedule->command('write:user-order-moneys')->daily();
+        $schedule->command('punish:users')->daily();
     }
 
     /**

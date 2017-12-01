@@ -132,4 +132,13 @@ class Order extends Model
     {
         return $this->hasOne(User::class, 'id', 'gainer_primary_user_id');
     }
+
+        /**
+     * 订单发罚单
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function punishOrReward()
+    {
+        return $this->hasOne(PunishOrReward::class, 'order_id', 'no');
+    }
 }

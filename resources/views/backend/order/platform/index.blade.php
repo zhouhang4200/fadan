@@ -2,6 +2,28 @@
 
 @section('title', ' | 订单列表')
 
+@section('css')
+    <style>
+        .layui-form-pane .layui-form-label {
+            width: 120px;
+            padding: 8px 15px;
+            height: 36px;
+            line-height: 20px;
+            border-radius: 2px 0 0 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+        }
+        blockquote:before{
+            content: ""
+        }
+        .theme-whbl blockquote, .theme-whbl blockquote.pull-right{
+            border-color: #e6e6e6;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -71,6 +93,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab-item layui-show">
                         <div class="layui-tab-item layui-show">
+                        <form class="layui-form">
                             <table class="layui-table" lay-size="sm">
                                 <thead>
                                 <tr>
@@ -109,13 +132,24 @@
                                         <td>{{ $order->gainerUser->nickname ?? $order->gainer_primary_user_id }}</td>
                                         <td>{{ $order->created_at }}</td>
                                         <td>
-                                            <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('order.platform.content', ['id' => $order->id]) }}">详情</a>
+                                            <div class="layui-input-inline">
+                                                <select  lay-filter="operation" data-no="{{ $order->no }}" data-id="{{ $order->id }}">
+                                                    <option value="">请选择操作</option>
+                                                        <option value="execute1">奖励</option>
+                                                        <option value="execute2">惩罚</option>
+                                                        <option value="execute3">加权重</option>
+                                                        <option value="execute4">减权重</option>
+                                                        <option value="execute5">禁止接单</option>
+                                                    <option value="detail">订单详情</option>
+                                                </select>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
                                 @endforelse
                                 </tbody>
                             </table>
+                            </form>
                         </div>
                         {!! $orders->appends([
                             'status' => $status,
@@ -134,43 +168,283 @@
             </div>
         </div>
     </div>
-    <div id="recharge" style="display: none;padding: 20px">
-        <form class="layui-form layui-form-pane" action="">
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="id" autocomplete="off" class="layui-input layui-disabled" readonly value="">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">商户名</label>
-                <div class="layui-input-block">
-                    <input type="text" name="name" autocomplete="off" class="layui-input layui-disabled" readonly value="">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">金额</label>
-                <div class="layui-input-block">
-                    <input type="text" name="amount" autocomplete="off" placeholder="请输入加款金额" class="layui-input" lay-verify="required|number">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="recharge">确定</button>
-            </div>
-        </form>
-    </div>
-
 @endsection
+<!-- 奖励加钱-->
+<div class="add-money" style="display: none;padding: 20px">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label  class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+            <input id="add" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+       <div class="layui-form-item">
+            <label  class="layui-form-label">奖励金额</label>
+            <div class="layui-input-block">
+                <select name="money" lay-verify="required">
+                    <option value="">请选择金额</option>
+                    <option value="10">10 元</option>
+                    <option value="20">20 元</option>
+                    <option value="50">50 元</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注说明</label>
+            <div class="layui-input-block">
+                <select name="remark">
+                    <option value="">请选择</option>
+                    <option value="奖励 10 元">奖励 10 元</option>
+                    <option value="奖励 20 元">奖励 20 元</option>
+                    <option value="奖励 50 元">奖励 50 元</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test1">多凭证图片上传</button> 
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="demo1"></div>
+            </blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>   
+            <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="" style="float:right" lay-filter="add">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 惩罚-->
+<div class="sub-money" style="display: none;padding: 20px">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label  class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+            <input id="sub" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">罚款金额</label>
+            <div class="layui-input-block">
+                <select name="money" lay-verify="required">
+                    <option value="">请选择金额</option>
+                    <option value="10">10 元</option>
+                    <option value="20">20 元</option>
+                    <option value="50">50 元</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注说明</label>
+            <div class="layui-input-block">
+                <select name="remark">
+                    <option value="">请选择</option>
+                    <option value="未按要求给顾客反馈信息和话术">未按要求给顾客反馈信息和话术,处罚 10 元</option>
+                    <option value="因沟通问题造成用户差评">因沟通问题造成用户差评,处罚 20 元</option>
+                    <option value="聊天记录抽查发现怼客户">聊天记录抽查发现怼客户,处罚 50 元</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test2">多凭证图片上传</button> 
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="demo2"></div>
+            </blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>
+            <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="" style="float:right" lay-filter="sub">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 加权重-->
+<div class="add-weight" style="display: none;padding: 20px">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label  class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+            <input id="add-weight" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">增加权重</label>
+            <div class="layui-input-block">
+                <select name="ratio" lay-verify="required">
+                    <option value="">请选择</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注说明</label>
+            <div class="layui-input-block">
+                <select name="remark">
+                    <option value="">请选择</option>
+                    <option value="月度统计第五名,奖励 5">月度统计第五名,奖励 5</option>
+                    <option value="月度统计第四名,奖励 10">月度统计第四名,奖励 10</option>
+                    <option value="月度统计第三名,奖励 15">月度统计第三名,奖励 15</option>
+                    <option value="月度统计第二名,奖励 30">月度统计第二名,奖励 30</option>
+                    <option value="月度统计第一名,奖励 40">月度统计第一名,奖励 40</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">生效时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" id="start_time" autocomplete="off" class="layui-input" placeholder="生效时间" value="">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">截止时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="end_time" id="end_time" autocomplete="off" class="layui-input" placeholder="截止时间" value="">
+            </div>
+        </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test3">多凭证图片上传</button> 
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="demo3"></div>
+            </blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>
+            <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="" style="float:right" lay-filter="add-weight">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 减权重-->
+<div class="sub-weight" style="display: none;padding: 20px">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label  class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+            <input id="sub-weight" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">减少权重</label>
+            <div class="layui-input-block">
+                <select name="ratio" lay-verify="required">
+                    <option value="">请选择</option>
+                    <option value="-5">5</option>
+                    <option value="-10">10</option>
+                    <option value="-15">15</option>
+                    <option value="-30">30</option>
+                    <option value="-40">40</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注说明</label>
+            <div class="layui-input-block">
+                <select name="remark">
+                    <option value="">请选择</option>
+                    <option value="违规，减少权重 5">违规，减少权重 5</option>
+                    <option value="违规，减少权重 10">违规，减少权重 10</option>
+                    <option value="违规，减少权重 15">违规，减少权重 15</option>
+                    <option value="违规，减少权重 30">违规，减少权重 30</option>
+                    <option value="违规，减少权重 40">违规，减少权重 40</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">生效时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" id="start_time1" autocomplete="off" class="layui-input" placeholder="生效时间" value="">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">截止时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="end_time" id="end_time1" autocomplete="off" class="layui-input" placeholder="截止时间" value="">
+            </div>
+        </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test4">多凭证图片上传</button> 
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="demo4"></div>
+            </blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>
+            <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="" style="float:right" lay-filter="sub-weight">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 禁止接单一天-->
+<div class="forbidden" style="display: none;padding: 20px">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label  class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+            <input id="forbidden" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注说明</label>
+            <div class="layui-input-block">
+                <select name="remark">
+                    <option value="">请选择</option>
+                    <option value="一天累计2次未按要求操作">一天累计2次未按要求操作</option>
+                    <option value="10分钟内未回复千手客服/运营信息超过2次">10分钟内未回复千手客服/运营信息超过2次</option>
+                    <option value="续3天，充值成功率低于平均水平">续3天，充值成功率低于平均水平</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test5">多凭证图片上传</button> 
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="demo5"></div>
+            </blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label  class="layui-form-label"></label>
+            <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="" style="float:right" lay-filter="forbidden">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 @section('js')
 <script>
     //Demo
-    layui.use(['form', 'laytpl', 'element', 'laydate'], function(){
-        var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+    layui.use(['form', 'layedit', 'laytpl', 'element', 'laydate', 'table', 'upload'], function(){
+        var form = layui.form, layer = layui.layer, laydate = layui.laydate, layTpl = layui.laytpl,
+                element = layui.element, table=layui.table, upload = layui.upload;
 
         //日期
         laydate.render({
@@ -179,7 +453,252 @@
         laydate.render({
             elem: '#endDate'
         });
+        //日期
+        laydate.render({
+            elem: '#start_time'
+        });
+        laydate.render({
+            elem: '#end_time'
+        });
+        //日期
+        laydate.render({
+            elem: '#start_time1'
+        });
+        laydate.render({
+            elem: '#end_time1'
+        });
 
+        // 订单操作
+        form.on('select(operation)', function (data) {
+            eval(data.value + "('" + data.elem.getAttribute('data-no')  + "',"+data.elem.getAttribute('data-id')+")");
+        });
+
+        //订单详情
+        function detail(no, id)
+        {
+            window.open("/admin/order/platform/content/"+id);
+        }
+
+        //多图片上传
+        upload.render({
+            elem: '#test1'
+            ,url: "{{ route('punishes.upload-images') }}"
+            ,size: 3000
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'jpg|jpeg|png|gif'
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo1').append('<img style="width:200px; height:200px;padding:2px" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+
+                });
+            }
+            ,done: function(res){
+                $('#demo1').append('<input type="hidden" value="'+res.path+'" name="voucher['+']" class="layui-upload-img">');
+            }
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '#test2'
+            ,url: "{{ route('punishes.upload-images') }}"
+            ,size: 3000
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'jpg|jpeg|png|gif'
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo2').append('<img style="width:200px; height:200px;padding:2px" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+
+                });
+            }
+            ,done: function(res){
+                $('#demo2').append('<input type="hidden" value="'+res.path+'" name="voucher['+']" class="layui-upload-img">');
+            }
+        });
+
+         //多图片上传
+        upload.render({
+            elem: '#test3'
+            ,url: "{{ route('punishes.upload-images') }}"
+            ,size: 3000
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'jpg|jpeg|png|gif'
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo3').append('<img style="width:200px; height:200px;padding:2px" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+
+                });
+            }
+            ,done: function(res){
+                $('#demo3').append('<input type="hidden" value="'+res.path+'" name="voucher['+']" class="layui-upload-img">');
+            }
+        });
+
+         //多图片上传
+        upload.render({
+            elem: '#test4'
+            ,url: "{{ route('punishes.upload-images') }}"
+            ,size: 3000
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'jpg|jpeg|png|gif'
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo4').append('<img style="width:200px; height:200px;padding:2px" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+
+                });
+            }
+            ,done: function(res){
+                $('#demo4').append('<input type="hidden" value="'+res.path+'" name="voucher['+']" class="layui-upload-img">');
+            }
+        });
+
+         //多图片上传
+        upload.render({
+            elem: '#test5'
+            ,url: "{{ route('punishes.upload-images') }}"
+            ,size: 3000
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'jpg|jpeg|png|gif'
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo5').append('<img style="width:200px; height:200px;padding:2px" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+
+                });
+            }
+            ,done: function(res){
+                $('#demo5').append('<input type="hidden" value="'+res.path+'" name="voucher['+']" class="layui-upload-img">');
+            }
+        });
+
+        // 奖励加款
+        function execute1(no, id)
+        {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                area: ['700px', '650px'],
+                shade: 0.2,
+                title: '奖励加款',
+                content: $('.add-money')
+            });
+
+            $('#add').val(no);
+        }
+
+        form.on('submit(add)', function (data) {
+            $.post('{{ route('execute.add-money') }}', {data: data.field}, function (result) {
+                console.log(result);
+                layer.msg(result.message)
+            }, 'json');
+            reload();
+            return false;
+        });
+
+        // 违规扣款
+        function execute2(no, id)
+        {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                area: ['700px', '650px'],
+                shade: 0.2,
+                title: '惩罚扣款',
+                content: $('.sub-money')
+            });
+
+            $('#sub').val(no);
+        }
+
+        form.on('submit(sub)', function (data) {
+            $.post('{{ route('execute.sub-money') }}', {data: data.field}, function (result) {
+                console.log(result);
+                layer.msg(result.message)
+            }, 'json');
+            reload();
+            return false;
+        });
+
+        // 加权重
+        function execute3(no, id)
+        {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                area: ['700px', '650px'],
+                shade: 0.2,
+                title: '奖励加权重',
+                content: $('.add-weight')
+            });
+
+            $('#add-weight').val(no);
+        }
+
+        form.on('submit(add-weight)', function (data) {
+            $.post('{{ route('execute.add-weight') }}', {data: data.field}, function (result) {
+                console.log(result);
+                layer.msg(result.message)
+            }, 'json');
+            reload();
+            return false;
+        });
+
+        // 减权重
+        function execute4(no, id)
+        {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                area: ['700px', '650px'],
+                shade: 0.2,
+                title: '奖励加权重',
+                content: $('.sub-weight')
+            });
+
+            $('#sub-weight').val(no);
+        }
+
+        form.on('submit(sub-weight)', function (data) {
+            $.post('{{ route('execute.sub-weight') }}', {data: data.field}, function (result) {
+                console.log(result);
+                layer.msg(result.message)
+            }, 'json');
+            reload();
+            return false;
+        });
+
+        // 禁止接单
+        function execute5(no, id)
+        {
+            layer.open({
+                type: 1,
+                offset: '100px',
+                area: ['700px', '650px'],
+                shade: 0.2,
+                title: '禁止接单一天',
+                content: $('.forbidden')
+            });
+
+            $('#forbidden').val(no);
+        }
+
+        form.on('submit(forbidden)', function (data) {
+            $.post('{{ route('execute.forbidden') }}', {data: data.field}, function (result) {
+                console.log(result);
+                layer.msg(result.message)
+            }, 'json');
+            reload();
+            return false;
+        });
     });
+
 </script>
 @endsection

@@ -20,8 +20,8 @@ class CreateRewardsTable extends Migration
             $table->integer('user_id')->comment('用户id');
             $table->decimal('money', 12, 4)->comment('奖励金额');
             $table->tinyInteger('type')->comment('支付状态,0,未支付,1,已支付');
-            $table->string('voucher')->default('')->comment('凭证照片');
-            $table->text('remark')->comment('备注');
+            $table->string('voucher')->nullable()->comment('凭证照片');
+            $table->text('remark')->nullable()->comment('备注');
             $table->timestamps();
         });
     }

@@ -11,7 +11,7 @@ class Punish extends Model
 
 	public $timestamps = true;
 
-	protected $fillable = ['user_id', 'order_id', 'money', 'deadline', 'remark', 'order_no', 'type'];
+	protected $fillable = ['user_id', 'order_id', 'money', 'deadline', 'remark', 'order_no', 'type', 'voucher'];
 
 	protected $keepRevisionOf = array(
         'order_id', 'user_id', 'money', 'type', 'remark', 'deadline'
@@ -76,7 +76,6 @@ class Punish extends Model
     		'user_id' => 'required|numeric',
     		'remark' => 'required',
     		'money' => 'required',
-    		'deadline' => 'required|date',
     	];
     }
 
@@ -110,5 +109,10 @@ class Punish extends Model
         }
 
         return $query->latest('created_at');
+    }
+
+    public function getVoucherAttribute($value)
+    {
+        return json_decode($value);
     }
 }

@@ -251,4 +251,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Punish::class);
     }
+
+    public function punishOrRewards()
+    {
+        return $this->hasMany(PunishOrReward::class);
+    }
 }

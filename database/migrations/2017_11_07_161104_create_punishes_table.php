@@ -21,8 +21,8 @@ class CreatePunishesTable extends Migration
             $table->decimal('money', 12, 4)->comment('缴款金额');
             $table->tinyInteger('type')->comment('支付状态,0,未支付,1,已支付');
             $table->timestamp('deadline')->comment('缴款最后期限');
-            $table->string('voucher')->default('')->comment('凭证照片');
-            $table->text('remark')->comment('备注');
+            $table->string('voucher')->nullable()->default('')->comment('凭证照片');
+            $table->text('remark')->nullable()->comment('备注');
             $table->timestamps();
         });
     }

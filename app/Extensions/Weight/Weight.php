@@ -58,7 +58,7 @@ class Weight
                 $percent +=  $item->manual_percent;
             }
             // 得到当前用户最终的权重值，四舍五入
-            $this->afterSum[$item->user_id] = round($item->weight + bcmul($item->weight, bcdiv($percent, 100)));
+            $this->afterSum[$item->user_id] = round($item->weight + bcmul($item->weight, bcdiv($percent, 100)) + bcmul($item->weight, bcdiv($item->ratio, 100)));
         }
 
         // 记录计算后的值

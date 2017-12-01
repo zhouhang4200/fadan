@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use App\Extensions\Weight\Algorithm\OrderSix;
 use App\Extensions\Weight\Algorithm\OrderSuccess;
 use App\Extensions\Weight\Algorithm\OrderUseTime;
 use App\Models\User;
 use App\Models\UserWeight;
+use App\Models\PunishOrReward;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
 
@@ -54,8 +56,28 @@ class UserWeightUpdate extends Command
             $orderUseTime = OrderUseTime::compute([$user]);
             $weight['use_time_percent'] = $orderUseTime[$user] ?? 0;
 
+            // 总体的权重奖惩率
+            $weight['ratio'] = 0;
+
             // 更新用户权重值
             UserWeight::where('user_id', $user)->update($weight);
+        }
+
+        $now = Carbon::now()->startOfDay()->toDateTimeString();
+
+        // 奖惩表里面当天在加减权重生效和结束时间的所有记录
+        $punishOrRewards = PunishOrReward::whereIn('type', [3, 4])
+                ->where('start_time', '<=', $now)
+                ->where('end_time', '>=', $now)
+                ->get()
+                ->unique();
+
+        // 奖惩表里面当天在加减权重生效和结束时间内的所有用户的 ratio 变更到 user_weight 里面的 ratio
+        foreach($punishOrRewards as $punishOrReward) {
+
+            $ratio = $punishOrReward->ratio ?? 0;
+
+            UserWeight::where('user_id', $punishOrReward->user_id)->update(['ratio' => $ratio]);
         }
     }
 }
