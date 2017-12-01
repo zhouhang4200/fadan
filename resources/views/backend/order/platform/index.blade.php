@@ -48,10 +48,10 @@
                                 </select>
                             </div>
                             <div class="form-group col-xs-1">
-                                <input type="text" class="layui-input" name="creator_primary_user_id"  placeholder="发单用户" value="">
+                                <input type="text" class="layui-input" name="creator_primary_user_id"  placeholder="发单用户" value="{{ $creatorPrimaryUserId }}">
                             </div>
                             <div class="form-group col-xs-1">
-                                <input type="text" class="layui-input" name="gainer_primary_user_id"  placeholder="接单用户" value="">
+                                <input type="text" class="layui-input" name="gainer_primary_user_id"  placeholder="接单用户" value="{{ $gainerPrimaryUserId }}">
                             </div>
                         </div>
                         <div class="row">
