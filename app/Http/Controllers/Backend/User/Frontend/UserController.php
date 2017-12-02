@@ -19,10 +19,15 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $id = $request->id;
         $name = $request->name;
-    	$users = User::where('parent_id', 0)->latest('id')->with('asset')->paginate(config('frontend.page'));
+        $nickname = $request->nickname;
 
-    	return view('backend.user.frontend.index', compact('users', 'name'));
+    	$users = User::where('parent_id', 0)->filter(['id' => $id, 'name' => $name, 'nickname' => $nickname])
+            ->with('asset')
+            ->paginate(config('frontend.page'));
+
+    	return view('backend.user.frontend.index', compact('users', 'name', 'nickname', 'id'));
     }
 
     /**
