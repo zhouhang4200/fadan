@@ -45,6 +45,12 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">数量</label>
+            <div class="layui-input-block">
+                <input type="text" name="quantity" autocomplete="off" placeholder="可用数量与外部商品ID匹配到此商品" class="layui-input" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">外部ID</label>
             <div class="layui-input-block">
                 <input type="text" name="foreign_goods_id" autocomplete="off" placeholder="请输入外部ID" class="layui-input"  lay-verify="required">

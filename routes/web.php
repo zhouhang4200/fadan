@@ -138,7 +138,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('order', 'OrderController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
 
         // 订单列表
-        Route::group(['middleware'=>'throttle:30,1'],function(){
+        Route::group(['middleware'=>'throttle:30'],function(){
             Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
         });
 
@@ -159,7 +159,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 申请售后
             Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('permission:frontend.workbench.order-operation.after-sales');
 			// 接单
-            Route::group(['middleware'=>'throttle:30,1'],function(){
+            Route::group(['middleware'=>'throttle:30'],function(){
                 Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('permission:frontend.workbench.order-operation.receiving');
             });
         	// 支付
