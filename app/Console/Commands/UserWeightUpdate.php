@@ -41,6 +41,8 @@ class UserWeightUpdate extends Command
     {
         $users = User::pluck('id');
 
+        $now = Carbon::now()->startOfDay()->toDateTimeString();
+
         // 初始化用户的权重值
         foreach ($users as $user) {
             $weight = [];
@@ -61,9 +63,19 @@ class UserWeightUpdate extends Command
 
             // 更新用户权重值
             UserWeight::where('user_id', $user)->update($weight);
-        }
 
-        $now = Carbon::now()->startOfDay()->toDateTimeString();
+            // 禁止接单一天惩罚，过期了，则状态改为1
+            $punish = PunishOrReward::where('user_id', $user->id)->where('type', 5)->where('status', 0)->oldest('deadline')->value('deadline');
+
+            $time = Carbon::parse($punish->deadline)->addDays(1)->startOfDay()->toDateTimeString();
+
+            $int = (new Carbon)->diffInSeconds($time, false);
+
+            // 禁止接单期限为1天，超过这一天则表示已经处罚了，状态为1
+            if ($int > 0) {
+                PunishOrReward::where('user_id', $user->id)->where('type', 5)->update(['status' => 1]);
+            }
+        }
 
         // 奖惩表里面当天在加减权重生效和结束时间的所有记录
         $punishOrRewards = PunishOrReward::whereIn('type', [3, 4])

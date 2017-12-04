@@ -76,4 +76,9 @@ class AdminUser extends Authenticatable
     {
         $this->notify(new AdminResetPasswordNotification($token));
     }
+
+    public function revisions()
+    {
+        return $this->hasMany(Revision::class, 'user_id', 'id');
+    }
 }

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Backend\Punish;
 
 use Redis;
+use Asset;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Revision;
 use Illuminate\Http\Request;
 use App\Models\PunishOrReward;
+use App\Extensions\Asset\Consume;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -26,20 +29,17 @@ class PunishController extends Controller
         $users = User::whereIn('id', $userIds)->get();
 
         $startDate = $request->startDate;
-
         $endDate = $request->endDate;
-
         $type = $request->type;
-
         $status = $request->status;
-
         $userId = $request->user_id;
+        $no = $request->order_no;
 
-        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status');
+        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'no');
 
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
 
-        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status'));
+        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'no'));
     }
 
     /**
@@ -170,9 +170,9 @@ class PunishController extends Controller
 
         if ($bool) {
 
-            return response()->json(['code' => '1', 'message' => '删除成功!']);
+            return response()->json(['code' => '1', 'message' => '撤销成功!']);
         }
-        return response()->json(['code' => '2', 'message' => '删除失败!']);
+        return response()->json(['code' => '2', 'message' => '撤销失败!']);
     }
 
     public function orders(Request $request)
@@ -236,5 +236,69 @@ class PunishController extends Controller
         $path = strstr($path, '/resources');
 
         return str_replace('\\', '/', $path);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel($id)
+    {
+        try {
+            $punish = PunishOrReward::find($id);
+            //奖励金额撤销
+            if ($punish->type == 1) {
+
+                $bool = Asset::handle(new Consume($punish->add_money, 3, $punish->order_no, '奖励撤销扣款', $punish->user_id));
+
+                if ($bool) {
+                    PunishOrReward::where('id', $id)->update(['status' => 11]);
+                } else {
+                    return response()->json(['code' => '2', 'message' => '奖励撤销扣款失败!']);
+                } 
+                // 写多态关联
+                if (!$punish->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    DB::rollback();
+                    throw new Exception('操作失败');
+                }
+
+                if (!$punish->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    DB::rollback();
+                    throw new Exception('操作失败');
+                }
+                return response()->json(['code' => '1', 'message' => '撤销奖励成功{$punish->add_money}元!']);
+
+            } elseif ($punish->type == 5) { //撤销禁止接单的处罚
+
+                $bool = PunishOrReward::where('id', $id)->delete();
+
+                if ($bool) {
+                    return response()->json(['code' => '1', 'message' => '撤销惩罚成功!']);
+                }
+                return response()->json(['code' => '2', 'message' => '撤销惩罚失败!']);
+            } else {
+                return response()->json(['code' => '2', 'message' => '操作异常!']);
+            }   
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    /**
+     * [record description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function record(Request $request)
+    {
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+        $orderId = $request->order_id;
+
+        $punishRecords = Revision::where('revisionable_type', 'App\Models\PunishOrReward')->latest('created_at')->paginate(config('backend.page'));
+        
+        return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderId'));
     }
 }

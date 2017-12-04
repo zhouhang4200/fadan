@@ -54,4 +54,14 @@ class Revision extends Model
 
         return $query->latest('created_at')->where('user_table', 'users');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function adminUser()
+    {
+        return $this->belongsTo(AdminUser::class, 'user_id', 'id');
+    }
 }

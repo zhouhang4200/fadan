@@ -283,6 +283,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                         @endcan
+                        @can('punishes.record')
+                            <li>
+                                <a href="{{ route('punishes.record') }}" @if($currentRouteName == 'punishes.record') class="active" @endif>
+                                    奖惩日志
+                                </a>
+                            </li>
+                        @endcan
                         </ul>
                     </li>
                     @endcan

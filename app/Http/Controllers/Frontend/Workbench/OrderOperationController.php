@@ -34,14 +34,13 @@ class OrderOperationController extends Controller
      */
     public function receiving(Request $request)
     {
-        $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->whereIn('status', ['3', '9', '10'])->oldest('deadline')->value('deadline');
+        $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->whereIn('status', ['3', '9'])->oldest('deadline')->value('deadline');
 
-        $forbidden = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 5)->oldest('deadline')->value('deadline');
+        $forbidden = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 5)->where('status', 0)->oldest('deadline')->value('deadline');
 
         if ($deadline) {
 
             $time = Carbon::parse($deadline);
-
             $int = (new Carbon)->diffInSeconds($time, false);
 
             if ($int < 0) {
@@ -52,11 +51,15 @@ class OrderOperationController extends Controller
         if ($forbidden) {
 
             $time = Carbon::parse($deadline);
-
             $int = (new Carbon)->diffInSeconds($time, false);
 
-            if ($int > 0) {
-                return response()->ajax(0, '您已被禁止接单一天!');
+            $endTime = Carbon::parse($deadline . ' 23:59:59');
+            $intEnd = (new Carbon)->diffInSeconds($time, false);
+
+            $canTime = Carbon::parse($deadline)->addDays(1)->startOfDay()->toDateTimeString();
+
+            if ($int > 0 && $intEnd < 0) {
+                return response()->ajax(0, '您已被禁止接单一天,解除禁止时间{$canTime}!');
             }
         }
 

@@ -49,6 +49,11 @@ class PunishOrReward extends Model
             $query->where('type', $filters['type']);
         }
 
+        if (is_numeric($filters['no'])) {
+
+            $query->where('order_no', $filters['no']);
+        }
+
         if (is_numeric($filters['status'])) {
 
             $query->where('status', $filters['status']);
@@ -131,4 +136,10 @@ class PunishOrReward extends Model
     {
         $this->attributes['voucher'] = json_encode($value);
     }
+
+    public function adminUser()
+    {
+        return $this->belongsTo(AdminUser::Class);
+    }
+
 }

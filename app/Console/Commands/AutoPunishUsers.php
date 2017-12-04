@@ -43,7 +43,7 @@ class AutoPunishUsers extends Command
 
         // 权重
         $punishOrRewards = PunishOrReward::whereIn('type', ['4'])
-                ->whereIn('status', ['7', '9', '10'])
+                ->whereIn('status', ['7', '9'])
                 ->where('deadline', $today)
                 ->get();
 
@@ -52,6 +52,5 @@ class AutoPunishUsers extends Command
             $punishOrReward->confirm = 1;
             $punishOrReward->save();
         }
-
     }
 }

@@ -82,7 +82,7 @@
                 <th>类型</th>
                 <th>状态</th>
                 <th>罚款金额</th>
-                <th>到期时间</th>
+                <th>最后期限</th>
                 <th>初始权重值</th>
                 <th>奖惩权重率</th>
                 <th>变更后的权重</th>
@@ -115,10 +115,10 @@
                         申诉中
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['5']))
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
-                    @elseif($punish->confirm == 0 && in_array($punish->status, ['3', '5', '7', '9', '10']))
+                    @elseif($punish->confirm == 0 && in_array($punish->status, ['3', '5', '7', '9']))
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['1', '3']))
-                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="show({{ $punish->id }})">查看</button>
                     @else
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
                     @endif
@@ -446,7 +446,7 @@
                     title: '奖惩明细',
                     area: ['650px', '650px'],
                     content: $('.payment'+id),
-                    btn: ['确认'] //只是为了演示
+                    btn: ['返回'] //只是为了演示
                     
                 });
             });

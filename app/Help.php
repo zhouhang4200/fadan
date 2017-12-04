@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\City;
-use \GuzzleHttp\Client;
+use GuzzleHttp\Client;
 use App\Models\UserSetting;
-use \App\Services\RedisConnect;
+use App\Services\RedisConnect;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
 

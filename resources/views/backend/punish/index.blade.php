@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 违规列表')
+@section('title', ' | 奖惩列表')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -10,6 +10,9 @@
         }
         .layui-table tr th, td{
             text-align: center;
+        }
+        .layui-input-inline {
+            margin-top:10px;
         }
     </style>
 @endsection
@@ -21,7 +24,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">违规列表</li>
+                            <li class="layui-this" lay-id="add">奖惩列表</li>
                         </ul>
 
                         <div class="layui-tab-content">                      
@@ -34,6 +37,9 @@
 
                                     <div class="layui-input-inline" >
                                         <input type="text" class="layui-input" value="{{ old('endDate') ?: $endDate }}"  name="endDate" id="test2" placeholder="结束时间">
+                                    </div>
+                                    <div class="layui-input-inline" >
+                                        <input type="text" class="layui-input" value="{{ old('no') ?: $no }}"  name="order_no" id="" placeholder="输入订单号">
                                     </div>
 
                                     <div class="layui-input-inline" >
@@ -60,13 +66,17 @@
                                         <select name="status" lay-verify="" lay-search="">
                                             <option value="">请选择状态</option>
                                             <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>默认</option>
-                                            <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励到账</option>
-                                            <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>奖励未到账</option>
+                                            <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励未到账</option>
+                                            <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>奖励已到账</option>
                                             <option value="3" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
                                             <option value="4" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
-                                            <option value="5" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>已加权重</option>
-                                            <option value="6" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已减权重</option>
-                                            <option value="7" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>申诉中</option>
+                                            <option value="5" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
+                                            <option value="6" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
+                                            <option value="7" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
+                                            <option value="8" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
+                                            <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
+                                            <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
+                                            <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
                                         </select>
                                     </div>
 
@@ -132,14 +142,17 @@
                                             <td>待确认</td>
                                             @endif
                                             <td>{{ $punish->created_at }}</td>
-                                            @if($punish->confirm != 1)
                                             <td>
-                                                <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $punish->id }})">删除</button>
+                                            @if(in_array($punish->type, ['1', '5']))
+                                                    <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="cancel({{ $punish->id }})">撤销</button>
+                                                    <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                            @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 0)
+                                                <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $punish->id }})">撤销</button>
                                                 <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
-                                            </td>
-                                            @else
-                                            <td>--</td>
+                                            @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 1)
+                                                <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
                                             @endif
+                                            </td>
                                         </tr>
                                     @empty
                                     @endforelse
@@ -192,6 +205,28 @@
                             layer.msg('删除成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
                         } else {
                             layer.msg('删除失败!', {icon: 5, time:1500});                        }
+                    }
+                });
+                layer.close(index);
+            });                
+        });
+    };
+
+    // 删除
+    function cancel(id)
+    {
+        layui.use(['form', 'layedit', 'laydate',], function(){
+            var form = layui.form
+            ,layer = layui.layer;
+            layer.confirm('确定撤销奖励吗?', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/punish/punishes/cancel/'+id,
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg('撤销成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
+                        } else {
+                            layer.msg('撤销失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);

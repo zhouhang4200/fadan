@@ -266,11 +266,15 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('punishes', 'PunishController@index')->name('punishes.index')->middleware('permission:punishes.index');
         Route::get('punishes/create', 'PunishController@create')->name('punishes.create')->middleware('permission:punishes.create');
         Route::post('punishes', 'PunishController@store')->name('punishes.store')->middleware('permission:punishes.store');
-        Route::get('punishes/{id}', 'PunishController@show')->name('punishes.show')->middleware('permission:punishes.show');
+        Route::get('punishes/{id}', 'PunishController@show')->name('punishes.show')->middleware('permission:punishes.show')->where('id', '[0-9]+');
         Route::get('punishes/{id}/edit', 'PunishController@edit')->name('punishes.edit')->middleware('permission:punishes.edit');
         Route::put('punishes/{id}', 'PunishController@update')->name('punishes.update')->middleware('permission:punishes.update');
         Route::delete('punishes/{id}', 'PunishController@destroy')->name('punishes.destroy')->middleware('permission:punishes.destroy');
         Route::post('punishes/user', 'PunishController@orders')->name('punishes.user')->middleware('permission:punishes.user');
+        // 撤销奖励
+        Route::post('punishes/cancel/{id}', 'PunishController@cancel')->name('punishes.cancel')->middleware('permission:punishes.cancel');
+        // 日志
+        Route::get('punishes/record', 'PunishController@record')->name('punishes.record')->middleware('permission:punishes.record');
         // 图片上传地址
         Route::post('punishes/upload-images', 'PunishController@uploadImages')->name('punishes.upload-images')->middleware('permission:punishes.upload-images');
         // 奖惩管理
