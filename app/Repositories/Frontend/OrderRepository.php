@@ -122,4 +122,23 @@ class OrderRepository
                 ->where('status', '>', 2);
         })->with(['detail', 'foreignOrder'])->first();
     }
+
+    /**
+     * 订单搜索
+     * @param  integer $type 1 接单方 2 发单方
+     * @param  array $condition 搜索条件
+     * @param  integer $pageSize 每页数量
+     */
+    public function search($condition, $type = 1, $pageSize = 10)
+    {
+        $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+
+        $query = Order::filter($condition);
+        if ($type == 1) {
+            $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+        } else {
+            $query->where('creator_primary_user_id', $primaryUserId); // 发单
+        }
+        return $query->paginate($pageSize);
+    }
 }

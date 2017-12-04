@@ -85,6 +85,15 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
     });
 
+    // 订单
+    Route::prefix('order')->namespace('Order')->group(function () {
+        // 接单列表
+        Route::get('receive', 'OrderController@receive')->name('frontend.order.receive')->middleware('permission:frontend.order.receive');
+        // 发单列表
+        Route::get('send', 'OrderController@send')->name('frontend.order.send')->middleware('permission:frontend.order.send');
+    });
+
+
     // 用户设置
     Route::namespace('Setting')->prefix('setting')->group(function () {
         // 接单权限
