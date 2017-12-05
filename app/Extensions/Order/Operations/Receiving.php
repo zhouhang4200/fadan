@@ -6,6 +6,7 @@ use App\Exceptions\CustomException;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Weight;
+use App\Services\FuluAppApi;
 
 // 接单
 class Receiving extends \App\Extensions\Order\Operations\Base\Operation
@@ -58,6 +59,9 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
         $this->runAfter = true;
     }
 
+    /**
+     * 后置操作
+     */
     public function after()
     {
         if ($this->runAfter) {
@@ -66,11 +70,21 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
             waitReceivingQuantitySub();
             // 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+
             // 删除接单
             try {
                 receivingUserDel($this->order->no);
             } catch (CustomException $exception) {
                 \Log::alert($exception->getMessage() . '删除接单队列');
+            }
+
+            // 如果是王者皮肤订单者并是APP订单则发送QQ号
+            if ($this->order->game_id == 21 && $this->order->creator_primary_user_id == 8111) {
+                try {
+                    FuluAppApi::sendOrderAndQq($this->order->gainer_primary_user_id, $this->order->foreign_order_no);
+                } catch(CustomException $exception) {
+                    \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
+                }
             }
         }
     }

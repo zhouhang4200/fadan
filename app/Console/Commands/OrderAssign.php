@@ -45,13 +45,6 @@ class OrderAssign extends Command
             // 获取所有待分配订单
             $carbon = new Carbon;
             foreach (waitReceivingGet() as $orderNo => $data) {
-                // 分配的所有内存
-       //         $useTotalMemory = memory_get_usage(true);
-                // 实际使用的所有内存
-        //        $useMemory = memory_get_usage(false);
-       //         \Log::alert(['分配的所有内存' => $this->convert($useTotalMemory), '实际使用的所有内存'  => $this->convert($useMemory)]);
-
-
                 // 保存创建时间的json
                 $data = json_decode($data);
                 $time = Carbon::parse($data->created_date);
@@ -138,7 +131,7 @@ class OrderAssign extends Command
 
                 }
             }
-//            sleep(1);
+            sleep(1);
         }
     }
 
