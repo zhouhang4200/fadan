@@ -50,7 +50,7 @@ class OrderController extends Controller
                 $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
                 $wangWang = !empty($orderData['wang_wang']) ? $orderData['wang_wang'] : ''; // 天猫订单旺旺号
 
-                Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData));
+                Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData, $orderData['remark']));
 
                 if (Order::get()->status != 11) {
                     // 给所有用户推送新订单消息

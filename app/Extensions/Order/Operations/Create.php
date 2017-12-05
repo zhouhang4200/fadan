@@ -147,7 +147,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                     throw new Exception('详情记录失败');
                 }
 
-                $this->order->remark .= "{$widget[$fieldName]}: {$fieldValue}; ";
+//                $this->order->remark .= "{$widget[$fieldName]}: {$fieldValue}; ";
             }
         }
     }

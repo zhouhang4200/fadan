@@ -52,20 +52,27 @@ class KamenForeignOrder extends ForeignOrder
     {
         // 如果进货站点为天猫店，则去取订单的天猫订单信息
         $siteInfo  = SiteInfo::where('kamen_site_id', $decodeArray['JSitid'])->first();
-        $price = 0; $totalPrice = 0; $wangWang = '';
+        $price = 0; $totalPrice = 0; $wangWang = ''; $remark = '';
 
         if ($siteInfo && $siteInfo->channel == 3) {
             $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);
             $price = $tmallOrderInfo['price'];
+            $remark = $tmallOrderInfo['remark'];
             $totalPrice = $tmallOrderInfo['payment'];
             $wangWang = $tmallOrderInfo['wang_wang'];
+
             $decodeArray['ProductPrice'] = $price;
             $decodeArray['total_price'] = $totalPrice;
+            $decodeArray['remark'] = $remark;
+            $decodeArray['province'] = loginDetail($tmallOrderInfo['ip'])['province'];
         } else {
             $price = $decodeArray['ProductPrice'];
             $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);
+
             $decodeArray['ProductPrice'] = $price;
             $decodeArray['total_price'] = $totalPrice;
+            $decodeArray['remark'] = $remark;
+            $decodeArray['province'] = loginDetail($decodeArray['BuyerIp'])['province'];
         }
 
 		$data['channel']          =  $siteInfo->channel;
@@ -134,6 +141,8 @@ class KamenForeignOrder extends ForeignOrder
                 }
                 $data['total'] = $model->details->total_price;
                 $data['kamen_site_id'] = $model->details->JSitid;
+                $data['province'] = $model->details->province;
+                $data['remark'] = $model->details->remark;
                 $data['wang_wang'] = $model->wang_wang;
     			return $data;
     		}
@@ -170,6 +179,8 @@ class KamenForeignOrder extends ForeignOrder
 			"UseAccount" => $decodeArray['UseAccount'] ?? '',
 			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? '',
 			"total_price" => $decodeArray['total_price'] ?? '',
+			"province" => $decodeArray['province'] ?? '',
+			"remark" => $decodeArray['remark'] ?? '',
 		];
     }
 
