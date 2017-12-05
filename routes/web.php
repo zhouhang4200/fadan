@@ -177,6 +177,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             });
         	// 支付
             Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
+            // 清空急需处理数量角标
+            Route::post('clear-wait-handle-quantity', 'OrderController@waitHandleQuantityClear')->name('frontend.workbench.clear-wait-handle-quantity');
         });
 	});
 

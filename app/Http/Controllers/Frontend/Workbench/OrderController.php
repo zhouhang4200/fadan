@@ -166,5 +166,15 @@ class OrderController extends Controller
 
         return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id - 1])]);
     }
+
+    /**
+     * 清空急需处理订单角标数
+     * @return mixed
+     */
+    public function waitHandleQuantityClear()
+    {
+        waitHandleQuantityClear(Auth::user()->id);
+        return response()->ajax(1);
+    }
 }
 

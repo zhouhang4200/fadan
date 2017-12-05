@@ -210,7 +210,7 @@
                 </div>
                 <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
                     <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="need">急需处理</li>
+                        <li class="layui-this" lay-id="need">急需处理 <span class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
                         <li class="" lay-id="ing">处理中</li>
                         <li class="" lay-id="finish">已完成</li>
                         <li class="" lay-id="after-sales">售后中</li>
@@ -330,6 +330,13 @@
                         return false;
                     } else {
                         element.tabDelete('order-list', 'search');
+                    }
+                    // 如果是急需处理
+                    if (type == 'need') {
+                        $(this).children('span').addClass('layui-hide');
+                        $.post('{{ route('frontend.workbench.clear-wait-handle-quantity') }}', {id:1}, function (result) {
+
+                        }, 'json')
                     }
                     getOrder('{{ route('frontend.workbench.order-list') }}', type);
                     return false;
@@ -588,6 +595,14 @@
             $('.market-order-quantity').addClass('layui-hide');
         } else {
             $('.market-order-quantity').removeClass('layui-hide').html(data.quantity);
+        }
+    });
+    // 待处理订单数
+    socket.on('notification:waitHandleQuantity', function (data) {
+        if (data.quantity == 0) {
+            $('.wait-handle-quantity').addClass('layui-hide');
+        } else {
+            $('.wait-handle-quantity').removeClass('layui-hide').html(data.quantity);
         }
     });
 </script>

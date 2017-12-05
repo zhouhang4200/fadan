@@ -232,6 +232,46 @@ if (!function_exists('waitReceivingQuantitySub')) {
     }
 }
 
+if (!function_exists('waitHandleQuantity')) {
+    /**
+     * 获取急需处理订单数
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantity($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->get(config('redis.order.waitHandleQuantity') . $userId);
+    }
+}
+
+if (!function_exists('waitHandleQuantityAdd')) {
+    /**
+     * 获取急需处理订单数 订单数 加1
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantityAdd($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->incr(config('redis.order.waitHandleQuantity') . $userId);
+    }
+}
+
+if (!function_exists('waitReceivingQuantityClear')) {
+
+    /**
+     * 获取急需处理订单数 订单数归0
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantityClear($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->set(config('redis.order.waitHandleQuantity') . $userId, 0);
+    }
+}
+
 if (!function_exists('socketServer')) {
     /**
      * socketServer

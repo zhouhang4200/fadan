@@ -68,8 +68,12 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
             waitReceivingDel($this->order->no);
             // 待接单数量减1
             waitReceivingQuantitySub();
-            // 待接单数量
+            // 待处理订单数加1
+            waitHandleQuantityAdd($this->order->gainer_user_id);
+            // 向前台发送 待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 向前台发送 待处理订单数量
+            event(new NotificationEvent('waitHandleQuantity', ['quantity' => waitHandleQuantity($this->order->gainer_user_id)]));
 
             // 删除接单
             try {
