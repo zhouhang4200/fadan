@@ -143,14 +143,26 @@
                                             @endif
                                             <td>{{ $punish->created_at }}</td>
                                             <td>
-                                            @if(in_array($punish->type, ['1', '5']))
-                                                    <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="cancel({{ $punish->id }})">撤销</button>
+                                            @if($punish->status == 9)
+                                                @if(in_array($punish->type, ['1', '5']))
+                                                        <button class="layui-btn layui-btn-disabled layui-btn-mini" onclick="cancel({{ $punish->id }})">撤销</button>
+                                                        <a type="button" class="layui-btn layui-btn-mini layui-btn-danger" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 0)
+                                                    <button class="layui-btn layui-btn-disabled layui-btn-mini" onclick="del({{ $punish->id }})">撤销</button>
+                                                    <a type="button" class="layui-btn layui-btn-mini layui-btn-danger" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 1)
+                                                    <a type="button" class="layui-btn layui-btn-mini layui-btn-danger" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @endif
+                                            @else
+                                                @if(in_array($punish->type, ['1', '5']))
+                                                        <button class="layui-btn layui-btn-disabled layui-btn-mini" onclick="cancel({{ $punish->id }})">撤销</button>
+                                                        <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 0)
+                                                    <button class="layui-btn layui-btn-disabled layui-btn-mini" onclick="del({{ $punish->id }})">撤销</button>
                                                     <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
-                                            @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 0)
-                                                <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="del({{ $punish->id }})">撤销</button>
-                                                <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
-                                            @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 1)
-                                                <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @elseif(!in_array($punish->type, ['1', '5']) && $punish->confirm == 1)
+                                                    <a type="button" class="layui-btn layui-btn-mini layui-btn-normal" href="{{ route('punishes.show', ['punish' => $punish->id]) }}">详情</a>
+                                                @endif
                                             @endif
                                             </td>
                                         </tr>

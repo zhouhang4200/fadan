@@ -40,10 +40,10 @@
                                     </div>
 
                                     <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('orderId') ?: $orderId }}"  name="order_id" id="" placeholder="输入订单号">
+                                        <input type="text" class="layui-input" value="{{ old('orderId') ?: $orderId }}"  name="order_id" id="" placeholder="输入关联订单号">
                                     </div>
 
-                                    <div class="layui-input-inline" style="padding:10px" >
+                                    <div class="layui-input-inline" >
                                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                         <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('punishes.record') }}" style="color:#fff">返回</a></button>
                                     </div>
@@ -73,15 +73,6 @@
                                             <td>{{ $punishRecord->adminUser->name ?? '' }}</td>
                                             <td>
                                                 @if($punishRecord->key == 'created_at')
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 创建了奖惩记录,记录序号为 {{ $punishRecord->revisionable_id }}
-                                                @elseif($punishRecord->key == 'deleted_at')
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 撤销了奖惩记录,记录序号为 {{ $punishRecord->revisionable_id }}
-                                                @else
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 更新了奖惩记录,将 {{ $punishRecord->key }} 从原来的值 {{ $punishRecord->old_value }} 更新为 {{ $punishRecord->new_value }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($punishRecord->key == 'created_at')
                                                     创建
                                                 @elseif($punishRecord->key == 'deleted_at')
                                                     撤销
@@ -89,6 +80,16 @@
                                                     更新
                                                 @endif
                                             </td>
+                                            <td>
+                                                @if($punishRecord->key == 'created_at')
+                                                    {{ $punishRecord->adminUser->name ?? '' }} 创建了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->revisionable_id }}
+                                                @elseif($punishRecord->key == 'deleted_at')
+                                                    {{ $punishRecord->adminUser->name ?? '' }} 撤销了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->revisionable_id }}
+                                                @else
+                                                    {{ $punishRecord->adminUser->name ?? '' }} 更新了奖惩记录,将 {{ $punishRecord->key }} 从原来的值 {{ $punishRecord->old_value }} 更新为 {{ $punishRecord->new_value }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $punishRecord->created_at }}</td>
                                         </tr>
                                     @empty
                                     @endforelse

@@ -297,7 +297,12 @@ class PunishController extends Controller
         $endDate = $request->endDate;
         $orderId = $request->order_id;
 
-        $punishRecords = Revision::where('revisionable_type', 'App\Models\PunishOrReward')->latest('created_at')->paginate(config('backend.page'));
+        $filters = compact('startDate', 'endDate', 'orderId');
+
+        $punishRecords = Revision::where('revisionable_type', 'App\Models\PunishOrReward')
+                        ->punishFilter($filters)
+                        ->latest('created_at')
+                        ->paginate(config('backend.page'));
         
         return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderId'));
     }

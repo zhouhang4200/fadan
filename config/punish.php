@@ -23,9 +23,4 @@ return [
 		10 => '申诉驳回',
 		11 => '撤销',
 	],
-
-	'operate_type' => [
-		'created_at' => '创建',
-		'deleted_at' => '撤销',
-	],
 ];
