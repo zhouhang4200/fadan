@@ -68,8 +68,8 @@
                                     @forelse($punishRecords as $punishRecord)
                                         <tr>
                                             <td>{{ $punishRecord->id }}</td>
-                                            <td>{{ \App\Models\PunishOrReward::find($punishRecord->revisionable_id) ? \App\Models\PunishOrReward::find($punishRecord->revisionable_id)->order_no : '' }}</td>
-                                            <td>{{ \App\Models\PunishOrReward::find($punishRecord->revisionable_id) ? \App\Models\PunishOrReward::find($punishRecord->revisionable_id)->order_id : '' }}</td>
+                                            <td>{{ $punishRecord->punishOrReward ? $punishRecord->punishOrReward->order_no : '' }}</td>
+                                            <td>{{$punishRecord->punishOrReward ? $punishRecord->punishOrReward->order_id : '' }}</td>
                                             <td>{{ $punishRecord->adminUser->name ?? '' }}</td>
                                             <td>
                                                 @if($punishRecord->key == 'created_at')
@@ -113,7 +113,7 @@
 @section('js')
 <script>
     layui.use(['form', 'layedit', 'laydate'], function(){
-        var laydate = layui.laydate;
+        var laydate = layui.laydate, form = layui.form;
         //常规用法
         laydate.render({
             elem: '#test1'

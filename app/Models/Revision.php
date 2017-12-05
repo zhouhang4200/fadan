@@ -97,4 +97,9 @@ class Revision extends Model
 
         return $query->latest('created_at');
     }
+
+    public function punishOrReward()
+    {
+        return $this->belongsTo(PunishOrReward::class, 'revisionable_id', 'id');
+    }
 }

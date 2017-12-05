@@ -142,4 +142,8 @@ class PunishOrReward extends Model
         return $this->belongsTo(AdminUser::Class);
     }
 
+    public function revisions()
+    {
+        return $this->hasMany(Revision::class, 'revisionable_id', 'id');
+    }
 }

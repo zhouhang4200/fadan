@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Punish;
 
 use Redis;
 use Asset;
+use Excel;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
@@ -34,12 +35,17 @@ class PunishController extends Controller
         $status = $request->status;
         $userId = $request->user_id;
         $no = $request->order_no;
+        $fullUrl = $request->fullUrl();
 
         $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'no');
 
+        if ($request->export) {
+            return $this->export($filters);
+        }
+
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
 
-        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'no'));
+        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'no', 'fullUrl'));
     }
 
     /**
@@ -305,5 +311,70 @@ class PunishController extends Controller
                         ->paginate(config('backend.page'));
         
         return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderId'));
+    }
+
+    /**
+     * 导出
+     * @param  [type] $filters [description]
+     * @return [type]          [description]
+     */
+    public function export($filters)
+    {
+        $punishes = PunishOrReward::filter($filters)->latest('created_at')->withTrashed()->get();
+  
+        return Excel::create('奖惩数据', function ($excel) use($punishes) {
+            $excel->sheet('Sheet1', function ($sheet) use ($punishes) {
+                // $sheet->setAutoSize(true);
+                $sheet->row(1, array(
+                    '序号',
+                    '订单号',
+                    '关联订单号',
+                    '用户id',
+                    '类型',
+                    '状态',
+                    '罚款金额',
+                    '最后期限',
+                    '初始权重',
+                    '奖惩权重',
+                    '最终权重',
+                    '生效时间',
+                    '截止时间',
+                    '奖励金额',
+                    '凭证照片',
+                    '备注',
+                    '商家确认',
+                    '创建时间',
+                    '更新时间',
+                    '删除时间',
+                ));
+
+                $data = [];
+                foreach ($punishes as $punishItem) {
+                    $data[] = [
+                        $punishItem['id'],
+                        $punishItem['order_no'],
+                        $punishItem['order_id'],
+                        $punishItem['user_id'],
+                        $punishItem['type'],
+                        $punishItem['status'],
+                        $punishItem['sub_money'],
+                        $punishItem['deadline'],
+                        $punishItem['before_weight_value'],
+                        $punishItem['ratio'],
+                        $punishItem['after_weight_value'],
+                        $punishItem['start_time'],
+                        $punishItem['end_time'],
+                        $punishItem['add_money'],
+                        json_encode($punishItem['voucher']),
+                        $punishItem['remark'],
+                        $punishItem['confirm'],
+                        $punishItem['created_at'],
+                        $punishItem['updated_at'],
+                        $punishItem['deleted_at'],
+                    ];
+                }
+                $sheet->fromArray($data, null, 'A2', false, false);
+            });
+        })->export('xls');
     }
 }

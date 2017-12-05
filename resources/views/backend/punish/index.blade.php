@@ -91,6 +91,7 @@
                                     <div class="layui-input-inline" style="padding:10px" >
                                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                         <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('punishes.index') }}" style="color:#fff">返回</a></button>
+                                        <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
                                     </div>
                                 </div>
                                 </div>
@@ -190,7 +191,7 @@
 @section('js')
 <script>
     layui.use(['form', 'layedit', 'laydate'], function(){
-        var laydate = layui.laydate;
+        var laydate = layui.laydate, form = layui.form;
         //常规用法
         laydate.render({
         elem: '#test1'
@@ -199,7 +200,14 @@
         //常规用法
         laydate.render({
             elem: '#test2'
-            });
+        });
+
+        form.on('submit(export)', function (data) {
+            $.post('{{ route('punishes.export') }}', {data: data.field}, function (result) {
+                layer.msg(result.message)
+            }, 'json');
+            return false;
+        });
 
     });
     // 删除
