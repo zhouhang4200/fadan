@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\GrabClose;
+use App\Models\User;
 use Carbon\Carbon;
 use App\Models\Order as OrderModel;
 use Illuminate\Console\Command;
