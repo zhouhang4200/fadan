@@ -34,7 +34,7 @@ class PunishController extends Controller
         $type = $request->type;
         $status = $request->status;
         $userId = $request->user_id;
-        $no = $request->order_no;
+        $no = $request->order_id;
         $fullUrl = $request->fullUrl();
 
         $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'no');

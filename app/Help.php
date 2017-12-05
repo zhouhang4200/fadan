@@ -347,7 +347,8 @@ if (!function_exists('whoCanReceiveOrder')) {
                 ->where('service_id', $serviceId)
                 ->where('game_id', $gameId)
                 ->where('type', 2)
-                ->pluck('other_user_id');
+                ->pluck('other_user_id')
+                ->toArray();
 
             if (in_array($receiveUserId, $categoryBlack)) {
                 return false;

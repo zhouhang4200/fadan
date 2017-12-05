@@ -34,32 +34,44 @@ class OrderOperationController extends Controller
      */
     public function receiving(Request $request)
     {
-        $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->whereIn('status', ['3', '9'])->oldest('deadline')->value('deadline');
-
-        $forbidden = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 5)->where('status', 0)->oldest('deadline')->value('deadline');
+        // 惩罚-》有罚单没交
+        $deadline = PunishOrReward::where('user_id', Auth::user()
+                ->getPrimaryUserId())
+                ->where('type', 2)
+                ->whereIn('status', ['3', '9'])
+                ->orderBy('deadline')
+                ->value('deadline');
 
         if ($deadline) {
+            // 这个时间默认为第二天的下午六点
+            $deadlineParse = Carbon::parse($deadline);
+            $deadlineParseInt = (new Carbon)->diffInSeconds($deadlineParse, false);
 
-            $time = Carbon::parse($deadline);
-            $int = (new Carbon)->diffInSeconds($time, false);
-
-            if ($int < 0) {
+            if ($deadlineParseInt < 0) {
                 return response()->ajax(0, '您已超过违规罚款截止日期，请先交违规罚款');
             }
         }
 
+        // 惩罚-》禁止接单一天
+        $forbidden = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('type', 5)
+                ->where('status', 0)
+                ->orderBy('deadline')
+                ->value('deadline');
+
         if ($forbidden) {
+            // 这是一天最后时间
+            $forbiddenParse = Carbon::parse($forbidden);
+            $forbiddenParseInt = (new Carbon)->diffInSeconds($forbiddenParse, false);
 
-            $time = Carbon::parse($deadline);
-            $int = (new Carbon)->diffInSeconds($time, false);
+            // 这是这一天起点时间
+            $forbiddenStartDay = $forbiddenParse->startOfDay();
+            $forbiddenStartDayInt = (new Carbon)->diffInSeconds($forbiddenStartDay, false);
 
-            $endTime = Carbon::parse($deadline . ' 23:59:59');
-            $intEnd = (new Carbon)->diffInSeconds($time, false);
+            $canTime = Carbon::parse($forbidden)->addDays(1)->startOfDay()->toDateTimeString();
 
-            $canTime = Carbon::parse($deadline)->addDays(1)->startOfDay()->toDateTimeString();
-
-            if ($int > 0 && $intEnd < 0) {
-                return response()->ajax(0, '您已被禁止接单一天,解除禁止时间{$canTime}!');
+            if ($forbiddenParseInt > 0 && $forbiddenStartDayInt < 0) {
+                return response()->ajax(0, '您已被禁止接单一天, 解除时间 ' . $canTime . '.');
             }
         }
 

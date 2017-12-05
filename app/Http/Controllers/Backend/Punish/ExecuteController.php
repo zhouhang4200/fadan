@@ -180,7 +180,7 @@ class ExecuteController extends Controller
 	    	$data['start_time'] = $request->data['start_time'] ?? '';
 	    	$data['end_time'] = isset($request->data['end_time']) ? $request->data['end_time'] . ' 23:59:59' : '';
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
-	    	$data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
+	    	$data['deadline'] = $data['start_time'];
 
 	    	if (! $order) {
 	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);

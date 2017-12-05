@@ -31,7 +31,7 @@
                         <form class="layui-form" method="" action="">
                             <div class="layui-input-inline" style="float:left;">
                                 <div class="layui-form-item">
-                                     <div class="layui-input-inline" >
+                                    <div class="layui-input-inline" >
                                         <input type="text" class="layui-input" value="{{ old('startDate') ?: $startDate }}" name="startDate" id="test1" placeholder="开始时间">
                                     </div>
 
@@ -39,7 +39,7 @@
                                         <input type="text" class="layui-input" value="{{ old('endDate') ?: $endDate }}"  name="endDate" id="test2" placeholder="结束时间">
                                     </div>
                                     <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('no') ?: $no }}"  name="order_no" id="" placeholder="输入订单号">
+                                        <input type="text" class="layui-input" value="{{ old('no') ?: $no }}"  name="order_id" id="" placeholder="输入关联订单号">
                                     </div>
 
                                     <div class="layui-input-inline" >
@@ -200,13 +200,6 @@
         //常规用法
         laydate.render({
             elem: '#test2'
-        });
-
-        form.on('submit(export)', function (data) {
-            $.post('{{ route('punishes.export') }}', {data: data.field}, function (result) {
-                layer.msg(result.message)
-            }, 'json');
-            return false;
         });
 
     });

@@ -60,36 +60,63 @@ class UserWeightUpdate extends Command
 
             // 总体的权重奖惩率
             $weight['ratio'] = 0;
-
             // 更新用户权重值
             UserWeight::where('user_id', $user)->update($weight);
 
-            // 禁止接单一天惩罚，过期了，则状态改为1
-            $punish = PunishOrReward::where('user_id', $user->id)->where('type', 5)->where('status', 0)->oldest('deadline')->value('deadline');
+            // 禁止接单一天惩罚，过期了，则状态改为1,当天的最后时间
+            $endDayPunishes = PunishOrReward::where('user_id', $user)
+                ->where('type', 5)
+                ->where('status', 0)
+                ->orderBy('deadline')
+                ->get();
 
-            $time = Carbon::parse($punish->deadline)->addDays(1)->startOfDay()->toDateTimeString();
 
-            $int = (new Carbon)->diffInSeconds($time, false);
+            // 禁止接单-》把过期的惩罚状态改为1
+            if ($endDayPunishes) {
 
-            // 禁止接单期限为1天，超过这一天则表示已经处罚了，状态为1
-            if ($int > 0) {
-                PunishOrReward::where('user_id', $user->id)->where('type', 5)->update(['status' => 1]);
+                foreach ($endDayPunishes as $endDayPunish) {
+
+                    $time = Carbon::parse($endDayPunish->deadline);
+                    $int = (new Carbon)->diffInSeconds($time, false);
+
+                    // 禁止接单期限为1天，超过这一天则表示已经处罚了，状态为1
+                    if ($int <= 0) {
+                        $endDayPunish->status = 1;
+                        $endDayPunish->save();
+                    }
+                }
             }
         }
 
+        // 取出所有减权重的过去时间为现在的
+        $sunWeights = PunishOrReward::whereIn('type', ['4'])
+                ->whereIn('status', ['7', '9'])
+                ->where('deadline', $now)
+                ->get();
+
+        // 减权重到点自动确认
+        foreach($sunWeights as $sunWeight) {
+            $sunWeight->confirm = 1;
+            $sunWeight->save();
+        }
+
         // 奖惩表里面当天在加减权重生效和结束时间的所有记录
-        $punishOrRewards = PunishOrReward::whereIn('type', [3, 4])
+        $sendRatios = PunishOrReward::whereIn('type', [3, 4])
                 ->where('start_time', '<=', $now)
                 ->where('end_time', '>=', $now)
+                ->where('confirm', 1)
                 ->get()
                 ->unique();
 
         // 奖惩表里面当天在加减权重生效和结束时间内的所有用户的 ratio 变更到 user_weight 里面的 ratio
-        foreach($punishOrRewards as $punishOrReward) {
+        if ($sendRatios) {
 
-            $ratio = $punishOrReward->ratio ?? 0;
+            foreach($sendRatios as $sendRatio) {
 
-            UserWeight::where('user_id', $punishOrReward->user_id)->update(['ratio' => $ratio]);
+                $ratio = $sendRatio->ratio ?? 0;
+
+                UserWeight::where('user_id', $sendRatio->user_id)->update(['ratio' => $ratio]);
+            }
         }
     }
 }

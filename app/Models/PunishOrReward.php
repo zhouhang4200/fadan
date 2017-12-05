@@ -51,7 +51,7 @@ class PunishOrReward extends Model
 
         if (is_numeric($filters['no'])) {
 
-            $query->where('order_no', $filters['no']);
+            $query->where('order_id', $filters['no']);
         }
 
         if (is_numeric($filters['status'])) {

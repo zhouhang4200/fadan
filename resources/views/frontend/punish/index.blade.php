@@ -116,9 +116,9 @@
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['5']))
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
                     @elseif($punish->confirm == 0 && in_array($punish->status, ['3', '5', '7', '9']))
-                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
+                        <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['1', '3']))
-                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="show({{ $punish->id }})">查看</button>
+                        <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="show({{ $punish->id }})">查看</button>
                     @else
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
                     @endif
