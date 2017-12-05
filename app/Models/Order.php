@@ -83,11 +83,11 @@ class Order extends Model
                 $query->where('status', $filters['source']);
             }
 
-            if (isset($filters['startDate']) && isset($filters['endDate']) && empty($filters['endDate'])) {
+            if (isset($filters['startDate']) &&  empty($filters['startDate'])) {
                 $query->where('created_at', '>=', $filters['startDate']);
             }
 
-            if (isset($filters['startDate']) && empty($filters['startDate'])) {
+            if (isset($filters['endDate']) && empty($filters['endDate'])) {
                 $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
             }
 
