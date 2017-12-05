@@ -64,6 +64,18 @@ class OrderAssign extends Command
                     // 如果该订单旺旺在三十分钟分内下过单则找出之前的订单分给哪个商户，直接将该单分给该商户
                     if ($data->wang_wang) {
                         $userId = wangWangGetUserId($data->wang_wang);
+
+                        try {
+                            if ($userId) {
+                                // 如果当前用户不在线则不分单给他
+                                $userInfo = User::find($userId);
+                                if ($userInfo->online != 1) {
+                                    $userId = 0;
+                                }
+                            }
+                        } catch (CustomException $exception) {
+
+                        }
                     }
 
                     if ($userId) {

@@ -140,20 +140,23 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 工作台
 	Route::namespace('Workbench')->prefix('workbench')->group(function () {
         // 首页
-        Route::get('/', 'OrderController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
+        Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
         // 获取用户所有前台可显示的商品
-        Route::post('goods', 'OrderController@goods')->name('frontend.workbench.goods')->middleware('permission:frontend.workbench.goods');
+        Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods')->middleware('permission:frontend.workbench.goods');
         // 商品模版
-        Route::post('template', 'OrderController@template')->name('frontend.workbench.template')->middleware('permission:frontend.workbench.template');
+        Route::post('template', 'IndexController@template')->name('frontend.workbench.template')->middleware('permission:frontend.workbench.template');
         // 获取子级的值
-        Route::post('child', 'OrderController@widgetChild')->name('frontend.workbench.widget.child')->middleware('permission:frontend.workbench.widget.child');
+        Route::post('child', 'IndexController@widgetChild')->name('frontend.workbench.widget.child')->middleware('permission:frontend.workbench.widget.child');
         // 下单
-        Route::post('order', 'OrderController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
-
+        Route::post('order', 'IndexController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
         // 订单列表
         Route::group(['middleware'=>'throttle:30'],function(){
-            Route::post('order-list', 'OrderController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
+            Route::post('order-list', 'IndexController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
         });
+        // 清空急需处理数量角标
+        Route::post('clear-wait-handle-quantity', 'IndexController@waitHandleQuantityClear')->name('frontend.workbench.clear-wait-handle-quantity');
+        // 修改当前账号状态
+        Route::post('set-status', 'IndexController@setStatus')->name('frontend.workbench.set-status');
 
         // 订单操作
         Route::prefix('order-operation')->group(function (){
@@ -177,9 +180,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             });
         	// 支付
             Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
-            // 清空急需处理数量角标
-            Route::post('clear-wait-handle-quantity', 'OrderController@waitHandleQuantityClear')->name('frontend.workbench.clear-wait-handle-quantity');
-        });
+           });
 	});
 
 	Route::namespace('Data')->prefix('data')->group(function () {

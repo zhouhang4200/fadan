@@ -22,13 +22,22 @@
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.index') }}">工作台</a><div class="arrow"></div></li>
                 @endcan
                 <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'home-accounts.index' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'user-groups.index' ? 'current' : '' || Route::currentRouteName() == 'rbacgroups.index' ? 'current' : '' || Route::currentRouteName() == 'idents.index' ? 'current' : '' || Route::currentRouteName() == 'home-system-logs.index' ? 'current' : '' || in_array(Route::currentRouteName(), ['users.create', 'users.edit', 'home-accounts.edit', 'user-groups.create', 'user-groups.edit', 'rbacgroups.create', 'rbacgroups.edit', 'idents.create']) ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
+                @can('frontend.setting.receiving-control.index')
+                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route('frontend.setting.receiving-control.index') }}">设置</a><div class="arrow"></div></li>
+                @endcan
             </ul>
         </div>
         <div class="user">
-            <div class="operation">
-                <a href="{{ route('frontend.setting.receiving-control.index') }}"><i class="iconfont icon-shezhi"></i>设置 【 主账号ID：{{ Auth::user()->getPrimaryUserId() }} 】</a>
-                <a href="javascript:(logout())" ><i class="iconfont icon-tuichu" style="font-size: 21px;top:1px"></i>注销登录</a>
-            </div>
+            <ul class="layui-nav layui-bg-blue" lay-filter="demo">
+                <li class="layui-nav-item">
+                    <a href="#" class="current-status">{{ Auth::user()->online == 1 ? '在线' : '挂起' }}</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#">在线</a></dd>
+                        <dd><a href="#">挂起</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="#"><i class="iconfont icon-tuichu" style="padding-right: 7px;"></i>注销登录</a></li>
+            </ul>
         </div>
     </div>
 </div>
