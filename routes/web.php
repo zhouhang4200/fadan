@@ -93,7 +93,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::get('send', 'OrderController@send')->name('frontend.order.send')->middleware('permission:frontend.order.send');
     });
 
-
     // 用户设置
     Route::namespace('Setting')->prefix('setting')->group(function () {
         // 接单权限
@@ -111,6 +110,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::prefix('api-risk-management')->group(function () {
             Route::get('/', 'ApiRiskManagementController@index')->name('frontend.setting.api-risk-management.index')->middleware('permission:frontend.setting.api-risk-management.index');
             Route::post('set', 'ApiRiskManagementController@set')->name('frontend.setting.api-risk-management.set')->middleware('permission:frontend.setting.api-risk-management.set');
+        });
+        // 皮肤交易设置
+        Route::prefix('skin')->group(function () {
+            Route::get('/', 'SkinController@index')->name('frontend.setting.skin.index')->middleware('permission:frontend.setting.skin.index');
+            Route::post('set', 'SkinController@set')->name('frontend.setting.skin.set')->middleware('permission:frontend.setting.skin.set');
         });
     });
 

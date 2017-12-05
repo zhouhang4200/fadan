@@ -11,4 +11,10 @@
 		<div class="arrow"></div>
 	</li>
 	@endcan
+	@can('frontend.setting.skin.index')
+		<li class="{{  Route::currentRouteName()  == 'frontend.setting.skin.index' ? 'current' : '' }}">
+			<a href="{{ route('frontend.setting.skin.index') }}">皮肤交易QQ</a>
+			<div class="arrow"></div>
+		</li>
+	@endcan
 </ul>
