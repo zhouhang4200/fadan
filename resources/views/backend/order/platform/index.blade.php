@@ -135,8 +135,7 @@
                                             <div class="layui-input-inline">
                                                 <select  lay-filter="operation" data-no="{{ $order->no }}" data-id="{{ $order->id }}">
                                                     <option value="">请选择操作</option>
-                                                        <option value="execute1">奖励</option>
-                                                        <option value="execute2">惩罚</option>
+                                                        <option value="execute2">罚款</option>
                                                         <option value="execute3">加权重</option>
                                                         <option value="execute4">减权重</option>
                                                         <option value="execute5">禁止接单</option>
