@@ -54,20 +54,20 @@ class Order extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['no']) {
+        if (isset($filters['no'])) {
             $query->where('no', $filters['no']);
-        } elseif ($filters['foreignOrderNo']) {
+        } elseif (isset($filters['foreignOrderNo'])) {
             $query->where('foreign_order_no', $filters['foreignOrderNo']);
         } else {
             if ($filters['status']) {
                 $query->where('status', $filters['status']);
             }
 
-            if ($filters['creatorPrimaryUserId']) {
+            if (isset($filters['creatorPrimaryUserId'])) {
                 $query->where('creator_primary_user_id', $filters['creatorPrimaryUserId']);
             }
 
-            if ($filters['gainerPrimaryUserId']) {
+            if (isset($filters['gainerPrimaryUserId'])) {
                 $query->where('gainer_primary_user_id', $filters['gainerPrimaryUserId']);
             }
 
@@ -79,19 +79,19 @@ class Order extends Model
                 $query->where('game_id', $filters['gameId']);
             }
 
-            if ($filters['source']) {
+            if (isset($filters['source'])) {
                 $query->where('status', $filters['source']);
             }
 
-            if ($filters['startDate'] && empty($filters['endDate'])) {
+            if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
                 $query->where('created_at', '>=', $filters['startDate']);
             }
 
-            if ($filters['endDate'] && empty($filters['startDate'])) {
+            if (isset($filters['endDate']) && !empty($filters['endDate'])) {
                 $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
             }
 
-            if ($filters['endDate'] && $filters['startDate']) {
+            if (isset($filters['endDate']) && isset($filters['startDate'])) {
                 $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
             }
         }

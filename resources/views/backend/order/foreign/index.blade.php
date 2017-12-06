@@ -50,6 +50,9 @@
                                 <input type="text" class="layui-input" name="foreign_order_no"  placeholder="外部订单号" value="{{ $foreignOrderNo }}">
                             </div>
                             <div class="form-group col-xs-2">
+                                <input type="text" class="layui-input" name="wang_wang"  placeholder="旺旺" value="{{ $wangWang }}">
+                            </div>
+                            <div class="form-group col-xs-2">
                                 <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
                                 <button type="submit" class="layui-btn layui-btn-normal">导出</button>
                             </div>
@@ -58,44 +61,62 @@
                     </form>
                 </header>
                 <div class="main-box-body clearfix">
-                    <div class="layui-tab-item layui-show">
-                        <div class="layui-tab-item layui-show">
-                            <table class="layui-table" lay-size="sm">
-                                <thead>
-                                <tr>
-                                    <th>来源</th>
-                                    <th>店铺名</th>
-                                    <th>卡门单号</th>
-                                    <th>卡门商品ID</th>
-                                    <th>外部单号</th>
-                                    <th>旺旺</th>
-                                    <th>单价</th>
-                                    <th>总价</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @forelse($orders as $order)
-                                    <tr>
-                                        <td>{{ config('order.source')[$order->channel] }}</td>
-                                        <td>{{ $order->channel_name }}</td>
-                                        <td>{{ $order->kamen_order_no }}</td>
-                                        <td>{{ $order->foreign_goods_id }}</td>
-                                        <td>{{ $order->foreign_order_no }}</td>
-                                        <td>{{ $order->wang_wang }}</td>
-                                        <td>{{ $order->single_price }}</td>
-                                        <td>{{ $order->total_price }}</td>
-                                    </tr>
-                                @empty
-                                @endforelse
-                                </tbody>
-                            </table>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $orders->total() }}　本页显示：{{$orders->count()}}
                         </div>
-                        {!! $orders->appends([
-                            'channel_name' => $channelName,
-                            'source_id' => $sourceId,
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                        ])->render() !!}
+                        <div class="col-xs-9">
+                        </div>
+                    </div>
+                    <table class="layui-table" lay-size="sm">
+                            <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>来源</th>
+                                <th>店铺名</th>
+                                <th>卡门单号</th>
+                                <th>卡门商品ID</th>
+                                <th>外部单号</th>
+                                <th>旺旺</th>
+                                <th>单价</th>
+                                <th>总价</th>
+                                <th>平台订单号</th>
+                                <th>平台接单商户ID</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @forelse($orders as $order)
+                                <tr>
+                                    <td>{{ $order->created_at }}</td>
+                                    <td>{{ config('order.source')[$order->channel] }}</td>
+                                    <td>{{ $order->channel_name }}</td>
+                                    <td>{{ $order->kamen_order_no }}</td>
+                                    <td>{{ $order->foreign_goods_id }}</td>
+                                    <td>{{ $order->foreign_order_no }}</td>
+                                    <td>{{ $order->wang_wang }}</td>
+                                    <td>{{ $order->single_price }}</td>
+                                    <td>{{ $order->total_price }}</td>
+                                    <td>{{ $order->order->no }}</td>
+                                    <td>{{ $order->order->gainer_primary_user_id }}</td>
+                                </tr>
+                            @empty
+                            @endforelse
+                            </tbody>
+                        </table>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $orders->total() }}　本页显示：{{$orders->count()}}
+                        </div>
+                        <div class="col-xs-9">
+                            <div class=" pull-right">
+                                {!! $orders->appends([
+                                    'channel_name' => $channelName,
+                                    'source_id' => $sourceId,
+                                    'start_date' => $startDate,
+                                    'end_date' => $endDate,
+                                ])->render() !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

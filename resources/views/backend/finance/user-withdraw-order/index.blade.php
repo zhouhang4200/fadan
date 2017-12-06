@@ -49,11 +49,13 @@
                         <thead>
                         <tr>
                             <th>提现单号</th>
+                            <th>主账号ID</th>
+                            <th>原千手ID</th>
+                            <th>姓名</th>
+                            <th>开户行</th>
+                            <th>卡号</th>
                             <th>提现金额</th>
                             <th>状态</th>
-                            <th>创建者ID</th>
-                            <th>主账号ID</th>
-                            <th>备注</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
@@ -63,11 +65,13 @@
                             @foreach ($dataList as $data)
                                 <tr>
                                     <td>{{ $data->no }}</td>
+                                    <td>{{ $data->creator_primary_user_id }}</td>
+                                    <td>{{ $data->user->nickname }}</td>
+                                    <td>{{ $data->user->realNameIdent->name }}</td>
+                                    <td>{{ $data->user->realNameIdent->bank_name }}</td>
+                                    <td>{{ $data->user->realNameIdent->bank_number }}</td>
                                     <td>{{ $data->fee + 0 }}</td>
                                     <td>{{ config('withdraw.status')[$data->status] }}</td>
-                                    <td>{{ $data->creator_user_id }}</td>
-                                    <td>{{ $data->creator_primary_user_id }}</td>
-                                    <td>{{ $data->remark }}</td>
                                     <td>{{ $data->created_at}}</td>
                                     <td>{{ $data->updated_at}}</td>
                                     <td>

@@ -11,6 +11,7 @@ return [
             'role' => '角色',
             'quantity' => '数量',
             'foreign_order_no' => '外部订单号',
+            'province' => '省份',
         ],
         // 字段类型
         'field_type' => [

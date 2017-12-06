@@ -206,6 +206,10 @@
                                                                             <td>数量</td>
                                                                             <td>{{ $content->quantity }}</td>
                                                                         </tr>
+                                                                        <tr>
+                                                                            <td>备注</td>
+                                                                            <td>{{ $content->remark }}</td>
+                                                                        </tr>
                                                                         @forelse($content->detail as $item)
                                                                             @if($item->field_name != 'quantity')
                                                                                 <tr>

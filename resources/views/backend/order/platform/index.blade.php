@@ -70,10 +70,10 @@
                                 </select>
                             </div>
                             <div class="form-group col-xs-1">
-                                <input type="text" class="layui-input" name="creator_primary_user_id"  placeholder="发单用户" value="">
+                                <input type="text" class="layui-input" name="creator_primary_user_id"  placeholder="发单用户" value="{{ $creatorPrimaryUserId }}">
                             </div>
                             <div class="form-group col-xs-1">
-                                <input type="text" class="layui-input" name="gainer_primary_user_id"  placeholder="接单用户" value="">
+                                <input type="text" class="layui-input" name="gainer_primary_user_id"  placeholder="接单用户" value="{{ $gainerPrimaryUserId }}">
                             </div>
                         </div>
                         <div class="row">
@@ -91,6 +91,7 @@
                     </form>
                 </header>
                 <div class="main-box-body clearfix">
+<<<<<<< HEAD
                     <div class="layui-tab-item layui-show">
                         <div class="layui-tab-item layui-show">
                         <form class="layui-form">
@@ -149,19 +150,80 @@
                                 </tbody>
                             </table>
                             </form>
+=======
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $orders->total() }}　本页显示：{{$orders->count()}}
                         </div>
-                        {!! $orders->appends([
-                            'status' => $status,
-                            'source' => $source,
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                            'service_id' => $serviceId,
-                            'game_id' => $gameId,
-                            'creator_primary_user_id' => $creatorPrimaryUserId,
-                            'gainer_primary_user_id' => $gainerPrimaryUserId,
-                            'no' => $no,
-                            'foreign_order_no' => $foreignOrderNo,
-                        ])->render() !!}
+                        <div class="col-xs-9">
+                        </div>
+                    </div>
+                    <table class="layui-table" lay-size="sm">
+                        <thead>
+                        <tr>
+                            <th width="19%">订单号</th>
+                            <th>来源</th>
+                            <th>状态</th>
+                            <th>商品</th>
+                            <th>服务</th>
+                            <th>游戏</th>
+                            <th>原单价</th>
+                            <th>原总额</th>
+                            <th>数量</th>
+                            <th>单价</th>
+                            <th>总额</th>
+                            <th>发单</th>
+                            <th>接单</th>
+                            <th>下单时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($orders as $order)
+                            <tr>
+                                <td>千手：{{ $order->no }} <br> 外部：{{ $order->foreign_order_no }}</td>
+                                <td>{{ config('order.source')[$order->source] }}</td>
+                                <td>{{ config('order.status')[$order->status] }}</td>
+                                <td>{{ $order->goods_name }}</td>
+                                <td>{{ $order->service_name }}</td>
+                                <td>{{ $order->game_name }}</td>
+                                <td>{{ $order->original_price }}</td>
+                                <td>{{ $order->original_amount }}</td>
+                                <td>{{ $order->quantity }}</td>
+                                <td>{{ $order->price }}</td>
+                                <td>{{ $order->amount }}</td>
+                                <td> {{ $order->creator_primary_user_id }}</td>
+                                <td>{{ $order->gainerUser->nickname ?? $order->gainer_primary_user_id }}</td>
+                                <td>{{ $order->created_at }}</td>
+                                <td>
+                                    <a type="button" class="layui-btn layui-btn-normal layui-btn-mini" target="_blank" href="{{ route('order.platform.content', ['id' => $order->id]) }}">详情</a>
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $orders->total() }}　本页显示：{{$orders->count()}}
+                        </div>
+                        <div class="col-xs-9">
+                            <div class=" pull-right">
+                                {!! $orders->appends([
+                                      'status' => $status,
+                                      'source' => $source,
+                                      'start_date' => $startDate,
+                                      'end_date' => $endDate,
+                                      'service_id' => $serviceId,
+                                      'game_id' => $gameId,
+                                      'creator_primary_user_id' => $creatorPrimaryUserId,
+                                      'gainer_primary_user_id' => $gainerPrimaryUserId,
+                                      'no' => $no,
+                                      'foreign_order_no' => $foreignOrderNo,
+                                  ])->render() !!}
+                            </div>
+>>>>>>> master
+                        </div>
                     </div>
                 </div>
             </div>

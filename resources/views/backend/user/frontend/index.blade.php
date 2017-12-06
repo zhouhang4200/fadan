@@ -15,20 +15,40 @@
         <div class="col-lg-12">
             <div class="main-box">
                 <header class="main-box-header clearfix">
-                    <div class="filter-block pull-left">
-                        <form class="form-inline" role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name"  placeholder="输入商户名称" value="{{ $name }}">
+                    <div class="filter-block">
+                        <form class="layui-form">
+                            <div class="row">
+                                {{--<div class=" col-xs-1">--}}
+                                    {{--<select class="layui-input" name="source_id" lay-search="">--}}
+                                        {{--<option value="0">请选择来源</option>--}}
+                                    {{--</select>--}}
+                                {{--</div>--}}
+                                <div class=" col-xs-2">
+                                    <input type="text" class="layui-input" name="id"  placeholder="账号ID" value="{{ $id }}">
+                                </div>
+                                <div class=" col-xs-2">
+                                    <input type="text" class="layui-input" name="nickname"  placeholder="别名" value="{{ $nickname }}">
+                                </div>
+                                <div class=" col-xs-2">
+                                    <input type="text" class="layui-input" name="name"  placeholder="账号名称" value="{{ $name }}">
+                                </div>
+                                <div class=" col-xs-2">
+                                    <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-success">搜索</button>
+
                         </form>
                     </div>
-
                 </header>
                 <div class="main-box-body clearfix">
-                    <div class="layui-tab-item layui-show">
-                        <div class="layui-tab-item layui-show">
-                            <table class="layui-table layui-form" lay-size="sm">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $users->total() }}　本页显示：{{$users->count()}}
+                        </div>
+                        <div class="col-xs-9">
+                        </div>
+                    </div>
+                    <table class="layui-table layui-form" lay-size="sm">
                                 <thead>
                                 <tr>
                                     <th>账号ID</th>
@@ -76,8 +96,19 @@
                                 @endforelse
                                 </tbody>
                             </table>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            总数：{{ $users->total() }}　本页显示：{{$users->count()}}
                         </div>
-                        {!! $users->render() !!}
+                        <div class="col-xs-9">
+                            <div class=" pull-right">
+                                {!! $users->appends([
+                                    'id' => $id,
+                                    'nickname' => $nickname,
+                                    'name' => $name,
+                                ])->render() !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

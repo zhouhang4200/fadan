@@ -5,7 +5,6 @@ use App\Models\SiteInfo;
 use Cache, Config, DB;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\TmallStore;
 
 /**
  *
@@ -46,6 +45,8 @@ class TmallOrderApi
                     'price' => $result->Price,
                     'payment' => $result->Payment,
                     'pay_time' => $result->PayTime,
+                    'remark' => $result->ReceiverAddress,
+                    'ip' => base64_decode($result->BuyerIp),
                 ];
             } else if ($result->Status == 'WAIT_SELLER_SEND_GOODS') {
                 return [
@@ -54,6 +55,8 @@ class TmallOrderApi
                     'price' => $result->Price,
                     'payment' => $result->Payment,
                     'pay_time' => $result->PayTime,
+                    'remark' => $result->ReceiverAddress,
+                    'ip' => base64_decode($result->BuyerIp),
                 ];
             }
         }

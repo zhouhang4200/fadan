@@ -7,7 +7,7 @@ class UserWithdrawOrderRepository
 {
     public function getList($timeStart, $timeEnd, $userId, $no, $status, $pageSize = 20)
     {
-        $dataList = UserWithdrawOrder::orderBy('id', 'desc')
+        $dataList = UserWithdrawOrder::orderBy('creator_primary_user_id')->orderBy('id')
             ->when(!empty($userId), function ($query) use ($userId) {
                 return $query->where('creator_primary_user_id', $userId);
             })
@@ -26,6 +26,7 @@ class UserWithdrawOrderRepository
             ->when($pageSize === 0, function ($query) {
                 return $query->limit(10000)->get();
             })
+            ->with('user')
             ->when($pageSize, function ($query) use ($pageSize) {
                 return $query->paginate($pageSize);
             });

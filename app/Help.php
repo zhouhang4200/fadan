@@ -232,6 +232,46 @@ if (!function_exists('waitReceivingQuantitySub')) {
     }
 }
 
+if (!function_exists('waitHandleQuantity')) {
+    /**
+     * 获取急需处理订单数
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantity($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->get(config('redis.order.waitHandleQuantity') . $userId);
+    }
+}
+
+if (!function_exists('waitHandleQuantityAdd')) {
+    /**
+     * 获取急需处理订单数 订单数 加1
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantityAdd($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->incr(config('redis.order.waitHandleQuantity') . $userId);
+    }
+}
+
+if (!function_exists('waitReceivingQuantityClear')) {
+
+    /**
+     * 获取急需处理订单数 订单数归0
+     * @param $userId
+     * @return mixed
+     */
+    function waitHandleQuantityClear($userId)
+    {
+        $redis = RedisConnect::order();
+        return $redis->set(config('redis.order.waitHandleQuantity') . $userId, 0);
+    }
+}
+
 if (!function_exists('socketServer')) {
     /**
      * socketServer
@@ -310,47 +350,62 @@ if (!function_exists('whoCanReceiveOrder')) {
             return true;
         } else if ($type == 1) { // 开启了白名单
 
-            // 查找接单用户是否在白名单中
-            $existWhite = UserReceivingUserControl::where('user_id', $sendUserId)
-                        ->where(['type' => 1, 'other_user_id' => $receiveUserId])->first();
+            // 获取 发单用户的用户白名单
+            $userWhite = UserReceivingUserControl::where('user_id', $sendUserId)
+                ->where('type', 1)
+                ->pluck('other_user_id')
+                ->toArray();
 
-            // 获取商品是否单独设置了白名单
-            $categoryWhite = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                        ->where('service_id', $serviceId)
+            // 获取 发单用户的商品白名单
+            $goodsWhite = UserReceivingCategoryControl::where('service_id', $serviceId)
+                        ->where('user_id', $sendUserId)
                         ->where('game_id', $gameId)
                         ->where('type', 1)
                         ->pluck('other_user_id')
                         ->toArray();
-
-            if ($existWhite && !$categoryWhite) { // 如果在白名单中，并且商品没有有单独设置白名单
+            // 如果开启了白名单，但商品与用户白名单中都没有数据则所有人可以接单
+            if (!$userWhite && !$goodsWhite) {
                 return true;
-            } elseif ($existWhite && $categoryWhite) { // 如果在白名单中，并且商品没有有单独设置白名单
-                if (in_array($receiveUserId, $categoryWhite)) {
-                    return true;
-                }
+            }
+            // 如果在白名单中，并且商品没有有单独设置白名单 可以接单
+            if (in_array($receiveUserId, $userWhite) && !$goodsWhite) {
+                return true;
+            }
+            // 如果在商品白名单中，则可以接单
+            if ($goodsWhite && in_array($receiveUserId, $goodsWhite)) {
+                return true;
+            }
+            // 如果有商品白名单，但用户并没有在商品白名单也则不可以接单
+            if ($goodsWhite && !in_array($receiveUserId, $goodsWhite)) {
                 return false;
-            } elseif (in_array($receiveUserId, $categoryWhite)) { // 如果在商品白名单中，则可以接单
-                return true;
             }
             return false;
         } else if ($type == 2) {
 
-            // 查找接单用户是否在白名单中
-            $existBlack = UserReceivingUserControl::where('user_id', $sendUserId)
-                ->where(['type' => 2, 'other_user_id' => $receiveUserId])->first();
+            // 获取 发单用户的用户黑名单
+            $userBlack = UserReceivingUserControl::where('user_id', $sendUserId)
+                ->where('type', 2)
+                ->pluck('other_user_id')
+                ->toArray();
 
-            if ($existBlack) {
-                return false;
-            }
-
-            $categoryBlack = UserReceivingCategoryControl::where('user_id', $sendUserId)
-                ->where('service_id', $serviceId)
+            // 获取发单商家的商品黑名单
+            $goodsBlack = UserReceivingCategoryControl::where('service_id', $serviceId)
                 ->where('game_id', $gameId)
                 ->where('type', 2)
                 ->pluck('other_user_id')
                 ->toArray();
 
-            if (in_array($receiveUserId, $categoryBlack)) {
+            // 如果黑名单中没有数据就所有人可接单
+            if (!$userBlack && !$goodsBlack) {
+                return true;
+            }
+
+            // 如果当前用户在黑名单中 不可接单
+            if (in_array($receiveUserId, $userBlack)) {
+                return false;
+            }
+
+            if (in_array($receiveUserId, $goodsBlack)) {
                 return false;
             }
             return true;
@@ -454,5 +509,30 @@ if (!function_exists('waitConfirmAdd')) {
     {
         $redis = RedisConnect::order();
         return $redis->hset(config('redis.order.waitConfirm'), $orderNo, $sendDate);
+    }
+}
+
+if (!function_exists('assignStatusGet')) {
+
+    /**
+     * 获取 是否可以开始执行分单
+     * @return mixed
+     */
+    function assignStatusGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->rpop(config('redis.order.assignStatus'));
+    }
+}
+
+if (!function_exists('assignStatusAdd')) {
+
+    /**
+     * 当一次分单执行完则向队列写入一条数据
+     */
+    function assignStatusAdd()
+    {
+        $redis = RedisConnect::order();
+        return $redis->lpush(config('redis.order.assignStatus'), 1);
     }
 }

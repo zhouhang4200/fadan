@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Workbench;
 
 use App\Events\NotificationEvent;
+use App\Models\User;
 use App\Repositories\Frontend\OrderRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ use Union\UnionPaginator;
  * Class OrderController
  * @package App\Http\Controllers\Frontend\Workbench
  */
-class OrderController extends Controller
+class IndexController extends Controller
 {
     /**
      * @param ServiceRepository $serviceRepository
@@ -165,6 +166,30 @@ class OrderController extends Controller
         $valueArr = explode(',', $widgetValue->field_value);
 
         return response()->ajax(1, '获取成功', ['child' => explode('|', $valueArr[$request->id - 1])]);
+    }
+
+    /**
+     * 清空急需处理订单角标数
+     * @return mixed
+     */
+    public function waitHandleQuantityClear()
+    {
+        waitHandleQuantityClear(Auth::user()->id);
+        return response()->ajax(1);
+    }
+
+    /**
+     * 设置当前账号状态
+     * @param Request $request
+     */
+    public function setStatus(Request $request)
+    {
+        if (in_array($request->status, [1, 2])) {
+            $user = User::find(Auth::user()->id);
+            $user->online = $request->status;
+            $user->save();
+            return response()->ajax(1);
+        }
     }
 }
 

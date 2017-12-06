@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Rbac;
 
+use Exception;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -97,26 +98,73 @@ class GroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! $request->roles) {
+        try {
+            if (! $request->roles) {
 
-            return back()->with('missRole', '请选择角色!');
+                return back()->with('missRole', '请选择角色!');
+            }
+
+            $user = User::find($id);
+
+            if ($request->roles == $user->roles->pluck('id')->toArray()) {
+
+                $roleIds = \DB::table('model_has_roles')->where('model_id', 27)->pluck('role_id');
+
+                $permissionIds = [];
+
+                foreach ($roleIds as $roleId) {
+
+                    $permissionIds[] = \DB::table('role_has_permissions')->where('role_id', $roleId)->pluck('permission_id');
+                }
+                $permissionIds = collect($permissionIds)->flatten();
+
+                $children = User::where('parent_id', $user->id)->get();
+
+                foreach ($children as $child) {
+                    foreach ($child->permissions()->pluck('id') as $permission) {
+                        if (! in_array($permission, $permissionIds->toArray())) {
+                            \DB::table('model_has_permissions')->where('model_id', $child->id)
+                                ->where('permission_id', $permission)
+                                ->delete();
+                        }
+                    }
+                }
+                return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
+            }
+
+            $array = $user->roles()->sync($request->roles);
+
+            $roleIds = \DB::table('model_has_roles')->where('model_id', 27)->pluck('role_id');
+
+            $permissionIds = [];
+
+            foreach ($roleIds as $roleId) {
+
+                $permissionIds[] = \DB::table('role_has_permissions')->where('role_id', $roleId)->pluck('permission_id');
+            }
+            $permissionIds = collect($permissionIds)->flatten();
+
+            $children = User::where('parent_id', $user->id)->get();
+
+            foreach ($children as $child) {
+                foreach ($child->permissions()->pluck('id') as $permission) {
+                    if (! in_array($permission, $permissionIds->toArray())) {
+                        \DB::table('model_has_permissions')->where('model_id', $child->id)
+                            ->where('permission_id', $permission)
+                            ->delete();
+                    }
+                }
+            }
+
+            if ($array['attached'] || $array['detached'] || $array['updated']) {
+
+                return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
+            }
+            return back()->with('updateError', '修改账号角色失败!');
+
+        } catch (Exception $e) {
+            
         }
-
-
-        $user = User::find($id);
-
-        if ($request->roles == $user->roles->pluck('id')->toArray()) {
-
-            return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
-        }
-
-        $array = $user->roles()->sync($request->roles);
-
-        if ($array['attached'] || $array['detached'] || $array['updated']) {
-
-            return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
-        }
-        return back()->with('updateError', '修改账号角色失败!');
     }
 
     /**

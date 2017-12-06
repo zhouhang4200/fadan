@@ -116,4 +116,13 @@ class UserWithdrawOrder extends Model
     {
         return $this->morphMany(PlatformAmountFlow::class, 'flowable');
     }
+
+    /**
+     * 关联user 模型
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'creator_primary_user_id');
+    }
 }

@@ -32,21 +32,19 @@ class OrderConfirm extends Command
 
     public function handle()
     {
-        while (1) {
-            // 获取所有待确认收货的订单
-            foreach (waitConfirm() as $orderNo => $deliveryDate) {
-                // 如果当前时间大于或等于发货时间 则自动确认收货
-                if(time() >= strtotime('+2 day', $deliveryDate)) {
-                    try {
-                        Order::handle(new Complete($orderNo, 0));
-                    } catch (CustomException $exception) {
-                        Log::alert([$orderNo, '自动确认收货失败，原因：' . $exception->getMessage()]);
-                    }
-                    // 删除
+        // 获取所有待确认收货的订单
+        foreach (waitConfirm() as $orderNo => $deliveryDate) {
+            // 如果当前时间大于或等于发货时间 则自动确认收货
+            if(time() >= strtotime('+2 day', $deliveryDate)) {
+                try {
+                    Order::handle(new Complete($orderNo, 0));
+                } catch (CustomException $exception) {
                     waitConfirmDel($orderNo);
+                    Log::alert([$orderNo, '自动确认收货失败，原因：' . $exception->getMessage()]);
                 }
+                // 删除
+                waitConfirmDel($orderNo);
             }
-            sleep(1);
         }
     }
 }

@@ -32,6 +32,7 @@ class Goods extends Model
         'user_id',
         'display',
         'price',
+        'quantity',
         'foreign_goods_id',
         'service_id',
         'game_id',

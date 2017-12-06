@@ -98,7 +98,7 @@ class PlatformController extends Controller
     public function content($orderNo)
     {
         return view('backend.order.platform.content')->with([
-            'content' => OrderModel::with('detail')->find($orderNo)
+            'content' => OrderModel::with(['detail'])->find($orderNo)
         ]);
     }
 
