@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Backend\Punish;
 
+use DB;
+use Auth;
 use Redis;
 use Asset;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\AdminUser;
 use App\Models\UserWeight;
 use Illuminate\Http\Request;
 use App\Models\PunishOrReward;
@@ -241,13 +244,38 @@ class ExecuteController extends Controller
     public function pass(Request $request)
     {
     	try {
-	    	PunishOrReward::where('id', $request->data['id'])->update(['status' => 11]);
+	    	PunishOrReward::where('id', $request->data['id'])->update(['status' => 11, 'confirm' => 1]);
 
 	    	$punish = PunishOrReward::find($request->data['id']);
-	    	// 软删除
-	    	$punish->delete(); 	
+	    	// 操作日志
+            $data = [
+            	[
+                	'punish_or_reward_id' => $punish->id,
+                    'operate_style' => 'status',
+                    'order_no' => $punish->order_no,
+                    'order_id' => $punish->order_id,
+                    'before_value' => 9,
+                    'after_value' => 11,
+                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                    'created_at' => new \DateTime(),
+                	'updated_at' => new \DateTime(),
+            	],
+            	[
+                	'punish_or_reward_id' => $punish->id,
+                    'operate_style' => 'confirm',
+                    'order_no' => $punish->order_no,
+                    'order_id' => $punish->order_id,
+                    'before_value' => 0,
+                    'after_value' => 1,
+                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                    'created_at' => new \DateTime(),
+                	'updated_at' => new \DateTime(),
+            	],
+            ];
 
-	    	return response()->json(['code' => 1, 'message' => '同意申诉!']);
+            DB::table('punish_or_reward_revisions')->insert($data);
+
+	    	return response()->json(['code' => 1, 'message' => '同意申诉并撤销该条记录!']);
 
 	    } catch (Exception $e) {
 
@@ -261,10 +289,8 @@ class ExecuteController extends Controller
      */
     public function refuse(Request $request) 
     {
-    	try {
-
+    	// try {
 	    	$punish = PunishOrReward::find($request->data['id']);
-
 	    	// 如果是罚款则我们主动罚款
 	    	if ($punish->type == 2 && in_array($punish->status, ['3', '9'])) {
 	    		// 检查账户余额
@@ -277,7 +303,37 @@ class ExecuteController extends Controller
 	    		$bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));
 
                 if ($bool) {
-                    PunishOrReward::where('id', $request->data['id'])->update(['status' => 10, 'confirm' => 1]);
+                    // PunishOrReward::where('id', $request->data['id'])->update(['status' => 10, 'confirm' => 1]);
+                    $punish->status = 10;
+                    $punish->confirm = 1;
+                    $punish->save();
+                    // 操作日志
+                    $data = [
+                    	[
+                        	'punish_or_reward_id' => $punish->id,
+    	                    'operate_style' => 'status',
+    	                    'order_no' => $punish->order_no,
+    	                    'order_id' => $punish->order_id,
+    	                    'before_value' => 9,
+    	                    'after_value' => 10,
+    	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+    	                    'created_at' => new \DateTime(),
+                    		'updated_at' => new \DateTime(),
+                    	],
+                    	[
+                        	'punish_or_reward_id' => $punish->id,
+    	                    'operate_style' => 'confirm',
+    	                    'order_no' => $punish->order_no,
+    	                    'order_id' => $punish->order_id,
+    	                    'before_value' => 0,
+    	                    'after_value' => 1,
+    	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+    	                    'created_at' => new \DateTime(),
+                    		'updated_at' => new \DateTime(),
+                    	],
+                    ];
+
+                    DB::table('punish_or_reward_revisions')->insert($data);
                 }
                 // 写多态关联
                 if (!$punish->userAmountFlows()->save(Asset::getUserAmountFlow())) {
@@ -292,16 +348,45 @@ class ExecuteController extends Controller
                 return response()->json(['code' => 1, 'message' => '申诉驳回，并已对该商家罚款' . number_format($punish->sub_money, 2) . '元!']);
 
 	    	} elseif ($punish->type == 4 && in_array($punish->status, ['7', '9'])) {
+	    		// PunishOrReward::where('id', $request->data['id'])->update(['status' => 10, 'confirm' => 1]);                   
+                $punish->status = 10;
+                $punish->confirm = 1;
+                $punish->save();
+                // 操作日志
+                $data = [
+                	[
+                    	'punish_or_reward_id' => $punish->id,
+	                    'operate_style' => 'status',
+	                    'order_no' => $punish->order_no,
+	                    'order_id' => $punish->order_id,
+	                    'before_value' => 9,
+	                    'after_value' => 10,
+	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+	                    'created_at' => new \DateTime(),
+                    	'updated_at' => new \DateTime(),
+                	],
+                	[
+                    	'punish_or_reward_id' => $punish->id,
+	                    'operate_style' => 'confirm',
+	                    'order_no' => $punish->order_no,
+	                    'order_id' => $punish->order_id,
+	                    'before_value' => 0,
+	                    'after_value' => 1,
+	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+	                    'created_at' => new \DateTime(),
+                    	'updated_at' => new \DateTime(),
+                	],
+                ];
 
-	    		PunishOrReward::where('id', $request->data['id'])->update(['status' => 10, 'confirm' => 1]);
+                DB::table('punish_or_reward_revisions')->insert($data);
 
                 return response()->json(['code' => 1, 'message' => '申诉驳回，并已对商家进行权重处罚!']);
 	    	}
 
 	    	return response()->json(['code' => 1, 'message' => '驳回申诉!']);
     		
-    	} catch (Exception $e) {
+    	// } catch (Exception $e) {
 
-    	}
+    	// }
     }
 }

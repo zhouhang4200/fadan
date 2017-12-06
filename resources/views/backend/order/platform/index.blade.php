@@ -582,7 +582,7 @@
         // 奖励加款
         function execute1(no, id)
         {
-            layer.open({
+            var index = layer.open({
                 type: 1,
                 offset: '100px',
                 area: ['700px', '650px'],
@@ -592,21 +592,24 @@
             });
 
             $('#add').val(no);
+
+            form.on('submit(add)', function (data) {
+                $.post('{{ route('execute.add-money') }}', {data: data.field}, function (result) {
+                    console.log(result);
+                    layer.msg(result.message, {
+                            time:1500,
+                        })
+                }, 'json');
+                layer.close(index);
+                return false;
+            });
         }
 
-        form.on('submit(add)', function (data) {
-            $.post('{{ route('execute.add-money') }}', {data: data.field}, function (result) {
-                console.log(result);
-                layer.msg(result.message)
-            }, 'json');
-            reload();
-            return false;
-        });
 
         // 违规扣款
         function execute2(no, id)
         {
-            layer.open({
+            var index = layer.open({
                 type: 1,
                 offset: '100px',
                 area: ['700px', '650px'],
@@ -614,23 +617,24 @@
                 title: '惩罚扣款',
                 content: $('.sub-money')
             });
-
             $('#sub').val(no);
-        }
 
-        form.on('submit(sub)', function (data) {
-            $.post('{{ route('execute.sub-money') }}', {data: data.field}, function (result) {
-                console.log(result);
-                layer.msg(result.message)
-            }, 'json');
-            reload();
-            return false;
-        });
+            form.on('submit(sub)', function (data) {
+                $.post('{{ route('execute.sub-money') }}', {data: data.field}, function (result) {
+                    console.log(result);
+                    layer.msg(result.message, {
+                        time:1500,
+                    })
+                }, 'json');
+                layer.close(index);
+                return false;
+            });
+        }
 
         // 加权重
         function execute3(no, id)
         {
-            layer.open({
+            var index = layer.open({
                 type: 1,
                 offset: '100px',
                 area: ['700px', '650px'],
@@ -640,21 +644,24 @@
             });
 
             $('#add-weight').val(no);
+
+            form.on('submit(add-weight)', function (data) {
+                $.post('{{ route('execute.add-weight') }}', {data: data.field}, function (result) {
+                    console.log(result);
+                    layer.msg(result.message, {
+                            time:1500,
+                        })
+                }, 'json');
+                layer.close(index);
+                return false;
+            });
         }
 
-        form.on('submit(add-weight)', function (data) {
-            $.post('{{ route('execute.add-weight') }}', {data: data.field}, function (result) {
-                console.log(result);
-                layer.msg(result.message)
-            }, 'json');
-            reload();
-            return false;
-        });
 
         // 减权重
         function execute4(no, id)
         {
-            layer.open({
+            var index = layer.open({
                 type: 1,
                 offset: '100px',
                 area: ['700px', '650px'],
@@ -664,21 +671,24 @@
             });
 
             $('#sub-weight').val(no);
+
+            form.on('submit(sub-weight)', function (data) {
+                $.post('{{ route('execute.sub-weight') }}', {data: data.field}, function (result) {
+                    console.log(result);
+                    layer.msg(result.message, {
+                            time:1500,
+                        })
+                }, 'json');
+                layer.close(index);
+                return false;
+            });
         }
 
-        form.on('submit(sub-weight)', function (data) {
-            $.post('{{ route('execute.sub-weight') }}', {data: data.field}, function (result) {
-                console.log(result);
-                layer.msg(result.message)
-            }, 'json');
-            reload();
-            return false;
-        });
 
         // 禁止接单
         function execute5(no, id)
         {
-            layer.open({
+            var index = layer.open({
                 type: 1,
                 offset: '100px',
                 area: ['700px', '650px'],
@@ -688,16 +698,19 @@
             });
 
             $('#forbidden').val(no);
+
+            form.on('submit(forbidden)', function (data) {
+                $.post('{{ route('execute.forbidden') }}', {data: data.field}, function (result) {
+                    console.log(result);
+                    layer.msg(result.message, {
+                            time:1500,
+                        })
+                }, 'json');
+                layer.close(index);
+                return false;
+            });
         }
 
-        form.on('submit(forbidden)', function (data) {
-            $.post('{{ route('execute.forbidden') }}', {data: data.field}, function (result) {
-                console.log(result);
-                layer.msg(result.message)
-            }, 'json');
-            reload();
-            return false;
-        });
     });
 
 </script>

@@ -81,7 +81,7 @@ class UserWeightUpdate extends Command
 
                     // 禁止接单期限为1天，超过这一天则表示已经处罚了，状态为1
                     if ($int <= 0) {
-                        $endDayPunish->status = 1;
+                        $endDayPunish->status = 12;
                         $endDayPunish->save();
                     }
                 }

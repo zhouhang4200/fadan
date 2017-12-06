@@ -68,25 +68,31 @@
                                     @forelse($punishRecords as $punishRecord)
                                         <tr>
                                             <td>{{ $punishRecord->id }}</td>
-                                            <td>{{ $punishRecord->punishOrReward ? $punishRecord->punishOrReward->order_no : '' }}</td>
-                                            <td>{{$punishRecord->punishOrReward ? $punishRecord->punishOrReward->order_id : '' }}</td>
-                                            <td>{{ $punishRecord->adminUser->name ?? '' }}</td>
+                                            <td>{{ $punishRecord->order_no }}</td>
+                                            <td>{{ $punishRecord->order_id }}</td>
+                                            <td>{{ $punishRecord->user_name ?? '系统' }}</td>
                                             <td>
-                                                @if($punishRecord->key == 'created_at')
+                                                @if($punishRecord->operate_style == 'created_at')
                                                     创建
-                                                @elseif($punishRecord->key == 'deleted_at')
+                                                @elseif($punishRecord->operate_style == 'deleted_at')
                                                     撤销
                                                 @else
                                                     更新
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($punishRecord->key == 'created_at')
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 创建了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->revisionable_id }}
-                                                @elseif($punishRecord->key == 'deleted_at')
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 撤销了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->revisionable_id }}
+                                                @if($punishRecord->operate_style == 'created_at')
+                                                    {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，创建了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->punish_or_reward_id }}
+                                                @elseif($punishRecord->operate_style == 'deleted_at')
+                                                    {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，撤销了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->punish_or_reward_id }}
                                                 @else
-                                                    {{ $punishRecord->adminUser->name ?? '' }} 更新了奖惩记录,将 {{ $punishRecord->key }} 从原来的值 {{ $punishRecord->old_value }} 更新为 {{ $punishRecord->new_value }}
+                                                    @if ($punishRecord->operate_style == 'confirm')
+                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录,将 {{  $punishRecord->operate_style }} 从原来的状态 {{ config('punish.confirm')[$punishRecord->before_value] }} 更新为 {{ config('punish.confirm')[$punishRecord->after_value] }}
+                                                    @elseif($punishRecord->operate_style == 'status')
+                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录将 {{  $punishRecord->operate_style }} 从原来的状态 {{ config('punish.status')[$punishRecord->before_value] }} 更新为 {{ config('punish.status')[$punishRecord->after_value] }}
+                                                    @else
+                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录,将 {{  $punishRecord->operate_style }} 从原来的状态 {{ $punishRecord->before_value }} 更新为 {{ $punishRecord->after_value }}
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td>{{ $punishRecord->created_at }}</td>
@@ -97,13 +103,13 @@
                             </table>
                             </div>
                         </div>
-                        @if($punishRecords)
-                            {!! $punishRecords->appends([
-                                'order_id' => $orderId,
-                                'start_date' => $startDate,
-                                'end_date' => $endDate,
-                            ])->render() !!}
-                        @endif
+                    @if ($punishRecords)
+                        {!! $punishRecords->appends([
+                            'orderId' => $orderId,
+                            'startDate' => $startDate,
+                            'endDate' => $endDate,
+                        ])->render() !!}
+                    @endif
                 </div>
             </div>
         </div>

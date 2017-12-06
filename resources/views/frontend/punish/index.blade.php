@@ -42,7 +42,7 @@
                     <div class="layui-input-inline">
                         <select name="status" lay-verify="" lay-search="">
                             <option value="">请选择状态</option>
-                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>默认</option>
+                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
                             <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励未到账</option>
                             <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>已奖励</option>
                             <option value="3" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
@@ -53,6 +53,8 @@
                             <option value="8" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
                             <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
                             <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
+                            <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
+                            <option value="12" {{ is_numeric($status) && $status == 12 ? 'selected' : '' }}>禁止接单一天已处罚</option>
                         </select>
                     </div>
                 </div>
@@ -385,7 +387,6 @@
             laydate.render({
             elem: '#end_time'
             });
-            
         }); 
 
         function display(id) {
@@ -401,14 +402,18 @@
                     ,yes: function(){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.payment') }}', {id:id}, function (result) {
-                            layer.msg(result.message);
+                            layer.msg(result.message, {
+                                time:1500,
+                            })
                             window.location.href = "{{ route('home-punishes.index') }}";
                         });
                     },
                     btn2: function(index, layero){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.complain') }}', {id:id}, function (result) {
-                            layer.msg(result.message);
+                            layer.msg(result.message, {
+                                time:1500,
+                            })
                             window.location.href = "{{ route('home-punishes.index') }}";
                         });
                     }
@@ -429,7 +434,9 @@
                     ,yes: function(){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.payment') }}', {id:id}, function (result) {
-                            layer.msg(result.message);
+                            layer.msg(result.message, {
+                                time:1500,
+                            })
                             window.location.href = "{{ route('home-punishes.index') }}";
                         });
                     }

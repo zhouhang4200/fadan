@@ -65,7 +65,7 @@
                                     <div class="layui-input-inline" >
                                         <select name="status" lay-verify="" lay-search="">
                                             <option value="">请选择状态</option>
-                                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>默认</option>
+                                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
                                             <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励未到账</option>
                                             <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>奖励已到账</option>
                                             <option value="3" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
@@ -77,6 +77,7 @@
                                             <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
                                             <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
                                             <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
+                                            <option value="12" {{ is_numeric($status) && $status == 12 ? 'selected' : '' }}>禁止接单一天已处罚</option>
                                         </select>
                                     </div>
 
@@ -215,9 +216,9 @@
                     url: '/admin/punish/punishes/'+id,
                     success: function (data) {
                         if (data.code == 1) {
-                            layer.msg('删除成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
+                            layer.msg('撤销成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
                         } else {
-                            layer.msg('删除失败!', {icon: 5, time:1500});                        }
+                            layer.msg('撤销失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);
@@ -237,9 +238,9 @@
                     url: '/admin/punish/punishes/cancel/'+id,
                     success: function (data) {
                         if (data.code == 1) {
-                            layer.msg('撤销成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
+                            layer.msg('撤销奖励成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
                         } else {
-                            layer.msg('撤销失败!', {icon: 5, time:1500});                        }
+                            layer.msg('撤销奖励失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);

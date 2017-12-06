@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Backend\Punish;
 
+use DB;
 use Redis;
 use Asset;
 use Excel;
+use Auth;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Revision;
+use App\Models\AdminUser;
 use Illuminate\Http\Request;
 use App\Models\PunishOrReward;
 use App\Extensions\Asset\Consume;
 use App\Http\Controllers\Controller;
+use App\Models\PunishOrRewardRevision;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PunishController extends Controller
@@ -172,7 +176,9 @@ class PunishController extends Controller
      */
     public function destroy($id)
     {
-        $bool = PunishOrReward::where('id', $id)->delete();
+        $punish = PunishOrReward::find($id);
+
+        $bool = $punish->delete();
 
         if ($bool) {
 
@@ -245,7 +251,7 @@ class PunishController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     *撤销操作
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -260,7 +266,63 @@ class PunishController extends Controller
                 $bool = Asset::handle(new Consume($punish->add_money, 3, $punish->order_no, '奖励撤销扣款', $punish->user_id));
 
                 if ($bool) {
-                    PunishOrReward::where('id', $id)->update(['status' => 11]);
+                    // 如果商户没确认，撤销同时，改为撤销状态并软删除该条记录
+                    if ($punish->confirm == 0) {
+
+                        PunishOrReward::where('id', $id)->update(['status' => 11, 'confirm' => 1]);
+
+                        $punish = PunishOrReward::find($id);
+
+                        $data = [
+                            [
+                                'punish_or_reward_id' => $punish->id,
+                                'operate_style' => 'status',
+                                'order_no' => $punish->order_no,
+                                'order_id' => $punish->order_id,
+                                'before_value' => 2,
+                                'after_value' => 11,
+                                'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                                'created_at' => new \DateTime(),
+                                'updated_at' => new \DateTime(),
+                            ],
+                            [
+                                'punish_or_reward_id' => $punish->id,
+                                'operate_style' => 'confirm',
+                                'order_no' => $punish->order_no,
+                                'order_id' => $punish->order_id,
+                                'before_value' => 0,
+                                'after_value' => 1,
+                                'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                                'created_at' => new \DateTime(),
+                                'updated_at' => new \DateTime(),
+                            ],
+                        ];
+
+                        DB::table('punish_or_reward_revisions')->insert($data);
+
+                        $punish->delete();
+                    } else {
+                        // 如果商户确认了，就不删除，显示撤销状态
+                        PunishOrReward::where('id', $id)->update(['status' => 11]);
+
+                        $punish = PunishOrReward::find($id);
+
+                        $data = [
+                            [
+                                'punish_or_reward_id' => $punish->id,
+                                'operate_style' => 'status',
+                                'order_no' => $punish->order_no,
+                                'order_id' => $punish->order_id,
+                                'before_value' => 2,
+                                'after_value' => 11,
+                                'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                                'created_at' => new \DateTime(),
+                                'updated_at' => new \DateTime(),
+                            ]
+                        ];
+                        DB::table('punish_or_reward_revisions')->insert($data);
+                    }
+
                 } else {
                     return response()->json(['code' => '2', 'message' => '奖励撤销扣款失败!']);
                 } 
@@ -276,14 +338,16 @@ class PunishController extends Controller
                 }
                 return response()->json(['code' => '1', 'message' => '撤销奖励成功{$punish->add_money}元!']);
 
-            } elseif ($punish->type == 5) { //撤销禁止接单的处罚
-
-                $bool = PunishOrReward::where('id', $id)->delete();
+            } elseif ($punish->type == 5) { 
+                //撤销禁止接单的处罚
+                $punish = PunishOrReward::find($id);
+                // 日志
+                $bool = $punish->delete();
 
                 if ($bool) {
-                    return response()->json(['code' => '1', 'message' => '撤销惩罚成功!']);
+                    return response()->json(['code' => '1', 'message' => '撤销成功!']);
                 }
-                return response()->json(['code' => '2', 'message' => '撤销惩罚失败!']);
+                return response()->json(['code' => '2', 'message' => '撤销失败!']);
             } else {
                 return response()->json(['code' => '2', 'message' => '操作异常!']);
             }   
@@ -293,7 +357,7 @@ class PunishController extends Controller
     }
 
     /**
-     * [record description]
+     * 奖惩日志
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -305,16 +369,47 @@ class PunishController extends Controller
 
         $filters = compact('startDate', 'endDate', 'orderId');
 
-        $punishRecords = Revision::where('revisionable_type', 'App\Models\PunishOrReward')
-                        ->punishFilter($filters)
-                        ->latest('created_at')
-                        ->paginate(config('backend.page'));
-        
+        $punishRecords = PunishOrRewardRevision::filter($filters)->paginate(config('backend.page'));
+
+        // $query = \DB::table('revisions')
+        //         ->select(\DB::raw("revisions.id, revisions.revisionable_id, revisions.key, revisions.old_value, revisions.new_value, revisions.created_at, punish_or_rewards.order_id, punish_or_rewards.order_no , admin_users.name"))
+        //         ->leftjoin('punish_or_rewards', function ($join) {
+        //             $join->on('punish_or_rewards.id', '=', 'revisions.revisionable_id');
+        //         })
+        //         ->leftjoin('admin_users', function ($join) {
+        //             $join->on('admin_users.id', '=', 'revisions.user_id');
+        //         })
+        //         ->where('revisions.revisionable_type', 'App\Models\PunishOrReward');
+
+        // if ($startDate && empty($endDate)) {
+
+        //     $query->where('created_at', '>=', $startDate);
+        // }
+
+        // if ($endDate && empty($startDate)) {
+
+        //     $query->where('created_at', '<=', $endDate . " 23:59:59");
+        // }
+
+        // if ($endDate && $startDate) {
+
+        //     $query->whereBetween('created_at', [$startDate, $endDate . " 23:59:59"]); 
+        // }
+
+        // if ($orderId) {
+
+        //     $punishIds = PunishOrReward::where('order_id', $orderId)->pluck('id');
+
+        //     $query->whereIn('revisionable_id', $punishIds);
+        // }
+                     
+        // $punishRecords = $query->latest('created_at')->paginate(config('backend.page'));
+               
         return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderId'));
     }
 
     /**
-     * 导出
+     * 奖惩列表导出
      * @param  [type] $filters [description]
      * @return [type]          [description]
      */

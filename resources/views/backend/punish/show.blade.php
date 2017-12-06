@@ -189,7 +189,9 @@
 
             form.on('submit(pass)', function (data) {
                 $.post('{{ route('execute.pass') }}', {data: data.field}, function (result) {
-                    layer.msg(result.message);
+                    layer.msg(result.message, {
+                        time:1500
+                    });
                 }, 'json');
                     window.location.href = "{{ route('punishes.index') }}";
                 return false;
@@ -197,7 +199,9 @@
 
             form.on('submit(refuse)', function (data) {
                 $.post('{{ route('execute.refuse') }}', {data: data.field}, function (result) {
-                    layer.msg(result.message);
+                    layer.msg(result.message, {
+                        time:1500
+                    });
                 }, 'json');
                     window.location.href = "{{ route('punishes.index') }}";
                 return false;
