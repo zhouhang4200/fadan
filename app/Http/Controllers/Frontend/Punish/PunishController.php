@@ -36,7 +36,7 @@ class PunishController extends Controller
                 $hasMoney = User::find($punish->user_id)->userAsset ? User::find($punish->user_id)->userAsset->balance : 0;
 
                 if ($hasMoney <= 0) {
-                    return response()->json(['code' => 1, 'message' => '账户余额不足，请充值!']);
+                    return response()->json(['code' => 2, 'message' => '账户余额不足，请充值!']);
                 }
 
     		    $bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));

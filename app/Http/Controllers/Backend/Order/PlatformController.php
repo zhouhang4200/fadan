@@ -59,9 +59,6 @@ class PlatformController extends Controller
         $filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
             'gainerPrimaryUserId', 'no', 'foreignOrderNo');
 
-        // 奖惩列表
-        $punishTypes = PunishType::get();
-
         // 订单导出
         if ($export) {
             return $this->order->export($filters);
@@ -85,7 +82,6 @@ class PlatformController extends Controller
             'no' => $no,
             'foreignOrderNo' => $foreignOrderNo,
             'fullUrl' => $request->fullUrl(),
-            'punishTypes' => $punishTypes,
         ]);
     }
 

@@ -102,7 +102,13 @@
                     <td>{{ $punish->order_id }}</td>
                     <td>{{ $punish->user_id }}</td>
                     <td>{{ config('punish.type')[$punish->type] }}</td>
-                    <td>{{ config('punish.status')[$punish->status] }}</td>
+                    @if(in_array($punish->status, [11]))
+                    <td style="color:#1E9FFF">{{ config('punish.status')[$punish->status] }}</td>
+                    @elseif(in_array($punish->status, [2, 6]))
+                    <td style="color:green">{{ config('punish.status')[$punish->status] }}</td>
+                    @else
+                    <td style="color:red">{{ config('punish.status')[$punish->status] }}</td>
+                    @endif
                     <td>{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}</td>
                     <td>{{ $punish->deadline ?? '--' }}</td>
                     <td>{{ $punish->before_weight_value ?? '--' }}</td>

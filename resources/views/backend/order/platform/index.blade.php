@@ -602,9 +602,17 @@
             form.on('submit(add)', function (data) {
                 $.post('{{ route('execute.add-money') }}', {data: data.field}, function (result) {
                     console.log(result);
-                    layer.msg(result.message, {
-                            time:1500,
+                    if (result.code == 1) {     
+                        layer.msg(result.message, {
+                            icon:6,
+                            time:1500
                         })
+                    } else {
+                        layer.msg(result.message, {
+                            icon:5,
+                            time:1500
+                        }) 
+                    }
                 }, 'json');
                 layer.close(index);
                 return false;
@@ -627,10 +635,17 @@
 
             form.on('submit(sub)', function (data) {
                 $.post('{{ route('execute.sub-money') }}', {data: data.field}, function (result) {
-                    console.log(result);
-                    layer.msg(result.message, {
-                        time:1500,
-                    })
+                    if (result.code == 1) {     
+                        layer.msg(result.message, {
+                            icon:6,
+                            time:1500
+                        })
+                    } else {
+                        layer.msg(result.message, {
+                            icon:5,
+                            time:1500
+                        }) 
+                    }
                 }, 'json');
                 layer.close(index);
                 return false;
@@ -653,10 +668,17 @@
 
             form.on('submit(add-weight)', function (data) {
                 $.post('{{ route('execute.add-weight') }}', {data: data.field}, function (result) {
-                    console.log(result);
-                    layer.msg(result.message, {
-                            time:1500,
+                    if (result.code == 1) {     
+                        layer.msg(result.message, {
+                            icon:6,
+                            time:1500
                         })
+                    } else {
+                        layer.msg(result.message, {
+                            icon:5,
+                            time:1500
+                        }) 
+                    }
                 }, 'json');
                 layer.close(index);
                 return false;
@@ -680,10 +702,17 @@
 
             form.on('submit(sub-weight)', function (data) {
                 $.post('{{ route('execute.sub-weight') }}', {data: data.field}, function (result) {
-                    console.log(result);
-                    layer.msg(result.message, {
-                            time:1500,
+                    if (result.code == 1) {     
+                        layer.msg(result.message, {
+                            icon:6,
+                            time:1500
                         })
+                    } else {
+                        layer.msg(result.message, {
+                            icon:5,
+                            time:1500
+                        }) 
+                    }
                 }, 'json');
                 layer.close(index);
                 return false;
@@ -707,10 +736,17 @@
 
             form.on('submit(forbidden)', function (data) {
                 $.post('{{ route('execute.forbidden') }}', {data: data.field}, function (result) {
-                    console.log(result);
-                    layer.msg(result.message, {
-                            time:1500,
+                    if (result.code == 1) {     
+                        layer.msg(result.message, {
+                            icon:6,
+                            time:1500
                         })
+                    } else {
+                        layer.msg(result.message, {
+                            icon:5,
+                            time:1500
+                        }) 
+                    }
                 }, 'json');
                 layer.close(index);
                 return false;

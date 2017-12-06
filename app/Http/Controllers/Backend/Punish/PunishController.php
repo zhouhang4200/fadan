@@ -23,14 +23,14 @@ class PunishController extends Controller
 {
     protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
     /**
-     * Display a listing of the resource.
+     * 奖惩列表
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
+        // 找出奖惩表里面出现的用户id
         $userIds = PunishOrReward::pluck('user_id')->unique();
-
         $users = User::whereIn('id', $userIds)->get();
 
         $startDate = $request->startDate;
@@ -42,11 +42,11 @@ class PunishController extends Controller
         $fullUrl = $request->fullUrl();
 
         $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'no');
-
+        // 导出
         if ($request->export) {
             return $this->export($filters);
         }
-
+        // 模型里面有筛选
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
 
         return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'no', 'fullUrl'));
@@ -102,7 +102,7 @@ class PunishController extends Controller
     // }
 
     /**
-     * 获取订单号
+     * 创建订单号
      * @return string
      */
     public static function createOrderId()
@@ -116,7 +116,7 @@ class PunishController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 奖惩详细
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -169,7 +169,7 @@ class PunishController extends Controller
     // }
 
     /**
-     * Remove the specified resource from storage.
+     * 列表页，直接撤销某个商户还未确认以及未申诉的奖惩记录
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -187,14 +187,14 @@ class PunishController extends Controller
         return response()->json(['code' => '2', 'message' => '撤销失败!']);
     }
 
-    public function orders(Request $request)
-    {
-        $userId = $request->id;
+    // public function orders(Request $request)
+    // {
+    //     $userId = $request->id;
 
-        $orders = Order::where('gainer_primary_user_id', $userId)->pluck('no');
+    //     $orders = Order::where('gainer_primary_user_id', $userId)->pluck('no');
 
-        return response()->json(['orders' => $orders]);
-    }
+    //     return response()->json(['orders' => $orders]);
+    // }
 
     /**
      * 点击图片 ajax 上传
@@ -216,7 +216,7 @@ class PunishController extends Controller
     }
 
     /**
-     * 图片上传
+     * 图片上传，返回图片路径
      * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
      * @param  $path string
      * @return string

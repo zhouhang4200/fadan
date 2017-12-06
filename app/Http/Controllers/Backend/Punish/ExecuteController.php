@@ -22,7 +22,7 @@ use App\Http\Controllers\Controller;
 class ExecuteController extends Controller
 {
 	/**
-	 * 惩罚扣钱
+	 * 罚款
 	 * @param  Request $request [description]
 	 * @return json
 	 */
@@ -39,18 +39,18 @@ class ExecuteController extends Controller
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	        $data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
-
+            // 判断订单是否存在
 	    	if (! $order) {
-
-	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);
+	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
+
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
 
-	        	return response()->json(['code' => 1, 'message' => '记录写入成功!']);
+	        	return response()->json(['code' => 1, 'message' => '成功创建一条罚单!']);
 	        }
-	        return response()->json(['code' => 0, 'message' => '记录写入失败!']);
+	        return response()->json(['code' => 2, 'message' => '罚单创建失败失败!']);
 
     	} catch (Exception $e) {
     		
@@ -88,9 +88,9 @@ class ExecuteController extends Controller
 	    	$order = Order::where('no', $data['order_id'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
-
+            // 判断订单存不存在
 	    	if (! $order) {
-	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);
+	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
 
 	        $punish = PunishOrReward::create($data);
@@ -98,11 +98,9 @@ class ExecuteController extends Controller
 	        if ($punish) {
 
 	        	$bool = Asset::handle(new Recharge($punish->add_money, 3, $punish->order_no, '奖励加款', $punish->user_id));
-
+                // 状态改为已加钱
 	        	if ($bool) {
-
 	        		$punish->status = 2;
-
 	        		$punish->save();
 	        	}
                 // 写多态关联
@@ -117,7 +115,7 @@ class ExecuteController extends Controller
     	        }
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功并奖励加款!']);
 	        }
-	        return response()->json(['code' => 0, 'message' => '记录写入失败!']);
+	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
 
     	} catch (Exception $e) {
     		
@@ -145,9 +143,9 @@ class ExecuteController extends Controller
 	    	$data['start_time'] = $request->data['start_time'] ?? '';
 	    	$data['end_time'] = isset($request->data['end_time']) ? $request->data['end_time'] . ' 23:59:59' : '';
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
-
+            // 判断订单存不存在
 	    	if (! $order) {
-	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);
+	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
 	        $punish = PunishOrReward::create($data);
 
@@ -155,7 +153,7 @@ class ExecuteController extends Controller
 	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功并已给用户增加权重!']);
 	        }
-	        return response()->json(['code' => 0, 'message' => '记录写入失败!']);
+	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
 
     	} catch (Exception $e) {
     		
@@ -184,9 +182,9 @@ class ExecuteController extends Controller
 	    	$data['end_time'] = isset($request->data['end_time']) ? $request->data['end_time'] . ' 23:59:59' : '';
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
 	    	$data['deadline'] = $data['start_time'];
-
+            // 判断订单存不存在
 	    	if (! $order) {
-	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);
+	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
 	        $punish = PunishOrReward::create($data);
 
@@ -194,7 +192,7 @@ class ExecuteController extends Controller
 	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功!']);
 	        }
-	        return response()->json(['code' => 0, 'message' => '记录写入失败!']);
+	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
 
     	} catch (Exception $e) {
     		
@@ -219,9 +217,9 @@ class ExecuteController extends Controller
 	    	$data['remark'] = $request->data['remark'];
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
 	    	$data['confirm'] = 1;
-
+            // 判断订单存不存在
 	    	if (! $order) {
-	    		return response()->json(['code' => 0, 'message' => '订单不存在!']);
+	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
 	        $punish = PunishOrReward::create($data);
 
@@ -229,7 +227,7 @@ class ExecuteController extends Controller
 	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功!']);
 	        }
-	        return response()->json(['code' => 0, 'message' => '记录写入失败!']);
+	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
 
     	} catch (Exception $e) {
 
@@ -237,7 +235,7 @@ class ExecuteController extends Controller
     }
 
     /**
-     * 同意申诉
+     * 同意申诉，此时记录不会删除，因为用户发起的申诉，
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -272,7 +270,7 @@ class ExecuteController extends Controller
                 	'updated_at' => new \DateTime(),
             	],
             ];
-
+            // 操作日志状态改为撤销
             DB::table('punish_or_reward_revisions')->insert($data);
 
 	    	return response()->json(['code' => 1, 'message' => '同意申诉并撤销该条记录!']);
@@ -289,7 +287,7 @@ class ExecuteController extends Controller
      */
     public function refuse(Request $request) 
     {
-    	// try {
+    	try {
 	    	$punish = PunishOrReward::find($request->data['id']);
 	    	// 如果是罚款则我们主动罚款
 	    	if ($punish->type == 2 && in_array($punish->status, ['3', '9'])) {
@@ -297,7 +295,7 @@ class ExecuteController extends Controller
 	    		$hasMoney = User::find($punish->user_id)->userAsset ? User::find($punish->user_id)->userAsset->balance : 0;
 
                 if ($hasMoney <= 0) {
-                    return response()->json(['code' => 1, 'message' => '账户余额不足，提醒他充值!']);
+                    return response()->json(['code' => 2, 'message' => '账户余额不足，提醒他充值!']);
                 }
 
 	    		$bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));
@@ -382,11 +380,9 @@ class ExecuteController extends Controller
 
                 return response()->json(['code' => 1, 'message' => '申诉驳回，并已对商家进行权重处罚!']);
 	    	}
+    		 return response()->json(['code' => 2, 'message' => '系统错误!']);
+    	} catch (Exception $e) {
 
-	    	return response()->json(['code' => 1, 'message' => '驳回申诉!']);
-    		
-    	// } catch (Exception $e) {
-
-    	// }
+    	}
     }
 }
