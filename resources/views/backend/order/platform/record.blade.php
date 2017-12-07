@@ -69,7 +69,8 @@
                         <div class="layui-tab layui-tab-brief" lay-filter="detail">
                             <ul class="layui-tab-title">
                                 <li  lay-id="detail"><a href="{{ route('order.platform.content', ['id' => Route::input('id')])  }}">订单内容</a></li>
-                                <li  class="layui-this"  lay-id="authentication"><a href="{{ route('order.platform.record', ['id' => Route::input('id')])  }}">订单日志</a></li>
+                                <li  @if(Route::currentRouteName() == 'order.platform.record') class="layui-this"  @endif lay-id="authentication"><a href="{{ route('order.platform.record', ['id' => Route::input('id')])  }}">订单日志</a></li>
+                                <li  @if(Route::currentRouteName() == 'punishes.record.show') class="layui-this"  @endif lay-id="show"><a href="{{ route('punishes.record.show', ['id' => Route::input('id')]) }}">奖惩日志</a></li>
                             </ul>
                             <div class="layui-tab-content">
                                 <div class="layui-tab-item content">

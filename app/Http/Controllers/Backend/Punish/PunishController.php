@@ -472,4 +472,18 @@ class PunishController extends Controller
             });
         })->export('xls');
     }
+
+    /**
+     * 奖惩日志详情
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function recordShow($id)
+    {
+        $order = Order::find($id);
+
+        $punishRecords = PunishOrRewardRevision::where('order_id', $order->no)->get();
+
+        return view('backend.punish.detail', compact('punishRecords'));
+    }
 }

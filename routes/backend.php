@@ -275,6 +275,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('punishes/cancel/{id}', 'PunishController@cancel')->name('punishes.cancel')->middleware('permission:punishes.cancel');
         // 日志
         Route::get('punishes/record', 'PunishController@record')->name('punishes.record')->middleware('permission:punishes.record');
+        // 日志详情
+        Route::get('punishes/record/show/{id}', 'PunishController@recordShow')->name('punishes.record.show')->middleware('permission:punishes.record.show');
         // 图片上传地址
         Route::post('punishes/upload-images', 'PunishController@uploadImages')->name('punishes.upload-images')->middleware('permission:punishes.upload-images');
         // 奖惩管理

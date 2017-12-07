@@ -1,58 +1,82 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 奖惩日志')
+@section('title', ' | 订单详情')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .user-td td div{
-            text-align: center;width: 320px;
-        }
-        .layui-table tr th, td{
-            text-align: center;
-        }
-        .layui-input-inline {
-            margin-top:10px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/backend/css/libs/nifty-component.css"/>
 @endsection
 
 @section('content')
+    <div class="md-modal" id="refund-application">
+        <div class="md-content">
+            <div class="modal-header">
+                <button class="md-close close">&times;</button>
+                <h4 class="modal-title">申请退款 (订单可退金额:) 元</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label>退款给</label>
+                        <select class="form-control who">
+                            <option value="0">双方</option>
+                            <option value="1">买家</option>
+                            <option value="2">卖家</option>
+                        </select>
+                    </div>
+                    <div class="buyer">
+                        <div class="form-group">
+                            <label>给买家(退款金额)</label>
+                            <input type="text" class="form-control buyer-money" name="refund-money"
+                                   placeholder="输入需退款金额">
+                        </div>
+                        <div class="form-group">
+                            <label>给买家(备注)</label>
+                            <textarea class="form-control buyer-remark" name="refund-remark" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="seller no">
+                        <div class="form-group">
+                            <label>给卖家(退款金额)</label>
+                            <input type="text" class="form-control seller-money" name="refund-money"
+                                   placeholder="输入需退款金额">
+                        </div>
+                        <div class="form-group">
+                            <label>给卖家(备注)</label>
+                            <textarea class="form-control seller-remark" name="refund-remark" rows="5"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary refund-application-submit">确认提交</button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
-            <div class="main-box">
+            <ol class="breadcrumb">
+                <li class=""><span>首页</span></li>
+                <li class=""><a href="{{ route('order.platform.index') }}"><span>平台订单</span></a></li>
+                <li class="active"><span>订单详情</span></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
                 <div class="main-box-body clearfix">
-                    <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
-                        <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">奖惩日志</li>
-                        </ul>
-
-                        <div class="layui-tab-content">                      
-                        <form class="layui-form" method="" action="">
-                            <div class="layui-input-inline" style="float:left;">
-                                <div class="layui-form-item">
-                                    <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('startDate') ?: $startDate }}" name="startDate" id="test1" placeholder="开始时间">
-                                    </div>
-
-                                    <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('endDate') ?: $endDate }}"  name="endDate" id="test2" placeholder="结束时间">
-                                    </div>
-
-                                    <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('orderId') ?: $orderId }}"  name="order_id" id="" placeholder="输入关联订单号">
-                                    </div>
-
-                                    <div class="layui-input-inline" >
-                                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                                        <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('punishes.record') }}" style="color:#fff">返回</a></button>
-                                    </div>
+                    <div class="table-responsive">
+                        <div class="layui-tab layui-tab-brief" lay-filter="detail">
+                            <ul class="layui-tab-title">
+                                <li  lay-id="detail"><a href="{{ route('order.platform.content', ['id' => Route::input('id')])  }}">订单内容</a></li>
+                                <li  @if(Route::currentRouteName() == 'order.platform.record') class="layui-this"  @endif lay-id="authentication"><a href="{{ route('order.platform.record', ['id' => Route::input('id')])  }}">订单日志</a></li>
+                                <li  @if(Route::currentRouteName() == 'punishes.record.show') class="layui-this"  @endif lay-id="show"><a href="{{ route('punishes.record.show', ['id' => Route::input('id')]) }}">奖惩日志</a></li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div class="layui-tab-item content">
                                 </div>
-                                </div>
-                            </form>
-                            <div class="layui-tab-item layui-show">
-
-                                <table class="layui-table" lay-size="sm">
+                                <div class="layui-tab-item  layui-show  show">
+                                    <table class="layui-table" lay-size="sm">
                                     <thead>
                                         <tr>
                                             <th>序号</th>
@@ -101,15 +125,11 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
-                    @if ($punishRecords)
-                        {!! $punishRecords->appends([
-                            'orderId' => $orderId,
-                            'startDate' => $startDate,
-                            'endDate' => $endDate,
-                        ])->render() !!}
-                    @endif
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,19 +137,12 @@
 @endsection
 
 @section('js')
-<script>
-    layui.use(['form', 'layedit', 'laydate'], function(){
-        var laydate = layui.laydate, form = layui.form;
-        //常规用法
-        laydate.render({
-            elem: '#test1'
-        });
+    <script src="/backend/js/modalEffects.js"></script>
+    <script src="/backend/js/jquery.modalEffects.js"></script>
+    <script>
+        layui.use(['layer', 'element', 'form'], function () {
+            var element = layui.element, form = layui.form;
 
-        //常规用法
-        laydate.render({
-            elem: '#test2'
         });
-
-    });
-</script>
+    </script>
 @endsection

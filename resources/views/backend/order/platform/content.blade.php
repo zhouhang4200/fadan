@@ -72,6 +72,7 @@
                             <ul class="layui-tab-title">
                                 <li  class="layui-this"  lay-id="detail"><a href="{{ route('order.platform.content', ['id' => Route::input('id')])  }}">订单内容</a></li>
                                 <li lay-id="authentication"><a href="{{ route('order.platform.record', ['id' => Route::input('id')])  }}">订单日志</a></li>
+                                <li  class=""  lay-id="record"><a href="{{ route('punishes.record.show', ['id' => Route::input('id')]) }}">奖惩日志</a></li>
                             </ul>
                             <div class="layui-tab-content">
                                 <div class="layui-tab-item layui-show content">
