@@ -12,7 +12,7 @@
             text-align: center;
         }
         .layui-input-inline {
-            margin-top:10px;
+            margin-top:20px;
         }
     </style>
 @endsection
@@ -89,7 +89,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="layui-input-inline" style="padding:10px" >
+                                    <div class="layui-input-inline">
                                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
                                         <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('punishes.index') }}" style="color:#fff">返回</a></button>
                                         <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
