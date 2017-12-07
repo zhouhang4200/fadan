@@ -416,60 +416,68 @@ class PunishController extends Controller
     public function export($filters)
     {
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->withTrashed()->get();
-  
-        return Excel::create('奖惩数据', function ($excel) use($punishes) {
-            $excel->sheet('Sheet1', function ($sheet) use ($punishes) {
-                // $sheet->setAutoSize(true);
-                $sheet->row(1, array(
-                    '序号',
-                    '订单号',
-                    '关联订单号',
-                    '用户id',
-                    '类型',
-                    '状态',
-                    '罚款金额',
-                    '最后期限',
-                    '初始权重',
-                    '奖惩权重',
-                    '最终权重',
-                    '生效时间',
-                    '截止时间',
-                    '奖励金额',
-                    '凭证照片',
-                    '备注',
-                    '商家确认',
-                    '创建时间',
-                    '更新时间',
-                    '删除时间',
-                ));
+        // 标题
+        $title = [
+            '序号',
+            '订单号',
+            '关联订单号',
+            '用户id',
+            '类型',
+            '状态',
+            '罚款金额',
+            '最后期限',
+            '初始权重',
+            '奖惩权重',
+            '最终权重',
+            '生效时间',
+            '截止时间',
+            '奖励金额',
+            '凭证照片',
+            '备注',
+            '商家确认',
+            '创建时间',
+            '更新时间',
+            '删除时间',
+        ];
+        // 数组分割
+        $chunkPunishes = array_chunk(array_reverse($punishes->toArray()), 1000);
 
-                $data = [];
-                foreach ($punishes as $punishItem) {
-                    $data[] = [
-                        $punishItem['id'],
-                        $punishItem['order_no'],
-                        $punishItem['order_id'],
-                        $punishItem['user_id'],
-                        $punishItem['type'],
-                        $punishItem['status'],
-                        $punishItem['sub_money'] ?? '--',
-                        $punishItem['deadline'] ?? '--',
-                        $punishItem['before_weight_value'] ?? '--',
-                        $punishItem['ratio'] ?? '--',
-                        $punishItem['after_weight_value'] ?? '--',
-                        $punishItem['start_time'] ?? '--',
-                        $punishItem['end_time'] ?? '--',
-                        $punishItem['add_money'] ?? '--',
-                        json_encode($punishItem['voucher']) ?? '--',
-                        $punishItem['remark'] ?? '--',
-                        $punishItem['confirm'] ?? '--',
-                        $punishItem['created_at'] ?? '--',
-                        $punishItem['updated_at'] ?? '--',
-                        $punishItem['deleted_at'] ?? '--',
+        Excel::create(iconv('UTF-8', 'gbk', '奖惩情况'), function ($excel) use ($chunkPunishes, $title) {
+
+            foreach ($chunkPunishes as $chunkPunish) {
+                // 内容
+                $datas = [];
+                foreach ($chunkPunish as $key => $punish) {
+                    $datas[] = [
+                        $punish['id'],
+                        $punish['order_no'],
+                        $punish['order_id'],
+                        $punish['user_id'],
+                        $punish['type'],
+                        $punish['status'],
+                        $punish['sub_money'] ?? '--',
+                        $punish['deadline'] ?? '--',
+                        $punish['before_weight_value'] ?? '--',
+                        $punish['ratio'] ?? '--',
+                        $punish['after_weight_value'] ?? '--',
+                        $punish['start_time'] ?? '--',
+                        $punish['end_time'] ?? '--',
+                        $punish['add_money'] ?? '--',
+                        json_encode($punish['voucher']) ?? '--',
+                        $punish['remark'] ?? '--',
+                        $punish['confirm'] ?? '--',
+                        $punish['created_at'] ?? '--',
+                        $punish['updated_at'] ?? '--',
+                        $punish['deleted_at'] ?? '--',
                     ];
                 }
-                $sheet->fromArray($data, null, 'A2', false, false);
-            });
+                // 将标题加入到数组
+                array_unshift($datas, $title);
+                // 每页多少数据
+                $excel->sheet("页数", function ($sheet) use ($datas) {
+                    $sheet->rows($datas);             
+                });
+            }
         })->export('xls');
     }
 
