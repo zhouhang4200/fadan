@@ -82,16 +82,16 @@
                                             </td>
                                             <td>
                                                 @if($punishRecord->operate_style == 'created_at')
-                                                    {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，创建了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->punish_or_reward_id }}
+                                                    管理员【{{ $punishRecord->user_name ?? '系统' }}】 在 【{{ $punishRecord->created_at }}】，创建了奖惩记录,对应 奖惩列表 里面的序号 【{{ $punishRecord->punish_or_reward_id }}】
                                                 @elseif($punishRecord->operate_style == 'deleted_at')
-                                                    {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，撤销了奖惩记录,对应 奖惩记录 里面的序号 {{ $punishRecord->punish_or_reward_id }}
+                                                    管理员【{{ $punishRecord->user_name ?? '系统' }}】 在 【{{ $punishRecord->created_at }}】 ，撤销了奖惩记录,对应 奖惩列表 里面的序号 【{{ $punishRecord->punish_or_reward_id }}】
                                                 @else
                                                     @if ($punishRecord->operate_style == 'confirm')
-                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录,将 {{  $punishRecord->operate_style }} 从原来的状态 {{ config('punish.confirm')[$punishRecord->before_value] }} 更新为 {{ config('punish.confirm')[$punishRecord->after_value] }}
+                                                        管理员【{{ $punishRecord->user_name ?? '系统' }}】 在 【{{ $punishRecord->created_at }}】 ，修改了奖惩记录,将 【{{  $punishRecord->operate_style }}】 从原来的状态 【{{ config('punish.confirm')[$punishRecord->before_value] }}】 更新为 【{{ config('punish.confirm')[$punishRecord->after_value] }}】
                                                     @elseif($punishRecord->operate_style == 'status')
-                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录将 {{  $punishRecord->operate_style }} 从原来的状态 {{ config('punish.status')[$punishRecord->before_value] }} 更新为 {{ config('punish.status')[$punishRecord->after_value] }}
+                                                        管理员【{{ $punishRecord->user_name ?? '系统' }}】 在 【{{ $punishRecord->created_at }}】 ，修改了奖惩记录将 【{{  $punishRecord->operate_style }}】 从原来的状态 【{{ config('punish.status')[$punishRecord->before_value] }}】 更新为 【{{ config('punish.status')[$punishRecord->after_value] }}】
                                                     @else
-                                                        {{ $punishRecord->user_name ?? '系统' }} 在 {{ $punishRecord->created_at }} ，修改了奖惩记录,将 {{  $punishRecord->operate_style }} 从原来的状态 {{ $punishRecord->before_value }} 更新为 {{ $punishRecord->after_value }}
+                                                        管理员【{{ $punishRecord->user_name ?? '系统' }}】 在 【{{ $punishRecord->created_at }}】 ，修改了奖惩记录,将 【{{  $punishRecord->operate_style }}】 从原来的状态 【{{ $punishRecord->before_value }}】 更新为 【{{ $punishRecord->after_value }}】
                                                     @endif
                                                 @endif
                                             </td>
