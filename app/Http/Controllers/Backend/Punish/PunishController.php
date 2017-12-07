@@ -178,13 +178,23 @@ class PunishController extends Controller
     {
         $punish = PunishOrReward::find($id);
 
-        $bool = $punish->delete();
-
-        if ($bool) {
+        // 如果为加权重
+        if ($punish->type == 3 && $punish->confirm == 1) {
+            $punish->status = 11;
+            $punish->confirm = 1;
+            $punish->save();
 
             return response()->json(['code' => '1', 'message' => '撤销成功!']);
+        } else {  
+            $bool = $punish->delete();
+
+            if ($bool) {
+
+                return response()->json(['code' => '1', 'message' => '撤销成功!']);
+            }
+            return response()->json(['code' => '2', 'message' => '撤销失败!']);
         }
-        return response()->json(['code' => '2', 'message' => '撤销失败!']);
+
     }
 
     // public function orders(Request $request)
