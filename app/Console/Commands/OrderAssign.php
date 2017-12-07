@@ -74,7 +74,7 @@ class OrderAssign extends Command
                                     $userId = 0;
                                 }
                             }
-                        } catch (CustomException $exception) {
+                        } catch (Exception $exception) {
 
                         }
                     }
