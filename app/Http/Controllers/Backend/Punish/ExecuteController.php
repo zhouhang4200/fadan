@@ -43,11 +43,10 @@ class ExecuteController extends Controller
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
-
+            // 奖惩记录
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
-
 	        	return response()->json(['code' => 1, 'message' => '成功创建一条罚单!']);
 	        }
 	        return response()->json(['code' => 2, 'message' => '罚单创建失败失败!']);
@@ -92,7 +91,7 @@ class ExecuteController extends Controller
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
-
+            // 奖惩记录
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
@@ -147,10 +146,10 @@ class ExecuteController extends Controller
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
+            // 奖惩记录
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
-	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功并已给用户增加权重!']);
 	        }
 	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
@@ -186,10 +185,10 @@ class ExecuteController extends Controller
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
+            // 奖惩记录
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
-	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功!']);
 	        }
 	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
@@ -221,10 +220,10 @@ class ExecuteController extends Controller
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
 	    	}
+            // 奖惩记录
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
-	        	
 	        	return response()->json(['code' => 1, 'message' => '记录写入成功!']);
 	        }
 	        return response()->json(['code' => 2, 'message' => '记录写入失败!']);
@@ -297,7 +296,7 @@ class ExecuteController extends Controller
                 if ($hasMoney <= 0) {
                     return response()->json(['code' => 2, 'message' => '账户余额不足，提醒他充值!']);
                 }
-
+                // 扣款
 	    		$bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));
 
                 if ($bool) {
@@ -330,7 +329,7 @@ class ExecuteController extends Controller
                     		'updated_at' => new \DateTime(),
                     	],
                     ];
-
+                    // 奖惩日志
                     DB::table('punish_or_reward_revisions')->insert($data);
                 }
                 // 写多态关联
@@ -375,7 +374,7 @@ class ExecuteController extends Controller
                     	'updated_at' => new \DateTime(),
                 	],
                 ];
-
+                // 奖惩日志
                 DB::table('punish_or_reward_revisions')->insert($data);
 
                 return response()->json(['code' => 1, 'message' => '申诉驳回，并已对商家进行权重处罚!']);

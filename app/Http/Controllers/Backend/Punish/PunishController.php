@@ -262,7 +262,7 @@ class PunishController extends Controller
             $punish = PunishOrReward::find($id);
             //奖励金额撤销
             if ($punish->type == 1) {
-
+                // 撤销奖励时扣款
                 $bool = Asset::handle(new Consume($punish->add_money, 3, $punish->order_no, '奖励撤销扣款', $punish->user_id));
 
                 if ($bool) {
@@ -297,9 +297,9 @@ class PunishController extends Controller
                                 'updated_at' => new \DateTime(),
                             ],
                         ];
-
+                        // 奖惩日志
                         DB::table('punish_or_reward_revisions')->insert($data);
-
+                        // 用户没确认，软删除记录
                         $punish->delete();
                     } else {
                         // 如果商户确认了，就不删除，显示撤销状态
@@ -366,7 +366,7 @@ class PunishController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $orderId = $request->order_id;
-
+        // 生成查询数组
         $filters = compact('startDate', 'endDate', 'orderId');
 
         $punishRecords = PunishOrRewardRevision::filter($filters)->paginate(config('backend.page'));
@@ -409,7 +409,7 @@ class PunishController extends Controller
     }
 
     /**
-     * 奖惩列表导出
+     * 奖惩列表导出.多分页导出
      * @param  [type] $filters [description]
      * @return [type]          [description]
      */
@@ -439,7 +439,7 @@ class PunishController extends Controller
             '更新时间',
             '删除时间',
         ];
-        // 数组分割
+        // 数组分割,反转
         $chunkPunishes = array_chunk(array_reverse($punishes->toArray()), 1000);
 
         Excel::create(iconv('UTF-8', 'gbk', '奖惩情况'), function ($excel) use ($chunkPunishes, $title) {
@@ -482,16 +482,21 @@ class PunishController extends Controller
     }
 
     /**
-     * 奖惩日志详情
+     * 订单详情里面的-》奖惩日志详情
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
     public function recordShow($id)
     {
-        $order = Order::find($id);
+        try {
+            $order = Order::find($id);
 
-        $punishRecords = PunishOrRewardRevision::where('order_id', $order->no)->get();
+            $punishRecords = PunishOrRewardRevision::where('order_id', $order->no)->get();
 
-        return view('backend.punish.detail', compact('punishRecords'));
+            return view('backend.punish.detail', compact('punishRecords'));
+
+        } catch (Exception $e) {
+
+        }
     }
 }
