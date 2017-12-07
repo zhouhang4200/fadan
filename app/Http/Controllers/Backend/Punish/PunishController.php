@@ -179,7 +179,7 @@ class PunishController extends Controller
         $punish = PunishOrReward::find($id);
 
         // 如果为加权重
-        if ($punish->type == 3 && $punish->confirm == 1) {
+        if (($punish->type == 3 || $punish->type == 5) && $punish->confirm == 1) {
             $punish->status = 11;
             $punish->confirm = 1;
             $punish->save();

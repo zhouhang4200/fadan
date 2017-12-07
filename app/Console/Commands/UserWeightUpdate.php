@@ -71,7 +71,7 @@ class UserWeightUpdate extends Command
                 ->get();
 
 
-            // 禁止接单-》把过期的惩罚状态改为1
+            // 禁止接单-》把过期的惩罚状态改为12
             if ($endDayPunishes) {
 
                 foreach ($endDayPunishes as $endDayPunish) {
