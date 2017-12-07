@@ -138,9 +138,9 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">凭证图片</label>
                                         <div class="layui-input-block">
-                                            <ul style="width:700px">
+                                            <ul>
                                                 @forelse($punish->voucher as $k => $voucherItem)
-                                                    <li id="voucher{{ $k+1 }}" style="float:left;width:200px;height:200px;background-image: url('{{ $voucherItem }}');background-size: cover !important;background-position: center !important;margin-right:3px;">
+                                                    <li id="voucher{{ $k+1 }}" style="float:left;width:400px;height:400px;background-image: url('{{ $voucherItem }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;">
                                                     </li>
                                                 @empty
                                                 @endforelse
