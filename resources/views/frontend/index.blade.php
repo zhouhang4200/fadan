@@ -71,6 +71,9 @@
     .icon > span + span{
         margin-left: 10px;
     }
+    .info-left .layui-form-item .layui-inline {
+        line-height: 17px;
+    }
 </style>
 @endsection
 
