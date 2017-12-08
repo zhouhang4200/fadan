@@ -28,28 +28,32 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
     public function updateAsset()
     {
         // 退款给买家
-        Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
+        if ($this->refundFee > 0) {
+            Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new Exception('操作失败');
-        }
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('操作失败');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new Exception('操作失败');
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('操作失败');
+            }
         }
 
         // 退款给卖家
         $sellerRefundFee = bcsub($this->order->amount, $this->refundFee);
-        Asset::handle(new Income($sellerRefundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '接单售后退款', $this->order->gainer_primary_user_id, $this->adminUserId));
+        if ($sellerRefundFee > 0) {
+            Asset::handle(new Income($sellerRefundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '接单售后退款', $this->order->gainer_primary_user_id, $this->adminUserId));
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new Exception('操作失败');
-        }
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('操作失败');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new Exception('操作失败');
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('操作失败');
+            }
         }
     }
 
