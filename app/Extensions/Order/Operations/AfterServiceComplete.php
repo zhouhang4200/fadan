@@ -21,7 +21,7 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
     {
         $this->orderNo     = $orderNo;
         $this->adminUserId = $adminUserId;
-        $this->refundFee   = $refundFee;
+        $this->refundFee   = abs($refundFee);
         $this->description = $description;
     }
 
