@@ -25,6 +25,7 @@ class UserController extends Controller
 
     	$users = User::where('parent_id', 0)->filter(['id' => $id, 'name' => $name, 'nickname' => $nickname])
             ->with('asset')
+            ->orderBy('id', 'desc')
             ->paginate(config('frontend.page'));
 
     	return view('backend.user.frontend.index', compact('users', 'name', 'nickname', 'id'));
