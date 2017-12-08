@@ -19,7 +19,7 @@ use App\Extensions\Asset\Income;
 use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
-use Order;
+use Order as OrderFacede;
 use App\Extensions\Order\Operations\Create;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Extensions\Order\Operations\Receiving;
@@ -44,13 +44,23 @@ use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
 use App\Models\Order as OrderModel;
 use App\Models\UserReceivingUserControl;
+use App\Models\Order;
 
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
          // dd(KamenOrderApi::share()->fail('1148054917'));
+         // 
+        $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
+        $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
 
+        $money = Order::select(\DB::raw('sum(amount) as total'))
+                ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
+                ->where('status', 8)
+                ->value('total');
+        dd($money);
+        
          dd(TmallOrderApi::getOrder(105794,103747613994411922));
         // $time = '2017-11-09 16:32:50';
         // $carbon = Carbon::parse($time);

@@ -289,4 +289,9 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('execute/pass', 'ExecuteController@pass')->name('execute.pass')->middleware('permission:execute.pass');
         Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');  
     });
+
+    // 违规管理
+    Route::namespace('Data')->prefix('datas')->group(function () {
+        Route::get('index', 'DayDataController@index')->name('datas.index')->middleware('permission:datas.index');  
+    });
 });

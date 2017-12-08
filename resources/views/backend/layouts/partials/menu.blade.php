@@ -317,7 +317,22 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    
+                    <li @if($currentOneLevelMenu == 'datas') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>数据</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                        @can('datas.index')
+                            <li>
+                                <a href="{{ route('datas.index') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    每日数据
+                                </a>
+                            </li>
+                        @endcan
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
