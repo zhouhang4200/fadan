@@ -23,25 +23,21 @@
                             <li class="layui-this" lay-id="add">添加管理员</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="POST" action="{{ route('admin-accounts.update', ['id' => $adminUser->id]) }}">
-                            {!! csrf_field() !!}
-                            <input type="hidden" name="_method" value="PUT">
+                            <form class="layui-form" method="POST" action="{{ route('admin-accounts.store') }}">
+                                {!! csrf_field() !!}
                                 <div style="width: 40%">
                                     <div class="layui-form-item">
-                                 
-                                        <label class="layui-form-label">账号名(不可更改)</label>
+                                        <label class="layui-form-label">账号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') ?: $adminUser->name  }}" autocomplete="off" class="layui-input">
+                                            <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" class="layui-input" placeholder="请输入账号名">
                                         </div>
-
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">新密码</label>
+                                        <label class="layui-form-label">密码</label>
                                         <div class="layui-input-block">
-                                            <input type="password" name="password" value="" lay-verify="" placeholder="最少6位,不填写则为原密码" autocomplete="off" class="layui-input">
+                                            <input type="password" name="password" value="" lay-verify="" placeholder="6-16位" autocomplete="off" class="layui-input">
                                         </div>
                                     </div>
-
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
                                             <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">立即提交</button>
@@ -62,13 +58,18 @@
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
 
-        var error = "{{ $errors->count() > 0 ? '按要求填写密码！' : '' }}";
-        var updateFail = "{{ session('updateFail') ?: '' }}";
+        var error = "{{ $errors->count() > 0 ? '按要求填写账号密码！' : '' }}";
+        var storeFail = "{{ session('storeFail') ?: '' }}";
 
         if (error) {
             layer.msg(error, {icon: 5, time:1500});        
-        } else if(updateFail) {
-            layer.msg(updateFail, {icon: 5, time:1500});
+        } else if(storeFail) {
+            layer.msg(storeFail, {icon: 5, time:1500});
+        }
+        var succ = "{{ session('succ') ?: '' }}";
+
+        if(succ) {
+            layer.msg(succ, {icon: 6, time:1500});
         }
   
       //……

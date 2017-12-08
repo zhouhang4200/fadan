@@ -43,7 +43,7 @@ class AdminUser extends Authenticatable
     {
         return [
             'name' => 'required|string|max:191|unique:admin_users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6|max:16',
         ];
     }
 

@@ -188,6 +188,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::delete('admin-modules/{id}', 'AdminModuleController@destroy')->name('admin-modules.destroy')->middleware('permission:admin-modules.destroy');
         // 后台账号
         Route::get('admin-accounts', 'AdminAccountController@index')->name('admin-accounts.index')->middleware('permission:admin-accounts.index');
+        Route::get('admin-accounts/create', 'AdminAccountController@create')->name('admin-accounts.create')->middleware('permission:admin-accounts.create');
+        Route::post('admin-accounts', 'AdminAccountController@store')->name('admin-accounts.store')->middleware('permission:admin-accounts.store');
         Route::get('admin-accounts/{id}/edit', 'AdminAccountController@edit')->name('admin-accounts.edit')->middleware('permission:admin-accounts.edit');
         Route::put('admin-accounts/{id}', 'AdminAccountController@update')->name('admin-accounts.update')->middleware('permission:admin-accounts.update');
     });

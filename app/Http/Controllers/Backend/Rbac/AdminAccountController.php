@@ -51,4 +51,21 @@ class AdminAccountController extends Controller
         }
         return redirect(route('admin-accounts.index'))->with('succ', '修改密码成功!');
     }
+
+    public function create(Request $request)
+    {
+        return view('backend.rbac.account.admin.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->validate($request, AdminUser::rules(), AdminUser::messages());
+
+        $datas = $request->all();
+        $datas['password'] = bcrypt($request->password);
+
+        AdminUser::create($datas);
+
+        return back()->with('succ', '添加成功!');
+    }
 }

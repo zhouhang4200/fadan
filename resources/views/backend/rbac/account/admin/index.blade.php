@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 后台账号')
+@section('title', ' | 管理员列表')
 
 @section('content')
     <div class="row">
@@ -9,9 +9,12 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">后台账号</li>
+                            <li class="layui-this" lay-id="add">管理员列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                            <div style="padding-top:10px; padding-bottom:10px; float:right">
+                                <a href="{{ route('admin-accounts.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加管理员</button></a>
+                            </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
