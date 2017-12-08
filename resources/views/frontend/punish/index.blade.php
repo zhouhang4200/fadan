@@ -102,7 +102,7 @@
                     <td>{{ $punish->order_id }}</td>
                     <td>{{ $punish->user_id }}</td>
                     <td>{{ config('punish.type')[$punish->type] }}</td>
-                    @if(in_array($punish->status, [11]))
+                    @if(in_array($punish->status, [4, 8, 10, 11]))
                     <td style="color:#1E9FFF">{{ config('punish.status')[$punish->status] }}</td>
                     @elseif(in_array($punish->status, [2, 6]))
                     <td style="color:green">{{ config('punish.status')[$punish->status] }}</td>
