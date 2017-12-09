@@ -48,15 +48,9 @@
                 </div>
                 <div class="nav-no-collapse pull-right" id="header-nav">
                     <ul class="nav navbar-nav pull-right">
-
-                        <li class="hidden-xs">
-                            <a class="btn">
-                                <i class="fa fa-cog"></i>
-                            </a>
-                        </li>
                         <li class="dropdown profile-dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/img/samples/scarlet-159.png" alt=""/>
+                                {{--<img src="/img/samples/scarlet-159.png" alt=""/>--}}
                                 <span class="hidden-xs">管理员</span> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
@@ -67,11 +61,6 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="hidden-xxs">
-                            <a class="btn">
-                                <i class="fa fa-power-off"></i>
-                            </a>
                         </li>
                     </ul>
                 </div>
@@ -114,7 +103,7 @@
         }, 900);
     }
     function logout() {
-        layui.use(['form', 'layedit', 'laydate',], function(){
+        layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
                     ,layer = layui.layer;
             layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){

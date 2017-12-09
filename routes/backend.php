@@ -118,7 +118,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         });
     });
 
-
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
         // 前台角色
         // Route::resource('roles', 'RoleController', ['except' => ['show']]);
@@ -218,8 +217,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('content/{id}', 'PlatformController@content')->name('order.platform.content')->middleware('permission:order.platform.content');
             // 订单操作记录
             Route::get('record/{id}', 'PlatformController@record')->name('order.platform.record')->middleware('permission:order.platform.record');
-            // 申请退款
-            Route::get('refund-application', 'PlatformController@refundApplication')->name('order.platform.refund-application')->middleware('permission:order.platform.refund-application');
             // 修改状态
             Route::post('change-status', 'PlatformController@changeStatus')->name('order.platform.change-status')->middleware('permission:order.platform.change-status');
         });
@@ -227,6 +224,17 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::prefix('foreign')->group( function () {
             // 订单列表
             Route::get('/', 'ForeignController@index')->name('order.foreign.index')->middleware('permission:order.platform.index');
+        });
+        // 售后订单
+        Route::prefix('after-service')->group( function () {
+            // 订单列表
+            Route::get('/', 'AfterServiceController@index')->name('order.after-service.index')->middleware('permission:order.after-service.index');
+            // 申请退款
+            Route::post('apply', 'AfterServiceController@apply')->name('order.after-service.apply')->middleware('permission:order.after-service.apply');
+            // 审核
+            Route::post('auditing', 'AfterServiceController@auditing')->name('order.after-service.auditing')->middleware('permission:order.after-service.auditing');
+            // 确认售后
+            Route::post('confirm', 'AfterServiceController@confirm')->name('order.after-service.confirm')->middleware('permission:order.after-service.confirm');
         });
     });
 

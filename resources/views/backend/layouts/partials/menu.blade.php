@@ -20,6 +20,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.platform.content',
                         'order.platform.record',
                         'order.foreign.index',
+                        'order.after-service.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
@@ -35,6 +36,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <li>
                                     <a href="{{ route('order.foreign.index') }}" @if($currentRouteName == 'order.foreign.index') class="active" @endif>
                                         外部订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.after-service.index') }}" @if($currentRouteName == 'order.after-service.index') class="active" @endif>
+                                        售后订单
                                     </a>
                                 </li>
                             </ul>

@@ -15,14 +15,16 @@ class CreateAfterServicesTable extends Migration
     {
         Schema::create('after_services', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('order_on')->comment('订单号');
-            $table->integer('creator_user_id')->unsigned()->default(0)->comment('发单人ID');
+            $table->string('order_no')->comment('订单号');
+            $table->integer('order_creator_user_id')->unsigned()->default(0)->comment('发单人ID');
+            $table->integer('order_gainer_user_id')->unsigned()->default(0)->comment('接单人ID');
+            $table->decimal('original_amount')->comment('订单原金额');
             $table->decimal('refund_amount')->default(0)->comment('退款金额');
-            $table->integer('gainer_user_id')->unsigned()->default(0)->comment('接单人ID');
             $table->integer('auditing_admin_user_id')->unsigned()->default(0)->comment('审核管理员ID');
             $table->integer('confirm_admin_user_id')->unsigned()->default(0)->comment('确认管理员ID');
             $table->tinyInteger('status')->unsigned()->default(0)->comment('状态 0 待审核 1 审核通过 2 审核拒绝 3 完成退款');
-            $table->string('remark')->nullable()->comment('备注');
+            $table->string('remark')->nullable()->comment('发起退款说明');
+            $table->string('auditing_remark')->nullable()->comment('审核说明');
             $table->timestamps();
         });
     }

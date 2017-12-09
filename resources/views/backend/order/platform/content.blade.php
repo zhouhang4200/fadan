@@ -15,34 +15,14 @@
             </div>
             <div class="modal-body">
                 <form role="form">
-                    <div class="form-group">
-                        <label>退款给</label>
-                        <select class="form-control who">
-                            <option value="0">双方</option>
-                            <option value="1">买家</option>
-                            <option value="2">卖家</option>
-                        </select>
-                    </div>
                     <div class="buyer">
                         <div class="form-group">
-                            <label>给买家(退款金额)</label>
-                            <input type="text" class="form-control buyer-money" name="refund-money"
-                                   placeholder="输入需退款金额">
+                            <label>退款金额</label>
+                            <input type="text" class="form-control refund-amount" name="refund-amount" placeholder="输入需退款金额" value="0">
                         </div>
                         <div class="form-group">
-                            <label>给买家(备注)</label>
-                            <textarea class="form-control buyer-remark" name="refund-remark" rows="5"></textarea>
-                        </div>
-                    </div>
-                    <div class="seller no">
-                        <div class="form-group">
-                            <label>给卖家(退款金额)</label>
-                            <input type="text" class="form-control seller-money" name="refund-money"
-                                   placeholder="输入需退款金额">
-                        </div>
-                        <div class="form-group">
-                            <label>给卖家(备注)</label>
-                            <textarea class="form-control seller-remark" name="refund-remark" rows="5"></textarea>
+                            <label>说明</label>
+                            <textarea class="form-control refund-remark" name="refund-remark" rows="5"></textarea>
                         </div>
                     </div>
                 </form>
@@ -261,6 +241,7 @@
             }, 'json');
             return false;
         });
+
         // 打开退款弹窗
         $('.layui-tab-content').on('click', '#refund', function () {
             layer.open({
@@ -270,143 +251,41 @@
                 content: $('.refund')
             });
         });
-        // 退款申请操作
-        var who = 1; // 默认给买家
-        var totalMoney = "{{ $content->amount }}";
-        var buyer = "{{ $content->creator_primary_user_id }}";
-        var seller = "{{ $content->gainer_primary_user_id }}";
         // 确认退款申请
         $('.refund-application-submit').click(function () {
-            var buyerMoney = $('.buyer-money').val();
-            var buyerRemark = $('.buyer-remark').val();
-            var sellerMoney = $('.seller-money').val();
-            var sellerRemark = $('.seller-remark').val();
-            var noteMessage;
+            var amount = "{{ $content->amount }}";
+            var refundAmount = $('.refund-amount').val();
+            var refundRemark = $('.refund-remark').val();
 
-            if (who == 0) {
-                if (totalMoney < eval(buyerMoney) + eval(sellerMoney)) {
-                    layer.msg('总退款金额不能大于订单总金额');
-                    return false;
-                }
-            } else if (who == 1 || who == 2) {
-                if (eval(totalMoney) < eval(buyerMoney) || eval(totalMoney) < eval(sellerMoney)) {
-                    layer.msg('退款金额不能大于订单总金额');
-                    return false;
-                }
+            if (eval(amount) < eval(refundAmount)) {
+                layer.msg('退款金额不能大于订单总金额');
+                return false;
             }
-
-            if (who == 0) {
-                if (buyerMoney == '') {
-                    layer.alert('买家退款金额不能为空');
-                    return false;
-                }
-                if (sellerMoney == '') {
-                    layer.alert('卖家退款金额不能为空');
-                    return false;
-                }
-                if (buyerRemark == '') {
-                    layer.alert('买家备注不能为空');
-                    return false;
-                }
-                if (sellerRemark == '') {
-                    layer.alert('卖家备注不能为空');
-                    return false;
-                }
-                noteMessage = '您确定</br>给买家退款: ' + buyerMoney + ' 元</br> 给卖家退款: ' + sellerMoney + ' 元?';
+            if (!refundAmount) {
+                refundAmount = 0;
             }
-
-            if (who == 1) {
-                if (buyerMoney == '') {
-                    layer.alert('买家退款金额不能为空');
-                    return false;
-                }
-                if (buyerRemark == '') {
-                    layer.alert('买家备注不能为空');
-                    return false;
-                }
-                noteMessage = '您确定给买家退款: ' + buyerMoney + ' 元吗?';
+            if (refundRemark.length == 0) {
+                layer.msg('请输入退款说明');
+                return false;
             }
-
-            if (who == 2) {
-                if (sellerMoney == '') {
-                    layer.alert('卖家退款金额不能为空');
-                    return false;
-                }
-                if (sellerRemark == '') {
-                    layer.alert('卖家备注不能为空');
-                    return false;
-                }
-                noteMessage = '您确定给卖家退款: ' + sellerMoney + ' 元吗?';
-            }
+            var noteMessage = '给发单方退款：'  + refundAmount + '元<br/>接单方将收到：' + (amount - refundAmount) + '元';
 
             layer.confirm(noteMessage, {icon: 3, title: '需要确认'}, function (index) {
                 layer.close(index);
                 $.ajax({
-                    url: '{{ route('order.platform.refund-application') }}',
+                    url: '{{ route('order.after-service.apply') }}',
                     type: 'post',
                     dataType: 'json',
-                    data: {
-                        who: who,
-                        order_id: "{{ $content->no }}",
-                        buyer_user_id: "{{ $content->creator_primary_user_id }}",
-                        buyer_money: buyerMoney,
-                        buyer_remark: buyerRemark,
-                        seller_user_id: "{{  $content->gainer_primary_user_id}}",
-                        seller_money: sellerMoney,
-                        seller_remark: sellerRemark
-                    },
+                    data: {no: "{{ $content->no }}", amount:refundAmount, remark:refundRemark},
                     success: function (result) {
-                        layer.msg(result.message);
-                        setTimeout(function () {
+                        layer.alert(result.message, function () {
+                            layer.closeAll();
                             $("#refund-application").niftyModal("hide");
-                        }, 1000);
+                        });
                     }
                 });
             });
         });
-        // 退款给谁
-        $(".who").change(function () {
-            if ($(this).val() == 0) {
-                who = 0;
-                $('.seller').removeClass('layui-hide');
-                $('.buyer').removeClass('layui-hide');
-            }
-            if ($(this).val() == 1) {
-                who = 1;
-                $('.seller').addClass('layui-hide');
-                $('.buyer').removeClass('layui-hide');
-            }
-            if ($(this).val() == 2) {
-                who = 2;
-                $('.seller').removeClass('layui-hide');
-                $('.buyer').addClass('layui-hide');
-            }
-        });
-
-        $('.buyer-money').blur(function () {
-            refundMoneyCheck($(this).val());
-            refundCheck($(this).val())
-        });
-
-        $('.seller-money').blur(function () {
-            refundMoneyCheck();
-        });
-
-        function refundMoneyCheck(money) {
-            if (eval(money) > eval(totalMoney)) {
-                layer.alert('可退款金额不能大于订单金额');
-            }
-        }
-
-        function refundCheck(money) {
-            if (who == 0) {
-                if (eval(money) == eval(totalMoney)) {
-                    layer.alert('如果您要将款项全退款给买家请选择"退款给买家"');
-                } else {
-                    $('.seller-money').val(totalMoney - money);
-                }
-            }
-        }
     });
 </script>
 @endsection
