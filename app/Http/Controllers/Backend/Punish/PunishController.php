@@ -41,13 +41,13 @@ class PunishController extends Controller
         $orderNo = $request->order_no;
         $fullUrl = $request->fullUrl();
 
-        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'orderNo');
-        // 导出
-        if ($request->export) {
-            return $this->export($filters);
-        }
+        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'orderNo');      
         // 模型里面有筛选
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
+        // 导出
+        if ($request->export && $punishes->count() > 0) {
+            return $this->export($filters);
+        }
 
         return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'orderNo', 'fullUrl'));
     }
@@ -425,70 +425,76 @@ class PunishController extends Controller
      */
     public function export($filters)
     {
-        $punishes = PunishOrReward::filter($filters)->latest('created_at')->withTrashed()->get();
-        // 标题
-        $title = [
-            '序号',
-            '订单号',
-            '关联订单号',
-            '用户id',
-            '类型',
-            '状态',
-            '罚款金额',
-            '最后期限',
-            '初始权重',
-            '奖惩权重',
-            '最终权重',
-            '生效时间',
-            '截止时间',
-            '奖励金额',
-            '凭证照片',
-            '备注',
-            '商家确认',
-            '创建时间',
-            '更新时间',
-            '删除时间',
-        ];
-        // 数组分割,反转
-        $chunkPunishes = array_chunk(array_reverse($punishes->toArray()), 1000);
+        try {
+            $punishes = PunishOrReward::filter($filters)->latest('created_at')->withTrashed()->get();
 
-        Excel::create(iconv('UTF-8', 'gbk', '奖惩情况'), function ($excel) use ($chunkPunishes, $title) {
+            // 标题
+            $title = [
+                '序号',
+                '订单号',
+                '关联订单号',
+                '用户id',
+                '类型',
+                '状态',
+                '罚款金额',
+                '最后期限',
+                '初始权重',
+                '奖惩权重',
+                '最终权重',
+                '生效时间',
+                '截止时间',
+                '奖励金额',
+                '凭证照片',
+                '备注',
+                '商家确认',
+                '创建时间',
+                '更新时间',
+                '删除时间',
+            ];
+            // 数组分割,反转
+            $chunkPunishes = array_chunk(array_reverse($punishes->toArray()), 1000);
 
-            foreach ($chunkPunishes as $chunkPunish) {
-                // 内容
-                $datas = [];
-                foreach ($chunkPunish as $key => $punish) {
-                    $datas[] = [
-                        $punish['id'],
-                        $punish['no'],
-                        $punish['order_no'],
-                        $punish['user_id'],
-                        $punish['type'],
-                        $punish['status'],
-                        $punish['sub_money'] ?? '--',
-                        $punish['deadline'] ?? '--',
-                        $punish['before_weight_value'] ?? '--',
-                        $punish['ratio'] ?? '--',
-                        $punish['after_weight_value'] ?? '--',
-                        $punish['start_time'] ?? '--',
-                        $punish['end_time'] ?? '--',
-                        $punish['add_money'] ?? '--',
-                        json_encode($punish['voucher']) ?? '--',
-                        $punish['remark'] ?? '--',
-                        $punish['confirm'] ?? '--',
-                        $punish['created_at'] ?? '--',
-                        $punish['updated_at'] ?? '--',
-                        $punish['deleted_at'] ?? '--',
-                    ];
+            Excel::create(iconv('UTF-8', 'gbk', '奖惩情况'), function ($excel) use ($chunkPunishes, $title) {
+
+                foreach ($chunkPunishes as $chunkPunish) {
+                    // 内容
+                    $datas = [];
+                    foreach ($chunkPunish as $key => $punish) {
+                        $datas[] = [
+                            $punish['id'],
+                            $punish['no'],
+                            $punish['order_no'],
+                            $punish['user_id'],
+                            $punish['type'],
+                            $punish['status'],
+                            $punish['sub_money'] ?? '--',
+                            $punish['deadline'] ?? '--',
+                            $punish['before_weight_value'] ?? '--',
+                            $punish['ratio'] ?? '--',
+                            $punish['after_weight_value'] ?? '--',
+                            $punish['start_time'] ?? '--',
+                            $punish['end_time'] ?? '--',
+                            $punish['add_money'] ?? '--',
+                            json_encode($punish['voucher']) ?? '--',
+                            $punish['remark'] ?? '--',
+                            $punish['confirm'] ?? '--',
+                            $punish['created_at'] ?? '--',
+                            $punish['updated_at'] ?? '--',
+                            $punish['deleted_at'] ?? '--',
+                        ];
+                    }
+                    // 将标题加入到数组
+                    array_unshift($datas, $title);
+                    // 每页多少数据
+                    $excel->sheet("页数", function ($sheet) use ($datas) {
+                        $sheet->rows($datas);             
+                    });
                 }
-                // 将标题加入到数组
-                array_unshift($datas, $title);
-                // 每页多少数据
-                $excel->sheet("页数", function ($sheet) use ($datas) {
-                    $sheet->rows($datas);             
-                });
-            }
-        })->export('xls');
+            })->export('xls');
+            
+        } catch (Exception $e) {
+            
+        }
     }
 
     /**
