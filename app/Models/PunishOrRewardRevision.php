@@ -8,7 +8,7 @@ class PunishOrRewardRevision extends Model
 {
     public $timestamps = true;
 
-	protected $fillable = ['punish_or_reward_id', 'punish_or_reward_no', 'order_no', 'user_name', 'operate_style', 'before_value', 'after_value', 'detail'];
+	protected $fillable = ['punish_or_reward_id', 'punish_or_reward_no', 'order_no', 'admin_user_name', 'operate_style', 'before_value', 'after_value', 'detail'];
 
 	public static function scopeFilter($query, $filters = [])
 	{

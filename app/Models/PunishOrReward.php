@@ -57,7 +57,7 @@ class PunishOrReward extends Model
                     'order_no' => $this->order_no,
                     'before_value' => array_get($this->originalData, $key),
                     'after_value' => $this->updatedData[$key],
-                    'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                    'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
                     'created_at' => new \DateTime(),
                     'updated_at' => new \DateTime(),
                 );
@@ -100,7 +100,7 @@ class PunishOrReward extends Model
                 'order_no' => $this->order_no,
                 'before_value' => null,
                 'after_value' => $this->{self::CREATED_AT},
-                'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
             );
@@ -126,7 +126,7 @@ class PunishOrReward extends Model
                 'order_no' => $this->order_no,
                 'before_value' => null,
                 'after_value' => $this->{$this->getDeletedAtColumn()},
-                'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
             );
