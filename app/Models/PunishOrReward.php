@@ -13,10 +13,10 @@ class PunishOrReward extends Model
 
     public $timestamps = true;
 
-    protected $fillable = ['user_id', 'order_id', 'sub_money', 'deadline', 'status', 'remark', 'order_no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time'];
+    protected $fillable = ['user_id', 'order_no', 'sub_money', 'deadline', 'status', 'remark', 'no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time'];
 
     protected $keepRevisionOf = array(
-        'user_id', 'order_id', 'sub_money', 'deadline', 'status', 'remark', 'order_no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time', 'deleted_at'
+        'user_id', 'order_no', 'sub_money', 'deadline', 'status', 'remark', 'no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time', 'deleted_at'
     );
 
     protected $dates = ['deleted_at'];
@@ -53,8 +53,8 @@ class PunishOrReward extends Model
                 $revisions[] = array(
                     'punish_or_reward_id' => $this->getKey(),
                     'operate_style' => $key,
+                    'punish_or_reward_no' => $this->no,
                     'order_no' => $this->order_no,
-                    'order_id' => $this->order_id,
                     'before_value' => array_get($this->originalData, $key),
                     'after_value' => $this->updatedData[$key],
                     'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
@@ -96,8 +96,8 @@ class PunishOrReward extends Model
             $revisions[] = array(
                 'punish_or_reward_id' => $this->getKey(),
                 'operate_style' => self::CREATED_AT,
+                'punish_or_reward_no' => $this->no,
                 'order_no' => $this->order_no,
-                'order_id' => $this->order_id,
                 'before_value' => null,
                 'after_value' => $this->{self::CREATED_AT},
                 'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
@@ -122,8 +122,8 @@ class PunishOrReward extends Model
             $revisions[] = array(
                 'punish_or_reward_id' => $this->getKey(),
                 'operate_style' => $this->getDeletedAtColumn(),
+                'punish_or_reward_no' => $this->no,
                 'order_no' => $this->order_no,
-                'order_id' => $this->order_id,
                 'before_value' => null,
                 'after_value' => $this->{$this->getDeletedAtColumn()},
                 'user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
@@ -144,7 +144,7 @@ class PunishOrReward extends Model
 
     public function order()
     {
-    	return $this->belongsTo(Order::Class, 'order_id', 'no');
+    	return $this->belongsTo(Order::Class, 'order_no', 'no');
     }
 
     public function userAmountFlows()
@@ -164,9 +164,9 @@ class PunishOrReward extends Model
             $query->where('type', $filters['type']);
         }
 
-        if (is_numeric($filters['no'])) {
+        if (is_numeric($filters['orderNo'])) {
 
-            $query->where('order_id', $filters['no']);
+            $query->where('order_no', $filters['orderNo']);
         }
 
         if (is_numeric($filters['status'])) {
@@ -200,7 +200,7 @@ class PunishOrReward extends Model
     public static function rules()
     {
     	return [
-    		'order_id' => 'required',
+    		'order_no' => 'required',
     		'user_id' => 'required|numeric',
     	];
     }

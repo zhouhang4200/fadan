@@ -39,7 +39,7 @@
                                         <input type="text" class="layui-input" value="{{ old('endDate') ?: $endDate }}"  name="endDate" id="test2" placeholder="结束时间">
                                     </div>
                                     <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('no') ?: $no }}"  name="order_id" id="" placeholder="输入关联订单号">
+                                        <input type="text" class="layui-input" value="{{ old('orderNo') ?: $orderNo }}"  name="order_no" id="" placeholder="输入关联订单号">
                                     </div>
 
                                     <div class="layui-input-inline" >
@@ -125,8 +125,8 @@
                                     @forelse($punishes as $punish)
                                         <tr>
                                             <td>{{ $punish->id }}</td>
+                                            <td>{{ $punish->no }}</td>
                                             <td>{{ $punish->order_no }}</td>
-                                            <td>{{ $punish->order_id }}</td>
                                             <td>{{ $punish->user_id }}</td>
                                             <td>{{ config('punish.type')[$punish->type] }}</td>
                                             <td>{{ config('punish.status')[$punish->status] }}</td>

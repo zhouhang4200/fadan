@@ -55,13 +55,13 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">订单号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="order_no" lay-verify="required" value="{{ $punish->order_no }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                            <input type="text" name="no" lay-verify="required" value="{{ $punish->no }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">关联订单号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="order_id" lay-verify="required" value="{{ $punish->order_id }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                            <input type="text" name="order_no" lay-verify="required" value="{{ $punish->order_no }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -81,7 +81,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">罚款金额</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="sub_money" lay-verify="required" value="{{ number_format($punish->sub_money, 2) ?? '--' }}" autocomplete="off" placeholder="" class="layui-input">
+                                            <input type="text" name="sub_money" lay-verify="required" value="{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}" autocomplete="off" placeholder="" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -124,7 +124,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">奖励金额</label>
                                         <div class="layui-input-block">
-                                            <input type="text" class="layui-input" lay-verify="required" value="{{ number_format($punish->add_money, 2) ?? '--' }}" name="add_money"  placeholder="">
+                                            <input type="text" class="layui-input" lay-verify="required" value="{{ $punish->add_money ? number_format($punish->add_money, 2) : '--' }}" name="add_money"  placeholder="">
                                         </div>
                                     </div>                           
 

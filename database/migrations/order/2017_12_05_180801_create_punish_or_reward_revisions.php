@@ -16,8 +16,8 @@ class CreatePunishOrRewardRevisions extends Migration
         Schema::create('punish_or_reward_revisions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('punish_or_reward_id')->unsigned()->comment('对应表的id');
-            $table->string('order_no')->comment('订单号');
-            $table->string('order_id')->comment('关联订单号');
+            $table->string('no')->comment('订单号');
+            $table->string('order_no')->comment('关联订单号');
             $table->string('user_name')->comment('操作人');
             $table->string('operate_style')->comment('操作方式');
             $table->string('before_value')->comment('更新前的值');

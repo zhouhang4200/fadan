@@ -201,7 +201,7 @@
         <div class="layui-form-item">
             <label  class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-            <input id="add" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input id="add" type="text" name="order_no" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -251,7 +251,7 @@
         <div class="layui-form-item">
             <label  class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-            <input id="sub" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input id="sub" type="text" name="order_no" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -301,7 +301,7 @@
         <div class="layui-form-item">
             <label  class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-            <input id="add-weight" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input id="add-weight" type="text" name="order_no" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -367,7 +367,7 @@
         <div class="layui-form-item">
             <label  class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-            <input id="sub-weight" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input id="sub-weight" type="text" name="order_no" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -433,7 +433,7 @@
         <div class="layui-form-item">
             <label  class="layui-form-label">订单号</label>
             <div class="layui-input-block">
-            <input id="forbidden" type="text" name="order_id" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input id="forbidden" type="text" name="order_no" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 

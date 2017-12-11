@@ -15,8 +15,8 @@ class CreateWeightRecordsTable extends Migration
     {
         Schema::create('weight_records', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('order_no')->comment('订单号');
-            $table->string('order_id')->comment('关联订单号');
+            $table->string('no')->comment('订单号');
+            $table->string('order_no')->comment('关联订单号');
             $table->integer('user_id')->comment('用户id');
             $table->integer('before_weight_value')->comment('用户扣除和增加之前的权重值');
             $table->tinyInteger('ratio')->comment('扣除或增加权重的系数，正负数，如-10，即为-10*0.01*权重值');

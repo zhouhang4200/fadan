@@ -38,10 +38,10 @@ class PunishController extends Controller
         $type = $request->type;
         $status = $request->status;
         $userId = $request->user_id;
-        $no = $request->order_id;
+        $orderNo = $request->order_no;
         $fullUrl = $request->fullUrl();
 
-        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'no');
+        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'orderNo');
         // 导出
         if ($request->export) {
             return $this->export($filters);
@@ -49,7 +49,7 @@ class PunishController extends Controller
         // 模型里面有筛选
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
 
-        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'no', 'fullUrl'));
+        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'orderNo', 'fullUrl'));
     }
 
     /**
@@ -86,7 +86,7 @@ class PunishController extends Controller
 
     //     $data['deadline'] = $request->deadline . ' 23:59:59';
 
-    //     $data['order_no'] = $orderNo;
+    //     $data['no'] = $orderNo;
 
     //     $this->validate($request, PunishOrReward::rules(), PunishOrReward::messages());
 
@@ -105,15 +105,15 @@ class PunishController extends Controller
      * 创建订单号
      * @return string
      */
-    public static function createOrderId()
-    {
-        // 14位长度当前的时间 20150709105750
-        $orderdate = date('YmdHis');
-        // 今日订单数量
-        $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
+    // public static function createOrderId()
+    // {
+    //     // 14位长度当前的时间 20150709105750
+    //     $orderdate = date('YmdHis');
+    //     // 今日订单数量
+    //     $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
 
-        return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
-    }
+    //     return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
+    // }
 
     /**
      * 奖惩详细
@@ -273,7 +273,7 @@ class PunishController extends Controller
             //奖励金额撤销
             if ($punish->type == 1) {
                 // 撤销奖励时扣款
-                $bool = Asset::handle(new Consume($punish->add_money, 3, $punish->order_no, '奖励撤销扣款', $punish->user_id));
+                $bool = Asset::handle(new Consume($punish->add_money, 3, $punish->no, '奖励撤销扣款', $punish->user_id));
 
                 if ($bool) {
                     // 如果商户没确认，撤销同时，改为撤销状态并软删除该条记录
@@ -287,8 +287,8 @@ class PunishController extends Controller
                             [
                                 'punish_or_reward_id' => $punish->id,
                                 'operate_style' => 'status',
+                                'no' => $punish->no,
                                 'order_no' => $punish->order_no,
-                                'order_id' => $punish->order_id,
                                 'before_value' => 2,
                                 'after_value' => 11,
                                 'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -298,8 +298,8 @@ class PunishController extends Controller
                             [
                                 'punish_or_reward_id' => $punish->id,
                                 'operate_style' => 'confirm',
+                                'no' => $punish->no,
                                 'order_no' => $punish->order_no,
-                                'order_id' => $punish->order_id,
                                 'before_value' => 0,
                                 'after_value' => 1,
                                 'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -321,8 +321,8 @@ class PunishController extends Controller
                             [
                                 'punish_or_reward_id' => $punish->id,
                                 'operate_style' => 'status',
+                                'no' => $punish->no,
                                 'order_no' => $punish->order_no,
-                                'order_id' => $punish->order_id,
                                 'before_value' => 2,
                                 'after_value' => 11,
                                 'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -375,9 +375,9 @@ class PunishController extends Controller
     {
         $startDate = $request->startDate;
         $endDate = $request->endDate;
-        $orderId = $request->order_id;
+        $orderNo = $request->order_no;
         // 生成查询数组
-        $filters = compact('startDate', 'endDate', 'orderId');
+        $filters = compact('startDate', 'endDate', 'orderNo');
 
         $punishRecords = PunishOrRewardRevision::filter($filters)->paginate(config('backend.page'));
 
@@ -408,14 +408,14 @@ class PunishController extends Controller
 
         // if ($orderId) {
 
-        //     $punishIds = PunishOrReward::where('order_id', $orderId)->pluck('id');
+        //     $punishIds = PunishOrReward::where('order_no', $orderId)->pluck('id');
 
         //     $query->whereIn('revisionable_id', $punishIds);
         // }
                      
         // $punishRecords = $query->latest('created_at')->paginate(config('backend.page'));
                
-        return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderId'));
+        return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderNo'));
     }
 
     /**
@@ -460,8 +460,8 @@ class PunishController extends Controller
                 foreach ($chunkPunish as $key => $punish) {
                     $datas[] = [
                         $punish['id'],
+                        $punish['no'],
                         $punish['order_no'],
-                        $punish['order_id'],
                         $punish['user_id'],
                         $punish['type'],
                         $punish['status'],
@@ -501,7 +501,7 @@ class PunishController extends Controller
         try {
             $order = Order::find($id);
 
-            $punishRecords = PunishOrRewardRevision::where('order_id', $order->no)->get();
+            $punishRecords = PunishOrRewardRevision::where('order_no', $order->no)->get();
 
             return view('backend.punish.detail', compact('punishRecords'));
 

@@ -8,7 +8,7 @@ class PunishOrRewardRevision extends Model
 {
     public $timestamps = true;
 
-	protected $fillable = ['punish_or_reward_id', 'order_no', 'order_id', 'user_name', 'operate_style', 'before_value', 'after_value', 'detail'];
+	protected $fillable = ['punish_or_reward_id', 'punish_or_reward_no', 'order_no', 'user_name', 'operate_style', 'before_value', 'after_value', 'detail'];
 
 	public static function scopeFilter($query, $filters = [])
 	{
@@ -27,9 +27,9 @@ class PunishOrRewardRevision extends Model
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate'] . " 23:59:59"]); 
         }
 
-        if ($filters['orderId']) {
+        if ($filters['orderNo']) {
 
-            $query->where('order_id', $filters['orderId']);
+            $query->where('order_no', $filters['orderNo']);
         }
 
         return $query->latest('created_at');

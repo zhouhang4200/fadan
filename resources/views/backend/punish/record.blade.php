@@ -40,7 +40,7 @@
                                     </div>
 
                                     <div class="layui-input-inline" >
-                                        <input type="text" class="layui-input" value="{{ old('orderId') ?: $orderId }}"  name="order_id" id="" placeholder="输入关联订单号">
+                                        <input type="text" class="layui-input" value="{{ old('orderNo') ?: $orderNo }}"  name="order_no" id="" placeholder="输入关联订单号">
                                     </div>
 
                                     <div class="layui-input-inline" >
@@ -56,7 +56,7 @@
                                     <thead>
                                         <tr>
                                             <th>序号</th>
-                                            <th>单号</th>
+                                            <th>奖惩单号</th>
                                             <th>关联订单号</th>
                                             <th>操作管理员</th>
                                             <th>类型</th>
@@ -68,8 +68,8 @@
                                         @forelse($punishRecords as $punishRecord)
                                             <tr>
                                                 <td>{{ $punishRecord->id }}</td>
+                                                <td>{{ $punishRecord->punish_or_reward_no }}</td>
                                                 <td>{{ $punishRecord->order_no }}</td>
-                                                <td>{{ $punishRecord->order_id }}</td>
                                                 <td>{{ $punishRecord->user_name ?? '系统' }}</td>
                                                 <td>
                                                     @if($punishRecord->operate_style == 'created_at')
@@ -105,7 +105,7 @@
                         </div>
                     @if ($punishRecords)
                         {!! $punishRecords->appends([
-                            'orderId' => $orderId,
+                            'orderNo' => $orderNo,
                             'startDate' => $startDate,
                             'endDate' => $endDate,
                         ])->render() !!}

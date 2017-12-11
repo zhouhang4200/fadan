@@ -15,8 +15,8 @@ class CreatePunishOrRewardsTable extends Migration
     {
         Schema::create('punish_or_rewards', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('order_no')->comment('订单号');
-            $table->string('order_id')->comment('关联订单号');
+            $table->string('no')->comment('订单号');
+            $table->string('order_no')->comment('关联订单号');
             $table->integer('user_id')->comment('用户id');
             $table->tinyInteger('type')->comment('类型,1,奖款,2,罚款,3加权重,4，减权重，5禁止接单');
             $table->tinyInteger('status')->default(0)->comment('状态,0，默认状态，1,奖励到账,2,奖励未到账,3未交罚款,4，已交罚款，5已加权重，6已减权重，7,申诉中，8，撤销');

@@ -56,7 +56,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">订单号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="order_id" lay-verify="required" value="{{ old('order_id') ?: $punish->order_id }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                            <input type="text" name="order_no" lay-verify="required" value="{{ old('order_no') ?: $punish->order_no }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">

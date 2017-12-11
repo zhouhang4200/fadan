@@ -35,8 +35,7 @@ class OrderOperationController extends Controller
     public function receiving(Request $request)
     {
         // 惩罚-》有罚单没交
-        $deadline = PunishOrReward::where('user_id', Auth::user()
-                ->getPrimaryUserId())
+        $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())
                 ->where('type', 2)
                 ->whereIn('status', ['3', '9'])
                 ->orderBy('deadline')

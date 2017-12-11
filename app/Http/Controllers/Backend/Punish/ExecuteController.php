@@ -33,9 +33,9 @@ class ExecuteController extends Controller
 	        $data['status'] = 3;
 	    	$data['sub_money'] = $request->data['money'];
 	    	$data['remark'] = $request->data['remark'];
-	        $data['order_no'] = static::createOrderId();
-	    	$data['order_id'] = $request->data['order_id'];
-	    	$order = Order::where('no', $data['order_id'])->first();
+	        $data['no'] = static::createOrderId();
+	    	$data['order_no'] = $request->data['order_no'];
+	    	$order = Order::where('no', $data['order_no'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	        $data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
@@ -82,9 +82,9 @@ class ExecuteController extends Controller
 	        $data['status'] = 1;
 	    	$data['add_money'] = $request->data['money'];
 	    	$data['remark'] = $request->data['remark'];
-	        $data['order_no'] = static::createOrderId();
-	    	$data['order_id'] = $request->data['order_id'];
-	    	$order = Order::where('no', $data['order_id'])->first();
+	        $data['no'] = static::createOrderId();
+	    	$data['order_no'] = $request->data['order_no'];
+	    	$order = Order::where('no', $data['order_no'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
             // 判断订单存不存在
@@ -96,7 +96,7 @@ class ExecuteController extends Controller
 
 	        if ($punish) {
 
-	        	$bool = Asset::handle(new Recharge($punish->add_money, 3, $punish->order_no, '奖励加款', $punish->user_id));
+	        	$bool = Asset::handle(new Recharge($punish->add_money, 3, $punish->no, '奖励加款', $punish->user_id));
                 // 状态改为已加钱
 	        	if ($bool) {
 	        		$punish->status = 2;
@@ -133,9 +133,9 @@ class ExecuteController extends Controller
 	        $data['status'] = 6;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
-	        $data['order_no'] = static::createOrderId();
-	    	$data['order_id'] = $request->data['order_id'];
-	    	$order = Order::where('no', $data['order_id'])->first();
+	        $data['no'] = static::createOrderId();
+	    	$data['order_no'] = $request->data['order_no'];
+	    	$order = Order::where('no', $data['order_no'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	    	$data['before_weight_value']= UserWeight::where('user_id', $data['user_id'])->value('weight') ?? 0;
 	    	$data['after_weight_value'] = round($data['before_weight_value'] + bcmul($data['before_weight_value'], bcdiv($request->data['ratio'], 100)));
@@ -171,9 +171,9 @@ class ExecuteController extends Controller
 	        $data['status'] = 7;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
-	        $data['order_no'] = static::createOrderId();
-	    	$data['order_id'] = $request->data['order_id'];
-	    	$order = Order::where('no', $data['order_id'])->first();
+	        $data['no'] = static::createOrderId();
+	    	$data['order_no'] = $request->data['order_no'];
+	    	$order = Order::where('no', $data['order_no'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	    	$data['before_weight_value'] = UserWeight::where('user_id', $data['user_id'])->value('weight') ?? 0;
 	    	$data['after_weight_value'] = round($data['before_weight_value'] + bcmul($data['before_weight_value'], bcdiv($request->data['ratio'], 100)));
@@ -208,9 +208,9 @@ class ExecuteController extends Controller
     	try {
     		$data['type'] = 5;
 	        $data['status'] = 0;
-    		$data['order_no'] = static::createOrderId();
-	    	$data['order_id'] = $request->data['order_id'];
-	    	$order = Order::where('no', $data['order_id'])->first();
+    		$data['no'] = static::createOrderId();
+	    	$data['order_no'] = $request->data['order_no'];
+	    	$order = Order::where('no', $data['order_no'])->first();
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	    	$data['deadline'] = Carbon::now()->addDays(1)->endOfDay()->toDateTimeString();
 	    	$data['remark'] = $request->data['remark'];
@@ -249,8 +249,8 @@ class ExecuteController extends Controller
             	[
                 	'punish_or_reward_id' => $punish->id,
                     'operate_style' => 'status',
+                    'punish_or_reward_no' => $punish->no,
                     'order_no' => $punish->order_no,
-                    'order_id' => $punish->order_id,
                     'before_value' => 9,
                     'after_value' => 11,
                     'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -260,8 +260,8 @@ class ExecuteController extends Controller
             	[
                 	'punish_or_reward_id' => $punish->id,
                     'operate_style' => 'confirm',
+                    'punish_or_reward_no' => $punish->no,
                     'order_no' => $punish->order_no,
-                    'order_id' => $punish->order_id,
                     'before_value' => 0,
                     'after_value' => 1,
                     'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -297,7 +297,7 @@ class ExecuteController extends Controller
                     return response()->json(['code' => 2, 'message' => '账户余额不足，提醒他充值!']);
                 }
                 // 扣款
-	    		$bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));
+	    		$bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->no, '违规扣款', $punish->user_id));
 
                 if ($bool) {
                     // PunishOrReward::where('id', $request->data['id'])->update(['status' => 10, 'confirm' => 1]);
@@ -309,8 +309,8 @@ class ExecuteController extends Controller
                     	[
                         	'punish_or_reward_id' => $punish->id,
     	                    'operate_style' => 'status',
-    	                    'order_no' => $punish->order_no,
-    	                    'order_id' => $punish->order_id,
+    	                    'punish_or_reward_no' => $punish->no,
+                            'order_no' => $punish->order_no,
     	                    'before_value' => 9,
     	                    'after_value' => 10,
     	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -320,8 +320,8 @@ class ExecuteController extends Controller
                     	[
                         	'punish_or_reward_id' => $punish->id,
     	                    'operate_style' => 'confirm',
-    	                    'order_no' => $punish->order_no,
-    	                    'order_id' => $punish->order_id,
+    	                    'punish_or_reward_no' => $punish->no,
+                            'order_no' => $punish->order_no,
     	                    'before_value' => 0,
     	                    'after_value' => 1,
     	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -354,8 +354,8 @@ class ExecuteController extends Controller
                 	[
                     	'punish_or_reward_id' => $punish->id,
 	                    'operate_style' => 'status',
-	                    'order_no' => $punish->order_no,
-	                    'order_id' => $punish->order_id,
+	                    'punish_or_reward_no' => $punish->no,
+                        'order_no' => $punish->order_no,
 	                    'before_value' => 9,
 	                    'after_value' => 10,
 	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
@@ -365,8 +365,8 @@ class ExecuteController extends Controller
                 	[
                     	'punish_or_reward_id' => $punish->id,
 	                    'operate_style' => 'confirm',
-	                    'order_no' => $punish->order_no,
-	                    'order_id' => $punish->order_id,
+	                    'punish_or_reward_no' => $punish->no,
+                        'order_no' => $punish->order_no,
 	                    'before_value' => 0,
 	                    'after_value' => 1,
 	                    'user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',

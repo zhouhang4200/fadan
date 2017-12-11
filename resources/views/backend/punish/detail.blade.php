@@ -92,8 +92,8 @@
                                         @forelse($punishRecords as $punishRecord)
                                             <tr>
                                                 <td>{{ $punishRecord->id }}</td>
+                                                <td>{{ $punishRecord->punish_or_reward_no }}</td>
                                                 <td>{{ $punishRecord->order_no }}</td>
-                                                <td>{{ $punishRecord->order_id }}</td>
                                                 <td>{{ $punishRecord->user_name ?? '系统' }}</td>
                                                 <td>
                                                     @if($punishRecord->operate_style == 'created_at')

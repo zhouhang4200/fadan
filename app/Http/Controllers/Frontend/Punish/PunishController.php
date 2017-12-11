@@ -49,7 +49,7 @@ class PunishController extends Controller
                     return response()->json(['code' => 2, 'message' => '账户余额不足，请充值!']);
                 }
 
-    		    $bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->order_no, '违规扣款', $punish->user_id));
+    		    $bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->no, '违规扣款', $punish->user_id));
 
                 if ($bool) {
                     PunishOrReward::where('id', $request->id)->update(['status' => 4, 'confirm' => 1]);
