@@ -69,6 +69,7 @@
                                             <td>{{ $dayData->order_market }}</td>
                                             <td>{{ $dayData->created_at }}</td>
                                             <td>{{ $dayData->updated_at }}</td>
+                                        </tr>
                                     @empty
                                     @endforelse
                                 </tbody>
