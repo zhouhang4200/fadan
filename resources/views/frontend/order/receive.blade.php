@@ -53,6 +53,7 @@
             </div>
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
+                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
             </div>
         </div>
     </form>
@@ -93,9 +94,11 @@
     </table>
 
     {{ $orders->appends([
-    'service_id' => $serviceId,
-    'game_id' => $gameId,
-    'status' => $status,
+        'service_id' => $serviceId,
+        'game_id' => $gameId,
+        'status' => $status,
+        'start_date' => $startDate,
+        'end_date' => $endDate,
     ])->links() }}
 @endsection
 
