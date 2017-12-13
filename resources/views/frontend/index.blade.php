@@ -25,7 +25,7 @@
         margin-top: 15px;
     }
     .layui-form-item{
-        margin: 0;
+        margin: 5;
     }
     .info-left .layui-form-item  .layui-inline .layui-input-inline{
         width: auto;
@@ -82,8 +82,13 @@
 @endsection
 
 @section('main')
-<div class="user-info">
-    <div src="" alt="" class="info-img fl"></div>
+<div class="user-info" style="height: 230px;">
+    <div alt="" class="info-img fl"  style="float:left;width:80px;height:80px;background-image: url('{{ $parentUser->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;">
+        @if(Auth::user()->parent_id == 0)
+            <button class="layui-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:85px">修改资料</button>
+        @endif
+            <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;margin-top:5px;margin-left:0px">修改头像</button>
+    </div>
     <div class="info-left">
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -182,7 +187,164 @@
         </div>
     </div>
 </div>
+<div id="persional" style="display: none; padding: 10px">
+    <form class="layui-form" method="" action="">
+        <div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">昵称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="nick_name" lay-verify="required|length" value="{{ $parentUser->nick_name }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">年龄:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="age" lay-verify="required|length" value="{{ $parentUser->age }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">QQ:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="qq" lay-verify="required|length" value="{{ $parentUser->qq }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="wechat" lay-verify="required|length" value="{{ $parentUser->wechat }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">电话:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="phone" lay-verify="required|length" value="{{ $parentUser->phone }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">旺旺号:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="wangwang" lay-verify="required|length" value="{{ $parentUser->wangwang }}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button type="hidden" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update-persional" style="margin-left: 180px">提交</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="voucher" style="display: none; padding: 10px">
+    <form class="layui-form" method="" action="">
+        <div class="layui-upload">
+            <button type="button" class="layui-btn layui-btn-normal" id="test1">上传图片</button>
+            <div class="layui-upload-list">
+            <img class="layui-upload-img" id="demo1" style="width:200px;height:200px">
+                <p id="demoText"></p>
+            </div>
+        </div> 
+        <input type="hidden" name="voucher" id="voucher-img" value="">
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <button type="hidden" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update-voucher">提交</button>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('js')
+<script>
+    layui.use(['form', 'table', 'upload'], function(){
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var layer = layui.layer;
+        var upload = layui.upload;
+        // 验证
+        form.verify({
+            length: [
+                /^\S{1,30}$/
+                ,'长度超出允许范围'
+            ]
+            ,pass: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ] 
+        }); 
+
+  
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: "{{ route('users.upload-images') }}"
+            ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+              obj.preview(function(index, file, result){
+                $('#demo1').attr('src', result); //图片链接（base64）
+              });
+            }
+            ,done: function(res){
+              if(res.code == 2){
+                return layer.msg('上传失败');
+              }
+              $('#voucher-img').val(res.path);
+            }
+        });
+        // 修改资料
+        $('#persional-user').on('click', function () {
+            layer.open({
+                type: 1,
+                shade: 0.2,
+                title: '修改资料',
+                area: ['450px', '450px'],
+                content: $('#persional')      
+            });
+        });
+
+        form.on('submit(update-persional)', function(data) {
+            $.post("{{ route('users.update-persional') }}", {data:data.field}, function (result) {
+                if (result.code == 1) {
+                    layer.msg(result.message, {
+                        time:1500,
+                        icon:6
+                    })
+                } else {
+                    layer.msg(result.message, {
+                        time:1500,
+                        icon:5
+                    })
+                }
+            });
+            layer.closeAll();
+            return false;
+        });
+         // 修改头像
+        $('#voucher-user').on('click', function () {
+            layer.open({
+                type: 1,
+                shade: 0.2,
+                title: '修改头像',
+                area: ['250px', '370px'],
+                content: $('#voucher')      
+            });
+        });
+
+        form.on('submit(update-voucher)', function(data) {
+            $.post("{{ route('users.update-voucher') }}", {data:data.field}, function (result) {
+                if (result.code == 1) {
+                    layer.msg(result.message, {
+                        time:1500,
+                        icon:6
+                    })
+                } else {
+                    layer.msg(result.message, {
+                        time:1500,
+                        icon:5
+                    })
+                }
+            });
+            layer.closeAll();
+            return false;
+        });
+    });
+</script>
 @endsection

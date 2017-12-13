@@ -18,6 +18,7 @@ class AddColumnsToUsers extends Migration
             $table->tinyInteger('age')->unsigned()->nullable()->after('nick_name')->comment('年龄');
             $table->string('wechat')->nullable()->after('age')->comment('微信');
             $table->string('wangwang')->nullable()->after('wechat')->comment('旺旺号');
+            $table->string('voucher')->nullable()->after('wanwang')->comment('头像');
         });
     }
 

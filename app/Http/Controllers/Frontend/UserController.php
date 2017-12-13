@@ -23,11 +23,8 @@ class UserController extends Controller
         if ($user->parent_id == 0) {
 
             $children = $user->children;
-
             $name = $request->name;
-
             $startDate = $request->startDate;
-
             $endDate = $request->endDate;
 
             $filters = compact('name', 'startDate', 'endDate');
@@ -61,13 +58,9 @@ class UserController extends Controller
             $this->validate($request, User::sonRules(), User::messages());
 
             $data = $request->all();
-
             $data['password'] = bcrypt($request->password);
-
             $data['email'] = Auth::id() . 'email' . rand(1, 100000000) . '@qq.com';
-
             $data['parent_id'] = Auth::id();
-
             $data['type'] = $request->type;
 
             $res = User::create($data);
@@ -129,15 +122,14 @@ class UserController extends Controller
             $newPassword = $request->password;
 
             if ($newPassword) {
-
                 $res = $user->update(['type' => $request->type, 'password' => bcrypt($newPassword)]);
 
                 if (! $res) {
-
                     return back()->withInput()->with('updateError', '修改密码失败！');
                 }
             }
             $user->update(['type' => $request->type]);
+
             return redirect(route('users.index'))->with('succ', '更新成功!');
         }
     }
@@ -155,14 +147,12 @@ class UserController extends Controller
             $user = User::find($id);
 
             $user->permissions()->detach();
-
             $bool = $user->delete();
 
             if (! $bool) {
 
                 return response()->json(['code' => '2', 'message' => '删除失败！']);
             }
-
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
     }

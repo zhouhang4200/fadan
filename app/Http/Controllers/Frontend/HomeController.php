@@ -24,12 +24,17 @@ class HomeController extends Controller
 
         $user = Auth::user();
 
-        $loginHistoryTime = LoginHistory::where('user_id', $user->id)->latest('created_at')->value('created_at');
+        if ($user->parent_id == 0) {
+            $parentUser = $user;
+        } else {
+            $parentUser = $user->parent;
+        }
 
+        $loginHistoryTime = LoginHistory::where('user_id', $user->id)->latest('created_at')->value('created_at');
         $masterId = $user->parent_id == 0 ? $user->id : $user->parent_id;
 
         $ident = RealNameIdent::where('user_id', $masterId)->first();
 
-        return view('frontend.index', compact('user', 'loginHistoryTime', 'ident'));
+        return view('frontend.index', compact('user', 'loginHistoryTime', 'ident', 'parentUser'));
     }
 }
