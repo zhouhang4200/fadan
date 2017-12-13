@@ -30,7 +30,7 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
     {
         // 退款给买家
         if ($this->refundFee > 0) {
-            if ($this->order->amount) {
+            if ($this->refundFee > $this->order->amount) {
                 throw new Exception('退款金额不能超过订单总额');
             }
 
