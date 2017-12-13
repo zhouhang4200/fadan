@@ -63,7 +63,7 @@ class UserWeightUpdate extends Command
             // 更新用户权重值
             UserWeight::where('user_id', $user)->update($weight);
 
-            // 禁止接单一天惩罚，过期了，则状态改为1,当天的最后时间
+            // 禁止接单一天惩罚，过期了，则状态改为12,当天的最后时间
             $endDayPunishes = PunishOrReward::where('user_id', $user)
                 ->where('type', 5)
                 ->where('status', 0)
@@ -90,7 +90,7 @@ class UserWeightUpdate extends Command
 
         // 取出所有减权重的过去时间为现在的
         $sunWeights = PunishOrReward::whereIn('type', ['4'])
-                ->whereIn('status', ['7', '9'])
+                ->whereIn('status', ['1', '9'])
                 ->where('deadline', $now)
                 ->get();
 
