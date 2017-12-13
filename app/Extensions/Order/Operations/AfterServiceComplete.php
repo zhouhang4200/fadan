@@ -3,6 +3,7 @@ namespace App\Extensions\Order\Operations;
 
 use Asset;
 use App\Extensions\Asset\Income;
+use App\Exceptions\OrderException as Exception;
 
 // 完成售后
 class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operation
@@ -29,6 +30,10 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
     {
         // 退款给买家
         if ($this->refundFee > 0) {
+            if ($this->order->amount) {
+                throw new Exception("Error Processing Request", 1);
+            }
+
             Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
 
             // 写多态关联

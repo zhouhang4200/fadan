@@ -45,64 +45,14 @@ use App\Models\UserWithdrawOrder;
 use App\Models\Order as OrderModel;
 use App\Models\UserReceivingUserControl;
 use App\Models\Order;
+use Log;
 
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-         // dd(KamenOrderApi::share()->fail('1148054917'));
-         // 
-        $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-        $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
-
-        $money = Order::select(\DB::raw('sum(amount) as total'))
-                ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-                ->where('status', 8)
-                ->value('total');
-        dd($money);
-        
-         dd(TmallOrderApi::getOrder(105794,103747613994411922));
-        // $time = '2017-11-09 16:32:50';
-        // $carbon = Carbon::parse($time);
-        // $bool = (new Carbon)->gte($carbon);
-        // $bool2 = (new Carbon)->lte($carbon);
-        // dd($bool2);
-        // 
-        $bool = whoCanReceiveOrder(23, 1223, 1, 12);
-
-        if ($bool) {
-            dd('yes');
-        } else {
-            dd('no');
-        }
-        // $order = OrderModel::find(2);
-
-        // dd($order->foreignOrder);
-        //
-        // $foreignOrder = ForeignOrder::find(20);
-
-        // dd($foreignOrder->order);
-
-        // $order = OrderModel::find(19524);
-
-
-        // dd($order->created_at);
-        // $carbon = new Carbon;
-
-        // $a = $carbon->diffInMinutes($order->created_at);
-        // dd($a);
-        // $this->testAsset();
-        // $this->testDaily();
-        $this->testOrder();
-        // $this->command();
-        //
-        // $app = new AppController;
-
-        // $data = $app->run('version', ['game_id' => 151]);
-
-        // dd($data);
-
-        // $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
+        Log::useDailyFiles(storage_path().'/logs/test.log');
+        Log::debug('1234');
     }
 
     public function testAsset()

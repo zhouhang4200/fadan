@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Backend\GameRepository;
 use App\Repositories\Backend\ServiceRepository;
 use League\Flysystem\Exception;
+use App\Extensions\Order\Operations\AfterServiceComplete;
 
 /**
  * Class OrderController
@@ -138,5 +139,37 @@ class PlatformController extends Controller
                 break;
         }
 
+    }
+
+    /**
+     * 处理售后
+     * @param Request $request
+     * @return mixed
+     */
+    public function afterServiceComplete(Request $request)
+    {
+        $order = OrderModel::where('no', $request->no)->first();
+
+        if (empty($order)) {
+            return response()->ajax(0, '订单不存在');
+        }
+
+        if ($order->amount < $request->amount) {
+            return response()->ajax(0, '退款金额不可大于订单总金额');
+        }
+
+        if (empty($request->remark)) {
+            return response()->ajax(0, '说明不能为空');
+        }
+
+        // 处理售后
+        try {
+            Order::handle(new AfterServiceComplete($order->no, Auth::user()->id, $request->amount, $request->remark));
+        }
+        catch (CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
     }
 }
