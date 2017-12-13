@@ -30,7 +30,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 2;
-	        $data['status'] = 3;
+	        $data['status'] = 1;
 	    	$data['sub_money'] = $request->data['money'];
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -130,7 +130,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 3;
-	        $data['status'] = 6;
+	        $data['status'] = 2;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -168,7 +168,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 4;
-	        $data['status'] = 7;
+	        $data['status'] = 1;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
