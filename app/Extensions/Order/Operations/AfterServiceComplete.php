@@ -31,7 +31,7 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
         // 退款给买家
         if ($this->refundFee > 0) {
             if ($this->order->amount) {
-                throw new Exception("Error Processing Request", 1);
+                throw new Exception('退款金额不能超过订单总额');
             }
 
             Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
