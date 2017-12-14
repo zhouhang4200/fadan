@@ -533,9 +533,20 @@
             });
         }
         function afterSales(no) {
-            $.post('{{ route('frontend.workbench.order-operation.after-sales') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.prompt({
+                formType: 2,
+                title: '请输入发起售后的原因',
+                area: ['200', '100']
+            }, function(value, index, elem){
+                $.post("{{ route('frontend.workbench.order-operation.after-sales') }}", {
+                    no:no,
+                    remark:value
+                }, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+                layer.close(index);
+            });
+
         }
         // 操作提示
         function notification(type, message) {

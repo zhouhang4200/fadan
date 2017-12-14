@@ -57,12 +57,11 @@ class IndexController extends Controller
         $searchType = $request->input('search_type', 0);
         $searchContent = $request->input('search_content');
 
-        $orders = $orderRepository->dataList($type, $searchType, $searchContent);
-
         if ($request->ajax()) {
             if (!in_array($type, ['need', 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {
                 return response()->ajax(0, '不存在的类型');
             }
+            $orders = $orderRepository->dataList($type, $searchType, $searchContent);
             return response()->json(\View::make('frontend.workbench.order-list', [
                 'type' => $type,
                 'no' => $no,
