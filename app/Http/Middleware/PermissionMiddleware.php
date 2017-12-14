@@ -23,15 +23,12 @@ class PermissionMiddleware
             if (Auth::user()->can($permission)) {
 
                 return $next($request);
-
-            } else {
-
-                if (Request::ajax()) {
-
-                    return response()->ajax(0, '您未开通相应权限！');
-                }
-                abort(403);
             }
+        }
+
+        if (Request::ajax()) {
+        
+            return response()->ajax(0, '您未开通相应权限！');
         }
 
         abort(403);

@@ -29,7 +29,6 @@
                     <div class="layui-input-inline">
                         <select name="type" lay-verify="" lay-search="">
                             <option value="">请选择类型</option>
-                            <option value="1" {{ is_numeric($type) && $type == 1 ? 'selected' : '' }}>奖励</option>
                             <option value="2" {{ is_numeric($type) && $type == 2 ? 'selected' : '' }}>罚款</option>
                             <option value="3" {{ is_numeric($type) && $type == 3 ? 'selected' : '' }}>加权重</option>
                             <option value="4" {{ is_numeric($type) && $type == 4 ? 'selected' : '' }}>减权重</option>
@@ -43,14 +42,12 @@
                         <select name="status" lay-verify="" lay-search="">
                             <option value="">请选择状态</option>
                             <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
-                            <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励未到账</option>
-                            <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>已奖励</option>
-                            <option value="3" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
-                            <option value="4" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
-                            <option value="5" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
-                            <option value="6" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
-                            <option value="7" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
-                            <option value="8" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
+                            <option value="21" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
+                            <option value="22" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
+                            <option value="31" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
+                            <option value="32" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
+                            <option value="41" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
+                            <option value="42" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
                             <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
                             <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
                             <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
@@ -102,12 +99,30 @@
                     <td>{{ $punish->order_no }}</td>
                     <td>{{ $punish->user_id }}</td>
                     <td>{{ config('punish.type')[$punish->type] }}</td>
-                    @if(in_array($punish->status, [4, 8, 10, 11]))
-                    <td style="color:#1E9FFF">{{ config('punish.status')[$punish->status] }}</td>
-                    @elseif(in_array($punish->status, [2, 6]))
-                    <td style="color:green">{{ config('punish.status')[$punish->status] }}</td>
+                    @if(in_array($punish->type, [2, 4, 5]) && in_array($punish->status, [2, 10, 11, 12]))
+                    <td style="color:#1E9FFF">
+                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
+                        {{ config('punish.status')[$punish->type . $punish->status] }}
+                        @else
+                        {{ config('punish.status')[$punish->status] }}
+                        @endif
+                    </td>
+                    @elseif($punish->type == 3 && $punish->status == 2)
+                    <td style="color:green">
+                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
+                        {{ config('punish.status')[$punish->type . $punish->status] }}
+                        @else
+                        {{ config('punish.status')[$punish->status] }}
+                        @endif
+                    </td>
                     @else
-                    <td style="color:red">{{ config('punish.status')[$punish->status] }}</td>
+                    <td style="color:red">
+                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
+                        {{ config('punish.status')[$punish->type . $punish->status] }}
+                        @else
+                        {{ config('punish.status')[$punish->status] }}
+                        @endif
+                    </td>
                     @endif
                     <td>{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}</td>
                     <td>{{ $punish->deadline ?? '--' }}</td>
@@ -123,7 +138,7 @@
                         申诉中
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['5']))
                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
-                    @elseif($punish->confirm == 0 && in_array($punish->status, ['3', '5', '7', '9']))
+                    @elseif($punish->confirm == 0 && in_array($punish->status, ['1', '9']))
                         <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
                     @elseif($punish->confirm == 0 && in_array($punish->type, ['1', '3']))
                         <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="show({{ $punish->id }})">查看</button>
@@ -164,9 +179,9 @@
                                 </div>
 
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label">类型</label>
+                                    <label class="layui-form-label">状态</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="status" lay-verify="required" value="@if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11])) {{ config('punish.status')[$punish->type . $punish->status] }} @else {{ config('punish.status')[$punish->status] }} @endif" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                     </div>
                                 </div>
                                  <div class="layui-form-item">
@@ -276,9 +291,9 @@
                                 </div>
 
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label">类型</label>
+                                    <label class="layui-form-label">状态</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="status" lay-verify="required" value="@if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11])) {{ config('punish.status')[$punish->type . $punish->status] }} @else {{ config('punish.status')[$punish->status] }} @endif" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                     </div>
                                 </div>
                                  <div class="layui-form-item">

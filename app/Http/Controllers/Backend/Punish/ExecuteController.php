@@ -30,7 +30,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 2;
-	        $data['status'] = 3;
+	        $data['status'] = 1;
 	    	$data['sub_money'] = $request->data['money'];
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -49,7 +49,7 @@ class ExecuteController extends Controller
 	        if ($punish) {
 	        	return response()->json(['code' => 1, 'message' => '成功创建一条罚单!']);
 	        }
-	        return response()->json(['code' => 2, 'message' => '罚单创建失败失败!']);
+	        return response()->json(['code' => 2, 'message' => '罚单创建失败!']);
 
     	} catch (Exception $e) {
     		
@@ -67,7 +67,7 @@ class ExecuteController extends Controller
         // 今日订单数量
         $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
 
-        return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
+        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
     }
 
     /**
@@ -130,7 +130,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 3;
-	        $data['status'] = 6;
+	        $data['status'] = 2;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -168,7 +168,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 4;
-	        $data['status'] = 7;
+	        $data['status'] = 1;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();

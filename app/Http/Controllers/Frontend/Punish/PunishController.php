@@ -52,7 +52,7 @@ class PunishController extends Controller
     		    $bool = Asset::handle(new Consume($punish->sub_money, 2, $punish->no, '违规扣款', $punish->user_id));
 
                 if ($bool) {
-                    PunishOrReward::where('id', $request->id)->update(['status' => 4, 'confirm' => 1]);
+                    PunishOrReward::where('id', $request->id)->update(['status' => 2, 'confirm' => 1]);
                 }
                 // 写多态关联
                 if (!$punish->userAmountFlows()->save(Asset::getUserAmountFlow())) {
@@ -69,7 +69,7 @@ class PunishController extends Controller
 
             } elseif ($punish->type == 4) { //如果是减权重
 
-                PunishOrReward::where('id', $request->id)->update(['status' => 8, 'confirm' => 1]);
+                PunishOrReward::where('id', $request->id)->update(['status' => 2, 'confirm' => 1]);
 
                 return response()->json(['code' => 1, 'message' => '已确认减少权重!']);
 

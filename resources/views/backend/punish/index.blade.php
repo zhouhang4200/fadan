@@ -54,7 +54,6 @@
                                     <div class="layui-input-inline" >
                                         <select name="type" lay-verify="" lay-search="">
                                             <option value="">请选择类型</option>
-                                            <option value="1" {{ is_numeric($type) && $type == 1 ? 'selected' : '' }}>奖励</option>
                                             <option value="2" {{ is_numeric($type) && $type == 2 ? 'selected' : '' }}>罚款</option>
                                             <option value="3" {{ is_numeric($type) && $type == 3 ? 'selected' : '' }}>加权重</option>
                                             <option value="4" {{ is_numeric($type) && $type == 4 ? 'selected' : '' }}>减权重</option>
@@ -66,14 +65,12 @@
                                         <select name="status" lay-verify="" lay-search="">
                                             <option value="">请选择状态</option>
                                             <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
-                                            <option value="1" {{ is_numeric($status) && $status == 1 ? 'selected' : '' }}>奖励未到账</option>
-                                            <option value="2" {{ is_numeric($status) && $status == 2 ? 'selected' : '' }}>奖励已到账</option>
-                                            <option value="3" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
-                                            <option value="4" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
-                                            <option value="5" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
-                                            <option value="6" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
-                                            <option value="7" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
-                                            <option value="8" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
+                                            <option value="21" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
+                                            <option value="22" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
+                                            <option value="31" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
+                                            <option value="32" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
+                                            <option value="41" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
+                                            <option value="42" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
                                             <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
                                             <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
                                             <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
@@ -129,7 +126,13 @@
                                             <td>{{ $punish->order_no }}</td>
                                             <td>{{ $punish->user_id }}</td>
                                             <td>{{ config('punish.type')[$punish->type] }}</td>
-                                            <td>{{ config('punish.status')[$punish->status] }}</td>
+                                            <td>
+                                            @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
+                                            {{ config('punish.status')[$punish->type . $punish->status] }}
+                                            @else
+                                            {{ config('punish.status')[$punish->status] }}
+                                            @endif
+                                            </td>
                                             <td>{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}</td>
                                             <td>{{ $punish->deadline ?? '--' }}</td>
                                             <td>{{ $punish->before_weight_value ?? '--' }}</td>
