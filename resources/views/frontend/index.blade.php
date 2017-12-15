@@ -6,7 +6,7 @@
 <style>
     .user-info{
         width: 970px;
-        height: 120px;
+        height: 200px;
         border: 1px solid #ddd;
         display: flex;
         margin: auto;
@@ -34,12 +34,12 @@
     .info-left .layui-form-item .layui-form-label{
         width: 80px;
         padding: 0;
-        height: 30px;
+        height: 25px;
         line-height: 30px;
     }
     .info-left .layui-form-item  .layui-inline{
         width: 250px;
-        height: 30px;
+        height: 25px;
         line-height: 30px;
     }
     .info-balance{
@@ -123,17 +123,57 @@
                 </div>
             </div>
         </div>
-        <div class="layui-form-item icon">
-        @if ($ident && $ident->status == 1)
-            <span><i class="layui-icon">&#xe612;</i> 已实名认证</span>
-        @elseif ($ident && $ident->status == 2)
-            <span><i class="layui-icon">&#xe612;</i> 实名认证未通过</span>
-        @elseif (! $ident && $user->parent_id == 0)
-            <span><i class="layui-icon">&#xe612;</i> <a href="{{ route('idents.create') }}">未实名认证</a></span>
-        @else
-            <span><i class="layui-icon">&#xe612;</i>未实名认证</span>
-        @endif
+        @if ($user->parent_id == 0)
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">年龄 ：</label>
+                <div class="layui-input-inline">
+                    {{ $user->age }}
+                </div>
+            </div>
+            <div class="layui-inline" style="width:270px;">
+                <label class="layui-form-label">QQ ：</label>
+                <div class="layui-input-inline" style="margin-right:0;">
+                    {{ $user->qq }}
+                </div>
+            </div>
         </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">微信 ：</label>
+                <div class="layui-input-inline">
+                    {{ $user->wechat }}
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">电话 ：</label>
+                <div class="layui-input-inline">
+                    {{ $user->phone }}
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width:270px;">
+                <label class="layui-form-label">旺旺号 ：</label>
+                <div class="layui-input-inline" style="margin-right:0;">
+                    {{ $user->wangwang }}
+                </div>
+            </div>
+            <div class="layui-inline" style="width:270px;">
+                <div class="layui-form-item icon">
+                @if ($ident && $ident->status == 1)
+                    <span><i class="layui-icon">&#xe612;</i> 已实名认证</span>
+                @elseif ($ident && $ident->status == 2)
+                    <span><i class="layui-icon">&#xe612;</i> 实名认证未通过</span>
+                @elseif (! $ident && $user->parent_id == 0)
+                    <span><i class="layui-icon">&#xe612;</i> <a href="{{ route('idents.create') }}">未实名认证</a></span>
+                @else
+                    <span><i class="layui-icon">&#xe612;</i>未实名认证</span>
+                @endif
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
     <div class="info-balance ">
         <div class="available-balance">可用余额：

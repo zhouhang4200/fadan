@@ -105,6 +105,10 @@ class UserController extends Controller
         }
         $user->voucher = $request->data['voucher'];
 
+        if (empty($user->voucher)) {
+            return response()->json(['code' => 2, 'message' => '请先上传头像!']);
+        }
+
         $bool = $user->save();
 
         if ($bool) {

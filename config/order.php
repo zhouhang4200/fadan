@@ -3,6 +3,10 @@
 use App\Extensions\Order\ForeignOrder\JdForeignOrder;
 use App\Extensions\Order\ForeignOrder\TmallForeignOrder;
 use App\Extensions\Order\ForeignOrder\KamenForeignOrder;
+use App\Extensions\Dailian\Controllers\Complete;
+use App\Extensions\Dailian\Controllers\NoReceive;
+use App\Extensions\Dailian\Controllers\OffSaled;
+use App\Extensions\Dailian\Controllers\Lock;
 
 // 订单
 return [
@@ -18,6 +22,19 @@ return [
         9 => '已接单,待分配', // 临时状态不存表
         10 => '已取消',
         11 => '未付款',
+        // 代练
+        12 => '未接单',
+        13 => '代练中',
+        14 => '待验收',
+        15 => '撤销中',
+        16 => '仲裁中',
+        17 => '异常',
+        18 => '锁定',
+        19 => '已撤销',
+        20 => '已结算',
+        21 => '已仲裁',
+        22 => '已下架',
+        23 => '强制撤销',
     ],
 
     'operation_type' => [
@@ -32,6 +49,19 @@ return [
         9  => '设置完成',
         10 => '取消订单',
         11 => '支付订单',
+        // 代练
+        12 => '完成',
+        13 => '重发',
+        14 => '上架',
+        15 => '下架',
+        16 => '锁定',
+        17 => '取消锁定',
+        18 => '撤销',
+        19 => '取消撤销',
+        20 => '申请仲裁',
+        21 => '取消仲裁',
+        22 => '编辑',
+        23 => '删除',
     ],
 
     'source' => [
@@ -56,6 +86,16 @@ return [
         'jd' => JdForeignOrder::class,
         'tmall' => TmallForeignOrder::Class,
         'kamen' => KamenForeignOrder::Class,
+    ],
+
+    // 代练
+    'dailians' => [
+        'complete' => Complete::class, // 完成 -> 已结算
+        'onSale' => NoReceive::class, // 上架 ->未接单
+        'offSale' => OffSaled::class, // 下架 -> 已下架
+        'lock' => Lock::class, // 锁定 -> 锁定
+        'unlock' => UnLock::class, // 取消锁定 -> 锁定前状态
+        'revoke' => Revoking::class, // 撤销 -> 撤销中
     ],
 
     // 订单分配下限 (最少接单人数)
