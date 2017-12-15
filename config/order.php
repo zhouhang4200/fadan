@@ -43,14 +43,6 @@ return [
         6 => '福禄API',
     ],
 
-    // 后台售后申请退款状态
-    'after_service' => [
-        1 => '待审核',
-        2 => '审核通过',
-        3 => '审核拒绝',
-        4 => '完成退款',
-    ],
-
     // 外部订单
     'parsers' => [
         'jd' => JdForeignOrder::class,

@@ -27,7 +27,7 @@
                             <li class="layui-this" lay-id="add">奖惩列表</li>
                         </ul>
 
-                        <div class="layui-tab-content">                      
+                        <div class="layui-tab-content">
                         <form class="layui-form" method="" action="">
                             <div class="layui-input-inline" style="float:left;">
                                 <div class="layui-form-item">
@@ -54,27 +54,18 @@
                                     <div class="layui-input-inline" >
                                         <select name="type" lay-verify="" lay-search="">
                                             <option value="">请选择类型</option>
-                                            <option value="2" {{ is_numeric($type) && $type == 2 ? 'selected' : '' }}>罚款</option>
-                                            <option value="3" {{ is_numeric($type) && $type == 3 ? 'selected' : '' }}>加权重</option>
-                                            <option value="4" {{ is_numeric($type) && $type == 4 ? 'selected' : '' }}>减权重</option>
-                                            <option value="5" {{ is_numeric($type) && $type == 5 ? 'selected' : '' }}>禁止接单</option>
+                                            @foreach ($punishType as $key => $value)
+                                                <option value="{{ $key }}" {{ $type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
                                     <div class="layui-input-inline" >
                                         <select name="status" lay-verify="" lay-search="">
                                             <option value="">请选择状态</option>
-                                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
-                                            <option value="21" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
-                                            <option value="22" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
-                                            <option value="31" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
-                                            <option value="32" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
-                                            <option value="41" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
-                                            <option value="42" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
-                                            <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
-                                            <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
-                                            <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
-                                            <option value="12" {{ is_numeric($status) && $status == 12 ? 'selected' : '' }}>禁止接单一天已处罚</option>
+                                            @foreach ($punishStatus as $key => $value)
+                                                <option value="{{ $key }}" {{ $status === $key ? 'selected' : '' }}>{{ $value }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -92,11 +83,10 @@
                                         <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
                                     </div>
                                 </div>
-                                </div>
-                            </form>
-                            <div class="layui-tab-item layui-show">
-
-                                <table class="layui-table" lay-size="sm">
+                            </div>
+                        </form>
+                        <div class="layui-tab-item layui-show">
+                            <table class="layui-table" lay-size="sm">
                                 <thead>
                                     <tr>
                                         <th>序号</th>
@@ -127,11 +117,11 @@
                                             <td>{{ $punish->user_id }}</td>
                                             <td>{{ config('punish.type')[$punish->type] }}</td>
                                             <td>
-                                            @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
-                                            {{ config('punish.status')[$punish->type . $punish->status] }}
-                                            @else
-                                            {{ config('punish.status')[$punish->status] }}
-                                            @endif
+                                                @if(in_array($punish->type, [2, 3, 4, 6]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
+                                                    {{ config('punish.status')[$punish->type . $punish->status] }}
+                                                @else
+                                                    {{ config('punish.status')[$punish->status] }}
+                                                @endif
                                             </td>
                                             <td>{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}</td>
                                             <td>{{ $punish->deadline ?? '--' }}</td>
@@ -174,17 +164,17 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                            </div>
                         </div>
-                        @if ($punishes)
-                            {!! $punishes->appends([
-                                'type' => $type,
-                                'status' => $status,
-                                'userId' => $userId,
-                                'startDate' => $startDate,
-                                'endDate' => $endDate,
-                            ])->render() !!}
-                        @endif
+                    </div>
+                    @if ($punishes)
+                        {!! $punishes->appends([
+                            'type' => $type,
+                            'status' => $status,
+                            'userId' => $userId,
+                            'startDate' => $startDate,
+                            'endDate' => $endDate,
+                        ])->render() !!}
+                    @endif
                 </div>
             </div>
         </div>
@@ -218,13 +208,13 @@
                     url: '/admin/punish/punishes/'+id,
                     success: function (data) {
                         if (data.code == 1) {
-                            layer.msg('撤销成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
+                            layer.msg('撤销成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";
                         } else {
                             layer.msg('撤销失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);
-            });                
+            });
         });
     };
 
@@ -240,13 +230,13 @@
                     url: '/admin/punish/punishes/cancel/'+id,
                     success: function (data) {
                         if (data.code == 1) {
-                            layer.msg('撤销奖励成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";                    
+                            layer.msg('撤销奖励成功!', {icon: 6, time:1500});                            window.location.href = "{{ route('punishes.index') }}";
                         } else {
                             layer.msg('撤销奖励失败!', {icon: 5, time:1500});                        }
                     }
                 });
                 layer.close(index);
-            });                
+            });
         });
     };
 </script>

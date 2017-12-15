@@ -77,6 +77,10 @@
                                                                         <button class="md-trigger btn btn-primary" data-modal="refund-application">
                                                                             <i class="fa fa-exclamation fa-lg"></i> 处理售后
                                                                         </button>
+                                                                        @elseif (in_array($content->status, [7, 8]))
+                                                                        <button class="md-trigger btn btn-primary" data-modal="refund-application">
+                                                                            <i class="fa fa-plus fa-lg"></i> 发起退款
+                                                                        </button>
                                                                         @endif
                                                                     </div>
                                                                     <div class="col-xs-7 layui-form">

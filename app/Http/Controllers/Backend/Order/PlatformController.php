@@ -17,6 +17,7 @@ use App\Repositories\Backend\GameRepository;
 use App\Repositories\Backend\ServiceRepository;
 use League\Flysystem\Exception;
 use App\Extensions\Order\Operations\AfterServiceComplete;
+use App\Repositories\Backend\PunishOrRewardRepository;
 
 /**
  * Class OrderController
@@ -162,13 +163,30 @@ class PlatformController extends Controller
             return response()->ajax(0, '说明不能为空');
         }
 
-        // 处理售后
-        try {
-            Order::handle(new AfterServiceComplete($order->no, Auth::user()->id, $request->amount, $request->remark));
+        switch ($order->status) {
+            case 6:
+                // 处理售后
+                try {
+                    Order::handle(new AfterServiceComplete($order->no, Auth::user()->id, $request->amount, $request->remark));
+                }
+                catch (CustomException $e) {
+                    return response()->ajax(0, $e->getMessage());
+                }
+                break;
+            case 7:
+            case 8:
+                // 7和8走奖惩流程
+                try {
+                    PunishOrRewardRepository::createOrderAfterService($order->no, $request->amount, $request->remark);
+                }
+                catch (CustomException $e) {
+                    return response()->ajax(0, $e->getMessage());
+                }
+                break;
+            default:
+                return response()->ajax(0, '订单当前状态无法进行该操作');
         }
-        catch (CustomException $e) {
-            return response()->ajax(0, $e->getMessage());
-        }
+
 
         return response()->ajax(1);
     }

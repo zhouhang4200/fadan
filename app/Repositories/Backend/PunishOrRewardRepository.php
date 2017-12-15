@@ -2,6 +2,10 @@
 namespace App\Repositories\Backend;
 
 use App\Models\PunishOrReward;
+use App\Models\Order;
+use Carbon\Carbon;
+use App\Exceptions\CustomException;
+use DB;
 
 /**
  * 奖惩
@@ -10,11 +14,38 @@ use App\Models\PunishOrReward;
  */
 class PunishOrRewardRepository
 {
-    // 订单退款单列表
-    public static function orderRefundList()
+    // 创建订单售后单
+    public static function createOrderAfterService($orderNo, $amount, $remark)
     {
-        $dataList = PunishOrReward::where('type', 6)->paginate(30);
+        $order = Order::where('no', $orderNo)->first();
+        if (empty($order)) {
+            throw new CustomException('订单不存在');
+        }
 
-        return $dataList;
+        DB::beginTransaction();
+
+        if (PunishOrReward::where('order_no', $orderNo)->where('type', 6)->lockForUpdate()->first()) {
+            throw new CustomException('该订单退过款');
+        }
+
+        $punishOrReward = new PunishOrReward;
+        $punishOrReward->no                  = generateOrderNo();
+        $punishOrReward->order_no            = $orderNo;
+        $punishOrReward->user_id             = $order->gainer_primary_user_id;
+        $punishOrReward->type                = 6;
+        $punishOrReward->status              = 1;
+        $punishOrReward->sub_money           = $amount;
+        $punishOrReward->deadline            = Carbon::now()->addDays(config('punish.order_refund_max_days'));
+        $punishOrReward->remark              = $remark;
+        $punishOrReward->confirm             = 0;
+
+        if (!$punishOrReward->save()) {
+            DB::rollback();
+            throw new CustomException('创建失败');
+        }
+
+        DB::commit();
+
+        return true;
     }
 }
