@@ -205,7 +205,7 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用退回
-            Order::handle(new AskForAfterService($request->no, Auth::user()->id));
+            Order::handle(new AskForAfterService($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {

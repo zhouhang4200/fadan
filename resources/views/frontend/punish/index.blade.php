@@ -29,10 +29,9 @@
                     <div class="layui-input-inline">
                         <select name="type" lay-verify="" lay-search="">
                             <option value="">请选择类型</option>
-                            <option value="2" {{ is_numeric($type) && $type == 2 ? 'selected' : '' }}>罚款</option>
-                            <option value="3" {{ is_numeric($type) && $type == 3 ? 'selected' : '' }}>加权重</option>
-                            <option value="4" {{ is_numeric($type) && $type == 4 ? 'selected' : '' }}>减权重</option>
-                            <option value="5" {{ is_numeric($type) && $type == 5 ? 'selected' : '' }}>禁止接单</option>
+                            @foreach ($punishType as $key => $value)
+                                <option value="{{ $key }}" {{ $type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -41,21 +40,13 @@
                     <div class="layui-input-inline">
                         <select name="status" lay-verify="" lay-search="">
                             <option value="">请选择状态</option>
-                            <option value="0" {{ is_numeric($status) && $status == 0 ? 'selected' : '' }}>禁止接单一天待处罚</option>
-                            <option value="21" {{ is_numeric($status) && $status == 3 ? 'selected' : '' }}>未交罚款</option>
-                            <option value="22" {{ is_numeric($status) && $status == 4 ? 'selected' : '' }}>已交罚款</option>
-                            <option value="31" {{ is_numeric($status) && $status == 5 ? 'selected' : '' }}>未加权重</option>
-                            <option value="32" {{ is_numeric($status) && $status == 6 ? 'selected' : '' }}>已加权重</option>
-                            <option value="41" {{ is_numeric($status) && $status == 7 ? 'selected' : '' }}>未减权重</option>
-                            <option value="42" {{ is_numeric($status) && $status == 8 ? 'selected' : '' }}>已减权重</option>
-                            <option value="9" {{ is_numeric($status) && $status == 9 ? 'selected' : '' }}>申诉中</option>
-                            <option value="10" {{ is_numeric($status) && $status == 10 ? 'selected' : '' }}>申诉驳回</option>
-                            <option value="11" {{ is_numeric($status) && $status == 11 ? 'selected' : '' }}>撤销</option>
-                            <option value="12" {{ is_numeric($status) && $status == 12 ? 'selected' : '' }}>禁止接单一天已处罚</option>
+                            @foreach ($punishStatus as $key => $value)
+                                <option value="{{ $key }}" {{ $status === $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
                 </div>
@@ -74,77 +65,58 @@
     <div class="layui-tab-item layui-show">
         <table class="layui-table" lay-size="sm">
             <thead>
-                <th>序号</th>
                 <th>单号</th>
-                <th>关联订单号</th>
-                <th>账号id</th>
                 <th>类型</th>
                 <th>状态</th>
                 <th>罚款金额</th>
-                <th>最后期限</th>
-                <th>初始权重值</th>
-                <th>奖惩权重率</th>
-                <th>变更后的权重</th>
-                <th>权重生效时间</th>
-                <th>权重截止时间</th>
                 <th>奖励金额</th>
-                <th>时间</th>
+                <th>创建时间</th>
+                <th>最后期限</th>
                 <th style="width:10%">操作</th>
             </thead>
             <tbody>
             @forelse($punishes as $punish)
                 <tr>
-                    <td>{{ $punish->id }}</td>
-                    <td>{{ $punish->no }}</td>
-                    <td>{{ $punish->order_no }}</td>
-                    <td>{{ $punish->user_id }}</td>
+                    <td>
+                        <p>奖惩单号:</p>
+                        <p>{{ $punish->no }}</p>
+                        <p>关联订单:</p>
+                        <p>{{ $punish->order_no }}</p>
+                    </td>
                     <td>{{ config('punish.type')[$punish->type] }}</td>
-                    @if(in_array($punish->type, [2, 4, 5]) && in_array($punish->status, [2, 10, 11, 12]))
-                    <td style="color:#1E9FFF">
-                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
-                        {{ config('punish.status')[$punish->type . $punish->status] }}
-                        @else
-                        {{ config('punish.status')[$punish->status] }}
-                        @endif
-                    </td>
-                    @elseif($punish->type == 3 && $punish->status == 2)
-                    <td style="color:green">
-                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
-                        {{ config('punish.status')[$punish->type . $punish->status] }}
-                        @else
-                        {{ config('punish.status')[$punish->status] }}
-                        @endif
-                    </td>
-                    @else
-                    <td style="color:red">
-                        @if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11]))
-                        {{ config('punish.status')[$punish->type . $punish->status] }}
-                        @else
-                        {{ config('punish.status')[$punish->status] }}
-                        @endif
-                    </td>
-                    @endif
+                    <td {!! $punish->status == 1 ? 'style="color:#1E9FFF"' : '' !!}>{{ config('punish.status')[$punish->status] }}</td>
                     <td>{{ $punish->sub_money ? number_format($punish->sub_money, 2) : '--' }}</td>
-                    <td>{{ $punish->deadline ?? '--' }}</td>
-                    <td>{{ $punish->before_weight_value ?? '--' }}</td>
-                    <td>{{ $punish->ratio ?? '--' }}</td>
-                    <td>{{ $punish->after_weight_value ?? '--' }}</td>
-                    <td>{{ $punish->start_time ?? '--' }}</td>
-                    <td>{{ $punish->end_time ?? '--' }}</td>
                     <td>{{ $punish->add_money ? number_format($punish->add_money, 2) : '--' }}</td>
                     <td>{{ $punish->created_at }}</td>
+                    <td>{{ $punish->deadline ?? '--' }}</td>
                     <td>
-                    @if($punish->status == 9)
-                        申诉中
-                    @elseif($punish->confirm == 0 && in_array($punish->type, ['5']))
-                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
-                    @elseif($punish->confirm == 0 && in_array($punish->status, ['1', '9']))
-                        <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="display({{ $punish->id }})">查看</button>
-                    @elseif($punish->confirm == 0 && in_array($punish->type, ['1', '3']))
-                        <button class="layui-btn layui-btn-danger layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="show({{ $punish->id }})">查看</button>
-                    @else
-                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="detail({{ $punish->id }})">详情</button>
-                    @endif
+                        @if (in_array($punish->type, [2, 4]))
+                            @if ($punish->status == 1)
+                                <?php $css = 'layui-btn-danger'; $onclick = "display($punish->id)"; ?>
+                            @elseif ($punish->status == 9)
+                                <?php $css = 'none'; $onclick = ""; ?>
+                            @else
+                                <?php $css = 'layui-btn-normal'; $onclick = "detail($punish->id)"; ?>
+                            @endif
+
+                        @elseif (in_array($punish->type, [5]))
+                            <?php $css = 'layui-btn-normal'; $onclick = "detail($punish->id)"; ?>
+                        @elseif (in_array($punish->type, [1, 3]))
+                            @if ($punish->confirm == 0)
+                                <?php $css = 'layui-btn-danger'; $onclick = "show($punish->id)"; ?>
+                            @else
+                                <?php $css = 'layui-btn-normal'; $onclick = "detail($punish->id)"; ?>
+                            @endif
+
+                        @elseif (in_array($punish->type, [6]))
+                            @if ($punish->status == 1)
+                                <?php $css = 'layui-btn-danger'; $onclick = "show($punish->id)"; ?>
+                            @else
+                                <?php $css = 'layui-btn-normal'; $onclick = "detail($punish->id)"; ?>
+                            @endif
+
+                        @endif
+                        <button class="layui-btn {{ $css }} layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px" id="show" onclick="{{ $onclick }}">查看</button>
                     </td>
                 </tr>
                 <div class="payment{{ $punish->id }}" style="display: none; padding: 10px">
@@ -181,7 +153,7 @@
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">状态</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="status" lay-verify="required" value="@if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11])) {{ config('punish.status')[$punish->type . $punish->status] }} @else {{ config('punish.status')[$punish->status] }} @endif" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                     </div>
                                 </div>
                                  <div class="layui-form-item">
@@ -232,7 +204,7 @@
                                     <div class="layui-input-block">
                                         <input type="text" class="layui-input" lay-verify="required" value="{{ $punish->add_money ? number_format($punish->add_money, 2) : '--' }}" name="add_money"  placeholder="">
                                     </div>
-                                </div>                           
+                                </div>
 
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">备注说明</label>
@@ -255,7 +227,7 @@
                                 </div>
                                 @endif
 
-                            </div>                              
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -280,20 +252,20 @@
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">关联订单号</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="order_no" lay-verify="required" value="{{ $punish->order_no }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="order_no" lay-verify="required" value="{{ $punish->order_no }}" autocomplete="off" placeholder="请输入关联订单号" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">类型</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="type" lay-verify="required" value="{{ config('punish.type')[$punish->type] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="type" lay-verify="required" value="{{ config('punish.type')[$punish->type] }}" autocomplete="off" placeholder="请输入类型" class="layui-input">
                                     </div>
                                 </div>
 
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">状态</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="status" lay-verify="required" value="@if(in_array($punish->type, [2, 3, 4]) && !in_array($punish->status, [0, -1, 9, 10, 11])) {{ config('punish.status')[$punish->type . $punish->status] }} @else {{ config('punish.status')[$punish->status] }} @endif" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                        <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入状态" class="layui-input">
                                     </div>
                                 </div>
                                  <div class="layui-form-item">
@@ -344,7 +316,7 @@
                                     <div class="layui-input-block">
                                         <input type="text" class="layui-input" lay-verify="required" value="{{ $punish->add_money ? number_format($punish->add_money, 2) : '--' }}" name="add_money"  placeholder="">
                                     </div>
-                                </div>                           
+                                </div>
 
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">备注说明</label>
@@ -367,7 +339,7 @@
                                 </div>
                                 @endif
 
-                            </div>                              
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -381,7 +353,7 @@
         'startDate' => $startDate,
         'endDate' => $endDate,
     ])->render() !!}
-    </div> 
+    </div>
 
 @endsection
 
@@ -398,7 +370,7 @@
             //常规用法
             laydate.render({
             elem: '#test2'
-            });  
+            });
              //常规用法
             laydate.render({
             elem: '#start_time'
@@ -408,7 +380,7 @@
             laydate.render({
             elem: '#end_time'
             });
-        }); 
+        });
 
         function display(id) {
             layui.use('form', function() {
@@ -423,24 +395,30 @@
                     ,yes: function(){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.payment') }}', {id:id}, function (result) {
-                            layer.msg(result.message, {
-                                time:1500,
-                            })
-                            window.location.href = "{{ route('home-punishes.index') }}";
+                            if (result.status === 1) {
+                                layer.alert(result.message, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
                         });
                     },
                     btn2: function(index, layero){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.complain') }}', {id:id}, function (result) {
-                            layer.msg(result.message, {
-                                time:1500,
-                            })
-                            window.location.href = "{{ route('home-punishes.index') }}";
+                            if (result.status === 1) {
+                                layer.alert('申诉成功', function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
                         });
                     }
                 });
             });
-        } 
+        }
 
         function show(id) {
             layui.use('form', function() {
@@ -455,15 +433,18 @@
                     ,yes: function(){
                         layer.closeAll();
                         $.post('{{ route('home-punishes.payment') }}', {id:id}, function (result) {
-                            layer.msg(result.message, {
-                                time:1500,
-                            })
-                            window.location.href = "{{ route('home-punishes.index') }}";
+                            if (result.status === 1) {
+                                layer.alert(result.message, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
                         });
                     }
                 });
             });
-        }  
+        }
 
          function detail(id) {
             layui.use('form', function() {
@@ -475,10 +456,10 @@
                     area: ['650px', '650px'],
                     content: $('.payment'+id),
                     btn: ['返回'] //只是为了演示
-                    
+
                 });
             });
-        }            
-      
+        }
+
     </script>
 @endsection

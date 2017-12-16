@@ -41,7 +41,7 @@ class PunishController extends Controller
         $orderNo = $request->order_no;
         $fullUrl = $request->fullUrl();
 
-        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'orderNo');      
+        $filters = compact('startDate', 'endDate', 'type', 'userId', 'status', 'orderNo');
         // 模型里面有筛选
         $punishes = PunishOrReward::filter($filters)->latest('created_at')->paginate(config('backend.page'));
         // 导出
@@ -49,7 +49,22 @@ class PunishController extends Controller
             return $this->export($filters);
         }
 
-        return view('backend.punish.index', compact('users', 'startDate', 'endDate', 'type', 'userId', 'punishes', 'status', 'orderNo', 'fullUrl'));
+        $punishType = config('punish.type');
+        $punishStatus = config('punish.status');
+
+        return view('backend.punish.index', compact(
+            'users',
+            'startDate',
+            'endDate',
+            'type',
+            'userId',
+            'punishes',
+            'status',
+            'orderNo',
+            'fullUrl',
+            'punishType',
+            'punishStatus'
+        ));
     }
 
     /**
@@ -62,7 +77,7 @@ class PunishController extends Controller
     //     $users = User::where('parent_id', 0)->get();
 
     //     $start = Carbon::now()->subDays(2)->startOfDay()->toDateTimeString();
-        
+
     //     $end = Carbon::now()->toDateTimeString();
 
     //     $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
@@ -91,7 +106,7 @@ class PunishController extends Controller
     //     $this->validate($request, PunishOrReward::rules(), PunishOrReward::messages());
 
     //     $res = PunishOrReward::create($data);
-        
+
     //     if (! $res) {
 
     //         return back()->withInput()->with('createFail', '添加失败！');
@@ -185,7 +200,7 @@ class PunishController extends Controller
             $punish->save();
 
             return response()->json(['code' => '1', 'message' => '撤销成功!']);
-        } else {  
+        } else {
             $bool = $punish->delete();
 
             if ($bool) {
@@ -227,12 +242,12 @@ class PunishController extends Controller
 
     /**
      * 图片上传，返回图片路径
-     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
+     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @param  $path string
      * @return string
      */
     public function uploadImage(UploadedFile $file, $path)
-    {   
+    {
         $extension = $file->getClientOriginalExtension();
 
         if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
@@ -335,7 +350,7 @@ class PunishController extends Controller
 
                 } else {
                     return response()->json(['code' => '2', 'message' => '奖励撤销扣款失败!']);
-                } 
+                }
                 // 写多态关联
                 if (!$punish->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     DB::rollback();
@@ -348,7 +363,7 @@ class PunishController extends Controller
                 }
                 return response()->json(['code' => '1', 'message' => '撤销奖励成功{$punish->add_money}元!']);
 
-            } elseif ($punish->type == 5) { 
+            } elseif ($punish->type == 5) {
                 //撤销禁止接单的处罚
                 $punish = PunishOrReward::find($id);
                 // 日志
@@ -360,9 +375,9 @@ class PunishController extends Controller
                 return response()->json(['code' => '2', 'message' => '撤销失败!']);
             } else {
                 return response()->json(['code' => '2', 'message' => '操作异常!']);
-            }   
+            }
         } catch (Exception $e) {
-            
+
         }
     }
 
@@ -403,7 +418,7 @@ class PunishController extends Controller
 
         // if ($endDate && $startDate) {
 
-        //     $query->whereBetween('created_at', [$startDate, $endDate . " 23:59:59"]); 
+        //     $query->whereBetween('created_at', [$startDate, $endDate . " 23:59:59"]);
         // }
 
         // if ($orderId) {
@@ -412,9 +427,9 @@ class PunishController extends Controller
 
         //     $query->whereIn('revisionable_id', $punishIds);
         // }
-                     
+
         // $punishRecords = $query->latest('created_at')->paginate(config('backend.page'));
-               
+
         return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderNo'));
     }
 
@@ -487,13 +502,13 @@ class PunishController extends Controller
                     array_unshift($datas, $title);
                     // 每页多少数据
                     $excel->sheet("页数", function ($sheet) use ($datas) {
-                        $sheet->rows($datas);             
+                        $sheet->rows($datas);
                     });
                 }
             })->export('xls');
-            
+
         } catch (Exception $e) {
-            
+
         }
     }
 
