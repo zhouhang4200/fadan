@@ -38,11 +38,6 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         外部订单
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('order.after-service.index') }}" @if($currentRouteName == 'order.after-service.index') class="active" @endif>
-                                        售后订单
-                                    </a>
-                                </li>
                             </ul>
                         </li>
                     @endcan
@@ -188,7 +183,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
-          
+
                     <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>

@@ -288,6 +288,11 @@
                         if (data.status === 1) {
                             layer.alert('操作成功', function () {
                                 window.location.reload();
+                                @if ($content->status == 6)
+                                    window.location.reload();
+                                @elseif (in_array($content->status, [7, 8]))
+                                    window.location.href = "{{ route('punishes.index') }}";
+                                @endif
                             });
                         } else {
                             layer.msg(data.message);
