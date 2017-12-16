@@ -74,7 +74,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">状态</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="status" lay-verify="required" value="@if(in_array($punish->type, [2, 3, 4, 6]) && !in_array($punish->status, [0, -1, 9, 10, 11])) {{ config('punish.status')[$punish->type . $punish->status] }} @else {{ config('punish.status')[$punish->status] }} @endif" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                            <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                         </div>
                                     </div>
 
