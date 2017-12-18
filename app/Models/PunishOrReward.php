@@ -49,6 +49,15 @@ class PunishOrReward extends Model
 
             $revisions = array();
 
+            $name = '系统';
+            if ($this->getUser()) {
+                if ($this->getUser()->getTable() == 'users') {
+                    $name = '商户： ' . User::where('id', $this->getSystemUserId())->value('name');
+                } else {
+                    $name = '管理员： ' . AdminUser::where('id', $this->getSystemUserId())->value('name');
+                }
+            }
+
             foreach ($changes_to_record as $key => $change) {
                 $revisions[] = array(
                     'punish_or_reward_id' => $this->getKey(),
@@ -57,7 +66,7 @@ class PunishOrReward extends Model
                     'order_no' => $this->order_no,
                     'before_value' => array_get($this->originalData, $key),
                     'after_value' => $this->updatedData[$key],
-                    'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                    'admin_user_name' => $name,
                     'created_at' => new \DateTime(),
                     'updated_at' => new \DateTime(),
                 );
@@ -93,6 +102,15 @@ class PunishOrReward extends Model
 
         if ((!isset($this->revisionEnabled) || $this->revisionEnabled))
         {
+            $name = '系统';
+            if ($this->getUser()) {
+                if ($this->getUser()->getTable() == 'users') {
+                    $name = '商户： ' . User::where('id', $this->getSystemUserId())->value('name');
+                } else {
+                    $name = '管理员： ' . AdminUser::where('id', $this->getSystemUserId())->value('name');
+                }
+            }
+
             $revisions[] = array(
                 'punish_or_reward_id' => $this->getKey(),
                 'operate_style' => self::CREATED_AT,
@@ -100,7 +118,7 @@ class PunishOrReward extends Model
                 'order_no' => $this->order_no,
                 'before_value' => null,
                 'after_value' => $this->{self::CREATED_AT},
-                'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                'admin_user_name' => $name,
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
             );
@@ -119,6 +137,15 @@ class PunishOrReward extends Model
             && $this->isSoftDelete()
             && $this->isRevisionable($this->getDeletedAtColumn())
         ) {
+            $name = '系统';
+            if ($this->getUser()) {
+                if ($this->getUser()->getTable() == 'users') {
+                    $name = '商户： ' . User::where('id', $this->getSystemUserId())->value('name');
+                } else {
+                    $name = '管理员： ' . AdminUser::where('id', $this->getSystemUserId())->value('name');
+                }
+            }
+
             $revisions[] = array(
                 'punish_or_reward_id' => $this->getKey(),
                 'operate_style' => $this->getDeletedAtColumn(),
@@ -126,7 +153,7 @@ class PunishOrReward extends Model
                 'order_no' => $this->order_no,
                 'before_value' => null,
                 'after_value' => $this->{$this->getDeletedAtColumn()},
-                'admin_user_name' => AdminUser::where('id', $this->getSystemUserId())->value('name') ?? '系统',
+                'admin_user_name' => $name,
                 'created_at' => new \DateTime(),
                 'updated_at' => new \DateTime(),
             );
