@@ -47,12 +47,14 @@ use App\Models\UserReceivingUserControl;
 use App\Models\Order;
 use Log;
 
+use App\Events\NotificationEvent;
+
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-        Log::useDailyFiles(storage_path().'/logs/test.log');
-        Log::debug('1234');
+        event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
+        exit("1234");
     }
 
     public function testAsset()

@@ -36,8 +36,8 @@ class OrderOperationController extends Controller
     {
         // 惩罚-》有罚单没交
         $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('type', 2)
-                ->whereIn('status', ['1', '9'])
+                ->whereIn('type', [2, 6])
+                ->whereIn('status', [1, 9])
                 ->orderBy('deadline')
                 ->value('deadline');
 

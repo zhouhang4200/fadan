@@ -6,6 +6,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use App\Exceptions\CustomException;
 use DB;
+use App\Events\NotificationEvent;
 
 /**
  * 奖惩
@@ -45,6 +46,9 @@ class PunishOrRewardRepository
         }
 
         DB::commit();
+
+        // 创建订单售后
+        event(new NotificationEvent('orderRefund', ['user_id' => $order->gainer_primary_user_id, 'amount' => $amount]));
 
         return true;
     }

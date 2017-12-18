@@ -34,5 +34,5 @@ return [
 	],
 
 	// 订单退款最大天数
-	'order_refund_max_days' => 7,
+	'order_refund_max_days' => 3,
 ];
