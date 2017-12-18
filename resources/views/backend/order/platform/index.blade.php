@@ -773,7 +773,6 @@
                 return false;
             });
         }
-
         // 发起售后
         function execute6(no, id) {
             layer.confirm('您确定要"发起售后"吗?', {icon: 3, title:'提示'}, function(index) {
