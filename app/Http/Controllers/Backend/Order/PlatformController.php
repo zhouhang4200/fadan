@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Order;
 
+use App\Models\User;
 use App\Models\AfterService;
 use App\Models\PunishType;
 use App\Exceptions\CustomException;
@@ -54,10 +55,14 @@ class PlatformController extends Controller
         $serviceId = $request->input('service_id');
         $gameId = $request->input('game_id');
         $creatorPrimaryUserId = $request->input('creator_primary_user_id');
-        $gainerPrimaryUserId = $request->input('gainer_primary_user_id');
+        $gainerPrimaryUserId = $request->gainer_primary_user_id;
         $no = $request->input('no');
         $foreignOrderNo = $request->input('foreign_order_no');
         $export = $request->input('export', 0);
+
+        if ($request->gainer_primary_user_id) {
+            $gainerPrimaryUserId = User::where('nickname', $request->gainer_primary_user_id)->value('id') ?: $request->gainer_primary_user_id;
+        }
 
         $filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
             'gainerPrimaryUserId', 'no', 'foreignOrderNo');
@@ -81,7 +86,7 @@ class PlatformController extends Controller
             'serviceId' => $serviceId,
             'gameId' => $gameId,
             'creatorPrimaryUserId' => $creatorPrimaryUserId,
-            'gainerPrimaryUserId' => $gainerPrimaryUserId,
+            'gainerPrimaryUserId' => $request->gainer_primary_user_id,
             'no' => $no,
             'foreignOrderNo' => $foreignOrderNo,
             'fullUrl' => $request->fullUrl(),
