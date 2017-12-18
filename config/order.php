@@ -7,6 +7,15 @@ use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\NoReceive;
 use App\Extensions\Dailian\Controllers\OffSaled;
 use App\Extensions\Dailian\Controllers\Lock;
+use App\Extensions\Dailian\Controllers\UnLock;
+use App\Extensions\Dailian\Controllers\Revoking;
+use App\Extensions\Dailian\Controllers\UnRevoke;
+use App\Extensions\Dailian\Controllers\Revoked;
+use App\Extensions\Dailian\Controllers\Arbitrationing;
+use App\Extensions\Dailian\Controllers\Arbitrationed;
+use App\Extensions\Dailian\Controllers\Delete;
+use App\Extensions\Dailian\Controllers\ForceRevoke;
+use App\Extensions\Dailian\Controllers\CancelArbitration;
 
 // 订单
 return [
@@ -35,6 +44,7 @@ return [
         21 => '已仲裁',
         22 => '已下架',
         23 => '强制撤销',
+        24 => '已删除',
     ],
 
     'operation_type' => [
@@ -62,6 +72,9 @@ return [
         21 => '取消仲裁',
         22 => '编辑',
         23 => '删除',
+        24 => '同意撤销',
+        25 => '强制撤销',
+        26 => '客服仲裁',
     ],
 
     'source' => [
@@ -94,8 +107,15 @@ return [
         'onSale' => NoReceive::class, // 上架 ->未接单
         'offSale' => OffSaled::class, // 下架 -> 已下架
         'lock' => Lock::class, // 锁定 -> 锁定
-        'unlock' => UnLock::class, // 取消锁定 -> 锁定前状态
+        'cancelLock' => UnLock::class, // 取消锁定 -> 锁定前状态
         'revoke' => Revoking::class, // 撤销 -> 撤销中
+        'cancelRevoke' => UnRevoke::class, // 取消撤销 -> 撤销前的状态
+        'agreeRevoke' => Revoked::class, // 同意撤销 -> 已撤销
+        'applayArbitration' => Arbitrationing::class, // 申请仲裁 -》 仲裁中
+        'cancelArbitration' => CancelArbitration::class, // 取消仲裁 -》 仲裁申请前状态
+        'delete' => Delete::class, // 删除 -》 删除
+        'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
+        'arbitration' => Arbitrationed::class, // 客服仲裁 -》 已仲裁
     ],
 
     // 订单分配下限 (最少接单人数)

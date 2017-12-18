@@ -32,10 +32,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
 		    $this->logDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-		   	// 保存权重
-		   	$this->saveWeight();
-		    // 后续操作
-		    $this->after();
+
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());

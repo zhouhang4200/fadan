@@ -4,10 +4,11 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Income;
 use Exception; 
-use App\Models\Order; // 代练模型
-use App\Models\OrderHistory; // 操作日志
+use App\Models\Order; 
+use App\Models\OrderHistory; 
+use App\Extensions\Asset\Income;
+use App\Extensions\Asset\Expend;
 
 abstract class DailianAbstract
 {
@@ -22,7 +23,6 @@ abstract class DailianAbstract
     protected $beforeHandleStatus;  // 操作前状态
     protected $handledStatus;       // 操作后状态
     protected $description;         // 操作说明
-    protected $runAfter = false;    // 是否执行after方法
 
     // 获取订单对象
     public function getObject()
@@ -88,12 +88,6 @@ abstract class DailianAbstract
             throw new Exception('操作记录失败');
         }
     }
-
-    // 保存权重
-    public function saveWeight() {}
-
-    // 后续操作
-    public function after() {}
 
     // 获取订单
     public function getOrder()

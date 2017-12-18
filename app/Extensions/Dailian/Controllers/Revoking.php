@@ -2,10 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-class Revoking extends Controller
+class Revoking extends DailianAbstract implements DailianInterface
 {
      //撤销中
     protected $acceptableStatus = [13, 14, 17, 18]; // 状态：18锁定
@@ -36,10 +33,6 @@ class Revoking extends Controller
 		    $this->logDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-		   	// 保存权重
-		   	$this->saveWeight();
-		    // 后续操作
-		    $this->after();
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());

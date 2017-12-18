@@ -2,17 +2,18 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Complete extends DailianConstract implements DailianInterface
+class ForceRevoke extends DailianAbstract implements DailianInterface
 {
-	protected $acceptableStatus = [14]; // 状态：14待验收
-	protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
-    protected $handledStatus    = 20; // 状态：20已结算
-    protected $type             = 12; // 操作：12完成
+     //强制撤销 -》 撤销
+    protected $acceptableStatus = [13, 14, 15, 16, 17, 18]; // 状态：
+	protected $beforeHandleStatus; // 操作之前的状态:
+    protected $handledStatus    = 23; // 状态：强制撤销
+    protected $type             = 25; // 操作：25强制撤销
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
     public function run($no, $userId)
     {	
     	DB::beginTransaction();
-        try {
+    	try {
     		// 赋值
     		$this->orderNo = $no;
         	$this->userId  = $userId;
@@ -41,13 +42,16 @@ class Complete extends DailianConstract implements DailianInterface
         return true;
     }
 
-    // 流水，代练完成，接单商户完成代练收入
+    /**
+     * [退代练费给发单，退双金给接单]
+     * @return [type] [description]
+     */
     public function updateAsset()
     {
         DB::beginTransaction();
         try {
-        	// 接单 第二个参数为子类型，85 -> 代练完成收入，省略前面的8，具体参考config('tradetype.user_sub')
-            Asset::handle(new Income($this->order->amount, 5, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
+            // 发单 退回代练费
+            Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -57,8 +61,8 @@ class Complete extends DailianConstract implements DailianInterface
                 throw new Exception('申请失败');
             }
 
-            // 接单 第二个参数为子类型，85 -> 代练完成收入，省略前面的8，具体参考config('tradetype.user_sub'), 先退安全保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '代练订单完成退安全保证金', $this->order->gainer_primary_user_id));
+            // 接单 退回安全保证金
+            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '安全保证金退回s', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -69,7 +73,7 @@ class Complete extends DailianConstract implements DailianInterface
             }
 
             // 接单 退效率保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '代练订单完成退效率保证金', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -82,5 +86,6 @@ class Complete extends DailianConstract implements DailianInterface
             DB::rollback();
         }
         DB::commit();
+    }
     }
 }

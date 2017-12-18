@@ -18,8 +18,4 @@ interface DailianInterface
     public function logDescription();
     // 保存操作日志
     public function saveLog();
-    // 保存权重
-    public function saveWeight();
-    // 后续操作
-    public function after();
 }

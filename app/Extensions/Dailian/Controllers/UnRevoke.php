@@ -2,13 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Lock extends DailianAbstract implements DailianInterface
+class UnRevoke extends DailianAbstract implements DailianInterface
 {
-     //锁定
-    protected $acceptableStatus = [13, 14, 17]; // 状态：13,代练中，14待验收，17异常
-	protected $beforeHandleStatus = 13; // 操作之前的状态:13,代练中
-    protected $handledStatus    = 18; // 状态：18锁定
-    protected $type             = 16; // 操作：16锁定
+    //取消撤销
+    protected $acceptableStatus = [15]; // 状态：15撤销中
+	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
+    protected $handledStatus; // 状态：操作之后的状态
+    protected $type             = 19; // 操作：19取消撤销
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
     public function run($no, $userId)
     {	
@@ -17,7 +17,8 @@ class Lock extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $no;
         	$this->userId  = $userId;
-        	$this->$beforeHandleStatus = $this->getObject()->status ?? 13;
+        	// 获取锁定前的状态
+        	$this->$handledStatus = unserialize(OrderHistory::where('order_no', $no)->latest('created_at')->value('before'))->status;
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情
@@ -32,7 +33,6 @@ class Lock extends DailianAbstract implements DailianInterface
 		    $this->logDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());

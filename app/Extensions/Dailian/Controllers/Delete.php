@@ -2,13 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Lock extends DailianAbstract implements DailianInterface
+class Delete extends DailianAbstract implements DailianInterface
 {
-     //锁定
-    protected $acceptableStatus = [13, 14, 17]; // 状态：13,代练中，14待验收，17异常
-	protected $beforeHandleStatus = 13; // 操作之前的状态:13,代练中
-    protected $handledStatus    = 18; // 状态：18锁定
-    protected $type             = 16; // 操作：16锁定
+     //删除 -》 删除
+    protected $acceptableStatus = [12, 22]; // 状态：13,代练中，12未接单， 22已下架
+	protected $beforeHandleStatus; // 操作之前的状态:
+    protected $handledStatus    = 24; // 状态：24已删除
+    protected $type             = 23; // 操作：23删除
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
     public function run($no, $userId)
     {	
@@ -17,7 +17,7 @@ class Lock extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $no;
         	$this->userId  = $userId;
-        	$this->$beforeHandleStatus = $this->getObject()->status ?? 13;
+        	$this->$beforeHandleStatus = $this->getObject()->status;
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情

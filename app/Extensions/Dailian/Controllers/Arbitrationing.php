@@ -2,13 +2,12 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Lock extends DailianAbstract implements DailianInterface
+class Arbitrationing extends DailianConstract implements DailianInterface
 {
-     //锁定
-    protected $acceptableStatus = [13, 14, 17]; // 状态：13,代练中，14待验收，17异常
-	protected $beforeHandleStatus = 13; // 操作之前的状态:13,代练中
-    protected $handledStatus    = 18; // 状态：18锁定
-    protected $type             = 16; // 操作：16锁定
+    protected $acceptableStatus = [15]; // 状态：15撤销中
+	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
+    protected $handledStatus    = 16; // 状态：16仲裁中
+    protected $type             = 20; // 操作：20申请仲裁
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
     public function run($no, $userId)
     {	
@@ -17,7 +16,6 @@ class Lock extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $no;
         	$this->userId  = $userId;
-        	$this->$beforeHandleStatus = $this->getObject()->status ?? 13;
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情

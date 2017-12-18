@@ -76,7 +76,7 @@ return [
      * role is updated. Then the cache will be flushed immediately.
      */
 
-    'cache_expiration_time' => 60 * 24,
+    'cache_expiration_time' => 1,
 
     /*
      * By default we'll make an entry in the application log when the permissions
