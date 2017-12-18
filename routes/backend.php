@@ -219,6 +219,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('record/{id}', 'PlatformController@record')->name('order.platform.record')->middleware('permission:order.platform.record');
             // 修改状态
             Route::post('change-status', 'PlatformController@changeStatus')->name('order.platform.change-status')->middleware('permission:order.platform.change-status');
+            // 后台发起售后
+            Route::post('apply-after-service', 'PlatformController@applyAfterService')->name('order.platform.apply-after-service')->middleware('permission:order.platform.apply-after-service');;
             // 售后完成
             Route::post('after-service-complete', 'PlatformController@afterServiceComplete')->name('order.after-service.after-service-complete')->middleware('permission:order.platform.after-service-complete');
         });
@@ -231,6 +233,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::prefix('after-service')->group( function () {
             // 订单列表
             Route::get('/', 'AfterServiceController@index')->name('order.after-service.index')->middleware('permission:order.after-service.index');
+            // 申请退款
+            Route::post('apply', 'AfterServiceController@apply')->name('order.after-service.apply')->middleware('permission:order.after-service.apply');
             // 审核
             Route::post('auditing', 'AfterServiceController@auditing')->name('order.after-service.auditing')->middleware('permission:order.after-service.auditing');
             // 确认售后
@@ -297,11 +301,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('execute/forbidden', 'ExecuteController@forbidden')->name('execute.forbidden')->middleware('permission:execute.forbidden');
         // 后台详情里面的操作
         Route::post('execute/pass', 'ExecuteController@pass')->name('execute.pass')->middleware('permission:execute.pass');
-        Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');
+        Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');  
     });
 
     // 违规管理
     Route::namespace('Data')->prefix('datas')->group(function () {
-        Route::get('index', 'DayDataController@index')->name('datas.index')->middleware('permission:datas.index');
+        Route::get('index', 'DayDataController@index')->name('datas.index')->middleware('permission:datas.index');  
     });
 });

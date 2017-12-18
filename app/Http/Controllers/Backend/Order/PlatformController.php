@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Order;
 
 use App\Models\User;
+use App\Extensions\Order\Operations\AskForAfterService;
 use App\Models\AfterService;
 use App\Models\PunishType;
 use App\Exceptions\CustomException;
@@ -55,7 +56,7 @@ class PlatformController extends Controller
         $serviceId = $request->input('service_id');
         $gameId = $request->input('game_id');
         $creatorPrimaryUserId = $request->input('creator_primary_user_id');
-        $gainerPrimaryUserId = $request->gainer_primary_user_id;
+        $gainerPrimaryUserId = $request->input('gainer_primary_user_id');
         $no = $request->input('no');
         $foreignOrderNo = $request->input('foreign_order_no');
         $export = $request->input('export', 0);
@@ -194,5 +195,27 @@ class PlatformController extends Controller
 
 
         return response()->ajax(1);
+    }
+
+    /**
+     * 从后台发起售后
+     * @param Request $request
+     * @return mixed
+     */
+    public function applyAfterService(Request $request)
+    {
+        try {
+            $orderInfo = OrderModel::where('no', $request->no)->first();
+            if ($orderInfo) {
+                // 调用退回
+                Order::handle(new AskForAfterService($request->no, $orderInfo->creator_primary_user_id, Auth::user()->name . ' 从后台发起售后'));
+                // 返回操作成功
+                return response()->ajax(0, '操作成功');
+            } else {
+                return response()->ajax(0, '订单不存在');
+            }
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
     }
 }

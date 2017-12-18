@@ -137,8 +137,8 @@
                             @forelse($orders as $order)
                                 <tr>
                                     <td>千手：{{ $order->no }} <br> 外部：{{ $order->foreign_order_no }}</td>
-                                    <td>{{ config('order.source')[$order->source] }}</td>
-                                    <td>{{ config('order.status')[$order->status] }}</td>
+                                    <td>{{ config('order.source')[$order->source] ?? '' }}</td>
+                                    <td>{{ config('order.status')[$order->status] ?? '' }}</td>
                                     <td>{{ $order->goods_name }}</td>
                                     <td>{{ $order->service_name }}</td>
                                     <td>{{ $order->game_name }}</td>
@@ -158,6 +158,7 @@
                                                     <option value="execute3">加权重</option>
                                                     <option value="execute4">减权重</option>
                                                     <option value="execute5">禁止接单</option>
+                                                    <option value="execute6">发起售后</option>
                                                 <option value="detail">订单详情</option>
                                             </select>
                                         </div>
@@ -773,6 +774,18 @@
             });
         }
 
+        // 发起售后
+        function execute6(no, id) {
+            layer.confirm('您确定要"发起售后"吗?', {icon: 3, title:'提示'}, function(index) {
+                $.post('{{ route('order.platform.apply-after-service') }}', {no:no}, function (result) {
+                    layer.msg(result.message, {
+                        icon:5,
+                        time:1500
+                    });
+                    return false;
+                }, 'json')
+            });
+        }
     });
 
 </script>

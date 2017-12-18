@@ -93,7 +93,7 @@
                                                 <td>{{ $item->order_no }}</td>
                                                 <td>{{ ($item->user_id == 0 || is_null($item->user_id)) ? '系统' : $item->user->getPrimaryUserId() }}</td>
                                                 <td>{{ $item->admin_user_id }}</td>
-                                                <td>{{ config('order.operation_type')[$item->type] }}</td>
+                                                <td>{{ config('order.operation_type')[$item->type] ?? '' }}</td>
                                                 <td>{{ $item->description }}</td>
                                                 <td>{{ $item->created_at }}</td>
                                             </tr>
