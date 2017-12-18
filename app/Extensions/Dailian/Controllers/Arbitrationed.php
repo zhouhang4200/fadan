@@ -76,7 +76,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
                     throw new Exception('申请失败');
                 }
                 // 接单 代练收入
-                Asset::handle(new Income($apiAmount, 5, $this->order->no, '客服仲裁的代练收入', $this->order->gainer_primary_user_id));
+                Asset::handle(new Income($apiAmount, 12, $this->order->no, '客服仲裁的代练收入', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new Exception('申请失败');

@@ -45,6 +45,9 @@ use App\Models\UserWithdrawOrder;
 use App\Models\Order as OrderModel;
 use App\Models\UserReceivingUserControl;
 use App\Models\Order;
+use Log;
+
+use App\Events\NotificationEvent;
 
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
@@ -52,6 +55,7 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+
 
         // $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
         // $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
@@ -104,6 +108,10 @@ class TestController extends Controller
         // dd($data);
 
         // $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
+
+        // event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
+        // exit("1234");
+
     }
 
     public function testAsset()

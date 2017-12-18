@@ -72,7 +72,7 @@
                                     </div>
 
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">类型</label>
+                                        <label class="layui-form-label">状态</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="status" lay-verify="required" value="{{ config('punish.status')[$punish->status] }}" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                         </div>
@@ -120,13 +120,13 @@
                                             <input type="text" class="layui-input" lay-verify="required" value="{{ $punish->end_time ?? '--' }}" name="end_time"  placeholder="">
                                         </div>
                                     </div>
-    
+
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">奖励金额</label>
                                         <div class="layui-input-block">
                                             <input type="text" class="layui-input" lay-verify="required" value="{{ $punish->add_money ? number_format($punish->add_money, 2) : '--' }}" name="add_money"  placeholder="">
                                         </div>
-                                    </div>                           
+                                    </div>
 
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">备注说明</label>
@@ -157,7 +157,7 @@
                                         <a class="layui-btn layui-btn-normal layui-btn-small" href="{{ route('punishes.index') }}"  style="margin-left: 10px">返回</a>
                                     @endif
                                     </div>
-                                </div>        
+                                </div>
                             </form>
                         </div>
                 </div>
@@ -189,7 +189,7 @@
 
             form.on('submit(pass)', function (data) {
                 $.post('{{ route('execute.pass') }}', {data: data.field}, function (result) {
-                    if (result.code == 1) {     
+                    if (result.code == 1) {
                         layer.msg(result.message, {
                             icon:6,
                             time:1500
@@ -198,7 +198,7 @@
                         layer.msg(result.message, {
                             icon:5,
                             time:1500
-                        }) 
+                        })
                     }
                 }, 'json');
                     window.location.href = "{{ route('punishes.index') }}";
@@ -207,7 +207,7 @@
 
             form.on('submit(refuse)', function (data) {
                 $.post('{{ route('execute.refuse') }}', {data: data.field}, function (result) {
-                    if (result.code == 1) {     
+                    if (result.code == 1) {
                         layer.msg(result.message, {
                             icon:6,
                             time:1500
@@ -216,13 +216,13 @@
                         layer.msg(result.message, {
                             icon:5,
                             time:1500
-                        }) 
+                        })
                     }
                 }, 'json');
                     window.location.href = "{{ route('punishes.index') }}";
                 return false;
             });
-        });  
+        });
 
 
     </script>

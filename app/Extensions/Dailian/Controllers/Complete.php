@@ -46,8 +46,8 @@ class Complete extends DailianConstract implements DailianInterface
     {
         DB::beginTransaction();
         try {
-        	// 接单 第二个参数为子类型，85 -> 代练完成收入，省略前面的8，具体参考config('tradetype.user_sub')
-            Asset::handle(new Income($this->order->amount, 5, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
+        	// 接单 代练收入
+            Asset::handle(new Income($this->order->amount, 12, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -57,8 +57,8 @@ class Complete extends DailianConstract implements DailianInterface
                 throw new Exception('申请失败');
             }
 
-            // 接单 第二个参数为子类型，85 -> 代练完成收入，省略前面的8，具体参考config('tradetype.user_sub'), 先退安全保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '代练订单完成退安全保证金', $this->order->gainer_primary_user_id));
+            // 接单 退回安全保证金
+            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -69,7 +69,7 @@ class Complete extends DailianConstract implements DailianInterface
             }
 
             // 接单 退效率保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '代练订单完成退效率保证金', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');

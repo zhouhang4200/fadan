@@ -96,8 +96,8 @@
                                     <td>{{ $order->wang_wang }}</td>
                                     <td>{{ $order->single_price }}</td>
                                     <td>{{ $order->total_price }}</td>
-                                    <td>{{ $order->order->no }}</td>
-                                    <td>{{ $order->order->gainer_primary_user_id }}</td>
+                                    <td>{{ $order->order->no ?? '' }}</td>
+                                    <td>{{ $order->order->gainer_primary_user_id ?? '' }}</td>
                                 </tr>
                             @empty
                             @endforelse

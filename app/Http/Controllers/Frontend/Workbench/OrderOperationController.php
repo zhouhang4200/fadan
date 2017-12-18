@@ -36,8 +36,8 @@ class OrderOperationController extends Controller
     {
         // 惩罚-》有罚单没交
         $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('type', 2)
-                ->whereIn('status', ['3', '9'])
+                ->whereIn('type', [2, 6])
+                ->whereIn('status', [1, 9])
                 ->orderBy('deadline')
                 ->value('deadline');
 
@@ -205,7 +205,7 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用退回
-            Order::handle(new AskForAfterService($request->no, Auth::user()->id));
+            Order::handle(new AskForAfterService($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
             return response()->ajax(0, '操作成功');
         } catch (CustomException $exception) {

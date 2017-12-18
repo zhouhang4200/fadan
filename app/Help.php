@@ -20,9 +20,7 @@ if (!function_exists('loginDetail')) {
     	$client = new Client();
 
     	$res = $client->request('GET', $url);
-
     	$res = $res->getBody();
-
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {

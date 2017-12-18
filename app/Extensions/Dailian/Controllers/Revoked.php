@@ -68,7 +68,7 @@ class Revoked extends DailianAbstract implements DailianInterface
             DB::beginTransaction();
             try {
                // 接单 协商代练费收入
-               Asset::handle(new Income($amount, 5, $this->order->no, '协商代练收入', $this->order->gainer_primary_user_id));
+               Asset::handle(new Income($amount, 12, $this->order->no, '协商代练收入', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new Exception('申请失败');

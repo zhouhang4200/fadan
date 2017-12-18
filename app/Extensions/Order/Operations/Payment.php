@@ -2,7 +2,7 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Events\NotificationEvent;
-use App\Exceptions\AssetException as Exception;
+use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;

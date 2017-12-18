@@ -28,7 +28,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary refund-application-submit">确认提交</button>
+                <button type="button" class="btn btn-primary after-service-complete">确认提交</button>
             </div>
         </div>
     </div>
@@ -73,9 +73,15 @@
                                                             <div class="" style="padding: 15px;">
                                                                 <div class="row">
                                                                     <div class="col-xs-5">
+                                                                        @if ($content->status == 6)
                                                                         <button class="md-trigger btn btn-primary" data-modal="refund-application">
-                                                                            <i class="fa fa-plus-circle fa-lg"></i> 申请退款
+                                                                            <i class="fa fa-exclamation fa-lg"></i> 处理售后
                                                                         </button>
+                                                                        @elseif (in_array($content->status, [7, 8]))
+                                                                        <button class="md-trigger btn btn-primary" data-modal="refund-application">
+                                                                            <i class="fa fa-plus fa-lg"></i> 发起退款
+                                                                        </button>
+                                                                        @endif
                                                                     </div>
                                                                     <div class="col-xs-7 layui-form">
                                                                         <input type="hidden" name="no" value="{{ $content->no }}">
@@ -251,8 +257,9 @@
                 content: $('.refund')
             });
         });
-        // 确认退款申请
-        $('.refund-application-submit').click(function () {
+
+        // 确认售后
+        $('.after-service-complete').click(function () {
             var amount = "{{ $content->amount }}";
             var refundAmount = $('.refund-amount').val();
             var refundRemark = $('.refund-remark').val();
@@ -273,15 +280,23 @@
             layer.confirm(noteMessage, {icon: 3, title: '需要确认'}, function (index) {
                 layer.close(index);
                 $.ajax({
-                    url: '{{ route('order.after-service.apply') }}',
+                    url: "{{ route('order.after-service.after-service-complete') }}",
                     type: 'post',
                     dataType: 'json',
                     data: {no: "{{ $content->no }}", amount:refundAmount, remark:refundRemark},
-                    success: function (result) {
-                        layer.alert(result.message, function () {
-                            layer.closeAll();
-                            $("#refund-application").niftyModal("hide");
-                        });
+                    success: function (data) {
+                        if (data.status === 1) {
+                            layer.alert('操作成功', function () {
+                                window.location.reload();
+                                @if ($content->status == 6)
+                                    window.location.reload();
+                                @elseif (in_array($content->status, [7, 8]))
+                                    window.location.href = "{{ route('punishes.index') }}";
+                                @endif
+                            });
+                        } else {
+                            layer.msg(data.message);
+                        }
                     }
                 });
             });
