@@ -10,6 +10,16 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class UserController extends Controller
 {
 	protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
+
+    public function persional()
+    {
+        if (Auth::user()->parent_id== 0) {
+            $user = Auth::user();
+        } else {
+            $user = Auth::user()->parent;
+        }
+        return view('frontend.user.persional.edit', compact('user'));
+    }
 	/**
 	 * 修改资料
 	 * @param  Request $request [description]
@@ -22,12 +32,13 @@ class UserController extends Controller
         } else {
             $user = Auth::user()->parent;
         }
-        $user->nick_name = $request->data['nick_name'];
+        $user->user_name = $request->data['user_name'];
         $user->age = $request->data['age'];
         $user->qq = $request->data['qq'];
         $user->wechat = $request->data['wechat'];
         $user->phone = $request->data['phone'];
-        $user->wangwang = $request->data['wangwang'];
+        $user->wang_wang = $request->data['wang_wang'];
+        $user->store_wang_wang = $request->data['store_wang_wang'];
 
         $bool = $user->save();
 

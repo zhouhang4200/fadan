@@ -8,7 +8,7 @@
         </a>
         <div class="nav">
             <ul>
-                <li class="{{ Route::currentRouteName() == 'frontend.index' ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
+                <li class="{{ in_array(Route::currentRouteName(), ['frontend.index', 'users.persional']) ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
                 @can('frontend.goods.index')
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.goods' ? 'current' : '' }}"><a href="{{ route('frontend.goods.index') }}">商品</a><div class="arrow"></div></li>
                 @endcan

@@ -331,13 +331,8 @@
         });
         // 修改资料
         $('#persional-user').on('click', function () {
-            layer.open({
-                type: 1,
-                shade: 0.2,
-                title: '修改资料',
-                area: ['450px', '450px'],
-                content: $('#persional')      
-            });
+            
+            window.location.href="{{ route('users.persional') }}";
         });
 
         form.on('submit(update-persional)', function(data) {
