@@ -13,9 +13,9 @@ interface DailianInterface
     // 保存更改状态后的订单
     public function save();
     // 更新平台资产
-    public function updateAsset();
+    public function updateAsset($apiAmount, $apiDeposit, $apiService, $writeAmount);
     // 订单日志描述
-    public function logDescription();
+    public function setDescription();
     // 保存操作日志
     public function saveLog();
 }

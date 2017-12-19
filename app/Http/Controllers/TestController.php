@@ -55,7 +55,39 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        $order = Order::find(88);
 
+        // $orderDetail = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+        // dd($orderDetail);
+        // dd(AUth::user());
+        // 已仲裁 ：订单号 操作人 回传代练费 回传双金费 回传手续费
+        // $a = DailianFactory::choose('arbitration')->run('2017121818232200000003', '27', 12, 2, 2); //bool
+        // 申请仲裁 ：订单号 操作人
+        // $a = DailianFactory::choose('applayArbitration')->run('2017121818232200000003', '27'); //bool
+        // 取消仲裁：订单号 操作人
+        $a = DailianFactory::choose('cancelArbitration')->run('2017121818232200000003', '27'); //bool54
+        // 完成: 订单号 操作人
+        // $a = DailianFactory::choose('complete')->run('2017121818232200000003', '27'); //bool
+        // 删除: 订单号 操作人
+        // $a = DailianFactory::choose('delete')->run('2017121818232200000003', '27'); //bool
+        // 强制撤销：订单号 操作人
+        // $a = DailianFactory::choose('forceRevoke')->run('2017121818232200000003', '27'); //bool
+        // 锁定： 订单号 操作人
+        // $a = DailianFactory::choose('lock')->run('2017121818232200000003', '27'); //bool
+        // 上架：订单号 操作人
+        // $a = DailianFactory::choose('onSale')->run('2017121818232200000003', '27'); //bool
+        // 下架：订单号 操作人
+        // $a = DailianFactory::choose('offSale')->run('2017121818232200000003', '27'); //bool
+        // 同意撤销 订单号 操作人 协商代练费 回传双金费 回传手续费 协商双金
+        // $a = DailianFactory::choose('agreeRevoke')->run('2017121818232200000003', '27', 12, 4, 2, 6); //bool
+        // 撤销：订单号 操作人
+        // $a = DailianFactory::choose('revoke')->run('2017121818232200000003', '27'); //bool
+        // 取消锁定: 订单号 操作人
+        // $a = DailianFactory::choose('cancelLock')->run('2017121818232200000003', '27'); //bool
+        // 取消撤销:订单号 操作人
+        // $a = DailianFactory::choose('cancelRevoke')->run('2017121818232200000003', '27'); //bool
+        dd($a);
+        // dd($order);
 
         // $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
         // $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();

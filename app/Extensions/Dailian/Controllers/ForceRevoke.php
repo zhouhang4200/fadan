@@ -2,6 +2,11 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use DB;
+use Asset;
+use Exception;
+use App\Extensions\Asset\Income;
+
 class ForceRevoke extends DailianAbstract implements DailianInterface
 {
      //强制撤销 -》 撤销
@@ -10,16 +15,16 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 23; // 状态：强制撤销
     protected $type             = 25; // 操作：25强制撤销
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
-    public function run($no, $userId)
+    public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
-    		$this->orderNo = $no;
+    		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
-        	$this->$beforeHandleStatus = $this->getObject()->status;
-    		// 获取订单对象
-		    $this->getObject();
+            // 获取订单对象
+            $this->getObject();
+        	$this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性
@@ -27,9 +32,9 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
 		    // 保存更改状态后的订单
 		    $this->save();
 		    // 更新平台资产
-		    $this->updateAsset();
+		    $this->updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
 		    // 订单日志描述
-		    $this->logDescription();
+		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
 
@@ -46,7 +51,7 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
      * [退代练费给发单，退双金给接单]
      * @return [type] [description]
      */
-    public function updateAsset()
+    public function updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {
         DB::beginTransaction();
         try {
@@ -62,7 +67,7 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             }
 
             // 接单 退回安全保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '安全保证金退回s', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -73,7 +78,7 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             }
 
             // 接单 退效率保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -86,6 +91,5 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             DB::rollback();
         }
         DB::commit();
-    }
     }
 }

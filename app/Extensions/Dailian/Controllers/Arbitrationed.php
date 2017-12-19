@@ -2,20 +2,26 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Arbitrationed extends DailianConstract implements DailianInterface
+use DB;
+use Asset;
+use Exception;
+use App\Extensions\Asset\Expend;
+use App\Extensions\Asset\Income;
+
+class Arbitrationed extends DailianAbstract implements DailianInterface
 {
 	// 已仲裁
     protected $acceptableStatus = [16]; // 状态：16仲裁中
 	protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
     protected $handledStatus    = 21; // 状态：21已仲裁
-    protected $type             = 26; // 操作：26客服仲裁
+    protected $type             = 26; // 操作：26 客服仲裁
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
-    public function run($no, $userId, $apiAmount, $apiDeposit, $apiService)
+    public function run($orderNo, $userId, $apiAmount, $apiDeposit, $apiService, $writeAmount = null)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
-    		$this->orderNo = $no;
+    		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
     		// 获取订单对象
 		    $this->getObject();
@@ -28,7 +34,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 		    // 更新平台资产
 		    $this->updateAsset($apiAmount, $apiDeposit, $apiService);
 		    // 订单日志描述
-		    $this->logDescription();
+		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
     	} catch (Exception $e) {
@@ -47,12 +53,12 @@ class Arbitrationed extends DailianConstract implements DailianInterface
      * @param  [type] $apiService    [回传手续费]
      * @return [type]                       [流水记录]
      */
-	public function updateAsset($apiAmount, $apiDeposit, $apiService)
+	public function updateAsset($apiAmount, $apiDeposit, $apiService, $writeAmount = null)
 	{
 		// 订单的安全保证金
-		$security = $this->order->orderDetail->pluck('field_name')->security_deposit;
-		// 订单的效率保证金
-		$efficiency = $this->order->orderDetail->pluck('field_name')->efficiency_deposit;
+		$security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
+		// 订单的效率保证金 efficiency_deposit
+		$efficiency = $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
 		// 剩余代练费 = 订单代练费 - 回传代练费
         $leftAmount = bcsub($this->order->amount, $apiAmount);
         // 订单双金 = 订单安全保证金 + 订单效率保证金
@@ -66,7 +72,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
             DB::beginTransaction();
         	try {
                 // 发单 代练费退回(剩余回传代练费)
-                Asset::handle(new Income($leftAmount, 7, $this->order->no, '客服仲裁退还代练费', $this->order->creator_primary_user_id));
+                Asset::handle(new Income($leftAmount, 7, $this->order->no, '退还代练费', $this->order->creator_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new Exception('申请失败');
@@ -76,7 +82,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
                     throw new Exception('申请失败');
                 }
                 // 接单 代练收入
-                Asset::handle(new Income($apiAmount, 12, $this->order->no, '客服仲裁的代练收入', $this->order->gainer_primary_user_id));
+                Asset::handle(new Income($apiAmount, 12, $this->order->no, '代练费收入', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new Exception('申请失败');
@@ -89,7 +95,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
                 // 如果订单安全保证金 > (回传双金 + 手续费)
                 if (bcsub($security, $apiAll) > 0) {    	
 	                // 发单 安全保证金收入
-	                Asset::handle(new Income($apiAll, 10, $this->order->no, '客服仲裁安全保证金收入', $this->order->creator_primary_user_id));
+	                Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -100,7 +106,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
 
 	                // 发单 手续费支出
-	                Asset::handle(new Expend($apiService, 2, $this->order->no, '客服仲裁手续费支出', $this->order->creator_primary_user_id));
+	                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -113,7 +119,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                // 接单 剩下的安全保证金
 	                $leftSecurity = bcsub($security, $apiAll);
 
-	                Asset::handle(new Income($leftSecurity, 8, $this->order->no, '客服仲裁退还安全保证金', $this->order->gainer_primary_user_id));
+	                Asset::handle(new Income($leftSecurity, 8, $this->order->no, '退还安全保证金', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -124,7 +130,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
 
 	                // 接单 退还效率保证金
-	                Asset::handle(new Income($efficiency, 9, $this->order->no, '客服仲裁退还效率保证金', $this->order->gainer_primary_user_id));
+	                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -135,7 +141,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
 
 	                // 接单 代练手续费收入
-	                Asset::handle(new Income($apiService, 6, $this->order->no, '客服仲裁代练手续费收入', $this->order->gainer_primary_user_id));
+	                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -146,7 +152,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
                 } else if (bcsub($security, $apiAll) == 0) {
                 	// 发单 安全保证金收入
-	                Asset::handle(new Income($apiAll, 10, $this->order->no, '客服仲裁安全保证金收入', $this->order->creator_primary_user_id));
+	                Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -157,7 +163,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
 
 	                // 发单 手续费支出
-	                Asset::handle(new Expend($apiService, 2, $this->order->no, '客服仲裁手续费支出', $this->order->creator_primary_user_id));
+	                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -167,8 +173,8 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                    throw new Exception('申请失败');
 	                }
 
-	                // 接单 退还效率保证金
-	                Asset::handle(new Income($efficiency, 9, $this->order->no, '客服仲裁退还效率保证金', $this->order->gainer_primary_user_id));
+	                // 接单 退还全额效率保证金
+	                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -179,7 +185,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
 
 	                // 接单 代练手续费收入
-	                Asset::handle(new Income($apiService, 6, $this->order->no, '客服仲裁代练手续费收入', $this->order->gainer_primary_user_id));
+	                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -190,7 +196,7 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                }
                 } else {
                 	// 发单 全额安全保证金收入
-                	Asset::handle(new Income($security, 10, $this->order->no, '客服仲裁安全保证金收入', $this->order->creator_primary_user_id));
+                	Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -203,18 +209,20 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                // 发单 效率保证金收入
 	                $creatorEfficiency = bcsub($apiAll, $security);
 
-	                Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '客服仲裁效率保证金收入', $this->order->creator_primary_user_id));
+	                if ($creatorEfficiency != 0) {
+		                Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
 
-	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new Exception('申请失败');
-	                }
+		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+		                    throw new Exception('申请失败');
+		                }
 
-	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new Exception('申请失败');
+		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+		                    throw new Exception('申请失败');
+		                }
 	                }
 
 	                // 发单 手续费支出
-	                Asset::handle(new Expend($apiService, 2, $this->order->no, '客服仲裁手续费支出', $this->order->creator_primary_user_id));
+	                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -227,17 +235,20 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	                // 接单 退还剩余效率保证金
 	                $leftEfficiency = bcsub($efficiency, $creatorEfficiency);
 
-	                Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '客服仲裁退还效率保证金', $this->order->gainer_primary_user_id));
+	                if ($leftEfficiency != 0) {
+		                Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
-	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new Exception('申请失败');
+		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+		                    throw new Exception('申请失败');
+		                }
+
+		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+		                    throw new Exception('申请失败');
+		                }
 	                }
 
-	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new Exception('申请失败');
-	                }
 	                 // 接单 代练手续费收入
-	                Asset::handle(new Income($apiService, 6, $this->order->no, '客服仲裁代练手续费收入', $this->order->gainer_primary_user_id));
+	                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 	                    throw new Exception('申请失败');
@@ -251,6 +262,8 @@ class Arbitrationed extends DailianConstract implements DailianInterface
 	            DB::rollBack();
 	        }
 	        DB::commit();
+	    } else {
+	    	throw new Exception('参数传入错误或不满足条件');
 	    }
 	}
 }

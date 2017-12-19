@@ -9,10 +9,12 @@ class DailianFactory
 	 * @param  [type] $name [description]
 	 * @return [type]       [description]
 	 */
-    public function choose($name)
+    public static function choose($name)
     {
-		if (config('order.dailians')[$name]) {
-            return new config('order.dailians')[$name];
+        $dailians = config('order.dailians');
+
+		if ($dailians[$name]) {
+            return new $dailians[$name];
         } else {
         	throw new Exception('参数传入错误!');
         }

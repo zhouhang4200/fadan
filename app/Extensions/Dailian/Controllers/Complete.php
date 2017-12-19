@@ -2,23 +2,30 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class Complete extends DailianConstract implements DailianInterface
+use DB;
+use Asset;
+use Exception;
+use App\Extensions\Asset\Income;
+
+class Complete extends DailianAbstract implements DailianInterface
 {
 	protected $acceptableStatus = [14]; // 状态：14待验收
 	protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
     protected $handledStatus    = 20; // 状态：20已结算
     protected $type             = 12; // 操作：12完成
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
-    public function run($no, $userId)
+    public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();
         try {
     		// 赋值
-    		$this->orderNo = $no;
+    		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
-        	$this->$beforeHandleStatus = $this->getObject()->status;
-    		// 获取订单对象
-		    $this->getObject();
+            // 获取订单对象
+            $this->getObject();
+
+            $this->beforeHandleStatus = $this->getOrder()->status ?? 14;
+
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性
@@ -26,9 +33,9 @@ class Complete extends DailianConstract implements DailianInterface
 		    // 保存更改状态后的订单
 		    $this->save();
 		    // 更新平台资产
-		    $this->updateAsset();
+		    $this->updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
 		    // 订单日志描述
-		    $this->logDescription();
+		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
 
@@ -42,7 +49,7 @@ class Complete extends DailianConstract implements DailianInterface
     }
 
     // 流水，代练完成，接单商户完成代练收入
-    public function updateAsset()
+    public function updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {
         DB::beginTransaction();
         try {
@@ -58,7 +65,7 @@ class Complete extends DailianConstract implements DailianInterface
             }
 
             // 接单 退回安全保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->security_deposit, 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');
@@ -69,7 +76,7 @@ class Complete extends DailianConstract implements DailianInterface
             }
 
             // 接单 退效率保证金
-            Asset::handle(new Income($this->order->orderDetail->pluck('field_name')->efficiency_deposit, 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
+            Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new Exception('申请失败');

@@ -2,20 +2,25 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-class CancelArbitration extends DailianConstract implements DailianInterface
+use DB;
+use Exception;
+use App\Models\OrderHistory;
+
+class CancelArbitration extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [16]; // 状态：16仲裁中
 	protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
-    protected $handledStatus = unserialize(OrderHistory::where('order_no', $no)->latest('created_at')->value('before'))->status;// 操作前的状态
+    protected $handledStatus;// 操作后的状态
     protected $type             = 21; // 操作：21取消仲裁
 	// 运行, 第一个参数为订单号，第二个参数为操作用户id
-    public function run($no, $userId)
+    public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
-    		$this->orderNo = $no;
+    		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('created_at')->value('before'))['status'];
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情
@@ -25,9 +30,9 @@ class CancelArbitration extends DailianConstract implements DailianInterface
 		    // 保存更改状态后的订单
 		    $this->save();
 		    // 更新平台资产
-		    $this->updateAsset();
+		    $this->updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
 		    // 订单日志描述
-		    $this->logDescription();
+		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
 

@@ -27,7 +27,7 @@ abstract class DailianAbstract
     // 获取订单对象
     public function getObject()
     {
-    	$this->order = Order::where('no', $this->no)->lockForUpdate()->first();
+    	$this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
 
         if (empty($this->order)) {
             throw new Exception('订单不存在');
@@ -64,15 +64,15 @@ abstract class DailianAbstract
     }
 
     // 更新平台资产
-    public function updateAsset(){}
+    public function updateAsset($apiAmount, $apiDeposit, $apiService, $writeAmount){}
 
     // 订单日志描述
     public function setDescription()
     {
     	// 操作后的状态
-    	$statusName = config('dailian.status')[$this->handledStatus];
+    	$statusName = config('order.status')[$this->handledStatus];
     	// 操作前的状态
-    	$beforeStatusName = config('dailian.status')[$this->beforeHandledStatus];
+    	$beforeStatusName = config('order.status')[$this->beforeHandleStatus];
     	// 详情
         $this->description = "用户[{$this->userId}]将订单从[$beforeStatusName]设置为[$statusName]状态！";
     }
