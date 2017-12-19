@@ -9,9 +9,19 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [15]; // 状态：15撤销中
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
-    protected $handledStatus    = 16; // 状态：16仲裁中
+    protected $handledStatus    = 16; // 操作之后状态：16仲裁中
     protected $type             = 20; // 操作：20申请仲裁
-	// 运行, 第一个参数为订单号，第二个参数为操作用户id
+    
+	/**
+     * [仲裁中：写日志，写流水]
+     * @param  [type] $orderNo     [订单号]
+     * @param  [type] $userId      [操作人]
+     * @param  [type] $apiAmount   [回传代练费]
+     * @param  [type] $apiDeposit  [回传双金]
+     * @param  [type] $apiService  [回传代练手续费]
+     * @param  [type] $writeAmount [协商代练费]
+     * @return [type]              [true or exception]
+     */
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();

@@ -13,7 +13,17 @@ class Complete extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
     protected $handledStatus    = 20; // 状态：20已结算
     protected $type             = 12; // 操作：12完成
-	// 运行, 第一个参数为订单号，第二个参数为操作用户id
+    
+	/**
+     * [run 完成 -> 已结算]
+     * @param  [type] $orderNo     [订单号]
+     * @param  [type] $userId      [操作人]
+     * @param  [type] $apiAmount   [回传代练费]
+     * @param  [type] $apiDeposit  [回传双金]
+     * @param  [type] $apiService  [回传代练手续费]
+     * @param  [type] $writeAmount [协商代练费]
+     * @return [type]              [true or exception]
+     */
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();

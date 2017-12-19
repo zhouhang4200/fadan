@@ -13,7 +13,16 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
     protected $handledStatus; // 状态：操作之后的状态
     protected $type             = 19; // 操作：19取消撤销
-	// 运行, 第一个参数为订单号，第二个参数为操作用户id
+
+	/**
+     * [run 取消撤销 -> 撤销前的状态]
+     * @param  [type] $userId      [操作人]
+     * @param  [type] $apiAmount   [回传代练费]
+     * @param  [type] $apiDeposit  [回传双金]
+     * @param  [type] $apiService  [回传代练手续费]
+     * @param  [type] $writeAmount [协商代练费]
+     * @return [type]              [true or exception]
+     */
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();

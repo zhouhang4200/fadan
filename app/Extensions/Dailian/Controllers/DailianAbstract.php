@@ -24,7 +24,10 @@ abstract class DailianAbstract
     protected $handledStatus;       // 操作后状态
     protected $description;         // 操作说明
 
-    // 获取订单对象
+    /**
+     * [getObject description]
+     * @return [type] [description]
+     */
     public function getObject()
     {
     	$this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();

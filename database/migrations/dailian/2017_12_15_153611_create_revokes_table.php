@@ -21,7 +21,8 @@ class CreateRevokesTable extends Migration
             $table->decimal('amount', 10, 4)->comment('申请退还的代练金');
             $table->decimal('deposit', 10, 4)->comment('申请退还的保证金');
             $table->tinyInteger('status')->unsigned()->comment('申请仲裁：0未申请仲裁，1 发单方申请仲裁, 2 接单方申请仲裁, 3 已仲裁');
-            $table->string('message', 500)->comment('撤销或仲裁原因');
+            $table->string('revoke_message', 500)->comment('撤销原因');
+            $table->string('complain_message', 500)->nullable()->comment('申诉原因');
             $table->timestamps();
         });
     }

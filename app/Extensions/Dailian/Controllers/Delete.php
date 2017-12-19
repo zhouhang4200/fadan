@@ -12,7 +12,17 @@ class Delete extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 24; // 状态：24已删除
     protected $type             = 23; // 操作：23删除
-	// 运行, 第一个参数为订单号，第二个参数为操作用户id
+
+	/**
+     * [run 删除 -》 删除]
+     * @param  [type] $orderNo     [订单号]
+     * @param  [type] $userId      [操作人]
+     * @param  [type] $apiAmount   [回传代练费]
+     * @param  [type] $apiDeposit  [回传双金]
+     * @param  [type] $apiService  [回传代练手续费]
+     * @param  [type] $writeAmount [协商代练费]
+     * @return [type]              [true or exception]
+     */
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();

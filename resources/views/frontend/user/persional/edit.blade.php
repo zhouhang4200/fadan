@@ -52,13 +52,13 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">充值旺旺号:</label>
+                    <label class="layui-form-label">充值旺旺号:</label>  
                     <div class="layui-input-inline">
                         <input type="text" name="wang_wang" lay-verify="" value="{{ $user->wang_wang }}" autocomplete="off" placeholder="请输入充值旺旺号" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">店铺旺旺号:</label>
+                    <label class="layui-form-label">店铺旺旺号:</label>  
                     <div class="layui-input-inline">
                         <input type="text" name="store_wang_wang" lay-verify="" value="{{ $user->store_wang_wang }}" autocomplete="off" placeholder="请输入店铺旺旺号" class="layui-input">
                     </div>
@@ -105,6 +105,7 @@
             layer.closeAll();
             return false;
         });
+
     });
 </script>
 @endsection

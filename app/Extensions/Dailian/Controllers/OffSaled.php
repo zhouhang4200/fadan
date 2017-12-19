@@ -12,7 +12,17 @@ class OffSaled extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus = 12; // 操作之前的状态:12未接单
     protected $handledStatus    = 22; // 状态：22已下架
     protected $type             = 15; // 操作：15下架
-	// 运行, 第一个参数为订单号，第二个参数为操作用户id
+
+	/**
+     * [run 下架 -> 已下架]
+     * @param  [type] $orderNo     [订单号]
+     * @param  [type] $userId      [操作人]
+     * @param  [type] $apiAmount   [回传代练费]
+     * @param  [type] $apiDeposit  [回传双金]
+     * @param  [type] $apiService  [回传代练手续费]
+     * @param  [type] $writeAmount [协商代练费]
+     * @return [type]              [true or exception]
+     */
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();
