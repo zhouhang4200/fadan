@@ -39,6 +39,10 @@ class ExecuteController extends Controller
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	        $data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
+
+            if ($request->data['money'] == 'original_amount') {
+                $data['sub_money'] = bcmul($order->original_amount, 0.01);
+            }
             // 判断订单是否存在
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);

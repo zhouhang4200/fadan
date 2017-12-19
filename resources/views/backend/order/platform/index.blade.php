@@ -264,6 +264,7 @@
                     <option value="10">10 元</option>
                     <option value="20">20 元</option>
                     <option value="50">50 元</option>
+                    <option value="original_amount">原订单价格的 1% </option>
                 </select>
             </div>
         </div>
@@ -276,6 +277,7 @@
                     <option value="未按要求给顾客反馈信息和话术">未按要求给顾客反馈信息和话术,处罚 10 元</option>
                     <option value="因沟通问题造成用户差评">因沟通问题造成用户差评,处罚 20 元</option>
                     <option value="聊天记录抽查发现怼客户">聊天记录抽查发现怼客户,处罚 50 元</option>
+                    <option value="接单超时未完成罚款,处罚原订单价格的 1%">接单超时未完成罚款,处罚原订单价格的 1%</option>
                 </select>
             </div>
         </div>
