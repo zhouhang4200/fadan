@@ -152,7 +152,7 @@
                                     <td>{{ $order->created_at }}</td>
                                     <td>
                                         <div class="layui-input-inline">
-                                            <select  lay-filter="operation" data-no="{{ $order->no }}" data-id="{{ $order->id }}">
+                                            <select  lay-filter="operation" data-no="{{ $order->no }}" data-original-amount="{{ $order->original_amount }}" data-id="{{ $order->id }}">
                                                 <option value="">请选择操作</option>
                                                     <option value="execute2">罚款</option>
                                                     <option value="execute3">加权重</option>
@@ -264,7 +264,7 @@
                     <option value="10">10 元</option>
                     <option value="20">20 元</option>
                     <option value="50">50 元</option>
-                    <option value="original_amount">原订单价格的 1% </option>
+                    <option id="original_amount" value="original_amount">原订单价格的 1% </option>
                 </select>
             </div>
         </div>
