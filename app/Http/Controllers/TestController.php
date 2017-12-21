@@ -55,39 +55,16 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-        $order = Order::find(88);
+        $data = 'zhouhang';
+        // 测试代练接口加密
+        return $this->testEncrypt('abc', $data);
 
-        // $orderDetail = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
-        // dd($orderDetail);
-        // dd(AUth::user());
-        // 完成: 订单号 操作人
-        // $a = DailianFactory::choose('complete')->run('2017121818232200000003', '27'); //bool
-        // 删除: 订单号 操作人
-        // $a = DailianFactory::choose('delete')->run('2017121818232200000003', '27'); //bool
-        // 上架：订单号 操作人
-        // $a = DailianFactory::choose('onSale')->run('2017121818232200000003', '27'); //bool
-        // 下架：订单号 操作人
-        // $a = DailianFactory::choose('offSale')->run('2017121818232200000003', '27'); //bool
-        // 锁定： 订单号 操作人
-        // $a = DailianFactory::choose('lock')->run('2017121818232200000003', '27'); //bool
-        // 取消锁定: 订单号 操作人
-        // $a = DailianFactory::choose('cancelLock')->run('2017121818232200000003', '27'); //bool
-        // 撤销：订单号 操作人
-        // $a = DailianFactory::choose('revoke')->run('2017121818232200000003', '27'); //bool
-        // 同意撤销 订单号 操作人 协商代练费 回传双金费 回传手续费 协商双金
-        // $a = DailianFactory::choose('agreeRevoke')->run('2017121818232200000003', '27', 20, 2, 2, 4); //bool
-        // 取消撤销:订单号 操作人
-        // $a = DailianFactory::choose('cancelRevoke')->run('2017121818232200000003', '27'); //bool
-        // 强制撤销：订单号 操作人
-        // $a = DailianFactory::choose('forceRevoke')->run('2017121818232200000003', '27'); //bool
-        // 申请仲裁 ：订单号 操作人
-        // $a = DailianFactory::choose('applayArbitration')->run('2017121818232200000003', '27'); //bool
-        // 取消仲裁：订单号 操作人
-        // $a = DailianFactory::choose('cancelArbitration')->run('2017121818232200000003', '27'); //bool
-        // 已仲裁 ：订单号 操作人 回传代练费 回传双金费 回传手续费
-        // $a = DailianFactory::choose('arbitration')->run('2017121818232200000003', '27', 18, 10, 2); //bool
-        dd($a);
-        // dd($order);
+        // 测试代练接口解密
+        return $this->testDecrypt();
+
+
+        // 测试代练订单状态
+        // $this->testDailianStatus();
 
         // $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
         // $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
@@ -193,5 +170,89 @@ class TestController extends Controller
     public function command()
     {
         $exitCode = Artisan::call('migrate');
+    }
+
+    public function testDailianStatus()
+    {
+        // $order = Order::find(88);
+        // $orderDetail = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+        // 完成: 订单号 操作人
+        // $a = DailianFactory::choose('complete')->run('2017121818232200000003', '27'); //bool
+        // 删除: 订单号 操作人
+        // $a = DailianFactory::choose('delete')->run('2017121818232200000003', '27'); //bool
+        // 上架：订单号 操作人
+        // $a = DailianFactory::choose('onSale')->run('2017121818232200000003', '27'); //bool
+        // 下架：订单号 操作人
+        // $a = DailianFactory::choose('offSale')->run('2017121818232200000003', '27'); //bool
+        // 锁定： 订单号 操作人
+        // $a = DailianFactory::choose('lock')->run('2017121818232200000003', '27'); //bool
+        // 取消锁定: 订单号 操作人
+        // $a = DailianFactory::choose('cancelLock')->run('2017121818232200000003', '27'); //bool
+        // 撤销：订单号 操作人
+        // $a = DailianFactory::choose('revoke')->run('2017121818232200000003', '27'); //bool
+        // 同意撤销 订单号 操作人 协商代练费 回传双金费 回传手续费 协商双金
+        // $a = DailianFactory::choose('agreeRevoke')->run('2017121818232200000003', '27', 20, 2, 2, 4); //bool
+        // 取消撤销:订单号 操作人
+        // $a = DailianFactory::choose('cancelRevoke')->run('2017121818232200000003', '27'); //bool
+        // 强制撤销：订单号 操作人
+        // $a = DailianFactory::choose('forceRevoke')->run('2017121818232200000003', '27'); //bool
+        // 申请仲裁 ：订单号 操作人
+        // $a = DailianFactory::choose('applayArbitration')->run('2017121818232200000003', '27'); //bool
+        // 取消仲裁：订单号 操作人
+        // $a = DailianFactory::choose('cancelArbitration')->run('2017121818232200000003', '27'); //bool
+        // 已仲裁 ：订单号 操作人 回传代练费 回传双金费 回传手续费
+        // $a = DailianFactory::choose('arbitration')->run('2017121818232200000003', '27', 18, 10, 2); //bool
+        // dd($order);
+    }
+
+    public function testEncrypt($key, $data)
+    {
+        $key = hash('sha256', $key, true); // 十六进制
+        $iv = $this->hexToStr('00000000000000000000000000000000'); // \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+        $privateKey = '-----BEGIN PRIVATE KEY-----
+MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAL5CB0BHCL81Ov31
+0aZzFv9e6vmzFsvOhdywog57gnJ+QC1lj8ILQ+iBaeseQYD5C9XG1jfVb2k5gpqy
+UoIV00ySLri3+V8xY8isGgKISXdyq9+P1aRNq2RS3t49wf4xyQewbgKr0HoH09eV
+FgTf6rQeH2MFB326QYFcUnEvKCfBAgMBAAECgYEAuiinKaiXkWfHMgjduwzvmq3I
+Isyt6HtKFZcq6hrFl7ualhDC6e3V42EFP04ab9S/VMw6fOU1HvNrrGwBOVGbraeS
+K45csy30KEMl6ZOm7rBdqHm3M1xjStWHrfQcvrd8ZM6lJr+8bGveWRwUoTC2kOJY
+wg0pYa6hR2VAuHIteLUCQQDeKuH6hBgoE9Z8UvaQVYdn0cpgEZn1eqgAH5YkhhBZ
+7x/CIlmASizMiWjgvuA5PShCgdcpbPx64meWIdvhVRQnAkEA2zspikwJLrzjbiOX
+UndPzFUlpBV6H7K2f9M5iS05+kBmjzKMXNwMsUb4pjmakUG491OkHWGe36aNkunY
+uYfN1wJAWuQ4Z4E7UMos6dgXP51+NB9EKGGLFz8DFGnXx0GB1wlZeNcMvsuZ4GQn
+ICt3GHPI0MzF9hC8ipmtv2JCzsE76QJBAJDKnkDsvxPTRRI1B3g7vMRjaBza4nGV
+Atuhkdp7uFMDvbjN1c5utyNOkGKYoPFWyubuovGUy+1CfzaMo8rFWrkCQQC9ZNaT
+ziowtzttdpQ12IhLcdcfeS1gLtvQ3QIokwb3wHgdhB5knDSTYz/upgr9GRddCv8W
+Iuli3G2IJNYc9Cwu
+-----END PRIVATE KEY-----'; // 私钥
+        // 0984752eb763b64cbc3c9d1707dbbb83f13af4d010e9028f8047e1a833304ac10d4c7f7405586b60206d29ebc20491ed844d0553043be530117cf8c13625c25ab1910cedc33018b70064a8c59b9cd8b73c87b37e1abe54d22072afe871c5e8540e74e89f03588b186e812af63d58f92d150ba1ba49b4e5019463a550412c3310
+        $sendKey =  openssl_private_encrypt($key, $encrypted, $privateKey) ? bin2hex($encrypted) : null;
+
+        //  函数把包含数据的二进制字符串转换为十六进制值
+        $data = bin2hex(openssl_encrypt($data, 'aes-256-cbc', $sendKey, OPENSSL_RAW_DATA, $iv)); // 2935d78c2993d1af3e449451265ddc09
+        // $endKey = base64_encode(openssl_encrypt($data, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv)); // xzBjhhtT4KLQEg8vAAPc3A==
+        // $endKey = openssl_encrypt($data, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv); // Ç0c†\eSà¢Ð\x12\x0F/\x00\x03ÜÜ
+        return ['key' => $sendKey, 'data' => $data];   
+    }
+
+     /**
+     * @param $hex
+     * @return string
+     */
+    private function hexToStr($hex)
+    {
+        $string = '';
+        for ($i = 0; $i < strlen($hex) - 1; $i += 2) {
+            $string .= chr(hexdec($hex[$i] . $hex[$i + 1]));
+        }
+        return $string;
+    }
+
+    public function testDecrypt($sendKey, $data)
+    {
+        $sendKey = '0984752eb763b64cbc3c9d1707dbbb83f13af4d010e9028f8047e1a833304ac10d4c7f7405586b60206d29ebc20491ed844d0553043be530117cf8c13625c25ab1910cedc33018b70064a8c59b9cd8b73c87b37e1abe54d22072afe871c5e8540e74e89f03588b186e812af63d58f92d150ba1ba49b4e5019463a550412c3310';
+        $data = '2935d78c2993d1af3e449451265ddc09';
+
+        
     }
 }
