@@ -50,11 +50,13 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function createForeignOrder($decodeArray)
     {
+        $jSitd = isset($decodeArray['JSitid']) ? $decodeArray['JSitid'] : 0;
+
         // 如果进货站点为天猫店，则去取订单的天猫订单信息
-        $siteInfo  = SiteInfo::where('kamen_site_id', $decodeArray['JSitid'])->first();
+        $siteInfo  = SiteInfo::where('kamen_site_id', $jSitd)->first();
         $price = 0; $totalPrice = 0; $wangWang = ''; $remark = '';
 
-        if ($siteInfo && $siteInfo->channel == 3) {
+        if ($siteInfo && $siteInfo->channel == 3 && isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
             $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);
             $price = $tmallOrderInfo['price'];
             $remark = $tmallOrderInfo['remark'];
@@ -77,10 +79,10 @@ class KamenForeignOrder extends ForeignOrder
 
 		$data['channel']          =  $siteInfo->channel;
 		$data['channel_name']     =  $siteInfo->name;
-		$data['kamen_order_no']   =  $decodeArray['OrderNo'];
-		$data['foreign_order_no'] = $decodeArray['CustomerOrderNo'];
-		$data['order_time']       = $decodeArray['BuyTime'];
-		$data['foreign_goods_id'] = $decodeArray['ProductId'];
+		$data['kamen_order_no']   =  $decodeArray['OrderNo'] ?? '';
+		$data['foreign_order_no'] = $decodeArray['CustomerOrderNo'] ?? '';
+		$data['order_time']       = $decodeArray['BuyTime'] ?? '';
+		$data['foreign_goods_id'] = $decodeArray['ProductId'] ?? '';
 		$data['single_price']     = $price;
 		$data['total_price']      = $totalPrice;
 		$data['wang_wang']        = $wangWang;
@@ -88,7 +90,11 @@ class KamenForeignOrder extends ForeignOrder
 		$data['qq']               = $decodeArray['ContactQQ'] ?? '';
 		$data['details']          = $this->saveDetails($decodeArray);
 
-		$has = ForeignOrderModel::where('foreign_order_no', $decodeArray['CustomerOrderNo'])->first();
+        if (isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
+            $has = ForeignOrderModel::where('foreign_order_no', $decodeArray['CustomerOrderNo'])->first();
+        } else {
+            $has = ForeignOrderModel::where('kamen_order_no', $decodeArray['OrderNo'])->first();
+        }
 
 		if (! $has) {
 			return ForeignOrderModel::create($data);
