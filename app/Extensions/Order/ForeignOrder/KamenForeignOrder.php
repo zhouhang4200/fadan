@@ -80,7 +80,7 @@ class KamenForeignOrder extends ForeignOrder
 		$data['channel']          =  $siteInfo->channel;
 		$data['channel_name']     =  $siteInfo->name;
 		$data['kamen_order_no']   =  $decodeArray['OrderNo'] ?? '';
-		$data['foreign_order_no'] = $decodeArray['CustomerOrderNo'] ? $decodeArray['CustomerOrderNo'] : $decodeArray['OrderNo'];
+		$data['foreign_order_no'] = isset($decodeArray['CustomerOrderNo']) ? $decodeArray['CustomerOrderNo'] : $decodeArray['OrderNo'];
 		$data['order_time']       = $decodeArray['BuyTime'] ?? '';
 		$data['foreign_goods_id'] = $decodeArray['ProductId'] ?? '';
 		$data['single_price']     = $price;
