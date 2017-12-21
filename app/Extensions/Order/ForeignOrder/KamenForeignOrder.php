@@ -74,7 +74,7 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['ProductPrice'] = $price;
             $decodeArray['total_price'] = $totalPrice;
             $decodeArray['remark'] = $remark;
-            $decodeArray['province'] = loginDetail($decodeArray['BuyerIp'])['province'];
+            $decodeArray['province'] = $jSitd == 0 ? $decodeArray['ChargeServer'] : loginDetail($decodeArray['BuyerIp'])['province'];
         }
 
 		$data['channel']          =  $siteInfo->channel;
