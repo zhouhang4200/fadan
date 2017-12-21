@@ -120,7 +120,7 @@
                 @if($item->field_name != 'quantity')
                 <li class="overflow">
                     <div class="item-banner left cm-padding">{{ $item->field_display_name }}</div>
-                    <div class="item-content left cm-padding">{{ $item->field_value }}</div>
+                    <div class="item-content left cm-padding">{{ isBase64($item->field_value) ? base64_decode($item->field_value) :  $item->field_value }}</div>
                 </li>
                 @endif
             @empty
