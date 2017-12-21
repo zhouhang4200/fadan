@@ -203,8 +203,13 @@
                                                                                     <td class="text-left" width="20%">
                                                                                         {{ $item->field_display_name }}
                                                                                     </td>
+
                                                                                     <td class="text-left" style="font-size: 14px">
-                                                                                        {{ isBase64($item->field_value) ? base64_decode($item->field_value) :  $item->field_value }}
+                                                                                    @if ($order->creator_primary_user_id == 8311 && $item->field_name == 'password')
+                                                                                        {{   base64_decode($item->field_value)  }}
+                                                                                    @else
+                                                                                        {{   $item->field_value }}
+                                                                                    @endif
                                                                                     </td>
                                                                                 </tr>
                                                                             @endif
