@@ -106,7 +106,7 @@ class KamenForeignOrder extends ForeignOrder
     protected function output(ForeignOrderModel $model)
     {
         // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
-        $siteId = $model->details->JSitid;
+        $siteId = !empty($model->details->JSitid) ? $model->details->JSitid : 0;
 
         $userId = SiteInfo::where('kamen_site_id', $siteId)->value('user_id');
 
@@ -146,7 +146,7 @@ class KamenForeignOrder extends ForeignOrder
                     $data['price'] = $model->details->ProductPrice;
                 }
                 $data['total'] = $model->details->total_price;
-                $data['kamen_site_id'] = $model->details->JSitid;
+                $data['kamen_site_id'] = $siteId;
                 $data['province'] = $model->details->province;
                 $data['remark'] = $model->details->remark;
                 $data['wang_wang'] = $model->wang_wang;
