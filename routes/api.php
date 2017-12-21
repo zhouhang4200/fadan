@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::namespace('Api')->group(function () {
+Route::post('kamen', 'OrderController@KamenOrder');
+Route::any('test', 'OrderController@test');
 
-    Route::post('kamen', 'OrderController@KamenOrder');
-    Route::any('test', 'OrderController@test');
+Route::namespace('App')->middleware('api.decode')->group(function () {
+    Route::get('test', 'AuthController@index');
 });
-

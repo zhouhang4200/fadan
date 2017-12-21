@@ -17,5 +17,9 @@ class ResponseMacroServiceProvider extends ServiceProvider
         Response::macro('ajax', function ($status = 1, $message = 'success', $content= []) {
             return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
         });
+
+        Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content= []) {
+            return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
+        });
     }
 }
