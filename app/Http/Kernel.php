@@ -60,5 +60,6 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
         'api.decode' => \App\Http\Middleware\ApiDecode::class,
+        'api.auth' => \App\Http\Middleware\ApiAuth::class,
     ];
 }
