@@ -57,10 +57,10 @@ class TestController extends Controller
     {
         $data = 'zhouhang';
         // 测试代练接口加密
-        // return $this->testEncrypt('abc', $data);
+        $data = $this->testEncrypt('abc', $data);
 
         // 测试代练接口解密
-        // return $this->testDecrypt();
+        return $this->testDecrypt($data);
 
 
         // 测试代练订单状态
@@ -205,7 +205,7 @@ class TestController extends Controller
         // dd($order);
     }
 
-    public function testEncrypt($key, $data)
+    public function testEncrypt($key = 'aaa', $data = '111')
     {
         $key = hash('sha256', $key, true); // 十六进制
         $iv = $this->hexToStr('00000000000000000000000000000000'); // \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
@@ -248,11 +248,21 @@ Iuli3G2IJNYc9Cwu
         return $string;
     }
 
-    public function testDecrypt($sendKey, $data)
+    public function testDecrypt($data)
     {
-        $sendKey = '0984752eb763b64cbc3c9d1707dbbb83f13af4d010e9028f8047e1a833304ac10d4c7f7405586b60206d29ebc20491ed844d0553043be530117cf8c13625c25ab1910cedc33018b70064a8c59b9cd8b73c87b37e1abe54d22072afe871c5e8540e74e89f03588b186e812af63d58f92d150ba1ba49b4e5019463a550412c3310';
-        $data = '2935d78c2993d1af3e449451265ddc09';
+        $publicKey = '-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+QgdARwi/NTr99dGmcxb/Xur5
+sxbLzoXcsKIOe4JyfkAtZY/CC0PogWnrHkGA+QvVxtY31W9pOYKaslKCFdNMki64
+t/lfMWPIrBoCiEl3cqvfj9WkTatkUt7ePcH+MckHsG4Cq9B6B9PXlRYE3+q0Hh9j
+BQd9ukGBXFJxLygnwQIDAQAB
+-----END PUBLIC KEY-----';
+        $sendKey = $data['key'];
+        $iv = $this->hexToStr('00000000000000000000000000000000');
 
+        $decryptKey = openssl_public_decrypt(pack("H*", $sendKey), $decrypted, $publicKey) ? $decrypted : null;
+
+        $datas = openssl_decrypt(pack("H*", $data['data']), 'aes-256-cbc', $decryptKey, OPENSSL_RAW_DATA, $iv); 
+        dd($datas);
         
     }
 }
