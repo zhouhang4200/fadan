@@ -205,7 +205,7 @@
                                                                                     </td>
 
                                                                                     <td class="text-left" style="font-size: 14px">
-                                                                                    @if ($order->creator_primary_user_id == 8311 && $item->field_name == 'password')
+                                                                                    @if ($content->creator_primary_user_id == 8311 && $item->field_name == 'password')
                                                                                         {{   base64_decode($item->field_value)  }}
                                                                                     @else
                                                                                         {{   $item->field_value }}
