@@ -46,6 +46,8 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            (new Lock)->run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());

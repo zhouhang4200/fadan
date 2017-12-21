@@ -32,7 +32,7 @@ class Lock extends DailianAbstract implements DailianInterface
         	$this->userId  = $userId;
             // 获取订单对象
             $this->getObject();
-        	$this->beforeHandleStatus = $this->getOrder()->status ?? 13;
+        	$this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性

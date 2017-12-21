@@ -57,14 +57,14 @@ class TestController extends Controller
     {
         $data = 'zhouhang';
         // 测试代练接口加密
-        return $this->testEncrypt('abc', $data);
+        // return $this->testEncrypt('abc', $data);
 
         // 测试代练接口解密
-        return $this->testDecrypt();
+        // return $this->testDecrypt();
 
 
         // 测试代练订单状态
-        // $this->testDailianStatus();
+        return $this->testDailianStatus();
 
         // $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
         // $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
@@ -187,13 +187,13 @@ class TestController extends Controller
         // 锁定： 订单号 操作人
         // $a = DailianFactory::choose('lock')->run('2017121818232200000003', '27'); //bool
         // 取消锁定: 订单号 操作人
-        // $a = DailianFactory::choose('cancelLock')->run('2017121818232200000003', '27'); //bool
+        // $a = DailianFactory::choose('cancelLock')->run('2017121917434600000003', '27'); //bool
         // 撤销：订单号 操作人
-        // $a = DailianFactory::choose('revoke')->run('2017121818232200000003', '27'); //bool
+        // $a = DailianFactory::choose('revoke')->run('2017121917434600000003', '27'); //bool
         // 同意撤销 订单号 操作人 协商代练费 回传双金费 回传手续费 协商双金
         // $a = DailianFactory::choose('agreeRevoke')->run('2017121818232200000003', '27', 20, 2, 2, 4); //bool
         // 取消撤销:订单号 操作人
-        // $a = DailianFactory::choose('cancelRevoke')->run('2017121818232200000003', '27'); //bool
+        // $a = DailianFactory::choose('cancelRevoke')->run('2017121917434600000003', '27'); //bool
         // 强制撤销：订单号 操作人
         // $a = DailianFactory::choose('forceRevoke')->run('2017121818232200000003', '27'); //bool
         // 申请仲裁 ：订单号 操作人
