@@ -25,6 +25,7 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     // 登陆后接口
     Route::middleware('api.auth')->group(function () {
         Route::any('test', 'TestController@index');
+        Route::get('order', 'OrderController@index');
     });
 });
 
@@ -36,7 +37,7 @@ Route::get('t', function () {
     // dump($key);
 
     $aesKey = 'woca';
-    $data = json_encode(['name' => 'buer2202', 'password' => 'abcdefg']);
+    $data = json_encode(['page' => 1, 'perPage' => 2, 'status' => 3]);
     $a = new \App\Extensions\EncryptAndDecrypt\Aes($aesKey);
 
     $str = $a->encrypt($data);
