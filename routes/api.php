@@ -21,6 +21,8 @@ Route::any('test', 'OrderController@test');
 /* App 接口 */
 Route::namespace('App')->middleware('api.decode')->group(function () {
     // 登陆接口
+    Route::post('auth/login', 'AuthController@login');
+    Route::post('auth/logout', 'AuthController@logout');
 
     // 登陆后接口
     Route::middleware('api.auth')->group(function () {
@@ -34,16 +36,12 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
 
 Route::get('t', function () {
     $aesKey = str_random(24);
-    openssl_public_encrypt($aesKey, $key, '-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+QgdARwi/NTr99dGmcxb/Xur5
-sxbLzoXcsKIOe4JyfkAtZY/CC0PogWnrHkGA+QvVxtY31W9pOYKaslKCFdNMki64
-t/lfMWPIrBoCiEl3cqvfj9WkTatkUt7ePcH+MckHsG4Cq9B6B9PXlRYE3+q0Hh9j
-BQd9ukGBXFJxLygnwQIDAQAB
------END PUBLIC KEY-----');
+    dump($aesKey);
+    openssl_public_encrypt($aesKey, $key, config('ios.ase_public_key'));
     $key = bin2hex($key);
     dump($key);
 
-    $data = json_encode(['user' => 2741, 'name' => 'buer']);
+    $data = json_encode(['name' => 'buer2202', 'password' => 'abcdefg']);
     $a = new \App\Extensions\EncryptAndDecrypt\Aes($aesKey);
 
     $str = $a->encrypt($data);

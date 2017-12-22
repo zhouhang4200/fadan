@@ -22,7 +22,6 @@ class ApiDecode
         myLog('app-request', ['App请求来了', $request->url(), $_SERVER['QUERY_STRING'],  $request->all()]);
 
         $validator = Validator::make($request->all(), [
-            'api_token' => 'bail|required|min:1|max:60',
             'key'       => 'bail|required',
             'data'      => 'bail|required',
         ]);
@@ -33,7 +32,7 @@ class ApiDecode
 
         try {
             // 解密数据包得到Aes 解密 key
-            if (!openssl_private_decrypt(pack("H*", $request->key), $aesKey, config('encryptanddecrypt.app.ase_private_key'))) {
+            if (!openssl_private_decrypt(pack("H*", $request->key), $aesKey, config('ios.ase_private_key'))) {
                 throw new Exception('key解密失败');
             }
 
@@ -44,9 +43,9 @@ class ApiDecode
             return response()->jsonReturn(0, $e->getMessage());
         }
 
-        $request->data = json_decode((new Aes($aesKey))->decrypt($request->data), true);
+        $request->params = json_decode((new Aes($aesKey))->decrypt($request->data), true);
 
-        myLog('app-request', ['App data解密', $request->url(), $_SERVER['QUERY_STRING'],  $request->data]);
+        myLog('app-request', ['App data解密', $request->url(), $_SERVER['QUERY_STRING'],  $request->params]);
 
         return $next($request);
     }
