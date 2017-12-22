@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Response;
 use Illuminate\Support\ServiceProvider;
+use App\Extensions\EncryptAndDecrypt\Aes;
 
 class ResponseMacroServiceProvider extends ServiceProvider
 {
@@ -14,12 +15,21 @@ class ResponseMacroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Response::macro('ajax', function ($status = 1, $message = 'success', $content= []) {
+        Response::macro('ajax', function ($status = 1, $message = 'success', $content = []) {
             return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
         });
 
-        Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content= []) {
-            return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
+        Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content = []) {
+            return response()->json(
+                [
+                    'status'  => $status,
+                    'message' => $message,
+                    'content' => empty($content) ? null : (new Aes(config('ios.aes_key')))->encrypt(json_encode($content))
+                ],
+                200,
+                ["Content-type" => "application/json;charset=utf-8"],
+                JSON_UNESCAPED_UNICODE
+            );
         });
     }
 }

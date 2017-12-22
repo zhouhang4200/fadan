@@ -14,10 +14,10 @@ class Aes
      * Aes constructor.
      * @param $key
      */
-    function __construct($key)
+    function __construct($key, $iv = '00000000000000000000000000000000')
     {
         $this->key = hash('sha256', $key, true);
-        $this->iv = $this->hexToStr('00000000000000000000000000000000');
+        $this->iv = $this->hexToStr($iv);
     }
 
     /**

@@ -21,29 +21,15 @@ class ApiDecode
     {
         myLog('app-request', ['App请求来了', $request->url(), $_SERVER['QUERY_STRING'],  $request->all()]);
 
-        $validator = Validator::make($request->all(), [
-            'key'       => 'bail|required',
-            'data'      => 'bail|required',
-        ]);
-
+        $validator = Validator::make($request->all(), ['data' => 'bail|required']);
         if ($validator->fails()) {
             return response()->jsonReturn(0, '参数不正确');
         }
 
-        try {
-            // 解密数据包得到Aes 解密 key
-            if (!openssl_private_decrypt(pack("H*", $request->key), $aesKey, config('ios.ase_private_key'))) {
-                throw new Exception('key解密失败');
-            }
-
-            if (empty($aesKey)) {
-                throw new Exception('解密失败');
-            }
-        } catch(Exception $e){
-            return response()->jsonReturn(0, $e->getMessage());
+        $request->params = json_decode((new Aes(config('ios.aes_key')))->decrypt($request->data), true);
+        if (empty($request->params)) {
+            return response()->jsonReturn(0, '数据解密失败');
         }
-
-        $request->params = json_decode((new Aes($aesKey))->decrypt($request->data), true);
 
         myLog('app-request', ['App data解密', $request->url(), $_SERVER['QUERY_STRING'],  $request->params]);
 
