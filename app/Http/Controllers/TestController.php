@@ -51,20 +51,23 @@ use App\Events\NotificationEvent;
 
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
+use App\Services\Show91;
+
 class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
-        $data = 'zhouhang';
-        // 测试代练接口加密
-        $data = $this->testEncrypt('abc', $data);
+        return $this->testShow91();
+        // $data = 'zhouhang';
+        // // 测试代练接口加密
+        // $data = $this->testEncrypt('abc', $data);
 
-        // 测试代练接口解密
-        return $this->testDecrypt($data);
+        // // 测试代练接口解密
+        // return $this->testDecrypt($data);
 
 
-        // 测试代练订单状态
-        return $this->testDailianStatus();
+        // // 测试代练订单状态
+        // return $this->testDailianStatus();
 
         // $yestodayStart = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
         // $yestodayEnd = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
@@ -264,5 +267,12 @@ BQd9ukGBXFJxLygnwQIDAQAB
         $datas = openssl_decrypt(pack("H*", $data['data']), 'aes-256-cbc', $decryptKey, OPENSSL_RAW_DATA, $iv); 
         dd($datas);
         
+    }
+
+    public function testShow91()
+    {
+        $tid = 1;
+
+        return Show91::cancelOrder();
     }
 }
