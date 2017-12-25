@@ -41,9 +41,30 @@ class OrderController extends Controller
     }
 
     /**
+     * 订单详情查看
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function detail(Request $request, OrderRepository $orderRepository)
+    {
+        if (!isset($request->params['no'])) {
+            return response()->jsonReturn(0, '参数不正确');
+        }
+
+        $order = $orderRepository->detail($request->params['no']);
+
+        if (empty($order)) {
+            return response()->jsonReturn(0, '订单不存在');
+        }
+
+        return response()->jsonReturn(1, 'success', ['order' => $order]);
+    }
+
+    /**
      * 退回订单集市
      * @param Request $request
-     * @return
+     * @return \Illuminate\Http\JsonResponse
      */
     public function turnBack(Request $request)
     {

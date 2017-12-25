@@ -32,8 +32,9 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
 
         // 订单列表
         Route::get('order', 'OrderController@index');
+        // 订单详情
+        Route::get('order/detail', 'OrderController@detail');
         // 退回集市
         Route::post('order/turn-back', 'OrderController@turnBack');
     });
 });
-

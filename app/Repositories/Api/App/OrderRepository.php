@@ -46,4 +46,20 @@ class OrderRepository
 
         return $dataList;
     }
+
+    /**
+     * 订单详情
+     * @param $orderNo
+     */
+    public function detail($orderNo)
+    {
+        $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
+
+        return Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
+            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
+        })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
+            $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo])->where('status', '>', 2);
+        })->with(['detail', 'foreignOrder'])
+        ->first();
+    }
 }
