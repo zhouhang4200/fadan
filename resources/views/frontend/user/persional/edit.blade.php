@@ -4,10 +4,51 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <link href="/frontend/css/iconfont.css" rel="stylesheet">
     <style>
         .layui-table tr th , td {
             text-align: center;
         } 
+        .postion{
+            position: relative;
+        }
+        .tip,
+        .tips{
+            width: 300px;
+            height: 50px;
+            padding: 5%;
+            color: #fff;
+            border-radius: 10px;
+            background-color:#91C5FF;
+            position: absolute;
+            left:273px;
+            top: -67px;
+            padding: 5px;
+        }
+        .tip{
+            top:-65px;
+            left: 275px;
+        }
+        .tip::after,
+        .tips::after{
+            content: '';
+            border: 10px solid rgba(0, 0, 0, 0);
+            border-top-color:#91C5FF; 
+            position: absolute;
+            right: 255px;
+            top:60px;
+        }
+        .none{
+            display: none;
+        }
+        #recharge,
+        #store{
+            font-size: 20px;
+            position: absolute;
+            left: 310px;
+            top: 7px;
+        }
+
     </style>
 @endsection
 
@@ -51,14 +92,22 @@
                         <input type="text" name="phone" lay-verify="" value="{{ $user->phone }}" autocomplete="off" placeholder="请输入电话" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">充值旺旺号:</label>  
+                <div class="layui-form-item postion">
+                    <label class="layui-form-label">充值旺旺号:</label><i class="iconfont icon-wenhao" id="recharge">
+                   
+                    </i>
+                     <div class="tips none">
+                            该旺旺号用于充值判断，请用所填旺旺号在指定淘宝店铺购买充值商品，才能对该账号充值。
+                    </div>
                     <div class="layui-input-inline">
                         <input type="text" name="wang_wang" lay-verify="" value="{{ $user->wang_wang }}" autocomplete="off" placeholder="请输入充值旺旺号" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">店铺旺旺号:</label>  
+                <div class="layui-form-item postion">
+                    <label class="layui-form-label">店铺旺旺号:</label><i class="iconfont icon-wenhao" id="store"></i>
+                    <div class="tip none">
+                    该旺旺号用于充值判断，请用所填旺旺号在指定淘宝店铺购买充值商品，才能对该账号充值。
+            </div>
                     <div class="layui-input-inline">
                         <input type="text" name="store_wang_wang" lay-verify="" value="{{ $user->store_wang_wang }}" autocomplete="off" placeholder="请输入店铺旺旺号" class="layui-input">
                     </div>
@@ -77,7 +126,7 @@
 <!--START 底部-->
 @section('js')
 <script>
-   layui.use(['form', 'table', 'upload'], function(){
+    layui.use(['form', 'table', 'upload'], function(){
         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
         var layer = layui.layer;
         var upload = layui.upload;
@@ -106,6 +155,22 @@
             return false;
         });
 
+
+        $('#recharge').mouseout(function(){
+            $('.tips').addClass('none');
+        });
+        
+        $('#recharge').mousemove(function(){
+            $('.tips').removeClass('none');
+        });
+        $('#store').mouseout(function(){
+            $('.tip').addClass('none');
+        });
+        
+        $('#store').mousemove(function(){
+            $('.tip').removeClass('none');
+        });
     });
+
 </script>
 @endsection
