@@ -94,7 +94,7 @@ class OrderOperationController extends Controller
             // 接单后，将当前接单用户的ID写入相关的订单号的队列中
             receiving($currentUserId, $orderNo);
         } else {
-            return response()->ajax(1, "此订单您无权接单，请联系商家（" . $order->creator_primary_user_id . "）");
+            return response()->ajax(0, "此订单您无权接单，请联系商家（" . $order->creator_primary_user_id . "）");
         }
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
@@ -190,7 +190,7 @@ class OrderOperationController extends Controller
             // 调用退回
             Order::handle(new TurnBack($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -207,7 +207,7 @@ class OrderOperationController extends Controller
             // 调用退回
             Order::handle(new AskForAfterService($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -223,7 +223,7 @@ class OrderOperationController extends Controller
             // 调用退回
             Order::handle(new Payment($request->no, Auth::user()->id));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }

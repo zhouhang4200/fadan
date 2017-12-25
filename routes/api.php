@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,34 +16,24 @@ Route::any('test', 'OrderController@test');
 
 /* App 接口 */
 Route::namespace('App')->middleware('api.decode')->group(function () {
-    // 登陆接口
+    // 用户登陆
     Route::post('auth/login', 'AuthController@login');
-    Route::post('auth/logout', 'AuthController@logout');
+
+
+    Route::any('test', 'TestController@index'); // 临时测试，想删就删
 
     // 登陆后接口
     Route::middleware('api.auth')->group(function () {
-        Route::any('test', 'TestController@index');
+        // 用户认证
+        Route::post('auth/logout', 'AuthController@logout');
+
+        // 用户信息
+        Route::get('user', 'UserController@index');
+
+        // 订单列表
         Route::get('order', 'OrderController@index');
+        // 退回集市
+        Route::post('order/turn-back', 'OrderController@turnBack');
     });
 });
 
-Route::get('t', function () {
-    // $aesKey = str_random(24);
-    // dump($aesKey);
-    // openssl_public_encrypt($aesKey, $key, config('ios.ase_public_key'));
-    // $key = bin2hex($key);
-    // dump($key);
-
-    $aesKey = 'woca';
-    $data = json_encode(['page' => 1, 'perPage' => 2, 'status' => 3]);
-    $a = new \App\Extensions\EncryptAndDecrypt\Aes($aesKey);
-
-    $str = $a->encrypt($data);
-    dump($str);
-    dump($a->decrypt('ca255768f3b50c88d7468b3be507659a'));
-
-    // $b = new \App\Extensions\EncryptAndDecrypt\Aes1($aesKey);
-    // $str = $b->encrypt($data);
-    // dump($str);
-    // dump($b->decrypt($str));
-});
