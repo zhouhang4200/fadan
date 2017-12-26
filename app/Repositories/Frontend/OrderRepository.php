@@ -36,9 +36,8 @@ class OrderRepository
             } else {
                 $query->where('creator_primary_user_id', $primaryUserId); // 发单
             }
-        } else {
             $query->orderBy('id', 'desc');
-        }
+        } 
 //            $query->from(DB::raw('orders force index (orders_creator_primary_user_id_status_index)'));
 //        } else if ($type == 1 && $status != 'market') { // 子账号接单方
 //            $query->where('gainer_user_id', $userId);

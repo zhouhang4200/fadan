@@ -30,7 +30,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 2;
-	        $data['status'] = 3;
+	        $data['status'] = 1;
 	    	$data['sub_money'] = $request->data['money'];
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -39,6 +39,10 @@ class ExecuteController extends Controller
 	    	$data['user_id'] = $order->creator_primary_user_id;
 	        $data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
+
+            if ($request->data['money'] == 'original_amount') {
+                $data['sub_money'] = bcmul($order->original_amount, 0.01);
+            }
             // 判断订单是否存在
 	    	if (! $order) {
 	    		return response()->json(['code' => 2, 'message' => '订单不存在!']);
@@ -49,7 +53,7 @@ class ExecuteController extends Controller
 	        if ($punish) {
 	        	return response()->json(['code' => 1, 'message' => '成功创建一条罚单!']);
 	        }
-	        return response()->json(['code' => 2, 'message' => '罚单创建失败失败!']);
+	        return response()->json(['code' => 2, 'message' => '罚单创建失败!']);
 
     	} catch (Exception $e) {
     		
@@ -67,7 +71,7 @@ class ExecuteController extends Controller
         // 今日订单数量
         $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
 
-        return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
+        return $orderdate . str_pad($orderquantity, 8, 0, STR_PAD_LEFT);
     }
 
     /**
@@ -130,7 +134,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 3;
-	        $data['status'] = 6;
+	        $data['status'] = 2;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -168,7 +172,7 @@ class ExecuteController extends Controller
     {
     	try {
 	        $data['type'] = 4;
-	        $data['status'] = 7;
+	        $data['status'] = 1;
 	    	$data['ratio'] = $request->data['ratio'] ?? 0;
 	    	$data['remark'] = $request->data['remark'];
 	        $data['no'] = static::createOrderId();
@@ -253,7 +257,7 @@ class ExecuteController extends Controller
                     'order_no' => $punish->order_no,
                     'before_value' => 9,
                     'after_value' => 11,
-                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
                     'created_at' => new \DateTime(),
                 	'updated_at' => new \DateTime(),
             	],
@@ -264,7 +268,7 @@ class ExecuteController extends Controller
                     'order_no' => $punish->order_no,
                     'before_value' => 0,
                     'after_value' => 1,
-                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
                     'created_at' => new \DateTime(),
                 	'updated_at' => new \DateTime(),
             	],
@@ -313,7 +317,7 @@ class ExecuteController extends Controller
                             'order_no' => $punish->order_no,
     	                    'before_value' => 9,
     	                    'after_value' => 10,
-    	                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+    	                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
     	                    'created_at' => new \DateTime(),
                     		'updated_at' => new \DateTime(),
                     	],
@@ -324,7 +328,7 @@ class ExecuteController extends Controller
                             'order_no' => $punish->order_no,
     	                    'before_value' => 0,
     	                    'after_value' => 1,
-    	                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+    	                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
     	                    'created_at' => new \DateTime(),
                     		'updated_at' => new \DateTime(),
                     	],
@@ -358,7 +362,7 @@ class ExecuteController extends Controller
                         'order_no' => $punish->order_no,
 	                    'before_value' => 9,
 	                    'after_value' => 10,
-	                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+	                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
 	                    'created_at' => new \DateTime(),
                     	'updated_at' => new \DateTime(),
                 	],
@@ -369,7 +373,7 @@ class ExecuteController extends Controller
                         'order_no' => $punish->order_no,
 	                    'before_value' => 0,
 	                    'after_value' => 1,
-	                    'admin_user_name' => AdminUser::where('id', Auth::id())->value('name') ?? '系统',
+	                    'admin_user_name' => '管理员： ' . AdminUser::where('id', Auth::id())->value('name') ?? '系统',
 	                    'created_at' => new \DateTime(),
                     	'updated_at' => new \DateTime(),
                 	],

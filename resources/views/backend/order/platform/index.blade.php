@@ -137,8 +137,8 @@
                             @forelse($orders as $order)
                                 <tr>
                                     <td>千手：{{ $order->no }} <br> 外部：{{ $order->foreign_order_no }}</td>
-                                    <td>{{ config('order.source')[$order->source] }}</td>
-                                    <td>{{ config('order.status')[$order->status] }}</td>
+                                    <td>{{ config('order.source')[$order->source] ?? '' }}</td>
+                                    <td>{{ config('order.status')[$order->status] ?? '' }}</td>
                                     <td>{{ $order->goods_name }}</td>
                                     <td>{{ $order->service_name }}</td>
                                     <td>{{ $order->game_name }}</td>
@@ -152,12 +152,13 @@
                                     <td>{{ $order->created_at }}</td>
                                     <td>
                                         <div class="layui-input-inline">
-                                            <select  lay-filter="operation" data-no="{{ $order->no }}" data-id="{{ $order->id }}">
+                                            <select  lay-filter="operation" data-no="{{ $order->no }}" data-original-amount="{{ $order->original_amount }}" data-id="{{ $order->id }}">
                                                 <option value="">请选择操作</option>
                                                     <option value="execute2">罚款</option>
                                                     <option value="execute3">加权重</option>
                                                     <option value="execute4">减权重</option>
                                                     <option value="execute5">禁止接单</option>
+                                                    <option value="execute6">发起售后</option>
                                                 <option value="detail">订单详情</option>
                                             </select>
                                         </div>
@@ -263,6 +264,7 @@
                     <option value="10">10 元</option>
                     <option value="20">20 元</option>
                     <option value="50">50 元</option>
+                    <option id="original_amount" value="original_amount">原订单价格的 1% </option>
                 </select>
             </div>
         </div>
@@ -275,6 +277,7 @@
                     <option value="未按要求给顾客反馈信息和话术">未按要求给顾客反馈信息和话术,处罚 10 元</option>
                     <option value="因沟通问题造成用户差评">因沟通问题造成用户差评,处罚 20 元</option>
                     <option value="聊天记录抽查发现怼客户">聊天记录抽查发现怼客户,处罚 50 元</option>
+                    <option value="接单超时未完成罚款,处罚原订单价格的 1%">接单超时未完成罚款,处罚原订单价格的 1%</option>
                 </select>
             </div>
         </div>
@@ -772,7 +775,18 @@
                 return false;
             });
         }
-
+        // 发起售后
+        function execute6(no, id) {
+            layer.confirm('您确定要"发起售后"吗?', {icon: 3, title:'提示'}, function(index) {
+                $.post('{{ route('order.platform.apply-after-service') }}', {no:no}, function (result) {
+                    layer.msg(result.message, {
+                        icon:5,
+                        time:1500
+                    });
+                    return false;
+                }, 'json')
+            });
+        }
     });
 
 </script>

@@ -316,8 +316,11 @@
         var form = layui.form,
                 layer = layui.layer,
                 layTpl = layui.laytpl,
+                util = layui.util,
                 element = layui.element;
         var serviceId = 0, gameId = 0, currentUrl, currentType;
+        // 倒计时
+
         // 打开工作台时加载订单列表
         getOrder('{{ route('frontend.workbench.order-list') }}', 'need');
         // 切换订单状态
@@ -533,9 +536,20 @@
             });
         }
         function afterSales(no) {
-            $.post('{{ route('frontend.workbench.order-operation.after-sales') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.prompt({
+                formType: 2,
+                title: '请输入发起售后的原因',
+                area: ['200', '100']
+            }, function(value, index, elem){
+                $.post("{{ route('frontend.workbench.order-operation.after-sales') }}", {
+                    no:no,
+                    remark:value
+                }, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+                layer.close(index);
+            });
+
         }
         // 操作提示
         function notification(type, message) {
@@ -605,6 +619,43 @@
             $('.wait-handle-quantity').removeClass('layui-hide').html(data.quantity);
         }
     });
+
+    $(function(){
+        updateEndTime();
+    });
+
+    //倒计时函数
+    function updateEndTime(){
+
+        var date = new Date();
+        var time = date.getTime();  //当前时间距1970年1月1日之间的毫秒数
+
+        $(".end-time").each(function(i){
+
+            var endDate = this.getAttribute("data-time"); //结束时间字符串
+
+            if (endDate == 0) {
+                return $(this).html("-");
+            }
+
+            //转换为时间日期类型
+            var endDate1 = eval('new Date(' + endDate.replace(/\d+(?=-[^-]+$)/, function (a) { return parseInt(a, 10) - 1 }).match(/\d+/g) + ')');
+
+            var endTime = endDate1.getTime() + {{ config('order.max_use_time') }}*1000; //结束时间毫秒数
+            var lag = (endTime - time) / 1000; //当前时间和结束时间之间的秒数
+
+            if(lag > 0) {
+                var second = Math.floor(lag % 60);
+                var minite = Math.floor((lag / 60) % 60);
+                // var hour = Math.floor((lag / 3600) % 24);
+                // var day = Math.floor((lag / 3600) / 24);
+                $(this).html(minite+"分"+second+"秒");
+            } else {
+                $(this).html("超时");
+            }
+        });
+        setTimeout("updateEndTime()", 1000);
+    }
 </script>
 <!--END 脚本-->
 </body>

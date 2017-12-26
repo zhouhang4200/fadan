@@ -16,7 +16,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::where('guard_name', 'web')->paginate(config('frontend.page'));
+        $permissions = Permission::where('guard_name', 'web')->latest('id')->paginate(config('frontend.page'));
 
         return view('backend.rbac.permission.index', compact('permissions'));
     }

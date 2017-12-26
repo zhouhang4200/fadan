@@ -20,9 +20,7 @@ if (!function_exists('loginDetail')) {
     	$client = new Client();
 
     	$res = $client->request('GET', $url);
-
     	$res = $res->getBody();
-
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
@@ -534,5 +532,17 @@ if (!function_exists('assignStatusAdd')) {
     {
         $redis = RedisConnect::order();
         return $redis->lpush(config('redis.order.assignStatus'), 1);
+    }
+}
+
+if (!function_exists('isBase64')) {
+
+    function isBase64($str){
+        if(@preg_match('/^[0-9]*$/',$str) || @preg_match('/^[a-zA-Z]*$/',$str)){
+            return false;
+        } elseif(base64_decode($str) && base64_decode($str) != ''){
+            return true;
+        }
+        return false;
     }
 }

@@ -32,6 +32,9 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th>单价</th>
             <th>总价</th>
             <th>状态</th>
+            @if ($type == 'market' || $type == 'need')
+            <th>倒计时</th>
+            @endif
             <th>下单时间</th>
             <th width="13%">操作</th>
         </tr>
@@ -48,7 +51,10 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 <td>{{ $item->amount }}</td>
                 <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
                 <td>{{ ($item->gainer_primary_user_id == $primaryUserId && $type == 'need') ? '您已接单' : config('order.status')[$status]  }}</td>
-                <td>{{ $item->created_at }}</td>
+                @if ($type == 'market' || $type == 'need')
+                <td class="end-time" data-time="{{ $item->created_at }}"></td>
+                @endif
+                <td >{{ $item->created_at }}</td>
                 <td>
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
@@ -89,7 +95,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 </td>
             </tr>
         @empty
-            <tr><td colspan="10">没有数据</td></tr>
+            <tr><td colspan="11">没有数据</td></tr>
         @endforelse
         </tbody>
     </table>

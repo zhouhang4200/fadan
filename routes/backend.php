@@ -235,6 +235,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('record/{id}', 'PlatformController@record')->name('order.platform.record')->middleware('permission:order.platform.record');
             // 修改状态
             Route::post('change-status', 'PlatformController@changeStatus')->name('order.platform.change-status')->middleware('permission:order.platform.change-status');
+            // 后台发起售后
+            Route::post('apply-after-service', 'PlatformController@applyAfterService')->name('order.platform.apply-after-service')->middleware('permission:order.platform.apply-after-service');;
+            // 售后完成
+            Route::post('after-service-complete', 'PlatformController@afterServiceComplete')->name('order.after-service.after-service-complete')->middleware('permission:order.platform.after-service-complete');
         });
         // 外部订单
         Route::prefix('foreign')->group( function () {
