@@ -36,11 +36,27 @@ class GoodsTemplateWidget extends Model
         'field_parent_id',
         'field_type',
         'field_name',
-        'field_value',
+//        'field_value',
         'field_default_value',
         'field_required',
         'field_sortord',
         'created_admin_user_id',
         'updated_admin_user_id',
     ];
+
+    /**
+     * 对应选项的值
+     */
+    public function values()
+    {
+        return $this->hasMany(GoodsTemplateWidgetValue::class, 'goods_template_widget_id', 'id');
+    }
+
+    /**
+     * 用户设置的对应选项的值
+     */
+    public function userValues()
+    {
+        return $this->hasMany(GoodsTemplateWidgetValue::class, 'goods_template_widget_id', 'id');
+    }
 }

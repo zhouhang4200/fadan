@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Goods;
 
+use App\Models\WidgetType;
 use App\Repositories\Backend\GameRepository;
 use App\Repositories\Backend\ServiceRepository;
 use Auth, Config, \Exception;
@@ -71,7 +72,7 @@ class TemplateController extends Controller
      */
     public function config(Request $request, $id)
     {
-        $filedName = Config::get('goods.template.field_name');
+        $filedName = WidgetType::all();
         $filedType = Config::get('goods.template.field_type');
 
         return view('backend.goods.template.show', compact('filedName', 'filedType'));

@@ -20,8 +20,22 @@ class GoodsTemplateWidgetRepository
         return GoodsTemplateWidget::where(['field_parent_id' => $parentId])->first();
     }
 
+    /**
+     * 获取指定模版的所有组件
+     * @param $templateId
+     * @return mixed
+     */
     public function getTemplateAllWidgetByTemplateId($templateId)
     {
-        return GoodsTemplateWidget::where('goods_template_id', $templateId)->orderBy('field_sortord', 'ASC')->get();
+        return GoodsTemplateWidget::where('goods_template_id', $templateId)->with('values')->orderBy('field_sortord', 'ASC')->get();
+    }
+
+    /**
+     * @param $widgetId
+     * @return mixed
+     */
+    public function getTemplateWidgetById($widgetId)
+    {
+        return GoodsTemplateWidget::find($widgetId);
     }
 }

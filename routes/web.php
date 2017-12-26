@@ -146,6 +146,30 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
 	// 工作台
 	Route::namespace('Workbench')->prefix('workbench')->group(function () {
+
+        // 代充
+        Route::namespace('Recharge')->prefix('recharge')->group(function (){
+            // 首页
+            Route::get('/', 'IndexController@index')->name('frontend.workbench.recharge.index')->middleware('permission:frontend.workbench.recharge.index');
+        });
+
+
+        // 代练
+        Route::namespace('Leveling')->prefix('leveling')->group(function (){
+            // 首页
+            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index');
+            // 根据订单状态获取订单数据
+            Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
+            // 创建订单
+            Route::get('create', 'IndexController@create')->name('frontend.workbench.leveling.create');
+            // 确认下单
+            Route::post('create', 'IndexController@order')->name('frontend.workbench.leveling.create');
+            // 获取模版
+            Route::post('get-template', 'IndexController@getTemplate')->name('frontend.workbench.leveling.get-template');
+            // 修改订单
+            Route::post('edit', 'IndexController@store')->name('frontend.workbench.leveling.edit');
+        });
+
         // 首页
         Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
         // 获取用户所有前台可显示的商品

@@ -24,7 +24,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     Route::get('system-logs', 'SystemLogController@index')->name('system-logs.index')->middleware('permission:system-logs.index');
 
     Route::namespace('Goods')->prefix('goods')->group(function (){
-
         // 服务
         Route::prefix('service')->group(function (){
             // 列表
@@ -85,6 +84,23 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
                 Route::post('/', 'TemplateWidgetController@store')->name('goods.template.widget.store')->middleware('permission:goods.template.widget.store');
                 // 删除
                 Route::post('destroy', 'TemplateWidgetController@destroy')->name('goods.template.widget.destroy')->middleware('permission:goods.template.widget.destroy');
+                Route::post('show-select-child', 'TemplateWidgetController@showSelectChild')->name('goods.template.widget.show-select-child');
+                // 获取组件类型
+                Route::get('type', 'TemplateWidgetController@type')->name('goods.template.widget.type');
+                // 添加组件类型
+                Route::post('add', 'TemplateWidgetController@add')->name('goods.template.widget.add');
+
+                // 修改组件选项
+                Route::post('edit-option', 'TemplateWidgetController@editOption')->name('goods.template.widget.edit-option');
+                // 添加组件选项
+                Route::post('add-option', 'TemplateWidgetController@addOption')->name('goods.template.widget.add-option');
+                // 删除组件选项
+                Route::post('del-option', 'TemplateWidgetController@delOption')->name('goods.template.widget.del-option');
+
+
+
+                // 组件配置
+//                Route::get('config', 'NewTemplateWidgetController@config')->name('goods.template.widget.config');
             });
         });
     });

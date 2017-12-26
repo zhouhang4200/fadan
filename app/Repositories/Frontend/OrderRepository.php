@@ -141,4 +141,31 @@ class OrderRepository
         }
         return $query->paginate($pageSize);
     }
+
+    /**
+     * 代练订单
+     * @param $status
+     * @param $pageSize
+     * @return mixed
+     */
+    public function levelingDataList($status, $pageSize)
+    {
+        $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+
+        $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id','service_name',
+            'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
+            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
+        );
+        $query->where('creator_primary_user_id', $primaryUserId)->with(['detail']);
+        $query->where('service_id', 2);
+        return $query->paginate($pageSize);
+    }
+
+    /**
+     * @param $orderNo
+     */
+    public function levelingDetail($orderNo)
+    {
+
+    }
 }

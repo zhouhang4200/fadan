@@ -92,11 +92,11 @@
         </table>
     </div>
 
-{!! $users->appends([
-    'name' => $name,
-    'startDate' => $startDate,
-    'endDate' => $endDate,
-])->render() !!}
+    {!! $users->appends([
+        'name' => $name,
+        'startDate' => $startDate,
+        'endDate' => $endDate,
+    ])->render() !!}
 
 @endsection
 <!--START 底部-->
