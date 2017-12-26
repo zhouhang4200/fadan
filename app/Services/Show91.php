@@ -6,6 +6,13 @@ use GuzzleHttp\Client;
 
 class Show91
 {
+    /**
+     * 发送请求
+     * @param  [type] $url     [地址]
+     * @param  [type] $options [参数数组]
+     * @param  string $method  [请求方式]
+     * @return [type]          [json数据]
+     */
     public static function getResult($url, $options = [], $method = 'POST')
     {
     	$client = new Client;

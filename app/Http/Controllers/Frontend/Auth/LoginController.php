@@ -123,6 +123,8 @@ class LoginController extends Controller
             $redis->del($redis->get(config('redis.user')['loginSession'] . $user->id));
         }
         $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());
+
+        session()->flash('notice', 'yes');
     }
 
     /**
