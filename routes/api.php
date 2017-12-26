@@ -19,6 +19,9 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     // 用户登陆
     Route::post('auth/login', 'AuthController@login');
 
+    // 版本检查
+    Route::get('version/ios', 'VersionController@ios');
+
 
     Route::any('test', 'TestController@index'); // 临时测试，想删就删
 
