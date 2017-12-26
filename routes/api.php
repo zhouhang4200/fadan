@@ -12,7 +12,7 @@
 */
 
 Route::post('kamen', 'OrderController@KamenOrder');
-Route::any('test', 'OrderController@test');
+Route::any('test', 'TestController@test');
 
 /* App 接口 */
 Route::namespace('App')->middleware('api.decode')->group(function () {
@@ -22,8 +22,8 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     // 版本检查
     Route::get('version/ios', 'VersionController@ios');
 
-
-    Route::any('test', 'TestController@index'); // 临时测试，想删就删
+    // 临时测试，想删就删
+    Route::any('test', 'TestController@index');
 
     // 登陆后接口
     Route::middleware('api.auth')->group(function () {

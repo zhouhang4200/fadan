@@ -22,14 +22,14 @@ class ResponseMacroServiceProvider extends ServiceProvider
 
         /*
          * 站外调用接口返回
-         * 注意：此接口依赖ajax宏
          */
         Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content = []) {
-            return response()->ajax($status, $message, $content);
+            $data = ['status' => $status, 'message' => $message, 'content' => $content];
 
-            $content = empty($content) ? null : (new Aes(config('ios.aes_key')))->encrypt(json_encode($content));
+            // 加密
+            $data = ['data' => (new Aes(config('ios.aes_key')))->encrypt(json_encode($data))];
 
-            return response()->ajax($status, $message, $content);
+            return response()->json($data);
         });
     }
 }
