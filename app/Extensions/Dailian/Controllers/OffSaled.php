@@ -8,8 +8,8 @@ use Exception;
 class OffSaled extends DailianAbstract implements DailianInterface
 {
     //已下架
-    protected $acceptableStatus = [12]; // 状态：12未接单
-	protected $beforeHandleStatus = 12; // 操作之前的状态:12未接单
+    protected $acceptableStatus = [1]; // 状态：1未接单
+	protected $beforeHandleStatus; // 操作之前的状态:1未接单
     protected $handledStatus    = 22; // 状态：22已下架
     protected $type             = 15; // 操作：15下架
 

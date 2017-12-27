@@ -9,7 +9,7 @@ class NoReceive extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [22]; // 已下架
     protected $beforeHandleStatus = 22; // 已下架
-    protected $handledStatus    = 12; // 未接单
+    protected $handledStatus    = 1; // 未接单
     protected $type             = 14; // 上架
 
     /**

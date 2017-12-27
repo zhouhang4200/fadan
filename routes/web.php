@@ -175,6 +175,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('get-template', 'IndexController@getTemplate')->name('frontend.workbench.leveling.get-template');
             // 修改订单
             Route::post('edit', 'IndexController@store')->name('frontend.workbench.leveling.edit');
+            // 改状态操作
+            Route::post('status', 'IndexController@changeStatus')->name('frontend.workbench.leveling.status');
         });
 
         // 首页

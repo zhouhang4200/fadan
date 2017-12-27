@@ -68,6 +68,8 @@ class Revoked extends DailianAbstract implements DailianInterface
      */
     public function updateAsset($amount, $apiDeposit, $apiService, $writeDeposit)
     {
+        // 从leveling_consult 中取各种值
+
         // 订单的安全保证金
         $security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
         // 订单的效率保证金
@@ -128,7 +130,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                     // 手续费有可能为0，比如 12，20, 0，20
                     if ($apiService > 0) {
                         // 发单 支出手续费
-                        Asset::handle(new Expend($apiService, 2, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
+                        Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                             throw new Exception('申请失败');
@@ -195,7 +197,7 @@ class Revoked extends DailianAbstract implements DailianInterface
 
                     if ($apiService > 0) {
                         // 发单 支出手续费
-                        Asset::handle(new Expend($apiService, 2, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
+                        Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                             throw new Exception('申请失败');
@@ -258,7 +260,7 @@ class Revoked extends DailianAbstract implements DailianInterface
 
                     if ($apiService > 0) {
                         // 发单 代练手续费支出
-                        Asset::handle(new Expend($apiService, 2, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
+                        Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                             throw new Exception('申请失败');

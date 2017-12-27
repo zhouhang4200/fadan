@@ -125,7 +125,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 
 	                if ($apiService > 0) {	                	
 		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 		                    throw new Exception('申请失败');
@@ -191,7 +191,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 
 	                if ($apiService > 0) {
 		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 		                    throw new Exception('申请失败');
@@ -254,7 +254,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 
 	                if ($apiService > 0) {
 		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 2, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
 		                    throw new Exception('申请失败');

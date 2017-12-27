@@ -16,6 +16,7 @@ use App\Extensions\Dailian\Controllers\Arbitrationed;
 use App\Extensions\Dailian\Controllers\Delete;
 use App\Extensions\Dailian\Controllers\ForceRevoke;
 use App\Extensions\Dailian\Controllers\CancelArbitration;
+use App\Extensions\Dailian\Controllers\Playing;
 
 // 订单
 return [
@@ -78,6 +79,7 @@ return [
         24 => '同意撤销',
         25 => '强制撤销',
         26 => '客服仲裁',
+        27 => '接单',
     ],
 
     'source' => [
@@ -111,6 +113,7 @@ return [
         'delete' => Delete::class, // 删除 -》 删除
         'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
         'arbitration' => Arbitrationed::class, // 客服仲裁 -》 已仲裁
+        'receive' => Playing::class, // 接单 -> 代练中
     ],
 
     // 订单分配下限 (最少接单人数)

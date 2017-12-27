@@ -14,6 +14,7 @@ use App\Models\GoodsTemplate;
 use Order, Exception;
 use App\Repositories\Frontend\GameRepository;
 use App\Exceptions\CustomException;
+use App\Extensions\Dailian\Controllers\DailianFactory;
 
 
 /**
@@ -142,6 +143,27 @@ class IndexController extends Controller
             ])
             ->get();
         return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId]);
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $keyWord = $request->keyWord; // 关键字,关联对应的类
+        $orderNo = $request->orderNo; // 订单号
+        $userId = $request->userId; // 操作人id
+        $apiAmount = $request->apiAmount ?? null; // 回传代练费 或 订单安全保证金
+        $apiDeposit = $request->apiDeposit ?? null; // 回传双金 或 订单效率保证金
+        $apiService = $request->apiService ?? null; // 回传手续费 
+        $writeAmount = $request->writeAmount ?? null; // 协商填写的代练费
+
+        try {
+            $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId, $apiAmount, $apiDeposit, $apiService, $writeAmount);
+
+            if ($bool) {
+                return response()->json(['status' => 1, 'message' => '操作成功!']);
+            }
+        } catch (Exception $e) {
+            return response()->json(['status' => 0, 'message' => '操作失败!']);
+        }
     }
 }
 

@@ -8,7 +8,7 @@ use Exception;
 class Delete extends DailianAbstract implements DailianInterface
 {
      //删除 -》 删除
-    protected $acceptableStatus = [12, 22]; // 状态：12未接单， 22已下架
+    protected $acceptableStatus = [1, 22]; // 状态：1未接单， 22已下架
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 24; // 状态：24已删除
     protected $type             = 23; // 操作：23删除

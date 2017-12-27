@@ -46,6 +46,7 @@
         .layui-form-mid {
             margin-right: 4px;
         }
+
     </style>
 @endsection
 
@@ -152,80 +153,79 @@
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
-                @{{# if (d.master && d.status == 15) {  }}
-                    <option value="14" data-no="@{{ d.no }}">上架</option>
+                @{{# if (!d.master && d.status == 1) {  }}
+                <option value="receive" data-no="@{{ d.no }}">接单</option>
                 @{{# }  }}
 
-                <!-->
+                @{{# if (d.master && d.status == 22) {  }}
+                    <option value="onSale" data-no="@{{ d.no }}">上架</option>
+                @{{# }  }}
+ 
                 @{{# if (d.master && d.status == 1) {  }}
-                <option value="15" data-no="@{{ d.no }}">下架</option>
+                <option value="offSale" data-no="@{{ d.no }}">下架</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master && (d.status == 14 || d.status == 15 || d.status == 16 || d.status == 17 || d.status == 18 || d.status == 19 || d.status == 20 || d.status == 21)) {  }}
                 <option value="13" data-no="@{{ d.no }}">重发</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="" data-no="@{{ d.no }}">加急</option>
+                @{{# if (d.master) {  }}
+                <option value="assa" data-no="@{{ d.no }}">加急</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15 || d.status == 15 || d.status == 15) {  }}
-                <option value="" data-no="@{{ d.no }}">取消加急</option>
+                @{{# if (d.master) {  }}
+                <option value="asda" data-no="@{{ d.no }}">取消加急</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                    <option value="16" data-no="@{{ d.no }}">锁定</option>
+                @{{# if (d.master && (d.status == 13 || d.status == 14 || d.status == 17)) {  }}
+                    <option value="lock" data-no="@{{ d.no }}">锁定</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="17" data-no="@{{ d.no }}">取消锁定</option>
+                @{{# if (d.master && d.status == 18) {  }}
+                <option value="cancelLock" data-no="@{{ d.no }}">取消锁定</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="17" data-no="@{{ d.no }}">取消锁定</option>
+                @{{# if (d.status == 13 || d.status == 14 || d.status == 17 || d.status == 18) {  }}
+                <option value="revoke" data-no="@{{ d.no }}">撤销</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="18" data-no="@{{ d.no }}">撤销</option>
+                @{{# if (d.status == 15) {  }}
+                <option value="cancelRevoke" data-no="@{{ d.no }}">取消撤销</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="19" data-no="@{{ d.no }}">取消撤销</option>
+                @{{# if (d.status == 15) {  }}
+                <option value="agreeRevoke" data-no="@{{ d.no }}">同意撤销</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="24" data-no="@{{ d.no }}">同意撤销</option>
+                @{{# if (d.status == 15) {  }}
+                <option value="applayArbitration" data-no="@{{ d.no }}">申请仲裁</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="20" data-no="@{{ d.no }}">申请仲裁</option>
+                @{{# if (d.status == 16) {  }}
+                <option value="cancelArbitration" data-no="@{{ d.no }}">取消仲裁</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="21" data-no="@{{ d.no }}">取消仲裁</option>
+                @{{# if (d.master && d.status == 14) {  }}
+                <option value="complete" data-no="@{{ d.no }}">完成</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
-                <option value="12" data-no="@{{ d.no }}">完成</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master) {  }}
                 <option value="send-message" data-no="@{{ d.no }}">发短信</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master) {  }}
                 <option value="message" data-no="@{{ d.no }}">留言</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master) {  }}
                 <option value="operation-record" data-no="@{{ d.no }}">操作记录</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master) {  }}
                 <option value="wang-wang" data-no="@{{ d.no }}">联系旺旺号</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.status == 15) {  }}
+                @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
                 <option value="delete" data-no="@{{ d.no }}">删除</option>
                 @{{# }  }}
             </select>
@@ -333,9 +333,20 @@
                     }
                 });
             });
+            var userId = "{{ Auth::id() }}";
             // 对订单操作
             form.on('select(order-operation)', function (data) {
-               layer.alert('订单号：' +  $(data.elem).find("option:selected").attr("data-no") + '<br/>选中的值：' + data.value );
+                $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                    orderNo:$(data.elem).find("option:selected").attr("data-no"), 
+                    userId:userId,
+                    keyWord:data.value,
+                }, function (result) {
+                    if (result.status == 1) {
+                        layer.alert(result.message);
+                    } else {
+                        layer.alert(result.message);
+                    }
+                });
             });
             // 重新渲染后重写样式
             function changeStyle(index) {

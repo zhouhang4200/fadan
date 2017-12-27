@@ -73,9 +73,9 @@ abstract class DailianAbstract
     public function setDescription()
     {
     	// 操作后的状态
-    	$statusName = config('order.status')[$this->handledStatus];
+    	$statusName = config('order.status_leveling')[$this->handledStatus];
     	// 操作前的状态
-    	$beforeStatusName = config('order.status')[$this->beforeHandleStatus];
+    	$beforeStatusName = config('order.status_leveling')[$this->beforeHandleStatus];
     	// 详情
         $this->description = "用户[{$this->userId}]将订单从[$beforeStatusName]设置为[$statusName]状态！";
     }
