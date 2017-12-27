@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\Backend;
 
+use Auth;
 use App\Models\GoodsTemplateWidget;
 
 class GoodsTemplateWidgetRepository
@@ -37,5 +38,28 @@ class GoodsTemplateWidgetRepository
     public function getTemplateWidgetById($widgetId)
     {
         return GoodsTemplateWidget::find($widgetId);
+    }
+
+    /**
+     * 获取所有组件通过模版ID
+     * @param  integer $templateId 模版ID
+     */
+    public function getWidgetBy($templateId)
+    {
+        return GoodsTemplateWidget::select('id', 'field_type', 'field_display_name', 'field_parent_id', 'field_name',
+            'display_form', 'field_required')
+            ->where('goods_template_id', $templateId)
+            ->orderBy('field_sortord')
+            ->with([
+                'values' => function($query){
+                    $query->select('goods_template_widget_id', 'field_value')
+                        ->where('user_id', 0);
+                },
+                'userValues' => function($query) {
+                    $query->select('goods_template_widget_id', 'field_value')
+                        ->where('user_id', Auth::user()->getPrimaryUserId());
+                }
+            ])
+            ->get();
     }
 }

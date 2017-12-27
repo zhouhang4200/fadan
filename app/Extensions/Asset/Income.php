@@ -16,6 +16,8 @@ class Income extends \App\Extensions\Asset\Base\Trade
     const TRADE_SUBTYPE_DELIVERY_FAILURE = 2; // 发货失败退款
     const TRADE_SUBTYPE_AFTER_SERVICE    = 3; // 售后退款
     const TRADE_SUBTYPE_CANCLE           = 4; // 取消订单退款
+    const TRADE_SUBTYPE_GAME_LEVELING_CANCEL     = 5; // 代练撤消退款
+    const TRADE_SUBTYPE_GAME_LEVELING_CHANGE_PRICE          = 6; // 代练改价退款
 
     protected $userAsset;
     protected $platformAsset;

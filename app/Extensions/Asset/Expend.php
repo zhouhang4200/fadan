@@ -13,6 +13,7 @@ class Expend extends \App\Extensions\Asset\Base\Trade
     use UserAmountFlowTrait, PlatformAmountFlowTrait;
 
     const TRADE_SUBTYPE_ORDER_MARKET = 1; // 订单集市支出
+    const TRADE_SUBTYPE_ORDER_GAME_LEVELING = 1; // 订单集市支出
 
     protected $userAsset;
     protected $platformAsset;
