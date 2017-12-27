@@ -65,6 +65,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
      */
 	public function updateAsset($apiAmount, $apiDeposit, $apiService, $writeAmount = null)
 	{
+		// 从leveling_consult 中取各种值
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('status', 3)->first();
+        $apiAmount = $consult->api_amount ?? 0;
+        $apiDeposit = $consult->api_deposit ?? 0;
+        $apiService = $consult->api_service ?? 0;
+        $writeAmount = $consult->amount ?? 0;
 		// 订单的安全保证金
 		$security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
 		// 订单的效率保证金 efficiency_deposit

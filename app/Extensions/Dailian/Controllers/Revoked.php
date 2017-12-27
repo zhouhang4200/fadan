@@ -69,7 +69,11 @@ class Revoked extends DailianAbstract implements DailianInterface
     public function updateAsset($amount, $apiDeposit, $apiService, $writeDeposit)
     {
         // 从leveling_consult 中取各种值
-
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('status', 4)->first();
+        $amount = $consult->amount ?? 0;
+        $apiDeposit = $consult->api_deposit ?? 0;
+        $apiService = $consult->api_service ?? 0;
+        $writeDeposit = $consult->deposit ?? 0;
         // 订单的安全保证金
         $security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
         // 订单的效率保证金
