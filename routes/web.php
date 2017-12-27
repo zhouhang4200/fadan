@@ -179,6 +179,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('edit', 'IndexController@store')->name('frontend.workbench.leveling.edit');
             // 改状态操作
             Route::post('status', 'IndexController@changeStatus')->name('frontend.workbench.leveling.status');
+            // 撤销
+            Route::post('consult', 'IndexController@consult')->name('frontend.workbench.leveling.consult');
+            // 申诉
+            Route::post('complete', 'IndexController@complete')->name('frontend.workbench.leveling.complete');
         });
 
         // 首页

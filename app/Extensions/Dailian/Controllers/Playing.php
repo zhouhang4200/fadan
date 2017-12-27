@@ -61,7 +61,7 @@ class Playing extends DailianAbstract implements DailianInterface
     }
 
     /**
-     * [退代练费给发单，退双金给接单]
+     * [接单支出安全和效率保证金]
      * @return [type] [description]
      */
     public function updateAsset($safePayment, $effectPayment, $apiService = null, $writeAmount = null)

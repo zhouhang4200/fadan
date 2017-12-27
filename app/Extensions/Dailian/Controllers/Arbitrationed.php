@@ -70,7 +70,6 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         $apiAmount = $consult->api_amount ?? 0;
         $apiDeposit = $consult->api_deposit ?? 0;
         $apiService = $consult->api_service ?? 0;
-        $writeAmount = $consult->amount ?? 0;
 		// 订单的安全保证金
 		$security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
 		// 订单的效率保证金 efficiency_deposit

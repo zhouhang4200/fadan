@@ -17,6 +17,8 @@ use Order, Exception;
 use App\Repositories\Frontend\GameRepository;
 use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Models\LevelingConsult;
+use App\Models\Order as OrderModel;
 
 
 /**
@@ -43,6 +45,7 @@ class IndexController extends Controller
     public function index()
     {
         $game = $this->game;
+
         return view('frontend.workbench.leveling.index', compact('game'));
     }
 
@@ -75,6 +78,8 @@ class IndexController extends Controller
                 $orderInfo = $item->toArray();
                 $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
                 $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+                $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
+                $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
                 $orderArr[] = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
             }
 
@@ -82,7 +87,7 @@ class IndexController extends Controller
                 'code' => 0,
                 'msg' => '',
                 'count' => $orders->total(),
-                'data' => $orderArr
+                'data' => $orderArr,
             ]);
         }
     }
@@ -226,6 +231,66 @@ class IndexController extends Controller
         } catch (Exception $e) {
             return response()->json(['status' => 0, 'message' => '操作失败!']);
         }
+    }
+
+    /**
+     * 撤销
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function consult(Request $request)
+    {
+        $data['order_no'] = $request->orderNo;
+        $data['amount'] = $request->data['amount'];
+        $data['deposit'] = $request->data['deposit'];
+        $data['user_id'] = Auth::id();
+        $data['revoke_message'] = $request->data['revoke_message'];
+
+        $order = OrderModel::where('no', $data['order_no'])->first();
+
+        if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
+            $data['consult'] = 1; // 发单方提出撤销
+        } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
+            $data['consult'] = 2; // 接单方
+        } else {
+            return response()->ajax(0, '操作失败!');
+        }
+
+
+        $bool = LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
+
+        if ($bool) {
+            return response()->ajax(1, '操作成功!');
+        }
+        return response()->ajax(0, '操作失败!');
+    }
+
+    /**
+     * 申诉
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function complete(Request $request)
+    {
+        $data['order_no'] = $request->orderNo;
+        $data['complain_message'] = $request->data['complain_message'];
+
+        $order = OrderModel::where('no', $data['order_no'])->first();
+
+        if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
+            $data['complain'] = 1; // 发单方提出申诉
+        } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
+            $data['complain'] = 2; // 接单方
+        } else {
+            return response()->ajax(0, '操作失败!');
+        }
+
+        $bool = LevelingConsult::where('order_no', $data['order_no'])->update($data);
+
+        if ($bool) {
+            return response()->ajax(1, '操作成功!');
+        }
+        return response()->ajax(0, '操作失败!');
     }
 }
 

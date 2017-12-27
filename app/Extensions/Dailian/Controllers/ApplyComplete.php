@@ -3,18 +3,18 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use Asset;
 use Exception;
 
-class Revoking extends DailianAbstract implements DailianInterface
+class ApplyComplete extends DailianAbstract implements DailianInterface
 {
-     //撤销中
-    protected $acceptableStatus = [13, 14, 17, 18]; // 状态：18锁定
-	protected $beforeHandleStatus; // 操作之前的状态:
-    protected $handledStatus    = 15; // 状态：15撤销中
-    protected $type             = 18; // 操作：18撤销
-
+	protected $acceptableStatus = [13]; // 状态：13代练中
+	protected $beforeHandleStatus; // 操作之前的状态:14待验收
+    protected $handledStatus    = 14; // 状态：14 待验收
+    protected $type             = 28; // 操作：28申请验收
+    
 	/**
-     * [run 撤销 -> 撤销中]
+     * [run 完成 -> 已结算]
      * @param  [type] $orderNo     [订单号]
      * @param  [type] $userId      [操作人]
      * @param  [type] $apiAmount   [回传代练费]
@@ -26,14 +26,15 @@ class Revoking extends DailianAbstract implements DailianInterface
     public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
     {	
     	DB::beginTransaction();
-    	try {
+        try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             // 获取订单对象
             $this->getObject();
-        	// 获取锁定前的状态
-        	$this->beforeHandleStatus = $this->getOrder()->status;
+
+            $this->beforeHandleStatus = $this->getOrder()->status;
+
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性
@@ -46,6 +47,7 @@ class Revoking extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());

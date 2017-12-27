@@ -53,9 +53,11 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        $order = Order::where('no', '2017122715401700000011')->first();
+
+        dd($order->levelingConsult->first()->toArray());
         $this->encrypt();
         return $this->decrypt();
-
 
         event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
         exit("1234");

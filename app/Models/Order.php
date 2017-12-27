@@ -141,4 +141,9 @@ class Order extends Model
     {
         return $this->hasOne(PunishOrReward::class, 'order_id', 'no');
     }
+
+    public function levelingConsult()
+    {
+        return $this->hasOne(LevelingConsult::class, 'order_no', 'no');
+    }
 }

@@ -17,6 +17,10 @@ use App\Extensions\Dailian\Controllers\Delete;
 use App\Extensions\Dailian\Controllers\ForceRevoke;
 use App\Extensions\Dailian\Controllers\CancelArbitration;
 use App\Extensions\Dailian\Controllers\Playing;
+use App\Extensions\Dailian\Controllers\ApplyComplete;
+use App\Extensions\Dailian\Controllers\CancelComplete;
+use App\Extensions\Dailian\Controllers\Abnormal;
+use App\Extensions\Dailian\Controllers\CancelAbnormal;
 
 // 订单
 return [
@@ -80,6 +84,11 @@ return [
         25 => '强制撤销',
         26 => '客服仲裁',
         27 => '接单',
+
+        28 => '申请完成',
+        29 => '取消验收',
+        30 => '异常',
+        31 => '取消异常',
     ],
 
     'source' => [
@@ -108,12 +117,18 @@ return [
         'revoke' => Revoking::class, // 撤销 -> 撤销中
         'cancelRevoke' => UnRevoke::class, // 取消撤销 -> 撤销前的状态
         'agreeRevoke' => Revoked::class, // 同意撤销 -> 已撤销
-        'applayArbitration' => Arbitrationing::class, // 申请仲裁 -》 仲裁中
+        'applyArbitration' => Arbitrationing::class, // 申请仲裁 -》 仲裁中
         'cancelArbitration' => CancelArbitration::class, // 取消仲裁 -》 仲裁申请前状态
         'delete' => Delete::class, // 删除 -》 删除
         'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
         'arbitration' => Arbitrationed::class, // 客服仲裁 -》 已仲裁
         'receive' => Playing::class, // 接单 -> 代练中
+
+        'applyComplete' => ApplyComplete::class, // 申请验收 -》 待验收
+        'cancelComplete' => CancelComplete::class, // 取消验收 -》代练中
+
+        'abnormal' => Abnormal::class, // 异常 -》 异常
+        'cancelAbnormal' => CancelAbnormal::class, // 取消异常-》代练中
     ],
 
     // 订单分配下限 (最少接单人数)

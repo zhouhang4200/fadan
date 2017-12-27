@@ -7,12 +7,13 @@ use Asset;
 use Exception;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
+use App\Models\LevelingConsult;
 
 class Revoked extends DailianAbstract implements DailianInterface
 {
      //同意撤销-》已撤销
-    protected $acceptableStatus = [15]; // 状态：15撤销中
-	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
+    protected $acceptableStatus = [15, 16]; // 状态：15撤销中 16仲裁中
+	protected $beforeHandleStatus; // 操作之前的状态:15撤销中
     protected $handledStatus    = 19; // 状态：19 已撤销
     protected $type             = 24; // 操作：24同意撤销
 
