@@ -25,6 +25,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
          */
         Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content = []) {
             $data = ['status' => $status, 'message' => $message, 'content' => $content];
+            // return response()->json($data);
 
             // 加密
             $data = ['data' => (new Aes(config('ios.aes_key')))->encrypt(json_encode($data))];

@@ -15,10 +15,9 @@ class OrderController extends Controller
     /**
      * 订单列表
      * @param Request $request
-     * @param OrderRepository $orderRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request, OrderRepository $orderRepository)
+    public function index(Request $request)
     {
         $page = $request->params['page'] ?? 1;
         $perPage = $request->params['per_page'] ?? 20;
@@ -28,7 +27,7 @@ class OrderController extends Controller
             return response()->jsonReturn(0, '状态不允许');
         }
 
-        $dataList = $orderRepository->dataList($status, $page, $perPage)->toArray();
+        $dataList = OrderRepository::dataList($status, $page, $perPage)->toArray();
         $data = [
             'current_page'   => $dataList['current_page'],
             'data'           => $dataList['data'],
@@ -43,16 +42,15 @@ class OrderController extends Controller
     /**
      * 订单详情查看
      * @param Request $request
-     * @param OrderRepository $orderRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function detail(Request $request, OrderRepository $orderRepository)
+    public function detail(Request $request)
     {
-        if (!isset($request->params['no'])) {
+        if (!isset($request->params['order_no'])) {
             return response()->jsonReturn(0, '参数不正确');
         }
 
-        $order = $orderRepository->detail($request->params['no']);
+        $order = OrderRepository::detail($request->params['order_no']);
 
         if (empty($order)) {
             return response()->jsonReturn(0, '订单不存在');
@@ -68,12 +66,12 @@ class OrderController extends Controller
      */
     public function turnBack(Request $request)
     {
-        $no     = $request->params['no'];
-        $remark = $request->params['remark'];
+        $orderNo = $request->params['order_no'];
+        $remark  = $request->params['remark'];
 
         try {
             // 调用退回
-            Order::handle(new TurnBack($no, Auth::guard('api')->user()->id, $remark));
+            Order::handle(new TurnBack($orderNo, Auth::guard('api')->user()->id, $remark));
         } catch (CustomException $e) {
             return response()->jsonReturn(0, $e->getMessage());
         }

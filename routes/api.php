@@ -40,4 +40,7 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
         // 退回集市
         Route::post('order/turn-back', 'OrderController@turnBack');
     });
+
+    // 充值结果回调
+    Route::post('order-charge/notify', 'OrderChargeController@notify');
 });
