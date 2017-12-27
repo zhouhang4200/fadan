@@ -67,7 +67,7 @@ abstract class DailianAbstract
     }
 
     // 更新平台资产
-    public function updateAsset($apiAmount, $apiDeposit, $apiService, $writeAmount){}
+    public function updateAsset(){}
 
     // 订单日志描述
     public function setDescription()

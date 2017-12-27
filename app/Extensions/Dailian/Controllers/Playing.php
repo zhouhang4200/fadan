@@ -26,7 +26,7 @@ class Playing extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $apiAmount, $apiDeposit, $apiService = null, $writeAmount = null)
+    public function run($orderNo, $userId)
     {	
     	DB::beginTransaction();
     	try {
@@ -35,8 +35,7 @@ class Playing extends DailianAbstract implements DailianInterface
         	$this->userId  = $userId;
             // 获取订单对象
             $this->getObject();
-            // 检测接单账号余额
-            $this->checkGainerMoney($apiAmount, $apiDeposit);
+            
         	$this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
@@ -45,7 +44,7 @@ class Playing extends DailianAbstract implements DailianInterface
 		    // 保存更改状态后的订单
 		    $this->save();
 		    // 更新平台资产
-		    $this->updateAsset($apiAmount, $apiDeposit, $apiService = null, $writeAmount = null);
+		    $this->updateAsset();
 		    // 订单日志描述
 		    $this->setDescription();
 		    // 保存操作日志
@@ -64,10 +63,14 @@ class Playing extends DailianAbstract implements DailianInterface
      * [接单支出安全和效率保证金]
      * @return [type] [description]
      */
-    public function updateAsset($safePayment, $effectPayment, $apiService = null, $writeAmount = null)
+    public function updateAsset()
     {
         DB::beginTransaction();
         try {
+            $safePayment = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
+            $effectPayment = $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+            // 检测接单账号余额
+            $this->checkGainerMoney($safePayment, $effectPayment);
             if ($safePayment > 0) {                      
                 // 接单 安全保证金支出
                 Asset::handle(new Expend($safePayment, 4, $this->order->no, '安全保证金支出', $this->order->gainer_primary_user_id));

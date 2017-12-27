@@ -23,7 +23,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null)
+    public function run($orderNo, $userId)
     {	
     	DB::beginTransaction();
     	try {
@@ -41,13 +41,13 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 		    // 保存更改状态后的订单
 		    $this->save();
 		    // 更新平台资产
-		    $this->updateAsset($apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
+		    $this->updateAsset();
 		    // 订单日志描述
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
 
-            (new Lock)->run($orderNo, $userId, $apiAmount = null, $apiDeposit = null, $apiService = null, $writeAmount = null);
+            (new Lock)->run($orderNo, $userId);
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());
