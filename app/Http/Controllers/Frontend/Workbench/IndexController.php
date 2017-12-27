@@ -42,7 +42,7 @@ class IndexController extends Controller
         $services = $serviceRepository->available();
         $games = $gameRepository->available();
 
-        return view('frontend.workbench.index', compact('orders', 'services', 'games', 'type', 'no'));
+        return view('frontend.workbench.recharge.index', compact('orders', 'services', 'games', 'type', 'no'));
     }
 
     /**

@@ -199,7 +199,7 @@
 <!--START 底部-->
 @section('js')
     <script type="text/html" id="operation">
-        <a class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>
+        <a href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no  }}" class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
@@ -368,8 +368,8 @@
                     {title: '操作', width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
-                page: true,
-                height: 800 //固定值
+                page: true
+//                height: 800 //固定值
 //                height: 'full-200'
             });
 
@@ -421,7 +421,7 @@
                         shade: 0.2,
                         title: '撤销',
                         area: ['550px', '450px'],
-                        content: $('.consult'),
+                        content: $('.consult')
                     });
                     form.on('submit(consult)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.consult') }}", {
@@ -449,7 +449,6 @@
                             layer.closeAll();
                         });
                         return false;
-                        layer.closeAll();
                     });
                     
                 } else if (data.value == 'applyArbitration') {
@@ -458,7 +457,7 @@
                         shade: 0.2,
                         title: '申诉',
                         area: ['550px', '350px'],
-                        content: $('.complete'),
+                        content: $('.complete')
                     });
                     form.on('submit(complete)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.complete') }}", {
@@ -486,14 +485,13 @@
                             layer.closeAll();
                         });
                         return false;
-                        layer.closeAll();
                     });
                     
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo, 
                         userId:userId,
-                        keyWord:data.value,
+                        keyWord:data.value
                     }, function (result) {
                         if (result.status == 1) {
                             layer.alert(result.message);

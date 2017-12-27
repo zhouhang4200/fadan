@@ -176,7 +176,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 获取订单详情
             Route::any('detail', 'IndexController@detail')->name('frontend.workbench.leveling.detail');
             // 修改订单
-            Route::post('edit', 'IndexController@store')->name('frontend.workbench.leveling.edit');
+            Route::post('update', 'IndexController@update')->name('frontend.workbench.leveling.update');
             // 改状态操作
             Route::post('status', 'IndexController@changeStatus')->name('frontend.workbench.leveling.status');
             // 撤销

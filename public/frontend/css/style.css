@@ -69,7 +69,7 @@ body {
 .icon-ui:before { content: "\e625"; }
 .wrapper {
 	position: relative;
-    width: 1200px;
+	width: 1600px;
     margin: auto;
     zoom: 1;
 }
@@ -323,7 +323,7 @@ body {
 
 .main .right{
 	background-color: #FFF;
-    width: 1030px;
+    width: 1430px;
     min-height: 849px;
     float: right;
     box-shadow: 0 2px 10px rgba(0,0,0,.2);
@@ -410,4 +410,23 @@ input,button{outline: none}
 .overflow-y{overflow-y:scroll ;-webkit-overflow-scrolling : touch;}
 input[type="button"],input[type="submit"],input[type="reset"],select{
 	-webkit-appearance: none;
+}
+/* tops */
+a.tooltip {outline:none; position: absolute; right: -21px; top: 6px;}
+a.tooltip strong {line-height:30px;}
+a.tooltip:hover {text-decoration:none;}
+a.tooltip span {
+	z-index:10;display:none; padding:14px 20px;
+	margin-top:-35px; margin-left:20px;
+	width:300px; line-height:16px;
+}
+a.tooltip:hover span{
+	display:inline; position:absolute; color:#111;
+	border:1px solid #DCA; background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
+
+/*CSS3 extras*/
+a.tooltip span {
+	border-radius:4px;
+	box-shadow: 5px 5px 8px #CCC;
 }

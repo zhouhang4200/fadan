@@ -51,13 +51,14 @@
                 <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
             </div>
             <form class="layui-form" action="">
+                <input type="hidden" name="no" value="{{ $detail['no'] }}">
                 <div class="layui-row form-group">
                     <div class="layui-col-md6">
                         <div class="layui-col-md3 layui-form-mid">*游戏</div>
                         <div class="layui-col-md8">
-                            <select name="game_id" lay-verify="required" lay-search="">
+                            <select name="game_id" lay-verify="required" lay-search="" @if(!in_array($detail['status'], [1, 23]))  disabled="disabled"  @endif>
                                 @foreach($game as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
+                                <option value="{{ $key }}" @if($value == $detail['game_name']) selected @endif>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -134,20 +135,19 @@
                             @endif
 
                             @if($item->field_type == 3 && in_array($detail['status'], [1, 23]))
-                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary" lay-verify="@if($item->field_required == 1) require @endif">
-                            @elseif($item->field_type == 3)
-                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary" lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled>
+
                             @endif
 
-
                             @if($item->field_type == 4 && in_array($detail['status'], [1, 23]))
-                                <textarea name="{{ $item->field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"></textarea>
+                                <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] }}</textarea>
                             @elseif($item->field_type == 4)
-                                <textarea name="{{ $item->field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled></textarea>
+                                <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] }}</textarea>
                             @endif
 
                             @if($item->field_type == 5 && in_array($detail['status'], [1, 23]))
-
+                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
+                            @elseif($item->field_type == 5)
+                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
                             @endif
 
                         </div>
@@ -165,20 +165,60 @@
                 @endforelse
                 </div>
 
-                <div class="layui-btn layui-btn-normal  layui-col-md12" lay-submit="" lay-filter="order">确定</div>
+                <div class="layui-btn layui-btn-normal  layui-col-md12" lay-submit="" lay-filter="save-update">提交修改</div>
             </form>
         </div>
 
         <div class="layui-col-md3">
             <div class="site-title">
-                <fieldset><legend><a name="hr">发单模版</a></legend></fieldset>
+                <fieldset><legend><a name="hr">订单数据</a></legend></fieldset>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">账号：</div>
+                <div class="layui-col-md4 text_right">平台单号：</div>
                 <div class="layui-col-md8">淘宝</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">来源价格：</div>
+                <div class="layui-col-md4 text_right">订单状态：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">支付金额：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">手续费：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">利润：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">打手呢称：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">剩余代练时间：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">发布时间：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">接单时间：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">提验时间：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">结算时间：</div>
+                <div class="layui-col-md8">淘宝</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md4 text_right">发单客服：</div>
                 <div class="layui-col-md8">淘宝</div>
             </div>
         </div>
@@ -188,14 +228,7 @@
                 <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
             </div>
 
-            <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">账号：</div>
-                <div class="layui-col-md8">淘宝</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">来源价格：</div>
-                <div class="layui-col-md8">淘宝</div>
-            </div>
+
 
         </div>
     </div>
@@ -207,22 +240,23 @@
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
 
-        var getTpl = goodsTemplate.innerHTML, view = $('#template');
-        $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:1}, function (result) {
-            layTpl(getTpl).render(result.content, function(html){
-                view.html(html);
-                layui.form.render();
-            });
-        }, 'json');
+
+        form.on('checkbox', function(data){
+            if (data.elem.checked) {
+                $(data.elem).val(1);
+            } else {
+                $(data.elem).remove();
+                $('.layui-form').append('<input type="hidden" name="' + $(data.elem).attr("name") + '" value="0"/>');
+            }
+        });
 
         // 下单
-        form.on('submit(order)', function (data) {
-            $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+        form.on('submit(save-update)', function (data) {
+            $.post('{{ route('frontend.workbench.leveling.update') }}', {data: data.field}, function (result) {
                 layer.msg(result.message)
             }, 'json');
             return false;
         });
-
     });
 </script>
 @endsection

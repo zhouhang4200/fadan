@@ -127,27 +127,27 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         if (!empty($this->details)) {
             $widget = GoodsTemplateWidget::where('goods_template_id', $this->templateId)->pluck('field_display_name', 'field_name');
 
-            foreach ($this->details as $fieldName => $fieldValue) {
-                if (!isset($widget[$fieldName]) || empty($this->details[$fieldName])) continue;
+            foreach ($widget as $k => $v) {
 
                 $orderDetail = new OrderDetail;
                 $orderDetail->order_no = $this->order->no;
-                $orderDetail->field_name = $fieldName;
-                $orderDetail->field_display_name = $widget[$fieldName];
-                $orderDetail->field_value = $fieldValue;
+                $orderDetail->field_name = $k;
+                $orderDetail->field_display_name = $v;
+                $orderDetail->field_value = $this->details[$k] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
                 if (!$orderDetail->save()) {
                     throw new Exception('详情记录失败');
                 }
             }
+
         }
     }
 
     public function updateAsset()
     {
         try {
-            Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_MARKET, $this->order->no, '下订单', $this->order->creator_primary_user_id));
+            Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_GAME_LEVELING, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
         }
         catch (CustomException $customException) {
             $this->order->status = 11;

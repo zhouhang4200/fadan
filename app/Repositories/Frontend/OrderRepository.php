@@ -164,13 +164,12 @@ class OrderRepository
             'service_name', 'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         );
+
         if ($type == 1) {
             $query->where('gainer_primary_user_id', $primaryUserId); // 接单
         } else {
             $query->where('creator_primary_user_id', $primaryUserId); // 发单
         }
-        $query->where('service_id', 2)->with(['detail']);
-
         $query->when($status != 0, function ($query) use ($status) {
             return $query->where('status', $status);
         });
@@ -197,6 +196,8 @@ class OrderRepository
         $query->when($endDate !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate." 23:59:59");
         });
+        $query->where('status', '!=', 24);
+        $query->where('service_id', 2)->with(['detail']);
         return $query->paginate($pageSize);
     }
 

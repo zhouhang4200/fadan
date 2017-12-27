@@ -5,7 +5,8 @@
 @section('css')
 <style>
     .user-info{
-        width: 970px;
+        /*width: 970px;*/
+        width: 1370px;
         height: 200px;
         border: 1px solid #ddd;
         display: flex;

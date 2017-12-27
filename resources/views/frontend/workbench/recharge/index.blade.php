@@ -1,260 +1,83 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>工作台</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="_token" content="{{ csrf_token() }}" >
-    <!--START 样式表-->
-    @include('frontend.layouts.links')
+@extends('frontend.layouts.app')
+
+@section('title', '工作台 - 代充')
+
+@section('css')
+    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
         .wrapper {
-            position: relative;
-            min-width: 1200px;
-            width: auto;
-            padding: 0 30px;
-            margin: auto;
-            zoom: 1;
+            width: 1600px;
         }
-        .right-content {
-            height: 800px;
-            background-color: #fff;
-            position: inherit;
+        .main .right {
+            width: 1430px;
         }
-        .left-menu {
-            width: 265px;
-            background-color: #F5F5F5;
-            border-left: solid 1px #D7D7D7;
-            height: 100%;
-            padding: 75px 20px 10px 0;
-            position: fixed;
-            z-index: 99;
-            top: 0;
-            bottom: 0;
-            left: -296px;
-            box-shadow: 0 0 10px 0 rgba(100, 100, 100, 0.5);
-            min-height: 650px;
+        .layui-laypage-skip input {
+            height: 27px !important;
         }
-        .left-menu > .open-btn {
-            color: #FFF;
-            background-color: #1E9FFF;
-            width: 16px;
-            padding: 8px 6px 8px 7px;
-            margin-top: -80px;
-            border: solid 1px #1E9FFF;
-            border-right: 0 none;
-            position: absolute;
-            z-index: 99;
-            top: 50%;
-            right: -37px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
-            border-radius: 0 5px 5px 0;
+        .laytable-cell-1-0, .laytable-cell-1-5, .laytable-cell-1-7{
+            height: 40px !important;
         }
-        .left-menu > .close-btn {
-            color: #FFF;
-            background-color: #1E9FFF;
-            width: 16px;
-            padding: 8px 6px 8px 7px;
-            margin-top: -80px;
-            border: solid 1px #1E9FFF;
-            border-right: 0 none;
-            position: absolute;
-            z-index: 99;
-            top: 50%;
-            right: -31px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
-            border-radius: 0 5px 5px 0;
+        th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
+            line-height: 40px !important;
         }
-        .prom-wrap {
-            width: 100%;
-            left: 0;
-            bottom: 0;
+        .laytable-cell-1-13{
+            height: 40px !important;
+            line-height: 40px !important;
         }
-        .fixed {
-            position: fixed;
+        .layui-laypage-em {
+            background-color: #1E9FFF !important;
         }
-        .prom-inner {
-            width: 1200px;
-            margin: 0 auto;
+        .layui-form-select .layui-input {
+            padding-right:0 !important;
         }
-        .prom-list {
-            background: white;
-            position: relative;
-            z-index: 100;
-            border: 1px solid #1E9FFF;
-            border-radius: 5px;
-            box-sizing: border-box;
-            width: 290px;
-            margin: 5px;
+        .layui-table-cell {
+            overflow: inherit;
         }
-        .prom-list-header {
-            height: 40px;
-            line-height: 40px;
-            font-weight: bold;
-            font-size: 18px;
-            padding-left: 13px;
-            text-align: left;
+        .layui-form-item .layui-inline {
+            margin-bottom: 5px;
+            margin-right: 5px;
         }
-        .text-center {
-            text-align: center;
+        .layui-form-mid {
+            margin-right: 4px;
         }
-        .relative {
-            position: relative;
-        }
-        .prom-list-body {
-            padding: 20px 15px;
-            font-size: 13px;
-        }
-        .prom-list-footer {
-            height: 40px;
-            line-height: 40px;
-            font-weight: bold;
-            font-size: 15px;
-            color: #1E9FFF;
-            border-top: 1px solid #1E9FFF;
-        }
-        .prom-list-footer .prom-list-footer-tab.get {
-            border-right: 1px solid #1E9FFF;
-        }
-        .prom-list-footer .prom-list-footer-tab {
-            width: 50%;
-            box-sizing: border-box;
-            cursor: pointer;
-        }
-        .prom-list-contents span {
-            width: 48%;
-        }
-        .close-prom {
-            background-color: #1E9FFF;
-            color: white;
-            padding: 2px 6px;
-            top: 6px;
-            right: 6px;
-            line-height: 22px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 3px;
-            font-size: 14px;
-        }
-        .header .user {
-            right: 30px;
-        }
-        .layui-tab-content {
-            padding: 0 !important;
-        }
+
     </style>
-    <!--END 样式表-->
-</head>
-<body>
+@endsection
 
+@section('submenu')
+    @include('frontend.workbench.submenu')
+@endsection
 
+@section('main')
+    <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="need">急需处理 <span class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+            <li class="" lay-id="ing">处理中</li>
+            <li class="" lay-id="finish">已完成</li>
+            <li class="" lay-id="after-sales">售后中</li>
+            <li class="" lay-id="cancel">已取消</li>
+            <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
+        </ul>
 
-
-<!--START 顶部菜单-->
-@include('frontend.layouts.header')
-<!--END 顶部菜单-->
-
-<!--START 主体-->
-<div class="main">
-    <div class="workbench-wrapper">
-        @can('frontend.workbench.order')
-            <div class="left-menu" id="left-menu">
-            <form class="layui-form " action="">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">类型</label>
-                    <div class="layui-input-block">
-                        <select name="service_id" lay-verify="required" lay-search lay-filter="service">
-                            <option value="">请选择类型</option>
-                            @forelse($services as $k => $v)
-                                <option value="{{ $k }}">{{ $v }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">游戏</label>
-                    <div class="layui-input-block">
-                        <select name="game_id" lay-verify="required" lay-search lay-filter="game">
-                            <option value="">请选择游戏</option>
-                            @forelse($games as $k => $v)
-                                <option value="{{ $k }}">{{ $v }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">商品</label>
-                    <div class="layui-input-block">
-                        <select name="goods" lay-verify="required" lay-search id="goods" lay-filter="goods" >
-                            <option value="">请选择商品</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="template"></div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn layui-bg-blue" lay-submit lay-filter="order">确认下单</button>
-                    </div>
-                </div>
-            </form>
-            <div class="open-btn"> 打开下单面板</div>
-            <div class="close-btn layui-hide">关闭下单面板</div>
-        </div>
-        @endcan
-        <div class="right-content">
-            <div class="content">
-                <div class="path"><span>工作台</span>
-                </div>
-
-                <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
-                    <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="need">急需处理 <span class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
-                        <li class="" lay-id="ing">处理中</li>
-                        <li class="" lay-id="finish">已完成</li>
-                        <li class="" lay-id="after-sales">售后中</li>
-                        <li class="" lay-id="cancel">已取消</li>
-                        <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
-                    </ul>
-
-                    <div class="layui-tab-content">
-                        <div class="layui-tab-item layui-show need"></div>
-                        <div class="layui-tab-item ing"></div>
-                        <div class="layui-tab-item finish"></div>
-                        <div class="layui-tab-item after-sales"></div>
-                        <div class="layui-tab-item cancel"></div>
-                        <div class="layui-tab-item market"></div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show need"></div>
+            <div class="layui-tab-item ing"></div>
+            <div class="layui-tab-item finish"></div>
+            <div class="layui-tab-item after-sales"></div>
+            <div class="layui-tab-item cancel"></div>
+            <div class="layui-tab-item market"></div>
         </div>
     </div>
-</div>
 
-
-<div class="prom-wrap fixed" id='prom'>
-    <ul class="prom-inner">
-    </ul>
-</div>
-<div id="audio"></div>
-<!--END 主体-->
-
-@include('frontend.layouts.scripts')
-
-<!--START 底部-->
-<link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
-@include('frontend.layouts.footer')
-<!--END 底部-->
+    <div class="prom-wrap fixed" id='prom'>
+        <ul class="prom-inner">
+        </ul>
+    </div>
+    <div id="audio"></div>
+@endsection
 
 <!--START 脚本-->
-@yield('js')
+@section('js')
 <script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?v20170927') }}"></script>
 <script type="text/html" id="goodsTemplate">
     @{{#  layui.each(d, function(index, item){ }}
@@ -665,6 +488,4 @@
         setTimeout("updateEndTime()", 1000);
     }
 </script>
-<!--END 脚本-->
-</body>
-</html>
+@endsection

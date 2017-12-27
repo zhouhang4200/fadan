@@ -16,6 +16,7 @@
         }
         .form-group {
             margin-bottom: 7px;
+            position: relative;
         }
 
         .layui-form-mid {
@@ -138,7 +139,6 @@
                     @{{# } }}
 
                     @{{# if(item.field_type == 3) {  }}
-                        <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}">
                     @{{# } }}
 
                     @{{# if(item.field_type == 4) {  }}
@@ -146,10 +146,18 @@
                     @{{# } }}
 
                     @{{# if(item.field_type == 5) {  }}
-
+                    <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}">
                     @{{# } }}
 
+                    @{{# if(item.help_text != null || item.help_text != undefined) {  }}
+                        <a href="#" class="tooltip">
+                            <i class="iconfont icon-wenhao" id="recharge"></i>
+                            <span>@{{ item.help_text }}</span>
+                        </a>
+                    @{{# }  }}
+
                 </div>
+
             </div>
 
             @{{#  row--; }}
@@ -174,6 +182,7 @@
                 layui.form.render();
             });
         }, 'json');
+
 
         // 下单
         form.on('submit(order)', function (data) {
