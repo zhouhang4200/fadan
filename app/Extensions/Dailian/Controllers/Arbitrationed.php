@@ -7,6 +7,7 @@ use Asset;
 use Exception;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
+use App\Models\LevelingConsult;
 
 class Arbitrationed extends DailianAbstract implements DailianInterface
 {
@@ -66,7 +67,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	public function updateAsset()
 	{
 		// 从leveling_consult 中取各种值
-        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('status', 3)->first();
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
         $apiAmount = $consult->api_amount ?? 0;
         $apiDeposit = $consult->api_deposit ?? 0;
         $apiService = $consult->api_service ?? 0;

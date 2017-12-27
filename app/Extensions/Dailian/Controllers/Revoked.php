@@ -27,7 +27,7 @@ class Revoked extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run()
+    public function run($orderNo, $userId)
     {	
     	DB::beginTransaction();
     	try {
@@ -70,7 +70,7 @@ class Revoked extends DailianAbstract implements DailianInterface
     public function updateAsset()
     {
         // 从leveling_consult 中取各种值
-        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('status', 4)->first();
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
         $amount = $consult->amount ?? 0;
         $apiDeposit = $consult->api_deposit ?? 0;
         $apiService = $consult->api_service ?? 0;
@@ -89,6 +89,7 @@ class Revoked extends DailianAbstract implements DailianInterface
         $isZero = bcsub($apiAll, $writeDeposit);
 
         if ($leftAmount >= 0 && bcsub($orderDeposit, $apiAll) >= 0 && $isZero == 0) {       
+
             DB::beginTransaction();
             try {
                 if ($amount > 0) {
