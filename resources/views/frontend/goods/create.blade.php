@@ -51,6 +51,18 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">游戏币数</label>
+            <div class="layui-input-block">
+                <input type="text" name="game_gold" autocomplete="off" placeholder="如：100" class="layui-input" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">游戏币单位</label>
+            <div class="layui-input-block">
+                <input type="text" name="game_gold_unit" autocomplete="off" placeholder="如：点券" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">外部ID</label>
             <div class="layui-input-block">
                 <input type="text" name="foreign_goods_id" autocomplete="off" placeholder="请输入外部ID" class="layui-input"  lay-verify="required">
