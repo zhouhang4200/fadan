@@ -173,6 +173,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('create', 'IndexController@order')->name('frontend.workbench.leveling.create');
             // 获取模版
             Route::post('get-template', 'IndexController@getTemplate')->name('frontend.workbench.leveling.get-template');
+            // 获取订单详情
+            Route::any('detail', 'IndexController@detail')->name('frontend.workbench.leveling.detail');
             // 修改订单
             Route::post('edit', 'IndexController@store')->name('frontend.workbench.leveling.edit');
             // 改状态操作

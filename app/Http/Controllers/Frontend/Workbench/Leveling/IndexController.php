@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Extensions\Order\Operations\CreateLeveling;
 use App\Models\GoodsTemplateWidget;
+use App\Models\OrderDetail;
+use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,13 +26,23 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
  */
 class IndexController extends Controller
 {
+    protected  $game;
+
     /**
-     * @param Request $request
+     * IndexController constructor.
+     * @param GameRepository $gameRepository
+     */
+    public function __construct(GameRepository $gameRepository)
+    {
+        $this->game = $gameRepository->available();
+    }
+
+    /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request, \App\Repositories\Backend\GameRepository $gameRepository)
+    public function index()
     {
-        $game = $gameRepository->available();
+        $game = $this->game;
         return view('frontend.workbench.leveling.index', compact('game'));
     }
 
@@ -81,7 +93,7 @@ class IndexController extends Controller
      */
     public function create(GameRepository $gameRepository)
     {
-        $game = $gameRepository->available();
+        $game = $this->game;
         return view('frontend.workbench.leveling.create', compact('game'));
     }
 
@@ -121,28 +133,78 @@ class IndexController extends Controller
     /**
      * 获取游戏模版
      * @param Request $request
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     * @return mixed
      */
-    public function getTemplate(Request $request)
+    public function getTemplate(Request $request, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
-        $templateId = GoodsTemplate::where('service_id', 2)
-            ->where('game_id', $request->game_id)
-            ->value('id');
+        // 获取对应的模版ID
+        $templateId = GoodsTemplate::getTemplateId(2, $request->game_id);
+        // 获取对应的模版组件
+        $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
-        $template = GoodsTemplateWidget::select('id', 'field_type', 'field_display_name', 'field_parent_id', 'field_name', 'display_form', 'field_required')
-            ->where('goods_template_id', $templateId)
-            ->orderBy('field_sortord')
-            ->with([
-                'values' => function($query){
-                    $query->select('goods_template_widget_id', 'field_value')
-                        ->where('user_id', 0);
-                },
-                'userValues' => function($query) {
-                    $query->select('goods_template_widget_id', 'field_value')
-                        ->where('user_id', Auth::user()->getPrimaryUserId());
-                }
-            ])
-            ->get();
         return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId]);
+    }
+
+    /**
+     * 订单详情
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function detail(Request $request,
+                           OrderRepository $orderRepository,
+                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    {
+        // 获取可用游戏
+        $game = $this->game;
+        // 获取订单数据
+        $detail = $orderRepository->levelingDetail($request->no);
+        // 获取订单对应模版ID
+        $templateId = GoodsTemplate::getTemplateId(2, $detail['game_id']);
+        // 获取对应的模版组件
+        $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
+    }
+
+    /**
+     * 更新订单
+     * @param Request $request
+     */
+    public function update(Request $request, OrderRepository $orderRepository)
+    {
+        $orderNo = $request->no;
+        $orderRepository->levelingDetail($orderNo);
+
+        $order = Order::where('no', $orderNo)->first();
+        $orderDetail = OrderDetail::where('order_no', $orderNo)->get();
+
+        // 下架 没有接单 更新所有信息
+        if(in_array($order->status, [1, 23])) {
+            // 加价 修改主单信息
+
+
+            // 其它信息只需改订单详情表
+        }
+
+        // 已接单  异常 更新部分信息
+        if (in_array($order->status, [13, 17])) {
+            // 加价 修改主单信息
+
+            // 其它信息只需改订单详情表
+
+        }
+        // 待验收 可加价格
+        if ($order->status == 14) {
+
+        }
+        // 状态锁定 可改密码
+        if ($order->status == 18) {
+
+        }
+
     }
 
     public function changeStatus(Request $request)
@@ -152,7 +214,7 @@ class IndexController extends Controller
         $userId = $request->userId; // 操作人id
         $apiAmount = $request->apiAmount ?? null; // 回传代练费 或 订单安全保证金
         $apiDeposit = $request->apiDeposit ?? null; // 回传双金 或 订单效率保证金
-        $apiService = $request->apiService ?? null; // 回传手续费 
+        $apiService = $request->apiService ?? null; // 回传手续费
         $writeAmount = $request->writeAmount ?? null; // 协商填写的代练费
 
         try {

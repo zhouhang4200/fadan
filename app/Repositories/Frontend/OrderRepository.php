@@ -158,13 +158,18 @@ class OrderRepository
     public function levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $pageSize)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+        $type = Auth::user()->type; // 账号类型是接单还是发单
 
         $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id',
             'service_name', 'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         );
-        $query->where('creator_primary_user_id', $primaryUserId)->with(['detail']);
-        $query->where('service_id', 2);
+        if ($type == 1) {
+            $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+        } else {
+            $query->where('creator_primary_user_id', $primaryUserId); // 发单
+        }
+        $query->where('service_id', 2)->with(['detail']);
 
         $query->when($status != 0, function ($query) use ($status) {
             return $query->where('status', $status);
@@ -196,10 +201,19 @@ class OrderRepository
     }
 
     /**
+     * 代练订单详情
      * @param $orderNo
+     * @return array
      */
     public function levelingDetail($orderNo)
     {
+        $primaryUserId = Auth::user()->getPrimaryUserId();
+        $order =  Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
+            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
+        })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
+            $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
+        })->with(['detail', 'foreignOrder'])->first();
 
+        return  array_merge($order->detail->pluck('field_value', 'field_name')->toArray(), $order->toArray());
     }
 }

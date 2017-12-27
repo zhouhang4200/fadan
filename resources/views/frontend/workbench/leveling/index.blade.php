@@ -8,28 +8,22 @@
         .wrapper {
             width: 1600px;
         }
-
         .main .right {
             width: 1430px;
         }
-
         .layui-laypage-skip input {
             height: 27px !important;
         }
-
         .laytable-cell-1-0, .laytable-cell-1-5, .laytable-cell-1-7{
             height: 40px !important;
         }
-
         th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
             line-height: 40px !important;
         }
-
         .laytable-cell-1-13{
             height: 40px !important;
             line-height: 40px !important;
         }
-
         .layui-laypage-em {
             background-color: #1E9FFF !important;
         }
@@ -276,7 +270,7 @@
                 method: 'post',
                 size: 'sm',
                 cols: [[
-                    {title: '订单号',fixed: 'left',width: '220',templet: '#noTemplate'},
+                    {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'lable', title: '标签', width: '150'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
@@ -289,11 +283,12 @@
                     {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '发单价', width: '100'},
-                    {title: '操作',fixed:'right', width: '230', toolbar: '#operation'}
+                    {title: '操作', width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
                 page: true,
-                height: 'full-200'
+                height: 800 //固定值
+//                height: 'full-200'
             });
 
             element.on('tab(order-list)', function () {
