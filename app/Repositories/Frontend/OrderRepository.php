@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\Frontend;
 
+use App\Models\OrderDetail;
 use DB, Auth;
 use Carbon\Carbon;
 use App\Models\Order;
@@ -144,19 +145,53 @@ class OrderRepository
     /**
      * 代练订单
      * @param $status
+     * @param $no
+     * @param $foreignOrderNo
+     * @param $gameId
+     * @param $wangWang
+     * @param $urgentOrder
      * @param $pageSize
+     * @param $startDate
+     * @param $endDate
      * @return mixed
      */
-    public function levelingDataList($status, $pageSize)
+    public function levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $pageSize)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
 
-        $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id','service_name',
-            'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
+        $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id',
+            'service_name', 'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         );
         $query->where('creator_primary_user_id', $primaryUserId)->with(['detail']);
         $query->where('service_id', 2);
+
+        $query->when($status != 0, function ($query) use ($status) {
+            return $query->where('status', $status);
+        });
+        $query->when($no != 0, function ($query) use ($no) {
+            return $query->where('no', $no);
+        });
+        $query->when($foreignOrderNo != 0, function ($query) use ($foreignOrderNo) {
+            return $query->where('foreign_order_no', $foreignOrderNo);
+        });
+        $query->when($gameId  != 0, function ($query) use ($gameId) {
+            return $query->where('game_id', $gameId);
+        });
+        $query->when($wangWang, function ($query) use ($wangWang, $primaryUserId) {
+            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when($urgentOrder !=0, function ($query) use ($urgentOrder) {
+            $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when($startDate !=0, function ($query) use ($startDate) {
+            return $query->where('created_at', '>=', $startDate);
+        });
+        $query->when($endDate !=0, function ($query) use ($endDate) {
+            return $query->where('created_at', '<=', $endDate." 23:59:59");
+        });
         return $query->paginate($pageSize);
     }
 

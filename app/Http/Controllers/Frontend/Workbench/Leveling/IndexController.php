@@ -27,9 +27,10 @@ class IndexController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request, \App\Repositories\Backend\GameRepository $gameRepository)
     {
-        return view('frontend.workbench.leveling.index');
+        $game = $gameRepository->available();
+        return view('frontend.workbench.leveling.index', compact('game'));
     }
 
     /**
@@ -39,22 +40,28 @@ class IndexController extends Controller
      */
     public function orderList(Request $request, OrderRepository $orderRepository)
     {
-        $no = $request->order_no;
-        $pageSize = $request->limit;
-        $type = $request->input('type', 0);
+        $no = $request->input('no', 0);
+        $foreignOrderNo = $request->input('foreign_order_no', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $wangWang = $request->input('wang_wang', 0);
+        $urgentOrder = $request->input('urgent_order', 0);
+        $startDate  = $request->input('start_date', 0);
+        $endDate = $request->input('end_date', 0);
+        $pageSize = $request->input('limit', 10);
 
-        $orders = $orderRepository->levelingDataList($type, $pageSize);
-
+        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate, $pageSize);
 
         if ($request->ajax()) {
-            if (!in_array($type, ['need', 'ing', 'finish', 'cancel', 'after-sales', 'market', 'cancel', 'search'])) {
+            if (!in_array($status, array_flip(config('order.status_leveling')))) {
                 return response()->ajax(0, '不存在的类型');
             }
 
             $orderArr = [];
             foreach($orders as $item) {
                 $orderInfo = $item->toArray();
-                $orderInfo['status'] = config('order.status')[$orderInfo['status']] ?? '';
+                $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
+                $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
                 $orderArr[] = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
             }
 

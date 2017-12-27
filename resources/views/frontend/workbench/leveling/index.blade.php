@@ -39,6 +39,13 @@
         .layui-table-cell {
             overflow: inherit;
         }
+        .layui-form-item .layui-inline {
+            margin-bottom: 5px;
+            margin-right: 5px;
+        }
+        .layui-form-mid {
+            margin-right: 4px;
+        }
     </style>
 @endsection
 
@@ -47,35 +54,41 @@
 @endsection
 
 @section('main')
-    <form class="layui-form" id="query_form">
+    <form class="layui-form" id="search">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-mid">平台单号：</label>
                 <div class="layui-input-inline">
-                    <input type="tel" name="id" autocomplete="off" class="layui-input">
+                    <input type="text" name="no" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">游戏：</label>
+                <label class="layui-form-mid">外部单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" autocomplete="off" class="layui-input">
+                    <input type="text" name="foreign_order_no" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">订单状态：</label>
-                <div class="layui-input-inline" style="">
-                    <select name="quiz1">
-                        <option value="">请选择省</option>
-                        <option value="浙江" selected="">浙江省</option>
-                        <option value="你的工号">江西省</option>
-                        <option value="你最喜欢的老师">福建省</option>
+                <label class="layui-form-mid">代练游戏：</label>
+                <div class="layui-input-inline">
+                    <select name="game_id" lay-search="">
+                        <option value="">请选择游戏</option>
+                        @foreach($game as  $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
                     </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-mid">号主旺旺：</label>
+                <div class="layui-input-inline" style="">
+                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">加急订单：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="checkbox" name="like1[write]" lay-skin="primary">
+                    <input type="checkbox" name="urgent_order" lay-skin="primary" value="0" lay-filter="urgent_order">
                 </div>
             </div>
         </div>
@@ -83,51 +96,47 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="createDate" autocomplete="off" class="layui-input fsDate" daterange="1"
-                           placeholder=" - " lay-key="1">
+                    <select name="game">
+                        <option value="">请选择省</option>
+
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">标签：</label>
+                <label class="layui-form-mid">订单标签：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="createDate" autocomplete="off" class="layui-input fsDate" daterange="1"
-                           placeholder=" - " lay-key="1">
+                    <input type="text" name="label" autocomplete="off" class="layui-input fsDate"   lay-key="1">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">发布时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="createDate" autocomplete="off" class="layui-input fsDate" daterange="1"
-                           placeholder=" - " lay-key="1">
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" >
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="createDate" autocomplete="off" class="layui-input fsDate" daterange="1"
-                           placeholder=" - " lay-key="1">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
                 </div>
-                <button class="layui-btn layui-btn-normal " type="button" function="query">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query">导出</button>
+                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
+                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="">导出</button>
             </div>
         </div>
     </form>
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="need">全部 <span
-                        class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span>
-            </li>
-            <li class="" lay-id="ing">未接单</li>
-            <li class="" lay-id="finish">代练中</li>
-            <li class="" lay-id="after-sales">待验收</li>
-            <li class="" lay-id="cancel">撤销中</li>
-            <li class="" lay-id="cancel">仲裁中</li>
-            <li class="" lay-id="cancel">异常</li>
-            <li class="" lay-id="cancel">锁定</li>
-            <li class="" lay-id="cancel">已撤销</li>
-            <li class="" lay-id="cancel">已结算</li>
-            <li class="" lay-id="cancel">已仲裁</li>
-            <li class="" lay-id="cancel">已下架</li>
-            <li class="" lay-id="market">强制撤销 <span
-                        class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
+            <li class="layui-this" lay-id="need">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+            <li class="" lay-id="1">未接单</li>
+            <li class="" lay-id="13">代练中</li>
+            <li class="" lay-id="14">待验收</li>
+            <li class="" lay-id="15">撤销中</li>
+            <li class="" lay-id="16">仲裁中</li>
+            <li class="" lay-id="17">异常</li>
+            <li class="" lay-id="18">锁定</li>
+            <li class="" lay-id="19">已撤销</li>
+            <li class="" lay-id="20">已结算</li>
+            <li class="" lay-id="21">已仲裁</li>
+            <li class="" lay-id="22">已下架</li>
+            <li class="" lay-id="23">强制撤销 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
             </li>
         </ul>
         <div class="layui-tab-content"></div>
@@ -143,8 +152,82 @@
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
-                <option value="2">1asdfasdf</option>
-                <option value="3">2asdfasdf</option>
+                @{{# if (d.master && d.status == 15) {  }}
+                    <option value="14" data-no="@{{ d.no }}">上架</option>
+                @{{# }  }}
+
+                <!-->
+                @{{# if (d.master && d.status == 1) {  }}
+                <option value="15" data-no="@{{ d.no }}">下架</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="13" data-no="@{{ d.no }}">重发</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="" data-no="@{{ d.no }}">加急</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15 || d.status == 15 || d.status == 15) {  }}
+                <option value="" data-no="@{{ d.no }}">取消加急</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                    <option value="16" data-no="@{{ d.no }}">锁定</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="17" data-no="@{{ d.no }}">取消锁定</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="17" data-no="@{{ d.no }}">取消锁定</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="18" data-no="@{{ d.no }}">撤销</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="19" data-no="@{{ d.no }}">取消撤销</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="24" data-no="@{{ d.no }}">同意撤销</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="20" data-no="@{{ d.no }}">申请仲裁</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="21" data-no="@{{ d.no }}">取消仲裁</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="12" data-no="@{{ d.no }}">完成</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="send-message" data-no="@{{ d.no }}">发短信</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="message" data-no="@{{ d.no }}">留言</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="operation-record" data-no="@{{ d.no }}">操作记录</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="wang-wang" data-no="@{{ d.no }}">联系旺旺号</option>
+                @{{# }  }}
+
+                @{{# if (d.master && d.status == 15) {  }}
+                <option value="delete" data-no="@{{ d.no }}">删除</option>
+                @{{# }  }}
             </select>
         </div>
     </script>
@@ -171,16 +254,21 @@
             }
         </style>
     </script>
-
     <script>
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,
                     layTpl = layui.laytpl,
                     element = layui.element,
+                    laydate = layui.laydate,
                     table = layui.table;
             // 当前tab 所在位置
             var status = 0;
+            var urgentOrder = 0;
+
+            laydate.render({elem: '#start-date'});
+            laydate.render({elem: '#end-date'});
+
             //方法级渲染
             table.render({
                 elem: '#orer-list',
@@ -188,14 +276,7 @@
                 method: 'post',
                 size: 'sm',
                 cols: [[
-//                    {checkbox: true, fixed: true},
-                    {
-                        title: '订单号',
-                        fixed: 'left',
-                        width: '220',
-                        templet: '#noTemplate',
-                        style: "height: 38px;line-height: 18px;"
-                    },
+                    {title: '订单号',fixed: 'left',width: '220',templet: '#noTemplate'},
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'lable', title: '标签', width: '150'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
@@ -204,7 +285,7 @@
                     {field: 'game_leveling_type', title: '代练类型', width: '100'},
                     {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
                     {field: 'role', title: '角色名称', width: '100'},
-                    {field: 'status', title: '订单状态', width: '120'},
+                    {field: 'status_text', title: '订单状态', width: '120'},
                     {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '发单价', width: '100'},
@@ -215,10 +296,8 @@
                 height: 'full-200'
             });
 
-            //监听Tab切换，以改变地址hash值
             element.on('tab(order-list)', function () {
-//                location.hash = 'test1='+ this.getAttribute('lay-id');
-                var status = this.getAttribute('lay-id');
+                 status = this.getAttribute('lay-id');
                 //执行重载
                 table.reload('order', {
                     where: {
@@ -231,7 +310,34 @@
                     }
                 });
             });
-
+            form.on('checkbox(urgent_order)', function(data){
+                urgentOrder = data.elem.checked ? 1 : 0;
+            });
+            // 搜索
+            form.on('submit(search)', function (data) {
+                table.reload('order', {
+                    where: {
+                        status: status,
+                        no: data.field.no,
+                        foreign_order_no: data.field.foreign_order_no,
+                        game_id: data.field.game_id,
+                        need: data.field.status,
+                        wang_wang: data.field.wang_wang,
+                        urgent_order: urgentOrder,
+                        start_date: data.field.start_date,
+                        end_date: data.field.end_date
+                    },
+                    done: function(res, curr, count){
+                        changeStyle(layui.table.index);
+                        layui.form.render();
+                    }
+                });
+            });
+            // 对订单操作
+            form.on('select(order-operation)', function (data) {
+               layer.alert('订单号：' +  $(data.elem).find("option:selected").attr("data-no") + '<br/>选中的值：' + data.value );
+            });
+            // 重新渲染后重写样式
             function changeStyle(index) {
                 var getTpl = changeStyleTemplate.innerHTML, view = $('body');
                 layTpl(getTpl).render(index, function(html){
