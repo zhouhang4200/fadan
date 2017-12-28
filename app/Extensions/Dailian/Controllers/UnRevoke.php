@@ -56,7 +56,6 @@ class UnRevoke extends DailianAbstract implements DailianInterface
         return true;
     }
 
-
     public function getBeforeStatus($orderNo)
     {
         $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];

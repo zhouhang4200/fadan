@@ -534,6 +534,32 @@
                         return false;
                     });
                     
+                } else if (data.value == 'delete') {
+                    layer.open({
+                        type: 1
+                        ,title: '删除'
+                        ,content: '<div style="padding: 20px 100px;">确认删除吗?</div>'
+                        ,btn: ['确认', '取消']
+                        ,btnAlign: 'c' //按钮居中
+                        ,shade: 0 //不显示遮罩
+                        ,yes: function(){
+                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                                orderNo:orderNo, 
+                                userId:userId,
+                                keyWord:data.value
+                            }, function (result) {
+                                if (result.status == 1) {
+                                    layer.alert(result.message);
+                                } else {
+                                    layer.alert(result.message);
+                                }
+                            });
+                          layer.closeAll();
+                        }
+                        ,btn2: function () {
+                            layer.closeAll();
+                        }
+                      });
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo, 
