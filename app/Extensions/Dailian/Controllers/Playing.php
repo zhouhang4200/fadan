@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use Exception;
+use App\Models\User;
 use App\Models\UserAsset;
 use App\Extensions\Asset\Expend;
 
@@ -57,6 +58,20 @@ class Playing extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+     // 保存更改状态后的订单
+    public function save()
+    {
+        $this->order->status = $this->handledStatus;
+        $this->order->gainer_user_id = $this->userId;
+        $this->gainer_primary_user_id = User::find($this->userId)->getPrimaryUserId();
+
+        if (!$this->order->save()) {
+            throw new Exception('订单操作失败');
+        }
+
+        return $this->order;
     }
 
     /**

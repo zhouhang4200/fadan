@@ -308,14 +308,10 @@ class IndexController extends Controller
     {
         $keyWord = $request->keyWord; // 关键字,关联对应的类
         $orderNo = $request->orderNo; // 订单号
-        $userId = $request->userId; // 操作人id
-        $apiAmount = $request->apiAmount ?? null; // 回传代练费 或 订单安全保证金
-        $apiDeposit = $request->apiDeposit ?? null; // 回传双金 或 订单效率保证金
-        $apiService = $request->apiService ?? null; // 回传手续费
-        $writeAmount = $request->writeAmount ?? null; // 协商填写的代练费
+        $userId = Auth::id(); // 操作人id
 
         try {
-            $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId, $apiAmount, $apiDeposit, $apiService, $writeAmount);
+            $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
 
             if ($bool) {
                 return response()->json(['status' => 1, 'message' => '操作成功!']);

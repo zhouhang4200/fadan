@@ -141,19 +141,38 @@
 
     <div class="consult" style="display: none; padding: 10px">
         <div class="layui-tab-content">
+            <span style="color:red;margin-left:15px;margin-right:15px;padding:15px">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
                 <div style="width: 40%">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">协商返还代练费</label>
+                        <label class="layui-form-label">*我愿意支付代练费（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入协商返还代练费" class="layui-input" style="width:400px">
+                            <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入代练费" class="layui-input" style="width:400px">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">协商返还双金</label>
+                        <label class="layui-form-label">我已支付代练费（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入协商返还双金" class="layui-input" style="width:400px">
+                            <input type="text" name="order_amount" id="order_amount" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">*需要对方赔付保证金</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入保证金" class="layui-input" style="width:400px">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">对方已预付安全保证金（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="safe" id="safe" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">对方已预付效率保证金（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="effect" id="effect" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -204,105 +223,105 @@
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
                 @{{# if (!d.master && d.status == 1) {  }}
-                <option value="receive" data-no="@{{ d.no }}">接单</option>
+                <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 22) {  }}
-                    <option value="onSale" data-no="@{{ d.no }}">上架</option>
+                    <option value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</option>
                 @{{# }  }}
  
                 @{{# if (d.master && d.status == 1) {  }}
-                <option value="offSale" data-no="@{{ d.no }}">下架</option>
+                <option value="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</option>
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 14 || d.status == 15 || d.status == 16 || d.status == 17 || d.status == 18 || d.status == 19 || d.status == 20 || d.status == 21)) {  }}
-                <option value="13" data-no="@{{ d.no }}">重发</option>
+                <option value="13" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="assa" data-no="@{{ d.no }}">加急</option>
+                <option value="assa" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">加急</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="asda" data-no="@{{ d.no }}">取消加急</option>
+                <option value="asda" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消加急</option>
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 13 || d.status == 14 || d.status == 17)) {  }}
-                    <option value="lock" data-no="@{{ d.no }}">锁定</option>
+                    <option value="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 18) {  }}
-                <option value="cancelLock" data-no="@{{ d.no }}">取消锁定</option>
+                <option value="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</option>
                 @{{# }  }}
     
                 @{{# if (d.master) {  }}
                     @{{# if (d.consult == 1 && d.status == 15) {  }}
-                    <option value="cancelRevoke" data-no="@{{ d.no }}">取消撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
-                    <option value="agreeRevoke" data-no="@{{ d.no }}">同意撤销</option>
+                    <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
                     @{{# }  }}
                 @{{# } else {  }}
                     @{{# if (d.consult == 2 && d.status == 15) {  }}
-                    <option value="cancelRevoke" data-no="@{{ d.no }}">取消撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
-                    <option value="agreeRevoke" data-no="@{{ d.no }}">同意撤销</option>
+                    <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
                     @{{# }  }}
                 @{{# }  }}
 
                 @{{# if (d.status == 13 || d.status == 14 || d.status == 17 || d.status == 18) {  }}
-                <option value="revoke" data-no="@{{ d.no }}">撤销</option>
+                <option value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</option>
                 @{{# }  }}
                 
                 @{{# if (d.status == 15) {  }}
-                <option value="applyArbitration" data-no="@{{ d.no }}">申请仲裁</option>
+                <option value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</option>
                 @{{# }  }}
                 
                 @{{# if (d.master) {  }}
                     @{{# if (d.complain == 1 && d.status == 16) {  }}
-                    <option value="cancelArbitration" data-no="@{{ d.no }}">取消仲裁</option>
+                    <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
                     @{{# }  }}
                 @{{# } else {  }}
                     @{{# if (d.complain == 2 && d.status == 16) {  }}
-                    <option value="cancelArbitration" data-no="@{{ d.no }}">取消仲裁</option>
+                    <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
                     @{{# }  }}
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 14) {  }}
-                <option value="complete" data-no="@{{ d.no }}">完成</option>
+                <option value="complete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">完成</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="send-message" data-no="@{{ d.no }}">发短信</option>
+                <option value="send-message" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="message" data-no="@{{ d.no }}">留言</option>
+                <option value="message" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">留言</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="operation-record" data-no="@{{ d.no }}">操作记录</option>
+                <option value="operation-record" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">操作记录</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="wang-wang" data-no="@{{ d.no }}">联系旺旺号</option>
+                <option value="wang-wang" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">联系旺旺号</option>
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
-                <option value="delete" data-no="@{{ d.no }}">删除</option>
+                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">删除</option>
                 @{{# }  }}
 
                 @{{# if (!d.master && (d.status == 13)) {  }}
-                <option value="applyComplete" data-no="@{{ d.no }}">申请完成</option>
+                <option value="applyComplete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请完成</option>
                 @{{# }  }}
 
                 @{{# if (!d.master && (d.status == 14)) {  }}
-                <option value="cancelComplete" data-no="@{{ d.no }}">取消验收</option>
+                <option value="cancelComplete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消验收</option>
                 @{{# }  }}
                 @{{# if (!d.master && (d.status == 13)) {  }}
-                <option value="abnormal" data-no="@{{ d.no }}">异常</option>
+                <option value="abnormal" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">异常</option>
                 @{{# }  }}
                 @{{# if (!d.master && (d.status == 17)) {  }}
-                <option value="cancelAbnormal" data-no="@{{ d.no }}">取消异常</option>
+                <option value="cancelAbnormal" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消异常</option>
                 @{{# }  }}
             </select>
         </div>
@@ -414,13 +433,19 @@
             // 对订单操作
             form.on('select(order-operation)', function (data) {
                 var orderNo = $(data.elem).find("option:selected").attr("data-no");
+                var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
+                var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
+                var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
                 var keyWord = data.value;
+                $('#order_amount').val(orderAmount);
+                $('#safe').val(orderSafe);
+                $('#effect').val(orderEffect);
                 if (data.value == 'revoke') {
                     layer.open({
                         type: 1,
                         shade: 0.2,
                         title: '撤销',
-                        area: ['550px', '450px'],
+                        area: ['650px', '650px'],
                         content: $('.consult')
                     });
                     form.on('submit(consult)', function(data){
