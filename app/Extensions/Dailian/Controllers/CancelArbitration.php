@@ -30,7 +30,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
-            $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('created_at')->value('before'))['status'];
+            $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情

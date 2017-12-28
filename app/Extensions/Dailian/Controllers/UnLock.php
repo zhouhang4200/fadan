@@ -31,6 +31,7 @@ class UnLock extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            // 获取锁定前的状态
             $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
     		// 获取订单对象
 		    $this->getObject();
@@ -54,4 +55,5 @@ class UnLock extends DailianAbstract implements DailianInterface
     	// 返回
         return true;
     }
+
 }

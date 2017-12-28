@@ -30,23 +30,22 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
-        	// 获取锁定前的状态
             // 获取订单对象
             $this->getObject();
-        	$this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('created_at')->value('before'))['status'];
-		    // 创建操作前的订单日志详情
-		    $this->createLogObject();
-		    // 设置订单属性
-		    $this->setAttributes();
-		    // 保存更改状态后的订单
-		    $this->save();
-		    // 更新平台资产
-		    $this->updateAsset();
-		    // 订单日志描述
-		    $this->setDescription();
-		    // 保存操作日志
-		    $this->saveLog();
-
+        	// 获取上一个操作状态
+            $this->getBeforeStatus($orderNo);
+            // 创建操作前的订单日志详情
+            $this->createLogObject();
+            // 设置订单属性
+            $this->setAttributes();
+            // 保存更改状态后的订单
+            $this->save();
+            // 更新平台资产
+            $this->updateAsset();
+            // 订单日志描述
+            $this->setDescription();
+            // 保存操作日志
+            $this->saveLog();
             (new Lock)->run($orderNo, $userId);
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -55,5 +54,26 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+
+    public function getBeforeStatus($orderNo)
+    {
+        $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+        // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        if ($beforeStatus == 16 || $beforeStatus == 18) {
+            $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
+            $arr = [];
+            foreach ($orderHistories as $key => $orderHistory) {
+                $status = unserialize($orderHistory->before);
+
+                if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
+                    $arr[$key] = $status['status'];
+                }
+            }
+            $this->handledStatus = current($arr);
+        } else {
+            $this->handledStatus = $beforeStatus;
+        }
     }
 }
