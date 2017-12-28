@@ -28,7 +28,7 @@ class UserGoodsRepository
                 return $query->where('game_id', $gameId);
             })
             ->when(!empty($foreignGoodsId), function ($query) use ($foreignGoodsId) {
-                return $query->where('foreign_goods_id', '>=', $foreignGoodsId);
+                return $query->where('foreign_goods_id',  $foreignGoodsId);
             })
             ->orderBy('service_id')
             ->orderBy('game_id')

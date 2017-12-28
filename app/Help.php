@@ -548,3 +548,15 @@ if (!function_exists('assignStatusAdd')) {
         return $redis->lpush(config('redis.order.assignStatus'), 1);
     }
 }
+
+if (!function_exists('isBase64')) {
+
+    function isBase64($str){
+        if(@preg_match('/^[0-9]*$/',$str) || @preg_match('/^[a-zA-Z]*$/',$str)){
+            return false;
+        } elseif(base64_decode($str) && base64_decode($str) != ''){
+            return true;
+        }
+        return false;
+    }
+}
