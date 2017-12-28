@@ -73,8 +73,8 @@ class Revoked extends DailianAbstract implements DailianInterface
         $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
         $amount = $consult->amount;
 
-        if (!$amount) {
-            throw new Exception('没有协商代练费!');
+        if (!$amount || !$consult) {
+            throw new Exception('状态错误!');
         }
         $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;

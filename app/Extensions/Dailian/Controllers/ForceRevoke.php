@@ -76,26 +76,30 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
                 throw new Exception('申请失败');
             }
 
-            // 接单 退回安全保证金
-            Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
+            if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {        
+                // 接单 退回安全保证金
+                Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
 
-            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('申请失败');
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new Exception('申请失败');
+                }
+
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new Exception('申请失败');
+                }
             }
 
-            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('申请失败');
-            }
+            if ($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value')) {        
+                // 接单 退效率保证金
+                Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
-            // 接单 退效率保证金
-            Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new Exception('申请失败');
+                }
 
-            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('申请失败');
-            }
-
-            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('申请失败');
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new Exception('申请失败');
+                }
             }
         } catch (Exception $e) {
             DB::rollback();

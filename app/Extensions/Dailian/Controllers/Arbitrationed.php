@@ -68,6 +68,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	{
 		// 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
+
+        if (!$consult) {
+        	throw new Exception('状态错误');
+        }
         $apiAmount = $consult->api_amount;
         $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;

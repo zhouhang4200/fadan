@@ -54,4 +54,28 @@ class Delete extends DailianAbstract implements DailianInterface
     	// 返回
         return true;
     }
+
+    /**
+     * [退代练费给发单，退双金给接单]
+     * @return [type] [description]
+     */
+    public function updateAsset()
+    {
+        DB::beginTransaction();
+        try {
+            // 发单 退回代练费
+            Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
+
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('申请失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('申请失败');
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+        DB::commit();
+    }
 }

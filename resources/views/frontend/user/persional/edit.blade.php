@@ -106,7 +106,7 @@
                 <div class="layui-form-item postion">
                     <label class="layui-form-label">店铺旺旺号:</label><i class="iconfont icon-wenhao" id="store"></i>
                     <div class="tip none">
-                    该旺旺号用于充值判断，请用所填旺旺号在指定淘宝店铺购买充值商品，才能对该账号充值。
+                    该旺旺号用于“代练-待发单”的数据获取授权，“代练-待发单”中会自动获取所填旺旺号的店铺订单数据。
             </div>
                     <div class="layui-input-inline">
                         <input type="text" name="store_wang_wang" lay-verify="" value="{{ $user->store_wang_wang }}" autocomplete="off" placeholder="请输入店铺旺旺号" class="layui-input">
