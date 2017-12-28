@@ -86,9 +86,9 @@
 <div class="user-info" style="height: 230px;">
     <div alt="" class="info-img fl"  style="float:left;width:80px;height:80px;background-image: url('{{ $parentUser->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;">
         @if(Auth::user()->parent_id == 0)
-            <button class="layui-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:85px">修改资料</button>
+            <button class="layui-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:85px;padding:0">修改资料</button>
         @endif
-            <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;margin-top:5px;margin-left:0px">修改头像</button>
+            <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;margin-top:5px;margin-left:0px;padding:0">修改头像</button>
     </div>
     <div class="info-left">
         <div class="layui-form-item">
