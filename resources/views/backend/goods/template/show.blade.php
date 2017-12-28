@@ -175,8 +175,8 @@
                         <input type="text" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="">
                     @{{#  } }}
                 </div>
-                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> </button>
+                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> </button>
             </div>
         @{{#  } }}
 
@@ -186,13 +186,13 @@
                 <label class="layui-form-label">@{{ item.field_display_name }}</label>
                 <div class="layui-input-inline">
                     <select name="@{{ item.field_name }}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
-                        @{{#  if(item.field_parent_id  == 0){ }}
-                                @{{#  layui.each(item.values, function(i, v){ }}
-                                    <option value="@{{ v.id }}">@{{ v.field_value }}</option>
-                                @{{#  }); }}
-                        @{{#  } else { }}
-                                <option value="请选上级">请选上级</option>
-                        @{{#  } }}
+                        {{--@{{#  if(item.field_parent_id  == 0){ }}--}}
+                                {{--@{{#  layui.each(item.values, function(i, v){ }}--}}
+                                    {{--<option value="@{{ v.id }}">@{{ v.field_value }}</option>--}}
+                                {{--@{{#  }); }}--}}
+                        {{--@{{#  } else { }}--}}
+                                {{--<option value="请选上级">请选上级</option>--}}
+                        {{--@{{#  } }}--}}
                     </select>
                 </div>
                 <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
@@ -214,8 +214,8 @@
                             <input type="radio" name="field_type" value="@{{ v }}" title="@{{ v }}">
                          @{{#  } }}
                     @{{#  }); }}
-                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
                 </div>
             </div>
         @{{#  } }}
