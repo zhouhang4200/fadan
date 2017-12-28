@@ -513,19 +513,16 @@
                                 }, function (result) {
                                     if (result.status == 1) {
                                         layer.alert(result.message);
-      
                                     } else {
                                         layer.alert(result.message);
-
                                     }
                                 });
                             } else {
                                 layer.alert(result.message);
-
                             }
-                            layer.closeAll();
-                           reload();
+                            reload();
                         });
+                            layer.closeAll();
                         return false;
                     });
                     
@@ -561,8 +558,8 @@
                        
                             }
                             reload();
-                            layer.closeAll();
                         });
+                            layer.closeAll();
                         return false;
                     });
                     
@@ -586,8 +583,8 @@
                                     layer.alert(result.message);
                                 }
                             });
-                            layer.closeAll();
                             reload();
+                            layer.closeAll();
                         }
                         ,btn2: function () {
                             layer.closeAll();
@@ -600,13 +597,16 @@
                         keyWord:data.value
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message);
-                            layer.closeAll();
+                            layer.alert(result.message, function () {
+                                layer.closeAll();
+                            });
+                    
                         } else {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                layer.closeAll();
+                            });
                         }
                         reload();
-                        layer.closeAll();
                     });
                 }
                

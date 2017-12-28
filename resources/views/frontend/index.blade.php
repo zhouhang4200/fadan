@@ -84,7 +84,7 @@
 
 @section('main')
 <div class="user-info" style="height: 230px;">
-    <div alt="" id="vouchers" class="info-img fl"  style="float:left;width:80px;height:80px;background-image: url('{{ $parentUser->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;">
+    <div alt="" id="user-img" class="info-img fl" style="float:left;width:80px;height:80px;background-image:url('{{ $user->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;" >
         <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
         @if(Auth::user()->parent_id == 0)
             <button class="layui-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:5px;margin-left:0px; padding:0">修改资料</button>
@@ -321,19 +321,19 @@
               //预读本地文件示例，不支持ie8
               obj.preview(function(index, file, result){
                 $('#demo1').attr('src', result); //图片链接（base64）
+                var styles="url('"+result+"');"
+                $('#user-img').css('background-image', styles);
               });
             }
             ,done: function(res){
               if(res.code == 2){
                 return layer.msg('上传失败');
               }
-              var st = "float:left;width:80px;height:80px;background-image: url('"+res.path+"');background-size: cover !important;background-position: center !important;margin-bottom:3px;"
-              $('#vouchers').css(st);
+              $('#voucher-img').val(res.path);
             }
         });
         // 修改资料
         $('#persional-user').on('click', function () {
-            
             window.location.href="{{ route('users.persional') }}";
         });
 

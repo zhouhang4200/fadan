@@ -333,8 +333,22 @@ class IndexController extends Controller
         $data['deposit'] = $request->data['deposit'];
         $data['user_id'] = Auth::id();
         $data['revoke_message'] = $request->data['revoke_message'];
-
+        // 订单数据
         $order = OrderModel::where('no', $data['order_no'])->first();
+        // 订单双金
+        $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+        $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+        $orderDeposit = bcadd($safeDeposit, $effectDeposit);
+        $isOverDeposit = bcsub($orderDeposit, $data['deposit']);
+        $isOverAmount = bcsub($order->amount, $data['amount']);
+        // 写入双金与订单双击比较
+        if ($isOverDeposit < 0) {
+            return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
+        }
+
+        if ($isOverAmount < 0) {
+            return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
+        }
 
         if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
             $data['consult'] = 1; // 发单方提出撤销

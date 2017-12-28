@@ -3,7 +3,9 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use Asset;
 use Exception;
+use App\Extensions\Asset\Income;
 
 class Delete extends DailianAbstract implements DailianInterface
 {
