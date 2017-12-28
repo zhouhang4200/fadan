@@ -40,7 +40,12 @@
         .layui-form-mid {
             margin-right: 4px;
         }
-
+        #info .layui-form-item .layui-input-block{
+            margin-left: 200px;
+        }
+        #info .layui-form-item .layui-form-label{
+           width: 160px;
+        }
     </style>
 @endsection
 
@@ -139,12 +144,12 @@
 
     <table class="layui-hide layui-form" id="orer-list" lay-filter="user" lay-size="sm"></table>
 
-    <div class="consult" style="display: none; padding: 10px">
+    <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
-            <span style="color:red;margin-left:15px;margin-right:15px;padding:15px">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
+            <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
-                <div style="width: 40%">
+                <div style="width: 80%" id="info">
                     <div class="layui-form-item">
                         <label class="layui-form-label">*我愿意支付代练费（元）</label>
                         <div class="layui-input-block">
@@ -154,7 +159,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">我已支付代练费（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="order_amount" id="order_amount" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="order_amount" id="order_amount" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -166,13 +171,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">对方已预付安全保证金（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="safe" id="safe" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">对方已预付效率保证金（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="effect" id="effect" lay-verify="required|number" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -185,6 +190,7 @@
                         <label class="layui-form-label"></label>
                         <div class="layui-input-block">
                             <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
                         </div>
                     </div>
                 </div>
@@ -192,21 +198,23 @@
         </div>
     </div>
 
-    <div class="complete" style="display: none; padding: 10px">
+    <div class="complete" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
-                <div style="width: 40%">
+                <div >
                     <div class="layui-form-item">
-                        <label class="layui-form-label">申诉理由</label>
-                        <div class="layui-input-block">
-                            <textarea placeholder="请输入申诉理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                        <div class="layui-input-block" style="margin:0px">
+                            <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
+
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label"></label>
-                        <div class="layui-input-block">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complete">立即提交</button>
+
+                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complete">确认</button>
+                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+
                         </div>
                     </div>
                 </div>
@@ -364,6 +372,9 @@
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
+            $('.cancel').click(function(){
+                layer.closeAll();
+            })
             //方法级渲染
             table.render({
                 elem: '#orer-list',
@@ -430,6 +441,8 @@
                 });
             });
             var userId = "{{ Auth::id() }}";
+
+
             // 对订单操作
             form.on('select(order-operation)', function (data) {
                 var orderNo = $(data.elem).find("option:selected").attr("data-no");
@@ -437,6 +450,15 @@
                 var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
                 var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
                 var keyWord = data.value;
+                if (!orderAmount) {
+                    orderAmount = 0;
+                }
+                if (!orderSafe) {
+                    orderSafe = 0;
+                }
+                if (!orderEffect) {
+                    orderEffect = 0;
+                }
                 $('#order_amount').val(orderAmount);
                 $('#safe').val(orderSafe);
                 $('#effect').val(orderEffect);
@@ -445,7 +467,7 @@
                         type: 1,
                         shade: 0.2,
                         title: '撤销',
-                        area: ['650px', '650px'],
+                        area: ['650px', '550px'],
                         content: $('.consult')
                     });
                     form.on('submit(consult)', function(data){
@@ -480,8 +502,8 @@
                     layer.open({
                         type: 1,
                         shade: 0.2,
-                        title: '申诉',
-                        area: ['550px', '350px'],
+                        title: '申请仲裁',
+                        area: ['500px', '280px'],
                         content: $('.complete')
                     });
                     form.on('submit(complete)', function(data){
