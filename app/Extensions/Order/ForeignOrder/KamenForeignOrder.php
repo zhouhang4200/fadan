@@ -183,7 +183,7 @@ class KamenForeignOrder extends ForeignOrder
 			"ContactType" => $decodeArray['ContactType'] ?? '',
 			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',
 			"UseAccount" => $decodeArray['UseAccount'] ?? '',
-			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? '',
+			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? $decodeArray['OrderNo'] ,
 			"total_price" => $decodeArray['total_price'] ?? '',
 			"province" => $decodeArray['province'] ?? '',
 			"remark" => $decodeArray['remark'] ?? '',
