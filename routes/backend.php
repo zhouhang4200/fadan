@@ -313,5 +313,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     Route::namespace('App')->prefix('app')->group(function () {
         Route::get('version', 'VersionController@index')->name('app.version.index')->middleware('permission:app.version.index');
         Route::post('version/store', 'VersionController@store')->name('app.version.store')->middleware('permission:app.version.store');
+
+        Route::get('order-charge', 'OrderChargeController@index')->name('app.order-charge.index')->middleware('permission:app.order-charge.index');
+        Route::get('order-charge/{id}', 'OrderChargeController@detail')->name('app.order-charge.detail')->middleware('permission:app.order-charge.detail');
     });
 });

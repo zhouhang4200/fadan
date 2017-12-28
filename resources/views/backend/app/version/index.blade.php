@@ -80,7 +80,7 @@
         </div>
     </div>
 </div>
-<div id="recharge" style="display: none;padding: 20px">
+<div id="box-add-new" style="display: none;padding: 20px">
     <form class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <label class="layui-form-label">客户端名称</label>
@@ -125,7 +125,7 @@
 
 @section('js')
 <script>
-layui.use(['form', 'laytpl', 'element'], function(){
+layui.use(['form', 'laytpl', 'element'], function () {
     var form = layui.form, layer = layui.layer;
 
     $('#add-new').click(function (data) {
@@ -133,7 +133,7 @@ layui.use(['form', 'laytpl', 'element'], function(){
             type: 1,
             shade: 0.2,
             title: '手动加款',
-            content: $('#recharge')
+            content: $('#box-add-new')
         });
     });
 

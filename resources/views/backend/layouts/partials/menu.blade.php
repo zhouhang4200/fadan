@@ -297,7 +297,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     <li @if($currentOneLevelMenu == 'app') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>App管理{{ $currentOneLevelMenu }}</span>
+                            <span>App管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
@@ -310,7 +310,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         @can('punishes.record')
                             <li>
-                                <a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>
+                                <a href="{{ route('app.order-charge.index') }}" @if(substr($currentRouteName, 0, 16) == 'app.order-charge') class="active" @endif>
                                     充值记录
                                 </a>
                             </li>
