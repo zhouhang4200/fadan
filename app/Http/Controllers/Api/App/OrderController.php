@@ -21,9 +21,9 @@ class OrderController extends Controller
     {
         $page = $request->params['page'] ?? 1;
         $perPage = $request->params['per_page'] ?? 20;
-        $status = $request->params['status'] ?? 3;
+        $status = $request->params['status'] ?? 0;
 
-        if (!in_array($status, [3, 4, 5, 6, 7, 8])) {
+        if (!in_array($status, [0, 3, 4, 5, 6, 7, 8])) {
             return response()->jsonReturn(0, '状态不允许');
         }
 

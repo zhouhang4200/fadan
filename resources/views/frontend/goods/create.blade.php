@@ -104,9 +104,11 @@
             form.on('submit(add)', function(data){
 
                 $.post("{{ route('frontend.goods.store') }}", {data:data.field}, function (result) {
-                layer.alert(result.message, {
-                    title: '最终的提交信息'
-                });
+                    layer.alert(result.message, {
+                        title: '最终的提交信息'
+                    }, function () {
+                        window.location.reload();
+                    });
                 }, 'json');
                 return false;
             });

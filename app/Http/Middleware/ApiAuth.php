@@ -27,11 +27,11 @@ class ApiAuth
         }
 
         if (!Auth::guard('api')->validate(['api_token' => $request->api_token])) {
-            return response()->jsonReturn(0, 'token不存在');
+            return response()->jsonReturn(-1, 'token不存在');
         }
 
         if (Auth::guard('api')->user()->api_token_expire < time()) {
-            return response()->jsonReturn(0, 'token已过期，请重新登陆');
+            return response()->jsonReturn(-1, 'token已过期，请重新登陆');
         }
 
         return $next($request);

@@ -10,34 +10,17 @@ class TestController extends Controller
 {
     public function index(Request $request)
     {
-        // dump($request->params);
+        if (!isset($request->params['name']) || !isset($request->params['version'])) {
+            return response()->jsonReturn(0, '参数不正确');
+        }
 
-        // $user = Auth::guard('api')->user();
-        // $user->api_token_expire = 0;
-        // $user->save();
+        try {
+            // $result = VersionRepository::market($request->params['name'], $request->params['version']);
+        }
+        catch (CustomException $e) {
+            return response()->jsonReturn(0, $e->getMessage());
+        }
 
-        // dump($user);
-
-        // $aesKey = str_random(24);
-        // dump($aesKey);
-        // openssl_public_encrypt($aesKey, $key, config('ios.ase_public_key'));
-        // $key = bin2hex($key);
-        // dump($key);
-
-        // $aesKey = config('ios.aes_key');
-        // $data = json_encode(['order_no' => '2017121917434600000003', 'remark' => '不要了']);
-        // $a = new \App\Extensions\EncryptAndDecrypt\Aes($aesKey);
-
-        // $str = $a->encrypt($data);
-        // dump($str);
-        // dump($a->decrypt($str));
-
-        // $b = new \App\Extensions\EncryptAndDecrypt\Aes1($aesKey);
-        // $str = $b->encrypt($data);
-        // dump($str);
-        // dump($b->decrypt($str));
-
-
-        \App\Repositories\Api\App\OrderChargeRepository::record('2017122213553400000001', 1, 2, 3, 4, 5);
+        return response()->jsonReturn(1, 'success', $result);
     }
 }

@@ -20,7 +20,7 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     Route::post('auth/login', 'AuthController@login');
 
     // 版本检查
-    Route::get('version/ios', 'VersionController@ios');
+    Route::get('version/check', 'VersionController@check');
 
     // 临时测试，想删就删
     Route::any('test', 'TestController@index');

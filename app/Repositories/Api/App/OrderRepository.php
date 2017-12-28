@@ -40,7 +40,9 @@ class OrderRepository
         ];
 
         $dataList = Order::where('gainer_primary_user_id', $primaryUserId)
-            ->where('status', $status)
+            ->when(!empty($status), function ($query) use ($status) {
+                return $query->where('status', $status);
+            })
             ->orderBy('id', 'desc')
             ->paginate($perPage, $select, 'page', $page);
 

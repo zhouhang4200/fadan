@@ -5,4 +5,7 @@ return [
 
     // aes加解密
     'aes_key' => 'woca',
+
+    // app名字
+    'app_name' => ['market'],
 ];

@@ -294,6 +294,29 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
                     @endcan
+                    <li @if($currentOneLevelMenu == 'app') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>App管理{{ $currentOneLevelMenu }}</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                        @can('punishes.index')
+                            <li>
+                                <a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>
+                                    版本管理
+                                </a>
+                            </li>
+                        @endcan
+                        @can('punishes.record')
+                            <li>
+                                <a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>
+                                    充值记录
+                                </a>
+                            </li>
+                        @endcan
+                        </ul>
+                    </li>
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
