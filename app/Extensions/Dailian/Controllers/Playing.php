@@ -65,7 +65,7 @@ class Playing extends DailianAbstract implements DailianInterface
     {
         $this->order->status = $this->handledStatus;
         $this->order->gainer_user_id = $this->userId;
-        $this->gainer_primary_user_id = User::find($this->userId)->getPrimaryUserId();
+        $this->order->gainer_primary_user_id = User::find($this->userId)->getPrimaryUserId();
 
         if (!$this->order->save()) {
             throw new Exception('订单操作失败');
