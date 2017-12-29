@@ -223,9 +223,9 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         //         throw new Exception($reason);
         //     }
 
-            // $thirdOrderNo = $result->data; // 第三方订单号
-            // 将第三方订单号更新到order_detail中
-            // OrderDetail::where('order_no', $this->order_no)->where('field_name', '')
-        }
+        //     $thirdOrderNo = $result->data; // 第三方订单号
+        //     //将第三方订单号更新到order_detail中
+        //     OrderDetail::where('order_no', $this->order_no)->where('field_name', '')
+        // }
     }
 }
