@@ -12,7 +12,7 @@ class TestController extends Controller
 {
     public function index(Request $request)
     {
-        $order = OrderRepository::detail('2017122910330500000004');
+        $order = OrderRepository::detail('');
 
 dump($order);
 

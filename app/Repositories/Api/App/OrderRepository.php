@@ -13,7 +13,6 @@ class OrderRepository
     public static function dataList($status, $page = 1, $perPage = 20)
     {
         $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId(); // 当前账号的主账号
-        // $primaryUserId = 8016;
 
         $select = [
             'id',
@@ -81,8 +80,7 @@ class OrderRepository
      */
     public static function detail($orderNo)
     {
-        // $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
-        $primaryUserId = 8016;
+        $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
 
         $order = Order::where('no', $orderNo)
             ->where('gainer_primary_user_id', $primaryUserId)
@@ -91,15 +89,19 @@ class OrderRepository
             ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
             ->first();
 
-        $data = clone $order;
+        if ($order) {
+            $data = clone $order;
 
-        // 构造详情
-        $details = [];
-        foreach ($order->detail as $detail) {
-            $details[$detail->field_name] = $detail->field_value;
+            // 构造详情
+            $details = [];
+            foreach ($order->detail as $detail) {
+                $details[$detail->field_name] = $detail->field_value;
+            }
+
+            $data->details = collect($details);
+        } else {
+            $data = null;
         }
-
-        $data->details = collect($details);
 
         return $data;
     }
