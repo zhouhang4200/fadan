@@ -39,14 +39,15 @@ class OrderController extends Controller
      */
     public function detail(Request $request)
     {
-        if (!isset($request->params['order_no'])) {
+        if (!isset($request->params['order_no']) || empty($request->params['order_no'])) {
             return response()->jsonReturn(0, '参数不正确');
         }
 
-        $order = OrderRepository::detail($request->params['order_no']);
-
-        if (empty($order)) {
-            return response()->jsonReturn(0, '订单不存在');
+        try {
+            $order = OrderRepository::detail($request->params['order_no']);
+        }
+        catch (CustomException $e) {
+            return response()->jsonReturn(0, $e->getMessage());
         }
 
         return response()->jsonReturn(1, 'success', ['order' => $order]);

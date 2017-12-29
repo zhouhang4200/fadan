@@ -3,6 +3,7 @@ namespace App\Repositories\Api\App;
 
 use App\Models\Order;
 use Auth;
+use App\Exceptions\CustomException;
 
 class OrderRepository
 {
@@ -89,19 +90,19 @@ class OrderRepository
             ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
             ->first();
 
-        if ($order) {
-            $data = clone $order;
-
-            // 构造详情
-            $details = [];
-            foreach ($order->detail as $detail) {
-                $details[$detail->field_name] = $detail->field_value;
-            }
-
-            $data->details = collect($details);
-        } else {
-            $data = null;
+        if (empty($order)) {
+            throw new CustomException('订单不存在');
         }
+
+        $data = clone $order;
+
+        // 构造详情
+        $details = [];
+        foreach ($order->detail as $detail) {
+            $details[$detail->field_name] = $detail->field_value;
+        }
+
+        $data->details = collect($details);
 
         return $data;
     }
