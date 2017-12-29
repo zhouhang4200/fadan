@@ -447,29 +447,12 @@
 
             function reload() {
                 //方法级渲染
-                table.render({
-                    elem: '#orer-list',
-                    url: '{{ route('frontend.workbench.leveling.order-list') }}',
-                    method: 'post',
-                    size: 'sm',
-                    cols: [[
-                        {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
-                        {field: 'order_source', title: '订单来源', width: '100'},
-                        {field: 'lable', title: '标签', width: '150'},
-                        {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
-                        {field: 'game_leveling_title', title: '代练标题', width: '250'},
-                        {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
-                        {field: 'game_leveling_type', title: '代练类型', width: '100'},
-                        {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
-                        {field: 'role', title: '角色名称', width: '100'},
-                        {field: 'status_text', title: '订单状态', width: '120'},
-                        {field: 'nickname', title: '打手呢称', width: '120'},
-                        {field: 'original_amount', title: '来源价格', width: '100'},
-                        {field: 'amount', title: '发单价', width: '100'},
-                        {title: '操作', width: '230', toolbar: '#operation'}//fixed:'right',
-                    ]],
-                    id: 'order',
-                    page: true,
+                //执行重载
+                table.reload('order', {
+                    where: {
+                        status: status
+                    },
+                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
                         layui.form.render();
