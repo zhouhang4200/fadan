@@ -23,6 +23,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
+use Excel;
 
 
 /**
@@ -46,10 +47,24 @@ class IndexController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request, OrderRepository $orderRepository)
     {
+        $no = $request->input('no', 0);
+        $foreignOrderNo = $request->input('foreign_order_no', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $wangWang = $request->input('wang_wang', 0);
+        $urgentOrder = $request->input('urgent_order', 0);
+        $startDate  = $request->input('start_date', 0);
+        $endDate = $request->input('end_date', 0);
+
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+
+        if ($request->export) {
+            $DailianOrders = $orderRepository->filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate);
+            $this->export($DailianOrders);
+        }
 
         return view('frontend.workbench.leveling.index', compact('game', 'employee'));
     }
@@ -70,6 +85,11 @@ class IndexController extends Controller
         $startDate  = $request->input('start_date', 0);
         $endDate = $request->input('end_date', 0);
         $pageSize = $request->input('limit', 10);
+
+        // if ($request->export) {
+        //     $DailianOrders = $orderRepository->filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate);
+        //     $this->export($DailianOrders);
+        // }
 
         $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate, $pageSize);
 
@@ -405,6 +425,77 @@ class IndexController extends Controller
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');
+    }
+
+    public function export($orders)
+    {
+        // try {
+            // 标题
+            $title = [
+                '序号',
+                '订单号',
+                '订单来源',
+                '标签',
+
+                '客服备注',
+
+                '代练标题',
+
+                '游戏区服',
+
+                '代练类型',
+
+                '账号密码',
+
+                '角色名称',
+
+                '订单状态',
+
+                '来源价格',
+
+                '发单价',
+                '创建时间',
+                '更新时间',
+            ];
+            // 数组分割,反转
+            $chunkOrders = array_chunk(array_reverse($orders->toArray()), 1000);
+            Excel::create(iconv('UTF-8', 'gbk', '代练订单'), function ($excel) use ($chunkOrders, $title) {
+
+                foreach ($chunkOrders as $chunkOrder) {
+                    // 内容
+                    $datas = [];
+                    foreach ($chunkOrder as $key => $order) {
+                        $datas[] = [
+                            $order['id'],
+                            $order['no'],
+                            $order['source'] ? config('order.source')[$order['source']] : '--',
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'label')->value('field_value') ?? '--',
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'cstomer_service_remark')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_title')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'region')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'serve')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_type')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'account')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'password')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'role')->value('field_value'),
+                            config('order.status_leveling')[$order['status']] ?? '--',
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'source_price')->value('field_value'),
+                            $order['amount'],
+                            $order['created_at'] ?? '--',
+                            $order['updated_at'] ?? '--',
+                        ];
+                    }
+                    // 将标题加入到数组
+                    array_unshift($datas, $title);
+                    // 每页多少数据
+                    $excel->sheet("页数", function ($sheet) use ($datas) {
+                        $sheet->rows($datas);
+                    });
+                }
+            })->export('xls');
+dd(1);
+
+        // } catch (Exception $e) {
+
+        // }
     }
 }
 

@@ -120,7 +120,8 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="">导出</button>
+                <!-- <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button> -->
+                 <a href="{{ request()->fullUrl() }}{{ stripos(request()->fullUrl(), '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
             </div>
         </div>
     </form>
@@ -588,6 +589,28 @@
                     view.append(html);
                 });
             }
+
+            // 导出
+            form.on('submit(export)', function (data) {
+                table.reload('order', {
+                    where: {
+                        status: status,
+                        no: data.field.no,
+                        foreign_order_no: data.field.foreign_order_no,
+                        game_id: data.field.game_id,
+                        need: data.field.status,
+                        wang_wang: data.field.wang_wang,
+                        urgent_order: urgentOrder,
+                        start_date: data.field.start_date,
+                        end_date: data.field.end_date,
+                        export:1
+                    },
+                    done: function(res, curr, count){
+                        changeStyle(layui.table.index);
+                        layui.form.render();
+                    }
+                });
+            });
         });
     </script>
 @endsection

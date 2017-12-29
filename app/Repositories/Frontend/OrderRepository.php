@@ -220,4 +220,53 @@ class OrderRepository
 
         return  array_merge($order->detail->pluck('field_value', 'field_name')->toArray(), $order->toArray());
     }
+
+    public function filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate)
+    {
+        $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+        $type = Auth::user()->type; // 账号类型是接单还是发单
+
+        $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id',
+            'service_name', 'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
+            'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
+        );
+
+        if ($status != 1) {
+            if ($type == 1) {
+                $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+            } else {
+                $query->where('creator_primary_user_id', $primaryUserId); // 发单
+            }
+        }
+
+        $query->when($status != 0, function ($query) use ($status) {
+            return $query->where('status', $status);
+        });
+        $query->when($no != 0, function ($query) use ($no) {
+            return $query->where('no', $no);
+        });
+        $query->when($foreignOrderNo != 0, function ($query) use ($foreignOrderNo) {
+            return $query->where('foreign_order_no', $foreignOrderNo);
+        });
+        $query->when($gameId  != 0, function ($query) use ($gameId) {
+            return $query->where('game_id', $gameId);
+        });
+        $query->when($wangWang, function ($query) use ($wangWang, $primaryUserId) {
+            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when($urgentOrder !=0, function ($query) use ($urgentOrder) {
+            $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when($startDate !=0, function ($query) use ($startDate) {
+            return $query->where('created_at', '>=', $startDate);
+        });
+        $query->when($endDate !=0, function ($query) use ($endDate) {
+            return $query->where('created_at', '<=', $endDate." 23:59:59");
+        });
+        $query->where('status', '!=', 24);
+        $query->where('service_id', 2)->with(['detail']);
+        return $query->get();
+    }
 }
