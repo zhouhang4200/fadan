@@ -160,7 +160,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'IndexController@index')->name('frontend.workbench.recharge.index')->middleware('permission:frontend.workbench.recharge.index');
         });
 
-
         // 代练
         Route::namespace('Leveling')->prefix('leveling')->group(function (){
             // 首页

@@ -123,7 +123,7 @@ class UserController extends Controller
         $bool = $user->save();
 
         if ($bool) {
-            return response()->json(['code' => 1, 'message' => '修改成功!']);
+            return response()->json(['code' => 1, 'message' => '修改成功!', 'path' => $user->voucher]);
         }
         return response()->json(['code' => 2, 'message' => '修改失败!']);
     }
