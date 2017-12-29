@@ -26,6 +26,7 @@
         margin-top: 15px;
     }
     .layui-form-item{
+        margin-bottom: 0px;
         margin: 5;
     }
     .info-left .layui-form-item  .layui-inline .layui-input-inline{
@@ -83,7 +84,7 @@
 @endsection
 
 @section('main')
-<div class="user-info" style="height: 230px;">
+<div class="user-info" style="height: 200px;">
     <div alt="" id="user-img" class="info-img fl" style="float:left;width:80px;height:80px;background-image:url('{{ $user->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;" >
         <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
         @if(Auth::user()->parent_id == 0)
