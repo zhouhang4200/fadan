@@ -186,7 +186,7 @@
             {{ $user->userAsset->frozen + 0 }}
          </div>
 
-        <button class="layui-btn layui-btn-normal layui-btn-custom-mini">余额充值</button>
+        <button class="layui-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
         @inject('withdraw', 'App\Services\Views\WithdrawService')
         {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
     </div>
@@ -385,12 +385,26 @@
             return false;
         });
 
+        form.on('submit(charge)', function () {
+            layer.open({
+                type: 1
+                ,title: '提示' //不显示标题栏
+                ,closeBtn: false
+                ,area: '400px;'
+                ,shade: 0.2
+                ,btn: ['确定']
+                ,btnAlign: 'c'
+                ,moveType: 1 //拖拽模式，0或者1
+                ,content: '<div style="padding: 15px; line-height: 22px;">请往以下银行卡转账完成充值，转账金额即充值金额，<font color="#e51c23">转账时需要填写“备注”，请保证与下方“转账备注”相同，否则可能出现充值失败</font>。<br>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>账号：asdf<br/>户名：asdf<br/>开户行：asdf<br/>转账备注：asdf<br/></div>'
+            });
+        });
+
         var notice = "{{ session('notice') }}";
 
         if (notice) {
             layer.open({
                 type: 1
-                ,title: false //不显示标题栏
+                ,title: '提示' //不显示标题栏
                 ,closeBtn: false
                 ,area: '300px;'
                 ,shade: 0.8
@@ -398,7 +412,7 @@
                 ,btn: ['确定']
                 ,btnAlign: 'c'
                 ,moveType: 1 //拖拽模式，0或者1
-                ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
+                ,content: '<div style="padding: 150px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
             });
         }
     });
