@@ -96,7 +96,7 @@
                     <label class="layui-form-label">充值旺旺号:</label><i class="iconfont icon-wenhao" id="recharge">
                    
                     </i>
-                     <div class="tips none">
+                     <div class="tips none" id="hehe">
                             该旺旺号用于充值判断，请用所填旺旺号在指定淘宝店铺购买充值商品，才能对该账号充值。
                     </div>
                     <div class="layui-input-inline">
@@ -170,6 +170,7 @@
         $('#store').mousemove(function(){
             $('.tip').removeClass('none');
         });
+        layer.tips('只想提示地精准些', '#hehe');
     });
 
 </script>
