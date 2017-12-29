@@ -27,16 +27,9 @@ class OrderController extends Controller
             return response()->jsonReturn(0, '状态不允许');
         }
 
-        $dataList = OrderRepository::dataList($status, $page, $perPage)->toArray();
-        $data = [
-            'current_page'   => $dataList['current_page'],
-            'data'           => $dataList['data'],
-            'last_page'      => $dataList['last_page'],
-            'per_page'       => $dataList['per_page'],
-            'total'          => $dataList['total'],
-        ];
+        $dataList = OrderRepository::dataList($status, $page, $perPage);
 
-        return response()->jsonReturn(1, 'success', $data);
+        return response()->jsonReturn(1, 'success', $dataList);
     }
 
     /**

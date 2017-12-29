@@ -13,6 +13,7 @@ class OrderRepository
     public static function dataList($status, $page = 1, $perPage = 20)
     {
         $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId(); // 当前账号的主账号
+        // $primaryUserId = 8016;
 
         $select = [
             'id',
@@ -40,13 +41,38 @@ class OrderRepository
         ];
 
         $dataList = Order::where('gainer_primary_user_id', $primaryUserId)
+            ->where('service_id', 1)
             ->when(!empty($status), function ($query) use ($status) {
                 return $query->where('status', $status);
             })
+            ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
             ->orderBy('id', 'desc')
-            ->paginate($perPage, $select, 'page', $page);
+            ->with(['detail' => function ($query) {
+                $query->select('order_no', 'field_value', 'field_name');
+            }])
+            ->paginate($perPage, $select, 'page', $page)
+            ->toArray();
 
-        return $dataList;
+        $dataFormat = [
+            'current_page'   => $dataList['current_page'],
+            'data'           => $dataList['data'],
+            'last_page'      => $dataList['last_page'],
+            'per_page'       => $dataList['per_page'],
+            'total'          => $dataList['total'],
+        ];
+
+        foreach ($dataFormat['data'] as $key => $value) {
+            // 构造详情
+            $details = [];
+
+            foreach ($value['detail'] as $v) {
+                $details[$v['field_name']] = $v['field_value'];
+            }
+
+            $dataFormat['data'][$key]['detail'] = $details;
+        }
+
+        return $dataFormat;
     }
 
     /**
@@ -55,13 +81,26 @@ class OrderRepository
      */
     public static function detail($orderNo)
     {
-        $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
+        // $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
+        $primaryUserId = 8016;
 
-        return Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
-                $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
-            })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
-                $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo])->where('status', '>', 2);
-            })->with(['detail', 'foreignOrder'])
+        $order = Order::where('no', $orderNo)
+            ->where('gainer_primary_user_id', $primaryUserId)
+            ->where('service_id', 1)
+            ->whereIn('status', [3, 4, 5, 6, 7, 8])
+            ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
             ->first();
+
+        $data = clone $order;
+
+        // 构造详情
+        $details = [];
+        foreach ($order->detail as $detail) {
+            $details[$detail->field_name] = $detail->field_value;
+        }
+
+        $data->details = collect($details);
+
+        return $data;
     }
 }

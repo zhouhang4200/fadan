@@ -29,11 +29,17 @@ class OrderChargeRepository
         if ($OrderCharge->exists) {
             $OrderCharge->charged_game_gold += $gameGold;
         } else {
+            $orderDetail = $Order->detail()->pluck('field_value', 'field_name');
+            if (!isset($orderDetail['game_gold']) || empty($orderDetail['game_gold'])) {
+                myLog('app-charge-record-fail', ['充值失败', $orderNo, '该商品未设置游戏币数量，不能充值']);
+                throw new CustomException('该商品未设置游戏币数量，不能充值');
+            }
+
             $OrderCharge->user_id           = $Order->gainer_primary_user_id;
             $OrderCharge->qs_order_id       = $qsOrderId;
-            $OrderCharge->total_game_gold   = $Order->goods->game_gold;
+            $OrderCharge->total_game_gold   = $orderDetail['game_gold'] * $Order->quantity;
             $OrderCharge->charged_game_gold = $gameGold;
-            $OrderCharge->game_gold_unit    = $Order->goods->game_gold_unit;
+            $OrderCharge->game_gold_unit    = $orderDetail['game_gold_unit'] ?? '';
             $OrderCharge->status            = 1; // 充值中
             $OrderCharge->product_id        = $productId;
             $OrderCharge->bundle_id         = $bundleId;
