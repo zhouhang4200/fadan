@@ -1,8 +1,8 @@
 <?php
 
 return [
-	'account' => '12', // 账号
-	'sign' => md5('b'), // 签名
+	'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB', // 账号
+	'sign' => '89abb1dfef56cdf21c315b3bc3670c5d', // 签名 md5(13FA3E0C456A4368A66D6D2FEAEBAD93 + EFAE2BC69B8D4E16A3649992F031BDDB)
 	'url' => [
 		'getGames' => 'http://www.show91.com/oauth/getGames', // 获得状态正常的游戏
 		'getAreas' => 'http://www.show91.com/oauth/getAreas', // 根据gameid获得游戏区

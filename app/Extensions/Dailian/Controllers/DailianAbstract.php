@@ -23,6 +23,7 @@ abstract class DailianAbstract
     protected $beforeHandleStatus;  // 操作前状态
     protected $handledStatus;       // 操作后状态
     protected $description;         // 操作说明
+    protected $runAfter = false;
 
     /**
      * [getObject description]
@@ -96,5 +97,10 @@ abstract class DailianAbstract
     public function getOrder()
     {
         return $this->order;
+    }
+
+    public function after () 
+    {
+        
     }
 }

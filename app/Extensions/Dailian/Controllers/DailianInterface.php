@@ -18,4 +18,6 @@ interface DailianInterface
     public function setDescription();
     // 保存操作日志
     public function saveLog();
+    //
+    public function after();
 }

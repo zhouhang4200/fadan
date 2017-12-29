@@ -127,10 +127,6 @@ class IndexController extends Controller
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
                 if (Order::get()->status != 11) {
-                    // 发布订单
-                    $options = 
-                    Show91::addOrder($options = []);
-                    
                     return response()->ajax(1, '下单成功');
                 } else {
                     return response()->ajax(0, '下单失败您的余额不足');
