@@ -154,22 +154,23 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-inline" style="width:270px;">
+            <div class="layui-inline" >
                 <label class="layui-form-label">旺旺号 ：</label>
                 <div class="layui-input-inline" style="margin-right:0;">
                     {{ $user->store_wang_wang }}
                 </div>
             </div>
-            <div class="layui-inline" style="width:270px;">
-                <div class="layui-form-item icon">
+            <div class="layui-inline" >
+                <label class="layui-form-label">实名认证 ：</label>
+                <div class="layui-input-inline" style="margin-right:0;">
                 @if ($ident && $ident->status == 1)
-                    <span><i class="layui-icon">&#xe612;</i> 已实名认证</span>
+                     已实名认证
                 @elseif ($ident && $ident->status == 2)
-                    <span><i class="layui-icon">&#xe612;</i> 实名认证未通过</span>
+                     实名认证未通过
                 @elseif (! $ident && $user->parent_id == 0)
-                    <span><i class="layui-icon">&#xe612;</i> <a href="{{ route('idents.create') }}">未实名认证</a></span>
+                     <a href="{{ route('idents.create') }}" style="color:#707070">未实名认证</a>
                 @else
-                    <span><i class="layui-icon">&#xe612;</i>未实名认证</span>
+                    未实名认证
                 @endif
                 </div>
             </div>
