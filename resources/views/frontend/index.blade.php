@@ -323,8 +323,8 @@
               //预读本地文件示例，不支持ie8
               obj.preview(function(index, file, result){
                 $('#demo1').attr('src', result); //图片链接（base64）
-                var styles="url('"+result+"');"
-                $('#user-img').css('background-image', styles);
+                var styles="url('"+result+"')";
+                $('#user-img div').css('background-image', styles);
               });
             }
             ,done: function(res){

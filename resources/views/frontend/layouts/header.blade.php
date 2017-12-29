@@ -2,7 +2,7 @@
     <div class="wrapper">
         <a href="" class="logo">
             <div class="t">
-                <h1>千手 · 订单集市</h1>
+                <h1>千手 · 千手平台</h1>
             </div>
             <div class="en"><img src="/frontend/images/en.png"></div>
         </a>
