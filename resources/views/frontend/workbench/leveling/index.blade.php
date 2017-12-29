@@ -96,9 +96,12 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="game">
-                        <option value="">请选择省</option>
-
+                    <select name="game" lay-search="">
+                        <option value="">请选择或输入</option>
+                        @forelse($employee as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
             </div>
@@ -335,7 +338,7 @@
         </div>
     </script>
     <script type="text/html" id="noTemplate">
-        平台：@{{ d.no }} <br/>
+        千手：@{{ d.no }} @{{# if(d.urgent_order == 1) { }}<span style="color:red">急</span> @{{#  } }} <br/>
         外部： @{{ d.foreign_order_no }}
     </script>
     <script type="text/html" id="gameTemplate">
@@ -395,7 +398,7 @@
                     {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '发单价', width: '100'},
-                    {title: '操作', width: '230', toolbar: '#operation'}//fixed:'right',
+                    {title: '操作', fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
                 page: true
@@ -543,32 +546,37 @@
                     });
                     
                 } else if (data.value == 'delete') {
-                    layer.open({
-                        type: 1
-                        ,title: '删除'
-                        ,content: '<div style="padding: 20px 100px;">确认删除吗?</div>'
-                        ,btn: ['确认', '取消']
-                        ,btnAlign: 'c' //按钮居中
-                        ,shade: 0 //不显示遮罩
-                        ,yes: function(){
-                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                                orderNo:orderNo, 
-                                userId:userId,
-                                keyWord:data.value
-                            }, function (result) {
-                                if (result.status == 1) {
-                                    layer.alert(result.message);
-                                } else {
-                                    layer.alert(result.message);
-                                }
-                            });
-                            reload();
-                            layer.closeAll();
-                        }
-                        ,btn2: function () {
-                            layer.closeAll();
-                        }
-                      });
+                    layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo:orderNo,
+                            userId:userId,
+                            keyWord:data.value
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message);
+                            } else {
+                                layer.alert(result.message);
+                            }
+                        });
+                        reload();
+                        layer.close(index);
+                    });
+                } else if(data.value == 'delete') {
+                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo:orderNo,
+                            userId:userId,
+                            keyWord:data.value
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message);
+                            } else {
+                                layer.alert(result.message);
+                            }
+                        });
+                        reload();
+                        layer.close(index);
+                    });
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo, 

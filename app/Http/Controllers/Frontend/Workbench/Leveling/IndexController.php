@@ -8,6 +8,7 @@ use App\Extensions\Order\Operations\CreateLeveling;
 use App\Models\GoodsTemplateWidget;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
+use App\Models\User;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
@@ -47,8 +48,9 @@ class IndexController extends Controller
     public function index()
     {
         $game = $this->game;
+        $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
 
-        return view('frontend.workbench.leveling.index', compact('game'));
+        return view('frontend.workbench.leveling.index', compact('game', 'employee'));
     }
 
     /**

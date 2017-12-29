@@ -38,6 +38,14 @@
         .layui-form-checkbox[lay-skin=primary] {
             height: 6px !important;
         }
+        .layui-layer-btn .layui-layer-btn0,.layui-layer-btn .layui-layer-btn1,.layui-layer-btn .layui-layer-btn2   {
+            border-color: #1E9FFF;
+            background-color: #1E9FFF;
+            color:#ffffff;
+        }
+        .layui-layer-dialog .layui-layer-content {
+            text-align: center;
+        }
     </style>
 @endsection
 
@@ -67,7 +75,9 @@
                 <div id="template">
 
                 </div>
-                <div class="layui-btn layui-btn-normal  layui-col-md12" lay-submit="" lay-filter="order">确定</div>
+                <div class="layui-col-md-offset2">
+                    <div class="layui-btn layui-btn-normal  layui-col-md2" lay-submit="" lay-filter="order">确定</div>
+                </div>
             </form>
         </div>
 
@@ -75,7 +85,14 @@
             <div class="site-title">
                 <fieldset><legend><a name="hr">发单模版</a></legend></fieldset>
             </div>
-            <div class=""></div>
+            <div class="layui-row " style="margin-bottom: 15px">
+                <div class="layui-col-md4">
+                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template">解析模版</div>
+                </div>
+                <div class="layui-col-md4 layui-col-md-offset4">
+                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="instructions">使用说明</div>
+                </div>
+            </div>
             <div class="">
                 <div class="layui-row form-group">
                     <textarea name="desc" class="layui-textarea" style="min-height: 800px"></textarea>
@@ -118,7 +135,7 @@
                 <div class="layui-col-md8">
 
                     @{{# if(item.field_type == 1) {  }}
-                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}">
+                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}">
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
@@ -175,6 +192,15 @@
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
 
+        //自定义验证规则
+        form.verify({
+            price: function(value){
+                if(value == 0){
+                    return '代练价格不能为0';
+                }
+            }
+        });
+
         var getTpl = goodsTemplate.innerHTML, view = $('#template');
         $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:1}, function (result) {
             layTpl(getTpl).render(result.content, function(html){
@@ -183,11 +209,42 @@
             });
         }, 'json');
 
+        form.on('submit(instructions)', function () {
+            layer.open({
+                type: 1
+                ,title: '使用说明' //不显示标题栏
+                ,closeBtn: false
+                ,area: '470px;'
+                ,shade: 0.2
+                ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                ,btn: ['确定']
+                ,btnAlign: 'c'
+                ,content: '<div style="padding: 10px 15px; line-height: 22px;   font-weight: 300;">1.选择“游戏”后会自动显示对应模板。<br/>2.将模版复制，发给号主填写。<br/>3.粘贴号主填写好的模版，粘贴至模板输入框内。<br/>4.点击“解析模板”按钮将资料导入至左侧表格内，点击“发布”按钮，即可创建订单。</div>'
+            });
+        });
 
         // 下单
         form.on('submit(order)', function (data) {
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
-                layer.msg(result.message)
+
+                if (result.status == 1) {
+                    layer.open({
+                        content: '发布成功!',
+                        btn: ['继续发布', '订单列表', '待发订单'],
+                        btn1: function(index, layero){
+                            location.reload();
+                        },
+                        btn2: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        },
+                        btn3: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        }
+                    });
+                } else {
+                    layer.msg(result.message);
+                }
+
             }, 'json');
             return false;
         });

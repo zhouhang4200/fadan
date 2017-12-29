@@ -59,7 +59,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件类型</label>
                                         <div class="layui-input-block">
-                                            <select name="field_type_and_name" lay-verify="required" lay-filter="widget-type">
+                                            <select name="field_type_and_name" lay-verify="required" lay-filter="widget-type" lay-search="">
                                                 <option value=""></option>
                                                 @foreach($filedName as  $value)
                                                     <option value="{{ $value->name }}-{{ $value->type }}" data-type="{{ $value->type }}">{{ $value->display_name }}</option>

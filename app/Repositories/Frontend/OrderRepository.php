@@ -165,11 +165,14 @@ class OrderRepository
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
         );
 
-        if ($type == 1) {
-            $query->where('gainer_primary_user_id', $primaryUserId); // 接单
-        } else {
-            $query->where('creator_primary_user_id', $primaryUserId); // 发单
+        if ($status != 1) {
+            if ($type == 1) {
+                $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+            } else {
+                $query->where('creator_primary_user_id', $primaryUserId); // 发单
+            }
         }
+
         $query->when($status != 0, function ($query) use ($status) {
             return $query->where('status', $status);
         });
