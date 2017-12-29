@@ -198,7 +198,7 @@
         </div>
     </div>
 
-    <div class="complete" style="display: none; padding: 10px 10px 0 10px">
+    <div class="complain" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
@@ -212,7 +212,7 @@
                     <div class="layui-form-item">
 
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complete">确认</button>
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
 
                         </div>
@@ -506,17 +506,7 @@
                             data:data.field
                         }, function (result) {
                             if (result.status == 1) {
-                                $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                                    orderNo:orderNo, 
-                                    userId:userId,
-                                    keyWord:keyWord,
-                                }, function (result) {
-                                    if (result.status == 1) {
-                                        layer.alert(result.message);
-                                    } else {
-                                        layer.alert(result.message);
-                                    }
-                                });
+                                layer.alert(result.message);
                             } else {
                                 layer.alert(result.message);
                             }
@@ -532,30 +522,19 @@
                         shade: 0.2,
                         title: '申请仲裁',
                         area: ['500px', '280px'],
-                        content: $('.complete')
+                        content: $('.complain')
                     });
-                    form.on('submit(complete)', function(data){
-                        $.post("{{ route('frontend.workbench.leveling.complete') }}", {
+                    form.on('submit(complain)', function(data){
+                        $.post("{{ route('frontend.workbench.leveling.complain') }}", {
                             orderNo:orderNo, 
                             data:data.field
                         }, function (result) {
                             if (result.status == 1) {
-                                $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                                orderNo:orderNo, 
-                                userId:userId,
-                                keyWord:keyWord,
-                                }, function (result) {
-                                    if (result.status == 1) {
-                                        layer.alert(result.message);
-                    
-                                    } else {
-                                        layer.alert(result.message);
-                         
-                                    }
-                                });
+                                layer.alert(result.message);
+            
                             } else {
                                 layer.alert(result.message);
-                       
+                 
                             }
                             reload();
                         });

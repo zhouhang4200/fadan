@@ -182,7 +182,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 撤销
             Route::post('consult', 'IndexController@consult')->name('frontend.workbench.leveling.consult');
             // 申诉
-            Route::post('complete', 'IndexController@complete')->name('frontend.workbench.leveling.complete');
+            Route::post('complain', 'IndexController@complain')->name('frontend.workbench.leveling.complain');
         });
 
         // 首页

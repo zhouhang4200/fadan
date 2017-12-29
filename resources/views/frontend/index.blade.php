@@ -324,7 +324,7 @@
               obj.preview(function(index, file, result){
                 $('#demo1').attr('src', result); //图片链接（base64）
                 var styles="url('"+result+"')";
-                $('#user-img div').css('background-image', styles);
+                $('#user-img').css('background-image', styles);
               });
             }
             ,done: function(res){

@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\GoodsTemplate;
 
-use Order, Exception, Asset;
+use DB, Order, Exception, Asset;
 use App\Repositories\Frontend\GameRepository;
 use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
@@ -328,43 +328,47 @@ class IndexController extends Controller
      */
     public function consult(Request $request)
     {
-        $data['order_no'] = $request->orderNo;
-        $data['amount'] = $request->data['amount'];
-        $data['deposit'] = $request->data['deposit'];
-        $data['user_id'] = Auth::id();
-        $data['revoke_message'] = $request->data['revoke_message'];
-        // 订单数据
-        $order = OrderModel::where('no', $data['order_no'])->first();
-        // 订单双金
-        $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
-        $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
-        $orderDeposit = bcadd($safeDeposit, $effectDeposit);
-        $isOverDeposit = bcsub($orderDeposit, $data['deposit']);
-        $isOverAmount = bcsub($order->amount, $data['amount']);
-        // 写入双金与订单双击比较
-        if ($isOverDeposit < 0) {
-            return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
-        }
-
-        if ($isOverAmount < 0) {
-            return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
-        }
-
-        if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
-            $data['consult'] = 1; // 发单方提出撤销
-        } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
-            $data['consult'] = 2; // 接单方
-        } else {
+        DB::beginTransaction();
+        try {
+            $data['order_no'] = $request->orderNo;
+            $data['amount'] = $request->data['amount'];
+            $data['deposit'] = $request->data['deposit'];
+            $data['user_id'] = Auth::id();
+            $data['revoke_message'] = $request->data['revoke_message'];
+            // 订单数据
+            $order = OrderModel::where('no', $data['order_no'])->first();
+            // 订单双金
+            $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+            $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+            $orderDeposit = bcadd($safeDeposit, $effectDeposit);
+            $isOverDeposit = bcsub($orderDeposit, $data['deposit']);
+            $isOverAmount = bcsub($order->amount, $data['amount']);
+            // 写入双金与订单双击比较
+            if ($isOverDeposit < 0) {
+                return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
+            }
+            // 写入代练费与订单代练费比较
+            if ($isOverAmount < 0) {
+                return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
+            }
+            // 判断是接单还是发单方操作
+            if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
+                $data['consult'] = 1; // 发单方提出撤销
+            } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
+                $data['consult'] = 2; // 接单方
+            } else {
+                return response()->ajax(0, '找不到订单对应的接单或发单人!');
+            }
+            // 存信息
+            LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
+            // 改状态
+            DailianFactory::choose('revoke')->run($data['order_no'], $data['user_id']);
+        } catch (Exception $e) {
+            DB::rollBack();
             return response()->ajax(0, '操作失败!');
         }
-
-
-        $bool = LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
-
-        if ($bool) {
-            return response()->ajax(1, '操作成功!');
-        }
-        return response()->ajax(0, '操作失败!');
+        DB::commit();
+        return response()->json(['status' => 1, 'message' => '操作成功!']);
     }
 
     /**
@@ -372,27 +376,33 @@ class IndexController extends Controller
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function complete(Request $request)
+    public function complain(Request $request)
     {
-        $data['order_no'] = $request->orderNo;
-        $data['complain_message'] = $request->data['complain_message'];
+        DB::beginTransaction();
+        try {
+            $userId = Auth::id();
+            $data['order_no'] = $request->orderNo;
+            $data['complain_message'] = $request->data['complain_message'];
 
-        $order = OrderModel::where('no', $data['order_no'])->first();
+            $order = OrderModel::where('no', $data['order_no'])->first();
+            // 操作人是发单还是接单
+            if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
+                $data['complain'] = 1; // 发单方提出申诉
+            } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
+                $data['complain'] = 2; // 接单方
+            } else {
+                return response()->ajax(0, '操作失败!');
+            }
 
-        if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
-            $data['complain'] = 1; // 发单方提出申诉
-        } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
-            $data['complain'] = 2; // 接单方
-        } else {
+            LevelingConsult::where('order_no', $data['order_no'])->update($data);
+            // 改状态
+            DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
+        } catch (Exception $e) {  
+            DB::rollBack();      
             return response()->ajax(0, '操作失败!');
         }
-
-        $bool = LevelingConsult::where('order_no', $data['order_no'])->update($data);
-
-        if ($bool) {
-            return response()->ajax(1, '操作成功!');
-        }
-        return response()->ajax(0, '操作失败!');
+        DB::commit();
+        return response()->ajax(1, '操作成功!');
     }
 }
 
