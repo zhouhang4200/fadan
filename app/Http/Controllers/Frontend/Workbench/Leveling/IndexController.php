@@ -45,6 +45,8 @@ class IndexController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param OrderRepository $orderRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request, OrderRepository $orderRepository)
@@ -134,11 +136,6 @@ class IndexController extends Controller
 
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
-                if (Order::get()->status != 11) {
-                    return response()->ajax(1, '下单成功');
-                } else {
-                    return response()->ajax(0, '下单失败您的余额不足');
-                }
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
@@ -321,7 +318,18 @@ class IndexController extends Controller
         $userId = Auth::id(); // 操作人id
 
         try {
-            $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
+            // 加急 取消加急
+            $bool = false;
+            if (in_array($keyWord, ['urgent', 'unUrgent'])) {
+                OrderDetail::where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
+                    ->where('order_no', $orderNo)
+                    ->where('field_name', 'urgent_order')
+                    ->update(['field_value' => $keyWord == 'urgent' ? 1 : 0]);
+                // 写操作记录
+                $bool = true;
+            } else {
+                $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
+            }
 
             if ($bool) {
                 return response()->json(['status' => 1, 'message' => '操作成功!']);
@@ -497,6 +505,15 @@ class IndexController extends Controller
         } catch (Exception $e) {
             
         }
+    }
+
+    /**
+     * 待发单
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function wait()
+    {
+        return view('frontend.workbench.leveling');
     }
 }
 

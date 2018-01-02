@@ -47,6 +47,7 @@
            width: 160px;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 @endsection
 
 @section('submenu')
@@ -120,8 +121,7 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button>
-
+                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="">导出</button>
             </div>
         </div>
     </form>
@@ -229,13 +229,14 @@
 
 <!--START 底部-->
 @section('js')
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/html" id="operation">
         <a href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no  }}" class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
                 @{{# if (!d.master && d.status == 1) {  }}
-                    <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
+                <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 22) {  }}
@@ -250,12 +251,12 @@
                 <option value="13" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.urgent_order != 1) {  }}
-                <option value="urgent" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">加急</option>
+                @{{# if (d.master) {  }}
+                <option value="assa" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">加急</option>
                 @{{# }  }}
 
-                @{{# if (d.master && d.urgent_order == 1) {  }}
-                <option value="unUrgent" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消加急</option>
+                @{{# if (d.master) {  }}
+                <option value="asda" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消加急</option>
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 13 || d.status == 14 || d.status == 17)) {  }}
@@ -339,7 +340,7 @@
         </div>
     </script>
     <script type="text/html" id="noTemplate">
-        千手：@{{ d.no }} @{{# if(d.urgent_order == 1 && d.master) { }}<span style="color:red">急</span> @{{#  } }} <br/>
+        千手：@{{ d.no }} @{{# if(d.urgent_order == 1) { }}<span style="color:red">急</span> @{{#  } }} <br/>
         外部： @{{ d.foreign_order_no }}
     </script>
     <script type="text/html" id="gameTemplate">
@@ -364,11 +365,11 @@
     <script>
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
-                    layer = layui.layer,
-                    layTpl = layui.laytpl,
-                    element = layui.element,
-                    laydate = layui.laydate,
-                    table = layui.table;
+                layer = layui.layer,
+                layTpl = layui.laytpl,
+                element = layui.element,
+                laydate = layui.laydate,
+                table = layui.table;
             // 当前tab 所在位置
             var status = 0;
             var urgentOrder = 0;
@@ -376,245 +377,6 @@
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
-            $('.cancel').click(function(){
-                layer.closeAll();
-            });
-            //方法级渲染
-            table.render({
-                elem: '#orer-list',
-                url: '{{ route('frontend.workbench.leveling.order-list') }}',
-                method: 'post',
-                size: 'sm',
-                cols: [[
-                    {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
-                    {field: 'order_source', title: '订单来源', width: '100'},
-                    {field: 'lable', title: '标签', width: '150'},
-                    {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
-                    {field: 'game_leveling_title', title: '代练标题', width: '250'},
-                    {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
-                    {field: 'game_leveling_type', title: '代练类型', width: '100'},
-                    {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
-                    {field: 'role', title: '角色名称', width: '100'},
-                    {field: 'status_text', title: '订单状态', width: '120'},
-                    {field: 'nickname', title: '打手呢称', width: '120'},
-                    {field: 'original_amount', title: '来源价格', width: '100'},
-                    {field: 'amount', title: '发单价', width: '100'},
-                    {title: '操作', fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
-                ]],
-                id: 'order',
-                page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
-                    layout: [ 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                    //,curr: 5 //设定初始在第 5 页
-                    ,groups: 1 //只显示 1 个连续页码
-                    ,first: false //不显示首页
-                    ,last: false //不显示尾页
-
-                },
-                height: 630 //固定值
-//                height: 'full-200'
-            });
-
-            element.on('tab(order-list)', function () {
-                 status = this.getAttribute('lay-id');
-                //执行重载
-                table.reload('order', {
-                    where: {
-                        status: status
-                    },
-                    height: 'full-200',
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            });
-            form.on('checkbox(urgent_order)', function(data){
-                urgentOrder = data.elem.checked ? 1 : 0;
-            });
-            // 搜索
-            form.on('submit(search)', function (data) {
-                table.reload('order', {
-                    where: {
-                        status: status,
-                        no: data.field.no,
-                        foreign_order_no: data.field.foreign_order_no,
-                        game_id: data.field.game_id,
-                        need: data.field.status,
-                        wang_wang: data.field.wang_wang,
-                        urgent_order: urgentOrder,
-                        start_date: data.field.start_date,
-                        end_date: data.field.end_date
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            });
-            var userId = "{{ Auth::id() }}";
-
-            function reload() {
-                //方法级渲染
-                //执行重载
-                table.reload('order', {
-                    where: {
-                        status: status
-                    },
-                    height: 'full-200',
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            }
-            // 对订单操作
-            form.on('select(order-operation)', function (data) {
-                if (!data.value) {
-                    return false;
-                }
-                var orderNo = $(data.elem).find("option:selected").attr("data-no");
-                var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
-                var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
-                var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
-                var keyWord = data.value;
-                if (!orderAmount) {
-                    orderAmount = 0;
-                }
-                if (!orderSafe) {
-                    orderSafe = 0;
-                }
-                if (!orderEffect) {
-                    orderEffect = 0;
-                }
-                $('#order_amount').val(orderAmount);
-                $('#safe').val(orderSafe);
-                $('#effect').val(orderEffect);
-                if (data.value == 'revoke') {
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '撤销',
-                        area: ['650px', '550px'],
-                        content: $('.consult')
-                    });
-                    form.on('submit(consult)', function(data){
-                        $.post("{{ route('frontend.workbench.leveling.consult') }}", {
-                            orderNo:orderNo, 
-                            data:data.field
-                        }, function (result) {
-                            if (result.status == 1) {
-                                layer.alert(result.message);
-                            } else {
-                                layer.alert(result.message);
-                            }
-                            reload();
-                        });
-                            layer.closeAll();
-                        return false;
-                    });
-                    
-                } else if (data.value == 'applyArbitration') {
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '申请仲裁',
-                        area: ['500px', '280px'],
-                        content: $('.complain')
-                    });
-                    form.on('submit(complain)', function(data){
-                        $.post("{{ route('frontend.workbench.leveling.complain') }}", {
-                            orderNo:orderNo, 
-                            data:data.field
-                        }, function (result) {
-                            if (result.status == 1) {
-                                layer.alert(result.message);
-            
-                            } else {
-                                layer.alert(result.message);
-                 
-                            }
-                            reload();
-                        });
-                            layer.closeAll();
-                        return false;
-                    });
-                    
-                } else if (data.value == 'delete') {
-                    layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
-                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo:orderNo,
-                            userId:userId,
-                            keyWord:data.value
-                        }, function (result) {
-                            if (result.status == 1) {
-                                layer.alert(result.message);
-                            } else {
-                                layer.alert(result.message);
-                            }
-                        });
-                        reload();
-                        layer.close(index);
-                    });
-                } else if(data.value == 'complete') {
-                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
-                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo:orderNo,
-                            userId:userId,
-                            keyWord:data.value
-                        }, function (result) {
-                            if (result.status == 1) {
-                                layer.alert(result.message);
-                            } else {
-                                layer.alert(result.message);
-                            }
-                        });
-                        reload();
-                        layer.close(index);
-                    });
-                } else {
-                    $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                        orderNo:orderNo, 
-                        userId:userId,
-                        keyWord:data.value
-                    }, function (result) {
-                        if (result.status == 1) {
-                            layer.alert(result.message, function () {
-                                layer.closeAll();
-                            });
-                    
-                        } else {
-                            layer.alert(result.message, function () {
-                                layer.closeAll();
-                            });
-                        }
-                        reload();
-                    });
-                }
-               
-            });
-            // 重新渲染后重写样式
-            function changeStyle(index) {
-                var getTpl = changeStyleTemplate.innerHTML, view = $('body');
-                layTpl(getTpl).render(index, function(html){
-                    view.append(html);
-                });
-            }
-
-            // 导出
-            form.on('submit(export)', function (data) {
-                var fields = data.field;
-                var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
-                console.log(datas);
-                window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
-            });
-
-            var hasData = "{{ session('message') }}";
-
-            if (hasData) {
-                layer.alert(hasData, function () {
-                    layer.closeAll();
-                });
-            }
         });
     </script>
 @endsection
