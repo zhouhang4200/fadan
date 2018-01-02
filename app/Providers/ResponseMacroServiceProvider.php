@@ -28,7 +28,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
             // return response()->json($data);
 
             // 加密
-            $data = ['data' => (new Aes(config('ios.aes_key')))->encrypt(json_encode($data))];
+            $data = ['data' => (new Aes(config('ios.aes_key')))->encrypt(json_encode($data, JSON_UNESCAPED_UNICODE))];
 
             return response()->json($data);
         });

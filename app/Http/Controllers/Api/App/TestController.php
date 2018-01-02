@@ -12,9 +12,9 @@ class TestController extends Controller
 {
     public function index(Request $request)
     {
-        $order = OrderRepository::detail('');
+        // $order = OrderRepository::detail('');
 
-dump($order);
+        dump(json_encode(['account' => '阿基里斯快递费']));
 
     }
 }

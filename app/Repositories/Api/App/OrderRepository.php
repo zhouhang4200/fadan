@@ -41,7 +41,7 @@ class OrderRepository
         ];
 
         $dataList = Order::where('gainer_primary_user_id', $primaryUserId)
-            ->where('service_id', 1)
+            ->whereIn('service_id', [1, 3])
             ->when(!empty($status), function ($query) use ($status) {
                 return $query->where('status', $status);
             })
@@ -85,7 +85,7 @@ class OrderRepository
 
         $order = Order::where('no', $orderNo)
             ->where('gainer_primary_user_id', $primaryUserId)
-            ->where('service_id', 1)
+            ->whereIn('service_id', [1, 3])
             ->whereIn('status', [3, 4, 5, 6, 7, 8])
             ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
             ->first();
