@@ -120,8 +120,8 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
-                <!-- <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button> -->
-                 <a href="{{ request()->fullUrl() }}{{ stripos(request()->fullUrl(), '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
+                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button>
+
             </div>
         </div>
     </form>
@@ -592,25 +592,19 @@
 
             // 导出
             form.on('submit(export)', function (data) {
-                table.reload('order', {
-                    where: {
-                        status: status,
-                        no: data.field.no,
-                        foreign_order_no: data.field.foreign_order_no,
-                        game_id: data.field.game_id,
-                        need: data.field.status,
-                        wang_wang: data.field.wang_wang,
-                        urgent_order: urgentOrder,
-                        start_date: data.field.start_date,
-                        end_date: data.field.end_date,
-                        export:1
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
+                var fields = data.field;
+                var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
+                console.log(datas);
+                window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
             });
+
+            var hasData = "{{ session('message') }}";
+
+            if (hasData) {
+                layer.alert(hasData, function () {
+                    layer.closeAll();
+                });
+            }
         });
     </script>
 @endsection

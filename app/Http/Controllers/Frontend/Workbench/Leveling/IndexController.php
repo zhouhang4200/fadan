@@ -49,22 +49,8 @@ class IndexController extends Controller
      */
     public function index(Request $request, OrderRepository $orderRepository)
     {
-        $no = $request->input('no', 0);
-        $foreignOrderNo = $request->input('foreign_order_no', 0);
-        $gameId = $request->input('game_id', 0);
-        $status = $request->input('status', 0);
-        $wangWang = $request->input('wang_wang', 0);
-        $urgentOrder = $request->input('urgent_order', 0);
-        $startDate  = $request->input('start_date', 0);
-        $endDate = $request->input('end_date', 0);
-
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
-
-        if ($request->export) {
-            $DailianOrders = $orderRepository->filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate);
-            $this->export($DailianOrders);
-        }
 
         return view('frontend.workbench.leveling.index', compact('game', 'employee'));
     }
@@ -86,12 +72,14 @@ class IndexController extends Controller
         $endDate = $request->input('end_date', 0);
         $pageSize = $request->input('limit', 10);
 
-        // if ($request->export) {
-        //     $DailianOrders = $orderRepository->filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate);
-        //     $this->export($DailianOrders);
-        // }
+        if ($request->export) {
 
-        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder,$startDate, $endDate, $pageSize);
+            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
+
+            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+        }
+
+        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $pageSize);
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {
@@ -429,30 +417,21 @@ class IndexController extends Controller
 
     public function export($orders)
     {
-        // try {
+        try {
             // 标题
             $title = [
                 '序号',
                 '订单号',
                 '订单来源',
                 '标签',
-
                 '客服备注',
-
                 '代练标题',
-
                 '游戏区服',
-
                 '代练类型',
-
                 '账号密码',
-
                 '角色名称',
-
                 '订单状态',
-
                 '来源价格',
-
                 '发单价',
                 '创建时间',
                 '更新时间',
@@ -491,11 +470,33 @@ class IndexController extends Controller
                     });
                 }
             })->export('xls');
-dd(1);
 
-        // } catch (Exception $e) {
+        } catch (Exception $e) {
 
-        // }
+        }
+    }
+
+    public function excel(Request $request, OrderRepository $orderRepository)
+    {
+        try {
+            $no = $request->no ?? 0;
+            $foreignOrderNo = $request->foreignOrderNo ?? 0;
+            $gameId = $request->gameId ?? 0;
+            $wangWang = $request->wangWang ?? 0;
+            $startDate = $request->startDate ?? 0;
+            $endDate = $request->endDate ?? 0;
+            $status = $request->status ?? 0;
+            $urgentOrder = $request->urgentOrder ?? 0;
+
+            $dailianOrders = $orderRepository->filterOrders($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate);
+
+            if ($dailianOrders) {
+                $this->export($dailianOrders);
+            }
+            return redirect(route('frontend.workbench.leveling.index'))->with(['message' => '无导出数据']);
+        } catch (Exception $e) {
+            
+        }
     }
 }
 

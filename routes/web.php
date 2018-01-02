@@ -182,6 +182,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('consult', 'IndexController@consult')->name('frontend.workbench.leveling.consult');
             // 申诉
             Route::post('complain', 'IndexController@complain')->name('frontend.workbench.leveling.complain');
+            // 跳转到新页面导出 excel
+            Route::get('excel', 'IndexController@excel')->name('frontend.workbench.leveling.excel');
         });
 
         // 首页
