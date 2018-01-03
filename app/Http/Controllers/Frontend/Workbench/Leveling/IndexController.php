@@ -139,7 +139,9 @@ class IndexController extends Controller
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
+
                 return response()->ajax(1, '下单成功');
+
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
@@ -431,6 +433,7 @@ class IndexController extends Controller
         return response()->ajax(1, '操作成功!');
     }
 
+
     public function export($orders)
     {
         try {
@@ -523,5 +526,6 @@ class IndexController extends Controller
     {
         return view('frontend.workbench.leveling');
     }
+
 }
 

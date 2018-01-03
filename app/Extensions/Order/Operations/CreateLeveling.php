@@ -157,7 +157,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
         // 写多态关联
         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new Exception('申请失败');
+            throw new CustomException('申请失败');
         }
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
