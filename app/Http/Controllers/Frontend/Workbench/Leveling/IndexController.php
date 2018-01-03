@@ -11,6 +11,7 @@ use App\Models\Order as OrderModel;
 use App\Models\User;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderRepository;
+use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -53,8 +54,9 @@ class IndexController extends Controller
     {
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
 
-        return view('frontend.workbench.leveling.index', compact('game', 'employee'));
+        return view('frontend.workbench.leveling.index', compact('game', 'employee', 'tags'));
     }
 
     /**
@@ -137,7 +139,9 @@ class IndexController extends Controller
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
+
                 return response()->ajax(1, '下单成功');
+
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
@@ -421,13 +425,14 @@ class IndexController extends Controller
             LevelingConsult::where('order_no', $data['order_no'])->update($data);
             // 改状态
             DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
-        } catch (Exception $e) {  
-            DB::rollBack();      
+        } catch (Exception $e) {
+            DB::rollBack();
             return response()->ajax(0, '操作失败!');
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');
     }
+
 
     public function export($orders)
     {
@@ -509,7 +514,7 @@ class IndexController extends Controller
             }
             return redirect(route('frontend.workbench.leveling.index'))->with(['message' => '无导出数据']);
         } catch (Exception $e) {
-            
+
         }
     }
 
@@ -521,5 +526,6 @@ class IndexController extends Controller
     {
         return view('frontend.workbench.leveling');
     }
+
 }
 

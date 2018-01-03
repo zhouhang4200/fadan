@@ -108,7 +108,12 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">订单标签：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="label" autocomplete="off" class="layui-input fsDate"   lay-key="1">
+                    <select name="label">
+                        <option value="">全部</option>
+                        @foreach ($tags as $tag)
+                            <option>{{ $tag }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
@@ -261,7 +266,7 @@
                 @{{# if (d.master && d.status == 22) {  }}
                     <option value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</option>
                 @{{# }  }}
- 
+
                 @{{# if (d.master && d.status == 1) {  }}
                 <option value="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</option>
                 @{{# }  }}
@@ -285,7 +290,7 @@
                 @{{# if (d.master && d.status == 18) {  }}
                 <option value="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</option>
                 @{{# }  }}
-    
+
                 @{{# if (d.master) {  }}
                     @{{# if (d.consult == 1 && d.status == 15) {  }}
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
@@ -303,11 +308,11 @@
                 @{{# if (d.status == 13 || d.status == 14 || d.status == 17 || d.status == 18) {  }}
                 <option value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</option>
                 @{{# }  }}
-                
+
                 @{{# if (d.status == 15) {  }}
                 <option value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</option>
                 @{{# }  }}
-                
+
                 @{{# if (d.master) {  }}
                     @{{# if (d.complain == 1 && d.status == 16) {  }}
                     <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
@@ -537,7 +542,7 @@
                     });
                     form.on('submit(consult)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.consult') }}", {
-                            orderNo:orderNo, 
+                            orderNo:orderNo,
                             data:data.field
                         }, function (result) {
                             if (result.status == 1) {
@@ -550,7 +555,7 @@
                             layer.closeAll();
                         return false;
                     });
-                    
+
                 } else if (data.value == 'applyArbitration') {
                     layer.open({
                         type: 1,
@@ -561,22 +566,22 @@
                     });
                     form.on('submit(complain)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.complain') }}", {
-                            orderNo:orderNo, 
+                            orderNo:orderNo,
                             data:data.field
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
-            
+
                             } else {
                                 layer.alert(result.message);
-                 
+
                             }
                             reload();
                         });
                             layer.closeAll();
                         return false;
                     });
-                    
+
                 } else if (data.value == 'delete') {
                     layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
@@ -611,7 +616,7 @@
                     });
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                        orderNo:orderNo, 
+                        orderNo:orderNo,
                         userId:userId,
                         keyWord:data.value
                     }, function (result) {
@@ -619,7 +624,7 @@
                             layer.alert(result.message, function () {
                                 layer.closeAll();
                             });
-                    
+
                         } else {
                             layer.alert(result.message, function () {
                                 layer.closeAll();
@@ -628,7 +633,7 @@
                         reload();
                     });
                 }
-               
+
             });
             // 重新渲染后重写样式
             function changeStyle(index) {
