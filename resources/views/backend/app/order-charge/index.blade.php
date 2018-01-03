@@ -58,7 +58,7 @@
                     <tbody>
                         @forelse($dataList as $data)
                             <tr>
-                                <td>{{ $data->getAttributes()['order_no'] }}</td>
+                                <td>{{ $data->order_no }}</td>
                                 <td>{{ $data->user_id }}</td>
                                 <td>{{ $data->qs_order_id }}</td>
                                 <td>{{ $data->total_game_gold }}</td>
@@ -69,7 +69,7 @@
                                 <td>{{ $data->bundle_id }}</td>
                                 <td>{{ $data->created_at }}</td>
                                 <td>{{ $data->updated_at }}</td>
-                                <td><a href="{{ route('app.order-charge.detail', ['id' => $data->getAttributes()['order_no']]) }}" class="layui-btn layui-btn-normal layui-btn-mini">详情</a></td>
+                                <td><a href="{{ route('app.order-charge.detail', ['id' => $data->order_no]) }}" class="layui-btn layui-btn-normal layui-btn-mini">详情</a></td>
                             </tr>
                         @empty
                             <tr>
