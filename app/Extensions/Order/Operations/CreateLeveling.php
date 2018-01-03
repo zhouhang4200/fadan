@@ -242,13 +242,11 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
                 $result = json_decode($result);
 
-                if (!$result->data) {
+                if ($result->reason) {
                     $reason = $result->reason ?? '下单失败!';
-                    throw new Exception($reason);
-                }
-                $thirdOrderNo = $result->data; // 第三方订单号
-
-                if ($thirdOrderNo) {
+                    throw new CustomException($reason);
+                } else {
+                    $thirdOrderNo = $result->data; // 第三方订单号
                     //将第三方订单号更新到order_detail中
                     OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
                         'field_value' => $thirdOrderNo,
@@ -257,9 +255,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                         'field_value' => 1, //91代练
                     ]);
                 }
-
-                echo $thirdOrderNo;
-            } catch (Exception $e) {
+            } catch (CustomException $e) {
+                throw new CustomException($e->getMessage());
                 DB::rollBack();
             }
             DB::commit();

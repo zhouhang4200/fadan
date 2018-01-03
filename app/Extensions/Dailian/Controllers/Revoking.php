@@ -14,8 +14,7 @@ class Revoking extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 15; // 状态：15撤销中
     protected $type             = 18; // 操作：18撤销
-    protected $runAfter         = 0;
-    // protected $runAfter         = 1;
+    protected $runAfter         = 1;
 
 	/**
      * [run 撤销 -> 撤销中]
@@ -50,6 +49,8 @@ class Revoking extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            $this->after();
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());
@@ -75,18 +76,20 @@ class Revoking extends DailianAbstract implements DailianInterface
                         'selfCancel.pay_price' => $consult->amount,
                         'selfCancel.pay_bond' => $consult->deposit,
                         'selfCancel.content' => $consult->revoke_message,
-                    ]; // 第三方订单号
+                    ];
+
                     // 结果
                     $result = Show91::addCancelOrder($options);
                     $result = json_decode($result);
-
-                    if ($result->result && $result->reason) {
+                    // dd($result);
+                    if ($result->reason) {
                         $reason = $result->reason ?? '下单失败!';
                         throw new Exception($reason);
                     }
+                    // dd($result);
                 }
             } catch (Exception $e) {
-
+                throw new Exception($e->getMessage());
             }
         }
     }
