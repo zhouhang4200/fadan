@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
-
 class Show91
 {
     /**
@@ -15,8 +13,6 @@ class Show91
      */
     public static function getResult($url, $options = [], $method = 'POST')
     {
-    	$client = new Client;
-
     	$params = [
     		'account' => config('show91.account'),
     		'sign' => config('show91.sign'),
@@ -24,9 +20,14 @@ class Show91
 
     	$options = array_merge($params, $options);
 
-    	$response = $client->request($method, $url, ['query' => $options]);
-
-		return $response->getBody();
+        $curl = curl_init();  //初始化
+        curl_setopt($curl, CURLOPT_URL, $url);  //设置url
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);  //设置post的数据
+        $result = curl_exec($curl);
+        curl_close($curl);
+        return $result;
     }
 
     /**

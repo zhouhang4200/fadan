@@ -465,7 +465,7 @@ class IndexController extends Controller
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'label')->value('field_value') ?? '--',
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'cstomer_service_remark')->value('field_value'),
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_title')->value('field_value'),
-                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'version')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'serve')->value('field_value'),
+                            $order['game_name'] . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'version')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'serve')->value('field_value'),
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_type')->value('field_value'),
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'account')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'password')->value('field_value'),
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'role')->value('field_value'),

@@ -100,7 +100,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->price = $price;
         $this->templateId = $templateId;
         $this->game = Game::find($gameId);
-        $this->runAfter = 0;
+        $this->runAfter = 1;
     }
 
     // 获取订单
@@ -200,44 +200,45 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             // 发布订单
             $options = [
                 'orderType' => 0,
-                'order.id' => $this->order->no,
-                'order.game_id' => ThirdGame::where('game_id', 1)->where('third_id', 1)->value('third_game_id') ?? 5, // 王者荣耀
+                // 'order.id' => $this->order->no,
+
+                'order.game_id' => ThirdGame::where('game_id', 1)->where('third_id', 1)->value('third_game_id') ?: '', // 王者荣耀
                 'order.game_area_id' => ThirdArea::where('game_id', $this->order->game_id)
                                         ->where('third_id', 1)
                                         ->where('area_id', $areaId)
-                                        ->value('third_area_id') ?? 21, // 安卓区
+                                        ->value('third_area_id') ?: '', // 安卓区
                 'order.game_server_id' => ThirdServer::where('game_id', $this->order->game_id)
                                         ->where('third_id', 1)
                                         ->where('server_id', $serverId)
-                                        ->value('third_server_id') ?? 19, // QQ服
-                'order.title' => $this->order->detail()->where('field_name', 'game_leveling_title')->value('field_value'),
+                                        ->value('third_server_id') ?: '', // QQ服
+                'order.title' => $this->order->detail()->where('field_name', 'game_leveling_title')->value('field_value') ?: '无',
                 'order.price' => $this->order->amount,
-                'order.bond4safe' => $this->order->detail()->where('field_name', 'security_deposit')->value('field_value'),
-                'order.bond4eff' => $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'),
-                'order.timelimit_days' => $this->order->detail()->where('field_name', 'game_leveling_day')->value('field_value'),
-                'order.timelimit_hour' => $this->order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'),
-                'order.account' => $this->order->detail()->where('field_name', 'account')->value('field_value'),// 游戏账号
-                'order.account_pwd' => $this->order->detail()->where('field_name', 'password')->value('field_value'), //账号密码
-                'order.role_name' => $this->order->detail()->where('field_name', 'role')->value('field_value'),//角色名字
-                'order.order_pwd' => '',//订单密码
+                'order.bond4safe' => $this->order->detail()->where('field_name', 'security_deposit')->value('field_value') ?: '',
+                'order.bond4eff' => $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value') ?: '',
+                'order.timelimit_days' => $this->order->detail()->where('field_name', 'game_leveling_day')->value('field_value') ?: 100,
+                'order.timelimit_hour' => $this->order->detail()->where('field_name', 'game_leveling_hour')->value('field_value') ?: 100,
+                'order.account' => $this->order->detail()->where('field_name', 'account')->value('field_value') ?: 100,// 游戏账号
+                'order.account_pwd' => $this->order->detail()->where('field_name', 'password')->value('field_value') ?: 100, //账号密码
+                'order.role_name' => $this->order->detail()->where('field_name', 'role')->value('field_value') ?: 100,//角色名字
+                'order.order_pwd' => '123',//订单密码
                 'order.current_info' => '当前游戏信息',
                 'initPic1' => '',
                 'initPic2' => '',
                 'initPic3' => '',
-                'order.require_info' => $this->order->detail()->where('field_name', 'game_leveling_requirements')->value('field_value'),// 代练要求
-                'order.remark' => $this->order->detail()->where('field_name', 'cstomer_service_remark')->value('field_value'),//订单备注
-                'order.linkman' => $this->order->creator_primary_user_id, // 联系人
-                'order.linkphone' => $this->order->detail()->where('field_name', 'user_phone')->value('field_value'),
-                'order.linkqq' => $this->order->detail()->where('field_name', 'user_qq')->value('field_value'),
+                'order.require_info' => $this->order->detail()->where('field_name', 'game_leveling_requirements')->value('field_value') ?: 1,// 代练要求
+                'order.remark' => $this->order->detail()->where('field_name', 'cstomer_service_remark')->value('field_value') ?: '无',//订单备注
+                'order.linkman' => $this->order->creator_primary_user_id ?: 1, // 联系人
+                'order.linkphone' => $this->order->detail()->where('field_name', 'user_phone')->value('field_value') ?: 1,
+                'order.linkqq' => $this->order->detail()->where('field_name', 'user_qq')->value('field_value') ?: 1,
                 'order.sms_notice' => 0, // 短信通知
-                'order.sms_mobphone' => '', // 短信通知电话
+                'order.sms_mobphone' => '1', // 短信通知电话
                 'micro' => 0, // 验证码订单
-                'haozhu' => $this->order->detail()->where('field_name', 'client_phone')->value('field_value'),
+                'haozhu' => $this->order->detail()->where('field_name', 'client_phone')->value('field_value') ?: 1,
                 'istop' => 0,
                 'forAuth' => 0,
             ];
-            $result = Show91::addOrder();
-            $result = Show91::getGames();
+
+            $result = Show91::addOrder($options);
 
             $result = json_decode($result);
 
@@ -247,7 +248,12 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             }
             $thirdOrderNo = $result->data; // 第三方订单号
             //将第三方订单号更新到order_detail中
-            OrderDetail::where('order_no', $this->order_no)->where('field_name', 'third_order_no')->update(['field_value' => $thirdOrderNo]);
+            OrderDetail::where('order_no', $this->order_no)->where('field_name', 'third_order_no')->update([
+                'field_value' => $thirdOrderNo,
+            ]);
+            OrderDetail::where('order_no', $this->order_no)->where('field_name', 'third')->update([
+                'field_value' => 1, //91代练
+            ]);
         }
     }
 }
