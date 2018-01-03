@@ -92,17 +92,7 @@
                         <input type="text" name="phone" lay-verify="" value="{{ $user->phone }}" autocomplete="off" placeholder="请输入电话" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item postion">
-                    <label class="layui-form-label">充值旺旺号:</label><i class="iconfont icon-wenhao" id="recharge">
-                   
-                    </i>
-                     <div class="tips none" id="hehe">
-                            该旺旺号用于充值判断，请用所填旺旺号在指定淘宝店铺购买充值商品，才能对该账号充值。
-                    </div>
-                    <div class="layui-input-inline">
-                        <input type="text" name="wang_wang" lay-verify="" value="{{ $user->wang_wang }}" autocomplete="off" placeholder="请输入充值旺旺号" class="layui-input">
-                    </div>
-                </div>
+
                 <div class="layui-form-item postion">
                     <label class="layui-form-label">店铺旺旺号:</label><i class="iconfont icon-wenhao" id="store"></i>
                     <div class="tip none">

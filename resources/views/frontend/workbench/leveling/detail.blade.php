@@ -96,7 +96,9 @@
 
                                                 @if(in_array($detail['status'], [13, 17]) && in_array($item->field_name, ['game_leveling_amount', 'password', 'game_leveling_day' , 'game_leveling_hour']))
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                @elseif(in_array($detail['status'], [14, 18]) && $item->field_name == 'game_leveling_amount' || $item->field_name == 'password')
+                                                @elseif(in_array($detail['status'], [14]) && $item->field_name == 'game_leveling_amount')
+                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                 @else
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly" disabled="disabled">

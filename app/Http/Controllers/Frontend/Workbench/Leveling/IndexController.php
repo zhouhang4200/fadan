@@ -136,6 +136,8 @@ class IndexController extends Controller
 
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
+
+                return response()->ajax(1, '下单成功');
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             }
@@ -267,14 +269,14 @@ class IndexController extends Controller
                 ]);
             }
             // 修改 游戏代练小时
-            if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour']) {
+            if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && $requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']) {
                 // 更新值
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                     'field_value' =>$requestData['game_leveling_hour']
                 ]);
             }
             // 修改 游戏代练天
-            if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day']) {
+            if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
                 // 更新值
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
                     'field_value' => $requestData['game_leveling_day']
@@ -308,9 +310,13 @@ class IndexController extends Controller
             }
         }
         return response()->ajax(1, '修改成功');
-
     }
 
+    /**
+     * 订单操作 改变订单状态
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function changeStatus(Request $request)
     {
         $keyWord = $request->keyWord; // 关键字,关联对应的类

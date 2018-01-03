@@ -225,6 +225,26 @@
             </form>
         </div>
     </div>
+    <div class="send-message" style="display: none; padding: 10px 10px 0 10px">
+        <div class="layui-tab-content">
+            <form class="layui-form" method="POST" action="">
+                {!! csrf_field() !!}
+                <div >
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="margin:0">
+                            <textarea placeholder="请输入要发送的内容" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
+                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 <!--START 底部-->
@@ -303,7 +323,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="send-message" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
+                <option value="sendMessage" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
@@ -314,8 +334,8 @@
                 <option value="operation-record" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">操作记录</option>
                 @{{# }  }}
 
-                @{{# if (d.master) {  }}
-                <option value="wang-wang" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">联系旺旺号</option>
+                @{{# if (d.master && d.client_wang_wang) {  }}
+                <option value="wangWang" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-wang-wang="@{{ d.client_wang_wang }}">联系旺旺号</option>
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
@@ -460,7 +480,8 @@
                     where: {
                         status: status
                     },
-                    height: 'full-200',
+                    height: 630, //固定值
+//                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
                         layui.form.render();
@@ -469,9 +490,7 @@
             }
             // 对订单操作
             form.on('select(order-operation)', function (data) {
-                if (!data.value) {
-                    return false;
-                }
+
                 var orderNo = $(data.elem).find("option:selected").attr("data-no");
                 var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
                 var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
@@ -489,6 +508,25 @@
                 $('#order_amount').val(orderAmount);
                 $('#safe').val(orderSafe);
                 $('#effect').val(orderEffect);
+
+                if (!data.value) {
+                    return false;
+                }
+                if (data.value == 'wangWang') {
+                    var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
+                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
+                    return false;
+                }
+                if (data.value == 'sendMessage') {
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '发送短信',
+                        area: ['500px', '280px'],
+                        content: $('.send-message')
+                    });
+                    return false
+                }
                 if (data.value == 'revoke') {
                     layer.open({
                         type: 1,
