@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Exception;
 use App\Models\OrderHistory;
+use App\Services\Show91;
 
 class UnRevoke extends DailianAbstract implements DailianInterface
 {
@@ -13,6 +14,8 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
     protected $handledStatus; // 状态：操作之后的状态
     protected $type             = 19; // 操作：19取消撤销
+    protected $runAfter         = 0;
+    // protected $runAfter         = 1;
 
 	/**
      * [run 取消撤销 -> 撤销前的状态]
@@ -73,6 +76,33 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             $this->handledStatus = current($arr);
         } else {
             $this->handledStatus = $beforeStatus;
+        }
+    }
+
+     /**
+     * 调用外部提交协商发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $options = [
+                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                    ]; // 第三方订单号
+                    // 结果
+                    $result = Show91::cancelSc($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
         }
     }
 }

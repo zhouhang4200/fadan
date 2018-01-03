@@ -4,14 +4,17 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Exception;
+use App\Services\Show91;
 
 class Lock extends DailianAbstract implements DailianInterface
 {
      //锁定
     protected $acceptableStatus = [13, 14, 17]; // 状态：13,代练中，14待验收，17异常
-	protected $beforeHandleStatus; // 操作之前的状态:13,代练中
+    protected $beforeHandleStatus; // 操作之前的状态:13,代练中
     protected $handledStatus    = 18; // 状态：18锁定
     protected $type             = 16; // 操作：16锁定
+    protected $runAfter         = 0;
+    // protected $runAfter         = 1;
 
 	/**
      * [run 锁定 -> 锁定]
@@ -53,5 +56,30 @@ class Lock extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+     /**
+     * 调用外部锁定发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $options = ['oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value')]; // 第三方订单号
+                    // 结果
+                    $result = Show91::changeOrderBlock($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
+        }
     }
 }

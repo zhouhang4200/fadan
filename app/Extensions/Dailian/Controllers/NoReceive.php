@@ -4,13 +4,16 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Exception;
+use App\Services\Show91;
 
 class NoReceive extends DailianAbstract implements DailianInterface
 {
-    protected $acceptableStatus = [22]; // 已下架
+    protected $acceptableStatus   = [22]; // 已下架
     protected $beforeHandleStatus = 22; // 已下架
-    protected $handledStatus    = 1; // 未接单
-    protected $type             = 14; // 上架
+    protected $handledStatus      = 1; // 未接单
+    protected $type               = 14; // 上架
+    protected $runAfter           = 0;
+    // protected $runAfter           = 1;
 
     /**
      * [run 上架 ->未接单]
@@ -52,5 +55,30 @@ class NoReceive extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+    /**
+     * 调用外部上架接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $options = ['oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value')]; // 第三方订单号
+                    // 结果
+                    $result = Show91::grounding($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
+        }
     }
 }

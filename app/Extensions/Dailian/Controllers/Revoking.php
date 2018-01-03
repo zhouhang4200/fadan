@@ -4,14 +4,18 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Exception;
+use App\Services\Show91;
+use App\Models\LevelingConsult;
 
 class Revoking extends DailianAbstract implements DailianInterface
 {
      //撤销中
     protected $acceptableStatus = [13, 14, 17, 18]; // 状态：18锁定
-	protected $beforeHandleStatus; // 操作之前的状态:
+    protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 15; // 状态：15撤销中
     protected $type             = 18; // 操作：18撤销
+    protected $runAfter         = 0;
+    // protected $runAfter         = 1;
 
 	/**
      * [run 撤销 -> 撤销中]
@@ -53,5 +57,37 @@ class Revoking extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+     /**
+     * 调用外部提交协商发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                    $options = [
+                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                        'selfCancel.pay_price' => $consult->amount,
+                        'selfCancel.pay_bond' => $consult->deposit,
+                        'selfCancel.content' => $consult->revoke_message,
+                    ]; // 第三方订单号
+                    // 结果
+                    $result = Show91::addCancelOrder($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
+        }
     }
 }

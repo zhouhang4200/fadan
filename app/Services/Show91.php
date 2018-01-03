@@ -22,9 +22,9 @@ class Show91
     		'sign' => config('show91.sign'),
     	];
 
-    	$options = array_merge($options, $params);
+    	$options = array_merge($params, $options);
 
-    	$response = $client->request($method, $url, $options);
+    	$response = $client->request($method, $url, ['query' => $options]);
 
 		return $response->getBody();
     }
@@ -33,9 +33,9 @@ class Show91
      * 获得状态正常的游戏
      * @return [json]      [result:XX, content:XX]  or [result:XX, reason:XX]
      */
-    public static function getGames()
+    public static function getGames($options = [])
     {
-    	return static::getResult(config('show91.url.getGames'));
+    	return static::getResult(config('show91.url.getGames'), $options = []);
     }
 
     /**

@@ -53,6 +53,8 @@ class TestController extends Controller
 {
     public function index(UserRechargeOrderRepository $repository)
     {
+        return $this->testApiOrder();
+
         $order = Order::where('no', '2017122715401700000011')->first();
 
         dd($order->levelingConsult->first()->toArray());
@@ -236,5 +238,20 @@ Iuli3G2IJNYc9Cwu
         } else {
             return false;
         }
+    }
+
+    public function testApiOrder()
+    {
+        $datas = \App\Services\Show91::getGames();
+
+        $datas = json_decode($datas);
+
+        $arr = [];
+        foreach ($datas->games as $k => $data) {
+            $arr[$k]['id'] = $data->id;
+            $arr[$k]['game_name'] = $data->game_name;
+        }
+        dd($arr);
+        dd($datas->games);
     }
 }

@@ -8,6 +8,8 @@ use Exception;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
+use App\Services\Show91;
+use App\Models\LevelingConsult;
 
 class Revoked extends DailianAbstract implements DailianInterface
 {
@@ -16,6 +18,8 @@ class Revoked extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:15撤销中
     protected $handledStatus    = 19; // 状态：19 已撤销
     protected $type             = 24; // 操作：24同意撤销
+    protected $runAfter         = 0;
+    // protected $runAfter         = 1;
 
 	/**
      * [run 同意撤销 -> 已撤销]
@@ -315,6 +319,37 @@ class Revoked extends DailianAbstract implements DailianInterface
             DB::commit();
         } else {
             throw new Exception('参数传入错误或不满足条件');
+        }
+    }
+
+         /**
+     * 调用外部提交同意协商发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                    $options = [
+                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                        'v' => 1, // 1同意 2不同意
+                        'p' => '', //show91支付密码
+                    ]; // 第三方订单号
+                    // 结果
+                    $result = Show91::confirmSc($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
         }
     }
 }

@@ -5,13 +5,17 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Exception;
 use App\Models\OrderHistory;
+use App\Services\Show91;
+use App\Models\LevelingConsult;
 
 class CancelArbitration extends DailianAbstract implements DailianInterface
 {
-    protected $acceptableStatus = [16]; // 状态：16仲裁中
-	protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
+    protected $acceptableStatus   = [16]; // 状态：16仲裁中
+    protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
     protected $handledStatus;// 操作后的状态
-    protected $type             = 21; // 操作：21取消仲裁
+    protected $type               = 21; // 操作：21取消仲裁
+    protected $runAfter           = 0;
+    // protected $runAfter           = 1;
     
 	/**
      * [取消仲裁 -》 仲裁申请前状态]
@@ -53,5 +57,34 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+    /**
+     * 撤销申诉
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                    $options = [
+                        'aid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'), // 撤销id 可以用单号
+                    ]; // 第三方订单号
+                    // 结果
+                    $result = Show91::cancelAppeal($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
+        }
     }
 }

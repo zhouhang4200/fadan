@@ -6,13 +6,16 @@ use DB;
 use Asset;
 use Exception;
 use App\Extensions\Asset\Income;
+use App\Services\Show91;
 
 class Complete extends DailianAbstract implements DailianInterface
 {
-	protected $acceptableStatus = [14]; // 状态：14待验收
-	protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
-    protected $handledStatus    = 20; // 状态：20已结算
-    protected $type             = 12; // 操作：12完成
+    protected $acceptableStatus   = [14]; // 状态：14待验收
+    protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
+    protected $handledStatus      = 20; // 状态：20已结算
+    protected $type               = 12; // 操作：12完成
+    protected $runAfter           = 0;
+    // protected $runAfter           = 1;
     
 	/**
      * [run 完成 -> 已结算]
@@ -104,5 +107,34 @@ class Complete extends DailianAbstract implements DailianInterface
             DB::rollback();
         }
         DB::commit();
+    }
+
+    /**
+     * 订单验收结算
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+
+                    $options = [
+                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'), // 撤销id 可以用单号
+                        'p' => '',
+                    ]; // 第三方订单号
+                    // 结果
+                    $result = Show91::accept($options);
+                    $result = json_decode($result);
+
+                    if ($result->result && $result->reason) {
+                        $reason = $result->reason ?? '下单失败!';
+                        throw new Exception($reason);
+                    }
+                }
+            } catch (Exception $e) {
+
+            }
+        }
     }
 }
