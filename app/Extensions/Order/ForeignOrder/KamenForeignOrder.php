@@ -178,7 +178,7 @@ class KamenForeignOrder extends ForeignOrder
 			"GSitid" => $decodeArray['GSitid'] ?? '',
 			"BuyerIp" => $decodeArray['BuyerIp'] ?? '',
 			"OrderFrom" => $decodeArray['OrderFrom'] ?? '',
-			"role" => $decodeArray['RoleName'] ?? '',
+			"role" => !isset($decodeArray['JSitid']) ? $decodeArray['ChargeGame']  : $decodeArray['RoleName'] ?? '',
 			"RemainingNumber" => $decodeArray['RemainingNumber'] ?? '',
 			"ContactType" => $decodeArray['ContactType'] ?? '',
 			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',
