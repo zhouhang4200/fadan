@@ -12,8 +12,7 @@ class NoReceive extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus = 22; // 已下架
     protected $handledStatus      = 1; // 未接单
     protected $type               = 14; // 上架
-    protected $runAfter           = 0;
-    // protected $runAfter           = 1;
+    protected $runAfter           = 1;
 
     /**
      * [run 上架 ->未接单]
@@ -47,6 +46,8 @@ class NoReceive extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();

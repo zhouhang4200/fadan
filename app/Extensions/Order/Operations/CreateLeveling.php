@@ -202,8 +202,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 // 发布订单
                 $options = [
                     'orderType' => 0,
-                    // 'order.id' => $this->order->no,
-
                     'order.game_id' => ThirdGame::where('game_id', 1)->where('third_id', 1)->value('third_game_id') ?: '', // 王者荣耀
                     'order.game_area_id' => ThirdArea::where('game_id', $this->order->game_id)
                                             ->where('third_id', 1)
@@ -244,7 +242,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
                 $result = json_decode($result);
 
-                if (!$result->result && !$result->data) {
+                if (!$result->data) {
                     $reason = $result->reason ?? '下单失败!';
                     throw new Exception($reason);
                 }

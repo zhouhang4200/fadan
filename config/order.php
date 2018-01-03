@@ -110,8 +110,8 @@ return [
     // 代练
     'dailians' => [
         'complete' => Complete::class, // 完成 -> 已结算
-        'onSale' => NoReceive::class, // 上架 ->未接单
-        'offSale' => OffSaled::class, // 下架 -> 已下架
+        'onSale' => NoReceive::class, // 上架 ->未接单 *
+        'offSale' => OffSaled::class, // 下架 -> 已下架 *
         'lock' => Lock::class, // 锁定 -> 锁定
         'cancelLock' => UnLock::class, // 取消锁定 -> 锁定前状态
         'revoke' => Revoking::class, // 撤销 -> 撤销中

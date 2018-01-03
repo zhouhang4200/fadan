@@ -13,8 +13,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:1未接单
     protected $handledStatus    = 22; // 状态：22已下架
     protected $type             = 15; // 操作：15下架
-    protected $runAfter         = 0;
-    // protected $runAfter         = 1;
+    protected $runAfter         = 1;
 
 	/**
      * [run 下架 -> 已下架]
@@ -48,6 +47,8 @@ class OffSaled extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();

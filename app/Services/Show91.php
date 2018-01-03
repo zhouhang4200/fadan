@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+
 class Show91
 {
     /**
@@ -13,21 +15,32 @@ class Show91
      */
     public static function getResult($url, $options = [], $method = 'POST')
     {
-    	$params = [
-    		'account' => config('show91.account'),
-    		'sign' => config('show91.sign'),
-    	];
+        $params = [
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
+        ];
 
-    	$options = array_merge($params, $options);
+        $options = array_merge($params, $options);
 
-        $curl = curl_init();  //初始化
-        curl_setopt($curl, CURLOPT_URL, $url);  //设置url
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);  //设置post的数据
-        $result = curl_exec($curl);
-        curl_close($curl);
-        return $result;
+        if (in_array($url, ['http://www.show91.com/oauth/addOrder'])) {
+
+            $curl = curl_init();  //初始化
+            curl_setopt($curl, CURLOPT_URL, $url);  //设置url
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $options);  //设置post的数据
+            $result = curl_exec($curl);
+            curl_close($curl);
+            return $result;
+        } else {
+            $client = new Client;
+            $response = $client->request($method, $url, [
+                'query' => $options,
+                ]);
+            return $response->getBody();
+        }
+
+        
     }
 
     /**
