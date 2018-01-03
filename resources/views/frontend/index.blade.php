@@ -390,7 +390,6 @@
             layer.open({
                 type: 1
                 ,title: '提示' //不显示标题栏
-                ,closeBtn: false
                 ,area: '400px;'
                 ,shade: 0.2
                 ,btn: ['确定']

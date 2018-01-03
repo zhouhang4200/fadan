@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Frontend\Workbench;
 
+use App\Models\OrderDetail;
 use Order;
 use Carbon\Carbon;
 use App\Models\SiteInfo;

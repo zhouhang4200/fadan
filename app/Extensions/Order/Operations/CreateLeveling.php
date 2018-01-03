@@ -156,9 +156,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             Asset::handle(new Expend($this->order->amount, Expend::TRADE_SUBTYPE_ORDER_GAME_LEVELING, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
         }
         catch (CustomException $customException) {
-            $this->order->status = 11;
-            $this->order->save();
-            return false;
+            throw new CustomException('代练价格不能大于账户余额');
         }
 
         // 写多态关联
