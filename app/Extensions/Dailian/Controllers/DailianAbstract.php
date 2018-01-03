@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderHistory; 
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
+use Illuminate\Support\Facades\Auth;
 
 abstract class DailianAbstract
 {
@@ -46,6 +47,7 @@ abstract class DailianAbstract
     public function createLogObject()
     {
     	$this->orderHistory = new OrderHistory;
+        $this->orderHistory->creator_primary_user_id       = Auth::user()->getPrimaryUserId();
         $this->orderHistory->user_id       = $this->userId;
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;

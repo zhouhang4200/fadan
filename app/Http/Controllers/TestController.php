@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Services\KamenOrderApi;
 use App\Services\TmallOrderApi;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -51,10 +53,30 @@ use App\Events\NotificationEvent;
 
 class TestController extends Controller
 {
-    public function index(UserRechargeOrderRepository $repository)
+    public function index()
     {
-        return $this->testApiOrder();
 
+        $client = new Client();
+//        $result = $client->post('www.show91.com/oauth/addOrder', [
+//            'headers' => [
+//                'Content-type' => 'multipart/form-data',
+//            ],
+//            'form_params' => [
+//                'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
+//                'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
+//            ]
+//        ]);
+
+        $res = $client->post('www.show91.com/oauth/addOrder',[
+            'headers' => ['Content-Type' => 'multipart/form-data'],
+            'body' => [
+                    'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
+                    'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
+            ]
+        ]);
+        dd($res->getStatusCode());
+
+dd(1);
         $order = Order::where('no', '2017122715401700000011')->first();
 
         dd($order->levelingConsult->first()->toArray());
@@ -238,20 +260,5 @@ Iuli3G2IJNYc9Cwu
         } else {
             return false;
         }
-    }
-
-    public function testApiOrder()
-    {
-        $datas = \App\Services\Show91::getGames();
-
-        $datas = json_decode($datas);
-
-        $arr = [];
-        foreach ($datas->games as $k => $data) {
-            $arr[$k]['id'] = $data->id;
-            $arr[$k]['game_name'] = $data->game_name;
-        }
-        dd($arr);
-        dd($datas->games);
     }
 }

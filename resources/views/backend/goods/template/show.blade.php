@@ -220,6 +220,19 @@
             </div>
         @{{#  } }}
 
+        @{{# if(item.field_type == 5) {  }}
+
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">@{{ item.field_display_name }}</label>
+            <div class="layui-input-block" >
+                <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}">
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+            </div>
+        </div>
+
+        @{{# } }}
+
     @{{#  }); }}
 
     @{{#  if(d.length === 0){ }}
