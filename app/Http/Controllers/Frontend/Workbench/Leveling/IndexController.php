@@ -527,5 +527,14 @@ class IndexController extends Controller
         return view('frontend.workbench.leveling');
     }
 
+    /**
+     * 订单操作记录
+     * @param Request $request
+     */
+    public function operationRecord(Request $request)
+    {
+
+    }
+
 }
 

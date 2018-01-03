@@ -184,6 +184,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('complain', 'IndexController@complain')->name('frontend.workbench.leveling.complain');
             // 跳转到新页面导出 excel
             Route::get('excel', 'IndexController@excel')->name('frontend.workbench.leveling.excel');
+            // 订单操作记录
+            Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
         });
 
         // 首页

@@ -46,6 +46,20 @@
         #info .layui-form-item .layui-form-label{
            width: 160px;
         }
+        /*下拉菜单*/
+        .layui-table-fixed .layui-table-body {
+            overflow: visible;
+        }
+        /*.layui-table-box, .layui-table-view {*/
+            /*position: relative;*/
+            /*!*overflow-y: unset;*!*/
+            /*overflow-x:hidden*/
+        /*}*/
+
+        .layui-table-box, .layui-table-view {
+            position: relative;
+            overflow: unset;
+        }
     </style>
 @endsection
 
@@ -384,6 +398,13 @@
                 height: 40px !important;
                 line-height: 40px !important;
             }
+            .layui-table-fixed .layui-table-body {
+                overflow: visible;
+            }
+            .layui-table-box, .layui-table-view {
+                position: relative;
+                overflow: unset;
+            }
         </style>
     </script>
     <script>
@@ -435,8 +456,8 @@
                     ,last: false //不显示尾页
 
                 },
-                height: 630 //固定值
-//                height: 'full-200'
+//                height: 650 //固定值
+                height: 'full-200'
             });
 
             element.on('tab(order-list)', function () {
@@ -449,6 +470,7 @@
                     height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
+                        $('.layui-border-box').css('height', '700px');
                         layui.form.render();
                     }
                 });
@@ -479,14 +501,13 @@
             var userId = "{{ Auth::id() }}";
 
             function reload() {
-                //方法级渲染
                 //执行重载
                 table.reload('order', {
                     where: {
                         status: status
                     },
-                    height: 630, //固定值
-//                    height: 'full-200',
+//                    height: 650, //固定值
+                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
                         layui.form.render();
@@ -594,8 +615,9 @@
                             } else {
                                 layer.alert(result.message);
                             }
+                            reload();
                         });
-                        reload();
+
                         layer.close(index);
                     });
                 } else if(data.value == 'complete') {
