@@ -2,8 +2,11 @@
 namespace App\Repositories\Api\App;
 
 use App\Models\Order;
-use Auth;
 use App\Exceptions\CustomException;
+use Auth;
+use Order as OrderForm;
+use App\Extensions\Order\Operations\TurnBack;
+use App\Extensions\Order\Operations\DeliveryFailure;
 
 class OrderRepository
 {
@@ -88,6 +91,7 @@ class OrderRepository
             ->whereIn('service_id', [1, 3])
             ->whereIn('status', [3, 4, 5, 6, 7, 8])
             ->select('no', 'source', 'status', 'goods_name', 'service_name', 'game_name', 'quantity', 'amount', 'remark', 'created_at', 'updated_at')
+            ->with('orderCharge')
             ->first();
 
         if (empty($order)) {
@@ -104,6 +108,53 @@ class OrderRepository
 
         $data->details = collect($details);
 
+        // 挂上充值信息
+        if ($data->orderCharge) {
+            $data->orderCharge->orderChargeRecords;
+        }
+
         return $data;
+    }
+
+    // 返回集市
+    public static function turnBack($orderNo, $remark)
+    {
+        try {
+            self::checkAuth($orderNo);
+            OrderForm::handle(new TurnBack($orderNo, Auth::guard('api')->user()->id, $remark));
+        }
+        catch (CustomException $e) {
+            throw new CustomException($e->getMessage());
+        }
+
+        return true;
+    }
+
+    // 发货失败
+    public static function deliveryFailure($orderNo, $remark)
+    {
+        try {
+            self::checkAuth($orderNo);
+            OrderForm::handle(new DeliveryFailure($orderNo, Auth::guard('api')->user()->id, $remark));
+        }
+        catch (CustomException $e) {
+            throw new CustomException($e->getMessage());
+        }
+
+        return true;
+    }
+
+    // 订单权限验证
+    public static function checkAuth($orderNo)
+    {
+        $userId = Auth::guard('api')->user()->id;
+        $primaryUserId = Auth::guard('api')->user()->getPrimaryUserId();
+
+        $gainerPrimaryUserId = Order::where('no', $orderNo)->value('gainer_primary_user_id');
+        if ($gainerPrimaryUserId != $primaryUserId) {
+            throw new CustomException('订单不存在');
+        }
+
+        return true;
     }
 }

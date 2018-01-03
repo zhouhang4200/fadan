@@ -14,6 +14,7 @@ class CreateOrderChargesTable extends Migration
     public function up()
     {
         Schema::create('order_charges', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('order_no', 30)->comment('订单号，关联order.no');
             $table->integer('user_id')->comment('用户id');
             $table->string('qs_order_id', 30)->comment('千手订单号');
@@ -25,7 +26,7 @@ class CreateOrderChargesTable extends Migration
             $table->string('bundle_id', 200)->comment('游戏id。记录千手数据库的 games.bundle_id');
             $table->timestamps();
 
-            $table->primary('order_no');
+            $table->unique('order_no');
             $table->index('user_id');
         });
     }

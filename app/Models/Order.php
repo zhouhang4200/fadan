@@ -147,4 +147,10 @@ class Order extends Model
     {
         return $this->belongsTo(Goods::class);
     }
+
+    // 充值情况
+    public function orderCharge()
+    {
+        return $this->hasOne(OrderCharge::class, 'order_no', 'no');
+    }
 }

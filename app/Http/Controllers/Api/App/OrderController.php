@@ -6,9 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Exceptions\CustomException;
 use App\Repositories\Api\App\OrderRepository;
-use Auth;
-use Order;
-use App\Extensions\Order\Operations\TurnBack;
 
 class OrderController extends Controller
 {
@@ -64,13 +61,32 @@ class OrderController extends Controller
         $remark  = $request->params['remark'];
 
         try {
-            // 调用退回
-            Order::handle(new TurnBack($orderNo, Auth::guard('api')->user()->id, $remark));
+            OrderRepository::turnBack($orderNo, $remark);
         } catch (CustomException $e) {
             return response()->jsonReturn(0, $e->getMessage());
         }
 
         // 返回操作成功
-        return response()->jsonReturn(1, 'success');
+        return response()->jsonReturn(1);
+    }
+
+    /**
+     * 发货失败
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deliveryFailure(Request $request)
+    {
+        $orderNo = $request->params['order_no'];
+        $remark  = $request->params['remark'];
+
+        try {
+            OrderRepository::deliveryFailure($orderNo, $remark);
+        } catch (CustomException $e) {
+            return response()->jsonReturn(0, $e->getMessage());
+        }
+
+        // 返回操作成功
+        return response()->jsonReturn(1);
     }
 }
