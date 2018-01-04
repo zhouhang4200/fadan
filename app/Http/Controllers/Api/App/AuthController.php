@@ -34,7 +34,7 @@ class AuthController extends Controller
             return response()->jsonReturn(0, '登陆失败');
         }
 
-        return response()->jsonReturn(1, '登陆成功', ['api_token' => $user->api_token]);
+        return response()->jsonReturn(1, '登陆成功', ['api_token' => $user->api_token, 'user_id' => $user->id]);
     }
 
     public function logout()

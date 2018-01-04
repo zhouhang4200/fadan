@@ -16,6 +16,7 @@ class OrderChargeController extends Controller
      */
     public function notify(Request $request)
     {
+        $userId    = $request->params['user_id'];
         $orderNo   = $request->params['order_no'];
         $qsOrderId = $request->params['qs_order_id'];
         $stockId   = $request->params['stock_id'];
@@ -24,7 +25,7 @@ class OrderChargeController extends Controller
         $bundleId  = $request->params['bundle_id'];
 
         try {
-            OrderChargeRepository::record($orderNo, $qsOrderId, $stockId, $gameGold, $productId, $bundleId);
+            OrderChargeRepository::record($orderNo, $qsOrderId, $stockId, $gameGold, $productId, $bundleId, $userId);
         }
         catch (CustomException $e) {
             return response()->jsonReturn(0, $e->getMessage());

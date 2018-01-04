@@ -6,6 +6,8 @@ use DB;
 use App\Models\Order;
 use App\Models\OrderCharge;
 use App\Models\OrderChargeRecord;
+use Order as OrderForm;
+use App\Extensions\Order\Operations\Delivery;
 
 class OrderChargeRepository
 {
@@ -13,7 +15,7 @@ class OrderChargeRepository
      * 订单详情
      * @param $orderNo
      */
-    public static function record($orderNo, $qsOrderId, $stockId, $gameGold, $productId, $bundleId)
+    public static function record($orderNo, $qsOrderId, $stockId, $gameGold, $productId, $bundleId, $userId)
     {
         $Order = Order::where('no', $orderNo)->first();
         if (empty($Order)) {
@@ -48,6 +50,14 @@ class OrderChargeRepository
         // 判断是否已充满
         if ($OrderCharge->charged_game_gold >= $OrderCharge->total_game_gold) {
             $OrderCharge->status = 2; // 充值完成
+
+            // 自动发货
+            try {
+                OrderForm::handle(new Delivery($orderNo, $userId));
+            }
+            catch (CustomException $e) {
+                myLog('app-charge-record-fail', ['过充', $orderNo, $qsOrderId, $stockId, $gameGold, $productId, $bundleId]);
+            }
         }
 
         if (!$OrderCharge->save()) {

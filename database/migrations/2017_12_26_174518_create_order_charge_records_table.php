@@ -18,7 +18,7 @@ class CreateOrderChargeRecordsTable extends Migration
             $table->unsignedInteger('user_id')->comment('用户id');
             $table->string('order_no', 30)->comment('订单号');
             $table->unsignedInteger('game_gold')->comment('充的游戏币数');
-            $table->tinyInteger('stock_id')->comment('库存id');
+            $table->integer('stock_id')->comment('库存id');
             $table->timestamps();
 
             $table->index('user_id');
