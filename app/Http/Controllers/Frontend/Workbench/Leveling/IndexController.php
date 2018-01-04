@@ -186,6 +186,12 @@ class IndexController extends Controller
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
+        $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+        $detail['consult'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+        $detail['complain'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+//        $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
+//        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
     }
 
@@ -264,6 +270,8 @@ class IndexController extends Controller
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                     'field_value' => $requestData['game_leveling_amount']
                 ]);
+            } else {
+                return response()->ajax(0, '代练价格只可增加');
             }
             // 修改密码
             if ($requestData['password'] != $orderDetail['password']) {
@@ -278,6 +286,8 @@ class IndexController extends Controller
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                     'field_value' =>$requestData['game_leveling_hour']
                 ]);
+            } else {
+                return response()->ajax(0, '代练时间只可增加');
             }
             // 修改 游戏代练天
             if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
@@ -285,6 +295,8 @@ class IndexController extends Controller
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
                     'field_value' => $requestData['game_leveling_day']
                 ]);
+            } else {
+                return response()->ajax(0, '代练时间只可增加');
             }
 
         }
@@ -301,6 +313,8 @@ class IndexController extends Controller
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                     'field_value' => $requestData['game_leveling_amount']
                 ]);
+            } else {
+                return response()->ajax(1, '代练价格只可增加');
             }
         }
         // 状态锁定 可改密码

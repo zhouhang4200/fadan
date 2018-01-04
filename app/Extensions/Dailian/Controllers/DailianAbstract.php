@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Models\User;
 use DB;
 use Asset;
 use Exception; 
@@ -46,9 +47,10 @@ abstract class DailianAbstract
     // 创建操作前的订单
     public function createLogObject()
     {
-    	$this->orderHistory = new OrderHistory;
-        $this->orderHistory->creator_primary_user_id       = Auth::user()->getPrimaryUserId();
+        $user = User::where('id', $this->userId)->first();
+        $this->orderHistory = new OrderHistory;
         $this->orderHistory->user_id       = $this->userId;
+        $this->orderHistory->creator_primary_user_id  = $user->getPrimaryUserId();
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;
         $this->orderHistory->name          = config('order.operation_type')[$this->type];

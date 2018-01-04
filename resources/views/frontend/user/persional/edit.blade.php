@@ -4,7 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <link href="/frontend/css/iconfont.css" rel="stylesheet">
     <style>
         .layui-table tr th , td {
             text-align: center;
@@ -93,19 +92,15 @@
                     </div>
                 </div>
 
-                <div class="layui-form-item postion">
-                    <label class="layui-form-label">店铺旺旺号:</label><i class="iconfont icon-wenhao" id="store"></i>
-                    <div class="tip none">
-
-                    </div>
-                    <a href="#" class="tooltip">
-                        <i class="iconfont icon-wenhao" id="recharge"></i>
-                        <span>该旺旺号用于“代练-待发单”的数据获取授权，“代练-待发单”中会自动获取所填旺旺号的店铺订单数据。</span>
-                    </a>
-
+                <div class="layui-form-item">
+                    <label class="layui-form-label">店铺旺旺号:</label>
 
                     <div class="layui-input-inline">
                         <input type="text" name="store_wang_wang" lay-verify="" value="{{ $user->store_wang_wang }}" autocomplete="off" placeholder="请输入店铺旺旺号" class="layui-input">
+                        <a href="#" class="tooltip">
+                            <i class="iconfont icon-wenhao" id=""></i>
+                            <span>该旺旺号用于“代练-待发单”的数据获取授权，“代练-待发单”中会自动获取所填旺旺号的店铺订单数据。</span>
+                        </a>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -152,21 +147,20 @@
         });
 
 
-        $('#recharge').mouseout(function(){
-            $('.tips').addClass('none');
-        });
-        
-        $('#recharge').mousemove(function(){
-            $('.tips').removeClass('none');
-        });
-        $('#store').mouseout(function(){
-            $('.tip').addClass('none');
-        });
-        
-        $('#store').mousemove(function(){
-            $('.tip').removeClass('none');
-        });
-        layer.tips('只想提示地精准些', '#hehe');
+//        $('#recharge').mouseout(function(){
+//            $('.tips').addClass('none');
+//        });
+//
+//        $('#recharge').mousemove(function(){
+//            $('.tips').removeClass('none');
+//        });
+//        $('#store').mouseout(function(){
+//            $('.tip').addClass('none');
+//        });
+//
+//        $('#store').mousemove(function(){
+//            $('.tip').removeClass('none');
+//        });
     });
 
 </script>

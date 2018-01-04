@@ -22,7 +22,6 @@
         .layui-form-mid {
             text-align: right;
         }
-
         .site-title {
             margin: 10px 0 20px;
         }

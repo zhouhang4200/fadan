@@ -2361,7 +2361,7 @@ a cite {
     right: -49px;
     top: 0;
     height: 100%;
-    width: 50px
+    /*width: 50px*/
 }
 
 .layui-table-tool {
