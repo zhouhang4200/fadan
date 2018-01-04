@@ -14,8 +14,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
     protected $handledStatus;// 操作后的状态
     protected $type               = 21; // 操作：21取消仲裁
-    protected $runAfter           = 0;
-    // protected $runAfter           = 1;
     
 	/**
      * [取消仲裁 -》 仲裁申请前状态]
@@ -27,7 +25,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 0)
     {	
     	DB::beginTransaction();
     	try {
@@ -77,13 +75,13 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                     $result = Show91::cancelAppeal($options);
                     $result = json_decode($result);
 
-                    if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
             } catch (Exception $e) {
-
+                throw new Exception($e->getMessage());
             }
         }
     }

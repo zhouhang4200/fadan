@@ -337,13 +337,13 @@ class Revoked extends DailianAbstract implements DailianInterface
                         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
                         'v' => 1, // 1同意 2不同意
                         'p' => '', //show91支付密码
-                    ]; // 第三方订单号
+                    ];
                     // 结果
                     $result = Show91::confirmSc($options);
                     $result = json_decode($result);
 
                     if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
