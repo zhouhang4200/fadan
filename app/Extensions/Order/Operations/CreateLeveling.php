@@ -182,11 +182,11 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
     /**
      * 下单调外部接口
-     * @return [type] [description]
+     * @throws CustomException
      */
     public function after()
     {
-        if ($this->runAfter) {
+        if ($this->runAfter && env('APP_ENV') != 'local') {
             DB::beginTransaction();
             try {
                 // 我们的服

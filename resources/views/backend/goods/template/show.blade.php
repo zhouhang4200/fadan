@@ -233,6 +233,19 @@
 
         @{{# } }}
 
+        @{{# if(item.field_type == 4) {  }}
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">@{{ item.field_display_name }}</label>
+            <div class="layui-input-block" >
+                    <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"></textarea>
+
+            </div>
+            <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+            <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+
+        </div>
+        @{{# } }}
+
     @{{#  }); }}
 
     @{{#  if(d.length === 0){ }}

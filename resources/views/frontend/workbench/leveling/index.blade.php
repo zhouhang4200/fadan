@@ -20,7 +20,7 @@
         th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
             line-height: 40px !important;
         }
-        .laytable-cell-1-13{
+        .laytable-cell-1-23{
             height: 40px !important;
             line-height: 40px !important;
         }
@@ -50,15 +50,13 @@
         .layui-table-fixed .layui-table-body {
             overflow: visible;
         }
-        /*.layui-table-box, .layui-table-view {*/
-            /*position: relative;*/
-            /*!*overflow-y: unset;*!*/
-            /*overflow-x:hidden*/
-        /*}*/
 
         .layui-table-box, .layui-table-view {
             position: relative;
             overflow: unset;
+        }
+        tr > .laytable-cell-2-label {
+            padding: 0 !important;
         }
     </style>
 @endsection
@@ -389,12 +387,29 @@
         @{{ d.account }} <br/>
         @{{ d.password }}
     </script>
+    <script type="text/html" id="labelTemplate">
+        @{{# if (d.label == '红色') { }}
+            <div style="height:100%;width:100%;background-color: #ff6159"></div>
+        @{{# } else if(d.label == '橙色') { }}
+            <div style="height:100%;width:100%;background-color: #f9a749"></div>
+        @{{# } else if(d.label == '黄色') { }}
+            <div style="height:100%;width:100%;background-color: #f4cf54"></div>
+        @{{# } else if(d.label == '绿色') { }}
+            <div style="height:100%;width:100%;background-color: #69cd5d"></div>
+        @{{# } else if(d.label == '蓝色') { }}
+            <div style="height:100%;width:100%;background-color: #48b7f2"></div>
+        @{{# } else if(d.label == '紫色') { }}
+            <div style="height:100%;width:100%;background-color: #d285df"></div>
+        @{{# } else if(d.label == '灰色') { }}
+            <div style="height:100%;width:100%;background-color: #a5a5a7"></div>
+        @{{# } }}
+    </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
             .laytable-cell-@{{ d  }}-0, .laytable-cell-@{{ d  }}-5, .laytable-cell-@{{ d  }}-7 {
                 height: 40px !important;
             }
-            .laytable-cell-@{{ d  }}-13 {
+            .laytable-cell-@{{ d  }}-23 {
                 height: 40px !important;
                 line-height: 40px !important;
             }
@@ -404,6 +419,9 @@
             .layui-table-box, .layui-table-view {
                 position: relative;
                 overflow: unset;
+            }
+            .layui-table-mend {
+                width：0 !important;
             }
         </style>
     </script>
@@ -434,7 +452,7 @@
                 cols: [[
                     {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
-                    {field: 'lable', title: '标签', width: '150'},
+                    {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
@@ -444,7 +462,17 @@
                     {field: 'status_text', title: '订单状态', width: '120'},
                     {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
-                    {field: 'amount', title: '发单价', width: '100'},
+                    {field: 'amount', title: '代练价格', width: '80'},
+                    {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
+                    {field: 'security_deposit', title: '安全保证金', width: '80'},
+                    {field: 'security_deposit', title: '支付金额', width: '80'},
+                    {field: 'security_deposit', title: '获得金额', width: '80'},
+                    {field: 'poundage', title: '手续费', width: '80'},
+                    {field: 'poundage', title: '利润', width: '80'},
+                    {field: 'poundage', title: '代练时间', width: '80'},
+                    {field: 'poundage', title: '剩余时间', width: '80'},
+                    {field: 'created_at', title: '发单时间', width: '150'},
+                    {field: 'receiving_time', title: '接单时间', width: '150'},
                     {title: '操作', fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
@@ -454,10 +482,8 @@
                     ,groups: 1 //只显示 1 个连续页码
                     ,first: false //不显示首页
                     ,last: false //不显示尾页
-
                 },
-//                height: 650 //固定值
-                height: 'full-200'
+//                height: 'full-200'
             });
 
             element.on('tab(order-list)', function () {
@@ -467,10 +493,10 @@
                     where: {
                         status: status
                     },
-                    height: 'full-200',
+//                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
-                        $('.layui-border-box').css('height', '700px');
+//                        $('.layui-border-box').css('height', '700px');
                         layui.form.render();
                     }
                 });
