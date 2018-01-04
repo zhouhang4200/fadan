@@ -77,16 +77,15 @@ class Revoking extends DailianAbstract implements DailianInterface
                         'selfCancel.pay_bond' => $consult->deposit,
                         'selfCancel.content' => $consult->revoke_message,
                     ];
-
+                    // dd($options);
                     // 结果
                     $result = Show91::addCancelOrder($options);
                     $result = json_decode($result);
-                    // dd($result);
+                    dd($result);
                     if ($result->reason) {
                         $reason = $result->reason ?? '下单失败!';
                         throw new Exception($reason);
                     }
-                    // dd($result);
                 }
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());

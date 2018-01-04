@@ -123,10 +123,8 @@ return [
         'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
         'arbitration' => Arbitrationed::class, // 客服仲裁 -》 已仲裁
         'receive' => Playing::class, // 接单 -> 代练中
-
         'applyComplete' => ApplyComplete::class, // 申请验收 -》 待验收
         'cancelComplete' => CancelComplete::class, // 取消验收 -》代练中
-
         'abnormal' => Abnormal::class, // 异常 -》 异常
         'cancelAbnormal' => CancelAbnormal::class, // 取消异常-》代练中
     ],
