@@ -72,8 +72,8 @@ class NoReceive extends DailianAbstract implements DailianInterface
                     $result = Show91::grounding($options);
                     $result = json_decode($result);
 
-                    if ($result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }

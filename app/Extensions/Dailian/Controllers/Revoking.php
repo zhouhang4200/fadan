@@ -14,7 +14,6 @@ class Revoking extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 15; // 状态：15撤销中
     protected $type             = 18; // 操作：18撤销
-    protected $runAfter         = 1;
 
 	/**
      * [run 撤销 -> 撤销中]
@@ -26,13 +25,14 @@ class Revoking extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
         	// 获取锁定前的状态
@@ -68,8 +68,8 @@ class Revoking extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
                     $options = [
                         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
@@ -77,13 +77,13 @@ class Revoking extends DailianAbstract implements DailianInterface
                         'selfCancel.pay_bond' => $consult->deposit,
                         'selfCancel.content' => $consult->revoke_message,
                     ];
-                    // dd($options);
+
                     // 结果
                     $result = Show91::addCancelOrder($options);
                     $result = json_decode($result);
-                    dd($result);
-                    if ($result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }

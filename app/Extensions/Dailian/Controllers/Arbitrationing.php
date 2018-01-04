@@ -13,8 +13,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
     protected $handledStatus    = 16; // 操作之后状态：16仲裁中
     protected $type             = 20; // 操作：20申请仲裁
-    protected $runAfter         = 0;
-    // protected $runAfter         = 1;
     
 	/**
      * [仲裁中：写日志，写流水]
@@ -26,13 +24,14 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情
@@ -80,13 +79,13 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     $result = Show91::addappeal($options);
                     $result = json_decode($result);
 
-                    if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
             } catch (Exception $e) {
-
+                throw new Exception($e->getMessage());
             }
         }
     }

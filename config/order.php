@@ -121,7 +121,7 @@ return [
         'cancelArbitration' => CancelArbitration::class, // 取消仲裁 -》 仲裁申请前状态
         'delete' => Delete::class, // 删除 -》 删除
         'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
-        'arbitration' => Arbitrationed::class, // 客服仲裁 -》 已仲裁
+        'arbitration' => Arbitrationed::class, // 同意仲裁 -》 已仲裁
         'receive' => Playing::class, // 接单 -> 代练中
         'applyComplete' => ApplyComplete::class, // 申请验收 -》 待验收
         'cancelComplete' => CancelComplete::class, // 取消验收 -》代练中

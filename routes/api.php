@@ -19,8 +19,21 @@ Route::namespace('Api')->group(function () {
     Route::any('test', 'OrderController@test');
 
     // 回调接口
-    Route::post('receive', 'LevelingController@receive'); //接单
-    Route::post('agree/consult', 'LevelingController@receive'); // 同意协商
-    Route::post('agree/revoke', 'LevelingController@receive'); // 同意撤销
+    Route::post('receive/order', 'LevelingController@receiveOrder'); //接单
+    
+    Route::post('agree/consult', 'LevelingController@agreeConsult'); // 同意协商
+    Route::post('agree/appeal', 'LevelingController@agreeAppeal'); // 同意申诉
+    Route::post('consult', 'LevelingController@consult'); // 协商
+    Route::post('appeal', 'LevelingController@appeal'); // 申诉
+
+    Route::post('cancel/consult', 'LevelingController@cancelConsult'); // 取消协商
+    Route::post('cancel/appeal', 'LevelingController@cancelAppeal'); // 取消申诉
+    Route::post('force/consult', 'LevelingController@forceConsult'); // 强制同意协商
+
+    Route::post('unusual/order', 'LevelingController@unusualOrder'); // 异常
+    Route::post('cancel/unusual', 'LevelingController@cancelUnusual'); // 取消异常
+
+    Route::post('apply/complete', 'LevelingController@applyComplete'); //申请验收
+    Route::post('cancel/complete', 'LevelingController@cancelComplete'); //取消验收
 });
 

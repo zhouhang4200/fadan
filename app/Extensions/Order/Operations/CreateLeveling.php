@@ -243,7 +243,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
                 $result = Show91::addOrder($options);
                 $result = json_decode($result, true);
-
+                
                 if (array_key_exists('reason', $result)) {
                     throw new CustomException($result['reason']);
                 } else {
