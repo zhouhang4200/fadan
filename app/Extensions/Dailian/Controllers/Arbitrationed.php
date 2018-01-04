@@ -27,7 +27,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	 * @param  [type] $writeAmount [协商代练费]
 	 * @return [type]              [true or exception]
 	 */
-    public function run($orderNo, $userId, $runAfter)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
@@ -49,6 +49,8 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+		    $this->after();
     	} catch (Exception $e) {
     		DB::rollBack();
     		throw new Exception($e->getMessage());
@@ -311,5 +313,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	    } else {
 	    	throw new Exception('参数传入错误或不满足条件');
 	    }
+	}
+
+	public function after()
+	{
+		if ($this->runAfter) {
+			LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
+		}
 	}
 }

@@ -73,7 +73,7 @@ class Revoked extends DailianAbstract implements DailianInterface
     public function updateAsset()
     {
         // 从leveling_consult 中取各种值
-        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
         $amount = $consult->amount;
 
         if (!$amount || !$consult) {
@@ -321,34 +321,10 @@ class Revoked extends DailianAbstract implements DailianInterface
         }
     }
 
-    /**
-     * 调用外部提交同意协商发接口
-     * @return [type] [description]
-     */
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                    $options = [
-                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-                        'v' => 1, // 1同意 2不同意
-                        'p' => '123456', //show91支付密码
-                    ];
-                    // 结果
-                    $result = Show91::confirmSc($options);
-                    $result = json_decode($result);
-
-                    if ($result && $result->reason) {
-                        $reason = $result->reason;
-                        throw new Exception($reason);
-                    }
-                }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
-            }
+            LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
         }
     }
 }

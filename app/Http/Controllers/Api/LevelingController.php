@@ -53,7 +53,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -120,7 +120,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -195,7 +195,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -291,7 +291,7 @@ class LevelingController
     		DB::rollBack();
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -349,7 +349,7 @@ class LevelingController
     		DB::rollBack();
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -387,7 +387,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -424,7 +424,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -462,7 +462,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -499,7 +499,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -537,7 +537,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -574,7 +574,7 @@ class LevelingController
     	} catch (Exception $e) {
     		return json_encode([
     			'code' => 0,
-    			'data' => $e->getMessage();
+    			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -611,7 +611,7 @@ class LevelingController
         } catch (Exception $e) {
             return json_encode([
                 'code' => 0,
-                'data' => $e->getMessage();
+                'data' => $e->getMessage(),
             ]);
             throw new Exception($e->getMessage());
         }
