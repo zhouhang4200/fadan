@@ -18,8 +18,6 @@ class Revoked extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:15撤销中
     protected $handledStatus    = 19; // 状态：19 已撤销
     protected $type             = 24; // 操作：24同意撤销
-    protected $runAfter         = 0;
-    // protected $runAfter         = 1;
 
 	/**
      * [run 同意撤销 -> 已撤销]
@@ -31,13 +29,14 @@ class Revoked extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
         	// 获取锁定前的状态
             // 获取订单对象
             $this->getObject();
@@ -322,7 +321,7 @@ class Revoked extends DailianAbstract implements DailianInterface
         }
     }
 
-         /**
+    /**
      * 调用外部提交同意协商发接口
      * @return [type] [description]
      */
@@ -336,19 +335,19 @@ class Revoked extends DailianAbstract implements DailianInterface
                     $options = [
                         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
                         'v' => 1, // 1同意 2不同意
-                        'p' => '', //show91支付密码
+                        'p' => '123456', //show91支付密码
                     ];
                     // 结果
                     $result = Show91::confirmSc($options);
                     $result = json_decode($result);
 
-                    if ($result->result && $result->reason) {
+                    if ($result && $result->reason) {
                         $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
             } catch (Exception $e) {
-
+                throw new Exception($e->getMessage());
             }
         }
     }

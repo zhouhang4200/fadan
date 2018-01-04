@@ -16,7 +16,6 @@ class Playing extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 27; // 操作：接单
-    protected $runAfter         = 1;
 
 	/**
      * 
@@ -133,31 +132,6 @@ class Playing extends DailianAbstract implements DailianInterface
 
         if ($leftAmount <= 0 || $leftAmount < $doublePayment) {
             throw new Exception('余额不足');
-        }
-    }
-
-     /**
-     * 调用外部接单接口
-     * @return [type] [description]
-     */
-    public function after()
-    {
-        if ($this->runAfter) {
-            try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $options = ['oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value')]; // 第三方订单号
-                    // 结果
-                    $result = Show91::grounding($options);
-                    $result = json_decode($result);
-
-                    if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
-                        throw new Exception($reason);
-                    }
-                }
-            } catch (Exception $e) {
-
-            }
         }
     }
 }

@@ -27,13 +27,14 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	 * @param  [type] $writeAmount [协商代练费]
 	 * @return [type]              [true or exception]
 	 */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+        	$this->runAfter = $runAfter;
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情

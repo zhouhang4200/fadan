@@ -25,13 +25,14 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 0)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
     		// 获取订单对象
 		    $this->getObject();

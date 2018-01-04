@@ -5,19 +5,35 @@ namespace App\Http\Controllers\Api;
 use Exception, DB;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Illuminate\Http\Request;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
 class LevelingController
 {	
+    protected $sign = 'a46ae5de453bfaadc8548a3e48c151db';
+
+    public function checkSign($sign)
+    {
+        if ($sign != $this->sign) {
+            return json_encode([
+                'code' => 0,
+                'data' => '验证失败',
+            ]);
+        }
+    }
+
 	/**
-	 * 
+	 *     接单
 	 * @param  [type] $orderNo [description]
 	 * @param  [type] $status  [description]
 	 * @return [type]          [description]
 	 */
-    public function receiveOrder($orderNo)
+    public function receiveOrder(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -27,7 +43,7 @@ class LevelingController
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('receive')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('receive')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -51,9 +67,14 @@ class LevelingController
      * @param  [type] $apiService [回传手续费]
      * @return [type]             [description]
      */
-    public function agreeConsult($orderNo, $apiDeposit, $apiService)
+    public function agreeConsult(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+            $apiDeposit = $request->apiDeposit;
+            $apiService = $request->apiService;
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -89,7 +110,7 @@ class LevelingController
     			];
     			LevelingConsult::updateOrCreate($data);
 
-    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -114,9 +135,15 @@ class LevelingController
     * @param  [type] $apiService [回传手续费]
     * @return [type]             [description]
     */
-    public function agreeAppeal($orderNo, $apiAmount, $apiDeposit, $apiService)
+    public function agreeAppeal(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+            $apiAmount = $request->apiAmount;
+            $apiDeposit = $request->apiDeposit;
+            $apiService = $request->apiService;
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -158,7 +185,7 @@ class LevelingController
     			];
     			LevelingConsult::updateOrCreate($data);
 
-    			DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -180,10 +207,17 @@ class LevelingController
      * @param  [type] $status  [description]
      * @return [type]          [description]
      */
-    public function consult($orderNo, $apiAmount, $apiDeposit, $content)
+    public function consult(Request $request)
     {
     	DB::beginTransaction();
     	try {
+            $orderNo = $request->orderNo;
+            $apiAmount = $request->apiAmount;
+            $apiDeposit = $request->apiDeposit;
+            $content = $request->content;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -246,7 +280,7 @@ class LevelingController
 
     			LevelingConsult::updateOrCreate($data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -270,10 +304,15 @@ class LevelingController
      * @param  [type] $status  [description]
      * @return [type]          [description]
      */
-    public function appeal($orderNo, $content)
+    public function appeal(Request $request)
     {
     	DB::beginTransaction();
     	try {
+            $orderNo = $request->orderNo;
+            $content = $request->content;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -299,7 +338,7 @@ class LevelingController
 
     			LevelingConsult::updateOrCreate($data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -322,9 +361,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function cancelConsult($orderNo)
+    public function cancelConsult(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -334,7 +377,7 @@ class LevelingController
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id);
+    			DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -355,9 +398,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function cancelAppeal($orderNo)
+    public function cancelAppeal(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -389,9 +436,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function forceConsult($orderNo)
+    public function forceConsult(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -422,9 +473,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function unusualOrder($orderNo)
+    public function unusualOrder(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -456,9 +511,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function cancelUnusual($orderNo)
+    public function cancelUnusual(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -489,9 +548,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function applyComplete($orderNo)
+    public function applyComplete(Request $request)
     {
     	try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
     		if (!$orderNo) {
     			return json_encode([
     				'code' => 0,
@@ -522,9 +585,13 @@ class LevelingController
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function cancelComplete($orderNo)
+    public function cancelComplete(Request $request)
     {
         try {
+            $orderNo = $request->orderNo;
+
+            $this->checkSign($request->sign);
+
             if (!$orderNo) {
                 return json_encode([
                     'code' => 0,

@@ -24,7 +24,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 0)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
@@ -94,13 +94,13 @@ class UnRevoke extends DailianAbstract implements DailianInterface
                     $result = Show91::cancelSc($options);
                     $result = json_decode($result);
 
-                    if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
             } catch (Exception $e) {
-
+                throw new Exception($e->getMessage());
             }
         }
     }

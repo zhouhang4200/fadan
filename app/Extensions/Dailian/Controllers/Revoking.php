@@ -25,13 +25,14 @@ class Revoking extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
         	// 获取锁定前的状态
@@ -65,10 +66,9 @@ class Revoking extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-        if ($consult->consult == 1) {
+        if ($this->runAfter) {
             try {
+                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
 
                     $options = [
