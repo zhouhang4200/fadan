@@ -70,7 +70,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	public function updateAsset()
 	{
 		// 从leveling_consult 中取各种值
-        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
         if (!$consult) {
         	throw new Exception('状态错误');

@@ -11,7 +11,7 @@ use App\Extensions\Asset\Expend;
 
 class Playing extends DailianAbstract implements DailianInterface
 {
-     //强制撤销 -》 撤销
+     //接单
     protected $acceptableStatus = [1]; // 状态：未接单
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中

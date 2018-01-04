@@ -9,7 +9,6 @@ use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use App\Models\LevelingConsult;
 
 class Revoked extends DailianAbstract implements DailianInterface
 {
@@ -92,6 +91,7 @@ class Revoked extends DailianAbstract implements DailianInterface
         $orderDeposit = bcadd($security, $efficiency);
         // 回传双金 + 回传手续费
         $apiAll = bcadd($apiDeposit, $apiService);
+
         // 回传双金 + 手续费 == 写入的双金
         $isZero = bcsub($apiAll, $writeDeposit);
 

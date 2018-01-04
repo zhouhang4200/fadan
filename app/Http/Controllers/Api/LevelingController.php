@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Models\LevelingConsult;
 
 class LevelingController
 {	
@@ -43,7 +44,7 @@ class LevelingController
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('receive')->run($order->no, $order->gainer_primary_user_id, 0);
+    			DailianFactory::choose('receive')->run($order->no, 1, 0);
 
     			return json_encode([
     				'code' => 1,
@@ -69,6 +70,7 @@ class LevelingController
      */
     public function agreeConsult(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiDeposit = $request->apiDeposit;
@@ -101,29 +103,27 @@ class LevelingController
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'api_deposit' => $api_deposit,
-    					'api_service' => $apiService,
-    					'complete' => 1,
-     				]
+					'api_deposit' => $apiDeposit,
+					'api_service' => $apiService,
+					'complete' => 1,
     			];
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已同意撤销',
-    			]);
+    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);  			
     		}
     	} catch (Exception $e) {
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
+            DB::rollBack();
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'code' => 0,
+                'data' => $e->getMessage(),
+            ]);
     	}
+        DB::commit();
+        return json_encode([
+            'code' => 1,
+            'data' => '已同意撤销',
+        ]);
     }
 
    /**
@@ -137,6 +137,7 @@ class LevelingController
     */
     public function agreeAppeal(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiAmount = $request->apiAmount;
@@ -159,7 +160,7 @@ class LevelingController
     				'code' => 0,
     				'data' => '回传双金之和缺失',
     			]);
-    		} elseif (!apiService) {
+    		} elseif (!$apiService) {
     			return json_encode([
     				'code' => 0,
     				'data' => '回传手续费缺失',
@@ -175,30 +176,28 @@ class LevelingController
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'api_amount' => $apiAmount,
-    					'api_deposit' => $api_deposit,
-    					'api_service' => $apiService,
-    					'complete' => 1,
-     				]
+					'api_amount' => $apiAmount,
+					'api_deposit' => $apiDeposit,
+					'api_service' => $apiService,
+					'complete' => 1,
     			];
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已同意申诉',
-    			]);
+                DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
     		}
     	} catch (Exception $e) {
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
+            DB::rollBack();
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'code' => 0,
+                'data' => $e->getMessage(),
+            ]);
     	}
+        DB::commit();
+        return json_encode([
+            'code' => 1,
+            'data' => '已同意申诉',
+        ]);
     }
 
     /**
@@ -209,7 +208,7 @@ class LevelingController
      */
     public function consult(Request $request)
     {
-    	DB::beginTransaction();
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiAmount = $request->apiAmount;
@@ -243,8 +242,9 @@ class LevelingController
 	    			]);
     			}
 
-    			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
-    			$order = Order::where('no', $no)->first();
+    			$orderDetail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->first(); 
+
+    			$order = Order::where('no', $orderDetail->order_no)->first();
 
     			$safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
 	            $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
@@ -267,35 +267,32 @@ class LevelingController
 	            }
 
     			$data = [
+					'user_id' => $order->gainer_primary_user_id,
     				'order_no' => $order->no,
-    				[
-    					'user_id' => $order->gainer_primary_user_id,
-	    				'order_no' => $order->no,
-	    				'amount' => $apiAmount,
-	    				'deposit' => $apiDeposit,
-	    				'consult' => 2,
-	    				'revoke_message' => $content,
-    				]
+    				'amount' => $apiAmount,
+    				'deposit' => $apiDeposit,
+    				'consult' => 2,
+    				'revoke_message' => $content,
     			];
 
-    			LevelingConsult::updateOrCreate($data);
+                LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已申请协商',
-    			]);
+    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);	
     		}
     	} catch (Exception $e) {
-    		DB::rollBack();
+            DB::rollBack();
+            throw new Exception($e->getMessage());
     		return json_encode([
     			'code' => 0,
     			'data' => $e->getMessage(),
     		]);
-    		throw new Exception($e->getMessage());
     	}
-    	DB::commit();
+        DB::commit();
+
+        return json_encode([
+            'code' => 1,
+            'data' => '已申请协商',
+        ]);
     }
 
     /**
@@ -328,32 +325,28 @@ class LevelingController
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'user_id' => $order->gainer_primary_user_id,
-	    				'complain' => 2,
-	    				'complain_message' => $content,
-    				]
+					'user_id' => $order->gainer_primary_user_id,
+    				'complain' => 2,
+    				'complain_message' => $content,
     			];
 
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已申请申诉',
-    			]);
+    			DailianFactory::choose('applyArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
     		}
     	} catch (Exception $e) {
     		DB::rollBack();
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'code' => 0,
+                'data' => $e->getMessage(),
+            ]);
     	}
     	DB::commit();
+        return json_encode([
+            'code' => 1,
+            'data' => '已申请申诉',
+        ]);
     }
 
     /**
@@ -363,6 +356,7 @@ class LevelingController
      */
     public function cancelConsult(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
 
@@ -377,20 +371,24 @@ class LevelingController
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已取消协商',
-    			]);
+                // 会变成锁定
+                DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+                // 91的要解除锁定
+    			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id);
     		}
     	} catch (Exception $e) {
+            DB::rollBack();
     		return json_encode([
     			'code' => 0,
     			'data' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
+        DB::commit();
+        return json_encode([
+            'code' => 1,
+            'data' => '已取消协商',
+        ]);
     }
 
      /**
@@ -414,7 +412,9 @@ class LevelingController
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('cancelArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+                DailianFactory::choose('cancelArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+                DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+    			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
     				'code' => 1,
