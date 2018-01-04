@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
+use App\Repositories\Frontend\OrderHistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -193,6 +194,14 @@ class IndexController extends Controller
 //        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
 
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
+    }
+
+    // 操作记录
+    public function history(Request $request)
+    {
+        $dataList = OrderHistoryRepository::dataList($request->order_no);
+        $html = view('frontend.workbench.leveling.history', compact('dataList'))->render();
+        return response()->ajax(1, 'success', $html);
     }
 
     /**

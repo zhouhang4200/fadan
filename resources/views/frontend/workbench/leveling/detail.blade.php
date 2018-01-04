@@ -49,9 +49,9 @@
 
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-            <li class="layui-this">详情</li>
-            <li>留言/截图</li>
-            <li>操作记录</li>
+            <li class="layui-this" lay-id="detail">详情</li>
+            <li lay-id="leave-word">留言/截图</li>
+            <li lay-id="history">操作记录</li>
         </ul>
         <div class="layui-tab-content">
             <div class="" style="float: right">
@@ -342,10 +342,11 @@
                 </div>
             </div>
             <div class="layui-tab-item">2</div>
-            <div class="layui-tab-item">3</div>
+            <div class="layui-tab-item">
+                <div class="layui-row  layui-col-space20" id="history"></div>
+            </div>
         </div>
     </div>
-
 
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
@@ -469,7 +470,7 @@
             var orderAmount = this.getAttribute("data-amount");
             var orderSafe = this.getAttribute("data-safe");
             var orderEffect = this.getAttribute("data-effect");
-     
+
             if (!orderAmount) {
                 orderAmount = 0;
             }
@@ -517,7 +518,7 @@
                         } else {
                             layer.alert(result.message);
                         }
-                        
+
                     });
                     layer.closeAll();
                     return false;
@@ -592,10 +593,10 @@
                             layer.closeAll();
                         });
                     }
-                    
+
                 });
             }
-            
+
         });
 
         // 修改
@@ -620,6 +621,21 @@
                 }
             }, 'json');
             return false;
+        });
+
+        // 监听Tab切换
+        // element.on('tab(history)', function(){
+        //     // location.hash = 'history='+ this.getAttribute('lay-id');
+        //     alert(1234);
+        // });
+
+        // 操作记录标签事件
+        $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('#history').html(data.content);
+            } else {
+                layer.alert(data.message);
+            }
         });
     });
 </script>
