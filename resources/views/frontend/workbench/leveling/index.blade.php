@@ -55,7 +55,9 @@
             position: relative;
             overflow: unset;
         }
-
+        tr > .laytable-cell-2-label {
+            padding: 0 !important;
+        }
     </style>
 @endsection
 
@@ -386,12 +388,21 @@
         @{{ d.password }}
     </script>
     <script type="text/html" id="labelTemplate">
-        @{{ d.account }} <br/>
-        @{{# if (d.label == '1') { }}
-
-        @{{ } else { }}
-
-        @{{ } }}
+        @{{# if (d.label == '红色') { }}
+            <div style="height:100%;width:100%;background-color: #ff6159"></div>
+        @{{# } else if(d.label == '橙色') { }}
+            <div style="height:100%;width:100%;background-color: #f9a749"></div>
+        @{{# } else if(d.label == '黄色') { }}
+            <div style="height:100%;width:100%;background-color: #f4cf54"></div>
+        @{{# } else if(d.label == '绿色') { }}
+            <div style="height:100%;width:100%;background-color: #69cd5d"></div>
+        @{{# } else if(d.label == '蓝色') { }}
+            <div style="height:100%;width:100%;background-color: #48b7f2"></div>
+        @{{# } else if(d.label == '紫色') { }}
+            <div style="height:100%;width:100%;background-color: #d285df"></div>
+        @{{# } else if(d.label == '灰色') { }}
+            <div style="height:100%;width:100%;background-color: #a5a5a7"></div>
+        @{{# } }}
     </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
@@ -441,7 +452,7 @@
                 cols: [[
                     {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
-                    {field: 'label', title: '标签', width: '150',templet: '#label'},
+                    {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
