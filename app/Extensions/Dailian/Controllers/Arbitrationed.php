@@ -53,7 +53,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->after();
     	} catch (Exception $e) {
     		DB::rollBack();
-    		throw new Exception($e->getMessage());
+    		echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回

@@ -54,7 +54,12 @@ class Complete extends DailianAbstract implements DailianInterface
 
     	} catch (Exception $e) {
     		DB::rollBack();
-    		throw new Exception($e->getMessage());
+    		echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -105,6 +110,7 @@ class Complete extends DailianAbstract implements DailianInterface
 
         } catch (Exception $e) {
             DB::rollback();
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
         DB::commit();
     }
@@ -133,7 +139,7 @@ class Complete extends DailianAbstract implements DailianInterface
                     }
                 }
             } catch (Exception $e) {
-
+                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
             }
         }
     }

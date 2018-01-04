@@ -54,7 +54,12 @@ class Revoked extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
     	} catch (Exception $e) {
     		DB::rollBack();
-    		throw new Exception($e->getMessage());
+    		echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -318,6 +323,7 @@ class Revoked extends DailianAbstract implements DailianInterface
             DB::commit();
         } else {
             throw new Exception('参数传入错误或不满足条件');
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
 

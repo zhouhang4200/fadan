@@ -359,7 +359,7 @@ class IndexController extends Controller
                 return response()->json(['status' => 1, 'message' => '操作成功!']);
             }
         } catch (Exception $e) {
-            return response()->json(['status' => 0, 'message' => '操作失败!']);
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
 
