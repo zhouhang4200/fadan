@@ -20,7 +20,7 @@
         th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
             line-height: 40px !important;
         }
-        .laytable-cell-1-15{
+        .laytable-cell-1-23{
             height: 40px !important;
             line-height: 40px !important;
         }
@@ -385,6 +385,14 @@
         @{{ d.account }} <br/>
         @{{ d.password }}
     </script>
+    <script type="text/html" id="labelTemplate">
+        @{{ d.account }} <br/>
+        @{{# if (d.label == '1') { }}
+
+        @{{ } else { }}
+
+        @{{ } }}
+    </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
             .laytable-cell-@{{ d  }}-0, .laytable-cell-@{{ d  }}-5, .laytable-cell-@{{ d  }}-7 {
@@ -433,7 +441,7 @@
                 cols: [[
                     {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
-                    {field: 'lable', title: '标签', width: '150'},
+                    {field: 'label', title: '标签', width: '150',templet: '#label'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
@@ -463,7 +471,6 @@
                     ,groups: 1 //只显示 1 个连续页码
                     ,first: false //不显示首页
                     ,last: false //不显示尾页
-
                 },
 //                height: 'full-200'
             });
