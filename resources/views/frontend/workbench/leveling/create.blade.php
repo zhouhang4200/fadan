@@ -254,45 +254,6 @@ layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         return false;
     });
 
-    // 解析模板
-    $('#parse').click(function () {
-        var fieldArrs = $('[name="desc"]').val().split('\n');
-        for (var i = fieldArrs.length - 1; i >= 0; i--) {
-            var arr = fieldArrs[i].split('：');
-
-            // 跳过格式不对的行或空行
-            if (typeof arr[1] == "undefined") {
-                continue;
-            }
-
-            // 获取表单dom
-            var $formDom = $('#form-order').find('[display-name="' + arr[0] + '"]');
-
-            // 填充表单
-            switch ($formDom.prop('type')) {
-                case 'select-one':
-                    $formDom.find('option').each(function () {
-                        if ($(this).text() == arr[1]) {
-                            $formDom.val($(this).val());
-                            return false;
-                        }
-                    });
-                    break;
-                case 'checkbox':
-                    if (arr[1] == 1) {
-                        $formDom.prop('checked', true);
-                    } else {
-                        $formDom.prop('checked', false);
-                    }
-                    break;
-                default:
-                    $formDom.val(arr[1]);
-                    break;
-            }
-        }
-
-        form.render();
-    });
 });
 </script>
 @endsection
