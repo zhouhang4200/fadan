@@ -96,22 +96,6 @@
 
 <!--START 底部-->
 @section('js')
-    <script type="text/html" id="noTemplate">
-        千手：@{{ d.no }} @{{# if(d.urgent_order == 1) { }}<span style="color:red">急</span> @{{#  } }} <br/>
-        外部： @{{ d.foreign_order_no }}
-    </script>
-
-    <script type="text/html" id="changeStyleTemplate">
-        <style>
-            .laytable-cell-@{{ d  }}-0, .laytable-cell-@{{ d  }}-5, .laytable-cell-@{{ d  }}-7 {
-                height: 40px !important;
-            }
-            .laytable-cell-@{{ d  }}-13 {
-                height: 40px !important;
-                line-height: 40px !important;
-            }
-        </style>
-    </script>
     <script>
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
@@ -133,7 +117,7 @@
                 }, 'json');
             }
 
-            form.on('submit(search)', function () {
+            form.on('submit(search)', function (data) {
                getOrder(data.field.no, data.field.wang_wang, data.field.start_date, data.field.end_date);
             });
         });

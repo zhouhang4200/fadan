@@ -253,7 +253,13 @@ layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         }, 'json');
         return false;
     });
+        // 切换游戏时加截新的模版
+        // 下单
+        form.on('select(order)', function (data) {
 
-});
+        });
+
+
+    });
 </script>
 @endsection

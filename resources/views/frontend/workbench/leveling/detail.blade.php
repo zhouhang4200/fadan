@@ -453,6 +453,9 @@
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
 
+        $('.cancel').click(function(){
+            layer.closeAll();
+        });
 
         form.on('checkbox', function(data){
             if (data.elem.checked) {

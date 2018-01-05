@@ -150,12 +150,13 @@ class OrderRepository
      * @param $gameId
      * @param $wangWang
      * @param $urgentOrder
+     * @param $label
      * @param $pageSize
      * @param $startDate
      * @param $endDate
      * @return mixed
      */
-    public function levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $pageSize)
+    public function levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->type; // 账号类型是接单还是发单
@@ -193,6 +194,10 @@ class OrderRepository
             $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder);
             return $query->whereIn('no', $orderNo);
         });
+        $query->when(!empty($label), function ($query) use ($label) {
+            $orderNo = OrderDetail::findOrdersBy('label', $label);
+            return $query->whereIn('no', $orderNo);
+        });
         $query->when($startDate !=0, function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);
         });
@@ -216,7 +221,7 @@ class OrderRepository
             $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
         })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
             $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
-        })->with(['detail', 'foreignOrder'])->first();
+        })->with(['detail', 'foreignOrder', 'levelingConsult'])->first();
 
         return  array_merge($order->detail->pluck('field_value', 'field_name')->toArray(), $order->toArray());
     }
