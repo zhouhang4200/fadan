@@ -58,7 +58,7 @@
             <div class="site-title">
                 <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
             </div>
-            <form class="layui-form" action="">
+            <form class="layui-form" action="" id="form-order">
                 <div class="layui-row form-group">
                     <div class="layui-col-md6">
                         <div class="layui-col-md3 layui-form-mid">*游戏</div>
@@ -86,7 +86,7 @@
             </div>
             <div class="layui-row " style="margin-bottom: 15px">
                 <div class="layui-col-md4">
-                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template">解析模版</div>
+                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template" id="parse">解析模版</div>
                 </div>
                 <div class="layui-col-md4 layui-col-md-offset4">
                     <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="instructions">使用说明</div>
@@ -260,6 +260,50 @@
                 });
             }, 'json');
         }
+
+        // 解析模板
+        $('#parse').click(function () {
+            var fieldArrs = $('[name="desc"]').val().split('\n');
+            for (var i = fieldArrs.length - 1; i >= 0; i--) {
+                var arr = fieldArrs[i].split('：');
+
+                // 跳过格式不对的行或空行
+                if (typeof arr[1] == "undefined") {
+                    continue;
+                }
+
+                // 去两端空格
+                var name = $.trim(arr[0]);
+                var value = $.trim(arr[1]);
+
+                // 获取表单dom
+                var $formDom = $('#form-order').find('[display-name="' + name + '"]');
+
+                // 填充表单
+                switch ($formDom.prop('type')) {
+                    case 'select-one':
+                        $formDom.find('option').each(function () {
+                            if ($(this).text() == value) {
+                                $formDom.val($(this).val());
+                                return false;
+                            }
+                        });
+                        break;
+                    case 'checkbox':
+                        if (value == 1) {
+                            $formDom.prop('checked', true);
+                        } else {
+                            $formDom.prop('checked', false);
+                        }
+                        break;
+                    default:
+                        $formDom.val(value);
+                        break;
+                }
+            }
+
+            form.render();
+        });
     });
 </script>
 @endsection
