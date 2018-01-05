@@ -285,7 +285,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 14 || d.status == 15 || d.status == 16 || d.status == 17 || d.status == 18 || d.status == 19 || d.status == 20 || d.status == 21)) {  }}
-                <option value="13" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</option>
+                <option value="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.urgent_order != 1) {  }}
@@ -560,6 +560,20 @@
                 if (!data.value) {
                     return false;
                 }
+                // 留言
+                if (data.value == '') {
+
+                }
+                // 操作记录
+                if (data.value == '') {
+
+                }
+                // 重发
+                if (data.value == 'repeat') {
+                    var no = $(data.elem).find("option:selected").attr("data-no");
+                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + no);
+                }
+                // 联系旺旺
                 if (data.value == 'wangWang') {
                     var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
                     window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);

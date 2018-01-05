@@ -192,7 +192,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
             // 待接单列表
             Route::get('wait', 'IndexController@wait')->name('frontend.workbench.leveling.wait');
+            // 待接单数据
             Route::post('wait-list', 'IndexController@waitList')->name('frontend.workbench.leveling.wait-list');
+            // 重发
+            Route::get('repeat/{id?}', 'IndexController@repeat')->name('frontend.workbench.leveling.repeat');
+
         });
 
         // 首页
