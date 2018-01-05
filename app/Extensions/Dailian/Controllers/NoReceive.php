@@ -12,7 +12,6 @@ class NoReceive extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus = 22; // 已下架
     protected $handledStatus      = 1; // 未接单
     protected $type               = 14; // 上架
-    protected $runAfter           = 1;
 
     /**
      * [run 上架 ->未接单]
@@ -24,13 +23,14 @@ class NoReceive extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
         	$this->beforeHandleStatus = $this->getOrder()->status;
@@ -47,16 +47,12 @@ class NoReceive extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            $this->after();
+            // $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
-    		echo json_encode([
-                'status' => 0,
-                'message' => $e->getMessage(),
-            ]);
-            exit;
-            // throw new Exception($e->getMessage());
+
+            throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回

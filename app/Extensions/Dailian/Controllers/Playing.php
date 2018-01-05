@@ -8,6 +8,8 @@ use Exception;
 use App\Models\User;
 use App\Models\UserAsset;
 use App\Extensions\Asset\Expend;
+use App\Models\OrderDetail;
+use Carbon\Carbon;
 
 class Playing extends DailianAbstract implements DailianInterface
 {
@@ -27,13 +29,14 @@ class Playing extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
             
@@ -51,16 +54,12 @@ class Playing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            $this->after();
+            // $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
-    		echo json_encode([
-                'status' => 0,
-                'message' => $e->getMessage(),
-            ]);
-            exit;
-            // throw new Exception($e->getMessage());
+
+            throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -73,7 +72,6 @@ class Playing extends DailianAbstract implements DailianInterface
         $this->order->status = $this->handledStatus;
         $this->order->gainer_user_id = $this->userId;
         $this->order->gainer_primary_user_id = User::find($this->userId)->getPrimaryUserId();
-        $this->order->
 
         if (!$this->order->save()) {
             throw new Exception('订单操作失败');
@@ -139,6 +137,17 @@ class Playing extends DailianAbstract implements DailianInterface
 
         if ($leftAmount <= 0 || $leftAmount < $doublePayment) {
             throw new Exception('余额不足');
+        }
+    }
+
+    public function after()
+    {
+        if ($this->runAfter) {
+            $now = Carbon::now()->toDateTimeString();
+
+            OrderDetail::where('order_no', $this->order->no)
+                ->where('field_name', 'receiving_time')
+                ->update(['field_value' => $now]);
         }
     }
 }

@@ -14,8 +14,6 @@ class Complete extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
     protected $handledStatus      = 20; // 状态：20已结算
     protected $type               = 12; // 操作：12完成
-    protected $runAfter           = 0;
-    // protected $runAfter           = 1;
     
 	/**
      * [run 完成 -> 已结算]
@@ -27,13 +25,14 @@ class Complete extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
         try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
 
@@ -52,14 +51,12 @@ class Complete extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
+            // $this->after();
+
     	} catch (Exception $e) {
     		DB::rollBack();
-    		echo json_encode([
-                'status' => 0,
-                'message' => $e->getMessage(),
-            ]);
-            exit;
-            // throw new Exception($e->getMessage());
+
+            throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -127,14 +124,14 @@ class Complete extends DailianAbstract implements DailianInterface
 
                     $options = [
                         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'), // 撤销id 可以用单号
-                        'p' => '',
-                    ]; // 第三方订单号
+                        'p' => '123456',
+                    ];
                     // 结果
                     $result = Show91::accept($options);
                     $result = json_decode($result);
 
-                    if ($result->result && $result->reason) {
-                        $reason = $result->reason ?? '下单失败!';
+                    if ($result && $result->reason) {
+                        $reason = $result->reason;
                         throw new Exception($reason);
                     }
                 }
