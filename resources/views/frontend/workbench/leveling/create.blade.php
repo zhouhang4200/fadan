@@ -58,12 +58,12 @@
             <div class="site-title">
                 <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
             </div>
-            <form class="layui-form" action="">
+            <form class="layui-form" action="" id="form-order">
                 <div class="layui-row form-group">
                     <div class="layui-col-md6">
                         <div class="layui-col-md3 layui-form-mid">*游戏</div>
                         <div class="layui-col-md8">
-                            <select name="game_id" lay-verify="required" lay-search="">
+                            <select name="game_id" lay-verify="required" lay-search="" show-name="x" display-name="游戏" lay-filter="game">
                                 @foreach($game as $key => $value)
                                 <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
@@ -86,7 +86,7 @@
             </div>
             <div class="layui-row " style="margin-bottom: 15px">
                 <div class="layui-col-md4">
-                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template">解析模版</div>
+                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template" id="parse">解析模版</div>
                 </div>
                 <div class="layui-col-md4 layui-col-md-offset4">
                     <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="instructions">使用说明</div>
@@ -200,20 +200,6 @@
             }
         });
 
-        var getTpl = goodsTemplate.innerHTML, view = $('#template');
-        $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:1}, function (result) {
-            var template = '游戏：\r\n';
-            $.each(result.content.template, function(index,element){
-                template += element.field_display_name + '：\r\n'
-            });
-            $('#user-template').val(template);
-
-            layTpl(getTpl).render(result.content, function(html){
-                view.html(html);
-                layui.form.render();
-            });
-        }, 'json');
-
         form.on('submit(instructions)', function () {
             layer.open({
                 type: 1
@@ -227,7 +213,6 @@
                 ,content: '<div style="padding: 10px 15px; line-height: 22px;   font-weight: 300;">1.选择“游戏”后会自动显示对应模板。<br/>2.将模版复制，发给号主填写。<br/>3.粘贴号主填写好的模版，粘贴至模板输入框内。<br/>4.点击“解析模板”按钮将资料导入至左侧表格内，点击“发布”按钮，即可创建订单。</div>'
             });
         });
-
         // 下单
         form.on('submit(order)', function (data) {
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
@@ -254,12 +239,71 @@
             return false;
         });
         // 切换游戏时加截新的模版
-        // 下单
-        form.on('select(order)', function (data) {
-
+        form.on('select(game)', function (data) {
+            loadTemplate(data.value)
         });
+        // 加载默认模板
+        loadTemplate(1);
+        // 加载模板
+        function loadTemplate(id) {
+            var getTpl = goodsTemplate.innerHTML, view = $('#template');
+            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id}, function (result) {
+                var template = '游戏：\r\n';
+                $.each(result.content.template, function(index,element){
+                    template += element.field_display_name + '：\r\n'
+                });
+                $('#user-template').val(template);
 
+                layTpl(getTpl).render(result.content, function(html){
+                    view.html(html);
+                    layui.form.render();
+                });
+            }, 'json');
+        }
 
+        // 解析模板
+        $('#parse').click(function () {
+            var fieldArrs = $('[name="desc"]').val().split('\n');
+            for (var i = fieldArrs.length - 1; i >= 0; i--) {
+                var arr = fieldArrs[i].split('：');
+
+                // 跳过格式不对的行或空行
+                if (typeof arr[1] == "undefined") {
+                    continue;
+                }
+
+                // 去两端空格
+                var name = $.trim(arr[0]);
+                var value = $.trim(arr[1]);
+
+                // 获取表单dom
+                var $formDom = $('#form-order').find('[display-name="' + name + '"]');
+
+                // 填充表单
+                switch ($formDom.prop('type')) {
+                    case 'select-one':
+                        $formDom.find('option').each(function () {
+                            if ($(this).text() == value) {
+                                $formDom.val($(this).val());
+                                return false;
+                            }
+                        });
+                        break;
+                    case 'checkbox':
+                        if (value == 1) {
+                            $formDom.prop('checked', true);
+                        } else {
+                            $formDom.prop('checked', false);
+                        }
+                        break;
+                    default:
+                        $formDom.val(value);
+                        break;
+                }
+            }
+
+            form.render();
+        });
     });
 </script>
 @endsection

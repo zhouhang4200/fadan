@@ -144,7 +144,6 @@ class IndexController extends Controller
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
-
                 return response()->ajax(1, '下单成功');
 
             } catch (CustomException $exception) {
@@ -198,6 +197,28 @@ class IndexController extends Controller
 //        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
 
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
+    }
+
+    public function repeat(Request $request,
+                           OrderRepository $orderRepository,
+                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
+    {
+        // 获取可用游戏
+        $game = $this->game;
+        // 获取订单数据
+        $detail = $orderRepository->levelingDetail($id);
+        // 获取订单对应模版ID
+        $templateId = GoodsTemplate::getTemplateId(2, $detail['game_id']);
+        // 获取对应的模版组件
+        $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+
+        $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+        $detail['consult'] = $detail['levelingConsult']['consult'] ?? '';
+        $detail['complain'] = $detail['levelingConsult']['complain'] ?? '';
+//        $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
+//        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+
+        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game'));
     }
 
     // 操作记录
