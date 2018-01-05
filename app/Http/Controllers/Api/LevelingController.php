@@ -109,7 +109,11 @@ class LevelingController
     			];
     			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);  			
+    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+                // 手续费写到order_detail中
+                OrderDetail::where('field_name', 'poundage')
+                ->where('order_no', $no)
+                ->update(['field_value' => $apiService]); 			
     		}
     	} catch (Exception $e) {
             DB::rollBack();
@@ -181,9 +185,15 @@ class LevelingController
 					'api_service' => $apiService,
 					'complete' => 1,
     			];
+                // 更新代练协商申诉表
     			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-
+                // 同意申诉
                 DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+                // 手续费写到order_detail中
+                OrderDetail::where('field_name', 'poundage')
+                ->where('order_no', $no)
+                ->update(['field_value' => $apiService]);
+
     		}
     	} catch (Exception $e) {
             DB::rollBack();

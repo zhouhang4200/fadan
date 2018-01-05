@@ -197,11 +197,12 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                             ->where('field_value', $this->order->detail()->where('field_name', 'serve')->value('field_value'))
                             ->value('id');
                 // 我们的区
-                $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'version')->value('id');
+                $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'region')->value('id');
                 $areaId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $areaTemplateWidgetId)
-                            ->where('field_name', 'version')
-                            ->where('field_value', $this->order->detail()->where('field_name', 'version')->value('field_value'))
+                            ->where('field_name', 'region')
+                            ->where('field_value', $this->order->detail()->where('field_name', 'region')->value('field_value'))
                             ->value('id');
+               
                 // 发布订单
                 $options = [
                     'orderType' => 0,
