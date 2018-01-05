@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Models\LevelingConsult;
 
 class LevelingController
 {	
@@ -16,8 +17,8 @@ class LevelingController
     {
         if ($sign != $this->sign) {
             return json_encode([
-                'code' => 0,
-                'data' => '验证失败',
+                'status' => 0,
+                'message' => '验证失败',
             ]);
         }
     }
@@ -36,25 +37,25 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('receive')->run($order->no, $order->gainer_primary_user_id, 0);
+    			DailianFactory::choose('receive')->run($order->no, 1, 0);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已接单',
+    				'status' => 1,
+    				'message' => '已接单',
     			]);
     		}
     	} catch (Exception $e) {
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
+            return json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
     		throw new Exception($e->getMessage());
     	}
     }
@@ -69,6 +70,7 @@ class LevelingController
      */
     public function agreeConsult(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiDeposit = $request->apiDeposit;
@@ -77,53 +79,51 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} elseif (!$apiDeposit) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '回传双金之和缺失',
+    				'status' => 0,
+    				'message' => '回传双金之和缺失',
     			]);
     		} elseif (!$apiService) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '回传手续费缺失',
+    				'status' => 0,
+    				'message' => '回传手续费缺失',
     			]);
     		} else {
     			if (! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
     				return json_encode([
-	    				'code' => 0,
-	    				'data' => '回传双金和手续费必须是数字',
+	    				'status' => 0,
+	    				'message' => '回传双金和手续费必须是数字',
 	    			]);
     			}
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'api_deposit' => $api_deposit,
-    					'api_service' => $apiService,
-    					'complete' => 1,
-     				]
+					'api_deposit' => $apiDeposit,
+					'api_service' => $apiService,
+					'complete' => 1,
     			];
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已同意撤销',
-    			]);
+    			DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);  			
     		}
     	} catch (Exception $e) {
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
+            DB::rollBack();
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
     	}
+        DB::commit();
+        return json_encode([
+            'status' => 1,
+            'message' => '已同意撤销',
+        ]);
     }
 
    /**
@@ -137,6 +137,7 @@ class LevelingController
     */
     public function agreeAppeal(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiAmount = $request->apiAmount;
@@ -146,59 +147,57 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} elseif (!$apiAmount) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '回传代练费缺失',
+    				'status' => 0,
+    				'message' => '回传代练费缺失',
     			]);
     		} elseif (!$apiDeposit) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '回传双金之和缺失',
+    				'status' => 0,
+    				'message' => '回传双金之和缺失',
     			]);
-    		} elseif (!apiService) {
+    		} elseif (!$apiService) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '回传手续费缺失',
+    				'status' => 0,
+    				'message' => '回传手续费缺失',
     			]);
     		} else {
     			if (! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
     				return json_encode([
-	    				'code' => 0,
-	    				'data' => '回传双金和手续费必须是数字',
+	    				'status' => 0,
+	    				'message' => '回传双金和手续费必须是数字',
 	    			]);
     			}
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'api_amount' => $apiAmount,
-    					'api_deposit' => $api_deposit,
-    					'api_service' => $apiService,
-    					'complete' => 1,
-     				]
+					'api_amount' => $apiAmount,
+					'api_deposit' => $apiDeposit,
+					'api_service' => $apiService,
+					'complete' => 1,
     			];
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已同意申诉',
-    			]);
+                DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
     		}
     	} catch (Exception $e) {
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
+            DB::rollBack();
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
     	}
+        DB::commit();
+        return json_encode([
+            'status' => 1,
+            'message' => '已同意申诉',
+        ]);
     }
 
     /**
@@ -209,7 +208,7 @@ class LevelingController
      */
     public function consult(Request $request)
     {
-    	DB::beginTransaction();
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
             $apiAmount = $request->apiAmount;
@@ -220,31 +219,32 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} elseif(!$content) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '协商原因缺失',
+    				'status' => 0,
+    				'message' => '协商原因缺失',
     			]);
     		} else {
     			if (!is_numeric($apiAmount)) {
     				return json_encode([
-	    				'code' => 0,
-	    				'data' => '代练费必须是数字',
+	    				'status' => 0,
+	    				'message' => '代练费必须是数字',
 	    			]);
     			}
 
     			if (!is_numeric($apiDeposit)) {
     				return json_encode([
-	    				'code' => 0,
-	    				'data' => '双金必须是数字',
+	    				'status' => 0,
+	    				'message' => '双金必须是数字',
 	    			]);
     			}
 
-    			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
-    			$order = Order::where('no', $no)->first();
+    			$orderDetail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->first(); 
+
+    			$order = Order::where('no', $orderDetail->order_no)->first();
 
     			$safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
 	            $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
@@ -254,48 +254,45 @@ class LevelingController
 	            // 写入双金与订单双击比较
 	            if ($isOverDeposit < 0) {
 	                return json_encode([
-		    			'code' => 0,
-		    			'data' => '写入双金超过订单代练双金',
+		    			'status' => 0,
+		    			'message' => '写入双金超过订单代练双金',
 		    		]);
 	            }
 	            // 写入代练费与订单代练费比较
 	            if ($isOverAmount < 0) {
 	                return json_encode([
-		    			'code' => 0,
-		    			'data' => '写入代练费超过订单代练费',
+		    			'status' => 0,
+		    			'message' => '写入代练费超过订单代练费',
 		    		]);
 	            }
 
     			$data = [
+					'user_id' => $order->gainer_primary_user_id,
     				'order_no' => $order->no,
-    				[
-    					'user_id' => $order->gainer_primary_user_id,
-	    				'order_no' => $order->no,
-	    				'amount' => $apiAmount,
-	    				'deposit' => $apiDeposit,
-	    				'consult' => 2,
-	    				'revoke_message' => $content,
-    				]
+    				'amount' => $apiAmount,
+    				'deposit' => $apiDeposit,
+    				'consult' => 2,
+    				'revoke_message' => $content,
     			];
 
-    			LevelingConsult::updateOrCreate($data);
+                LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已申请协商',
-    			]);
+    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);	
     		}
     	} catch (Exception $e) {
-    		DB::rollBack();
+            DB::rollBack();
+            throw new Exception($e->getMessage());
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
-    		throw new Exception($e->getMessage());
     	}
-    	DB::commit();
+        DB::commit();
+
+        return json_encode([
+            'status' => 1,
+            'message' => '已申请协商',
+        ]);
     }
 
     /**
@@ -315,45 +312,41 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} elseif (!$content) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '申诉原因缺失',
+    				'status' => 0,
+    				'message' => '申诉原因缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
     			$data = [
-    				'order_no' => $order->no,
-    				[
-    					'user_id' => $order->gainer_primary_user_id,
-	    				'complain' => 2,
-	    				'complain_message' => $content,
-    				]
+					'user_id' => $order->gainer_primary_user_id,
+    				'complain' => 2,
+    				'complain_message' => $content,
     			];
 
-    			LevelingConsult::updateOrCreate($data);
+    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已申请申诉',
-    			]);
+    			DailianFactory::choose('applyArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
     		}
     	} catch (Exception $e) {
     		DB::rollBack();
-    		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
-    		]);
     		throw new Exception($e->getMessage());
+            return json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
     	}
     	DB::commit();
+        return json_encode([
+            'status' => 1,
+            'message' => '已申请申诉',
+        ]);
     }
 
     /**
@@ -363,6 +356,7 @@ class LevelingController
      */
     public function cancelConsult(Request $request)
     {
+        DB::beginTransaction();
     	try {
             $orderNo = $request->orderNo;
 
@@ -370,27 +364,31 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
-
-    			return json_encode([
-    				'code' => 1,
-    				'data' => '已取消协商',
-    			]);
+                // 会变成锁定
+                DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+                // 91的要解除锁定
+    			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id);
     		}
     	} catch (Exception $e) {
+            DB::rollBack();
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
+        DB::commit();
+        return json_encode([
+            'status' => 1,
+            'message' => '已取消协商',
+        ]);
     }
 
      /**
@@ -407,24 +405,26 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
     			$order = Order::where('no', $no)->first();
 
-    			DailianFactory::choose('cancelArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+                DailianFactory::choose('cancelArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+                DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+    			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id, 0);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已取消申诉',
+    				'status' => 1,
+    				'message' => '已取消申诉',
     			]);
     		}
     	} catch (Exception $e) {
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -445,8 +445,8 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
@@ -455,14 +455,14 @@ class LevelingController
     			DailianFactory::choose('forceRevoke')->run($order->no, $order->gainer_primary_user_id);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已强制协商',
+    				'status' => 1,
+    				'message' => '已强制协商',
     			]);
     		}
     	} catch (Exception $e) {
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -482,8 +482,8 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
@@ -492,14 +492,14 @@ class LevelingController
     			DailianFactory::choose('abnormal')->run($order->no, $order->gainer_primary_user_id);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已将订单标记为异常',
+    				'status' => 1,
+    				'message' => '已将订单标记为异常',
     			]);
     		}
     	} catch (Exception $e) {
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -520,8 +520,8 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
@@ -530,14 +530,14 @@ class LevelingController
     			DailianFactory::choose('cancelAbnormal')->run($order->no, $order->gainer_primary_user_id);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已取消异常订单',
+    				'status' => 1,
+    				'message' => '已取消异常订单',
     			]);
     		}
     	} catch (Exception $e) {
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -557,8 +557,8 @@ class LevelingController
 
     		if (!$orderNo) {
     			return json_encode([
-    				'code' => 0,
-    				'data' => '订单号缺失',
+    				'status' => 0,
+    				'message' => '订单号缺失',
     			]);
     		} else {
     			$no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
@@ -567,14 +567,14 @@ class LevelingController
     			DailianFactory::choose('applyComplete')->run($order->no, $order->gainer_primary_user_id);
 
     			return json_encode([
-    				'code' => 1,
-    				'data' => '已申请验收',
+    				'status' => 1,
+    				'message' => '已申请验收',
     			]);
     		}
     	} catch (Exception $e) {
     		return json_encode([
-    			'code' => 0,
-    			'data' => $e->getMessage(),
+    			'status' => 0,
+    			'message' => $e->getMessage(),
     		]);
     		throw new Exception($e->getMessage());
     	}
@@ -594,8 +594,8 @@ class LevelingController
 
             if (!$orderNo) {
                 return json_encode([
-                    'code' => 0,
-                    'data' => '订单号缺失',
+                    'status' => 0,
+                    'message' => '订单号缺失',
                 ]);
             } else {
                 $no = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->value('order_no'); 
@@ -604,14 +604,14 @@ class LevelingController
                 DailianFactory::choose('cancelComplete')->run($order->no, $order->gainer_primary_user_id);
 
                 return json_encode([
-                    'code' => 1,
-                    'data' => '已取消验收',
+                    'status' => 1,
+                    'message' => '已取消验收',
                 ]);
             }
         } catch (Exception $e) {
             return json_encode([
-                'code' => 0,
-                'data' => $e->getMessage(),
+                'status' => 0,
+                'message' => $e->getMessage(),
             ]);
             throw new Exception($e->getMessage());
         }

@@ -51,9 +51,15 @@ class Revoking extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
-    	} catch (Exception $e) {
-    		DB::rollBack();
-    		throw new Exception($e->getMessage());
+            return $e->getMessage();
+        } catch (Exception $e) {
+            DB::rollBack();
+            echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -89,6 +95,7 @@ class Revoking extends DailianAbstract implements DailianInterface
                 }
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
+                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
             }
         }
     }

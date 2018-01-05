@@ -9,7 +9,6 @@ use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use App\Models\LevelingConsult;
 
 class Revoked extends DailianAbstract implements DailianInterface
 {
@@ -55,7 +54,12 @@ class Revoked extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
     	} catch (Exception $e) {
     		DB::rollBack();
-    		throw new Exception($e->getMessage());
+    		echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -92,6 +96,7 @@ class Revoked extends DailianAbstract implements DailianInterface
         $orderDeposit = bcadd($security, $efficiency);
         // 回传双金 + 回传手续费
         $apiAll = bcadd($apiDeposit, $apiService);
+
         // 回传双金 + 手续费 == 写入的双金
         $isZero = bcsub($apiAll, $writeDeposit);
 
@@ -318,6 +323,7 @@ class Revoked extends DailianAbstract implements DailianInterface
             DB::commit();
         } else {
             throw new Exception('参数传入错误或不满足条件');
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
 

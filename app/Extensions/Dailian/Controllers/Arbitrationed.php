@@ -53,7 +53,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->after();
     	} catch (Exception $e) {
     		DB::rollBack();
-    		throw new Exception($e->getMessage());
+    		echo json_encode([
+                'status' => 0,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+            // throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -70,7 +75,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	public function updateAsset()
 	{
 		// 从leveling_consult 中取各种值
-        $consult = LevelingConsult::where('order_no', $this->orderNo)->where('complete', 1)->first();
+        $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
         if (!$consult) {
         	throw new Exception('状态错误');
