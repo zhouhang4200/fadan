@@ -253,13 +253,59 @@ layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         }, 'json');
         return false;
     });
-        // 切换游戏时加截新的模版
-        // 下单
-        form.on('select(order)', function (data) {
 
-        });
-
+    // 切换游戏时加截新的模版
+    // 下单
+    form.on('select(order)', function (data) {
 
     });
+
+
+    // 解析模板
+    $('#parse').click(function () {
+        var fieldArrs = $('[name="desc"]').val().split('\n');
+        for (var i = fieldArrs.length - 1; i >= 0; i--) {
+            var arr = fieldArrs[i].split('：');
+
+            // 跳过格式不对的行或空行
+            if (typeof arr[1] == "undefined") {
+                continue;
+            }
+
+            // 去两端空格
+            var name = $.trim(arr[0]);
+            var value = $.trim(arr[1]);
+console.log(name);
+console.log(value);
+            // 获取表单dom
+            var $formDom = $('#form-order').find('[display-name="' + name + '"]');
+
+            // 填充表单
+            switch ($formDom.prop('type')) {
+                case 'select-one':
+                    $formDom.find('option').each(function () {
+                        if ($(this).text() == value) {
+                            $formDom.val($(this).val());
+                            return false;
+                        }
+                    });
+                    break;
+                case 'checkbox':
+                    if (value == 1) {
+                        $formDom.prop('checked', true);
+                    } else {
+                        $formDom.prop('checked', false);
+                    }
+                    break;
+                default:
+                    $formDom.val(value);
+                    break;
+            }
+        }
+
+        form.render();
+    });
+
+});
 </script>
 @endsection
