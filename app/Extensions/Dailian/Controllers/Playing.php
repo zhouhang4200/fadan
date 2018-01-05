@@ -4,12 +4,12 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Exception;
 use App\Models\User;
 use App\Models\UserAsset;
 use App\Extensions\Asset\Expend;
 use App\Models\OrderDetail;
 use Carbon\Carbon;
+use App\Exceptions\DailianException as Exception; 
 
 class Playing extends DailianAbstract implements DailianInterface
 {

@@ -4,11 +4,11 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Exception;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
+use App\Exceptions\DailianException as Exception; 
 
 class Revoked extends DailianAbstract implements DailianInterface
 {
@@ -39,24 +39,23 @@ class Revoked extends DailianAbstract implements DailianInterface
         	// 获取锁定前的状态
             // 获取订单对象
             $this->getObject();
-        	$this->beforeHandleStatus = $this->getOrder()->status;
-		    // 创建操作前的订单日志详情
-		    $this->createLogObject();
-		    // 设置订单属性
-		    $this->setAttributes();
-		    // 保存更改状态后的订单
-		    $this->save();
-		    // 更新平台资产
-		    $this->updateAsset();
-		    // 订单日志描述
-		    $this->setDescription();
-		    // 保存操作日志
-		    $this->saveLog();
+            $this->beforeHandleStatus = $this->getOrder()->status;
+            // 创建操作前的订单日志详情
+            $this->createLogObject();
+            // 设置订单属性
+            $this->setAttributes();
+            // 保存更改状态后的订单
+            $this->save();
+            // 更新平台资产
+            $this->updateAsset();
+            // 订单日志描述
+            $this->setDescription();
+            // 保存操作日志
+            $this->saveLog();
 
             // $this->after();
-    	} catch (Exception $e) {
-    		DB::rollBack();
-
+        } catch (Exception $e) {
+            DB::rollBack();
             throw new Exception($e->getMessage());
     	}
     	DB::commit();
@@ -99,7 +98,6 @@ class Revoked extends DailianAbstract implements DailianInterface
         $isZero = bcsub($apiAll, $writeDeposit);
 
         if ($leftAmount >= 0 && bcsub($orderDeposit, $apiAll) >= 0 && $isZero == 0) {       
-
             DB::beginTransaction();
             try {
                 if ($amount > 0) {
@@ -317,11 +315,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                 } 
             } catch (Exception $e) {
                 DB::rollBack();
+                throw new Exception($e->getMessage());
             }
             DB::commit();
         } else {
             throw new Exception('无回传双金手续费或回传双金手续费超过订单双金!');
-            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
 

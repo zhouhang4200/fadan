@@ -3,9 +3,9 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Models\OrderHistory;
 use App\Services\Show91;
+use App\Exceptions\DailianException as Exception; 
 
 class UnRevoke extends DailianAbstract implements DailianInterface
 {

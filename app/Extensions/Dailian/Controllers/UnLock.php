@@ -3,8 +3,8 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Models\OrderHistory;
+use App\Exceptions\DailianException as Exception; 
 
 class UnLock extends DailianAbstract implements DailianInterface
 {

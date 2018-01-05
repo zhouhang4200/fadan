@@ -4,7 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Exception;
+use App\Exceptions\DailianException as Exception; 
 
 class ApplyComplete extends DailianAbstract implements DailianInterface
 {

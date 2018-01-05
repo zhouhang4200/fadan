@@ -3,8 +3,8 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Services\Show91;
+use App\Exceptions\DailianException as Exception; 
 
 class NoReceive extends DailianAbstract implements DailianInterface
 {

@@ -3,10 +3,10 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Models\OrderHistory;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
+use App\Exceptions\DailianException as Exception; 
 
 class CancelArbitration extends DailianAbstract implements DailianInterface
 {

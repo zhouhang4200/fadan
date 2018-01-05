@@ -2,15 +2,15 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Models\User;
 use DB;
 use Asset;
-use Exception; 
+use App\Models\User;
 use App\Models\Order; 
 use App\Models\OrderHistory; 
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\DailianException as Exception; 
 
 abstract class DailianAbstract
 {
