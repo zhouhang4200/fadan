@@ -80,7 +80,7 @@ class Lock extends DailianAbstract implements DailianInterface
                     }
                 }
             } catch (Exception $e) {
-                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+                throw new Exception($e->getMessage());
             }
         }
     }

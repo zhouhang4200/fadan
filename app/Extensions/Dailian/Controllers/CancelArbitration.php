@@ -86,7 +86,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                 }
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
-                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
             }
         }
     }
