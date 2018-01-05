@@ -197,11 +197,24 @@ class IndexController extends Controller
     }
 
     // 操作记录
-    public function history(Request $request)
+    public function history($order_no)
     {
-        $dataList = OrderHistoryRepository::dataList($request->order_no);
+        $dataList = OrderHistoryRepository::dataList($order_no);
         $html = view('frontend.workbench.leveling.history', compact('dataList'))->render();
         return response()->ajax(1, 'success', $html);
+    }
+
+    // 从show91接口拿数据
+    public function leaveMessage($order_no)
+    {
+        try {
+            $messageList = Show91::messageList(['oid' => $order_no]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax($e->getCode(), $e->getMessage());
+        }
+
+        return response()->ajax(1, 'success', $messageList);
     }
 
     /**

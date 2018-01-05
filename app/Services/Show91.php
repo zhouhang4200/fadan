@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use App\Exceptions\CustomException;
 
 class Show91
 {
@@ -37,10 +38,11 @@ class Show91
             $response = $client->request($method, $url, [
                 'query' => $options,
                 ]);
+
             return $response->getBody();
         }
 
-        
+
     }
 
     /**
@@ -100,7 +102,7 @@ class Show91
     {
     	return static::getResult(config('show91.url.changeOrderBlock'), $options);
     }
-    
+
     /**
      * 获得订单状态接口
      * @return [type]          [description]
@@ -159,7 +161,7 @@ class Show91
 
     /**
      * 提交协商请求
-     * @param [type] $options [oid => 订单id， selfCancel.pay_price => 需要玩家支付的代练费，double格式，请不要超过订单费用, 
+     * @param [type] $options [oid => 订单id， selfCancel.pay_price => 需要玩家支付的代练费，double格式，请不要超过订单费用,
      *                        selfCancel.pay_bond => 需要工作室赔偿的保证金，double格式, selfCancel.content => 协商原因]
      */
     public static function addCancelOrder($options = [])
@@ -244,7 +246,14 @@ class Show91
      */
     public static function messageList($options = [])
     {
-    	return static::getResult(config('show91.url.messageList'), $options);
+    	$res = static::getResult(config('show91.url.messageList'), $options);
+        $res = json_decode($res->getContents());
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data;
     }
 
     /**
@@ -265,10 +274,10 @@ class Show91
     {
     	return static::getResult(config('show91.url.addPrice'), $options);
     }
-    
+
     /**
      * 增加订单代练时间
-     * @param [type] $options [oid => 订单id, orderAddTime.days => 增加天数, orderAddTime.hours => 增加小时数, 
+     * @param [type] $options [oid => 订单id, orderAddTime.days => 增加天数, orderAddTime.hours => 增加小时数,
      *                        orderAddTime.msg => 留言长度可为空]
      */
     public static function addLimitTime($options = [])
