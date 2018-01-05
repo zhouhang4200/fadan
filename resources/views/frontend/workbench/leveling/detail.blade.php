@@ -353,7 +353,7 @@
             <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
-                <div style="width: 80%" id="info">
+                <div style="width: 100%" id="info">
                     <div class="layui-form-item">
                         <label class="layui-form-label">*我愿意支付代练费（元）</label>
                         <div class="layui-input-block">

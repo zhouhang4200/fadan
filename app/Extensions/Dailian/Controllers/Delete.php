@@ -4,8 +4,8 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Exception;
 use App\Extensions\Asset\Income;
+use App\Exceptions\DailianException as Exception; 
 
 class Delete extends DailianAbstract implements DailianInterface
 {
@@ -78,7 +78,7 @@ class Delete extends DailianAbstract implements DailianInterface
             }
         } catch (Exception $e) {
             DB::rollback();
-            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+            throw new Exception($e->getMessage());
         }
         DB::commit();
     }

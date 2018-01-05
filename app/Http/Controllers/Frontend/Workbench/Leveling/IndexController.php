@@ -541,9 +541,16 @@ class IndexController extends Controller
                 '角色名称',
                 '订单状态',
                 '来源价格',
-                '发单价',
-                '创建时间',
-                '更新时间',
+                '代练价格',
+                '安全保证金',
+                '效率保证金',
+                '支付金额',
+                '获得金额',
+                '手续费',
+                '利润',
+                '代练时间',
+                '接单时间',
+                '发单时间',
             ];
             // 数组分割,反转
             $chunkOrders = array_chunk(array_reverse($orders->toArray()), 1000);
@@ -553,6 +560,32 @@ class IndexController extends Controller
                     // 内容
                     $datas = [];
                     foreach ($chunkOrder as $key => $order) {
+                        // 支付金额
+                        if ($order['status'] == 15 || $order['status'] == 16) {
+                            $levelingConsult = LevelingConsult::where('order_no', $order['no'])->first();
+                            $payment = $levelingConsult->amount;
+                            $haveMoney = $levelingConsult->deposit;
+                            $poundage = $levelingConsult->api_service ?? 0;
+                        } else {
+                            $payment = bcadd($order['amount'], OrderDetail::where('order_no', $order['no'])->where('field_name', 'price_markup')->value('field_value'));
+                            $haveMoney = 0;
+                            $poundage = 0;
+                        }
+                        // 来源价格
+                        $sourcePrice = OrderDetail::where('order_no', $order['no'])->where('field_name', 'source_price')->value('field_value');
+                        $day = OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_day')->value('field_value');
+                        $hour = OrderDetail::where('order_no', $order['no'])->where('field_name', 'game_leveling_hour')->value('field_value');
+                        $dailianTime = bcadd(bcmul($day, 8600), bcmul($hour, 60)) ?? 0;
+
+                        if ($order['status'] == 19 || $order['status'] == 20 || $order['status'] == 21) {
+                            $profit = bcsub(bcadd($haveMoney, bcsub($sourcePrice, $payment)), $poundage);
+                        } else {
+                            $profit = '';
+                        }
+                        // 接单时间
+                        $receiveTime = OrderDetail::where('order_no', $order['no'])->where('field_name', 'receiving_time')->value('field_value');
+                        $sendTime = $order['created_at'];
+
                         $datas[] = [
                             $order['id'],
                             $order['no'],
@@ -565,10 +598,18 @@ class IndexController extends Controller
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'account')->value('field_value') . '/' . OrderDetail::where('order_no', $order['no'])->where('field_name', 'password')->value('field_value'),
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'role')->value('field_value'),
                             config('order.status_leveling')[$order['status']] ?? '--',
-                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'source_price')->value('field_value'),
+                            $sourcePrice,
                             $order['amount'],
-                            $order['created_at'] ?? '--',
-                            $order['updated_at'] ?? '--',
+
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'security_deposit')->value('field_value'),
+                            OrderDetail::where('order_no', $order['no'])->where('field_name', 'efficiency_deposit')->value('field_value'),
+                            $payment,
+                            $haveMoney,
+                            $poundage,
+                            $profit,
+                            $dailianTime,
+                            $receiveTime,
+                            $sendTime,
                         ];
                     }
                     // 将标题加入到数组

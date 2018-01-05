@@ -4,10 +4,10 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Exception;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
+use App\Exceptions\DailianException as Exception; 
 
 class Arbitrationed extends DailianAbstract implements DailianInterface
 {

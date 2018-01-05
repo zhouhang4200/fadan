@@ -3,8 +3,8 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Services\Show91;
+use App\Exceptions\DailianException as Exception; 
 
 class Lock extends DailianAbstract implements DailianInterface
 {
@@ -80,7 +80,7 @@ class Lock extends DailianAbstract implements DailianInterface
                     }
                 }
             } catch (Exception $e) {
-                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
+                throw new Exception($e->getMessage());
             }
         }
     }

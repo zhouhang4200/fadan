@@ -3,9 +3,9 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Exception;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
+use App\Exceptions\DailianException as Exception; 
 
 class Revoking extends DailianAbstract implements DailianInterface
 {
@@ -90,7 +90,6 @@ class Revoking extends DailianAbstract implements DailianInterface
                 }
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
-                return response()->json(['status' => 0, 'message' => $e->getMessage()]);
             }
         }
     }
