@@ -461,7 +461,6 @@
                     {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
                     {field: 'role', title: '角色名称', width: '100'},
                     {field: 'status_text', title: '订单状态', width: '120'},
-//                    {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '代练价格', width: '80'},
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
@@ -478,13 +477,11 @@
                 ]],
                 id: 'order',
                 page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
-                    layout: [ 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                    //,curr: 5 //设定初始在第 5 页
-                    ,groups: 1 //只显示 1 个连续页码
-                    ,first: false //不显示首页
-                    ,last: false //不显示尾页
-                },
-//                height: 'full-200'
+                    layout: [ 'count', 'prev', 'page', 'next', 'skip'],
+                    groups: 1,
+                    first: false,
+                    last: false
+                }
             });
 
             element.on('tab(order-list)', function () {
@@ -494,10 +491,8 @@
                     where: {
                         status: status
                     },
-//                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
-//                        $('.layui-border-box').css('height', '700px');
                         layui.form.render();
                     }
                 });
@@ -517,7 +512,8 @@
                         wang_wang: data.field.wang_wang,
                         urgent_order: urgentOrder,
                         start_date: data.field.start_date,
-                        end_date: data.field.end_date
+                        end_date: data.field.end_date,
+                        label: data.field.label
                     },
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
@@ -533,7 +529,6 @@
                     where: {
                         status: status
                     },
-//                    height: 650, //固定值
                     height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
@@ -548,7 +543,7 @@
                 var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
                 var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
                 var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
-                var keyWord = data.value;
+
                 if (!orderAmount) {
                     orderAmount = 0;
                 }
@@ -696,7 +691,6 @@
             form.on('submit(export)', function (data) {
                 var fields = data.field;
                 var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
-                console.log(datas);
                 window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
             });
 

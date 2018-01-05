@@ -20,6 +20,35 @@ class ForeignOrder extends Model
         'qq',
     ];
 
+    /**
+     * 订单过滤
+     * @param $query
+     * @param array $filters
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if (isset($filters['no'])) {
+            $query->where('foreign_order_no', $filters['no']);
+        }  else {
+
+            if ($filters['wangWang']) {
+                $query->where('wang_wang', $filters['wangWang']);
+            }
+
+            if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
+                $query->where('created_at', '>=', $filters['startDate']);
+            }
+
+            if (isset($filters['endDate']) && !empty($filters['endDate'])) {
+                $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
+            }
+
+            if (isset($filters['endDate']) && isset($filters['startDate'])) {
+                $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
+            }
+        }
+    }
+
     public function getDetailsAttribute($value)
     {
         return json_decode($value);

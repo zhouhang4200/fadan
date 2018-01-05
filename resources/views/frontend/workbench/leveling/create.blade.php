@@ -253,6 +253,12 @@
             }, 'json');
             return false;
         });
+        // 切换游戏时加截新的模版
+        // 下单
+        form.on('select(order)', function (data) {
+
+        });
+
 
     });
 </script>

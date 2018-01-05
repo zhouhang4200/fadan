@@ -76,6 +76,7 @@ class IndexController extends Controller
         $urgentOrder = $request->input('urgent_order', 0);
         $startDate  = $request->input('start_date', 0);
         $endDate = $request->input('end_date', 0);
+        $label = $request->input('label');
         $pageSize = $request->input('limit', 10);
 
         if ($request->export) {
@@ -85,7 +86,7 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize);
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {
@@ -97,8 +98,10 @@ class IndexController extends Controller
                 $orderInfo = $item->toArray();
                 $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
                 $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-                $orderInfo['consult'] = $orderInfo['levelingConsult']['consult'] ?? '';
-                $orderInfo['complain'] = $orderInfo['levelingConsult']['complain'] ?? '';
+//                $orderInfo['consult'] = $orderInfo['levelingConsult']['consult'] ?? '';
+//                $orderInfo['complain'] = $orderInfo['levelingConsult']['complain'] ?? '';
+                $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
+                $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
                 $orderArr[] = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
             }
 
@@ -189,8 +192,8 @@ class IndexController extends Controller
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-        $detail['consult'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-        $detail['complain'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+        $detail['consult'] = $detail['levelingConsult']['consult'] ?? '';
+        $detail['complain'] = $detail['levelingConsult']['complain'] ?? '';
 //        $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
 //        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
 
@@ -470,7 +473,9 @@ class IndexController extends Controller
         return response()->ajax(1, '操作成功!');
     }
 
-
+    /**
+     * @param $orders
+     */
     public function export($orders)
     {
         try {
@@ -532,6 +537,11 @@ class IndexController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function excel(Request $request, OrderRepository $orderRepository)
     {
         try {
@@ -566,7 +576,8 @@ class IndexController extends Controller
 
     /**
      * 待发单数据
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function waitList(Request $request)
     {
@@ -574,7 +585,8 @@ class IndexController extends Controller
         $wangWang = $request->wang_wang;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-        $orders = \App\Models\ForeignOrder::where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
+        $orders = \App\Models\ForeignOrder::filter(compact('no', 'wangWang', 'startDate', 'endDate'))
+            ->where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
             ->where('status', 1)
             ->paginate(30);
 
