@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
+use App\Repositories\Frontend\OrderHistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -193,6 +194,27 @@ class IndexController extends Controller
 //        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
 
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
+    }
+
+    // 操作记录
+    public function history($order_no)
+    {
+        $dataList = OrderHistoryRepository::dataList($order_no);
+        $html = view('frontend.workbench.leveling.history', compact('dataList'))->render();
+        return response()->ajax(1, 'success', $html);
+    }
+
+    // 从show91接口拿数据
+    public function leaveMessage($order_no)
+    {
+        try {
+            $messageList = Show91::messageList(['oid' => $order_no]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax($e->getCode(), $e->getMessage());
+        }
+
+        return response()->ajax(1, 'success', $messageList);
     }
 
     /**

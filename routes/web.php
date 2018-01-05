@@ -27,8 +27,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 修改资料，上传头像
     Route::prefix('users')->namespace('User')->group(function () {
         Route::get('persional', 'UserController@persional')->name('users.persional');
-        Route::post('persional', 'UserController@updatePersional')->name('users.update-persional')->middleware('permission:users.update-persional'); 
-        Route::post('voucher', 'UserController@updateVoucher')->name('users.update-voucher'); 
+        Route::post('persional', 'UserController@updatePersional')->name('users.update-persional')->middleware('permission:users.update-persional');
+        Route::post('voucher', 'UserController@updateVoucher')->name('users.update-voucher');
         Route::post('upload-images', 'UserController@uploadImages')->name('users.upload-images');
     });
 
@@ -174,6 +174,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('get-template', 'IndexController@getTemplate')->name('frontend.workbench.leveling.get-template');
             // 获取订单详情
             Route::any('detail', 'IndexController@detail')->name('frontend.workbench.leveling.detail');
+            // 订单操作记录
+            Route::get('history/{order_no}', 'IndexController@history')->name('frontend.workbench.leveling.history');
+            // 订单留言
+            Route::get('leave-message/{order_no}', 'IndexController@leaveMessage')->name('frontend.workbench.leveling.leave-message');
             // 修改订单
             Route::post('update', 'IndexController@update')->name('frontend.workbench.leveling.update');
             // 改状态操作

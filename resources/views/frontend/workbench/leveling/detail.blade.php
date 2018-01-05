@@ -47,110 +47,110 @@
 @section('main')
 
 
-    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <div class="layui-tab layui-tab-brief" lay-filter="myFilter">
         <ul class="layui-tab-title">
-            <li class="layui-this">详情</li>
-            <li>留言/截图</li>
-            <li>操作记录</li>
+            <li class="layui-this" lay-id="detail">详情</li>
+            <li lay-id="leave-word">留言/截图</li>
+            <li lay-id="history">操作记录</li>
         </ul>
         <div class="layui-tab-content">
-            <div class="" style="float: right">
-                @if($detail['status'] != 24)
-
-                    @if ($detail['master'] && $detail['status'] == 22)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">上架</button>
-                    @endif
-
-                    @if ($detail['master'] && $detail['status'] == 1)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">下架</button>
-                    @endif
-
-                    @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="13" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">重发</button>
-                    @endif
-
-                    @if ($detail['master'] && $detail['urgent_order'] != 1)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">加急</button>
-                    @endif
-
-                    @if ($detail['master'] && $detail['urgent_order'] == 1)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
-                    @endif
-
-                    @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">锁定</button>
-                    @endif
-
-                    @if ($detail['master'] && $detail['status'] == 18)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
-                    @endif
-
-                    @if ($detail['master'])
-                        @if ($detail['consult'] == 1 && $detail['status'] == 15)
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
-                        @elseif ($detail['consult'] == 2 && ($detail['status'] == 15 || $detail['status'] == 16))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
-                        @endif
-
-                        @if ($detail['consult'] == 2 && $detail['status'] == 15)
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
-                        @elseif ($detail['consult'] == 1 && ($detail['status'] == 15 || $detail['status'] == 16))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
-                        @endif
-                    @endif
-
-                    @if (in_array($detail['status'], [13, 14, 17, 18]))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">撤销</button>
-                    @endif
-
-                    @if ($detail['status'] == 15)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">申请仲裁</button>
-                    @endif
-
-                    @if ($detail['master'])
-                        @if ($detail['complain'] == 1 && $detail['status'] == 16)
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
-                        @endif
-
-                        @if ($detail['complain'] == 2 && $detail['status'] == 16)
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
-                        @endif
-                    @endif
-
-                    @if ($detail['master'] && $detail['status'] == 14)
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">完成</button>
-                    @endif
-
-                    @if ($detail['master'])
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendMessage" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">发短信</button>
-                    @endif
-
-                    @if ($detail['master'] && $detail['client_wang_wang'])
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="wangWang" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}" data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</button>
-                    @endif
-
-                    @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">删除</button>
-                    @endif
-
-                    @if (!$detail['master'] && ($detail['status'] == 13))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
-                    @endif
-
-                    @if (!$detail['master'] && ($detail['status'] == 14))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
-                    @endif
-
-                    @if (!$detail['master'] && ($detail['status'] == 13))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">异常</button>
-                    @endif
-
-                    @if (!$detail['master'] && ($detail['status'] == 17))
-                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
-                    @endif
-                @endif
-            </div>
             <div class="layui-tab-item layui-show">
+                <div class="" style="text-align: right;">
+                    @if($detail['status'] != 24)
+
+                        @if ($detail['master'] && $detail['status'] == 22)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">上架</button>
+                        @endif
+
+                        @if ($detail['master'] && $detail['status'] == 1)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">下架</button>
+                        @endif
+
+                        @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="13" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">重发</button>
+                        @endif
+
+                        @if ($detail['master'] && $detail['urgent_order'] != 1)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">加急</button>
+                        @endif
+
+                        @if ($detail['master'] && $detail['urgent_order'] == 1)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
+                        @endif
+
+                        @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">锁定</button>
+                        @endif
+
+                        @if ($detail['master'] && $detail['status'] == 18)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
+                        @endif
+
+                        @if ($detail['master'])
+                            @if ($detail['consult'] == 1 && $detail['status'] == 15)
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                            @elseif ($detail['consult'] == 2 && ($detail['status'] == 15 || $detail['status'] == 16))
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                            @endif
+
+                            @if ($detail['consult'] == 2 && $detail['status'] == 15)
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                            @elseif ($detail['consult'] == 1 && ($detail['status'] == 15 || $detail['status'] == 16))
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                            @endif
+                        @endif
+
+                        @if (in_array($detail['status'], [13, 14, 17, 18]))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">撤销</button>
+                        @endif
+
+                        @if ($detail['status'] == 15)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">申请仲裁</button>
+                        @endif
+
+                        @if ($detail['master'])
+                            @if ($detail['complain'] == 1 && $detail['status'] == 16)
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
+                            @endif
+
+                            @if ($detail['complain'] == 2 && $detail['status'] == 16)
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
+                            @endif
+                        @endif
+
+                        @if ($detail['master'] && $detail['status'] == 14)
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                        @endif
+
+                        @if ($detail['master'])
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendMessage" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">发短信</button>
+                        @endif
+
+                        @if ($detail['master'] && $detail['client_wang_wang'])
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="wangWang" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}" data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</button>
+                        @endif
+
+                        @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">删除</button>
+                        @endif
+
+                        @if (!$detail['master'] && ($detail['status'] == 13))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
+                        @endif
+
+                        @if (!$detail['master'] && ($detail['status'] == 14))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
+                        @endif
+
+                        @if (!$detail['master'] && ($detail['status'] == 13))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">异常</button>
+                        @endif
+
+                        @if (!$detail['master'] && ($detail['status'] == 17))
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] }}" data-effect="{{ $detail['efficiency_deposit'] }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
+                        @endif
+                    @endif
+                </div>
                 <div class="layui-row  layui-col-space20">
                     <div class="layui-col-md6">
                         <div class="site-title">
@@ -341,11 +341,12 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-tab-item">2</div>
-            <div class="layui-tab-item">3</div>
+            <div class="layui-tab-item">&nbsp;</div>
+            <div class="layui-tab-item">
+                <div class="layui-row  layui-col-space20" id="history"></div>
+            </div>
         </div>
     </div>
-
 
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
@@ -428,7 +429,7 @@
         <div class="layui-tab-content">
             <form class="layui-form" method="POST" action="">
                 {!! csrf_field() !!}
-                <div >
+                <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0">
                             <textarea placeholder="请输入要发送的内容" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
@@ -469,7 +470,7 @@
             var orderAmount = this.getAttribute("data-amount");
             var orderSafe = this.getAttribute("data-safe");
             var orderEffect = this.getAttribute("data-effect");
-     
+
             if (!orderAmount) {
                 orderAmount = 0;
             }
@@ -517,7 +518,7 @@
                         } else {
                             layer.alert(result.message);
                         }
-                        
+
                     });
                     layer.closeAll();
                     return false;
@@ -592,10 +593,10 @@
                             layer.closeAll();
                         });
                     }
-                    
+
                 });
             }
-            
+
         });
 
         // 修改
@@ -621,6 +622,31 @@
             }, 'json');
             return false;
         });
+
+        // 监听Tab切换
+        element.on('tab(myFilter)', function(){
+            switch (this.getAttribute('lay-id')) {
+                case 'history':
+                    // 加载订单操作记录
+                    $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
+                        if (data.status === 1) {
+                            $('#history').html(data.content);
+                        } else {
+                            layer.alert(data.message);
+                        }
+                    });
+
+                    break;
+
+                case 'leave-word':
+                    // 加载留言截图
+                    layer.msg('建设中');
+                    break;
+                default:
+                    break;
+            }
+        });
+
     });
 </script>
 @endsection
