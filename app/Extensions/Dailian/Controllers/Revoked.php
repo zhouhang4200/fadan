@@ -320,7 +320,7 @@ class Revoked extends DailianAbstract implements DailianInterface
             }
             DB::commit();
         } else {
-            throw new Exception('参数传入错误或不满足条件');
+            throw new Exception('无回传双金手续费或回传双金手续费超过订单双金!');
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
