@@ -20,7 +20,7 @@
         th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
             line-height: 40px !important;
         }
-        .laytable-cell-1-23{
+        .laytable-cell-1-22{
             height: 40px !important;
             line-height: 40px !important;
         }
@@ -157,8 +157,9 @@
             <li class="" lay-id="20">已结算</li>
             <li class="" lay-id="21">已仲裁</li>
             <li class="" lay-id="22">已下架</li>
-            <li class="" lay-id="23">强制撤销 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
-            </li>
+            <li class="" lay-id="23">强制撤销</li>
+
+            <span class="layui-badge layui-bg-blue layui-hide  market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
         </ul>
         <div class="layui-tab-content"></div>
     </div>
@@ -409,7 +410,7 @@
             .laytable-cell-@{{ d  }}-0, .laytable-cell-@{{ d  }}-5, .laytable-cell-@{{ d  }}-7 {
                 height: 40px !important;
             }
-            .laytable-cell-@{{ d  }}-23 {
+            .laytable-cell-@{{ d  }}-22 {
                 height: 40px !important;
                 line-height: 40px !important;
             }
@@ -460,7 +461,7 @@
                     {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
                     {field: 'role', title: '角色名称', width: '100'},
                     {field: 'status_text', title: '订单状态', width: '120'},
-                    {field: 'nickname', title: '打手呢称', width: '120'},
+//                    {field: 'nickname', title: '打手呢称', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '代练价格', width: '80'},
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},

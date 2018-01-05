@@ -94,7 +94,7 @@
             </div>
             <div class="">
                 <div class="layui-row form-group">
-                    <textarea name="desc" class="layui-textarea" style="min-height: 800px"></textarea>
+                    <textarea name="desc" class="layui-textarea" style="min-height: 800px" id="user-template"></textarea>
                 </div>
             </div>
         </div>
@@ -134,11 +134,11 @@
                 <div class="layui-col-md8">
 
                     @{{# if(item.field_type == 1) {  }}
-                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}">
+                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}">
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
-                        <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}">
+                        <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}">
                                 <option value=""></option>
                                 @{{#  if(item.user_values.length > 0){ }}
                                     @{{#  layui.each(item.user_values, function(i, v){ }}
@@ -158,11 +158,11 @@
                     @{{# } }}
 
                     @{{# if(item.field_type == 4) {  }}
-                        <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"></textarea>
+                        <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"  display-name="@{{item.field_display_name}}"></textarea>
                     @{{# } }}
 
                     @{{# if(item.field_type == 5) {  }}
-                    <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}">
+                    <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
                     @{{# } }}
 
                     @{{# if(item.help_text != null || item.help_text != undefined) {  }}
@@ -202,6 +202,12 @@
 
         var getTpl = goodsTemplate.innerHTML, view = $('#template');
         $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:1}, function (result) {
+            var template = '游戏：\r\n';
+            $.each(result.content.template, function(index,element){
+                template += element.field_display_name + '：\r\n'
+            });
+            $('#user-template').val(template);
+
             layTpl(getTpl).render(result.content, function(html){
                 view.html(html);
                 layui.form.render();

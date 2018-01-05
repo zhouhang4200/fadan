@@ -16,7 +16,7 @@
 		<div class="arrow"></div>
 	</li>
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.wait' ? 'current' : '' }}">
-		<a href="{{ route('frontend.workbench.index') }}">代练待发</a>
+		<a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
 		<div class="arrow"></div>
 	</li>
 </ul>

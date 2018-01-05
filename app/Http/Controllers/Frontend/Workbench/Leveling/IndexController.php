@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
+use App\Extensions\Order\ForeignOrder\ForeignOrder;
 use App\Extensions\Order\Operations\CreateLeveling;
 use App\Models\GoodsTemplateWidget;
 use App\Models\OrderDetail;
@@ -96,8 +97,8 @@ class IndexController extends Controller
                 $orderInfo = $item->toArray();
                 $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
                 $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-                $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
-                $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+                $orderInfo['consult'] = $orderInfo['levelingConsult']['consult'] ?? '';
+                $orderInfo['complain'] = $orderInfo['levelingConsult']['complain'] ?? '';
                 $orderArr[] = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
             }
 
@@ -241,7 +242,7 @@ class IndexController extends Controller
                 // 加价
                 if ($order->price < $requestData['game_leveling_amount']) {
                     $amount =  $requestData['game_leveling_amount'] - $order->price;
-                    Asset::handle(new Expend($amount, Expend::TRADE_SUBTYPE_ORDER_GAME_LEVELING_ADD, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                    Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                     $order->price = $requestData['game_leveling_amount'];
                     $order->amount = $requestData['game_leveling_amount'];
@@ -252,7 +253,7 @@ class IndexController extends Controller
                     ]);
                 } else { // 减价
                     $amount =  $order->price  -  $requestData['game_leveling_amount'];
-                    Asset::handle(new Income($amount, Income::TRADE_SUBTYPE_GAME_LEVELING_CHANGE_PRICE, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+                    Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                     $order->price = $requestData['game_leveling_amount'];
                     $order->amount = $requestData['game_leveling_amount'];
@@ -283,7 +284,7 @@ class IndexController extends Controller
             // 加价 修改主单信息
             if ($order->price < $requestData['game_leveling_amount']) {
                 $amount =  $requestData['game_leveling_amount'] - $order->price;
-                Asset::handle(new Expend($amount, Expend::TRADE_SUBTYPE_ORDER_GAME_LEVELING_ADD, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                 $order->price = $requestData['game_leveling_amount'];
                 $order->amount = $requestData['game_leveling_amount'];
@@ -326,7 +327,7 @@ class IndexController extends Controller
         if ($order->status == 14) {
             if ($order->price < $requestData['game_leveling_amount']) {
                 $amount =  $requestData['game_leveling_amount'] - $order->price;
-                Asset::handle(new Expend($amount, Expend::TRADE_SUBTYPE_ORDER_GAME_LEVELING_ADD, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                 $order->price = $requestData['game_leveling_amount'];
                 $order->amount = $requestData['game_leveling_amount'];
@@ -388,7 +389,7 @@ class IndexController extends Controller
     /**
      * 撤销
      * @param  Request $request [description]
-     * @return [type]           [description]
+     * @return \Illuminate\Http\JsonResponse [type]           [description]
      */
     public function consult(Request $request)
     {
@@ -560,17 +561,30 @@ class IndexController extends Controller
      */
     public function wait()
     {
-        return view('frontend.workbench.leveling');
+        return view('frontend.workbench.leveling.wait');
     }
 
     /**
-     * 订单操作记录
-     * @param Request $request
+     * 待发单数据
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function operationRecord(Request $request)
+    public function waitList(Request $request)
     {
+        $no = $request->no;
+        $wangWang = $request->wang_wang;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $orders = \App\Models\ForeignOrder::where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
+            ->where('status', 1)
+            ->paginate(30);
 
+        return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [
+            'no' => $no,
+            'orders' => $orders,
+            'wangWang' => $wangWang,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ])->render());
     }
-
 }
 

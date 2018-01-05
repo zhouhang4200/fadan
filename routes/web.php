@@ -190,6 +190,9 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('excel', 'IndexController@excel')->name('frontend.workbench.leveling.excel');
             // 订单操作记录
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
+            // 待接单列表
+            Route::get('wait', 'IndexController@wait')->name('frontend.workbench.leveling.wait');
+            Route::post('wait-list', 'IndexController@waitList')->name('frontend.workbench.leveling.wait-list');
         });
 
         // 首页
