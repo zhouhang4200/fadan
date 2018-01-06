@@ -5,7 +5,7 @@ use App\Models\UserWithdrawOrder;
 
 class UserWithdrawOrderRepository
 {
-    public function getList($timeStart, $timeEnd, $userId, $no, $status, $pageSize = 20)
+    public function getList($timeStart, $timeEnd, $userId, $no, $status, $adminRemark, $pageSize = 20)
     {
         $dataList = UserWithdrawOrder::orderBy('creator_primary_user_id')->orderBy('id')
             ->when(!empty($userId), function ($query) use ($userId) {
@@ -22,6 +22,9 @@ class UserWithdrawOrderRepository
             })
             ->when(!empty($timeEnd), function ($query) use ($timeEnd) {
                 return $query->where('created_at', '<=', $timeEnd);
+            })
+            ->when(!empty($adminRemark), function ($query) use ($adminRemark) {
+                return $query->where('admin_remark', $adminRemark);
             })
             ->when($pageSize === 0, function ($query) {
                 return $query->limit(10000)->get();
