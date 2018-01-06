@@ -70,6 +70,7 @@ class UserWithdrawOrderRepository
                     $v->user->realNameIdent->name ?? '',
                     $v->user->realNameIdent->bank_name ?? '',
                     isset($v->user->realNameIdent->bank_number) ? $v->user->realNameIdent->bank_number . "\t" : '',
+                    $v->fee,
                     config('withdraw.status')[$v->status],
                     $v->created_at,
                     $v->uddate_at,
