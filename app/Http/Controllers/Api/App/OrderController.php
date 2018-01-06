@@ -71,6 +71,25 @@ class OrderController extends Controller
     }
 
     /**
+     * 发货
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delivery(Request $request)
+    {
+        $orderNo = $request->params['order_no'];
+
+        try {
+            OrderRepository::delivery($orderNo);
+        } catch (CustomException $e) {
+            return response()->jsonReturn(0, $e->getMessage());
+        }
+
+        // 返回操作成功
+        return response()->jsonReturn(1);
+    }
+
+    /**
      * 发货失败
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse

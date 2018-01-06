@@ -39,6 +39,8 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
         Route::get('order/detail', 'OrderController@detail');
         // 退回集市
         Route::post('order/turn-back', 'OrderController@turnBack');
+        // 发货
+        Route::post('order/delivery', 'OrderController@delivery');
         // 发货失败
         Route::post('order/delivery-failure', 'OrderController@deliveryFailure');
     });

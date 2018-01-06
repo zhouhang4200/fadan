@@ -6,6 +6,7 @@ use App\Exceptions\CustomException;
 use Auth;
 use Order as OrderForm;
 use App\Extensions\Order\Operations\TurnBack;
+use App\Extensions\Order\Operations\Delivery;
 use App\Extensions\Order\Operations\DeliveryFailure;
 
 class OrderRepository
@@ -119,28 +120,24 @@ class OrderRepository
     // 返回集市
     public static function turnBack($orderNo, $remark)
     {
-        try {
-            self::checkAuth($orderNo);
-            OrderForm::handle(new TurnBack($orderNo, Auth::guard('api')->user()->id, $remark));
-        }
-        catch (CustomException $e) {
-            throw new CustomException($e->getMessage());
-        }
+        self::checkAuth($orderNo);
+        OrderForm::handle(new TurnBack($orderNo, Auth::guard('api')->user()->id, $remark));
+        return true;
+    }
 
+    // 发货
+    public static function delivery($orderNo)
+    {
+        self::checkAuth($orderNo);
+        OrderForm::handle(new Delivery($orderNo, Auth::guard('api')->user()->id));
         return true;
     }
 
     // 发货失败
     public static function deliveryFailure($orderNo, $remark)
     {
-        try {
-            self::checkAuth($orderNo);
-            OrderForm::handle(new DeliveryFailure($orderNo, Auth::guard('api')->user()->id, $remark));
-        }
-        catch (CustomException $e) {
-            throw new CustomException($e->getMessage());
-        }
-
+        self::checkAuth($orderNo);
+        OrderForm::handle(new DeliveryFailure($orderNo, Auth::guard('api')->user()->id, $remark));
         return true;
     }
 
