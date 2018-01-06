@@ -82,7 +82,7 @@ class OrderRepository
             ]);
             $order->chunk(1000, function ($items) use ($out) {
                 $orders = $items->toArray();
-                $data = [];
+
                 foreach ($orders as $k => $v) {
 
                     $status = '';
@@ -102,7 +102,7 @@ class OrderRepository
                     }
                     // 订单详情
                     $detail = collect($v['detail'])->pluck( 'field_value','field_name');
-                    $data[] = [
+                    $data = [
                         $v['creator_primary_user_id'],
                         $v['gainer_primary_user_id'],
                         $v['gainer_user']['nickname'] ?? '',
@@ -123,8 +123,8 @@ class OrderRepository
                         $reason,
                         $v['created_at']
                     ];
+                    fputcsv($out, $data);
                 }
-                fputcsv($out, $data);
             });
             fclose($out);
         },200, [
