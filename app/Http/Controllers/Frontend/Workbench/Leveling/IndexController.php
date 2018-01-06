@@ -28,7 +28,6 @@ use App\Models\LevelingConsult;
 use App\Services\Show91;
 use Excel;
 
-
 /**
  * 代练订单
  * Class OrderController
@@ -96,13 +95,41 @@ class IndexController extends Controller
             $orderArr = [];
             foreach($orders as $item) {
                 $orderInfo = $item->toArray();
+
+                // 删掉无用的数据
+                unset($orderInfo['detail']);
+
                 $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
                 $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
 //                $orderInfo['consult'] = $orderInfo['levelingConsult']['consult'] ?? '';
 //                $orderInfo['complain'] = $orderInfo['levelingConsult']['complain'] ?? '';
                 $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
                 $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
-                $orderArr[] = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
+
+                // 当前订单数据
+                $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
+
+                // 增加数据
+                $orderCurrent['get_amount'] = ($orderCurrent['efficiency_deposit'] ?? 0) + ($orderCurrent['security_deposit'] ?? 0);
+                $orderCurrent['payment_amount'] = '--'; // 待取值
+
+                $days = $orderCurrent['game_leveling_require_day'] ?? 0;
+                $hours = $orderCurrent['game_leveling_require_hour'] ?? 0;
+                $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+
+                // 如果存在接单时间
+                if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+                    // 计算到期的时间戳
+                    $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+
+                    // 计算剩余时间
+                    $leftSecond = $expirationTimestamp - time();
+                    $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
+                } else {
+                    $orderCurrent['left_time'] = '--';
+                }
+
+                $orderArr[] = $orderCurrent;
             }
 
             return response()->json([

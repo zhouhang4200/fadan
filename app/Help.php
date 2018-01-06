@@ -24,7 +24,7 @@ if (!function_exists('loginDetail')) {
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
-            
+
             $city = City::where('name', $res->city)->first();
 
             return [
@@ -183,7 +183,7 @@ if (!function_exists('waitReceivingAdd')) {
     function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '')
     {
         $redis = RedisConnect::order();
-        
+
         return $redis->hset(config('redis.order.waitReceiving'), $orderNo, json_encode([
             'receiving_date' => $receivingDate,
             'created_date' => $createdDate,
@@ -544,5 +544,47 @@ if (!function_exists('isBase64')) {
             return true;
         }
         return false;
+    }
+}
+
+if (!function_exists('sec2Time')) {
+    function sec2Time($seconds, $showSeconds = false)
+    {
+        if (is_numeric($seconds)) {
+            $value = array(
+              'years' => 0, 'days' => 0, 'hours' => 0,
+              'minutes' => 0, 'seconds' => 0,
+            );
+            if($seconds >= 31556926){
+              $value['years'] = floor($seconds/31556926);
+              $seconds = ($seconds%31556926);
+            }
+            if($seconds >= 86400){
+              $value['days'] = floor($seconds/86400);
+              $seconds = ($seconds%86400);
+            }
+            if($seconds >= 3600){
+              $value['hours'] = floor($seconds/3600);
+              $seconds = ($seconds%3600);
+            }
+            if($seconds >= 60){
+              $value['minutes'] = floor($seconds/60);
+              $seconds = ($seconds%60);
+            }
+            $value['seconds'] = floor($seconds);
+
+            $t = '';
+            if ($value['years'] > 0) {
+                $t .= $value['years'] .'年 ';
+            }
+            $t .= $value['days'] . '天 ' . $value['hours'] . '小时 ' . $value['minutes'] . '分 ';
+
+            if ($showSeconds) {
+              $t .= $value['seconds'] . '秒';
+            }
+            Return $t;
+        } else {
+            return (bool) FALSE;
+        }
     }
 }
