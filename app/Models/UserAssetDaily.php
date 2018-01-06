@@ -12,4 +12,12 @@ class UserAssetDaily extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function asset()
+    {
+        return $this->hasOne(UserAsset::class, 'user_id', 'user_id');
+    }
 }
