@@ -37,7 +37,7 @@ class Show91
             $client = new Client;
             $response = $client->request($method, $url, [
                 'query' => $options,
-                ]);
+            ]);
 
             return $response->getBody();
         }

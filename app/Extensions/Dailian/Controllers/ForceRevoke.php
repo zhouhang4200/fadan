@@ -70,11 +70,11 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('申请失败');
+                throw new Exception('流水记录写入失败');
             }
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('申请失败');
+                throw new Exception('流水记录写入失败');
             }
 
             if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {        
@@ -82,11 +82,11 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
                 Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
             }
 
@@ -95,11 +95,11 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
                 Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
             }
         } catch (Exception $e) {

@@ -66,6 +66,9 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     {
         $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        if (! $beforeStatus) {
+            throw new Exception('订单操作记录不存在');
+        }
         if ($beforeStatus == 16 || $beforeStatus == 18) {
             $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
             $arr = [];
@@ -91,18 +94,23 @@ class UnRevoke extends DailianAbstract implements DailianInterface
         if ($this->runAfter) {
             try {
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
                     $options = [
-                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                        'oid' => $thirdOrderNo,
                     ]; 
                     // 结果
                     $result = Show91::cancelSc($options);
                     $result = json_decode($result);
 
                     if ($result && $result->reason) {
-                        $reason = $result->reason;
-                        throw new Exception($reason);
+                        throw new Exception($result->reason);
                     }
                 }
+                return true;
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }

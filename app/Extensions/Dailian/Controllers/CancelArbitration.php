@@ -72,18 +72,28 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
                     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
+                    if (! $consult) {
+                        throw new Exception('订单申诉和协商记录不存在');
+                    }
+
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
+
                     $options = [
-                        'aid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'), // 撤销id 可以用单号
-                    ]; // 第三方订单号
+                        'aid' => $thirdOrderNo, // 撤销id 可以用单号
+                    ];
                     // 结果
                     $result = Show91::cancelAppeal($options);
                     $result = json_decode($result);
 
                     if ($result && $result->reason) {
-                        $reason = $result->reason;
-                        throw new Exception($reason);
+                        throw new Exception($result->reason);
                     }
                 }
+                return true;
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }

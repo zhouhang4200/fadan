@@ -3,7 +3,6 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Asset;
 use App\Exceptions\DailianException as Exception; 
 
 class CancelAbnormal extends DailianAbstract implements DailianInterface

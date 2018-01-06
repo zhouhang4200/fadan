@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\DailianException;
+
 class DailianFactory
 {
 	/**
@@ -16,7 +18,7 @@ class DailianFactory
 		if ($dailians[$name]) {
             return new $dailians[$name];
         } else {
-        	throw new Exception('参数传入错误!');
+        	throw new DailianException('参数解析错误!');
         }
     }
 }

@@ -97,11 +97,11 @@ class Playing extends DailianAbstract implements DailianInterface
                 Asset::handle(new Expend($safePayment, 4, $this->order->no, '安全保证金支出', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
             }
 
@@ -110,11 +110,11 @@ class Playing extends DailianAbstract implements DailianInterface
                 Asset::handle(new Expend($effectPayment, 5, $this->order->no, '效率保证金支出', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('申请失败');
+                    throw new Exception('流水记录写入失败');
                 }
             }
         } catch (Exception $e) {
@@ -135,8 +135,8 @@ class Playing extends DailianAbstract implements DailianInterface
 
         $doublePayment = bcadd($safePayment, $effectPayment);
 
-        if ($leftAmount <= 0 || $leftAmount < $doublePayment) {
-            throw new Exception('余额不足');
+        if (! $leftAmount || $leftAmount < $doublePayment) {
+            throw new Exception('商户余额不足');
         }
     }
 

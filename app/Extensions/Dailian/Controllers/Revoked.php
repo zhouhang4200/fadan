@@ -75,10 +75,11 @@ class Revoked extends DailianAbstract implements DailianInterface
     {
         // 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
+
         $amount = $consult->amount;
 
-        if (!$amount || !$consult) {
-            throw new Exception('状态错误!');
+        if (! $amount || ! $consult) {
+            throw new Exception('不存在申诉和协商记录或不存在协商代练费!');
         }
         $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;
@@ -105,11 +106,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                     Asset::handle(new Income($amount, 12, $this->order->no, '协商代练收入', $this->order->gainer_primary_user_id));
 
                     if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
                 }
 
@@ -118,11 +119,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                     Asset::handle(new Income($leftAmount, 7, $this->order->no, '退回协商代练费', $this->order->creator_primary_user_id));
 
                     if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
                 }
                 
@@ -133,11 +134,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -147,11 +148,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -162,11 +163,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($leftSecurity, 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -175,11 +176,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($efficiency, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -188,11 +189,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
                 } else if (bcsub($security, $apiAll) == 0) {
@@ -201,11 +202,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -214,11 +215,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -226,11 +227,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                     Asset::handle(new Income($efficiency, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
                     if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     if ($apiService > 0) {
@@ -238,11 +239,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
                 } else {
@@ -250,11 +251,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                     Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
                     if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('申请失败');
+                        throw new Exception('流水记录写入失败');
                     }
 
                     // 发单  剩余效率保证金收入
@@ -264,11 +265,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -277,11 +278,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Expend($apiService, 3, $this->order->no, '代练手续费支出', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -292,11 +293,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
 
@@ -305,11 +306,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                         Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
 
                         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                            throw new Exception('申请失败');
+                            throw new Exception('流水记录写入失败');
                         }
                     }
                 } 

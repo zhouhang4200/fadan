@@ -70,10 +70,19 @@ class Revoking extends DailianAbstract implements DailianInterface
         if ($this->runAfter) {
             try {
                 $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
 
+                if (! $consult) {
+                    throw new Exception('不存在申诉和协商记录');
+                }
+
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
                     $options = [
-                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                        'oid' => $thirdOrderNo,
                         'selfCancel.pay_price' => $consult->amount,
                         'selfCancel.pay_bond' => $consult->deposit,
                         'selfCancel.content' => $consult->revoke_message,
@@ -84,8 +93,7 @@ class Revoking extends DailianAbstract implements DailianInterface
                     $result = json_decode($result);
                     
                     if ($result && $result->reason) {
-                        $reason = $result->reason;
-                        throw new Exception($reason);
+                        throw new Exception($result->reason);
                     }
                 }
             } catch (Exception $e) {

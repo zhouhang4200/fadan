@@ -70,11 +70,11 @@ class Delete extends DailianAbstract implements DailianInterface
             Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('申请失败');
+                throw new Exception('流水记录写入失败');
             }
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('申请失败');
+                throw new Exception('流水记录写入失败');
             }
         } catch (Exception $e) {
             DB::rollback();

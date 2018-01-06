@@ -69,16 +69,24 @@ class Lock extends DailianAbstract implements DailianInterface
         if ($this->runAfter) {
             try {
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $options = ['oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value')]; // 第三方订单号
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
+
+                    $options = [
+                        'oid' => $thirdOrderNo,
+                    ];
                     // 结果
                     $result = Show91::changeOrderBlock($options);
                     $result = json_decode($result);
 
                     if ($result && $result->reason) {
-                        $reason = $result->reason;
-                        throw new Exception($reason);
+                        throw new Exception($result->reason);
                     }
                 }
+                return true;
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
