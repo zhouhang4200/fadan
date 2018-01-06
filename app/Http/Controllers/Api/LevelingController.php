@@ -182,8 +182,8 @@ class LevelingController
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            if(! $content || ! is_string($content) || strlen($content) > 100 || strlen($content) < 1) {
-                throw new Exception('协商原因为字符串且长度不超过100');
+            if(! $content || ! is_string($content) || strlen($content) > 200 || strlen($content) < 1) {
+                throw new Exception('协商原因为字符串且长度不超过200');
     		} else {
     			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit)) {
                     throw new Exception('代练费和双金必须是数字');
@@ -241,8 +241,8 @@ class LevelingController
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-    		if (! $content || ! is_string($content) || strlen($content) > 100 || strlen($content) < 1) {
-                throw new Exception('申诉原因为字符串且长度不超过100');
+    		if (! $content || ! is_string($content) || strlen($content) > 200 || strlen($content) < 1) {
+                throw new Exception('申诉原因为字符串且长度不超过200');
     		} else {
     			$data = [
 					'user_id' => $order->gainer_primary_user_id,
