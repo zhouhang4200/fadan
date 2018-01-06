@@ -60,7 +60,7 @@ class LevelingController
     {
     	try {          
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
-            
+
 			DailianFactory::choose('receive')->run($order->no, 1, 0);
 
 			return $this->success('发接单');
@@ -89,6 +89,10 @@ class LevelingController
 			if (! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
                 throw new Exception('回传双金和手续费必须是数字');
 			}
+
+            if ($apiDeposit < 0 || $apiService < 0) {
+                throw new Exception('回传双金和手续费必须大于0');
+            }
 
 			$data = [
 				'api_deposit' => $apiDeposit,
@@ -131,29 +135,29 @@ class LevelingController
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-    		if (!$apiAmount) {
-                throw new Exception('回传代练费缺失');
-    		} else {
-    			if (! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
-                    throw new Exception('回传双金和手续费必须是数字');
-    			}
+			if (! is_numeric($apiDeposit) || ! is_numeric($apiService) || ! is_numeric($apiAmount)) {
+                throw new Exception('回传双金、手续费和代练费必须是数字');
+			}
 
-    			$data = [
-					'api_amount' => $apiAmount,
-					'api_deposit' => $apiDeposit,
-					'api_service' => $apiService,
-					'complete' => 1,
-    			];
-                // 更新代练协商申诉表
-    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-                // 同意申诉
-                DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
-                // 手续费写到order_detail中
-                OrderDetail::where('field_name', 'poundage')
-                    ->where('order_no', $order->no)
-                    ->update(['field_value' => $apiService]);
+            if ($apiDeposit < 0 || $apiService < 0 || $apiAmount < 0) {
+                throw new Exception('回传双金、手续费和代练费必须大于0');
+            }
 
-    		}
+			$data = [
+				'api_amount' => $apiAmount,
+				'api_deposit' => $apiDeposit,
+				'api_service' => $apiService,
+				'complete' => 1,
+			];
+            // 更新代练协商申诉表
+			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+            // 同意申诉
+            DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+            // 手续费写到order_detail中
+            OrderDetail::where('field_name', 'poundage')
+                ->where('order_no', $order->no)
+                ->update(['field_value' => $apiService]);
+
     	} catch (Exception $e) {
             DB::rollBack();
             return $this->fail($e->getMessage());
@@ -174,19 +178,19 @@ class LevelingController
     	try {
             $apiAmount = $request->apiAmount;
             $apiDeposit = $request->apiDeposit;
-            $content = $request->content;
+            $content = $request->content ?? '';
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            if(!$content) {
-                throw new Exception('协商原因缺失');
+            if(! $content || ! is_string($content) || strlen($content) > 100 || strlen($content) < 1) {
+                throw new Exception('协商原因为字符串且长度不超过100');
     		} else {
-    			if (!is_numeric($apiAmount)) {
-                    throw new Exception('代练费必须是数字');
+    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit)) {
+                    throw new Exception('代练费和双金必须是数字');
     			}
 
-    			if (!is_numeric($apiDeposit)) {
-                    throw new Exception('双金必须是数字');
+    			if ($apiAmount < 0 || $apiDeposit < 0) {
+                    throw new Exception('代练费和双金必须大于0');
     			}
 
                 $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
@@ -233,12 +237,12 @@ class LevelingController
     {
     	DB::beginTransaction();
     	try {
-            $content = $request->content;
+            $content = $request->content ?? '';
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-    		if (!$content) {
-                throw new Exception('申诉原因缺失');
+    		if (! $content || ! is_string($content) || strlen($content) > 100 || strlen($content) < 1) {
+                throw new Exception('申诉原因为字符串且长度不超过100');
     		} else {
     			$data = [
 					'user_id' => $order->gainer_primary_user_id,
