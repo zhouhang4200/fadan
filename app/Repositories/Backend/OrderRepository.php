@@ -106,7 +106,7 @@ class OrderRepository
                         $v['creator_primary_user_id'],
                         $v['gainer_primary_user_id'],
                         $v['gainer_user']['nickname'] ?? '',
-                        $v['no'],
+                        $v['no']  . "\t",
                         $v['foreign_order_no'],
                         $v['game_name'],
                         $v['goods_name'],
@@ -129,7 +129,7 @@ class OrderRepository
             fclose($out);
         },200, [
             'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="平台订单导出.xls"',
+            'Content-Disposition' => 'attachment; filename="平台订单导出.csv"',
         ]);
         $response->send();
 
