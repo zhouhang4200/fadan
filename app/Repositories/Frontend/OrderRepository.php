@@ -217,12 +217,12 @@ class OrderRepository
     public function levelingDetail($orderNo)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId();
-        $order =  Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
-            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
-        })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
-            $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
-        })->with(['detail', 'foreignOrder', 'levelingConsult'])->first();
-
+//        $order =  Order::orWhere(function ($query) use ($orderNo, $primaryUserId) {
+//            $query->where(['creator_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
+//        })->orWhere(function ($query)  use ($orderNo, $primaryUserId) {
+//            $query->where(['gainer_primary_user_id' => $primaryUserId, 'no' => $orderNo]);
+//        })->with(['detail', 'foreignOrder', 'levelingConsult'])->first();
+$order = Order::with(['detail', 'foreignOrder', 'levelingConsult'])->first();
         return  array_merge($order->detail->pluck('field_value', 'field_name')->toArray(), $order->toArray());
     }
 
