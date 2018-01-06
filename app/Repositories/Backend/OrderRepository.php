@@ -107,7 +107,7 @@ class OrderRepository
                         $v['gainer_primary_user_id'],
                         $v['gainer_user']['nickname'] ?? '',
                         $v['no']  . "\t",
-                        $v['foreign_order_no'],
+                        $v['foreign_order_no']  . "\t",
                         $v['game_name'],
                         $v['goods_name'],
                         $detail['account'] ?? '',
@@ -132,78 +132,5 @@ class OrderRepository
             'Content-Disposition' => 'attachment; filename="平台订单导出.csv"',
         ]);
         $response->send();
-
-
-//        return Excel::create('订单数据', function ($excel) use($order) {
-//            $excel->sheet('Sheet1', function ($sheet) use ($order) {
-//                $sheet->setAutoSize(true);
-//                $sheet->row(1, array(
-//                    '买家',
-//                    '卖家',
-//                    '卖家ID备注',
-//                    '订单号',
-//                    '外部订单号',
-//                    '游戏',
-//                    '商品名',
-//                    '账号',
-//                    '版本',
-//                    '数量',
-//                    '单价',
-//                    '总价',
-//                    '天猫单价',
-//                    '天猫总价',
-//                    '渠道',
-//                    '渠道名',
-//                    '状态',
-//                    '原因',
-//                    '下单时间',
-//                ));
-//                $order->chunk(1000, function ($items) use ($sheet) {
-//                    $orders = $items->toArray();
-//                    $data = [];
-//                    foreach ($orders as $k => $v) {
-//                        $status = '';
-//                        if ($v['status']) {
-//                            $status = config('order.status')[$v['status']];
-//                        }
-//                        if ($v['source']) {
-//                            $v['source'] = config('order.source')[$v['source']];
-//                        }
-//                        $reason = '';
-//                        if (isset($v['history'])) {
-//                            if (in_array($v['status'], [5, 10])) {
-//                                $count = count($v['history']) - 1;
-//                                $temp = explode('，', $v['history'][$count]['description']);
-//                                $reason = $temp[1] ?? '';
-//                            }
-//                        }
-//                        // 订单详情
-//                        $detail = collect($v['detail'])->pluck( 'field_value','field_name');
-//                        $data[] = [
-//                            $v['creator_primary_user_id'],
-//                            $v['gainer_primary_user_id'],
-//                            $v['gainer_user']['nickname'] ?? '',
-//                            $v['no'],
-//                            $v['foreign_order_no'],
-//                            $v['game_name'],
-//                            $v['goods_name'],
-//                            $detail['account'] ?? '',
-//                            $detail['version'] ?? '',
-//                            $v['quantity'],
-//                            $v['price'],
-//                            $v['amount'],
-//                            $v['original_price'],
-//                            $v['original_amount'],
-//                            $v['source'],
-//                            $v['foreign_order']['channel_name'] ?? '',
-//                            $status,
-//                            $reason,
-//                            $v['created_at']
-//                        ];
-//                    }
-//                    $sheet->fromArray($data, null, 'A2', false, false);
-//                });
-//            });
-//        })->export('xls');
     }
 }
