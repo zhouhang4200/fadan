@@ -59,7 +59,7 @@ class UserAssetDailyRepository
                         $v->user_id,
                         $v->realNameIdent->name ?? '',
                         $v->realNameIdent->bank_name ?? '',
-                        $v->realNameIdent->bank_number ?? '',
+                        $v->realNameIdent->bank_number . "\t" ?? '',
                         $v->balance,
                         $v->frozen,
                         $v->total_recharge,
