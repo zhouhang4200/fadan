@@ -22,6 +22,10 @@ class UserWithdrawOrderController extends Controller
         $status    = $request->status;
         $adminRemark    = $request->admin_remark;
 
+        if ($request->export == 1) {
+            $userWithdrawRepository->export($timeStart, $timeEnd, $userId, $no, $status, $adminRemark);
+        }
+
         $dataList = $userWithdrawRepository->getList($timeStart, $timeEnd, $userId, $no, $status, $adminRemark);
 
         return view('backend.finance.user-withdraw-order.index', compact('dataList', 'userId', 'timeStart', 'timeEnd', 'no', 'status', 'adminRemark'));

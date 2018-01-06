@@ -44,6 +44,7 @@
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
+                                <button class="btn btn-primary" type="button"  id="export">导出</button>
                             </div>
                         </div>
                     </form>
@@ -115,6 +116,11 @@
 <script>
 $('#time-start').datepicker();
 $('#time-end').datepicker();
+
+$('#export').click(function () {
+    var url = "{{ route('finance.user-widthdraw-order') }}?export=1&" + $('#search-flow').serialize();
+    window.location.href = url;
+});
 
 layui.use(['layer'], function () {
 
