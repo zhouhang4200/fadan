@@ -8,7 +8,7 @@ class UserAssetDailyRepository
 {
     public function getList($userId, $dateStart, $dateEnd, $pageSize = 20)
     {
-        $dataList = UserAssetDaily::orderBy('id', 'desc')->with('asset')
+        $dataList = UserAssetDaily::orderBy('id', 'desc')->with('realNameIdent')
             ->when(!empty($userId), function ($query) use ($userId) {
                 return $query->where('user_id', $userId);
             })
@@ -57,9 +57,9 @@ class UserAssetDailyRepository
                     fputcsv($out, [
                         $v->date,
                         $v->user_id,
-                        $v->asset->name ?? '',
-                        $v->asset->bank_name ?? '',
-                        $v->asset->bank_number ?? '',
+                        $v->realNameIdent->name ?? '',
+                        $v->realNameIdent->bank_name ?? '',
+                        $v->realNameIdent->bank_number ?? '',
                         $v->balance,
                         $v->frozen,
                         $v->total_recharge,

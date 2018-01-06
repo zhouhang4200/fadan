@@ -16,8 +16,8 @@ class UserAssetDaily extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function asset()
+    public function realNameIdent()
     {
-        return $this->hasOne(UserAsset::class, 'user_id', 'user_id');
+        return $this->hasOne(RealNameIdent::class, 'user_id', 'user_id');
     }
 }
