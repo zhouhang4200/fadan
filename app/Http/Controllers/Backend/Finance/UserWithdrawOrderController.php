@@ -20,16 +20,21 @@ class UserWithdrawOrderController extends Controller
         $timeEnd   = $request->time_end;
         $no        = $request->no;
         $status    = $request->status;
+        $adminRemark    = $request->admin_remark;
 
-        $dataList = $userWithdrawRepository->getList($timeStart, $timeEnd, $userId, $no, $status);
+        if ($request->export == 1) {
+            $userWithdrawRepository->export($timeStart, $timeEnd, $userId, $no, $status, $adminRemark);
+        }
 
-        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'userId', 'timeStart', 'timeEnd', 'no', 'status'));
+        $dataList = $userWithdrawRepository->getList($timeStart, $timeEnd, $userId, $no, $status, $adminRemark);
+
+        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'userId', 'timeStart', 'timeEnd', 'no', 'status', 'adminRemark'));
     }
 
-    public function complete(UserWithdrawOrder $userWithdrawOrder)
+    public function complete(UserWithdrawOrder $userWithdrawOrder, Request $request)
     {
         try {
-            $userWithdrawOrder->complete();
+            $userWithdrawOrder->complete($request->remark);
         }
         catch (Exception $e) {
             return response()->ajax(0, $e->getMessage());
