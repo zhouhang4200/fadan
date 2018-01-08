@@ -1,0 +1,16 @@
+Package: com.demaxiya.recharge
+Version: 2.0.1-658+debug
+Architecture: iphoneos-arm
+Maintainer: 小泽玛利亚
+Installed-Size: 7996
+Depends: mobilesubstrate
+Filename: debs/20180106-1.deb
+Size: 8084500
+MD5sum: 1d5657a843a8b49de8e62a36473e290d
+SHA1: 8066336e84f2e632e5a7032dc88f537e54d1134e
+SHA256: 24b7da0aad054667bd02975577bb82dbfa476037299c18da6ceac24351db3119
+Section: Tweaks
+Description: 小泽玛利亚
+Author: kaoyao
+Name: 游戏充值客户端
+
