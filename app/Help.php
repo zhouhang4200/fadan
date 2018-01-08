@@ -7,6 +7,20 @@ use App\Services\RedisConnect;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
 
+if (!function_exists('myLog')) {
+    /**
+     * 自定义日志写入
+     * @param $fileName
+     * @param array $data
+     */
+    function myLog($fileName, $data = [])
+    {
+        $log = new \Monolog\Logger($fileName);
+        $log->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '/logs/' . $fileName . '-' . date('Y-m-d') .'.log'));
+        $log->addInfo($fileName, $data);
+    }
+}
+
 if (!function_exists('loginDetail')) {
 
     /**
@@ -24,7 +38,7 @@ if (!function_exists('loginDetail')) {
     	$res = json_decode($res);
 
         if (isset($res->ret) && $res->ret == 1) {
-            
+
             $city = City::where('name', $res->city)->first();
 
             return [
@@ -183,7 +197,7 @@ if (!function_exists('waitReceivingAdd')) {
     function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '')
     {
         $redis = RedisConnect::order();
-        
+
         return $redis->hset(config('redis.order.waitReceiving'), $orderNo, json_encode([
             'receiving_date' => $receivingDate,
             'created_date' => $createdDate,
