@@ -9,7 +9,7 @@ use App\Exceptions\DailianException as Exception;
 
 class Arbitrationing extends DailianAbstract implements DailianInterface
 {
-    protected $acceptableStatus = [15]; // 状态：15撤销中
+    protected $acceptableStatus = [13, 14, 15]; // 状态：15撤销中
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
     protected $handledStatus    = 16; // 操作之后状态：16仲裁中
     protected $type             = 20; // 操作：20申请仲裁

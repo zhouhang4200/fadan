@@ -46,7 +46,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id'
+        'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id',
+        'user_name', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
+        'online', 'nickname', 'voucher', 'api_token', 'api_token_expire'
     ];
 
     protected $dates = ['deleted_at'];
@@ -257,5 +259,46 @@ class User extends Authenticatable
     public function revisions()
     {
         return $this->hasMany(Revision::class, 'user_id', 'id');
+    }
+
+    /**
+     * 代练员工管理查询
+     * @param  [type] $query   [description]
+     * @param  [type] $filters [description]
+     * @return [type]          [description]
+     */
+    public static function scopeStaffManagementFilter($query, $filters = [])
+    {
+        if ($filters['userName']) {
+            $query->where('id', $filters['userName']);
+        }
+
+        if ($filters['name']) {
+            $query->where('name', $filters['name']);
+        }
+
+        if ($filters['station']) {
+            $userIds = UserRbacGroup::where('rbac_group_id', $filters['station'])->pluck('user_id');
+            $query->whereIn('id', $userIds);
+        }
+        return $query->where('parent_id', Auth::user()->getPrimaryUserId());
+    }
+
+    public static function staffManagementRules()
+    {
+        return [
+            'name' => 'required|string|max:50|unique:users',
+            'user_name' => 'required|string|max:50|unique:users',
+            'password' => 'required|string|min:6|max:12',
+        ];
+    }
+
+    public static function staffManagementMessages()
+    {
+        return [
+            'name.required' => '账号必须填写',
+            'user_name.required' => '昵称必须填写',
+            'password.required' => '密码必须填写',
+        ];
     }
 }

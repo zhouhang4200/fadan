@@ -76,6 +76,17 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 		Route::post('home-punishes/complain', 'PunishController@complain')->name('home-punishes.complain'); //申诉
 	});
 
+    // 代练员工管理
+    Route::prefix('staff-management')->namespace('Account')->group(function () {
+        Route::get('index', 'staffManagementController@index')->name('staff-management.index'); // 员工列表
+        Route::post('forbidden', 'staffManagementController@forbidden')->name('staff-management.forbidden'); // 子账号禁用
+        Route::get('edit/{id}', 'staffManagementController@edit')->name('staff-management.edit')->where('id', '[0-9]+'); // 员工编辑
+        Route::put('update/{id}', 'staffManagementController@update')->name('staff-management.update')->where('id', '[0-9]+'); // 提交员工编辑
+        Route::delete('delete', 'staffManagementController@delete')->name('staff-management.delete'); // 删除员工
+        Route::get('create', 'staffManagementController@create')->name('staff-management.create');
+        Route::post('store', 'staffManagementController@store')->name('staff-management.store');
+    });
+
     // 商品
     Route::prefix('goods')->namespace('Goods')->group(function () {
         // 商品列表

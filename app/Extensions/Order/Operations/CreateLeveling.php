@@ -217,8 +217,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                                             ->value('third_server_id') ?: '', // QQ服
                     'order.title' => $this->order->detail()->where('field_name', 'game_leveling_title')->value('field_value') ?: '无',
                     'order.price' => $this->order->amount,
-                    'order.bond4safe' => $this->order->detail()->where('field_name', 'security_deposit')->value('field_value') ?: '',
-                    'order.bond4eff' => $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value') ?: '',
+                    'order.bond4safe' => $this->order->detail()->where('field_name', 'security_deposit')->value('field_value') ?: 0,
+                    'order.bond4eff' => $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value') ?: 0,
                     'order.timelimit_days' => $this->order->detail()->where('field_name', 'game_leveling_day')->value('field_value'),
                     'order.timelimit_hour' => $this->order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'),
                     'order.account' => $this->order->detail()->where('field_name', 'account')->value('field_value'),// 游戏账号

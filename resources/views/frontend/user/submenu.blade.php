@@ -23,5 +23,8 @@
         @can('rbacgroups.index')
             <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create', 'rbacgroups.edit']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}"> 权限组管理 </a><div class="arrow"></div></li>
         @endcan
+        
+            <li class="{{ in_array(Route::currentRouteName(), ['staff-management.index', 'staff-management.edit']) ? 'current' : '' }}"><a href="{{ route('staff-management.index') }}"> 员工管理 </a><div class="arrow"></div></li>
+        
     @endif
 </ul>

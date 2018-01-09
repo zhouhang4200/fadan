@@ -36,5 +36,6 @@ Route::namespace('Api')->group(function () {
 
     Route::post('apply/complete', 'LevelingController@applyComplete'); //申请验收
     Route::post('cancel/complete', 'LevelingController@cancelComplete'); //取消验收
+    Route::post('refuse/consult', 'LevelingController@refuseConsult'); //拒绝验收
 });
 

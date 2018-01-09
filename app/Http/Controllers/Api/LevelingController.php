@@ -91,7 +91,7 @@ class LevelingController
 			}
 
             if ($apiDeposit < 0 || $apiService < 0) {
-                throw new Exception('回传双金和手续费必须大于0');
+                throw new Exception('回传双金和手续费必须大于或等于0');
             }
 
 			$data = [
@@ -140,7 +140,7 @@ class LevelingController
 			}
 
             if ($apiDeposit < 0 || $apiService < 0 || $apiAmount < 0) {
-                throw new Exception('回传双金、手续费和代练费必须大于0');
+                throw new Exception('回传双金、手续费和代练费必须大于等于0');
             }
 
 			$data = [
@@ -178,7 +178,7 @@ class LevelingController
     	try {
             $apiAmount = $request->apiAmount;
             $apiDeposit = $request->apiDeposit;
-            $content = $request->content ?? '';
+            $content = $request->content ?? '无';
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
