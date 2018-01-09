@@ -72,6 +72,7 @@ class RegisterController extends Controller
             'qq' => $data['qq'],
             'phone' => $data['phone'],
             'password' => bcrypt($data['password']),
+            'api_token' => str_random(60),
         ]);
     }
 
