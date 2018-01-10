@@ -56,19 +56,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->parent_id == 0) {  
+        if (Auth::user()->parent_id == 0) {
 
             $this->validate($request, User::sonRules(), User::messages());
 
             $data = $request->all();
-
             $data['password'] = bcrypt($request->password);
-
             $data['email'] = Auth::id() . 'email' . rand(1, 100000000) . '@qq.com';
-
             $data['parent_id'] = Auth::id();
-
             $data['type'] = $request->type;
+            $data['api_token'] = str_random(60);
 
             $res = User::create($data);
 
