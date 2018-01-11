@@ -80,10 +80,10 @@ class OffSaled extends DailianAbstract implements DailianInterface
                     ]; 
                     // 结果
                     $result = Show91::grounding($options);
-                    $result = json_decode($result);
+                    $result = json_decode($result, true);
 
-                    if ($result && $result->reason) {
-                        throw new Exception($result->reason);
+                    if ($result && $result['result']) {
+                        throw new Exception($result['reason']);
                     }
                 }
             } catch (Exception $e) {

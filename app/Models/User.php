@@ -301,4 +301,9 @@ class User extends Authenticatable
             'password.required' => '密码必须填写',
         ];
     }
+
+    public function employeeStatistic()
+    {
+        return $this->hasMany(EmployeeStatistic::class);
+    }
 }

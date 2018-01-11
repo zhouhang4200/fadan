@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay',
+        'App\Console\Commands\EmployeeStatistic',
     ];
 
     /**
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('write:user-order-moneys')->daily();
         // 自动确认收货 每五分钟运行一次
         $schedule->command('Order:Confirm')->everyFiveMinutes();
+        $schedule->command('employee:statistic')->daily();
     }
 
     /**

@@ -87,6 +87,13 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('store', 'staffManagementController@store')->name('staff-management.store');
     });
 
+    Route::prefix('statistic')->namespace('Statistic')->group(function () {
+        Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee');
+        Route::get('order', 'StatisticController@order')->name('frontend.statistic.order');
+        Route::get('price', 'StatisticController@price')->name('frontend.statistic.price');
+        Route::get('message', 'StatisticController@message')->name('frontend.statistic.message');
+    });
+
     // 商品
     Route::prefix('goods')->namespace('Goods')->group(function () {
         // 商品列表

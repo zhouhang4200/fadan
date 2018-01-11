@@ -25,6 +25,9 @@
                 @can('frontend.setting.receiving-control.index')
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route('frontend.setting.receiving-control.index') }}">设置</a><div class="arrow"></div></li>
                 @endcan
+
+                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route('frontend.statistic.employee') }}">统计</a><div class="arrow"></div></li>
+                
             </ul>
         </div>
         <div class="user">

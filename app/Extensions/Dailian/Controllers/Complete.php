@@ -51,7 +51,7 @@ class Complete extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            // $this->after();
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -128,15 +128,15 @@ class Complete extends DailianAbstract implements DailianInterface
                     }
 
                     $options = [
-                        'oid' => $thirdOrderNo, // 撤销id 可以用单号
+                        'oid' => $thirdOrderNo, 
                         'p' => '123456',
                     ];
                     // 结果
                     $result = Show91::accept($options);
-                    $result = json_decode($result);
+                    $result = json_decode($result, true);
 
-                    if ($result && $result->reason) {
-                        throw new Exception($result->reason);
+                    if ($result && $result['result']) {
+                        throw new Exception($result['reason']);
                     }
                 }
                 return true;

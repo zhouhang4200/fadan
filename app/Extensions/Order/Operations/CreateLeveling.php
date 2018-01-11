@@ -224,8 +224,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                     'order.account' => $this->order->detail()->where('field_name', 'account')->value('field_value'),// 游戏账号
                     'order.account_pwd' => $this->order->detail()->where('field_name', 'password')->value('field_value'), //账号密码
                     'order.role_name' => $this->order->detail()->where('field_name', 'role')->value('field_value'),//角色名字
-                    'order.order_pwd' => '123456',//订单密码
-                    'order.current_info' => '当前游戏信息',
+                    'order.order_pwd' => '',//订单密码
+                    'order.current_info' => $this->order->detail()->where('field_name', 'game_leveling_instructions')->value('field_value'),
                     'initPic1' => '',
                     'initPic2' => '',
                     'initPic3' => '',
@@ -245,7 +245,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $result = Show91::addOrder($options);
                 $result = json_decode($result, true);
 
-                if ($result && array_key_exists('reason', $result)) {
+                if ($result && $result['result']) {
                     throw new CustomException($result['reason']);
                 } else {
                     $thirdOrderNo = $result['data']; // 第三方订单号

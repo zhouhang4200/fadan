@@ -53,7 +53,7 @@ class Revoked extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
 
-            // $this->after();
+            $this->after();
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
@@ -98,7 +98,7 @@ class Revoked extends DailianAbstract implements DailianInterface
         // 回传双金 + 手续费 == 写入的双金
         $isZero = bcsub($apiAll, $writeDeposit);
 
-        if ($leftAmount >= 0 && bcsub($orderDeposit, $apiAll) >= 0 && $isZero == 0) {       
+        if ($leftAmount >= 0 && bcsub($orderDeposit, $apiAll) >= 0 && $isZero == 0) {    
             DB::beginTransaction();
             try {
                 if ($amount > 0) {
@@ -223,15 +223,17 @@ class Revoked extends DailianAbstract implements DailianInterface
                         }
                     }
 
-                    // 接单 退回全额 效率保证金
-                    Asset::handle(new Income($efficiency, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
+                    if ($efficiency) {
+                        // 接单 退回全额 效率保证金
+                        Asset::handle(new Income($efficiency, 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
 
-                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('流水记录写入失败');
-                    }
+                        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                            throw new Exception('流水记录写入失败');
+                        }
 
-                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('流水记录写入失败');
+                        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                            throw new Exception('流水记录写入失败');
+                        }
                     }
 
                     if ($apiService > 0) {
@@ -247,15 +249,17 @@ class Revoked extends DailianAbstract implements DailianInterface
                         }
                     }
                 } else {
-                    // 发单 全额
-                    Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+                    if ($security) {
+                        // 发单 全额
+                        Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
-                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                        throw new Exception('流水记录写入失败');
-                    }
+                        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                            throw new Exception('流水记录写入失败');
+                        }
 
-                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                        throw new Exception('流水记录写入失败');
+                        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                            throw new Exception('流水记录写入失败');
+                        }
                     }
 
                     // 发单  剩余效率保证金收入
@@ -327,7 +331,32 @@ class Revoked extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
+
+                    $options = [
+                        'oid' => $thirdOrderNo, 
+                        'v' => 1,
+                        'p' => '123456',
+                    ];
+                    // 结果
+                    $result = Show91::confirmSc($options);
+                    $result = json_decode($result, true);
+
+                    if ($result && $result['result']) {
+                        throw new Exception($result['reason']);
+                    }
+                }
+                LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
+                return true;
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
         }
     }
 }

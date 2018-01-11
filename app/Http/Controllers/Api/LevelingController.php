@@ -61,7 +61,7 @@ class LevelingController
     	try {          
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('receive')->run($order->no, 1, 0);
+			DailianFactory::choose('receive')->run($order->no, 29, 0);
 
 			return $this->success('发接单');
     	} catch (Exception $e) {
@@ -102,7 +102,7 @@ class LevelingController
   
             LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 
-            DailianFactory::choose('agreeRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+            DailianFactory::choose('agreeRevoke')->run($order->no, 29, 0);
             // 手续费写到order_detail中
             OrderDetail::where('field_name', 'poundage')
                 ->where('order_no', $order->no)
@@ -152,7 +152,7 @@ class LevelingController
             // 更新代练协商申诉表
 			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
             // 同意申诉
-            DailianFactory::choose('arbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+            DailianFactory::choose('arbitration')->run($order->no, 29, 0);
             // 手续费写到order_detail中
             OrderDetail::where('field_name', 'poundage')
                 ->where('order_no', $order->no)
@@ -182,7 +182,7 @@ class LevelingController
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            if(! $content || ! is_string($content) || strlen($content) > 200 || strlen($content) < 1) {
+            if(! $content || strlen($content) > 200 || strlen($content) < 1) {
                 throw new Exception('协商原因为字符串且长度不超过200');
     		} else {
     			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit)) {
@@ -208,7 +208,7 @@ class LevelingController
                 }
 
                 $data = [
-                    'user_id' => $order->gainer_primary_user_id,
+                    'user_id' => 29,
                     'order_no' => $order->no,
                     'amount' => $apiAmount,
                     'deposit' => $apiDeposit,
@@ -217,7 +217,7 @@ class LevelingController
                 ];
 
                 LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-    			DailianFactory::choose('revoke')->run($order->no, $order->gainer_primary_user_id, 0);	
+    			DailianFactory::choose('revoke')->run($order->no, 29, 0);	
     		}
     	} catch (Exception $e) {
             DB::rollBack();
@@ -241,17 +241,17 @@ class LevelingController
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-    		if (! $content || ! is_string($content) || strlen($content) > 200 || strlen($content) < 1) {
+    		if (! $content || strlen($content) > 200 || strlen($content) < 1) {
                 throw new Exception('申诉原因为字符串且长度不超过200');
     		} else {
     			$data = [
-					'user_id' => $order->gainer_primary_user_id,
+					'user_id' => 29,
     				'complain' => 2,
     				'complain_message' => $content,
     			];
 
     			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-    			DailianFactory::choose('applyArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
+    			DailianFactory::choose('applyArbitration')->run($order->no, 29, 0);
     		}
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -273,9 +273,9 @@ class LevelingController
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
             // 会变成锁定
-            DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
+            DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
             // 91的要解除锁定
-			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id);
+			DailianFactory::choose('cancelLock')->run($order->no, 29);
 
     	} catch (Exception $e) {
             DB::rollBack();
@@ -295,9 +295,9 @@ class LevelingController
     	try {    
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            DailianFactory::choose('cancelArbitration')->run($order->no, $order->gainer_primary_user_id, 0);
-            DailianFactory::choose('cancelRevoke')->run($order->no, $order->gainer_primary_user_id, 0);
-			DailianFactory::choose('cancelLock')->run($order->no, $order->gainer_primary_user_id, 0);
+            DailianFactory::choose('cancelArbitration')->run($order->no, 29, 0);
+            DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
+			DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
 
             return $this->success('已取消申诉');
     	} catch (Exception $e) {
@@ -316,7 +316,7 @@ class LevelingController
     	try {      
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('forceRevoke')->run($order->no, $order->gainer_primary_user_id);
+			DailianFactory::choose('forceRevoke')->run($order->no, 29);
 
             return $this->success('已强制协商');
     	} catch (Exception $e) {
@@ -334,7 +334,7 @@ class LevelingController
     	try {      
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('abnormal')->run($order->no, $order->gainer_primary_user_id);
+			DailianFactory::choose('abnormal')->run($order->no, 29);
 
             return $this->success('已将订单标记为异常');
     	} catch (Exception $e) {
@@ -353,7 +353,7 @@ class LevelingController
     	try {           
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('cancelAbnormal')->run($order->no, $order->gainer_primary_user_id);
+			DailianFactory::choose('cancelAbnormal')->run($order->no, 29);
 
             return $this->success('已取消异常订单');
     	} catch (Exception $e) {
@@ -371,7 +371,7 @@ class LevelingController
     	try {   
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('applyComplete')->run($order->no, $order->gainer_primary_user_id);
+			DailianFactory::choose('applyComplete')->run($order->no, 29);
 
             return $this->success('已申请验收');
     	} catch (Exception $e) {
@@ -389,7 +389,7 @@ class LevelingController
         try {       
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            DailianFactory::choose('cancelComplete')->run($order->no, $order->gainer_primary_user_id);
+            DailianFactory::choose('cancelComplete')->run($order->no, 29);
 
             return $this->success('已取消验收');
         } catch (Exception $e) {
