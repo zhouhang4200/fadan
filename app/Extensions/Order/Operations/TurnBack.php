@@ -72,7 +72,8 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
             $carbon = new Carbon;
             $minutes = $carbon->diffInMinutes($this->order->created_at);
 
-            if ($minutes >= 40 && !in_array($this->order->creator_primary_user_id, [8311, 8111])) {
+            $sendUser = $this->order->creator_primary_user_id ?? 0;
+            if ($minutes >= 40 && !in_array($sendUser, [8311, 8111])) {
                 // 超过40分钟失败
                 Order::handle(new Cancel($this->order->no, 0));
                 $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
@@ -93,7 +94,7 @@ class TurnBack extends \App\Extensions\Order\Operations\Base\Operation
                     Carbon::now('Asia/Shanghai')->addMinutes(1)->toDateTimeString(),
                     $this->order->created_at->toDateTimeString(),
                     '',
-                    $this->order->creator_primary_user_id
+                    $sendUser
                 );
             }
             // 如果订单存旺旺并关取了商户ID则删除关联关系
