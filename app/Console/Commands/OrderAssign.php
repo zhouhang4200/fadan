@@ -51,7 +51,8 @@ class OrderAssign extends Command
                 $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
-                if ($minutes >= 40 && !in_array($data->creator_primary_user_id, [8311, 8111])) {
+                $sendUser = $data->creator_primary_user_id ?? 0;
+                if ($minutes >= 40 && !in_array($sendUser, [8311, 8111])) {
                     try {
                         Order::handle(new Cancel($orderNo, 0));
                     } catch (CustomException $exception) {
@@ -137,7 +138,7 @@ class OrderAssign extends Command
                                 date('Y-m-d H:i:s', $currentAfter),
                                 $data->created_date,
                                 $data->wang_wang,
-                                $data->creator_primary_user_id
+                                $data->creator_primary_user_id ?? 0
                             );
                             continue;
                         }
