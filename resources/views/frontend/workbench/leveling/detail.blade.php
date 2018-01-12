@@ -491,7 +491,6 @@
             if (operation == 'wangWang') {
                 var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
                 window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
-                return false;
             }
             if (operation == 'sendMessage') {
                 layer.open({
@@ -501,7 +500,6 @@
                     area: ['500px', '280px'],
                     content: $('.send-message')
                 });
-                return false
             }
             if (operation == 'revoke') {
                 layer.open({
@@ -511,22 +509,24 @@
                     area: ['650px', '550px'],
                     content: $('.consult')
                 });
+
                 form.on('submit(consult)', function(data){
                     $.post("{{ route('frontend.workbench.leveling.consult') }}", {
                         orderNo:orderNo,
                         data:data.field
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
                         } else {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
                         }
-
                     });
-                    layer.closeAll();
-                    return false;
                 });
-
+                return false;
             } else if (operation == 'applyArbitration') {
                 layer.open({
                     type: 1,
@@ -541,15 +541,16 @@
                         data:data.field
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
 
                         } else {
-                            layer.alert(result.message);
-
+                            layer.alert(result.message,function () {
+                                window.location.reload()
+                            });
                         }
                     });
-                    layer.closeAll();
-                    return false;
                 });
 
             } else if (operation == 'delete') {
@@ -559,13 +560,15 @@
                         keyWord:operation
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
                         } else {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
                         }
                     });
-
-                    layer.close(index);
                 });
             } else if(operation == 'complete') {
                 layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
@@ -574,9 +577,13 @@
                         keyWord:operation
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message);
+                            layer.alert(result.message,function () {
+                                window.location.reload()
+                            });
                         } else {
-                            layer.alert(result.message);
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
                         }
                     });
                     layer.close(index);
@@ -588,18 +595,16 @@
                 }, function (result) {
                     if (result.status == 1) {
                         layer.alert(result.message, function () {
-                            layer.closeAll();
+                            window.location.reload()
                         });
 
                     } else {
                         layer.alert(result.message, function () {
-                            layer.closeAll();
+                            window.location.reload()
                         });
                     }
-
                 });
             }
-
         });
 
         // 修改
