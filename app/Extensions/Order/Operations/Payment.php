@@ -64,7 +64,9 @@ class Payment extends \App\Extensions\Order\Operations\Base\Operation
             // 写入待分配订单hash
             waitReceivingAdd($this->order->no,
                 Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
-                $this->order->created_at->toDateTimeString()
+                $this->order->created_at->toDateTimeString(),
+                '',
+                $this->order->creator_primary_user_id
             );
         }
     }
