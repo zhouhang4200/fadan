@@ -37,6 +37,12 @@
         .layui-form-checkbox[lay-skin=primary] {
             height: 6px !important;
         }
+        #info .layui-form-item .layui-input-block{
+            margin-left: 200px;
+        }
+        #info .layui-form-item .layui-form-label{
+            width: 160px;
+        }
     </style>
 @endsection
 

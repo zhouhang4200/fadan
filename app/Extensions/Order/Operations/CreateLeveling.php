@@ -185,8 +185,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
      */
     public function after()
     {
-        if ($this->runAfter && env('APP_ENV') != 'local') {
-//        if ($this->runAfter) {
+//        if ($this->runAfter && env('APP_ENV') != 'local') {
+        if ($this->runAfter) {
             DB::beginTransaction();
             try {
                 // 我们的服
