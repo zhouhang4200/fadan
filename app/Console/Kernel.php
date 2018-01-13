@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay',
         'App\Console\Commands\EmployeeStatistic',
+        'App\Console\Commands\OrderStatistic',
     ];
 
     /**
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         // 自动确认收货 每五分钟运行一次
         $schedule->command('Order:Confirm')->everyFiveMinutes();
         $schedule->command('employee:statistic')->daily();
+        $schedule->command('order:statistic')->daily();
     }
 
     /**

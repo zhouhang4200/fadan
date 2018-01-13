@@ -50,7 +50,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
 
-            // $this->after();
+            $this->after();
 
         } catch (Exception $e) {
             DB::rollBack();

@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use Image;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
@@ -47,7 +48,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            // $this->after();
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -84,14 +85,14 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         'oid' => $thirdOrderNo,
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => '',
+                        'pic1' => imagepng(url('frontend/images/logo.png')),
                         'pic2' => '',
                         'pic3' => '',
                     ];
                     // 结果
                     $result = Show91::addappeal($options);
                     $result = json_decode($result, true);
-
+                    dd($result);
                     if ($result && $result['result']) {
                         throw new Exception($result['reason']);
                     }

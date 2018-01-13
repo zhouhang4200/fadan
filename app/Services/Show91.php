@@ -23,26 +23,45 @@ class Show91
 
         $options = array_merge($params, $options);
 
-        if (in_array($url, ['http://www.show91.com/oauth/addOrder'])) {
-
-            $curl = curl_init();  //初始化
-            curl_setopt($curl, CURLOPT_URL, $url);  //设置url
+        if (in_array($url, ['http://www.show91.com/oauth/addOrder', 'http://www.show91.com/oauth/addappeal'])) {
+            $header[] = "Content-type: multipart/form-data";
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
             curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $options);  //设置post的数据
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
             $result = curl_exec($curl);
             curl_close($curl);
             return $result;
+        } elseif (in_array($url, ['http://www.show91.com/oauth/addappeal'])) {
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"sign\"\r\n\r\n89abb1dfef56cdf21c315b3bc3670c5d\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"oid\"\r\n\r\nORD180113103534538973\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"appeal.title\"\r\n\r\n1\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"appeal.content\"\r\n\r\n1\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"account\"\r\n\r\nEFAE2BC69B8D4E16A3649992F031BDDB\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"pic1\"; filename=\"C:\\Users\\Administrator\\Desktop\\aa.jpg\"\r\nContent-Type: image/png\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"pic2\"\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"pic3\"\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+                "postman-token: ac855087-11f8-7534-c563-ee79654de0de"
+              ),
+            ));
+            $err = curl_error($curl);
+            $response = curl_exec($curl);
+            curl_close($curl);
+            return $response;
         } else {
             $client = new Client;
             $response = $client->request($method, $url, [
                 'query' => $options,
             ]);
-
             return $response->getBody();
         }
-
-
     }
 
     /**

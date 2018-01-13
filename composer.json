@@ -10,6 +10,7 @@
         "fideloper/proxy": "~3.3",
         "germey/geetest": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
+        "intervention/image": "^2.4",
         "kaizer666/laravel-union-paginator": "^0.3.7",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",

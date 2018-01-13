@@ -59,8 +59,8 @@
             <tbody>
                 @forelse($datas as $data)
                     <tr>
-                        <td>{{ $data->user->user_name }}</td>
-                        <td>{{ $data->user->name }}</td>
+                        <td>{{ $data->user_name }}</td>
+                        <td>{{ $data->name }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->send_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
@@ -104,68 +104,13 @@
             laydate.render({
                 elem: '#test2'
             });
-            // 账号启用禁用
-            form.on('switch(open)', function(data){
-                var id = data.elem.getAttribute('lay-data');
-                console.log(id);
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('staff-management.forbidden') }}",
-                    data:{id:id},
-                    success: function (data) {
-                        if (data.status) {
-                            layer.msg(data.message, {icon: 6, time:1000});
-                            
-                        } else {
-                            layer.msg('启用失败', {icon: 5, time:1500}); 
-                        }
-                    }
-                });
-            });
+           
             //页面显示修改结果
-            var succ = "{{ session('succ') }}";
-            var fail = "{{ session('fail') }}";
             var empty = "{{ session('empty') }}";
 
-            if (succ) {
-                layer.msg(succ, {icon: 6, time:1000});
-            }
-            if (fail) {
-                layer.msg(fail, {icon: 5, time:1000});
-            }
             if (empty) {
                 layer.msg(empty, {icon: 5, time:1000});
             }
-            // 删除
-            form.on('submit(delete)', function (data) {
-                var id = data.elem.getAttribute('lay-data');
-                console.log(id);
-                layer.confirm('确认删除吗？', {
-                      btn: ['确认', '取消'] 
-                      ,title: '提示'
-                      ,icon: 3
-                    }, function(index, layero){
-                        $.ajax({
-                            type: 'DELETE',
-                            url: "{{ route('staff-management.delete') }}",
-                            data:{id:id},
-                            success: function (data) {
-                                if (data.status) {
-                                    layer.msg(data.message, {icon: 6, time:1000});
-                                    
-                                } else {
-                                    layer.msg(data.message, {icon: 5, time:1500}); 
-                                }
-                            }
-                        });
-                        layer.closeAll();
-                        window.location.href="{{ route('staff-management.index') }}";
-                    }, function(index){
-                        layer.closeAll();
-                    });
-          
-                return false;
-            });
         });
     </script>
 @endsection

@@ -49,9 +49,11 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
 
-            // $this->after();
+            $this->after();
             
-            (new Lock)->run($orderNo, $userId);
+            if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
+                (new Lock)->run($orderNo, $userId);
+            }
     	} catch (Exception $e) {
     		DB::rollBack();
 

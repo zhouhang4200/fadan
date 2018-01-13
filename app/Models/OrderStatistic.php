@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EmployeeStatistic extends Model
+class OrderStatistic extends Model
 {
     protected $fillable = [
-        'user_id', 'parent_id', 'name', 'user_name', 'complete_order_count', 
-        'send_order_amount', 'revoke_order_count', 'arbitrate_order_count', 'profit', 'date'
+    	'date', 'send_order_count', 'receive_order_count', 'complete_order_count', 'complete_order_rate', 'revoke_order_count', 'arbitrate_order_count', 'three_status_original_amount', 'complete_order_amount', 'two_status_payment', 'two_status_income', 'poundage', 'profit'
     ];
 
     public function user()
@@ -16,22 +15,8 @@ class EmployeeStatistic extends Model
     	return $this->belongsTo(User::class);
     }
 
-    public function children()
-    {
-    	return $this->hasMany(static::class, 'parent_id');
-    }
-
-    public function parent()
-    {
-    	return $this->belongsTo(static::class, 'parent_id');
-    }
-
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['userName']) {
-            $query->where('user_id', $filters['userName']);
-        }
-
         if (isset($filters['startDate']) && empty($filters['endDate'])) {
             $query->where('date', '>=', $filters['startDate']);
         }

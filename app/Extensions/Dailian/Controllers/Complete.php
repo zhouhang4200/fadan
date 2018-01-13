@@ -37,7 +37,6 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->getObject();
 
             $this->beforeHandleStatus = $this->getOrder()->status;
-
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性

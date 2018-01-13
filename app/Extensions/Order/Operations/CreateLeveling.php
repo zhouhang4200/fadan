@@ -153,7 +153,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     public function updateAsset()
     {
         try {
-            Asset::handle(new Expend($this->order->amount, 76, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+            Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
         } catch (CustomException $customException) {
             throw new CustomException('代练价格不能大于账户余额');
         }

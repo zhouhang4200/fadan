@@ -7,6 +7,7 @@ use Auth;
 use Excel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\OrderStatistic;
 use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
 
@@ -36,15 +37,64 @@ class StatisticController extends Controller
     		if ($datas->count() < 1) {
     			return redirect(route('frontend.statistic.employee'))->withInput()->with('empty', '数据为空!');
     		}
-            return $this->export($filters);
+            return $this->exportEmployee($filters);
         }
 
     	return view('frontend.statistic.employee', compact('datas', 'userName', 'startDate', 'endDate', 'children', 'fullUrl', 'totalData'));
     }
 
-    public function order()
+    public function order(Request $request)
     {
+    	$startDate = $request->start_date;
+    	$endDate = $request->end_date;
+    	$fullUrl = $request->fullUrl();
+    	$filters = compact('startDate', 'endDate');
 
+    	$datas = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+				->filter($filters)
+				->select(DB::raw('user_id, date, 
+					sum(send_order_count) as send_order_count,
+				 	sum(receive_order_count) as receive_order_count, 
+				 	sum(complete_order_count) as complete_order_count,
+				 	sum(complete_order_rate) as complete_order_rate, 
+				 	sum(revoke_order_count) as revoke_order_count, 
+					sum(arbitrate_order_count) as arbitrate_order_count,
+					sum(three_status_original_amount) as three_status_original_amount,
+					sum(complete_order_amount) as complete_order_amount,
+					sum(two_status_payment) as two_status_payment,
+					sum(two_status_income) as two_status_income,
+					sum(poundage) as poundage,
+					sum(profit) as profit
+				'))
+				->groupBy('date')
+				->paginate(config('frontend.page'));
+
+		$totalData = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+				->filter($filters)
+				->select(DB::raw('user_id,
+					sum(send_order_count) as total_send_order_count,
+				 	sum(receive_order_count) as total_receive_order_count, 
+				 	sum(complete_order_count) as total_complete_order_count,
+				 	sum(complete_order_rate) as total_complete_order_rate, 
+				 	sum(revoke_order_count) as total_revoke_order_count, 
+					sum(arbitrate_order_count) as total_arbitrate_order_count,
+					sum(three_status_original_amount) as total_three_status_original_amount,
+					sum(complete_order_amount) as total_complete_order_amount,
+					sum(two_status_payment) as total_two_status_payment,
+					sum(two_status_income) as total_two_status_income,
+					sum(poundage) as total_poundage,
+					sum(profit) as total_profit
+				'))
+				->first();
+
+		if ($request->export) {
+    		if ($datas->count() < 1) {
+    			return redirect(route('frontend.statistic.order'))->withInput()->with('empty', '数据为空!');
+    		}
+            return $this->exportOrder($filters);
+        }
+
+    	return view('frontend.statistic.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
     }
 
     public function price()
@@ -57,7 +107,7 @@ class StatisticController extends Controller
 
     }
 
-    public function export($filters)
+    public function exportEmployee($filters)
     {
         try {
             $datas = EmployeeStatistic::where('parent_id', Auth::user()->getPrimaryUserId())
@@ -93,7 +143,7 @@ class StatisticController extends Controller
 
             $chunkDatas = array_chunk(array_reverse($datas->toArray()), 1000);
 
-            Excel::create(iconv('UTF-8', 'gbk', '奖惩情况'), function ($excel) use ($chunkDatas, $title, $totalData) {
+            Excel::create(iconv('UTF-8', 'gbk', '员工统计'), function ($excel) use ($chunkDatas, $title, $totalData) {
 
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
@@ -124,4 +174,119 @@ class StatisticController extends Controller
 
         }
     }
+
+    public function exportOrder($filters)
+    {
+        try {
+            $datas =OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+				->filter($filters)
+				->select(DB::raw('user_id, date, 
+					sum(send_order_count) as send_order_count,
+				 	sum(receive_order_count) as receive_order_count, 
+				 	sum(complete_order_count) as complete_order_count,
+				 	sum(complete_order_rate) as complete_order_rate, 
+				 	sum(revoke_order_count) as revoke_order_count, 
+					sum(arbitrate_order_count) as arbitrate_order_count,
+					sum(three_status_original_amount) as three_status_original_amount,
+					sum(complete_order_amount) as complete_order_amount,
+					sum(two_status_payment) as two_status_payment,
+					sum(two_status_income) as two_status_income,
+					sum(poundage) as poundage,
+					sum(profit) as profit,
+				'))
+				->groupBy('date')
+				->get();
+
+            $totalData = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+				->filter($filters)
+				->select(DB::raw('user_id,
+					sum(send_order_count) as total_send_order_count,
+				 	sum(receive_order_count) as total_receive_order_count, 
+				 	sum(complete_order_count) as total_complete_order_count,
+				 	sum(complete_order_rate) as total_complete_order_rate, 
+				 	sum(revoke_order_count) as total_revoke_order_count, 
+					sum(arbitrate_order_count) as total_arbitrate_order_count,
+					sum(three_status_original_amount) as total_three_status_original_amount,
+					sum(complete_order_amount) as total_complete_order_amount,
+					sum(two_status_payment) as total_two_status_payment,
+					sum(two_status_income) as total_two_status_income,
+					sum(poundage) as total_poundage,
+					sum(profit) as total_profit,
+				'))
+				->first();
+            // 标题
+            $title = [
+                '发布时间',
+                '发布单数',
+                '被接单数',
+                '已结算单数',
+                '已结算占比',
+                '已撤销单数',
+                '已仲裁单数',
+                '已结算/撤销/仲裁来源价格',
+                '已结算单发单金额',
+                '撤销/仲裁支付金额',
+                '撤销/仲裁获得赔偿',
+                '手续费',
+                '利润',
+            ];
+
+            $totalData = [
+            	'总计',
+            	$totalData->total_send_order_count,
+			 	$totalData->total_receive_order_count, 
+			 	$totalData->total_complete_order_count,
+			 	$totalData->total_complete_order_rate, 
+			 	$totalData->total_revoke_order_count, 
+				$totalData->total_arbitrate_order_count,
+				$totalData->total_three_status_original_amount,
+				$totalData->total_complete_order_amount,
+				$totalData->total_two_status_payment,
+				$totalData->total_two_status_income,
+				$totalData->total_poundage,
+				$totalData->total_profit,
+            ];
+
+
+            $chunkDatas = array_chunk(array_reverse($datas->toArray()), 1000);
+
+            Excel::create(iconv('UTF-8', 'gbk', '订单统计'), function ($excel) use ($chunkDatas, $title, $totalData) {
+
+                foreach ($chunkDatas as $chunkData) {
+                    // 内容
+                    $datas = [];
+                    foreach ($chunkData as $key => $data) {
+                    	$user = User::find($data['user_id']);
+                        $datas[] = [
+                            $data['date'] ?? '--',
+                            $data['send_order_count'] ?? '--',
+						 	$data['receive_order_count'] ?? '--', 
+						 	$data['complete_order_count'] ?? '--',
+						 	$data['complete_order_rate'] ?? '--', 
+						 	$data['revoke_order_count'] ?? '--', 
+							$data['arbitrate_order_count'] ?? '--',
+							$data['three_status_original_amount'] ?? '--',
+							$data['complete_order_amount'] ?? '--',
+							$data['two_status_payment'] ?? '--',
+							$data['two_status_income'] ?? '--',
+							$data['poundage'] ?? '--',
+							$data['profit'] ?? '--',
+                        ];
+                    }
+                    // 将标题加入到数组
+                    array_unshift($datas, $title);
+                    array_push($datas, $totalData);
+                    // 每页多少数据
+                    $excel->sheet("页数", function ($sheet) use ($datas) {
+                        $sheet->rows($datas);
+                    });
+                }
+            })->export('xls');
+
+        } catch (Exception $e) {
+
+        }
+    }
 }
+
+

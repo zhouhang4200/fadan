@@ -302,8 +302,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function employeeStatistic()
+    public function employeeStatistics()
     {
         return $this->hasMany(EmployeeStatistic::class);
+    }
+
+    public function orderStatistics()
+    {
+        return $this->hasMany(OrderStatistic::class);
     }
 }

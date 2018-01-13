@@ -33,3 +33,4 @@ return [
 		'addLimitTime2' => 'http://www.show91.com/oauth/addLimitTime2', // 增加代练时间，商家用
 	],
 ];
+
