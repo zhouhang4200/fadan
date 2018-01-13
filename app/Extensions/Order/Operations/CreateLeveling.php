@@ -245,6 +245,10 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $result = Show91::addOrder($options);
                 $result = json_decode($result, true);
 
+                if (! $result) {
+                    throw new CustomException('外部接口错误,请重试!');
+                }
+
                 if ($result && $result['result']) {
                     throw new CustomException($result['reason']);
                 } else {

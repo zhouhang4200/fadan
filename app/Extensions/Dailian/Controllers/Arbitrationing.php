@@ -85,7 +85,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         'oid' => $thirdOrderNo,
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => imagepng(url('frontend/images/logo.png')),
+                        'pic1' => base64_encode(file_get_contents(url('frontend/images/logo.png'))),
                         'pic2' => '',
                         'pic3' => '',
                     ];
@@ -93,6 +93,10 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     $result = Show91::addappeal($options);
                     $result = json_decode($result, true);
                     dd($result);
+                    if (! $result) {
+                        throw new CustomException('外部接口错误,请重试!');
+                    }
+                
                     if ($result && $result['result']) {
                         throw new Exception($result['reason']);
                     }

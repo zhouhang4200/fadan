@@ -354,6 +354,10 @@ class Revoked extends DailianAbstract implements DailianInterface
                     $result = Show91::confirmSc($options);
                     $result = json_decode($result, true);
 
+                    if (! $result) {
+                        throw new CustomException('外部接口错误,请重试!');
+                    }
+
                     if ($result && $result['result']) {
                         throw new Exception($result['reason']);
                     }
