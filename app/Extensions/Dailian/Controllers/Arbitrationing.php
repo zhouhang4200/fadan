@@ -92,7 +92,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     // 结果
                     $result = Show91::addappeal($options);
                     $result = json_decode($result, true);
-                    dd($result);
+                    // dd($result);
                     if (! $result) {
                         throw new CustomException('外部接口错误,请重试!');
                     }

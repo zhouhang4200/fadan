@@ -34,7 +34,7 @@
         text-indent: 20px;
     }
     .info-left .layui-form-item .layui-form-label{
-        width: 80px;
+        width: 85px;
         padding: 0;
         height: 25px;
         line-height: 30px;
@@ -127,40 +127,48 @@
         </div>
         @if ($user->parent_id == 0)
         <div class="layui-form-item">
+            <div class="layui-inline" >
+                <label class="layui-form-label">昵称 ：</label>
+                <div class="layui-input-inline" >
+                    {{ $user->user_name }}
+                </div>
+            </div>
             <div class="layui-inline">
                 <label class="layui-form-label">年龄 ：</label>
                 <div class="layui-input-inline">
                     {{ $user->age }}
                 </div>
             </div>
-            <div class="layui-inline" style="width:270px;">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" >
                 <label class="layui-form-label">QQ ：</label>
-                <div class="layui-input-inline" style="margin-right:0;">
+                <div class="layui-input-inline" >
                     {{ $user->qq }}
                 </div>
             </div>
-        </div>
-        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">微信 ：</label>
                 <div class="layui-input-inline">
                     {{ $user->wechat }}
                 </div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">电话 ：</label>
                 <div class="layui-input-inline">
                     {{ $user->phone }}
                 </div>
             </div>
-        </div>
-        <div class="layui-form-item">
             <div class="layui-inline" >
-                <label class="layui-form-label">旺旺号 ：</label>
-                <div class="layui-input-inline" style="margin-right:0;">
+                <label class="layui-form-label">店铺旺旺号 ：</label>
+                <div class="layui-input-inline">
                     {{ $user->store_wang_wang }}
                 </div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline" >
                 <label class="layui-form-label">实名认证 ：</label>
                 <div class="layui-input-inline" style="margin-right:0;">

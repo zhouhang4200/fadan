@@ -421,6 +421,7 @@ class IndexController extends Controller
         $orderNo = $request->orderNo; // 订单号
         $userId = Auth::id(); // 操作人id
 
+        DB::beginTransaction();
         try {
             // 加急 取消加急
             $bool = false;
@@ -434,13 +435,12 @@ class IndexController extends Controller
             } else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
-
-            if ($bool) {
-                return response()->json(['status' => 1, 'message' => '操作成功!']);
-            }
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
+        DB::commit();
+        return response()->json(['status' => 1, 'message' => '操作成功!']);
     }
 
     /**
