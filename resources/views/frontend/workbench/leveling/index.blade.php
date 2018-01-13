@@ -422,7 +422,7 @@
                 overflow: unset;
             }
             .layui-table-mend {
-                width：0 !important;
+                width：0px !important;
             }
         </style>
     </script>
@@ -454,11 +454,11 @@
                     {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
-                    {field: 'cstomer_service_remark', title: '客服备注', width: '250'},
+                    {field: 'cstomer_service_remark', title: '客服备注', width: '150'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
                     {field: 'game_leveling_type', title: '代练类型', width: '100'},
-                    {title: '账号/密码', templet: '#accountPasswordTemplate', width: '200'},
+                    {title: '账号/密码', templet: '#accountPasswordTemplate', width: '100'},
                     {field: 'role', title: '角色名称', width: '100'},
                     {field: 'status_text', title: '订单状态', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},

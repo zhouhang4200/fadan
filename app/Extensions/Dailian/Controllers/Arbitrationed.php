@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
 use App\Extensions\Asset\Expend;
@@ -307,6 +308,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                }
 	                }
                 }
+                // 写入获得金额
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $apiAll);
+                // 写入手续费
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
 	        } catch (Exception $e) {
 	            DB::rollBack();
 	        }
