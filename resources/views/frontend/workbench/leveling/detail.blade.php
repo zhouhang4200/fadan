@@ -92,7 +92,7 @@
                             @elseif ($detail['consult'] == 2 && ($detail['status'] == 15 || $detail['status'] == 16))
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
                             @endif
-
+                        @else
                             @if ($detail['consult'] == 2 && $detail['status'] == 15)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                             @elseif ($detail['consult'] == 1 && ($detail['status'] == 15 || $detail['status'] == 16))
@@ -197,7 +197,7 @@
                                                 @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                 @else
-                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly" disabled="disabled">
+                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly"">
                                                 @endif
 
                                             @endif
@@ -517,13 +517,14 @@
                     }, function (result) {
                         if (result.status == 1) {
                             layer.alert(result.message, function () {
-                                window.location.reload()
+//                                window.location.reload()
                             });
                         } else {
                             layer.alert(result.message, function () {
-                                window.location.reload()
+//                                window.location.reload()
                             });
                         }
+                        return false;
                     });
                 });
                 return false;

@@ -2,6 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Models\OrderDetail;
+use App\Models\UserOrderDetail;
+use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
 use App\Extensions\Asset\Income;
@@ -18,15 +21,14 @@ class Revoked extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 19; // 状态：19 已撤销
     protected $type             = 24; // 操作：24同意撤销
 
-	/**
+    /**
      * [run 同意撤销 -> 已撤销]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费]
+     * @internal param $ [type] $apiDeposit  [回传双金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -65,11 +67,11 @@ class Revoked extends DailianAbstract implements DailianInterface
 
     /**
      * 流水
-     * @param  [type] $amount [协商代练费]
-     * @param  [type] $deposit [回传双金费]
-     * @param  [type] $apiService [回传手续费]
-     * @param  [type] $writeDeposit [协商的双金]
-     * @return [bool]             [流水记录]
+     * @throws Exception
+     * @internal param $ [type] $amount [协商代练费]
+     * @internal param $ [type] $deposit [回传双金费]
+     * @internal param $ [type] $apiService [回传手续费]
+     * @internal param $ [type] $writeDeposit [协商的双金]
      */
     public function updateAsset()
     {
@@ -317,7 +319,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                             throw new Exception('流水记录写入失败');
                         }
                     }
-                } 
+                }
+                // 写入获得金额
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $apiAll);
+                // 写入手续费
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
             } catch (Exception $e) {
                 DB::rollBack();
                 throw new Exception($e->getMessage());

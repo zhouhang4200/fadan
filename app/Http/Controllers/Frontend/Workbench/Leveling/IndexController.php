@@ -110,18 +110,16 @@ class IndexController extends Controller
                 $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
 
                 // 增加数据
-                $orderCurrent['get_amount'] = ($orderCurrent['efficiency_deposit'] ?? 0) + ($orderCurrent['security_deposit'] ?? 0);
                 $orderCurrent['payment_amount'] = '--'; // 待取值
 
-                $days = $orderCurrent['game_leveling_require_day'] ?? 0;
-                $hours = $orderCurrent['game_leveling_require_hour'] ?? 0;
+                $days = $orderCurrent['game_leveling_amount'] ?? 0;
+                $hours = $orderCurrent['game_leveling_day'] ?? 0;
                 $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
 
                 // 如果存在接单时间
                 if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
                     // 计算到期的时间戳
                     $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
-
                     // 计算剩余时间
                     $leftSecond = $expirationTimestamp - time();
                     $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
@@ -204,9 +202,7 @@ class IndexController extends Controller
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function detail(Request $request,
-                           OrderRepository $orderRepository,
-                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    public function detail(Request $request, OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -218,17 +214,21 @@ class IndexController extends Controller
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-        $detail['consult'] = $detail['levelingConsult']['consult'] ?? '';
-        $detail['complain'] = $detail['levelingConsult']['complain'] ?? '';
-//        $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
-//        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+        $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
+        $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
     }
 
-    public function repeat(Request $request,
-                           OrderRepository $orderRepository,
-                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
+    /**
+     * 重下单
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function repeat(Request $request,  OrderRepository $orderRepository,  GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -240,15 +240,17 @@ class IndexController extends Controller
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-        $detail['consult'] = $detail['levelingConsult']['consult'] ?? '';
-        $detail['complain'] = $detail['levelingConsult']['complain'] ?? '';
-//        $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
-//        $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+        $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
+        $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
         return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game'));
     }
 
-    // 操作记录
+    /**
+     * 操作记录
+     * @param $order_no
+     * @return mixed
+     */
     public function history($order_no)
     {
         $dataList = OrderHistoryRepository::dataList($order_no);
@@ -256,7 +258,11 @@ class IndexController extends Controller
         return response()->ajax(1, 'success', $html);
     }
 
-    // 从show91接口拿数据
+    /**
+     * 从show91接口拿数据
+     * @param $order_no
+     * @return mixed
+     */
     public function leaveMessage($order_no)
     {
         try {
@@ -344,7 +350,7 @@ class IndexController extends Controller
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                     'field_value' => $requestData['game_leveling_amount']
                 ]);
-            } else {
+            } else if ($order->price > $requestData['game_leveling_amount']) {
                 return response()->ajax(0, '代练价格只可增加');
             }
             // 修改密码
@@ -529,13 +535,12 @@ class IndexController extends Controller
         try {
             // 标题
             $title = [
-                '序号',
                 '订单号',
                 '订单来源',
                 '标签',
                 '客服备注',
                 '代练标题',
-                '游戏区服',
+                '游戏/区服',
                 '代练类型',
                 '账号密码',
                 '角色名称',
@@ -549,8 +554,9 @@ class IndexController extends Controller
                 '手续费',
                 '利润',
                 '代练时间',
-                '接单时间',
+                '剩余时间',
                 '发单时间',
+                '接单时间',
             ];
             // 数组分割,反转
             $chunkOrders = array_chunk(array_reverse($orders->toArray()), 1000);
@@ -586,8 +592,22 @@ class IndexController extends Controller
                         $receiveTime = OrderDetail::where('order_no', $order['no'])->where('field_name', 'receiving_time')->value('field_value');
                         $sendTime = $order['created_at'];
 
+//                        $days = $orderCurrent['game_leveling_amount'] ?? 0;
+//                        $hours = $orderCurrent['game_leveling_day'] ?? 0;
+//                        $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+//
+//                        // 如果存在接单时间
+//                        if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+//                            // 计算到期的时间戳
+//                            $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+//                            // 计算剩余时间
+//                            $leftSecond = $expirationTimestamp - time();
+//                            $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
+//                        } else {
+//                            $orderCurrent['left_time'] = '--';
+//                        }
+
                         $datas[] = [
-                            $order['id'],
                             $order['no'],
                             $order['source'] ? config('order.source')[$order['source']] : '--',
                             OrderDetail::where('order_no', $order['no'])->where('field_name', 'label')->value('field_value') ?? '--',
@@ -608,8 +628,9 @@ class IndexController extends Controller
                             $poundage,
                             $profit,
                             $dailianTime,
-                            $receiveTime,
+
                             $sendTime,
+                            $receiveTime,
                         ];
                     }
                     // 将标题加入到数组

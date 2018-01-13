@@ -9,8 +9,12 @@ use App\Models\UserAsset;
 use App\Extensions\Asset\Expend;
 use App\Models\OrderDetail;
 use Carbon\Carbon;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException as Exception;
 
+/**
+ * Class Playing
+ * @package App\Extensions\Dailian\Controllers
+ */
 class Playing extends DailianAbstract implements DailianInterface
 {
      //接单
@@ -54,7 +58,7 @@ class Playing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            // $this->after();
+             $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
