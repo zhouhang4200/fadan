@@ -175,7 +175,14 @@ class Show91
      */
     public static function addMess($options = [])
     {
-    	return static::getResult(config('show91.url.addMess'), $options);
+    	$res = static::getResult(config('show91.url.addMess'), $options);
+        $res = json_decode($res->getContents());
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? [];
     }
 
     /**
@@ -272,7 +279,7 @@ class Show91
             throw new CustomException($res->reason, $res->result);
         }
 
-        return $res->data;
+        return $res->data ?? [];
     }
 
     /**

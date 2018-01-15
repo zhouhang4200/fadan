@@ -196,6 +196,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('history/{order_no}', 'IndexController@history')->name('frontend.workbench.leveling.history');
             // 订单留言
             Route::get('leave-message/{order_no}', 'IndexController@leaveMessage')->name('frontend.workbench.leveling.leave-message');
+            // 订单留言
+            Route::post('send-message', 'IndexController@sendMessage')->name('frontend.workbench.leveling.send-message');
             // 修改订单
             Route::post('update', 'IndexController@update')->name('frontend.workbench.leveling.update');
             // 改状态操作

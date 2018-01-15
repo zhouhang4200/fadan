@@ -32,5 +32,6 @@ return [
 		'grounding' => 'http://www.show91.com/oauth/grounding', // 订单上下架
 		'addLimitTime2' => 'http://www.show91.com/oauth/addLimitTime2', // 增加代练时间，商家用
 	],
-];
 
+	'uid' => 295769, // 平台的91用户id
+];

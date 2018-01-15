@@ -264,13 +264,39 @@ class IndexController extends Controller
     public function leaveMessage($order_no)
     {
         try {
-            $messageList = Show91::messageList(['oid' => $order_no]);
+            $dataList = Show91::messageList(['oid' => $order_no]);
         }
         catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
         }
 
-        return response()->ajax(1, 'success', $messageList);
+        $show91Uid = config('show91.uid');
+
+        $html = view('frontend.workbench.leveling.leave-message', compact('dataList', 'show91Uid'))->render();
+        return response()->ajax(1, 'success', $html);
+    }
+
+    /**
+     * 向show91接口发送留言
+     * @param $oid 91的订单id
+     * @return mixed
+     */
+    public function sendMessage(Request $request)
+    {
+        $oid = $request->oid ?: 'ORD180115104933226951';
+        $mess = $request->mess ?: '12341234';
+        if (empty($oid)) {
+            return response()->ajax(0, '单号不正确');
+        }
+
+        try {
+            $res = Show91::addMess(['oid' => $oid, 'mess' => $mess]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax($e->getCode(), $e->getMessage());
+        }
+
+        return response()->ajax(1, 'success');
     }
 
     /**

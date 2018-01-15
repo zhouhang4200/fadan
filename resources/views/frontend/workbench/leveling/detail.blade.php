@@ -3,47 +3,180 @@
 @section('title', '工作台 - 代练 - 订单详情')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
-        .layui-input-block{
-            margin-left: 50px;
-        }
-        .form-group {
-            margin-bottom: 7px;
-        }
+<link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+<style>
+.wrapper {
+    width: 1600px;
+}
+.main .right {
+    width: 1430px;
+}
+.layui-input-block{
+    margin-left: 50px;
+}
+.form-group {
+    margin-bottom: 7px;
+}
 
-        .layui-form-mid {
-            text-align: right;
-        }
+.layui-form-mid {
+    text-align: right;
+}
 
-        .site-title {
-            margin: 10px 0 20px;
-        }
-        .site-title fieldset {
-            border: none;
-            padding: 0;
-            border-top: 1px solid #eee;
-        }
-        .site-title fieldset legend {
-            font-size: 17px;
-            font-weight: 300;
-        }
-        .layui-form-checkbox[lay-skin=primary] {
-            height: 6px !important;
-        }
-        #info .layui-form-item .layui-input-block{
-            margin-left: 200px;
-        }
-        #info .layui-form-item .layui-form-label{
-            width: 160px;
-        }
-    </style>
+.site-title {
+    margin: 10px 0 20px;
+}
+.site-title fieldset {
+    border: none;
+    padding: 0;
+    border-top: 1px solid #eee;
+}
+.site-title fieldset legend {
+    font-size: 17px;
+    font-weight: 300;
+}
+.layui-form-checkbox[lay-skin=primary] {
+    height: 6px !important;
+}
+#info .layui-form-item .layui-input-block{
+    margin-left: 200px;
+}
+#info .layui-form-item .layui-form-label{
+    width: 160px;
+}
+
+/* 留言 */
+.message_box {
+  display: flex;
+}
+.message_box .im {
+  width: 430px;
+  border-right: 1px solid #ccc;
+  height: 800px;
+}
+.message_box .im .chat_window {
+  width: 80%;
+  height: 500px;
+  margin: auto;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  overflow: auto;
+  padding: 10px 20px 10px 20px;
+  box-sizing: border-box;
+}
+.message_box .im .chat_window .customer_message {
+  margin-top: 10px;
+}
+.message_box .im .chat_window .customer_message .message .message_time {
+  text-align: center;
+}
+.message_box .im .chat_window .customer_message .message .portrait {
+  width: 30px;
+  height: 30px;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
+  overflow: hidden;
+  float: left;
+  margin-top: 24px;
+  margin-right: 20px;
+}
+.message_box .im .chat_window .customer_message .message .portrait img {
+  width: 100%;
+  height: 100%;
+}
+.message_box .im .chat_window .customer_message .message .content {
+  width: 80%;
+  min-height: 35px;
+  border: 1px solid #E3E3E3;
+  border-radius: 3px;
+  display: inline-block;
+  margin-top: 20px;
+  line-height: 20px;
+  text-indent: 20px;
+  padding: 5px 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+}
+.message_box .im .chat_window .customer_message .message .content::before,
+.message_box .im .chat_window .customer_message .message .content:after {
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  top: 10px;
+  left: -16px;
+  position: absolute;
+  width: 0;
+  border-width: 8px;
+  border-right-color: #fff;
+}
+.message_box .im .chat_window .customer_message .message .content::before {
+  left: -17px;
+  border-right-color: #E3E3E3;
+}
+.message_box .im .chat_window .kf_message {
+  margin-top: 10px;
+}
+.message_box .im .chat_window .kf_message .message .message_time {
+  text-align: center;
+}
+.message_box .im .chat_window .kf_message .message .portrait {
+  width: 30px;
+  height: 30px;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
+  overflow: hidden;
+  float: right;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.message_box .im .chat_window .kf_message .message .portrait img {
+  width: 100%;
+  height: 100%;
+}
+.message_box .im .chat_window .kf_message .message .content {
+  width: 80%;
+  min-height: 35px;
+  border: 1px solid #E3E3E3;
+  border-radius: 3px;
+  display: inline-block;
+  float: right;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  line-height: 20px;
+  text-indent: 20px;
+  background-color: #8DFA69;
+  position: relative;
+  margin-bottom: 20px;
+}
+.message_box .im .chat_window .kf_message .message .content:after {
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  top: 7px;
+  right: -20px;
+  position: absolute;
+  width: 0;
+  border-width: 10px;
+  border-left-color: #8DFA69;
+}
+.message_box .im .chat_bar {
+  width: 80%;
+  height: 100px;
+  margin: auto;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: #E3E3E3;
+}
+.message_box .information {
+  flex: 3;
+  height: 500px;
+}
+
+/* 留言结束 */
+</style>
 @endsection
 
 @section('submenu')
@@ -56,7 +189,7 @@
     <div class="layui-tab layui-tab-brief" lay-filter="myFilter">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="detail">详情</li>
-            <li lay-id="leave-word">留言/截图</li>
+            <li lay-id="leave-message">留言/截图</li>
             <li lay-id="history">操作记录</li>
         </ul>
         <div class="layui-tab-content">
@@ -347,10 +480,27 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-tab-item">&nbsp;</div>
-            <div class="layui-tab-item">
-                <div class="layui-row  layui-col-space20" id="history"></div>
+            <div class="layui-tab-item" id="leave-message">
+                <div class="message_box">
+                    <div class="im">
+                        <div class="chat_window"></div>
+                        <div class="chat_bar">
+                            <form class="layui-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-input-inline" style="margin-left:0;width:70%;" style=" position: relative;">
+                                        <input type="text" name="show91-message" required lay-verify="required" placeholder="请输入留言" autocomplete="off" class="layui-input"
+                                            style="height:70px;border-radius:0;line-height:0;">
+                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="send-message" style="position:absolute;right:-87px;top:0px;width:70px;">发送</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="information"></div>
+                </div>
             </div>
+            <div class="layui-tab-item" id="history"></div>
         </div>
     </div>
 
@@ -642,6 +792,8 @@
         element.on('tab(myFilter)', function(){
             switch (this.getAttribute('lay-id')) {
                 case 'history':
+                    $('#history').html('<div class="layui-layer layui-layer-loading" id="layui-layer1" type="loading" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 462.5px; left: 655px;"><div id="" class="layui-layer-content layui-layer-loading0"></div><span class="layui-layer-setwin"></span></div>');
+
                     // 加载订单操作记录
                     $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
                         if (data.status === 1) {
@@ -653,15 +805,49 @@
 
                     break;
 
-                case 'leave-word':
-                    // 加载留言截图
-                    layer.msg('建设中');
+                case 'leave-message':
+                    $('.chat_window').html('<div class="layui-layer layui-layer-loading" id="layui-layer1" type="loading" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 462.5px; left: 655px;"><div id="" class="layui-layer-content layui-layer-loading0"></div><span class="layui-layer-setwin"></span></div>');
+                    loadMessage();
                     break;
                 default:
                     break;
             }
         });
 
+        // 发送留言
+        form.on('submit(send-message)', function (data) {
+            var $button = $(this);
+            $button.attr('disabled', true).text('发送中...');
+
+            $.post("{{ route('frontend.workbench.leveling.send-message') }}", {
+                'oid': "{{ $detail['third_order_no'] }}",
+                'mess': $('[name="show91-message"]').val()
+            }, function (data) {
+                $button.attr('disabled', false).text('发送');
+                $('[name="show91-message"]').val('');
+
+                if (data.status !== 1) {
+                    layer.msg(data.message);
+                    return false;
+                } else {
+                    loadMessage();
+                }
+            }, 'json');
+        });
     });
+
+    // 加载留言
+    function loadMessage()
+    {
+        $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['third_order_no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('.chat_window').html(data.content);
+                $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+            } else {
+                layer.alert(data.message);
+            }
+        });
+    }
+
 </script>
 @endsection
