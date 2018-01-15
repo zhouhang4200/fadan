@@ -105,16 +105,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
                         'oid' => $thirdOrderNo,
                     ]; 
                     // 结果
-                    $result = Show91::cancelSc($options);
-                    $result = json_decode($result, true);
-
-                    if (! $result) {
-                        throw new Exception('外部接口错误,请重试!');
-                    }
-
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    Show91::cancelSc($options);
                 }
                 return true;
             } catch (Exception $e) {

@@ -224,7 +224,6 @@
         <div class="layui-tab-content">
             <form class="layui-form">
             <input type="hidden" id="order_no" name="order_no">
-                <input id="pic" type="file" name="pic" onchange="handleFiles(this.files)">
                 <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0px">
@@ -308,12 +307,14 @@
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# } else {  }}
                     @{{# if (d.consult == 2 && d.status == 15) {  }}
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# }  }}
 
@@ -321,7 +322,7 @@
                 <option value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</option>
                 @{{# }  }}
 
-                @{{# if (d.status == 15) {  }}
+                @{{# if (d.status == 13 || d.status == 14 || d.status == 15) {  }}
                 <option value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</option>
                 @{{# }  }}
 
@@ -628,14 +629,12 @@
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
-
                             } else {
                                 layer.alert(result.message);
-
                             }
                             reload();
                         });
-                            layer.closeAll();
+                        layer.closeAll();
                         return false;
                     });
 
@@ -715,41 +714,6 @@
                     layer.closeAll();
                 });
             }
-
-
-  
-
-
         });
-        var file = '';
-        $('#submit').on('click', function(){          
-            var orderNo = $('#order_no').val();
-            var formData = new FormData();
-            var complainMessage = $('textarea[name="complain_message"]').val();
-            formData.append("file", file);
-            formData.append("orderNo", orderNo);
-            formData.append("complainMessage", complainMessage);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('frontend.workbench.leveling.complain') }}",
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (result) {
-                        console.log(result);
-                }
-            })
-            
-            return false;
-        });
-
-      function handleFiles(files)
-        {
-          if(files.length)
-          {
-             file = files[0];
-           }
-        }
     </script>
 @endsection

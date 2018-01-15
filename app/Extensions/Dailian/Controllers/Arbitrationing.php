@@ -80,30 +80,17 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         throw new Exception('第三方订单号不存在');
                     }
 
-                    $img = imagecreatefrompng(url('frontend/images/logo.png'));
-                    // header('Content-Type: image/png');
-                    // dd($img);
                     $options = [
                         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-                        // 'oid' => 'ORD180113142648826994',
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => $img,
-                        'pic2' => '',
-                        'pic3' => '',
+                        'pic1' => new \CURLFile(public_path('frontend\images\logo.png')),
+                        'pic2' => new \CURLFile(public_path('frontend\images\logo.png')),
+                        'pic3' => new \CURLFile(public_path('frontend\images\logo.png')),
                     ];
-                    // dd($options);
                     // 结果
-                    $result = Show91::addappeal($options);
-                    $result = json_decode($result, true);
-                    // dd($result);
-                    if (! $result) {
-                        throw new Exception('外部接口错误,请重试!');
-                    }
-
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    dd($options);
+                    Show91::addappeal($options);
                 }
                 return true;
             } catch (Exception $e) {

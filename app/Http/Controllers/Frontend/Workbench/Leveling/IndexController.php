@@ -504,12 +504,8 @@ class IndexController extends Controller
             $userId = Auth::id();
             $data['order_no'] = $request->orderNo;
             $data['complain_message'] = $request->complainMessage;
-
-            // if ($request->hasFile('file')) {
-            //     $file = $request->file('file');
-            // } else {
-            //     throw new DailianException('请先上传图片');
-            // }
+            $data['amount'] = 0;
+            $data['deposit'] = 0;
 
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
@@ -521,7 +517,7 @@ class IndexController extends Controller
                 return response()->ajax(0, '操作失败!');
             }
 
-            LevelingConsult::where('order_no', $data['order_no'])->update($data);
+            LevelingConsult::where('order_no', $data['order_no'])->UpdateOrcreate(['order_no' => $data['order_no']], $data);
             // 改状态
             DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
         } catch (DailianException $e) {

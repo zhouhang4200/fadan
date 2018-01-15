@@ -4,17 +4,18 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use App\Exceptions\CustomException;
+use App\Exceptions\DailianException;
 
 class Show91
 {
     /**
-     * 发送请求
-     * @param  [type] $url     [地址]
-     * @param  [type] $options [参数数组]
-     * @param  string $method  [请求方式]
-     * @return [type]          [json数据]
+     * form-data 格式提交数据
+     * @param  [type] $url     [description]
+     * @param  [type] $options [description]
+     * @param  string $method  [description]
+     * @return [type]          [description]
      */
-    public static function getResult($url, $options = [], $method = 'POST')
+    public static function formDataRequest($url, $options = [], $method = 'POST')
     {
         $params = [
             'account' => config('show91.account'),
@@ -23,23 +24,38 @@ class Show91
 
         $options = array_merge($params, $options);
 
-        if (in_array($url, [config('show91.url')['addOrder'], config('show91.url')['addappeal']])) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
-            $result = curl_exec($curl);
-            curl_close($curl);
-            return $result;
-        } else {
-            $client = new Client;
-            $response = $client->request($method, $url, [
-                'query' => $options,
-            ]);
-            return $response->getBody();
-        }
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
+        $result = curl_exec($curl);
+        curl_close($curl);
+        return $result;
+    }
+
+    /**
+     * 普通提交
+     * @param  [type] $url     [description]
+     * @param  [type] $options [description]
+     * @param  string $method  [description]
+     * @return [type]          [description]
+     */
+    public static function normalRequest($url, $options = [], $method = 'POST')
+    {
+        $params = [
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
+        ];
+
+        $options = array_merge($params, $options);
+
+        $client = new Client;
+        $response = $client->request($method, $url, [
+            'query' => $options,
+        ]);
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -48,7 +64,7 @@ class Show91
      */
     public static function getGames($options = [])
     {
-    	return static::getResult(config('show91.url.getGames'), $options = []);
+    	return static::normalRequest(config('show91.url.getGames'), $options = []);
     }
 
     /**
@@ -58,7 +74,7 @@ class Show91
      */
     public static function getAreas($options)
     {
-    	return static::getResult(config('show91.url.getAreas'), $options);
+    	return static::normalRequest(config('show91.url.getAreas'), $options);
     }
 
     /**
@@ -68,7 +84,7 @@ class Show91
      */
     public static function getServer($options)
     {
-    	return static::getResult(config('show91.url.getServer'), $options);
+    	return static::normalRequest(config('show91.url.getServer'), $options);
     }
 
     /**
@@ -77,7 +93,7 @@ class Show91
      */
     public static function addOrder($options = [])
     {
-    	return static::getResult(config('show91.url.addOrder'), $options);
+    	return static::formDataRequest(config('show91.url.addOrder'), $options);
     }
 
     /**
@@ -87,7 +103,7 @@ class Show91
      */
     public static function editOrderAccPwd($options = [])
     {
-    	return static::getResult(config('show91.url.editOrderAccPwd'), $options);
+    	return static::normalRequest(config('show91.url.editOrderAccPwd'), $options);
     }
 
     /**
@@ -97,7 +113,9 @@ class Show91
      */
     public static function changeOrderBlock($options = [])
     {
-    	return static::getResult(config('show91.url.changeOrderBlock'), $options);
+        $res = static::normalRequest(config('show91.url.changeOrderBlock'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -106,7 +124,7 @@ class Show91
      */
     public static function orderStatus()
     {
-    	return static::getResult(config('show91.url.orderStatus'));
+    	return static::normalRequest(config('show91.url.orderStatus'));
     }
 
     /**
@@ -116,7 +134,7 @@ class Show91
      */
     public static function orderDetail($options = [])
     {
-    	return static::getResult(config('show91.url.orderDetail'), $options);
+    	return static::normalRequest(config('show91.url.orderDetail'), $options);
     }
 
     /**
@@ -125,7 +143,7 @@ class Show91
      */
     public static function cancelOrder()
     {
-    	return static::getResult(config('show91.url.cancelOrder'));
+    	return static::normalRequest(config('show91.url.cancelOrder'));
     }
 
     /**
@@ -135,7 +153,9 @@ class Show91
      */
     public static function addappeal($options = [])
     {
-    	return static::getResult(config('show91.url.addappeal'), $options);
+        $res = static::formDataRequest(config('show91.url.addappeal'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -144,7 +164,7 @@ class Show91
      */
     public static function seeappeal()
     {
-    	return static::getResult(config('show91.url.seeappeal'));
+    	return static::normalRequest(config('show91.url.seeappeal'));
     }
 
     /**
@@ -153,7 +173,7 @@ class Show91
      */
     public static function addMess($options = [])
     {
-    	return static::getResult(config('show91.url.addMess'), $options);
+    	return static::normalRequest(config('show91.url.addMess'), $options);
     }
 
     /**
@@ -163,7 +183,9 @@ class Show91
      */
     public static function addCancelOrder($options = [])
     {
-    	return static::getResult(config('show91.url.addCancelOrder'), $options);
+        $res = static::normalRequest(config('show91.url.addCancelOrder'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -173,7 +195,9 @@ class Show91
      */
     public static function confirmSc($options = [])
     {
-    	return static::getResult(config('show91.url.confirmSc'), $options);
+        $res = static::normalRequest(config('show91.url.confirmSc'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -183,7 +207,9 @@ class Show91
      */
     public static function cancelSc($options = [])
     {
-    	return static::getResult(config('show91.url.cancelSc'), $options);
+        $res = static::normalRequest(config('show91.url.cancelSc'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -193,7 +219,9 @@ class Show91
      */
     public static function cancelAppeal($options = [])
     {
-    	return static::getResult(config('show91.url.cancelAppeal'), $options);
+    	$res = static::normalRequest(config('show91.url.cancelAppeal'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
      /**
@@ -203,7 +231,7 @@ class Show91
      */
     public static function topic($options = [])
     {
-    	return static::getResult(config('show91.url.topic'), $options);
+    	return static::normalRequest(config('show91.url.topic'), $options);
     }
 
     /**
@@ -213,7 +241,7 @@ class Show91
      */
     public static function addpic($options = [])
     {
-    	return static::getResult(config('show91.url.addpic'), $options);
+    	return static::normalRequest(config('show91.url.addpic'), $options);
     }
 
     /**
@@ -223,7 +251,7 @@ class Show91
      */
     public static function chedan($options = [])
     {
-    	return static::getResult(config('show91.url.chedan'), $options);
+    	return static::normalRequest(config('show91.url.chedan'), $options);
     }
 
     /**
@@ -233,7 +261,9 @@ class Show91
      */
     public static function accept($options = [])
     {
-    	return static::getResult(config('show91.url.accept'), $options);
+        $res = static::normalRequest(config('show91.url.accept'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -243,7 +273,7 @@ class Show91
      */
     public static function messageList($options = [])
     {
-    	$res = static::getResult(config('show91.url.messageList'), $options);
+    	$res = static::normalRequest(config('show91.url.messageList'), $options);
         $res = json_decode($res->getContents());
 
         if ($res->result != 0) {
@@ -260,7 +290,7 @@ class Show91
      */
     public static function addevidence($options = [])
     {
-    	return static::getResult(config('show91.url.addevidence'), $options);
+    	return static::normalRequest(config('show91.url.addevidence'), $options);
     }
 
     /**
@@ -269,7 +299,7 @@ class Show91
      */
     public static function addPrice($options = [])
     {
-    	return static::getResult(config('show91.url.addPrice'), $options);
+    	return static::normalRequest(config('show91.url.addPrice'), $options);
     }
 
     /**
@@ -279,7 +309,7 @@ class Show91
      */
     public static function addLimitTime($options = [])
     {
-    	return static::getResult(config('show91.url.addLimitTime'), $options);
+    	return static::normalRequest(config('show91.url.addLimitTime'), $options);
     }
 
     /**
@@ -289,7 +319,7 @@ class Show91
      */
     public static function confirmAt($options = [])
     {
-    	return static::getResult(config('show91.url.confirmAt'), $options);
+    	return static::normalRequest(config('show91.url.confirmAt'), $options);
     }
 
     /**
@@ -299,7 +329,9 @@ class Show91
      */
     public static function grounding($options = [])
     {
-    	return static::getResult(config('show91.url.grounding'), $options);
+        $res = static::normalRequest(config('show91.url.grounding'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -308,6 +340,20 @@ class Show91
      */
     public static function addLimitTime2($options = [])
     {
-    	return static::getResult(config('show91.url.addLimitTime2'), $options);
+    	return static::normalRequest(config('show91.url.addLimitTime2'), $options);
+    }
+
+    public static function returnErrorMessage($res = null)
+    {
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result']) {
+            throw new DailianException($res['reason']);
+        }
+        return true;
     }
 }

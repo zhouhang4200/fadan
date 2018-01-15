@@ -58,12 +58,12 @@ class LevelingController
 	 */
     public function receiveOrder(Request $request)
     {
-    	try {          
+    	try {       
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('receive')->run($order->no, 29, 0);
 
-			return $this->success('发接单');
+			return $this->success('接单成功');
     	} catch (Exception $e) {
             return $this->fail($e->getMessage());
     	}
@@ -279,7 +279,7 @@ class LevelingController
             // 会变成锁定
             DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
             // 91的要解除锁定
-			DailianFactory::choose('cancelLock')->run($order->no, 29);
+			// DailianFactory::choose('cancelLock')->run($order->no, 29);
 
     	} catch (Exception $e) {
             DB::rollBack();
@@ -301,7 +301,7 @@ class LevelingController
 
             DailianFactory::choose('cancelArbitration')->run($order->no, 29, 0);
             DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
-			DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
+			// DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
 
             return $this->success('已取消申诉');
     	} catch (Exception $e) {

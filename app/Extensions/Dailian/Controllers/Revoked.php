@@ -352,16 +352,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                         'p' => '123456',
                     ];
                     // 结果
-                    $result = Show91::confirmSc($options);
-                    $result = json_decode($result, true);
-
-                    if (! $result) {
-                        throw new Exception('外部接口错误,请重试!');
-                    }
-
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    Show91::confirmSc($options);
                 }
                 LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
                 return true;
