@@ -222,21 +222,20 @@
 
     <div class="complain" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div >
+            <form class="layui-form">
+            <input type="hidden" id="order_no" name="order_no">
+                <input id="pic" type="file" name="pic" onchange="handleFiles(this.files)">
+                <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0px">
                             <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-
                         </div>
                     </div>
                     <div class="layui-form-item">
 
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
+                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-
                         </div>
                     </div>
                 </div>
@@ -621,6 +620,7 @@
                         area: ['500px', '280px'],
                         content: $('.complain')
                     });
+                    $('#order_no').val(orderNo);
                     form.on('submit(complain)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.complain') }}", {
                             orderNo:orderNo,
@@ -715,6 +715,41 @@
                     layer.closeAll();
                 });
             }
+
+
+  
+
+
         });
+        var file = '';
+        $('#submit').on('click', function(){          
+            var orderNo = $('#order_no').val();
+            var formData = new FormData();
+            var complainMessage = $('textarea[name="complain_message"]').val();
+            formData.append("file", file);
+            formData.append("orderNo", orderNo);
+            formData.append("complainMessage", complainMessage);
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('frontend.workbench.leveling.complain') }}",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (result) {
+                        console.log(result);
+                }
+            })
+            
+            return false;
+        });
+
+      function handleFiles(files)
+        {
+          if(files.length)
+          {
+             file = files[0];
+           }
+        }
     </script>
 @endsection

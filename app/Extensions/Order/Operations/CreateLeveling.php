@@ -18,6 +18,7 @@ use App\Models\ThirdGame;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\ThirdArea;
 use App\Models\ThirdServer;
+use App\Exceptions\DailianException;
 
 /**
  * 创建代练订单
@@ -186,7 +187,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     public function after()
     {
         if ($this->runAfter && env('APP_ENV') != 'local') {
-//        if ($this->runAfter) {
+       // if ($this->runAfter) {
             DB::beginTransaction();
             try {
                 // 我们的服
@@ -240,6 +241,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                     'haozhu' => $this->order->detail()->where('field_name', 'client_phone')->value('field_value'),
                     'istop' => 0,
                     'forAuth' => 0,
+                    'order.game_play_id' => 1,
                 ];
 
                 $result = Show91::addOrder($options);

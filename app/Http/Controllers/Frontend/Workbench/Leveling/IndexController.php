@@ -27,6 +27,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
 use Excel;
+use App\Exceptions\DailianException;
 
 /**
  * 代练订单
@@ -435,7 +436,7 @@ class IndexController extends Controller
             } else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
@@ -485,9 +486,9 @@ class IndexController extends Controller
             LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
             // 改状态
             DailianFactory::choose('revoke')->run($data['order_no'], $data['user_id']);
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '操作失败!');
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
         return response()->json(['status' => 1, 'message' => '操作成功!']);
@@ -504,7 +505,13 @@ class IndexController extends Controller
         try {
             $userId = Auth::id();
             $data['order_no'] = $request->orderNo;
-            $data['complain_message'] = $request->data['complain_message'];
+            $data['complain_message'] = $request->complainMessage;
+
+            // if ($request->hasFile('file')) {
+            //     $file = $request->file('file');
+            // } else {
+            //     throw new DailianException('请先上传图片');
+            // }
 
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
@@ -519,9 +526,9 @@ class IndexController extends Controller
             LevelingConsult::where('order_no', $data['order_no'])->update($data);
             // 改状态
             DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '操作失败!');
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');

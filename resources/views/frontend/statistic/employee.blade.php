@@ -21,8 +21,9 @@
                     <div class="layui-input-inline">               
                         <select name="user_name" lay-verify="" lay-search="">
                             <option value="">请输入员工姓名</option>
+                            <option value="{{ $parent->id }}" {{ $parent->id == $userName ? 'selected' : '' }}>{{ $parent->user_name ?? '--' }}</option>
                             @forelse($children as $child)
-                                <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->user_name }}</option>
+                                <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->user_name ?? '--' }}</option>
                             @empty
                             @endforelse
                         </select>
@@ -59,7 +60,7 @@
             <tbody>
                 @forelse($datas as $data)
                     <tr>
-                        <td>{{ $data->user_name }}</td>
+                        <td>{{ $data->user_name ?? '--' }}</td>
                         <td>{{ $data->name }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->send_order_amount, 2) ?? '--' }}</td>

@@ -15,7 +15,8 @@ class CreateOrderStatisticsTable extends Migration
     {
         Schema::create('order_statistics', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->comment('主账号');
+            $table->integer('user_id')->unsigned()->comment('账号');
+            $table->integer('parnet_id')->unsigned()->comment('主账号');
             $table->date('date')->comment('日期');
             $table->integer('send_order_count')->unsigned()->default(0)->comment('发布订单数');
             $table->integer('receive_order_count')->unsigned()->default(0)->comment('被接单数, 除了 接单 已下架 删除的订单和');

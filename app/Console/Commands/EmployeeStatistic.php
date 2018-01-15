@@ -47,20 +47,76 @@ class EmployeeStatistic extends Command
             $yestodayDate = Carbon::now()->subDays(1)->toDateString();
             $todayDate = Carbon::now()->toDateString();
 
-            $userDatas = DB::select("SELECT NOW() as created_at, NOW() as updated_at, a.creator_primary_user_id as parent_id, c.name, c.user_name, DATE_FORMAT(a.updated_at, '%Y-%m-%d') AS date, a.creator_user_id as user_id, COUNT(CASE WHEN a.status = 20 THEN a.id ELSE NULL END) AS complete_order_count, SUM(CASE WHEN a.status = 20 THEN a.amount ELSE 0 END) AS send_order_amount, COUNT(CASE WHEN a.STATUS = 19 THEN a.id ELSE NULL END) AS revoke_order_count, COUNT(CASE WHEN a.STATUS = 21 THEN a.id ELSE NULL END) AS arbitrate_order_count, SUM(case when a.status in (19, 20, 21) then a.original_amount else 0 end) as a.three_status_original_amount, SUM(case when a.status = 20 then a.amount else 0 end) as a.complete_order_amount, SUM(case when a.status in (19, 21) and a.creator_user_id = b.user_id and b.trade_subtype = 87 then (a.amount-b.fee) else 0 end) as a.two_status_payment, SUM(case when a.status in (19, 21) and a.creator_user_id = b.user_id and b.trade_subtype in (810, 811) then b.fee else 0 end) as a.two_status_income, SUM(case when a.status in (19, 21) and a.creator_user_id = b.user_id and b.trade_subtype = 73 then b.fee else 0 end) as a.poundage, SUM(a.three_status_original_amount-a.complete_order_amount-a.two_status_payment+a.two_status_income-a.poundage) as profit FROM orders a LEFT JOIN user_amount_flows b ON a.no = b.trade_no left join users c on a.creator_user_id = c.id WHERE a.updated_at >= '$yestodayDate' AND a.updated_at < '$todayDate' AND a.status IN (19, 20, 21) GROUP BY creator_user_id");
+            $userDatas = DB::select("
+                SELECT 
+                    n.name, 
+                    n.id as user_id, 
+                    n.user_name, 
+                    n.parent_id, 
+                    m.complete_order_count, 
+                    m.revoke_order_count, 
+                    m.arbitrate_order_count,m.complete_order_amount, 
+                    DATE_FORMAT(m.updated_at, '%Y-%m-%d') as date, 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') as created_at, 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') as updated_at,
+                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income-m.poundage AS profit
+                FROM 
+                    (SELECT 
+                        d.creator_user_id,
+                        d.updated_at,
+                        COUNT(*) AS send_order_count, 
+                        SUM(CASE WHEN d.STATUS NOT IN (1, 22, 24) THEN 1 ELSE 0 END) AS receive_order_count,
+                        SUM(CASE WHEN d.STATUS = 20 THEN 1 ELSE 0 END) AS complete_order_count, 
+                        SUM(CASE WHEN d.STATUS = 19 THEN 1 ELSE 0 END) AS revoke_order_count, 
+                        SUM(CASE WHEN d.STATUS = 21 THEN 1 ELSE 0 END) AS arbitrate_order_count,
+                        SUM(CASE WHEN d.STATUS IN (19, 20, 21) THEN d.original_amount ELSE 0 END) AS three_status_original_amount,
+                        SUM(CASE WHEN d.STATUS = 20 THEN d.amount ELSE 0 END) AS complete_order_amount,
+                        SUM(c.two_status_payment) AS two_status_payment,
+                        SUM(c.two_status_income) AS two_status_income,
+                        SUM(c.poundage) AS poundage
+                    FROM    
+                        (SELECT 
+                            a.no, 
+                            a.creator_user_id, 
+                            a.status, 
+                            a.updated_at,
+                            SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment,
+                            SUM(CASE WHEN b.trade_subtype IN (810, 811) THEN b.fee ELSE 0 END) AS two_status_income,
+                            SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage
+                            FROM orders a 
+                            LEFT JOIN user_amount_flows b ON a.no = b.trade_no AND b.user_id = a.creator_user_id 
+                            WHERE a.updated_at >= '$yestodayDate' AND a.updated_at < '$todayDate' AND a.service_id = 2
+                            GROUP BY trade_no
+                        ) c LEFT JOIN orders d ON c.no = d.no 
+                    GROUP BY d.creator_user_id ) m left join users n on m.creator_user_id = n.id
+                ");
 
             if ($userDatas) {
                 $userDatas = array_map(function ($userData) {
                     return (array) $userData;
                 }, $userDatas);
 
+                $userDataCheck = $userDatas[0];
+
+                if ($userDataCheck) {
+                    $date = $userDataCheck['date'];
+                    $has = EmployeeStatisticModel::where('date', $date)->first();
+
+                    if ($has) {
+                        throw new Exception('数据已存在!');
+                    }
+                }
                 EmployeeStatisticModel::insert($userDatas);
+
+                echo '写入成功!';
+            } else {
+                echo '数据库无数据!';
             }
         } catch (Exception $e) {
             DB::rollback();
             echo '写入失败:'.$e->getMessage();
         }
         DB::commit();
-        echo '写入成功!';
+        echo '运行完毕!';
     }
 }

@@ -179,18 +179,19 @@ class LevelingController
             $apiAmount = $request->apiAmount;
             $apiDeposit = $request->apiDeposit;
             $content = $request->content ?? '无';
+            $apiService = $request->apiService;
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
             if(! $content || strlen($content) > 200 || strlen($content) < 1) {
                 throw new Exception('协商原因为字符串且长度不超过200');
     		} else {
-    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit)) {
-                    throw new Exception('代练费和双金必须是数字');
+    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
+                    throw new Exception('代练费和双金或手续费必须是数字');
     			}
 
-    			if ($apiAmount < 0 || $apiDeposit < 0) {
-                    throw new Exception('代练费和双金必须大于0');
+    			if ($apiAmount < 0 || $apiDeposit < 0 || $apiService < 0) {
+                    throw new Exception('代练费和双金或手续费必须大于0');
     			}
 
                 $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
@@ -211,6 +212,9 @@ class LevelingController
                     'user_id' => 29,
                     'order_no' => $order->no,
                     'amount' => $apiAmount,
+                    'api_amount' => $apiAmount,
+                    'api_deposit' => $apiDeposit,
+                    'api_service' => $apiService,
                     'deposit' => $apiDeposit,
                     'consult' => 2,
                     'revoke_message' => $content,

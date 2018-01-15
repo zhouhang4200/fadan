@@ -109,7 +109,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
                     $result = json_decode($result, true);
 
                     if (! $result) {
-                        throw new CustomException('外部接口错误,请重试!');
+                        throw new Exception('外部接口错误,请重试!');
                     }
 
                     if ($result && $result['result']) {
