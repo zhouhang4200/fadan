@@ -102,10 +102,8 @@ class IndexController extends Controller
 
                 $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
                 $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-//                $orderInfo['consult'] = $orderInfo['levelingConsult']['consult'] ?? '';
-//                $orderInfo['complain'] = $orderInfo['levelingConsult']['complain'] ?? '';
-                $orderInfo['consult'] = $item->levelingConsult ? $item->levelingConsult()->first()->consult : '';
-                $orderInfo['complain'] = $item->levelingConsult ? $item->levelingConsult()->first()->complain : '';
+                $orderInfo['consult'] = $orderInfo['leveling_consult']['consult'] ?? '';
+                $orderInfo['complain'] = $orderInfo['leveling_consult']['complain'] ?? '';
 
                 // 当前订单数据
                 $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
@@ -113,8 +111,8 @@ class IndexController extends Controller
                 // 增加数据
                 $orderCurrent['payment_amount'] = '--'; // 待取值
 
-                $days = $orderCurrent['game_leveling_amount'] ?? 0;
-                $hours = $orderCurrent['game_leveling_day'] ?? 0;
+                $days = $orderCurrent['game_leveling_day'] ?? 0;
+                $hours = $orderCurrent['game_leveling_hour'] ?? 0;
                 $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
 
                 // 如果存在接单时间
@@ -635,7 +633,7 @@ class IndexController extends Controller
                             $poundage,
                             $profit,
                             $dailianTime,
-
+                            1,
                             $sendTime,
                             $receiveTime,
                         ];
