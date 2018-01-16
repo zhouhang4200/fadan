@@ -6,6 +6,7 @@ use DB;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use App\Models\OrderNotice;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception;
 use App\Extensions\Dailian\Controllers\DailianFactory;
@@ -41,13 +42,16 @@ class LevelingController
         ]);
     }
 
-    public function fail($message)
+    public function fail($message, $order)
     {
          return json_encode([
             'status' => 0,
             'message' => $message,
         ]);
         \Log::info($message); 
+        // 异常写入order_notices 表
+        $this->addOrderNotice($order);
+
         throw new Exception($message);
     }
 
@@ -66,7 +70,7 @@ class LevelingController
 
 			return $this->success('接单成功');
     	} catch (Exception $e) {
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -111,7 +115,7 @@ class LevelingController
 
     	} catch (Exception $e) {
             DB::rollBack();
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
         return $this->success('已同意撤销');
@@ -161,7 +165,7 @@ class LevelingController
 
     	} catch (Exception $e) {
             DB::rollBack();
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
         return $this->success('已同意申诉');
@@ -223,7 +227,7 @@ class LevelingController
 
     	} catch (Exception $e) {
             DB::rollBack();
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
         return $this->success('已申请协商');
@@ -256,7 +260,7 @@ class LevelingController
     	} catch (Exception $e) {
     		DB::rollBack();
             \Log::info($e->getMessage());
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
     	}
     	DB::commit();
         return $this->success('已申请申诉');
@@ -280,7 +284,7 @@ class LevelingController
 
     	} catch (Exception $e) {
             DB::rollBack();
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
         return $this->success('已取消协商');
@@ -302,7 +306,7 @@ class LevelingController
 
             return $this->success('已取消申诉');
     	} catch (Exception $e) {
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -321,7 +325,7 @@ class LevelingController
 
             return $this->success('已强制协商');
     	} catch (Exception $e) {
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -339,7 +343,7 @@ class LevelingController
 
             return $this->success('已将订单标记为异常');
     	} catch (Exception $e) {
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -358,7 +362,7 @@ class LevelingController
 
             return $this->success('已取消异常订单');
     	} catch (Exception $e) {
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -376,7 +380,7 @@ class LevelingController
 
             return $this->success('已申请验收');
     	} catch (Exception $e) {
-    		return $this->fail($e->getMessage());
+    		return $this->fail($e->getMessage(), $order);
     	}
     }
 
@@ -394,7 +398,17 @@ class LevelingController
 
             return $this->success('已取消验收');
         } catch (Exception $e) {
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $order);
         }
+    }
+
+    public function addOrderNotice($order)
+    {
+        $data = [];
+        $data['creator_user_id'] = $order->creator_user_id;
+        $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+        $data['gainer_user_id'] = $order->gainer_user_id;
+        $data['creator_user_name'] = $order->user->name;
+        
     }
 }

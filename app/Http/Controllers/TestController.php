@@ -49,6 +49,7 @@ use App\Models\Order as OrderModel;
 use App\Models\UserReceivingUserControl;
 use App\Models\Order;
 use Log;
+use Exception;
 
 use App\Events\NotificationEvent;
 
@@ -56,6 +57,14 @@ class TestController extends Controller
 {
     public function index()
     {
+        try {
+            $order = Order::find(9);
+            throw new Exception('我是错误信息');
+        } catch (Exception $e) {
+            dd($e->getMessage(), $order);
+
+        }
+        dd(4);
 //        return (new SmSApi())->send(2, 18500132452, '您的订单已经被打接单，请不要登号', 1);
 //        $client = new Client();
 //        $result = $client->post('www.show91.com/oauth/addOrder', [

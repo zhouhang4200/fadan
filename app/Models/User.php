@@ -311,4 +311,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OrderStatistic::class);
     }
+
+    public function creatorOrders()
+    {
+        return $this->hasMany();
+    }
 }

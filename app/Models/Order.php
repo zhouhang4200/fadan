@@ -98,15 +98,6 @@ class Order extends Model
     }
 
     /**
-     * 订单发罚单
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function punish()
-    {
-        return $this->hasOne(Punish::class, 'order_id', 'no');
-    }
-
-    /**
      * 订单外部订单关联
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -121,7 +112,7 @@ class Order extends Model
      */
     public function creatorUser()
     {
-        return $this->hasOne(User::class, 'id', 'creator_primary_user_id');
+        return $this->belongsTo(User::class, 'id', 'creator_user_id');
     }
 
     /**
@@ -130,7 +121,25 @@ class Order extends Model
      */
     public function gainerUser()
     {
-        return $this->hasOne(User::class, 'id', 'gainer_primary_user_id');
+        return $this->belongsTo(User::class, 'id', 'gainer_user_id');
+    }
+
+    /**
+     * 主发单人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creatorPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'id', 'creator_primary_user_id');
+    }
+
+    /**
+     * 主接单人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function gainerPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'id', 'gainer_primary_user_id');
     }
 
     /**
@@ -139,7 +148,7 @@ class Order extends Model
      */
     public function punishOrReward()
     {
-        return $this->hasOne(PunishOrReward::class, 'order_id', 'no');
+        return $this->hasMany(PunishOrReward::class, 'order_id', 'no');
     }
 
     public function levelingConsult()

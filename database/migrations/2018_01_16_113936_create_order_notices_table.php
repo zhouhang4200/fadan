@@ -18,6 +18,7 @@ class CreateOrderNoticesTable extends Migration
             $table->integer('creator_user_id')->unsigned()->comment('发单人id');
             $table->integer('creator_primary_user_id')->unsigned()->comment('发单人主id');
             $table->integer('gainer_user_id')->unsigned()->comment('接单人id');
+            $table->string('creator_user_name')->comment('发单人账号');
             $table->string('order_no')->comment('平台订单号');
             $table->string('third_order_no')->comment('第三方订单号');
             $table->tinyInteger('third')->unsigned()->comment('第三方平台：1，91代练， 2，代练妈妈， 3，代练通， 4，易代练');
