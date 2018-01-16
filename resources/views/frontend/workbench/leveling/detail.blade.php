@@ -878,8 +878,6 @@
         element.on('tab(myFilter)', function(){
             switch (this.getAttribute('lay-id')) {
                 case 'history':
-                    $('#history').html('<div class="layui-layer layui-layer-loading" id="layui-layer1" type="loading" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 462.5px; left: 655px;"><div id="" class="layui-layer-content layui-layer-loading0"></div><span class="layui-layer-setwin"></span></div>');
-
                     // 加载订单操作记录
                     $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
                         if (data.status === 1) {
@@ -892,8 +890,6 @@
                     break;
 
                 case 'leave-message':
-                    $('.chat_window').html('<div class="layui-layer layui-layer-loading" id="layui-layer1" type="loading" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 462.5px; left: 655px;"><div id="" class="layui-layer-content layui-layer-loading0"></div><span class="layui-layer-setwin"></span></div>');
-
                     // 加载订单留言
                     loadMessage();
 
@@ -1008,8 +1004,6 @@
             if (data.status === 1) {
                 $('.chat_window').html(data.content);
                 $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
-            } else {
-                layer.alert(data.message);
             }
         });
     }
@@ -1020,8 +1014,6 @@
         $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (data) {
             if (data.status === 1) {
                 $('#leave-image').html(data.content);
-            } else {
-                layer.alert(data.message);
             }
         });
     }
