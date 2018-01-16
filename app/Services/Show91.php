@@ -65,6 +65,35 @@ class Show91
     }
 
     /**
+     * 发送post请求，第1种
+     * @param  [type] $url     [地址]
+     * @param  [type] $options [参数数组]
+     * @return [type]          [json数据]
+     */
+    public static function postRequest_1($url, $options = [])
+    {
+        $params = [
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
+        ];
+
+        $options = array_merge($params, $options);
+
+        $header['Content-type'] = 'multipart/form-data';
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        return $result;
+    }
+
+    /**
      * 获得状态正常的游戏
      * @return [json]      [result:XX, content:XX]  or [result:XX, reason:XX]
      */
@@ -232,7 +261,14 @@ class Show91
      */
     public static function topic($options = [])
     {
-    	return static::getResult(config('show91.url.topic'), $options);
+    	$res = static::getResult(config('show91.url.topic'), $options);
+        $res = json_decode($res->getContents());
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? [];
     }
 
     /**
@@ -242,7 +278,14 @@ class Show91
      */
     public static function addpic($options = [])
     {
-    	return static::getResult(config('show91.url.addpic'), $options);
+    	$res = static::postRequest_1(config('show91.url.addpic'), $options);
+        $res = json_decode($res);
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? ''; // 正常情况下，data是文件名
     }
 
     /**

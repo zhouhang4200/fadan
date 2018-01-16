@@ -490,14 +490,33 @@
                                     <div class="layui-input-inline" style="margin-left:0;width:70%;" style=" position: relative;">
                                         <input type="text" name="show91-message" required lay-verify="required" placeholder="请输入留言" autocomplete="off" class="layui-input"
                                             style="height:70px;border-radius:0;line-height:0;">
-                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="send-message" style="position:absolute;right:-87px;top:0px;width:70px;">发送</button>
+                                        <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="send-message" style="position:absolute;right:-87px;top:0px;">发送</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
 
                     </div>
-                    <div class="information"></div>
+                    <div class="information">
+                        <div class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传截图</label>
+                                <div class="layui-input-inline">
+                                    <button type="button" class="layui-btn" id="upload-image">
+                                        <i class="layui-icon">&#xe67c;</i>上传图片
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">截图说明</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="image_description" placeholder="请输入简短文字" class="layui-input" style="width: 828px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-left: 20px; overflow-y: scroll;height: 713px" id="leave-image"></div>
+                    </div>
                 </div>
             </div>
             <div class="layui-tab-item" id="history"></div>
@@ -606,8 +625,9 @@
 <!--START 底部-->
 @section('js')
 <script>
-    layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
+        var upload = layui.upload;
 
         $('.cancel').click(function(){
             layer.closeAll();
@@ -807,7 +827,12 @@
 
                 case 'leave-message':
                     $('.chat_window').html('<div class="layui-layer layui-layer-loading" id="layui-layer1" type="loading" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 462.5px; left: 655px;"><div id="" class="layui-layer-content layui-layer-loading0"></div><span class="layui-layer-setwin"></span></div>');
+
+                    // 加载订单留言
                     loadMessage();
+
+                    // 加载订单截图
+                    loadImage();
                     break;
                 default:
                     break;
@@ -834,6 +859,29 @@
                 }
             }, 'json');
         });
+
+        // 截图上传
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload-image',
+            url: "{{ route('frontend.workbench.leveling.upload-image') }}",
+            accept: 'images',
+            field: 'image',
+            data: {
+                order_no: "{{ $detail['no'] }}"
+            },
+            before: function (obj) {
+                this.data.description = $('[name="image_description"]').val();
+            },
+            done: function (res, index, upload) {
+                if (res.status === 1) {
+                    loadImage();
+                    layer.alert('上传成功');
+                } else {
+                    layer.alert(res.message);
+                }
+            }
+        });
     });
 
     // 加载留言
@@ -848,6 +896,29 @@
             }
         });
     }
+
+    // 加载截图
+    function loadImage()
+    {
+        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['third_order_no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('#leave-image').html(data.content);
+            } else {
+                layer.alert(data.message);
+            }
+        });
+    }
+
+    // 图片预览
+    $('#leave-image').on('click', '.show-image', function () {
+        //iframe层
+        layer.open({
+            type: 1,
+            title: '图片预览',
+            area: ['50%', '80%'],
+            content: '<img  src="'+ $(this).data('url') + '"  width="100%" />'
+        });
+    });
 
 </script>
 @endsection

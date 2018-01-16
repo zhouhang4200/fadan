@@ -27,6 +27,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
 use Excel;
+use App\Repositories\Frontend\OrderAttachmentRepository;
 
 /**
  * 代练订单
@@ -257,14 +258,14 @@ class IndexController extends Controller
     }
 
     /**
-     * 从show91接口拿数据
-     * @param $order_no
+     * 从show91接口拿留言数据
+     * @param $oid
      * @return mixed
      */
-    public function leaveMessage($order_no)
+    public function leaveMessage($oid)
     {
         try {
-            $dataList = Show91::messageList(['oid' => $order_no]);
+            $dataList = Show91::messageList(['oid' => $oid]);
         }
         catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
@@ -274,6 +275,55 @@ class IndexController extends Controller
 
         $html = view('frontend.workbench.leveling.leave-message', compact('dataList', 'show91Uid'))->render();
         return response()->ajax(1, 'success', $html);
+    }
+
+    /**
+     * 从show91接口拿截图数据
+     * @param $oid
+     * @return mixed
+     */
+    public function leaveImage($oid)
+    {
+        try {
+            $dataList = Show91::topic(['oid' => $oid]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax($e->getCode(), $e->getMessage());
+        }
+
+        $html = view('frontend.workbench.leveling.leave-image', compact('dataList'))->render();
+        return response()->ajax(1, 'success', $html);
+    }
+
+    /**
+     * 上传截图后，推送到show91
+     * @param $order_no
+     * @return mixed
+     */
+    public function uploadImage(Request $request)
+    {
+
+        $orderNo = $request->order_no;
+        $description = $request->description ?: '无';
+        if (empty($orderNo)) {
+            return response()->ajax(0, '单号缺失');
+        }
+
+        if (!$request->file('image')->isValid()) {
+            return response()->ajax(0, '上传失败');
+        }
+
+        $diskName = 'order';
+        $fileName = $request->file('image')->store('', $diskName);
+
+        try {
+            OrderAttachmentRepository::saveImageAndUploadToShow91($orderNo, $diskName, $fileName, $description);
+        }
+        catch (CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
     }
 
     /**
@@ -296,7 +346,7 @@ class IndexController extends Controller
             return response()->ajax($e->getCode(), $e->getMessage());
         }
 
-        return response()->ajax(1, 'success');
+        return response()->json([1, 'success']);
     }
 
     /**
