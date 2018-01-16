@@ -63,6 +63,11 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'order' => [
+            'driver' => 'local',
+            'root' => public_path('resources/uploads/order'),
+            'visibility' => 'public',
+        ],
     ],
 
 ];

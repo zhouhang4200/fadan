@@ -58,7 +58,7 @@ class Show91
         return $response->getBody()->getContents();
     }
 
-    /**
+    /*
      * 获得状态正常的游戏
      * @return [json]      [result:XX, content:XX]  or [result:XX, reason:XX]
      */
@@ -173,7 +173,14 @@ class Show91
      */
     public static function addMess($options = [])
     {
-    	return static::normalRequest(config('show91.url.addMess'), $options);
+    	$res = static::normalRequest(config('show91.url.addMess'), $options);
+        $res = json_decode($res);
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? [];
     }
 
     /**
@@ -231,7 +238,14 @@ class Show91
      */
     public static function topic($options = [])
     {
-    	return static::normalRequest(config('show91.url.topic'), $options);
+    	$res = static::normalRequest(config('show91.url.topic'), $options);
+        $res = json_decode($res);
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? [];
     }
 
     /**
@@ -241,9 +255,14 @@ class Show91
      */
     public static function addpic($options = [])
     {
-    	$res =  static::formDataRequest(config('show91.url.addpic'), $options);
-        dd($res);
-        return static::returnErrorMessage($res);
+    	$res = static::formDataRequest(config('show91.url.addpic'), $options);
+        $res = json_decode($res);
+
+        if ($res->result != 0) {
+            throw new CustomException($res->reason, $res->result);
+        }
+
+        return $res->data ?? ''; // 正常情况下，data是文件名
     }
 
     /**
@@ -276,13 +295,13 @@ class Show91
     public static function messageList($options = [])
     {
     	$res = static::normalRequest(config('show91.url.messageList'), $options);
-        $res = json_decode($res->getContents());
+        $res = json_decode($res);
 
         if ($res->result != 0) {
             throw new CustomException($res->reason, $res->result);
         }
 
-        return $res->data;
+        return $res->data ?? [];
     }
 
     /**

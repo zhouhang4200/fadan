@@ -32,6 +32,7 @@ use App\Models\LevelingConsult;
 use App\Services\Show91;
 use Excel;
 use App\Exceptions\DailianException;
+use App\Repositories\Frontend\OrderAttachmentRepository;
 
 /**
  * 代练订单
@@ -194,8 +195,12 @@ class IndexController extends Controller
         $templateId = GoodsTemplate::getTemplateId(2, $request->game_id);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
-
-        return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId]);
+        // 如果有订单号则获取订单原来设置的值
+        $orderTemplateValue = [];
+        if ($request->no) {
+            $orderTemplateValue = OrderDetailRepository::getByOrderNo($request->no);
+        }
+        return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId, 'value' => $orderTemplateValue]);
     }
 
     /**
@@ -262,20 +267,106 @@ class IndexController extends Controller
     }
 
     /**
-     * 从show91接口拿数据
+     * 从show91接口拿留言数据
      * @param $order_no
      * @return mixed
      */
     public function leaveMessage($order_no)
     {
+        // 取订单信息
+        $order = (new OrderRepository)->detail($order_no);
+        if (empty($order)) {
+            return response()->ajax(0, '订单不存在');
+        }
+
+        // 取订单详情
+        $orderDetail = $order->detail->pluck('field_value', 'field_name');
+        // 第三方单号
+        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
+
         try {
-            $messageList = Show91::messageList(['oid' => $order_no]);
+            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        $show91Uid = config('show91.uid');
+
+        $html = view('frontend.workbench.leveling.leave-message', compact('dataList', 'show91Uid'))->render();
+        return response()->ajax(1, 'success', $html);
+    }
+
+    /**
+     * 从show91接口拿截图数据
+     * @param $order_no
+     * @return mixed
+     */
+    public function leaveImage($order_no)
+    {
+        try {
+            $dataList = OrderAttachmentRepository::dataList($order_no);
         }
         catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
         }
 
-        return response()->ajax(1, 'success', $messageList);
+        $html = view('frontend.workbench.leveling.leave-image', compact('dataList'))->render();
+        return response()->ajax(1, 'success', $html);
+    }
+
+    /**
+     * 上传截图后，推送到show91
+     * @param $order_no
+     * @return mixed
+     */
+    public function uploadImage(Request $request)
+    {
+
+        $orderNo = $request->order_no;
+        $description = $request->description ?: '无';
+        if (empty($orderNo)) {
+            return response()->ajax(0, '单号缺失');
+        }
+
+        if (!$request->file('image')->isValid()) {
+            return response()->ajax(0, '上传失败');
+        }
+
+        $diskName = 'order';
+        $fileName = $request->file('image')->store('', $diskName);
+
+        try {
+            OrderAttachmentRepository::saveImageAndUploadToShow91($orderNo, $diskName, $fileName, $description);
+        }
+        catch (CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
+    }
+
+    /**
+     * 向show91接口发送留言
+     * @param $oid 91的订单id
+     * @return mixed
+     */
+    public function sendMessage(Request $request)
+    {
+        $oid = $request->oid ?: 'ORD180115104933226951';
+        $mess = $request->mess ?: '12341234';
+        if (empty($oid)) {
+            return response()->ajax(0, '单号不正确');
+        }
+
+        try {
+            $res = Show91::addMess(['oid' => $oid, 'mess' => $mess]);
+        }
+        catch (CustomException $e) {
+            return response()->ajax($e->getCode(), $e->getMessage());
+        }
+
+        return response()->ajax(1);
     }
 
     /**

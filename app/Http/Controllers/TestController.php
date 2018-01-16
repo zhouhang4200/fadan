@@ -171,7 +171,7 @@ Iuli3G2IJNYc9Cwu
         $key = 'PhtVnNtqe4a5R1W5vhwnzBfZ'; // PhtVnNtqe4a5R1W5vhwnzBfZ
 
         // ******
-        $a = openssl_private_encrypt($key, $encrypted, $private_key) ? bin2hex($encrypted) : null; 
+        $a = openssl_private_encrypt($key, $encrypted, $private_key) ? bin2hex($encrypted) : null;
 
 // 42efbe94121f7583365f5bfc2cad4466f40163a6a9ff89880ef4f0d2f2217a950459c3b9972d5a1c3654fdb684b6b5b1608935c07420fbe5caf1c743c134308c379742c6c50e0c330dace4a4ef42ea84c04c392d3582248d6d9f19db396630e0da8d750f618db63d2e8c30c832ab92a3ff2bdf8df67a57925c9a9ffea040f8e0
 // $encrypted = b"B´¥ö\x12\x1Fuâ6_[³,¡Df¶\x01cª® ëê\x0E¶­Ê‗!zò\x04Y├╣ù-Z\x1C6T²ÂäÂÁ▒`ë5└t ¹Õ╩±ÃC┴40î7ùBã┼\x0E\f3\r¼õñ´BÛä└L9-5é$ìmƒ\x19█9f0Ó┌ìu\x0FaìÂ=.î0╚2½Æú +▀ì÷zWÆ\Üƒ■á@°Ó"
@@ -249,7 +249,7 @@ Iuli3G2IJNYc9Cwu
         //关闭加密模块
         mcrypt_module_close($td);
         // FfMzOFYV4RNItDbkLiqHDnQ4
-        return $this->strIppAdding($str); 
+        return $this->strIppAdding($str);
     }
 
     /**
@@ -261,7 +261,7 @@ Iuli3G2IJNYc9Cwu
         dd(str_random(24));
         // 返回字符的哥字符的ascii 码
         $sLast = ord(substr($string, -1)); // 96
-        
+
         $slastc = chr($sLast); // "`"
         $pCheck = substr($string, -$sLast); // b"ô¤ÝtQw5WYŽh´C\x00Ò`"
         if (preg_match("/$slastc{" . $sLast . "}/", $string)) {

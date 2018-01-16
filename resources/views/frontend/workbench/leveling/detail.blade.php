@@ -3,47 +3,180 @@
 @section('title', '工作台 - 代练 - 订单详情')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
-        .layui-input-block{
-            margin-left: 50px;
-        }
-        .form-group {
-            margin-bottom: 7px;
-        }
+<link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+<style>
+.wrapper {
+    width: 1600px;
+}
+.main .right {
+    width: 1430px;
+}
+.layui-input-block{
+    margin-left: 50px;
+}
+.form-group {
+    margin-bottom: 7px;
+}
 
-        .layui-form-mid {
-            text-align: right;
-        }
+.layui-form-mid {
+    text-align: right;
+}
 
-        .site-title {
-            margin: 10px 0 20px;
-        }
-        .site-title fieldset {
-            border: none;
-            padding: 0;
-            border-top: 1px solid #eee;
-        }
-        .site-title fieldset legend {
-            font-size: 17px;
-            font-weight: 300;
-        }
-        .layui-form-checkbox[lay-skin=primary] {
-            height: 6px !important;
-        }
-        #info .layui-form-item .layui-input-block{
-            margin-left: 200px;
-        }
-        #info .layui-form-item .layui-form-label{
-            width: 160px;
-        }
-    </style>
+.site-title {
+    margin: 10px 0 20px;
+}
+.site-title fieldset {
+    border: none;
+    padding: 0;
+    border-top: 1px solid #eee;
+}
+.site-title fieldset legend {
+    font-size: 17px;
+    font-weight: 300;
+}
+.layui-form-checkbox[lay-skin=primary] {
+    height: 6px !important;
+}
+#info .layui-form-item .layui-input-block{
+    margin-left: 200px;
+}
+#info .layui-form-item .layui-form-label{
+    width: 160px;
+}
+
+/* 留言 */
+.message_box {
+  display: flex;
+}
+.message_box .im {
+  width: 430px;
+  border-right: 1px solid #ccc;
+  height: 800px;
+}
+.message_box .im .chat_window {
+  width: 80%;
+  height: 500px;
+  margin: auto;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  overflow: auto;
+  padding: 10px 20px 10px 20px;
+  box-sizing: border-box;
+}
+.message_box .im .chat_window .customer_message {
+  margin-top: 10px;
+}
+.message_box .im .chat_window .customer_message .message .message_time {
+  text-align: center;
+}
+.message_box .im .chat_window .customer_message .message .portrait {
+  width: 30px;
+  height: 30px;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
+  overflow: hidden;
+  float: left;
+  margin-top: 24px;
+  margin-right: 20px;
+}
+.message_box .im .chat_window .customer_message .message .portrait img {
+  width: 100%;
+  height: 100%;
+}
+.message_box .im .chat_window .customer_message .message .content {
+  width: 80%;
+  min-height: 35px;
+  border: 1px solid #E3E3E3;
+  border-radius: 3px;
+  display: inline-block;
+  margin-top: 20px;
+  line-height: 20px;
+  text-indent: 20px;
+  padding: 5px 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+}
+.message_box .im .chat_window .customer_message .message .content::before,
+.message_box .im .chat_window .customer_message .message .content:after {
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  top: 10px;
+  left: -16px;
+  position: absolute;
+  width: 0;
+  border-width: 8px;
+  border-right-color: #fff;
+}
+.message_box .im .chat_window .customer_message .message .content::before {
+  left: -17px;
+  border-right-color: #E3E3E3;
+}
+.message_box .im .chat_window .kf_message {
+  margin-top: 10px;
+}
+.message_box .im .chat_window .kf_message .message .message_time {
+  text-align: center;
+}
+.message_box .im .chat_window .kf_message .message .portrait {
+  width: 30px;
+  height: 30px;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
+  overflow: hidden;
+  float: right;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.message_box .im .chat_window .kf_message .message .portrait img {
+  width: 100%;
+  height: 100%;
+}
+.message_box .im .chat_window .kf_message .message .content {
+  width: 80%;
+  min-height: 35px;
+  border: 1px solid #E3E3E3;
+  border-radius: 3px;
+  display: inline-block;
+  float: right;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  line-height: 20px;
+  text-indent: 20px;
+  background-color: #8DFA69;
+  position: relative;
+  margin-bottom: 20px;
+}
+.message_box .im .chat_window .kf_message .message .content:after {
+  border: solid transparent;
+  content: ' ';
+  height: 0;
+  top: 7px;
+  right: -20px;
+  position: absolute;
+  width: 0;
+  border-width: 10px;
+  border-left-color: #8DFA69;
+}
+.message_box .im .chat_bar {
+  width: 80%;
+  height: 100px;
+  margin: auto;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: #E3E3E3;
+}
+.message_box .information {
+  flex: 3;
+  height: 500px;
+}
+
+/* 留言结束 */
+</style>
 @endsection
 
 @section('submenu')
@@ -54,7 +187,7 @@
     <div class="layui-tab layui-tab-brief" lay-filter="myFilter">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="detail">详情</li>
-            <li lay-id="leave-word">留言/截图</li>
+            <li lay-id="leave-message">留言/截图</li>
             <li lay-id="history">操作记录</li>
         </ul>
         <div class="layui-tab-content">
@@ -347,10 +480,46 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-tab-item">&nbsp;</div>
-            <div class="layui-tab-item">
-                <div class="layui-row  layui-col-space20" id="history"></div>
+            <div class="layui-tab-item" id="leave-message">
+                <div class="message_box">
+                    <div class="im">
+                        <div class="chat_window"></div>
+                        <div class="chat_bar">
+                            <form class="layui-form" id="form-send-message">
+                                <div class="layui-form-item">
+                                    <div class="layui-input-inline" style="margin-left:0;width:70%;" style=" position: relative;">
+                                        <input type="text" name="show91-message" required lay-verify="required" placeholder="请输入留言" autocomplete="off" class="layui-input"
+                                            style="height:70px;border-radius:0;line-height:0;">
+                                        <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="send-message" style="position:absolute;right:-87px;top:0px;">发送</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="information">
+                        <div class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传截图</label>
+                                <div class="layui-input-inline">
+                                    <button type="button" class="layui-btn" id="upload-image">
+                                        <i class="layui-icon">&#xe67c;</i>上传图片
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">截图说明</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="image_description" placeholder="请输入简短文字" class="layui-input" style="width: 828px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-left: 20px; overflow-y: scroll;height: 713px" id="leave-image"></div>
+                    </div>
+                </div>
             </div>
+            <div class="layui-tab-item" id="history"></div>
         </div>
     </div>
     <div class="consult" style="display: none; padding:  0 20px">
@@ -522,8 +691,9 @@
 
     </script>
 <script>
-    layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
+        var upload = layui.upload;
 
         $('.cancel').click(function(){
             layer.closeAll();
@@ -719,9 +889,12 @@
 
                     break;
 
-                case 'leave-word':
-                    // 加载留言截图
-                    layer.msg('建设中');
+                case 'leave-message':
+                    // 加载订单留言
+                    loadMessage();
+
+                    // 加载订单截图
+                    loadImage();
                     break;
                 default:
                     break;
@@ -771,6 +944,90 @@
             }, 'json');
         }
 
+        // 阻止默认事件
+        $('#form-send-message').submit(function () {
+            return false;
+        });
+
+        // 发送留言
+        form.on('submit(send-message)', function (data) {
+            var $button = $(this);
+            $button.attr('disabled', true).text('发送中...');
+
+            $.post("{{ route('frontend.workbench.leveling.send-message') }}", {
+                'oid': "{{ $detail['third_order_no'] }}",
+                'mess': $('[name="show91-message"]').val()
+            }, function (data) {
+                $button.attr('disabled', false).text('发送');
+                $('[name="show91-message"]').val('');
+
+                if (data.status === 1) {
+                    loadMessage();
+                } else {
+                    layer.msg(data.message);
+                    return false;
+                }
+            }, 'json');
+        });
+
+        // 截图上传
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload-image',
+            url: "{{ route('frontend.workbench.leveling.upload-image') }}",
+            accept: 'images',
+            field: 'image',
+            data: {
+                order_no: "{{ $detail['no'] }}"
+            },
+            before: function (obj) {
+                this.data.description = $('[name="image_description"]').val();
+                load = layer.load(4, {shade:0.3});
+            },
+            done: function (res, index, upload) {
+                layer.close(load);
+
+                if (res.status === 1) {
+                    loadImage();
+                    layer.alert('上传成功');
+                } else {
+                    layer.alert(res.message);
+                }
+            }
+        });
     });
+
+    // 加载留言
+    function loadMessage()
+    {
+        $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('.chat_window').html(data.content);
+                $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+            }
+        });
+    }
+
+    // 加载截图
+    function loadImage()
+    {
+        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('#leave-image').html(data.content);
+            }
+        });
+    }
+
+    // 图片预览
+    $('#leave-image').on('click', '.show-image', function () {
+        //iframe层
+        layer.open({
+            type: 1,
+            title: '图片预览',
+            area: ['50%', '80%'],
+            content: '<img  src="'+ $(this).data('url') + '"  width="100%" />'
+        });
+    });
+
 </script>
 @endsection
