@@ -6,14 +6,18 @@ use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\ForeignOrder\ForeignOrder;
 use App\Extensions\Order\Operations\CreateLeveling;
+use App\Models\Game;
 use App\Models\GoodsTemplateWidget;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
+use App\Models\SmsSendRecord;
 use App\Models\User;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
+use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
+use App\Services\SmSApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -227,7 +231,7 @@ class IndexController extends Controller
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function repeat(Request $request,  OrderRepository $orderRepository,  GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
+    public function repeat(OrderRepository $orderRepository,  GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -237,7 +241,7 @@ class IndexController extends Controller
         $templateId = GoodsTemplate::getTemplateId(2, $detail['game_id']);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
-
+        // 写入订单关联数据
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
@@ -284,128 +288,181 @@ class IndexController extends Controller
     {
         $requestData = $request->data;
         $orderNo = $requestData['no'];
-        $orderRepository->levelingDetail($orderNo);
 
-        $order = OrderModel::where('no', $orderNo)->first();
-        $orderDetail = OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name');
-        $orderDetailDisplayName = OrderDetail::where('order_no', $orderNo)->pluck('field_display_name', 'field_name');
+        DB::beginTransaction();
+        try {
 
-        // 下架 没有接单 更新所有信息
-        if(in_array($order->status, [1, 23])) {
-            $changeValue = '';
-            // 加价 修改主单信息
-            if ($order->price != $requestData['game_leveling_amount']) {
-                // 加价
-                if ($order->price < $requestData['game_leveling_amount']) {
-                    $amount =  $requestData['game_leveling_amount'] - $order->price;
-                    Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+            $order = OrderModel::where('no', $orderNo)->lockForUpdate()->first();
+            $orderDetail = OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name');
+            $orderDetailDisplayName = OrderDetail::where('order_no', $orderNo)->pluck('field_display_name', 'field_name');
 
-                    $order->price = $requestData['game_leveling_amount'];
-                    $order->amount = $requestData['game_leveling_amount'];
-                    $order->save();
+            // 如果本次修改提交，游戏ID与原订单不同则删除原有订单详情，写入新的值
+            if ($requestData['game_id'] != $order->game_id) {
+                // 删除原订单详情
+                OrderDetail::where('order_no', $orderNo)->delete();
+                // 找到对应的游戏ID模版ID
+                $templateId = GoodsTemplate::where('game_id', $requestData['game_id'])->where('service_id', 2)->value('id');
+                // 按模填入订单详情数据
+                OrderDetailRepository::create($templateId, $orderNo, $requestData);
+                // 本次修改与原单价不同则对进对应的资金操作
+                if ($order->price != $requestData['game_leveling_amount']) {
+                    // 加价
+                    if ($order->price < $requestData['game_leveling_amount']) {
+                        $amount =  $requestData['game_leveling_amount'] - $order->price;
+                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
-                    OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-                        'field_value' => $requestData['game_leveling_amount']
-                    ]);
-                } else { // 减价
-                    $amount =  $order->price  -  $requestData['game_leveling_amount'];
-                    Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+                        $order->price = $requestData['game_leveling_amount'];
+                        $order->amount = $requestData['game_leveling_amount'];
+                        $order->save();
 
-                    $order->price = $requestData['game_leveling_amount'];
-                    $order->amount = $requestData['game_leveling_amount'];
-                    $order->save();
-
-                    OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-                        'field_value' => $requestData['game_leveling_amount']
-                    ]);
-                }
-            }
-
-            // 其它信息只需改订单详情表
-            foreach ($requestData as $key => $value) {
-                if (isset($orderDetail[$key])) {
-                    if ($orderDetail[$key] != $value) {
-                        // 更新值
-                        OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
-                            'field_value' =>$value
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                            'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        $changeValue .= $orderDetailDisplayName[$key] . '更改前：' . $value . ' 更改后：' . $requestData[$key] . '<br/>';
+                    } else { // 减价
+                        $amount =  $order->price  -  $requestData['game_leveling_amount'];
+                        Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+
+                        $order->price = $requestData['game_leveling_amount'];
+                        $order->amount = $requestData['game_leveling_amount'];
+                        $order->save();
+
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                            'field_value' => $requestData['game_leveling_amount']
+                        ]);
+                    }
+                }
+                // 更改订单数据
+                $order->game_id = $requestData['game_id'];
+                $order->game_name = Game::where('id', $requestData['game_id'])->value('name');
+                $order->price = $requestData['game_leveling_amount'];
+                $order->amount = $requestData['game_leveling_amount'];
+                $order->save();
+
+            } else {
+                // 下架 没有接单 更新所有信息
+                if(in_array($order->status, [1, 23])) {
+                    $changeValue = '';
+                    // 加价 修改主单信息
+                    if ($order->price != $requestData['game_leveling_amount']) {
+                        // 加价
+                        if ($order->price < $requestData['game_leveling_amount']) {
+                            $amount =  $requestData['game_leveling_amount'] - $order->price;
+                            Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+
+                            $order->price = $requestData['game_leveling_amount'];
+                            $order->amount = $requestData['game_leveling_amount'];
+                            $order->save();
+
+                            OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                                'field_value' => $requestData['game_leveling_amount']
+                            ]);
+                        } else { // 减价
+                            $amount =  $order->price  -  $requestData['game_leveling_amount'];
+                            Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+
+                            $order->price = $requestData['game_leveling_amount'];
+                            $order->amount = $requestData['game_leveling_amount'];
+                            $order->save();
+
+                            OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                                'field_value' => $requestData['game_leveling_amount']
+                            ]);
+                        }
+                    }
+
+                    // 其它信息只需改订单详情表
+                    foreach ($requestData as $key => $value) {
+                        if (isset($orderDetail[$key])) {
+                            if ($orderDetail[$key] != $value) {
+                                // 更新值
+                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
+                                    'field_value' =>$value
+                                ]);
+                                $changeValue .= $orderDetailDisplayName[$key] . '更改前：' . $value . ' 更改后：' . $requestData[$key] . '<br/>';
+                            }
+                        }
+                    }
+                }
+
+                // 已接单  异常 更新部分信息 （加价 加时间天 加时间小时 修改密码 ）
+                if (in_array($order->status, [13, 17])) {
+                    // 加价 修改主单信息
+                    if ($order->price < $requestData['game_leveling_amount']) {
+                        $amount =  $requestData['game_leveling_amount'] - $order->price;
+                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+
+                        $order->price = $requestData['game_leveling_amount'];
+                        $order->amount = $requestData['game_leveling_amount'];
+                        $order->save();
+
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                            'field_value' => $requestData['game_leveling_amount']
+                        ]);
+                    } else if ($order->price > $requestData['game_leveling_amount']) {
+                        return response()->ajax(0, '代练价格只可增加');
+                    }
+                    // 修改密码
+                    if ($requestData['password'] != $orderDetail['password']) {
+                        // 更新值
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
+                            'field_value' =>$requestData['password']
+                        ]);
+                    }
+                    // 修改 游戏代练小时
+                    if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && $requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']) {
+                        // 更新值
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
+                            'field_value' =>$requestData['game_leveling_hour']
+                        ]);
+                    } else {
+                        return response()->ajax(0, '代练时间只可增加');
+                    }
+                    // 修改 游戏代练天
+                    if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
+                        // 更新值
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
+                            'field_value' => $requestData['game_leveling_day']
+                        ]);
+                    } else {
+                        return response()->ajax(0, '代练时间只可增加');
+                    }
+
+                }
+                // 待验收 可加价格
+                if ($order->status == 14) {
+                    if ($order->price < $requestData['game_leveling_amount']) {
+                        $amount =  $requestData['game_leveling_amount'] - $order->price;
+                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+
+                $order->price = $requestData['game_leveling_amount'];
+                $order->amount = $requestData['game_leveling_amount'];
+                $order->save();
+
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                            'field_value' => $requestData['game_leveling_amount']
+                        ]);
+                    } else {
+                        return response()->ajax(1, '代练价格只可增加');
+                    }
+                }
+                // 状态锁定 可改密码
+                if ($order->status == 18) {
+                    // 修改密码
+                    if ($requestData['password'] != $orderDetail['password']) {
+                        // 更新值
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
+                            'field_value' =>$requestData['password']
+                        ]);
                     }
                 }
             }
+
+        } catch (CustomException $customException) {
+            DB::rollBack();
+            return response()->ajax(0, '修改失败');
         }
+        DB::commit();
 
-        // 已接单  异常 更新部分信息 （加价 加时间天 加时间小时 修改密码 ）
-        if (in_array($order->status, [13, 17])) {
-            // 加价 修改主单信息
-            if ($order->price < $requestData['game_leveling_amount']) {
-                $amount =  $requestData['game_leveling_amount'] - $order->price;
-                Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
-
-                $order->price = $requestData['game_leveling_amount'];
-                $order->amount = $requestData['game_leveling_amount'];
-                $order->save();
-
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-                    'field_value' => $requestData['game_leveling_amount']
-                ]);
-            } else if ($order->price > $requestData['game_leveling_amount']) {
-                return response()->ajax(0, '代练价格只可增加');
-            }
-            // 修改密码
-            if ($requestData['password'] != $orderDetail['password']) {
-                // 更新值
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
-                    'field_value' =>$requestData['password']
-                ]);
-            }
-            // 修改 游戏代练小时
-            if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && $requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']) {
-                // 更新值
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
-                    'field_value' =>$requestData['game_leveling_hour']
-                ]);
-            } else {
-                return response()->ajax(0, '代练时间只可增加');
-            }
-            // 修改 游戏代练天
-            if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
-                // 更新值
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
-                    'field_value' => $requestData['game_leveling_day']
-                ]);
-            } else {
-                return response()->ajax(0, '代练时间只可增加');
-            }
-
-        }
-        // 待验收 可加价格
-        if ($order->status == 14) {
-            if ($order->price < $requestData['game_leveling_amount']) {
-                $amount =  $requestData['game_leveling_amount'] - $order->price;
-                Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
-
-                $order->price = $requestData['game_leveling_amount'];
-                $order->amount = $requestData['game_leveling_amount'];
-                $order->save();
-
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-                    'field_value' => $requestData['game_leveling_amount']
-                ]);
-            } else {
-                return response()->ajax(1, '代练价格只可增加');
-            }
-        }
-        // 状态锁定 可改密码
-        if ($order->status == 18) {
-            // 修改密码
-            if ($requestData['password'] != $orderDetail['password']) {
-                // 更新值
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
-                    'field_value' => $requestData['password']
-                ]);
-            }
-        }
         return response()->ajax(1, '修改成功');
     }
 
@@ -466,11 +523,11 @@ class IndexController extends Controller
             $isOverAmount = bcsub($order->amount, $data['amount']);
             // 写入双金与订单双击比较
             if ($isOverDeposit < 0) {
-                throw new DailianException('操作失败！要求退回双金金额大于订单双金!');
+                return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
             }
             // 写入代练费与订单代练费比较
             if ($isOverAmount < 0) {
-                throw new DailianException('操作失败！要求退回代练费大于订单代练费!');
+                return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
             }
             // 判断是接单还是发单方操作
             if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
@@ -478,7 +535,7 @@ class IndexController extends Controller
             } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
                 $data['consult'] = 2; // 接单方
             } else {
-                throw new DailianException('找不到订单对应的接单或发单人!');
+                return response()->ajax(0, '找不到订单对应的接单或发单人!');
             }
             // 存信息
             LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
@@ -526,6 +583,38 @@ class IndexController extends Controller
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 发送短信
+     * @param Request $request
+     * @return mixed
+     */
+    public function sendSms(Request $request)
+    {
+        $orderInfo = OrderModel::where('no', $request->no)
+            ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
+            ->with('detail')
+            ->first();
+
+        if ($orderInfo) {
+            $orderArr = array_merge($orderInfo->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo->toArray());
+
+            $sendResult  = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
+
+            if ((bool)strpos($sendResult,"mterrcode=000")) {
+                // 发送成功写发送记录 , Auth::user()->getPrimaryUserId()
+                SmsSendRecord::create([
+                   'primary_user_id' => Auth::user()->getPrimaryUserId(),
+                   'user_id' => Auth::user()->id,
+                   'order_no' => $orderInfo->no,
+                    'client_phone' => $orderArr['client_phone'],
+                   'content' => $request->contents,
+                ]);
+                return response()->ajax(1, '发送成功!');
+            }
+            return response()->ajax(0, '发送失败');
+        }
     }
 
     /**

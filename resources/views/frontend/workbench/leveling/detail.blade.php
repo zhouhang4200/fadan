@@ -51,8 +51,6 @@
 @endsection
 
 @section('main')
-
-
     <div class="layui-tab layui-tab-brief" lay-filter="myFilter">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="detail">详情</li>
@@ -76,11 +74,11 @@
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="13" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">重发</button>
                         @endif
 
-                        @if ($detail['master'] && $detail['urgent_order'] != 1)
+                        @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
                         @endif
 
-                        @if ($detail['master'] && $detail['urgent_order'] == 1)
+                        @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] == 1)
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
                         @endif
 
@@ -132,7 +130,7 @@
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendMessage" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">发短信</button>
                         @endif
 
-                        @if ($detail['master'] && $detail['client_wang_wang'])
+                        @if ($detail['master'] && isset($detail['client_wang_wang']) &&  $detail['client_wang_wang'])
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="wangWang" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</button>
                         @endif
 
@@ -168,7 +166,7 @@
                                 <div class="layui-col-md6">
                                     <div class="layui-col-md3 layui-form-mid">*游戏</div>
                                     <div class="layui-col-md8">
-                                        <select name="game_id" lay-verify="required" lay-search="" @if(!in_array($detail['status'], [1, 23]))  disabled="disabled"  @endif>
+                                        <select name="game_id" lay-verify="required" lay-search="" @if(!in_array($detail['status'], [1, 23]))  disabled="disabled"  @endif lay-filter="game">
                                             @foreach($game as $key => $value)
                                                 <option value="{{ $key }}" @if($value == $detail['game_name']) selected @endif>{{ $value }}</option>
                                             @endforeach
@@ -177,106 +175,108 @@
                                 </div>
                             </div>
 
-                            <div class="layui-row form-group">
-                                <?php $row = 0 ?>
-                                @forelse($template as $item)
+                            <div id="template">
+                                <div class="layui-row form-group">
+                                    <?php $row = 0 ?>
+                                    @forelse($template as $item)
 
-                                    @if($row == 0)
-                                        <?php  $row = $item->display_form ?>
-                                    @endif
+                                        @if($row == 0)
+                                            <?php  $row = $item->display_form ?>
+                                        @endif
 
-                                    <div class="layui-col-md6">
-                                        <div class="layui-col-md3 layui-form-mid"> @if ($item->field_required == 1) <span style="color: orangered;">*</span> @endif
-                                            {{ $item->field_display_name  }}
-                                        </div>
-                                        <div class="layui-col-md8">
+                                        <div class="layui-col-md6">
+                                            <div class="layui-col-md3 layui-form-mid"> @if ($item->field_required == 1) <span style="color: orangered;">*</span> @endif
+                                                {{ $item->field_display_name  }}
+                                            </div>
+                                            <div class="layui-col-md8">
 
-                                            <!--订单状态为 没有接单 已下架时可以编辑该属性-->
-                                            @if($item->field_type == 1 && in_array($detail['status'], [1, 23]))
-                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                            @elseif($item->field_type == 1)
-
-                                                @if(in_array($detail['status'], [13, 17]) && in_array($item->field_name, ['game_leveling_amount', 'password', 'game_leveling_day' , 'game_leveling_hour']))
+                                                <!--订单状态为 没有接单 已下架时可以编辑该属性-->
+                                                @if($item->field_type == 1 && in_array($detail['status'], [1, 23]))
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                @elseif(in_array($detail['status'], [14]) && $item->field_name == 'game_leveling_amount')
-                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
-                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                @else
-                                                    <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly"">
+                                                @elseif($item->field_type == 1)
+
+                                                    @if(in_array($detail['status'], [13, 17]) && in_array($item->field_name, ['game_leveling_amount', 'password', 'game_leveling_day' , 'game_leveling_hour']))
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                    @elseif(in_array($detail['status'], [14]) && $item->field_name == 'game_leveling_amount')
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                    @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                    @else
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly"">
+                                                    @endif
+
                                                 @endif
 
-                                            @endif
+                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 23]))
+                                                    <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif">
+                                                        <option value=""></option>
+                                                        @if(count($item->user_values) > 0)
 
-                                            @if($item->field_type == 2 && in_array($detail['status'], [1, 23]))
-                                                <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif">
-                                                    <option value=""></option>
-                                                    @if(count($item->user_values) > 0)
-
-                                                        @foreach($item->user_values as $v)
-                                                            <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
-                                                        @endforeach
-
-                                                    @else
-
-                                                        @if(count($item->values) > 0)
-                                                            @foreach($item->values as $v)
+                                                            @foreach($item->user_values as $v)
                                                                 <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
+
+                                                        @else
+
+                                                            @if(count($item->values) > 0)
+                                                                @foreach($item->values as $v)
+                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                @endforeach
+                                                            @endif
+
                                                         @endif
+                                                    </select>
+                                                @elseif($item->field_type == 2)
+                                                    <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" class="layui-disabled" disabled>
+                                                        <option value=""></option>
+                                                        @if(count($item->user_values) > 0)
 
-                                                    @endif
-                                                </select>
-                                            @elseif($item->field_type == 2)
-                                                <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" class="layui-disabled" disabled>
-                                                    <option value=""></option>
-                                                    @if(count($item->user_values) > 0)
-
-                                                        @foreach($item->user_values as $v)
-                                                            <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
-                                                        @endforeach
-
-                                                    @else
-
-                                                        @if(count($item->values) > 0)
-                                                            @foreach($item->values as $v)
+                                                            @foreach($item->user_values as $v)
                                                                 <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
+
+                                                        @else
+
+                                                            @if(count($item->values) > 0)
+                                                                @foreach($item->values as $v)
+                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                @endforeach
+                                                            @endif
+
                                                         @endif
+                                                    </select>
+                                                @endif
 
-                                                    @endif
-                                                </select>
-                                            @endif
+                                                @if($item->field_type == 3 && in_array($detail['status'], [1, 23]))
 
-                                            @if($item->field_type == 3 && in_array($detail['status'], [1, 23]))
+                                                @endif
 
-                                            @endif
+                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]))
+                                                    <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
+                                                @elseif($item->field_type == 4)
+                                                    <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
+                                                @endif
 
-                                            @if($item->field_type == 4 && in_array($detail['status'], [1, 23]))
-                                                <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
-                                            @elseif($item->field_type == 4)
-                                                <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
-                                            @endif
+                                                @if($item->field_type == 5 && in_array($detail['status'], [1, 23]))
+                                                    <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
+                                                @elseif($item->field_type == 5)
+                                                    <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
+                                                @endif
 
-                                            @if($item->field_type == 5 && in_array($detail['status'], [1, 23]))
-                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
-                                            @elseif($item->field_type == 5)
-                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
-                                            @endif
-
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <?php $row--; ?>
+                                        <?php $row--; ?>
 
-                                    @if($row == 0)
-                            </div>
-                            <div class="layui-row form-group">
-                                @endif
+                                        @if($row == 0)
+                                </div>
+                                <div class="layui-row form-group">
+                                    @endif
 
-                                @empty
+                                    @empty
 
-                                @endforelse
+                                    @endforelse
+                                </div>
                             </div>
 
                             <div class="layui-col-md-offset2">
@@ -353,7 +353,6 @@
             </div>
         </div>
     </div>
-
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
             <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
@@ -407,7 +406,6 @@
             </form>
         </div>
     </div>
-
     <div class="complain" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
             <form class="layui-form" method="POST" action="">
@@ -455,6 +453,74 @@
 
 <!--START 底部-->
 @section('js')
+<script id="goodsTemplate" type="text/html">
+        <input type="hidden" name="id" value="@{{ d.id }}">
+        <div class="layui-row form-group">
+            @{{# var row = 0;}}
+            @{{#  layui.each(d.template, function(index, item){ }}
+
+            @{{#  if(row == 0) { row = item.display_form;  }  }}
+
+            <div class="layui-col-md6">
+                <div class="layui-col-md3 layui-form-mid">
+                    @{{# if (item.field_required == 1) {  }}<span style="color: orangered;">*</span>@{{# }  }} @{{ item.field_display_name  }}
+                </div>
+                <div class="layui-col-md8">
+
+                    @{{# if(item.field_type == 1) {  }}
+                    <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}">
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 2) {  }}
+                    <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}">
+                        <option value=""></option>
+                        @{{#  if(item.user_values.length > 0){ }}
+                        @{{#  layui.each(item.user_values, function(i, v){ }}
+                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        @{{#  }); }}
+                        @{{#  } else { }}
+                        @{{#  if(item.values.length > 0){ }}
+                        @{{#  layui.each(item.values, function(i, v){ }}
+                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        @{{#  }); }}
+                        @{{#  }  }}
+                        @{{#  }  }}
+                    </select>
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 3) {  }}
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 4) {  }}
+                    <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"  display-name="@{{item.field_display_name}}"></textarea>
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 5) {  }}
+                    <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
+                    @{{# } }}
+
+                    @{{# if(item.help_text != null || item.help_text != undefined) {  }}
+                    <a href="#" class="tooltip">
+                        <i class="iconfont icon-wenhao" id="recharge"></i>
+                        <span>@{{ item.help_text }}</span>
+                    </a>
+                    @{{# }  }}
+
+                </div>
+
+            </div>
+
+            @{{#  row--; }}
+
+            @{{# if(row == 0) { }}
+        </div>
+        <div class="layui-row form-group">
+            @{{# }  }}
+
+            @{{# })  }}
+        </div>
+
+    </script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
@@ -661,6 +727,49 @@
                     break;
             }
         });
+        // 切换游戏时加截新的模版
+        form.on('select(game)', function (data) {
+            loadTemplate(data.value)
+        });
+        // 加载模板
+        function loadTemplate(id) {
+            var getTpl = goodsTemplate.innerHTML, view = $('#template');
+            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, no:'{{ Request::input('no') }}'}, function (result) {
+                layTpl(getTpl).render(result.content, function(html){
+                    view.html(html);
+                    layui.form.render();
+                });
+                if (result.content.value.length != 0) {
+
+                    $.each(result.content.value, function (name, value) {
+                        // 获取表单dom
+                        var $formDom = $('#template').find('[name="' + name + '"]');
+                        // 填充表单
+                        switch ($formDom.prop('type')) {
+                            case 'select-one':
+                                $formDom.find('option').each(function () {
+                                    if ($(this).text() == value) {
+                                        $formDom.val($(this).val());
+                                        return false;
+                                    }
+                                });
+                                break;
+                            case 'checkbox':
+                                if (value == 1) {
+                                    $formDom.prop('checked', true);
+                                } else {
+                                    $formDom.prop('checked', false);
+                                }
+                                break;
+                            default:
+                                $formDom.val(value);
+                                break;
+                        }
+                    });
+                }
+
+            }, 'json');
+        }
 
     });
 </script>

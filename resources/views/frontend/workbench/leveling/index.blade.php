@@ -30,9 +30,9 @@
         .layui-form-select .layui-input {
             padding-right:0 !important;
         }
-        .layui-table-cell {
-            overflow: inherit;
-        }
+        /*.layui-table-cell {*/
+            /*overflow: inherit;*/
+        /*}*/
         .layui-form-item .layui-inline {
             margin-bottom: 5px;
             margin-right: 5px;
@@ -50,7 +50,6 @@
         .layui-table-fixed .layui-table-body {
             overflow: visible;
         }
-
         .layui-table-box, .layui-table-view {
             position: relative;
             overflow: unset;
@@ -248,12 +247,12 @@
                 <div >
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0">
-                            <textarea placeholder="请输入要发送的内容" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
+                            <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
                         </div>
                     </div>
@@ -388,6 +387,9 @@
         @{{ d.account }} <br/>
         @{{ d.password }}
     </script>
+    <script type="text/html" id="getAmountTemplate">
+        @{{ d.get_amount ? d.get_amount : '' }} <br/>
+    </script>
     <script type="text/html" id="labelTemplate">
         @{{# if (d.label == '红色') { }}
             <div style="height:100%;width:100%;background-color: #ff6159"></div>
@@ -466,7 +468,7 @@
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
                     {field: 'security_deposit', title: '安全保证金', width: '80'},
                     {field: 'payment_amount', title: '支付金额', width: '80'},
-                    {field: 'get_amount', title: '获得金额', width: '80'},
+                    {field: 'get_amount', title: '获得金额', width: '80',templet: '#getAmountTemplate'},
                     {field: 'poundage', title: '手续费', width: '80'},
                     {field: 'poundage', title: '利润', width: '80'},
                     {field: 'leveling_time', title: '代练时间', width: '80'},
@@ -580,6 +582,8 @@
                     return false;
                 }
                 if (data.value == 'sendMessage') {
+                    var no = $(data.elem).find("option:selected").attr("data-no");
+                    $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + no + '"/>');
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -691,6 +695,14 @@
                     });
                 }
 
+            });
+            // 发送短信
+            form.on('submit(confirm-send-sms)', function (data) {
+                $.post('{{ route('frontend.workbench.leveling.send-sms') }}', {no:data.field.no, contents:data.field.contents},function (result) {
+                    layer.closeAll();
+                    layer.msg(result.message);
+                }, 'json');
+                return false;
             });
             // 重新渲染后重写样式
             function changeStyle(index) {
