@@ -11,8 +11,16 @@ use App\Models\OrderStatistic;
 use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
 
+/**
+ * 统计
+ */
 class StatisticController extends Controller
 {
+    /**
+     * 员工统计
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function employee(Request $request)
     {
     	$userName = $request->user_name;
@@ -22,27 +30,56 @@ class StatisticController extends Controller
     	$fullUrl = $request->fullUrl();
     	$filters = compact('userName', 'startDate', 'endDate');
 
-    	$datas = EmployeeStatistic::where('parent_id', Auth::user()->getPrimaryUserId())
-    				->filter($filters)
-    				->select(DB::raw('user_id, user_name, name, sum(complete_order_count) as complete_order_count, sum(revoke_order_count) as revoke_order_count, sum(arbitrate_order_count) as arbitrate_order_count, sum(profit) as profit, sum(send_order_amount) as send_order_amount'))
-    				->groupBy('user_id')
-    				->paginate(config('frontend.page'));
+        if (Auth::user()->parent_id == 0) {
+            $parent = Auth::user();
+            $userIds = Auth::user()->children->pluck('id')->merge(Auth::id());
+        } else {
+            $parent = Auth::user()->parent;
+            $userIds = Auth::user()->parent->children->pluck('id')->merge(Auth::user()->parent->id);
+        }
 
-    	$totalData = EmployeeStatistic::where('parent_id', Auth::user()->getPrimaryUserId())
+    	$query = EmployeeStatistic::whereIn('user_id', $userIds)
     				->filter($filters)
-    				->select(DB::raw('sum(complete_order_count) as total_complete_order_count, sum(revoke_order_count) as total_revoke_order_count, sum(arbitrate_order_count) as total_arbitrate_order_count, sum(profit) as total_profit, sum(send_order_amount) as total_send_order_amount, count(distinct(user_id)) as total_user_id_count'))
+    				->select(DB::raw('
+                        user_id, 
+                        user_name, 
+                        name, 
+                        sum(complete_order_count) as complete_order_count, 
+                        sum(revoke_order_count) as revoke_order_count, 
+                        sum(arbitrate_order_count) as arbitrate_order_count, 
+                        sum(profit) as profit, 
+                        sum(complete_order_amount) as complete_order_amount'))
+    				->groupBy('user_id');
+
+    	$datas = $query->paginate(config('frontend.page'));
+        $excelDatas = $query->get();
+
+    	$totalData = EmployeeStatistic::whereIn('user_id', $userIds)
+    				->filter($filters)
+    				->select(DB::raw('
+                        sum(complete_order_count) as total_complete_order_count, 
+                        sum(revoke_order_count) as total_revoke_order_count, 
+                        sum(arbitrate_order_count) as total_arbitrate_order_count, 
+                        sum(profit) as total_profit, 
+                        sum(complete_order_amount) as total_complete_order_amount, 
+                        count(distinct(user_id)) as total_user_id_count'))
     				->first();
 
     	if ($request->export) {
     		if ($datas->count() < 1) {
     			return redirect(route('frontend.statistic.employee'))->withInput()->with('empty', '数据为空!');
     		}
-            return $this->exportEmployee($filters);
+            return $this->exportEmployee($excelDatas, $totalData);
         }
 
-    	return view('frontend.statistic.employee', compact('datas', 'userName', 'startDate', 'endDate', 'children', 'fullUrl', 'totalData'));
+    	return view('frontend.statistic.employee', compact('datas', 'userName', 'startDate', 'endDate', 'children', 'fullUrl', 'totalData', 'parent'));
     }
 
+    /**
+     * 订单统计
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function order(Request $request)
     {
     	$startDate = $request->start_date;
@@ -50,7 +87,13 @@ class StatisticController extends Controller
     	$fullUrl = $request->fullUrl();
     	$filters = compact('startDate', 'endDate');
 
-    	$datas = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+        if (Auth::user()->parent_id == 0) {
+            $userIds = Auth::user()->children->pluck('id')->merge(Auth::id());
+        } else {
+            $userIds = Auth::user()->parent->children->pluck('id')->merge(Auth::user()->parent->id);
+        }
+
+    	$query = OrderStatistic::whereIn('user_id', $userIds)
 				->filter($filters)
 				->select(DB::raw('user_id, date, 
 					sum(send_order_count) as send_order_count,
@@ -66,10 +109,9 @@ class StatisticController extends Controller
 					sum(poundage) as poundage,
 					sum(profit) as profit
 				'))
-				->groupBy('date')
-				->paginate(config('frontend.page'));
+				->groupBy('date');
 
-		$totalData = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
+		$totalData = OrderStatistic::whereIn('user_id', $userIds)
 				->filter($filters)
 				->select(DB::raw('user_id,
 					sum(send_order_count) as total_send_order_count,
@@ -87,11 +129,14 @@ class StatisticController extends Controller
 				'))
 				->first();
 
+        $excelDatas = $query->get();
+        $datas = $query->paginate(config('frontend.page'));
+
 		if ($request->export) {
     		if ($datas->count() < 1) {
     			return redirect(route('frontend.statistic.order'))->withInput()->with('empty', '数据为空!');
     		}
-            return $this->exportOrder($filters);
+            return $this->exportOrder($excelDatas, $totalData);
         }
 
     	return view('frontend.statistic.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
@@ -107,19 +152,9 @@ class StatisticController extends Controller
 
     }
 
-    public function exportEmployee($filters)
+    public function exportEmployee($excelDatas, $totalData)
     {
         try {
-            $datas = EmployeeStatistic::where('parent_id', Auth::user()->getPrimaryUserId())
-    				->filter($filters)
-    				->select(DB::raw('user_id, user_name, name, sum(complete_order_count) as complete_order_count, sum(revoke_order_count) as revoke_order_count, sum(arbitrate_order_count) as arbitrate_order_count, sum(profit) as profit, sum(send_order_amount) as send_order_amount'))
-    				->groupBy('user_id')
-    				->get();
-
-            $totalData = EmployeeStatistic::where('parent_id', Auth::user()->getPrimaryUserId())
-    				->filter($filters)
-    				->select(DB::raw('sum(complete_order_count) as total_complete_order_count, sum(revoke_order_count) as total_revoke_order_count, sum(arbitrate_order_count) as total_arbitrate_order_count, sum(profit) as total_profit, sum(send_order_amount) as total_send_order_amount, count(distinct(user_id)) as total_user_id_count'))
-    				->first();
             // 标题
             $title = [
                 '员工姓名',
@@ -135,15 +170,15 @@ class StatisticController extends Controller
             	'总计',
                 $totalData->total_user_id_count,
                 $totalData->total_complete_order_count,
-                $totalData->total_send_order_amount,
+                $totalData->total_complete_order_amount,
                 $totalData->total_revoke_order_count,
                 $totalData->total_arbitrate_order_count,
                 $totalData->total_profit,
             ];
 
-            $chunkDatas = array_chunk(array_reverse($datas->toArray()), 1000);
+            $chunkDatas = array_chunk(array_reverse($excelDatas->toArray()), 500);
 
-            Excel::create(iconv('UTF-8', 'gbk', '员工统计'), function ($excel) use ($chunkDatas, $title, $totalData) {
+            Excel::create('员工统计', function ($excel) use ($chunkDatas, $title, $totalData) {
 
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
@@ -154,7 +189,7 @@ class StatisticController extends Controller
                             $user->user_name,
                             $data['name'],
                             $data['complete_order_count'] ?? '--',
-                            $data['send_order_amount'] ?? '--',
+                            $data['complete_order_amount'] ?? '--',
                             $data['revoke_order_count'] ?? '--',
                             $data['arbitrate_order_count'] ?? '--',
                             $data['profit'] ?? '--',
@@ -175,45 +210,9 @@ class StatisticController extends Controller
         }
     }
 
-    public function exportOrder($filters)
+    public function exportOrder($excelDatas, $totalData)
     {
         try {
-            $datas =OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
-				->filter($filters)
-				->select(DB::raw('user_id, date, 
-					sum(send_order_count) as send_order_count,
-				 	sum(receive_order_count) as receive_order_count, 
-				 	sum(complete_order_count) as complete_order_count,
-				 	sum(complete_order_rate) as complete_order_rate, 
-				 	sum(revoke_order_count) as revoke_order_count, 
-					sum(arbitrate_order_count) as arbitrate_order_count,
-					sum(three_status_original_amount) as three_status_original_amount,
-					sum(complete_order_amount) as complete_order_amount,
-					sum(two_status_payment) as two_status_payment,
-					sum(two_status_income) as two_status_income,
-					sum(poundage) as poundage,
-					sum(profit) as profit,
-				'))
-				->groupBy('date')
-				->get();
-
-            $totalData = OrderStatistic::where('user_id', Auth::user()->getPrimaryUserId())
-				->filter($filters)
-				->select(DB::raw('user_id,
-					sum(send_order_count) as total_send_order_count,
-				 	sum(receive_order_count) as total_receive_order_count, 
-				 	sum(complete_order_count) as total_complete_order_count,
-				 	sum(complete_order_rate) as total_complete_order_rate, 
-				 	sum(revoke_order_count) as total_revoke_order_count, 
-					sum(arbitrate_order_count) as total_arbitrate_order_count,
-					sum(three_status_original_amount) as total_three_status_original_amount,
-					sum(complete_order_amount) as total_complete_order_amount,
-					sum(two_status_payment) as total_two_status_payment,
-					sum(two_status_income) as total_two_status_income,
-					sum(poundage) as total_poundage,
-					sum(profit) as total_profit,
-				'))
-				->first();
             // 标题
             $title = [
                 '发布时间',
@@ -248,9 +247,9 @@ class StatisticController extends Controller
             ];
 
 
-            $chunkDatas = array_chunk(array_reverse($datas->toArray()), 1000);
+            $chunkDatas = array_chunk(array_reverse($excelDatas->toArray()), 500);
 
-            Excel::create(iconv('UTF-8', 'gbk', '订单统计'), function ($excel) use ($chunkDatas, $title, $totalData) {
+            Excel::create('订单统计', function ($excel) use ($chunkDatas, $title, $totalData) {
 
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
@@ -284,7 +283,7 @@ class StatisticController extends Controller
             })->export('xls');
 
         } catch (Exception $e) {
-
+            
         }
     }
 }

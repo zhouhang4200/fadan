@@ -79,13 +79,13 @@ class Revoked extends DailianAbstract implements DailianInterface
         $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
         $amount = $consult->amount;
-
-        if (! $amount || ! $consult) {
-            throw new Exception('不存在申诉和协商记录或不存在协商代练费!');
-        }
-        $apiDeposit = $consult->api_deposit;
-        $apiService = $consult->api_service;
         $writeDeposit = $consult->deposit;
+
+        if (! $amount || ! $consult || ! $writeDeposit) {
+            throw new Exception('不存在申诉和协商记录或不存在协商代练费或双金!');
+        }
+        // $apiDeposit = $consult->api_deposit;
+        $apiService = $consult->api_service;
         // 订单的安全保证金
         $security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
         // 订单的效率保证金
@@ -93,14 +93,15 @@ class Revoked extends DailianAbstract implements DailianInterface
         // 剩余代练费 = 订单代练费 - 回传代练费
         $leftAmount = bcsub($this->order->amount, $amount);
         // 订单双金 = 订单安全保证金 + 订单效率保证金
-        $orderDeposit = bcadd($security, $efficiency);
+        // $orderDeposit = bcadd($security, $efficiency);
+        // 回传手续费 《= 协商所填双金
+        $isRight = bcsub($writeDeposit, $apiService);
         // 回传双金 + 回传手续费
-        $apiAll = bcadd($apiDeposit, $apiService);
-
+        // $apiAll = bcadd($apiDeposit, $apiService);
         // 回传双金 + 手续费 == 写入的双金
-        $isZero = bcsub($apiAll, $writeDeposit);
+        // $isZero = bcsub($apiAll, $writeDeposit);
 
-        if ($leftAmount >= 0 && bcsub($orderDeposit, $apiAll) >= 0 && $isZero == 0) {    
+        if ($leftAmount >= 0 && $isRight >= 0) {    
             DB::beginTransaction();
             try {
                 if ($amount > 0) {
@@ -129,11 +130,11 @@ class Revoked extends DailianAbstract implements DailianInterface
                     }
                 }
                 
-                // 如果订单安全保证金 > 回传双金 + 手续费 
-                if (bcsub($security, $apiAll) > 0) {
-                    if ($apiAll > 0) {
+                // 如果订单安全保证金 > 填写双金
+                if (bcsub($security, $writeDeposit) > 0) {
+                    if ($writeDeposit > 0) {
                         // 发单 安全保证金收入
-                        Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+                        Asset::handle(new Income($writeDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                             throw new Exception('流水记录写入失败');
@@ -159,7 +160,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                     }
 
                     // 接单 退回 剩余安全保证金
-                    $leftSecurity = bcsub($security, $apiAll);
+                    $leftSecurity = bcsub($security, $writeDeposit);
 
                     if ($leftSecurity > 0) {
                         Asset::handle(new Income($leftSecurity, 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
@@ -198,10 +199,10 @@ class Revoked extends DailianAbstract implements DailianInterface
                             throw new Exception('流水记录写入失败');
                         }
                     }
-                } else if (bcsub($security, $apiAll) == 0) {
-                    if ($apiAll > 0) {
+                } else if (bcsub($security, $writeDeposit) == 0) {
+                    if ($writeDeposit > 0) {
                         // 发单 安全保证金收入
-                        Asset::handle(new Income($apiAll, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+                        Asset::handle(new Income($writeDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
                         if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                             throw new Exception('流水记录写入失败');
@@ -265,7 +266,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                     }
 
                     // 发单  剩余效率保证金收入
-                    $creatorEfficiency = bcsub($apiAll, $security);
+                    $creatorEfficiency = bcsub($writeDeposit, $security);
 
                     if ($creatorEfficiency > 0) {
                         Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
@@ -321,7 +322,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                     }
                 }
                 // 写入获得金额
-                OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $apiAll);
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $writeDeposit);
                 // 写入手续费
                 OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
             } catch (Exception $e) {
@@ -351,16 +352,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                         'p' => '123456',
                     ];
                     // 结果
-                    $result = Show91::confirmSc($options);
-                    $result = json_decode($result, true);
-
-                    if (! $result) {
-                        throw new CustomException('外部接口错误,请重试!');
-                    }
-
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    Show91::confirmSc($options);
                 }
                 LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
                 return true;

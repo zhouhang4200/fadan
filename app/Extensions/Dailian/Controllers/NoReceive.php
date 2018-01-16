@@ -78,16 +78,7 @@ class NoReceive extends DailianAbstract implements DailianInterface
                         'oid' => $thirdOrderNo,
                     ]; 
                     // 结果
-                    $result = Show91::grounding($options);
-                    $result = json_decode($result, true);
-
-                    if (! $result) {
-                        throw new CustomException('外部接口错误,请重试!');
-                    }
-
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    Show91::grounding($options);
                 }
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());

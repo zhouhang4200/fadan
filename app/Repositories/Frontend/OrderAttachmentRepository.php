@@ -9,6 +9,36 @@ use File;
 
 class OrderAttachmentRepository
 {
+    public static function dataList($orderNo)
+    {
+        // 取订单信息
+        $order = (new OrderRepository)->detail($orderNo);
+        if (empty($order)) {
+            throw new CustomException('订单不存在');
+        }
+
+        // 取订单详情
+        $orderDetail = $order->detail->pluck('field_value', 'field_name');
+        // 第三方单号
+        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
+
+        try {
+            $dataList = Show91::topic(['oid' => $thirdOrderNo]);
+        }
+        catch (CustomException $e) {
+            throw new CustomException($e->getMessage());
+        }
+
+        $description = OrderAttachment::where('order_no', $orderNo)->pluck('description', 'third_file_name');
+
+        foreach ($dataList as $key => $value) {
+            $imgKey = basename($value->url);
+            $dataList[$key]->description = $description[$imgKey] ?? '无';
+        }
+
+        return $dataList;
+    }
+
     /**
      * 保存图片信息并推送到show91
      * @return mixed

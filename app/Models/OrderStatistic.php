@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderStatistic extends Model
 {
     protected $fillable = [
-    	'date', 'send_order_count', 'receive_order_count', 'complete_order_count', 'complete_order_rate', 'revoke_order_count', 'arbitrate_order_count', 'three_status_original_amount', 'complete_order_amount', 'two_status_payment', 'two_status_income', 'poundage', 'profit'
+    	'date', 'user_id', 'parent_id', 'send_order_count', 'receive_order_count', 'complete_order_count', 'complete_order_rate', 'revoke_order_count', 'arbitrate_order_count', 'three_status_original_amount', 'complete_order_amount', 'two_status_payment', 'two_status_income', 'poundage', 'profit'
     ];
 
     public function user()
@@ -28,7 +28,6 @@ class OrderStatistic extends Model
         if ($filters['endDate'] && $filters['startDate']) {
             $query->whereBetween('date', [$filters['startDate'], $filters['endDate']]);
         }
-
         return $query;
     }
 }

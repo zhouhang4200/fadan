@@ -485,7 +485,7 @@
                     <div class="im">
                         <div class="chat_window"></div>
                         <div class="chat_bar">
-                            <form class="layui-form">
+                            <form class="layui-form" id="form-send-message">
                                 <div class="layui-form-item">
                                     <div class="layui-input-inline" style="margin-left:0;width:70%;" style=" position: relative;">
                                         <input type="text" name="show91-message" required lay-verify="required" placeholder="请输入留言" autocomplete="off" class="layui-input"
@@ -839,6 +839,11 @@
             }
         });
 
+        // 阻止默认事件
+        $('#form-send-message').submit(function () {
+            return false;
+        });
+
         // 发送留言
         form.on('submit(send-message)', function (data) {
             var $button = $(this);
@@ -851,11 +856,11 @@
                 $button.attr('disabled', false).text('发送');
                 $('[name="show91-message"]').val('');
 
-                if (data.status !== 1) {
+                if (data.status === 1) {
+                    loadMessage();
+                } else {
                     layer.msg(data.message);
                     return false;
-                } else {
-                    loadMessage();
                 }
             }, 'json');
         });
@@ -872,8 +877,11 @@
             },
             before: function (obj) {
                 this.data.description = $('[name="image_description"]').val();
+                load = layer.load(4, {shade:0.3});
             },
             done: function (res, index, upload) {
+                layer.close(load);
+
                 if (res.status === 1) {
                     loadImage();
                     layer.alert('上传成功');
@@ -887,7 +895,7 @@
     // 加载留言
     function loadMessage()
     {
-        $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['third_order_no']]) }}", function (data) {
+        $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}", function (data) {
             if (data.status === 1) {
                 $('.chat_window').html(data.content);
                 $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
@@ -900,7 +908,7 @@
     // 加载截图
     function loadImage()
     {
-        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['third_order_no']]) }}", function (data) {
+        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (data) {
             if (data.status === 1) {
                 $('#leave-image').html(data.content);
             } else {

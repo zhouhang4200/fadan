@@ -27,6 +27,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
 use Excel;
+use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 
 /**
@@ -259,16 +260,27 @@ class IndexController extends Controller
 
     /**
      * 从show91接口拿留言数据
-     * @param $oid
+     * @param $order_no
      * @return mixed
      */
-    public function leaveMessage($oid)
+    public function leaveMessage($order_no)
     {
+        // 取订单信息
+        $order = (new OrderRepository)->detail($order_no);
+        if (empty($order)) {
+            return response()->ajax(0, '订单不存在');
+        }
+
+        // 取订单详情
+        $orderDetail = $order->detail->pluck('field_value', 'field_name');
+        // 第三方单号
+        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
+
         try {
-            $dataList = Show91::messageList(['oid' => $oid]);
+            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
         }
         catch (CustomException $e) {
-            return response()->ajax($e->getCode(), $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         }
 
         $show91Uid = config('show91.uid');
@@ -279,13 +291,13 @@ class IndexController extends Controller
 
     /**
      * 从show91接口拿截图数据
-     * @param $oid
+     * @param $order_no
      * @return mixed
      */
-    public function leaveImage($oid)
+    public function leaveImage($order_no)
     {
         try {
-            $dataList = Show91::topic(['oid' => $oid]);
+            $dataList = OrderAttachmentRepository::dataList($order_no);
         }
         catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
@@ -346,7 +358,7 @@ class IndexController extends Controller
             return response()->ajax($e->getCode(), $e->getMessage());
         }
 
-        return response()->json([1, 'success']);
+        return response()->ajax(1);
     }
 
     /**
@@ -509,7 +521,7 @@ class IndexController extends Controller
             } else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
             return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
@@ -559,9 +571,9 @@ class IndexController extends Controller
             LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
             // 改状态
             DailianFactory::choose('revoke')->run($data['order_no'], $data['user_id']);
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '操作失败!');
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
         return response()->json(['status' => 1, 'message' => '操作成功!']);
@@ -579,6 +591,8 @@ class IndexController extends Controller
             $userId = Auth::id();
             $data['order_no'] = $request->orderNo;
             $data['complain_message'] = $request->data['complain_message'];
+            $data['amount'] = 0;
+            $data['deposit'] = 0;
 
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
@@ -590,12 +604,12 @@ class IndexController extends Controller
                 return response()->ajax(0, '操作失败!');
             }
 
-            LevelingConsult::where('order_no', $data['order_no'])->update($data);
+            LevelingConsult::where('order_no', $data['order_no'])->UpdateOrcreate(['order_no' => $data['order_no']], $data);
             // 改状态
             DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '操作失败!');
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');

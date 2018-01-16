@@ -25,7 +25,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId, $runAfter = 1, $file = null)
     {	
     	DB::beginTransaction();
     	try {
@@ -48,11 +48,10 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            $this->after();
+            $this->after($file);
 
     	} catch (Exception $e) {
     		DB::rollBack();
-
             throw new Exception($e->getMessage());
     	}
     	DB::commit();
@@ -82,24 +81,15 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     }
 
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => base64_encode(file_get_contents(url('frontend/images/logo.png'))),
-                        'pic2' => '',
-                        'pic3' => '',
+                        'pic1' => new \CURLFile(public_path('resources/users/20171213/1513149427451690.jpg'), 'image/jpg'),
+                        'pic2' => new \CURLFile(public_path('resources/users/20171213/1513149427451690.jpg'), 'image/jpg'),
+                        'pic3' => new \CURLFile(public_path('resources/users/20171213/1513149427451690.jpg'), 'image/jpg'),
                     ];
                     // 结果
-                    $result = Show91::addappeal($options);
-                    $result = json_decode($result, true);
-                    // dd($result);
-                    if (! $result) {
-                        throw new CustomException('外部接口错误,请重试!');
-                    }
-                
-                    if ($result && $result['result']) {
-                        throw new Exception($result['reason']);
-                    }
+                    Show91::addappeal($options);
                 }
                 return true;
             } catch (Exception $e) {

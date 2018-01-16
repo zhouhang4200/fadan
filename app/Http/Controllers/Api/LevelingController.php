@@ -47,6 +47,7 @@ class LevelingController
             'status' => 0,
             'message' => $message,
         ]);
+         // 
         throw new Exception($e->getMessage());
     }
 
@@ -58,12 +59,12 @@ class LevelingController
 	 */
     public function receiveOrder(Request $request)
     {
-    	try {          
+    	try {       
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('receive')->run($order->no, 29, 0);
 
-			return $this->success('发接单');
+			return $this->success('接单成功');
     	} catch (Exception $e) {
             return $this->fail($e->getMessage());
     	}
@@ -179,18 +180,19 @@ class LevelingController
             $apiAmount = $request->apiAmount;
             $apiDeposit = $request->apiDeposit;
             $content = $request->content ?? '无';
+            $apiService = $request->apiService;
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
             if(! $content || strlen($content) > 200 || strlen($content) < 1) {
                 throw new Exception('协商原因为字符串且长度不超过200');
     		} else {
-    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit)) {
-                    throw new Exception('代练费和双金必须是数字');
+    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
+                    throw new Exception('代练费和双金或手续费必须是数字');
     			}
 
-    			if ($apiAmount < 0 || $apiDeposit < 0) {
-                    throw new Exception('代练费和双金必须大于0');
+    			if ($apiAmount < 0 || $apiDeposit < 0 || $apiService < 0) {
+                    throw new Exception('代练费和双金或手续费必须大于0');
     			}
 
                 $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
@@ -211,6 +213,9 @@ class LevelingController
                     'user_id' => 29,
                     'order_no' => $order->no,
                     'amount' => $apiAmount,
+                    'api_amount' => $apiAmount,
+                    'api_deposit' => $apiDeposit,
+                    'api_service' => $apiService,
                     'deposit' => $apiDeposit,
                     'consult' => 2,
                     'revoke_message' => $content,
@@ -275,7 +280,7 @@ class LevelingController
             // 会变成锁定
             DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
             // 91的要解除锁定
-			DailianFactory::choose('cancelLock')->run($order->no, 29);
+			// DailianFactory::choose('cancelLock')->run($order->no, 29);
 
     	} catch (Exception $e) {
             DB::rollBack();
@@ -297,7 +302,7 @@ class LevelingController
 
             DailianFactory::choose('cancelArbitration')->run($order->no, 29, 0);
             DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
-			DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
+			// DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
 
             return $this->success('已取消申诉');
     	} catch (Exception $e) {

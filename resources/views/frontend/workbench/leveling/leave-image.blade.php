@@ -10,7 +10,7 @@
         <tr>
             <td>{{ $data->id }}</td>
             <td>{{ $data->userName }}</td>
-            <td>{{ $data->oid }}</td>
+            <td>{{ $data->description }}</td>
             <td>{{ $data->created_on }}</td>
             <td><button type="button" data-url="{{ $data->url }}" class="layui-btn layui-btn-normal layui-btn-sm show-image">查看</button></td>
         </tr>

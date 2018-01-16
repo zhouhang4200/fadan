@@ -222,21 +222,19 @@
 
     <div class="complain" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div >
+            <form class="layui-form">
+            <input type="hidden" id="order_no" name="order_no">
+                <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0px">
                             <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-
                         </div>
                     </div>
                     <div class="layui-form-item">
 
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
+                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-
                         </div>
                     </div>
                 </div>
@@ -309,12 +307,14 @@
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# } else {  }}
                     @{{# if (d.consult == 2 && d.status == 15) {  }}
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# }  }}
 
@@ -322,7 +322,7 @@
                 <option value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</option>
                 @{{# }  }}
 
-                @{{# if (d.status == 15) {  }}
+                @{{# if (d.status == 13 || d.status == 14 || d.status == 15) {  }}
                 <option value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</option>
                 @{{# }  }}
 
@@ -621,6 +621,7 @@
                         area: ['500px', '280px'],
                         content: $('.complain')
                     });
+                    $('#order_no').val(orderNo);
                     form.on('submit(complain)', function(data){
                         $.post("{{ route('frontend.workbench.leveling.complain') }}", {
                             orderNo:orderNo,
@@ -628,14 +629,12 @@
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
-
                             } else {
                                 layer.alert(result.message);
-
                             }
                             reload();
                         });
-                            layer.closeAll();
+                        layer.closeAll();
                         return false;
                     });
 
