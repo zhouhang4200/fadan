@@ -11,9 +11,9 @@ use App\Exceptions\DailianException as Exception;
 class Arbitrationing extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [13, 14, 15]; // 状态：15撤销中
-	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
-    protected $handledStatus    = 16; // 操作之后状态：16仲裁中
-    protected $type             = 20; // 操作：20申请仲裁
+	protected $beforeHandleStatus; // 操作之前的状态:15撤销中
+    protected $handledStatus = 16; // 操作之后状态：16仲裁中
+    protected $type          = 20; // 操作：20申请仲裁
     
 	/**
      * [仲裁中：写日志，写流水]
@@ -25,7 +25,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1, $file = null)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
@@ -33,8 +33,9 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
-    		// 获取订单对象
-		    $this->getObject();
+            // 获取订单对象
+            $this->getObject();
+            $this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性
@@ -48,7 +49,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            $this->after($file);
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();

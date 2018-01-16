@@ -5,19 +5,18 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Models\OrderHistory;
 use App\Services\Show91;
-use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
 
-class CancelArbitration extends DailianAbstract implements DailianInterface
+class RefuseRevoke extends DailianAbstract implements DailianInterface
 {
-    protected $acceptableStatus   = [16]; // 状态：16仲裁中
-    protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
-    protected $handledStatus;// 操作后的状态
-    protected $type               = 21; // 操作：21取消仲裁
-    
+    //取消撤销
+    protected $acceptableStatus = [15]; // 状态：15撤销中
+	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
+    protected $handledStatus; // 状态：操作之后的状态
+    protected $type             = 19; // 操作：19取消撤销
+
 	/**
-     * [取消仲裁 -》 仲裁申请前状态]
-     * @param  [type] $orderNo     [订单号]
+     * [run 取消撤销 -> 撤销前的状态]
      * @param  [type] $userId      [操作人]
      * @param  [type] $apiAmount   [回传代练费]
      * @param  [type] $apiDeposit  [回传双金]
@@ -33,24 +32,28 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
-    		// 获取订单对象
-		    $this->getObject();
+            // 获取订单对象
+            $this->getObject();
+        	// 获取上一个操作状态
             $this->getBeforeStatus($orderNo);
-		    // 创建操作前的订单日志详情
-		    $this->createLogObject();
-		    // 设置订单属性
-		    $this->setAttributes();
-		    // 保存更改状态后的订单
-		    $this->save();
-		    // 更新平台资产
-		    $this->updateAsset();
-		    // 订单日志描述
-		    $this->setDescription();
-		    // 保存操作日志
-		    $this->saveLog();
+            // 创建操作前的订单日志详情
+            $this->createLogObject();
+            // 设置订单属性
+            $this->setAttributes();
+            // 保存更改状态后的订单
+            $this->save();
+            // 更新平台资产
+            $this->updateAsset();
+            // 订单日志描述
+            $this->setDescription();
+            // 保存操作日志
+            $this->saveLog();
 
             $this->after();
-
+            
+            if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
+                (new Lock)->run($orderNo, $userId);
+            }
     	} catch (Exception $e) {
     		DB::rollBack();
 
@@ -84,8 +87,8 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
         }
     }
 
-    /**
-     * 撤销申诉
+     /**
+     * 调用外部提交协商发接口
      * @return [type] [description]
      */
     public function after()
@@ -93,23 +96,18 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
         if ($this->runAfter) {
             try {
                 if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                    if (! $consult) {
-                        throw new Exception('订单申诉和协商记录不存在');
-                    }
-
                     $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
 
                     if (! $thirdOrderNo) {
                         throw new Exception('第三方订单号不存在');
                     }
-
                     $options = [
-                        'aid' => $thirdOrderNo, // 撤销id 可以用单号
-                    ];
+                        'oid' => $thirdOrderNo,
+                        'v' => 2,
+                        'p' => '123456',
+                    ]; 
                     // 结果
-                    Show91::cancelAppeal($options);
+                    Show91::confirmSc($options);
                 }
                 return true;
             } catch (Exception $e) {

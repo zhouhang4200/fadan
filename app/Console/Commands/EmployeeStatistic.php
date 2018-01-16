@@ -50,15 +50,15 @@ class EmployeeStatistic extends Command
             $userDatas = DB::select("
                 SELECT 
                     n.name, 
-                    n.id as user_id, 
+                    n.id AS user_id, 
                     n.user_name, 
                     n.parent_id, 
                     m.complete_order_count, 
                     m.revoke_order_count, 
                     m.arbitrate_order_count,m.complete_order_amount, 
-                    DATE_FORMAT(m.updated_at, '%Y-%m-%d') as date, 
-                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') as created_at, 
-                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') as updated_at,
+                    DATE_FORMAT(m.updated_at, '%Y-%m-%d') AS date, 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, 
+                    DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
                     m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income-m.poundage AS profit
                 FROM 
                     (SELECT 
@@ -88,7 +88,7 @@ class EmployeeStatistic extends Command
                             WHERE a.updated_at >= '$yestodayDate' AND a.updated_at < '$todayDate' AND a.service_id = 2
                             GROUP BY trade_no
                         ) c LEFT JOIN orders d ON c.no = d.no 
-                    GROUP BY d.creator_user_id ) m left join users n on m.creator_user_id = n.id
+                    GROUP BY d.creator_user_id ) m LEFT JOIN users n ON m.creator_user_id = n.id
                 ");
 
             if ($userDatas) {

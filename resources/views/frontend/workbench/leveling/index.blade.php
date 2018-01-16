@@ -17,9 +17,9 @@
         .laytable-cell-1-0, .laytable-cell-1-5, .laytable-cell-1-7{
             height: 40px !important;
         }
-        th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
+        /*th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
             line-height: 40px !important;
-        }
+        }*/
         .laytable-cell-1-22{
             height: 40px !important;
             line-height: 40px !important;
@@ -307,14 +307,14 @@
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
+                    <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# } else {  }}
                     @{{# if (d.consult == 2 && d.status == 15) {  }}
                     <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
                     @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
                     <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
+                    <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
                     @{{# }  }}
                 @{{# }  }}
 
@@ -456,11 +456,11 @@
                     {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
                     {field: 'cstomer_service_remark', title: '客服备注', width: '150'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
+                    {field: 'status_text', title: '订单状态', width: '120'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
                     {field: 'game_leveling_type', title: '代练类型', width: '100'},
                     {title: '账号/密码', templet: '#accountPasswordTemplate', width: '100'},
                     {field: 'role', title: '角色名称', width: '100'},
-                    {field: 'status_text', title: '订单状态', width: '120'},
                     {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'amount', title: '代练价格', width: '80'},
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},

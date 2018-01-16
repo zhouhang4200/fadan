@@ -402,7 +402,7 @@ class IndexController extends Controller
             if ($requestData['password'] != $orderDetail['password']) {
                 // 更新值
                 OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
-                    'field_value' =>$requestData['password']
+                    'field_value' => $requestData['password']
                 ]);
             }
         }
@@ -466,11 +466,11 @@ class IndexController extends Controller
             $isOverAmount = bcsub($order->amount, $data['amount']);
             // 写入双金与订单双击比较
             if ($isOverDeposit < 0) {
-                return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
+                throw new DailianException('操作失败！要求退回双金金额大于订单双金!');
             }
             // 写入代练费与订单代练费比较
             if ($isOverAmount < 0) {
-                return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
+                throw new DailianException('操作失败！要求退回代练费大于订单代练费!');
             }
             // 判断是接单还是发单方操作
             if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
@@ -478,7 +478,7 @@ class IndexController extends Controller
             } else if (Auth::user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
                 $data['consult'] = 2; // 接单方
             } else {
-                return response()->ajax(0, '找不到订单对应的接单或发单人!');
+                throw new DailianException('找不到订单对应的接单或发单人!');
             }
             // 存信息
             LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
