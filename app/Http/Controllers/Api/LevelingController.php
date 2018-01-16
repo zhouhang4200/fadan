@@ -47,8 +47,8 @@ class LevelingController
             'status' => 0,
             'message' => $message,
         ]);
-         // 
-        throw new Exception($e->getMessage());
+        \Log::info($message); 
+        throw new Exception($message);
     }
 
 	/**
@@ -179,51 +179,48 @@ class LevelingController
     	try {
             $apiAmount = $request->apiAmount;
             $apiDeposit = $request->apiDeposit;
-            $content = $request->content ?? '无';
+            $content = $request->content ?: '无';
             $apiService = $request->apiService;
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-            if(! $content || strlen($content) > 200 || strlen($content) < 1) {
-                throw new Exception('协商原因为字符串且长度不超过200');
-    		} else {
-    			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
-                    throw new Exception('代练费和双金或手续费必须是数字');
-    			}
+			if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
+                throw new Exception('代练费和双金或手续费必须是数字');
+			}
 
-    			if ($apiAmount < 0 || $apiDeposit < 0 || $apiService < 0) {
-                    throw new Exception('代练费和双金或手续费必须大于0');
-    			}
+			if ($apiAmount < 0 || $apiDeposit < 0 || $apiService < 0) {
+                throw new Exception('代练费和双金或手续费必须大于0');
+			}
 
-                $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
-                $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
-                $orderDeposit = bcadd($safeDeposit, $effectDeposit);
-                $isOverDeposit = bcsub($orderDeposit, $apiDeposit);
-                $isOverAmount = bcsub($order->amount, $apiAmount);
-                // 写入双金与订单双击比较
-                if ($isOverDeposit < 0) {
-                    throw new Exception('传入双金超过订单代练双金');
-                }
-                // 写入代练费与订单代练费比较
-                if ($isOverAmount < 0) {
-                    throw new Exception('传入代练费超过订单代练费');
-                }
+            $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+            $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+            $orderDeposit = bcadd($safeDeposit, $effectDeposit);
+            $isOverDeposit = bcsub($orderDeposit, $apiDeposit);
+            $isOverAmount = bcsub($order->amount, $apiAmount);
+            // 写入双金与订单双击比较
+            if ($isOverDeposit < 0) {
+                throw new Exception('传入双金超过订单代练双金');
+            }
+            // 写入代练费与订单代练费比较
+            if ($isOverAmount < 0) {
+                throw new Exception('传入代练费超过订单代练费');
+            }
 
-                $data = [
-                    'user_id' => 29,
-                    'order_no' => $order->no,
-                    'amount' => $apiAmount,
-                    'api_amount' => $apiAmount,
-                    'api_deposit' => $apiDeposit,
-                    'api_service' => $apiService,
-                    'deposit' => $apiDeposit,
-                    'consult' => 2,
-                    'revoke_message' => $content,
-                ];
+            $data = [
+                'user_id' => 29,
+                'order_no' => $order->no,
+                'amount' => $apiAmount,
+                'api_amount' => $apiAmount,
+                'api_deposit' => $apiDeposit,
+                'api_service' => $apiService,
+                'deposit' => $apiDeposit,
+                'consult' => 2,
+                'revoke_message' => $content,
+            ];
 
-                LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-    			DailianFactory::choose('revoke')->run($order->no, 29, 0);	
-    		}
+            LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+			DailianFactory::choose('revoke')->run($order->no, 29, 0);	
+
     	} catch (Exception $e) {
             DB::rollBack();
             return $this->fail($e->getMessage());
@@ -242,24 +239,23 @@ class LevelingController
     {
     	DB::beginTransaction();
     	try {
-            $content = $request->content ?? '';
+            \Log::info('已进入!');
+            $content = $request->content ?? '无';
             
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-    		if (! $content || strlen($content) > 200 || strlen($content) < 1) {
-                throw new Exception('申诉原因为字符串且长度不超过200');
-    		} else {
-    			$data = [
-					'user_id' => 29,
-    				'complain' => 2,
-    				'complain_message' => $content,
-    			];
+			$data = [
+				'user_id' => 29,
+				'complain' => 2,
+				'complain_message' => $content,
+			];
 
-    			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
-    			DailianFactory::choose('applyArbitration')->run($order->no, 29, 0);
-    		}
+			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+			DailianFactory::choose('applyArbitration')->run($order->no, 29, 0);
+
     	} catch (Exception $e) {
     		DB::rollBack();
+            \Log::info($e->getMessage());
             return $this->fail($e->getMessage());
     	}
     	DB::commit();
@@ -301,7 +297,7 @@ class LevelingController
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
             DailianFactory::choose('cancelArbitration')->run($order->no, 29, 0);
-            DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
+            // DailianFactory::choose('cancelRevoke')->run($order->no, 29, 0);
 			// DailianFactory::choose('cancelLock')->run($order->no, 29, 0);
 
             return $this->success('已取消申诉');

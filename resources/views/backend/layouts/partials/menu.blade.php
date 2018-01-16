@@ -38,6 +38,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         外部订单
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
+                                        代练订单报警
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     @endcan

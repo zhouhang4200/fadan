@@ -256,6 +256,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 确认售后
             Route::post('confirm', 'AfterServiceController@confirm')->name('order.after-service.confirm')->middleware('permission:order.after-service.confirm');
         });
+
+        // 代练订单报警
+        Route::prefix('leveling')->group(function () {
+            Route::get('/', 'LevelingController@index')->name('order.leveling.index');
+            Route::delete('destroy/{id}', 'LevelingController@destroy')->name('order.leveling.destroy');
+        });
     });
 
     // 财务

@@ -220,7 +220,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('wait-list', 'IndexController@waitList')->name('frontend.workbench.leveling.wait-list');
             // 重发
             Route::get('repeat/{id?}', 'IndexController@repeat')->name('frontend.workbench.leveling.repeat');
-
+            // 发送短信
+            Route::post('send-sms', 'IndexController@sendSms')->name('frontend.workbench.leveling.send-sms');
         });
 
         // 首页

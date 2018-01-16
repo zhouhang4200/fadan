@@ -21,6 +21,7 @@ use App\Extensions\Dailian\Controllers\ApplyComplete;
 use App\Extensions\Dailian\Controllers\CancelComplete;
 use App\Extensions\Dailian\Controllers\Abnormal;
 use App\Extensions\Dailian\Controllers\CancelAbnormal;
+use App\Extensions\Dailian\Controllers\RefuseRevoke;
 
 // 订单
 return [
@@ -127,6 +128,7 @@ return [
         'cancelComplete' => CancelComplete::class, // 取消验收 -》代练中
         'abnormal' => Abnormal::class, // 异常 -》 异常
         'cancelAbnormal' => CancelAbnormal::class, // 取消异常-》代练中
+        'refuseRevoke' => RefuseRevoke::class, // 不同意协商
     ],
 
     // 订单分配下限 (最少接单人数)

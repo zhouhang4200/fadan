@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Services\KamenOrderApi;
+use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -55,8 +56,8 @@ class TestController extends Controller
 {
     public function index()
     {
-
-        $client = new Client();
+//        return (new SmSApi())->send(2, 18500132452, '您的订单已经被打接单，请不要登号', 1);
+//        $client = new Client();
 //        $result = $client->post('www.show91.com/oauth/addOrder', [
 //            'headers' => [
 //                'Content-type' => 'multipart/form-data',
