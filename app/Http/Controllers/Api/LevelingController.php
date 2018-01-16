@@ -47,6 +47,7 @@ class LevelingController
             'status' => 0,
             'message' => $message,
         ]);
+         // 
         throw new Exception($e->getMessage());
     }
 

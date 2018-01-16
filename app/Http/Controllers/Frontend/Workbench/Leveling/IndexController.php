@@ -503,7 +503,7 @@ class IndexController extends Controller
         try {
             $userId = Auth::id();
             $data['order_no'] = $request->orderNo;
-            $data['complain_message'] = $request->complainMessage;
+            $data['complain_message'] = $request->data['complain_message'];
             $data['amount'] = 0;
             $data['deposit'] = 0;
 

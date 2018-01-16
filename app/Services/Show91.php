@@ -241,7 +241,9 @@ class Show91
      */
     public static function addpic($options = [])
     {
-    	return static::normalRequest(config('show91.url.addpic'), $options);
+    	$res =  static::formDataRequest(config('show91.url.addpic'), $options);
+        dd($res);
+        return static::returnErrorMessage($res);
     }
 
     /**
