@@ -30,9 +30,9 @@
         .layui-form-select .layui-input {
             padding-right:0 !important;
         }
-        /*.layui-table-cell {*/
-            /*overflow: inherit;*/
-        /*}*/
+        .layui-table-fixed-r .layui-table-cell {
+            overflow: inherit;
+        }
         .layui-form-item .layui-inline {
             margin-bottom: 5px;
             margin-right: 5px;

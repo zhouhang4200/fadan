@@ -195,8 +195,12 @@ class IndexController extends Controller
         $templateId = GoodsTemplate::getTemplateId(2, $request->game_id);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
-
-        return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId]);
+        // 如果有订单号则获取订单原来设置的值
+        $orderTemplateValue = [];
+        if ($request->no) {
+            $orderTemplateValue = OrderDetailRepository::getByOrderNo($request->no);
+        }
+        return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId, 'value' => $orderTemplateValue]);
     }
 
     /**
