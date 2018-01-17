@@ -471,15 +471,15 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
-                            <div class="layui-col-md8">{{ isset($detail['consult_desc']) ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['consult_desc'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">仲裁说明：</div>
-                            <div class="layui-col-md8">{{ isset($detail['complain_desc']) ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['complain_desc'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">仲裁结果：</div>
-                            <div class="layui-col-md8">{{ isset($detail['complain_result']) ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['complain_result'] ?? '' }}</div>
                         </div>
                     </div>
 
