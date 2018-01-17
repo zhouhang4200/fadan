@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Models\OrderHistory;
 use App\Services\Show91;
+use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
 
 class UnRevoke extends DailianAbstract implements DailianInterface
@@ -49,6 +50,8 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
 
+            $this->changeConsultStatus();
+
             $this->after();
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
@@ -87,6 +90,12 @@ class UnRevoke extends DailianAbstract implements DailianInterface
         }
     }
 
+    public function changeConsultStatus()
+    {
+        $conuslt = LevelingConsult::where('order_no', $this->order->no)->first();
+        $consult->consult = 0;
+        $consult->save();
+    }
      /**
      * 调用外部提交协商发接口
      * @return [type] [description]

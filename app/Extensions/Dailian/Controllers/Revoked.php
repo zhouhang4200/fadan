@@ -79,6 +79,21 @@ class Revoked extends DailianAbstract implements DailianInterface
         // 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
+        if ($consult->consult == 1) {
+            $user = User::where('id', $this->order->gainer_primary_user_id)->first();
+            $userIds = $user->children->pluck('id')->merge($user->id)->toArray();
+
+        } else if ($consult->consult == 2) {
+            $user = User::where('id', $this->order->creator_primary_user_id)->first();
+            $userIds = $user->children->pluck('id')->merge($user->id)->toArray();
+        } else {
+            throw new Exception('未找到该单撤销发起人！');
+        }
+
+        if (! in_array($this->userId, $userIds)) {
+            throw new Exception('当前操作人不是该订单操作者本人!');
+        }
+
         $amount = $consult->amount;
         $writeDeposit = $consult->deposit;
 
@@ -101,17 +116,6 @@ class Revoked extends DailianAbstract implements DailianInterface
         // $apiAll = bcadd($apiDeposit, $apiService);
         // 回传双金 + 手续费 == 写入的双金
         // $isZero = bcsub($apiAll, $writeDeposit);
-        $user = User::where('id', $consult->user_id)->first();
-
-        if ($user->parent_id == 0) {
-            $userIds = $user->children->pluck('id')->merge($user->id);
-        } else {
-            $userIds = $user->parent->children->pluck('id')->merge($user->parent->id);
-        }
-
-        if (! in_array($this->userId, $userIds)) {
-            throw new Exception('当前操作人不是该订单操作者本人!');
-        }
 
         if ($leftAmount >= 0 && $isRight >= 0) {    
             DB::beginTransaction();

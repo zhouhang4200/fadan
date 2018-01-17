@@ -17,8 +17,8 @@ class CreateLevelingConsultsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->comment('操作人id');
             $table->string('order_no')->comment('订单号');
-            $table->decimal('amount', 10, 4)->comment('填写申请退还的代练金');
-            $table->decimal('deposit', 10, 4)->comment('填写申请退还的双金');
+            $table->decimal('amount', 10, 4)->default(0)->comment('填写申请退还的代练金');
+            $table->decimal('deposit', 10, 4)->default(0)->comment('填写申请退还的双金');
             $table->decimal('api_amount', 10, 4)->default(0)->comment('接口回传退还的代练金，需要更新这个值');
             $table->decimal('api_deposit', 10, 4)->default(0)->comment('接口回传双金，需要更新这个值');
             $table->decimal('api_service', 10, 4)->default(0)->comment('接口回传手续费，需要更新这个值');

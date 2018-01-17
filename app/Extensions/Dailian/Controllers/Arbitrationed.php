@@ -79,15 +79,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         	throw new Exception('状态错误');
         }
 
-        $user = User::where('id', $consult->user_id)->first();
-
-        if ($user->parent_id == 0) {
-            $userIds = $user->children->pluck('id')->merge($user->id);
-        } else {
-            $userIds = $user->parent->children->pluck('id')->merge($user->parent->id);
-        }
-
-        if (! in_array($this->userId, $userIds)) {
+        if ($this->userId != 29) {
             throw new Exception('当前操作人不是该订单操作者本人!');
         }
 

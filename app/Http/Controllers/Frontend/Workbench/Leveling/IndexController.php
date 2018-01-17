@@ -709,8 +709,6 @@ class IndexController extends Controller
             $userId = Auth::id();
             $data['order_no'] = $request->orderNo;
             $data['complain_message'] = $request->data['complain_message'];
-            $data['amount'] = 0;
-            $data['deposit'] = 0;
 
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单

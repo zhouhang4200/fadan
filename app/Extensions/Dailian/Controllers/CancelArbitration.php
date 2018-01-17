@@ -49,6 +49,8 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
+            $this->changeConsultStatus();
+
             $this->after();
 
     	} catch (Exception $e) {
@@ -82,6 +84,13 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
         } else {
             $this->handledStatus = $beforeStatus;
         }
+    }
+
+    public function changeConsultStatus()
+    {
+        $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+        $consult->complain = 0;
+        $consult->save();
     }
 
     /**
