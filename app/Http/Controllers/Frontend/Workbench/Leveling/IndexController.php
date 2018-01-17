@@ -227,14 +227,49 @@ class IndexController extends Controller
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
         // 撤销说明
-        if(isset($detail['levelig_consult']['complete']) && $detail['levelig_consult']['complete'] == 1) {
-            $detail['revocation'] = $detail['levelig_consult']['complain'] == 1 ? '你' : '对方' . '';
+        if(isset($detail['levelig_consult']['consult']) && $detail['levelig_consult']['consult'] != 0) {
+
+            //发起人的主ID 与 当前主ID一样则撤销发起人
+            $user = User::where('id', $detail['levelig_consult']['user_id'])->first();
+            if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
+                $text = '你进行撤销操作';
+            } else {
+                $text = '对方进行撤销操作';
+            }
+            if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
+                $text .= '你支付代练费' . $detail['levelig_consult']['api_service'] . '元';
+                $text .= '对方支付保证金' . $detail['levelig_consult']['api_deposit'] . '元' . '原因：' . $detail['levelig_consult']['revoke_message'];
+            } else {
+                $text .= '对方支付代练费' . $detail['levelig_consult']['api_service'] . '元';
+                $text .= '你支付保证金' . $detail['levelig_consult']['api_deposit'] . '元' . '原因：' . $detail['levelig_consult']['revoke_message'];
+            }
+            $detail['consult_desc'] = $text;
         }
         // 仲裁说明
-        if(isset($detail['levelig_consult']['complete']) && $detail['levelig_consult']['complete'] == 2) {
-
+        if(isset($detail['levelig_consult']['complete']) && $detail['levelig_consult']['complain'] != 0) {
+            //发起人的主ID 与 当前主ID一样则仲裁发起人
+            $user = User::where('id', $detail['levelig_consult']['user_id'])->first();
+            if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
+                $text = '你进行仲裁操作 原因：' . $detail['levelig_consult']['complain_message'];
+            } else {
+                $text = '对方进行仲裁操作 原因：' . $detail['levelig_consult']['complain_message'];
+            }
+            $detail['complain_desc'] = $text;
         }
-//        $detail['revocation'] =
+        // 仲裁结果
+        if(isset($detail['levelig_consult']['complete']) && $detail['levelig_consult']['complain'] == 2) {
+
+            $text = '客服进行了仲裁';
+            if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
+                $text .= '你支付代练费' .  $detail['levelig_consult']['api_service'] . '元';
+                $text .= '对方支付保证金' . $detail['levelig_consult']['api_deposit'] . '元';
+            } else {
+                $text .= '对方支付代练费' . $detail['levelig_consult']['api_service'] . '元';
+                $text .= '你支付保证金' . $detail['levelig_consult']['api_deposit'] . '元';
+            }
+
+            $detail['complain_result'] = $text;
+        }
 
         return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game'));
     }

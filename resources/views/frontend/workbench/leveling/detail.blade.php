@@ -438,28 +438,28 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ $detail['poundage']  }}</div>
+                            <div class="layui-col-md8">{{ isset($detail['poundage']) ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
                         </div>
 
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发布时间：</div>
-                            <div class="layui-col-md8"> {{ $detail['created_at'] }}</div>
+                            <div class="layui-col-md8"> {{ $detail['created_at'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">接单时间：</div>
-                            <div class="layui-col-md8">{{ $detail['receiving_time']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['receiving_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">提验时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">结算时间：</div>
@@ -471,15 +471,15 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
-                            <div class="layui-col-md8"></div>
+                            <div class="layui-col-md8">{{ isset($detail['consult_desc']) ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">仲裁说明：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ isset($detail['complain_desc']) ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">仲裁结果：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ isset($detail['complain_result']) ?? '' }}</div>
                         </div>
                     </div>
 
