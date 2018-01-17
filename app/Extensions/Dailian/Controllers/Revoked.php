@@ -340,6 +340,8 @@ class Revoked extends DailianAbstract implements DailianInterface
                 OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $writeDeposit);
                 // 写入手续费
                 OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
+                // 写入结算时间
+                OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
             } catch (Exception $e) {
                 DB::rollBack();
                 throw new Exception($e->getMessage());
