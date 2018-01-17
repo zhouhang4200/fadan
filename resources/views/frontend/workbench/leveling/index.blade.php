@@ -340,7 +340,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="sendMessage" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
+                <option value="sendSms" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
@@ -348,7 +348,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                <option value="operation-record" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">操作记录</option>
+                <option value="operationRecord" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">操作记录</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.client_wang_wang) {  }}
@@ -563,17 +563,17 @@
                     return false;
                 }
                 // 留言
-                if (data.value == '') {
-
+                if (data.value == 'message') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=1');
                 }
                 // 操作记录
-                if (data.value == '') {
-
+                if (data.value == 'operationRecord') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=2');
                 }
                 // 重发
                 if (data.value == 'repeat') {
                     var no = $(data.elem).find("option:selected").attr("data-no");
-                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + no);
+                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + orderNo);
                 }
                 // 联系旺旺
                 if (data.value == 'wangWang') {
@@ -581,9 +581,8 @@
                     window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
                     return false;
                 }
-                if (data.value == 'sendMessage') {
-                    var no = $(data.elem).find("option:selected").attr("data-no");
-                    $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + no + '"/>');
+                if (data.value == 'sendSms') {
+                    $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + orderNo + '"/>');
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -726,6 +725,9 @@
                     layer.closeAll();
                 });
             }
+
+//            getQueryString(window.location, )
+
         });
     </script>
 @endsection

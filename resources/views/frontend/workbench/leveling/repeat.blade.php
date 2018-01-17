@@ -54,7 +54,7 @@
                         <div class="site-title">
                             <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
                         </div>
-                        <form class="layui-form" action="">
+                        <form class="layui-form" action="" id="form-order">
                             <div class="layui-row form-group">
                                 <div class="layui-col-md6">
                                     <div class="layui-col-md3 layui-form-mid">*游戏</div>
@@ -136,7 +136,7 @@
                             </div>
 
                             <div class="layui-col-md-offset2">
-                                <div class="layui-btn layui-btn-normal  layui-col-md2" lay-submit="" lay-filter="save-update">确定</div>
+                                <div class="layui-btn layui-btn-normal  layui-col-md2" lay-submit="" lay-filter="order">确定</div>
                             </div>
                         </form>
                     </div>
@@ -159,6 +159,74 @@
 
 <!--START 底部-->
 @section('js')
+<script id="goodsTemplate" type="text/html">
+        <input type="hidden" name="id" value="@{{ d.id }}">
+        <div class="layui-row form-group">
+            @{{# var row = 0;}}
+            @{{#  layui.each(d.template, function(index, item){ }}
+
+            @{{#  if(row == 0) { row = item.display_form;  }  }}
+
+            <div class="layui-col-md6">
+                <div class="layui-col-md3 layui-form-mid">
+                    @{{# if (item.field_required == 1) {  }}<span style="color: orangered;">*</span>@{{# }  }} @{{ item.field_display_name  }}
+                </div>
+                <div class="layui-col-md8">
+
+                    @{{# if(item.field_type == 1) {  }}
+                    <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}">
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 2) {  }}
+                    <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}">
+                        <option value=""></option>
+                        @{{#  if(item.user_values.length > 0){ }}
+                        @{{#  layui.each(item.user_values, function(i, v){ }}
+                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        @{{#  }); }}
+                        @{{#  } else { }}
+                        @{{#  if(item.values.length > 0){ }}
+                        @{{#  layui.each(item.values, function(i, v){ }}
+                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        @{{#  }); }}
+                        @{{#  }  }}
+                        @{{#  }  }}
+                    </select>
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 3) {  }}
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 4) {  }}
+                    <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"  display-name="@{{item.field_display_name}}"></textarea>
+                    @{{# } }}
+
+                    @{{# if(item.field_type == 5) {  }}
+                    <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
+                    @{{# } }}
+
+                    @{{# if(item.help_text != null || item.help_text != undefined) {  }}
+                    <a href="#" class="tooltip">
+                        <i class="iconfont icon-wenhao" id="recharge"></i>
+                        <span>@{{ item.help_text }}</span>
+                    </a>
+                    @{{# }  }}
+
+                </div>
+
+            </div>
+
+            @{{#  row--; }}
+
+            @{{# if(row == 0) { }}
+        </div>
+        <div class="layui-row form-group">
+            @{{# }  }}
+
+            @{{# })  }}
+        </div>
+
+    </script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
@@ -198,6 +266,55 @@
                 default:
                     break;
             }
+        });
+
+        // 切换游戏时加截新的模版
+        form.on('select(game)', function (data) {
+            loadTemplate(data.value)
+        });
+        // 加载默认模板
+        loadTemplate(1);
+        // 加载模板
+        function loadTemplate(id) {
+            var getTpl = goodsTemplate.innerHTML, view = $('#template');
+            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id}, function (result) {
+                var template = '游戏：\r\n';
+                $.each(result.content.template, function(index,element){
+                    template += element.field_display_name + '：\r\n'
+                });
+                $('#user-template').val(template);
+
+                layTpl(getTpl).render(result.content, function(html){
+                    view.html(html);
+                    layui.form.render();
+                });
+            }, 'json');
+        }
+
+        // 下单
+        form.on('submit(order)', function (data) {
+            $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+
+                if (result.status == 1) {
+                    layer.open({
+                        content: '发布成功!',
+                        btn: ['继续发布', '订单列表', '待发订单'],
+                        btn1: function(index, layero){
+                            location.reload();
+                        },
+                        btn2: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        },
+                        btn3: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        }
+                    });
+                } else {
+                    layer.msg(result.message);
+                }
+
+            }, 'json');
+            return false;
         });
 
     });
