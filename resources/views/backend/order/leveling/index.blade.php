@@ -140,9 +140,10 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">谁发起的撤销</label>
+                        <label class="layui-form-label">发起人</label>
                         <div class="layui-input-block">
-                            <textarea placeholder="请输入撤销理由" name="who" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                            <input type="radio" name="sex" value="男" title="男">
+                            <input type="radio" name="sex" value="女" title="女">
                         </div>
                     </div>
                     <div class="layui-form-item">

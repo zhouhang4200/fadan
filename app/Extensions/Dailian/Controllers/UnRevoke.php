@@ -92,7 +92,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 
     public function changeConsultStatus()
     {
-        $conuslt = LevelingConsult::where('order_no', $this->order->no)->first();
+        $conuslt = LevelingConsult::where('order_no', $this->orderNo)->first();
         $consult->consult = 0;
         $consult->save();
     }

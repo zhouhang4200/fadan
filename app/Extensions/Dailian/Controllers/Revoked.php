@@ -82,7 +82,6 @@ class Revoked extends DailianAbstract implements DailianInterface
         if ($consult->consult == 1) {
             $user = User::where('id', $this->order->gainer_primary_user_id)->first();
             $userIds = $user->children->pluck('id')->merge($user->id)->toArray();
-
         } else if ($consult->consult == 2) {
             $user = User::where('id', $this->order->creator_primary_user_id)->first();
             $userIds = $user->children->pluck('id')->merge($user->id)->toArray();
