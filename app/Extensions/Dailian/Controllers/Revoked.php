@@ -7,6 +7,7 @@ use App\Models\UserOrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
+use App\Models\User;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
@@ -100,6 +101,18 @@ class Revoked extends DailianAbstract implements DailianInterface
         // $apiAll = bcadd($apiDeposit, $apiService);
         // 回传双金 + 手续费 == 写入的双金
         // $isZero = bcsub($apiAll, $writeDeposit);
+        $user = User::where('id', $consult->user_id)->first();
+
+        if ($user->parent_id == 0) {
+            $userIds = $user->children->pluck('id')->merge($user->id);
+        } else {
+            $parent = $user->parent;
+            $userIds = $user->parent->children->pluck('id')->merge($user->parent->id);
+        }
+
+        if (! in_array($this->userId, $userIds)) {
+            throw new Exception('当前操作人不是该订单操作者本人!');
+        }
 
         if ($leftAmount >= 0 && $isRight >= 0) {    
             DB::beginTransaction();

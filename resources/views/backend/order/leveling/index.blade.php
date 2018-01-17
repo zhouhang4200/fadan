@@ -140,6 +140,12 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">谁发起的撤销</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入撤销理由" name="who" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label"></label>
                         <div class="layui-input-block">
                             <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
@@ -209,60 +215,19 @@
             var orderNo = data.elem.getAttribute('lay-data');
             var status = data.value;
 
-            if (data.value == 'revoke') {
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '撤销',
-                        area: ['650px', '550px'],
-                        content: $('.consult')
-                    });
-                    form.on('submit(consult)', function(data){
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{ route('order.leveling.change-status') }}",
-                            data:{orderNo:orderNo, status:status, data:data.field},
-                            success: function (data) {
-                                if (data.status) {
-                                    layer.msg(data.message, {icon: 6, time:1000});
-                                } else {
-                                    layer.msg('手动修改失败', {icon: 5, time:1500}); 
-                                }
-                            }
-                        });
-                        layer.closeAll();
-                        return false;
-                    });
-
-                } else if (data.value == 'applyArbitration') {
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '申请仲裁',
-                        area: ['500px', '280px'],
-                        content: $('.complain')
-                    });
-                    form.on('submit(complain)', function(data){
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{ route('order.leveling.change-status') }}",
-                            data:{orderNo:orderNo, status:status, data:data.field},
-                            success: function (data) {
-                                if (data.status) {
-                                    layer.msg(data.message, {icon: 6, time:1000});
-                                } else {
-                                    layer.msg('手动修改失败', {icon: 5, time:1500}); 
-                                }
-                            }
-                        });
-                        layer.closeAll();
-                        return false;
-                    });
-                } else {
+            if (data.value == 15 || data.value == 19 || data.value == 21) {
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: '申请撤销',
+                    area: ['650px', '550px'],
+                    content: $('.consult')
+                });
+                form.on('submit(consult)', function(data){
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('order.leveling.change-status') }}",
-                        data:{orderNo:orderNo, status:status},
+                        data:{orderNo:orderNo, status:status, data:data.field},
                         success: function (data) {
                             if (data.status) {
                                 layer.msg(data.message, {icon: 6, time:1000});
@@ -271,7 +236,48 @@
                             }
                         }
                     });
-                }
+                    layer.closeAll();
+                    return false;
+                });
+            } else if (data.value == 16) {
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: '申请仲裁',
+                    area: ['500px', '280px'],
+                    content: $('.complain')
+                });
+                form.on('submit(complain)', function(data){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('order.leveling.change-status') }}",
+                        data:{orderNo:orderNo, status:status, data:data.field},
+                        success: function (data) {
+                            if (data.status) {
+                                layer.msg(data.message, {icon: 6, time:1000});
+                            } else {
+                                layer.msg('手动修改失败', {icon: 5, time:1500}); 
+                            }
+                        }
+                    });
+                    layer.closeAll();
+                    return false;
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('order.leveling.change-status') }}",
+                    data:{orderNo:orderNo, status:status},
+                    success: function (data) {
+                        if (data.status) {
+                            layer.msg(data.message, {icon: 6, time:1000});
+                        } else {
+                            layer.msg('手动修改失败', {icon: 5, time:1500}); 
+                        }
+                    }
+                });
+            }
+            window.location.href="{{ route('order.leveling.index') }}";
         });
     });
 </script>

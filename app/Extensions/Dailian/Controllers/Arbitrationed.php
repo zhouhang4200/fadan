@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
+use App\Models\User;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
@@ -77,6 +78,20 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         if (!$consult) {
         	throw new Exception('状态错误');
         }
+
+        $user = User::where('id', $consult->user_id)->first();
+
+        if ($user->parent_id == 0) {
+            $userIds = $user->children->pluck('id')->merge($user->id);
+        } else {
+            $parent = $user->parent;
+            $userIds = $user->parent->children->pluck('id')->merge($user->parent->id);
+        }
+
+        if (! in_array($this->userId, $userIds)) {
+            throw new Exception('当前操作人不是该订单操作者本人!');
+        }
+
         $apiAmount = $consult->api_amount;
         $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;
