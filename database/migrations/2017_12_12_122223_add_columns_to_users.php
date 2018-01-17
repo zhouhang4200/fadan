@@ -14,7 +14,7 @@ class AddColumnsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_name')->nullable()->after('name')->comment('昵称');
+            $table->string('username')->nullable()->after('name')->comment('昵称');
             $table->tinyInteger('age')->unsigned()->nullable()->after('nick_name')->comment('年龄');
             $table->string('wechat')->nullable()->after('age')->comment('微信');
             $table->string('store_wang_wang')->nullable()->after('wechat')->comment('旺旺号');

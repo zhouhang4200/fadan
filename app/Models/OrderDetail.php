@@ -8,11 +8,11 @@ use Auth;
 class OrderDetail extends Model
 {
     public $fillable = [
-      'order_no',
-      'creator_primary_user_id',
-      'field_name',
-      'field_display_name',
-      'field_value',
+        'order_no',
+        'creator_primary_user_id',
+        'field_name',
+        'field_display_name',
+        'field_value',
     ];
 
     /**
@@ -28,5 +28,10 @@ class OrderDetail extends Model
             ->where('field_value', $fieldValue)
             ->pluck('order_no')
             ->toArray();
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_no', 'no');
     }
 }

@@ -32,7 +32,7 @@ class UserController extends Controller
         } else {
             $user = Auth::user()->parent;
         }
-        $user->user_name = $request->data['user_name'];
+        $user->username = $request->data['user_name'];
         $user->age = $request->data['age'];
         $user->qq = $request->data['qq'];
         $user->wechat = $request->data['wechat'];

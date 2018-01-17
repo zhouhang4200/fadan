@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Revisionable\RevisionableTrait;
+use App\Extensions\Dailian\Controllers\PublicController;
 
 /**
  * Class Order
@@ -112,7 +114,7 @@ class Order extends Model
      */
     public function creatorUser()
     {
-        return $this->belongsTo(User::class, 'id', 'creator_user_id');
+        return $this->belongsTo(User::class, 'creator_user_id', 'id');
     }
 
     /**
@@ -121,7 +123,7 @@ class Order extends Model
      */
     public function gainerUser()
     {
-        return $this->belongsTo(User::class, 'id', 'gainer_user_id');
+        return $this->belongsTo(User::class, 'gainer_user_id', 'id');
     }
 
     /**
@@ -130,7 +132,7 @@ class Order extends Model
      */
     public function creatorPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'id', 'creator_primary_user_id');
+        return $this->belongsTo(User::class, 'creator_primary_user_id', 'id');
     }
 
     /**
@@ -139,7 +141,7 @@ class Order extends Model
      */
     public function gainerPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'id', 'gainer_primary_user_id');
+        return $this->belongsTo(User::class, 'gainer_primary_user_id', 'id');
     }
 
     /**
@@ -154,5 +156,67 @@ class Order extends Model
     public function levelingConsult()
     {
         return $this->hasOne(LevelingConsult::class, 'order_no', 'no');
+    }
+
+    /**
+     * 手动改状态
+     * @param  [type] $status [description]
+     * @param  [type] $user   [description]
+     * @return [type]         [description]
+     */
+    public function handChangeStatus($status, $user)
+    {
+        $beforeStatus = config('order.status_leveling')[$this->status];
+        $handledStatus = config('order.status_leveling')[$status];
+
+        $beforOrder = static::where('no', $this->no)->first();
+
+        $this->status = $status;
+        $this->save();
+
+        $data['order_no'] = $this->no;
+        $data['creator_primary_user_id'] = $this->creator_primary_user_id;
+        $data['user_id'] = $this->creator_user_id;
+        $data['admin_user_id'] = $user->id;
+        $data['type'] = 0;
+        $data['name'] = '手动修改订单状态';
+        $data['description'] = "管理员[$user->name]将订单从[$beforeStatus]手动修改为[$handledStatus]状态!";
+        $data['before'] = serialize($beforOrder->toArray());
+        $data['after'] = serialize($this->toArray());
+        $data['created_at'] = Carbon::now()->toDateTimeString();
+
+        OrderHistory::create($data);
+
+        if (in_array($status, [19, 20, 21, 23, 24])) {
+            switch ($status) {
+                case 19:
+                    PublicController::revokeFlows();
+                break;
+                case 20:
+                    PublicController::completeFlows();
+                break;
+                case 21:
+                    PublicController::arbitrationFlows();
+                break;
+                case 23:
+                    PublicController::forceRevokeFlows();
+                break;
+                case 24:
+                    PublicController::deleteFlows();
+                break; 
+            }
+        }
+        OrderNotice::where('order_no', $this->no)->update(['status' => $status, 'complete' => 1]);
+        return true;
+    }
+
+    public function orderNotices()
+    {
+        return $this->hasMany(OrderNotice::class, 'order_no', 'no');
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_no', 'no');
     }
 }

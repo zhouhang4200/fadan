@@ -21,6 +21,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.platform.record',
                         'order.foreign.index',
                         'order.after-service.index',
+                        'order.leveling.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>

@@ -130,7 +130,7 @@
             <div class="layui-inline" >
                 <label class="layui-form-label">昵称 ：</label>
                 <div class="layui-input-inline" >
-                    {{ $user->user_name }}
+                    {{ $user->username }}
                 </div>
             </div>
             <div class="layui-inline">
@@ -407,7 +407,7 @@
             });
         });
 
-        var notice = "{{ session('notice') }}";
+        var notice = "{{ session('notices') }}";
 
         if (notice) {
             layer.open({

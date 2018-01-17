@@ -7,9 +7,11 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Models\OrderNotice;
+use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Exceptions\OrderNoticeException;
 
 class LevelingController
 {	
@@ -44,14 +46,14 @@ class LevelingController
 
     public function fail($message, $order)
     {
-         return json_encode([
+        // 异常写入order_notices 表
+        $this->addOrderNotice($order);
+
+        return json_encode([
             'status' => 0,
             'message' => $message,
         ]);
         \Log::info($message); 
-        // 异常写入order_notices 表
-        $this->addOrderNotice($order);
-
         throw new Exception($message);
     }
 
@@ -152,7 +154,7 @@ class LevelingController
 				'api_amount' => $apiAmount,
 				'api_deposit' => $apiDeposit,
 				'api_service' => $apiService,
-				'complete' => 1,
+				'complete' => 2,
 			];
             // 更新代练协商申诉表
 			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
@@ -404,11 +406,42 @@ class LevelingController
 
     public function addOrderNotice($order)
     {
-        $data = [];
-        $data['creator_user_id'] = $order->creator_user_id;
-        $data['creator_primary_user_id'] = $order->creator_primary_user_id;
-        $data['gainer_user_id'] = $order->gainer_user_id;
-        $data['creator_user_name'] = $order->user->name;
-        
+        DB::beginTransaction();
+        try {
+            $data = [];
+            $data['creator_user_id'] = $order->creator_user_id;
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+            $data['gainer_user_id'] = $order->gainer_user_id;
+            $data['creator_user_name'] = $order->creatorUser->name;
+            $data['order_no'] = $order->no;
+            $data['third_order_no'] = $order->detail()->where('field_name', 'third_order_no')->value('field_value');
+            $data['third'] = $order->detail()->where('field_name', 'third')->value('field_value');
+            $data['status'] = $order->status;
+            $data['third_status'] = $this->getThirdOrderStatus($data['third_order_no']);
+            $data['create_order_time'] = $order->created_at;
+            $data['complete'] = 0;
+
+            OrderNotice::updateOrCreate(['order_no' => $order->no], $data);
+        } catch (OrderNoticeException $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());    
+        }
+        DB::commit();
+        return true;
+    }
+
+    public function getThirdOrderStatus($orderNo)
+    {
+        if (! $orderNo) {
+            throw new OrderNoticeException('第三方订单号不存在');
+        }
+
+        $options = [
+            'oid' => $orderNo,
+        ]; 
+
+        $res = Show91::orderDetail($options);
+
+        return $res['data']['order_status'];
     }
 }

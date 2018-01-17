@@ -25,7 +25,9 @@ class CreateOrderNoticesTable extends Migration
             $table->tinyInteger('status')->unsigned()->comment('我们平台状态，参考 config.order ');
             $table->tinyinteger('third_status')->unsigned()->comment('外部订单状态， 同样参考 config.order ');
             $table->timestamp('create_order_time')->comment('订单发布时间');
+            $table->tinyInteger('complete')->unsigned()->default(0)->comment('是否完成, 默认0， 完成1');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

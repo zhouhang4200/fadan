@@ -260,7 +260,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 代练订单报警
         Route::prefix('leveling')->group(function () {
             Route::get('/', 'LevelingController@index')->name('order.leveling.index');
-            Route::delete('destroy/{id}', 'LevelingController@destroy')->name('order.leveling.destroy');
+            Route::delete('destroy', 'LevelingController@destroy')->name('order.leveling.destroy');
+            Route::post('change/status', 'LevelingController@changeStatus')->name('order.leveling.change-status');
         });
     });
 

@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
+use App\Services\Show91;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException as Exception; 
 
@@ -14,7 +15,6 @@ class Delete extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 24; // 状态：24已删除
     protected $type             = 23; // 操作：23删除
-
 	/**
      * [run 删除 -》 删除]
      * @param  [type] $orderNo     [订单号]
@@ -25,13 +25,14 @@ class Delete extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
         	$this->beforeHandleStatus = $this->getOrder()->status;
@@ -47,6 +48,8 @@ class Delete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            $this->after();
 
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -81,5 +84,32 @@ class Delete extends DailianAbstract implements DailianInterface
             throw new Exception($e->getMessage());
         }
         DB::commit();
+    }
+
+    /**
+     * 调用外部提交协商发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                    if (! $thirdOrderNo) {
+                        throw new Exception('第三方订单号不存在');
+                    }
+                    $options = [
+                        'oid' => $thirdOrderNo,
+                    ]; 
+                    // 结果
+                    Show91::chedan($options);
+                }
+                return true;
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
+        }
     }
 }

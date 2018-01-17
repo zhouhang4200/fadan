@@ -64,7 +64,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">昵称:</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="user_name" lay-verify="" value="{{ $user->user_name }}" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+                        <input type="text" name="user_name" lay-verify="" value="{{ $user->username }}" autocomplete="off" placeholder="请输入昵称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">

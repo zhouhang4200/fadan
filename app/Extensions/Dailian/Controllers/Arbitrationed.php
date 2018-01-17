@@ -332,7 +332,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	public function after()
 	{
 		if ($this->runAfter) {
-			LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
+			LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
 		}
 	}
 }

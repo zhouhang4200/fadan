@@ -24,7 +24,7 @@
                     <select name="user_name" lay-verify="" lay-search="">
                         <option value="">请输入员工姓名</option>
                         @forelse($children as $child)
-                            <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->user_name }}</option>
+                            <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->username }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -76,7 +76,7 @@
                 @forelse($users as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
-                        <td>{{ $user->user_name }}</td>
+                        <td>{{ $user->username }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ config('user.type')[$user->type] }}</td>
                         <td>{{ $user->rbacGroups->pluck('name')->count() > 0 ? implode(' |

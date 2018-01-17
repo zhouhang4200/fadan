@@ -47,7 +47,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id',
-        'user_name', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
+        'username', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
         'online', 'nickname', 'voucher', 'api_token', 'api_token_expire'
     ];
 
@@ -288,7 +288,7 @@ class User extends Authenticatable
     {
         return [
             'name' => 'required|string|max:50|unique:users',
-            'user_name' => 'required|string|max:50|unique:users',
+            'username' => 'required|string|max:50|unique:users',
             'password' => 'required|string|min:6|max:12',
         ];
     }
@@ -297,7 +297,7 @@ class User extends Authenticatable
     {
         return [
             'name.required' => '账号必须填写',
-            'user_name.required' => '昵称必须填写',
+            'username.required' => '昵称必须填写',
             'password.required' => '密码必须填写',
         ];
     }
@@ -314,6 +314,21 @@ class User extends Authenticatable
 
     public function creatorOrders()
     {
-        return $this->hasMany();
+        return $this->hasMany(Order::class, 'creator_user_id', 'id');
+    }
+
+    public function gainerOrders()
+    {
+        return $this->hasMany(Order::class, 'gainer_user_id', 'id');
+    }
+
+    public function creatorPrimaryOrders()
+    {
+        return $this->hasMany(Order::class, 'creator_primary_user_id', 'id');
+    }
+
+    public function gainerPrimaryOrders()
+    {
+        return $this->hasMany(Order::class, 'gainer_primary_user_id', 'id');
     }
 }

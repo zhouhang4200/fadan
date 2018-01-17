@@ -134,7 +134,9 @@ class Show91
      */
     public static function orderDetail($options = [])
     {
-    	return static::normalRequest(config('show91.url.orderDetail'), $options);
+    	$res = static::normalRequest(config('show91.url.orderDetail'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -272,7 +274,9 @@ class Show91
      */
     public static function chedan($options = [])
     {
-    	return static::normalRequest(config('show91.url.chedan'), $options);
+    	$res = static::normalRequest(config('show91.url.chedan'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -375,6 +379,6 @@ class Show91
         if ($res && $res['result']) {
             throw new DailianException($res['reason']);
         }
-        return true;
+        return $res;
     }
 }

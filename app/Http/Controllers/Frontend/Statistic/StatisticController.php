@@ -186,7 +186,7 @@ class StatisticController extends Controller
                     foreach ($chunkData as $key => $data) {
                     	$user = User::find($data['user_id']);
                         $datas[] = [
-                            $user->user_name,
+                            $user->username,
                             $data['name'],
                             $data['complete_order_count'] ?? '--',
                             $data['complete_order_amount'] ?? '--',

@@ -51,7 +51,7 @@ class EmployeeStatistic extends Command
                 SELECT 
                     n.name, 
                     n.id AS user_id, 
-                    n.user_name, 
+                    n.username, 
                     n.parent_id, 
                     m.complete_order_count, 
                     m.revoke_order_count, 

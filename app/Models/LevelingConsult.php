@@ -18,6 +18,7 @@ class LevelingConsult extends Model
         'complain',
         'revoke_message',
         'complain_message',
+        'remark',
     ];
 
     public static function rules()
