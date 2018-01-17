@@ -88,9 +88,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
 
     public function changeConsultStatus()
     {
-        $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-        $consult->complain = 0;
-        $consult->save();
+        LevelingConsult::where('order_no', $this->orderNo)->update(['complain' => 0]);
     }
 
     /**
