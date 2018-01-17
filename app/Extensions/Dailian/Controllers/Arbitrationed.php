@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
+use Redis;
 use App\Models\User;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
@@ -341,6 +342,8 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	{
 		if ($this->runAfter) {
 			LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
+
+			delRedisCompleteOrders($this->orderNo);
 		}
 	}
 }

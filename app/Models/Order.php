@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Exceptions\OrderNoticeException;
 use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Revisionable\RevisionableTrait;
 use App\Extensions\Dailian\Controllers\PublicController;
@@ -168,7 +169,7 @@ class Order extends Model
      * @param  [type] $user   [description]
      * @return [type]         [description]
      */
-    public function handChangeStatus($status, $user)
+    public function handChangeStatus($status, $user, $datas = null)
     {
         $beforeStatus = config('order.status_leveling')[$this->status];
         $handledStatus = config('order.status_leveling')[$status];
@@ -191,15 +192,59 @@ class Order extends Model
 
         OrderHistory::create($data);
 
-        if (in_array($status, [19, 20, 21, 23, 24])) {
+        if (in_array($status, [15, 16, 19, 20, 21, 23, 24])) {
             switch ($status) {
+                case 15:
+                    if ($datas) {
+                        $arr['user_id'] = 1;
+                        $arr['order_no'] = $this->no;
+                        $arr['amount'] = $datas['amount'] ?? 0;
+                        $arr['deposit'] = $datas['deposit'] ?? 0;
+                        $arr['consult'] = $datas['who'] ?? 0;
+                        $arr['revoke_message'] = $datas['revoke_message'];
+                        LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
+                    } else {
+                        throw new OrderNoticeException('没有填写申请撤销表单！');
+                    }
+                break;
+                case 16:
+                    if ($datas) {
+                        $arr['user_id'] = 1;
+                        $arr['order_no'] = $this->no;
+                        $arr['complain'] = $datas['who'] ?? 0;
+                        $arr['complain_message'] = $datas['complain_message'];
+                        LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
+                    } else {
+                        throw new OrderNoticeException('没有填写申请仲裁表单！');
+                    }
+                break;
                 case 19:
+                    if ($datas) {
+                        $arr['user_id'] = 1;
+                        $arr['order_no'] = $this->no;
+                        $arr['amount'] = $datas['amount'] ?? 0;
+                        $arr['deposit'] = $datas['deposit'] ?? 0;
+                        $arr['consult'] = $datas['who'] ?? 0;
+                        $arr['revoke_message'] = $datas['revoke_message'];
+                        LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
+                    } else {
+                        throw new OrderNoticeException('没有填写申请撤销表单！');
+                    }
                     PublicController::revokeFlows();
                 break;
                 case 20:
                     PublicController::completeFlows();
                 break;
                 case 21:
+                    if ($datas) {
+                        $arr['user_id'] = 1;
+                        $arr['order_no'] = $this->no;
+                        $arr['complain'] = $datas['who'] ?? 0;
+                        $arr['complain_message'] = $datas['complain_message'];
+                        LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
+                    } else {
+                        throw new OrderNoticeException('没有填写申请仲裁表单！');
+                    }
                     PublicController::arbitrationFlows();
                 break;
                 case 23:
@@ -211,6 +256,7 @@ class Order extends Model
             }
         }
         OrderNotice::where('order_no', $this->no)->update(['status' => $status, 'complete' => 1]);
+
         return true;
     }
 

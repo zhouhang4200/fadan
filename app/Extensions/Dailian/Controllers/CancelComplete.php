@@ -46,6 +46,8 @@ class CancelComplete extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
+            delRedisCompleteOrders($this->orderNo);
+
     	} catch (Exception $e) {
     		DB::rollBack();
 

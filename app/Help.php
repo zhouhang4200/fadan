@@ -4,6 +4,7 @@ use App\Models\City;
 use GuzzleHttp\Client;
 use App\Models\UserSetting;
 use App\Services\RedisConnect;
+use Illuminate\Support\Facades\Redis;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
 
@@ -585,6 +586,22 @@ if (!function_exists('sec2Time')) {
             Return $t;
         } else {
             return (bool) FALSE;
+        }
+    }
+}
+
+if (!function_exists('delRedisCompleteOrders')) {
+
+    function delRedisCompleteOrders($no) {
+        $orders = Redis::hGetAll('complete_orders');
+
+        if ($orders) {
+            foreach ($orders as $redisOrderNo => $time) {
+                if ($no == $redisOrderNo) {
+                    Redis::hDel('complete_orders', $redisOrderNo);
+                    break;
+                }
+            }
         }
     }
 }

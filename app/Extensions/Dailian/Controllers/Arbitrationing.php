@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use Redis;
 use Image;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
@@ -92,7 +93,8 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     // 结果
                     Show91::addappeal($options);
                 }
-                return true;
+
+                delRedisCompleteOrders($this->orderNo);
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }

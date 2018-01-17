@@ -3,6 +3,8 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use Redis;
+use Carbon\Carbon;
 use App\Exceptions\DailianException as Exception; 
 
 class ApplyComplete extends DailianAbstract implements DailianInterface
@@ -22,13 +24,14 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId)
+    public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
         try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
 
@@ -47,6 +50,8 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
+            $this->after();
+
     	} catch (Exception $e) {
     		DB::rollBack();
             throw new Exception($e->getMessage());
@@ -54,5 +59,14 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
     	DB::commit();
     	// 返回
         return true;
+    }
+
+    public function after()
+    {
+        if ($this->runAfter) {
+            $now = Carbon::now()->toDateTimeString();
+            $key = $this->orderNo;
+            Redis::hSet('complete_orders', $key, $now);
+        }
     }
 }

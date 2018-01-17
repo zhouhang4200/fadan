@@ -47,6 +47,8 @@ class UnLock extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+
+            delRedisCompleteOrders($this->orderNo);
     	} catch (Exception $e) {
     		DB::rollBack();
 

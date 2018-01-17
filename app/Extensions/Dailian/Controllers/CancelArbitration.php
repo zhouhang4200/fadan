@@ -118,7 +118,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                     // 结果
                     Show91::cancelAppeal($options);
                 }
-                return true;
+                delRedisCompleteOrders($this->orderNo);
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }

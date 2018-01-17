@@ -52,6 +52,8 @@ class Revoking extends DailianAbstract implements DailianInterface
 
             $this->after();
 
+            delRedisCompleteOrders($this->orderNo);
+
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());

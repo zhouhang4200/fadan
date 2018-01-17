@@ -50,6 +50,8 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             $this->saveLog();
 
             $this->after();
+
+            delRedisCompleteOrders($this->orderNo);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
                 (new Lock)->run($orderNo, $userId);

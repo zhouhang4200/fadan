@@ -142,8 +142,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">发起人</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="sex" value="男" title="男">
-                            <input type="radio" name="sex" value="女" title="女">
+                            <input type="radio" name="who" value="1" title="发单">
+                            <input type="radio" name="who" value="2" title="接单">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -169,7 +169,13 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-
+                        <label class="layui-form-label">发起人</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="who" value="1" title="发单">
+                            <input type="radio" name="who" value="2" title="接单">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
                             <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
@@ -277,8 +283,8 @@
                         }
                     }
                 });
-            }
             window.location.href="{{ route('order.leveling.index') }}";
+            }
         });
     });
 </script>

@@ -92,7 +92,13 @@ class LevelingController extends Controller
     		if (in_array($request->status, [19, 20, 21, 23])) {
     			throw new OrderNoticeException('订单状态不可更改!');
     		}
-    		$order->handChangeStatus($request->status, Auth::user());
+
+    		if ($request->data) {
+    			$data = $request->data;
+    		} else {
+    			$data = null;
+    		}
+    		$order->handChangeStatus($request->status, Auth::user(), $data);
     	} catch (OrderNoticeException $e) {
     		DB::rollback();
     		return response()->ajax(0, $e->getMessage());

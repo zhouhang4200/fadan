@@ -48,7 +48,9 @@ class Lock extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
 
-            // $this->after();
+            $this->after();
+
+            delRedisCompleteOrders($this->orderNo);
 
     	} catch (Exception $e) {
     		DB::rollBack();

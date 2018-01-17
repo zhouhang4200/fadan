@@ -49,6 +49,8 @@ class NoReceive extends DailianAbstract implements DailianInterface
 
             $this->after();
 
+            delRedisCompleteOrders($this->orderNo);
+
     	} catch (Exception $e) {
     		DB::rollBack();
 
