@@ -204,7 +204,7 @@
                         @endif
 
                         @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="13" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">重发</button>
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">重发</button>
                         @endif
 
                         @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
@@ -260,7 +260,7 @@
                         @endif
 
                         @if ($detail['master'])
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendMessage" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">发短信</button>
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendSms" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">发短信</button>
                         @endif
 
                         @if ($detail['master'] && isset($detail['client_wang_wang']) &&  $detail['client_wang_wang'])
@@ -334,13 +334,15 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                    @elseif(in_array($item->field_name, ['order_source', 'foreign_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
-                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly"">
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
                                                     @endif
 
                                                 @endif
 
-                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 23]))
+                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 23]) || $item->field_name == 'label')
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif">
                                                         <option value=""></option>
                                                         @if(count($item->user_values) > 0)
@@ -384,13 +386,13 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]))
+                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'cstomer_service_remark')
                                                     <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @elseif($item->field_type == 4)
                                                     <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @endif
 
-                                                @if($item->field_type == 5 && in_array($detail['status'], [1, 23]))
+                                                @if($item->field_type == 5 && in_array($detail['status'], [1, 23]) || $item->field_name == 'urgent_order')
                                                     <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
                                                 @elseif($item->field_type == 5)
                                                     <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
@@ -436,19 +438,16 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['poundage']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
                         </div>
-                        <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">打手呢称：</div>
-                            <div class="layui-col-md8">淘宝</div>
-                        </div>
+
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发布时间：</div>
@@ -456,19 +455,31 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">接单时间：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['receiving_time']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">提验时间：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">结算时间：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">淘宝</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">撤销说明：</div>
+                            <div class="layui-col-md8"></div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">仲裁说明：</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">仲裁结果：</div>
+                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
                         </div>
                     </div>
 
@@ -476,7 +487,6 @@
                         <div class="site-title">
                             <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -605,12 +615,12 @@
                 <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0">
-                            <textarea placeholder="请输入要发送的内容" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
+                            <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="complain">确认</button>
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
                         </div>
                     </div>
@@ -734,7 +744,8 @@
                 var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
                 window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
             }
-            if (operation == 'sendMessage') {
+            if (operation == 'sendSms') {
+                $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + orderNo + '"/>');
                 layer.open({
                     type: 1,
                     shade: 0.2,
@@ -742,6 +753,11 @@
                     area: ['500px', '280px'],
                     content: $('.send-message')
                 });
+                return false;
+            }
+            // 重发
+            if (operation == 'repeat') {
+                window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + orderNo);
             }
             if (operation == 'revoke') {
                 layer.open({
@@ -759,17 +775,17 @@
                     }, function (result) {
                         if (result.status == 1) {
                             layer.alert(result.message, function () {
-//                                window.location.reload()
+                                window.location.reload()
                             });
                         } else {
-                            layer.alert(result.message, function () {
-//                                window.location.reload()
+                            layer.alert(result.message, function (index) {
+                                layer.close(index);
                             });
                         }
-                        return false;
                     });
+                    return false;
                 });
-                return false;
+
             } else if (operation == 'applyArbitration') {
                 layer.open({
                     type: 1,
@@ -784,16 +800,17 @@
                         data:data.field
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message, function () {
+                            layer.alert(result.message, function (index) {
                                 window.location.reload()
                             });
 
                         } else {
-                            layer.alert(result.message,function () {
-                                window.location.reload()
+                            layer.alert(result.message,function (index) {
+                                layer.close(index);
                             });
                         }
                     });
+                    return false;
                 });
 
             } else if (operation == 'delete') {
@@ -849,7 +866,6 @@
                 });
             }
         });
-
         // 修改
         form.on('submit(save-update)', function (data) {
             $.post('{{ route('frontend.workbench.leveling.update') }}', {data: data.field}, function (result) {
@@ -873,26 +889,15 @@
             }, 'json');
             return false;
         });
-
         // 监听Tab切换
         element.on('tab(myFilter)', function(){
             switch (this.getAttribute('lay-id')) {
                 case 'history':
-                    // 加载订单操作记录
-                    $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
-                        if (data.status === 1) {
-                            $('#history').html(data.content);
-                        } else {
-                            layer.alert(data.message);
-                        }
-                    });
-
+                    loadHistory();
                     break;
-
                 case 'leave-message':
                     // 加载订单留言
                     loadMessage();
-
                     // 加载订单截图
                     loadImage();
                     break;
@@ -970,6 +975,14 @@
             }, 'json');
         });
 
+        // 发送短信
+        form.on('submit(confirm-send-sms)', function (data) {
+            $.post('{{ route('frontend.workbench.leveling.send-sms') }}', {no:data.field.no, contents:data.field.contents},function (result) {
+                layer.closeAll();
+                layer.msg(result.message);
+            }, 'json');
+            return false;
+        });
         // 截图上传
         //执行实例
         var uploadInst = upload.render({
@@ -995,7 +1008,26 @@
                 }
             }
         });
+
+        var tab = getQueryString(window.location.href, 'tab');
+        if (tab == '1') {
+            element.tabChange('myFilter', 'leave-message')
+        } else if(tab == '2') {
+            loadHistory();
+            element.tabChange('myFilter', 'history')
+        }
     });
+
+    function loadHistory() {
+        // 加载订单操作记录
+        $.get("{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}", function (data) {
+            if (data.status === 1) {
+                $('#history').html(data.content);
+            } else {
+                layer.alert(data.message);
+            }
+        });
+    }
 
     // 加载留言
     function loadMessage()

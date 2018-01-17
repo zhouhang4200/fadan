@@ -54,12 +54,15 @@ class Order extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if (isset($filters['no'])) {
+
+        if (isset($filters['no']) && $filters['no']) {
+
             $query->where('no', $filters['no']);
-        } elseif (isset($filters['foreignOrderNo'])) {
+        } elseif (isset($filters['foreignOrderNo']) && $filters['foreignOrderNo']) {
+
             $query->where('foreign_order_no', $filters['foreignOrderNo']);
         } else {
-            if ($filters['status']) {
+            if (isset($filters['status']) && $filters['status']) {
                 $query->where('status', $filters['status']);
             }
 
@@ -71,30 +74,31 @@ class Order extends Model
                 $query->where('gainer_primary_user_id', $filters['gainerPrimaryUserId']);
             }
 
-            if ($filters['serviceId']) {
+            if (isset($filters['serviceId']) && $filters['serviceId']) {
                 $query->where('service_id', $filters['serviceId']);
             }
 
-            if ($filters['gameId']) {
+            if (isset($filters['gameId']) && $filters['gameId']) {
                 $query->where('game_id', $filters['gameId']);
             }
 
-            if (isset($filters['source'])) {
+            if (isset($filters['source']) && $filters['source']) {
                 $query->where('status', $filters['source']);
             }
 
-            if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
+            if (isset($filters['startDate']) &&  $filters['startDate']) {
                 $query->where('created_at', '>=', $filters['startDate']);
             }
 
-            if (isset($filters['endDate']) && !empty($filters['endDate'])) {
+            if (isset($filters['endDate']) && $filters['endDate']) {
                 $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
             }
 
-            if (isset($filters['endDate']) && isset($filters['startDate'])) {
+            if (isset($filters['endDate']) && $filters['startDate']) {
                 $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
             }
         }
+        return $query;
     }
 
     /**
