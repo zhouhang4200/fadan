@@ -106,7 +106,6 @@ class Revoked extends DailianAbstract implements DailianInterface
         if ($user->parent_id == 0) {
             $userIds = $user->children->pluck('id')->merge($user->id);
         } else {
-            $parent = $user->parent;
             $userIds = $user->parent->children->pluck('id')->merge($user->parent->id);
         }
 
