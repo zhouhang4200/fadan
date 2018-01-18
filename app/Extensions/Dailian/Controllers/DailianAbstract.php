@@ -50,7 +50,8 @@ abstract class DailianAbstract
         $user = User::where('id', $this->userId)->first();
         $this->orderHistory = new OrderHistory;
         $this->orderHistory->user_id       = $this->userId;
-        $this->orderHistory->creator_primary_user_id  = $user->getPrimaryUserId();
+        // $this->orderHistory->creator_primary_user_id  = $user->getPrimaryUserId();
+        $this->orderHistory->creator_primary_user_id  = $this->order->creator_primary_user_id;
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;
         $this->orderHistory->name          = config('order.operation_type')[$this->type];

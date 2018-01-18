@@ -75,7 +75,7 @@
                                                 @endforelse
                                             </select>
                                         </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" lay-data="{{ $paginateOrderNotice->id }}">删除</button>
+                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginateOrderNotice->id }}">删除</button>
                                     </td>
                                 </tr>
                             @empty
@@ -291,6 +291,27 @@
                     window.location.href="{{ route('order.leveling.index') }}";
                 });
             }
+        });
+
+        form.on('submit(delete)', function (data) {
+            var orderId = data.elem.getAttribute("data-id");
+            layer.confirm('确认删除订单吗？', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    type: 'DELETE',
+                    url: "{{ route('order.leveling.destroy') }}",
+                    data:{orderId:orderId},
+                    success: function (data) {
+                        if (data.status) {
+                            layer.msg(data.message, {icon: 6, time:1000});
+                        } else {
+                            layer.msg(data.message, {icon: 5, time:1500}); 
+                        }
+                    }
+                });
+                layer.close(index);
+                window.location.href="{{ route('order.leveling.index') }}";
+            });
+            return false;
         });
     });
 </script>

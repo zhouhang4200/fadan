@@ -114,4 +114,15 @@ class LevelingController extends Controller
     	DB::commit();
     	return response()->ajax(1, '修改状态为【'.config('order.status_leveling')[$request->status].'】成功!');
     }
+
+    public function destroy(Request $request)
+    {
+        $res = OrderNotice::destroy($request->orderId);
+
+        if ($res) {
+            return response()->ajax(1, '删除成功!');
+        } else {
+            return response()->ajax(0, '删除失败!');
+        }
+    }
 }
