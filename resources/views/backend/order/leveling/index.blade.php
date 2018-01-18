@@ -65,8 +65,8 @@
                                     <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
                                     <td>{{ $paginateOrderNotice->create_order_time }}</td>
                                     <td>
-                                        <div class="form-group col-xs-2">
-                                            <select name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->order->amount }}" data-safe="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'security_deposit')->value('field_value') }}"
+                                        <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
+                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->order->amount }}" data-safe="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'security_deposit')->value('field_value') }}"
                                             data-effect="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'efficiency_deposit')->value('field_value') }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
                                                 <option value="">修改状态</option>
                                                 @forelse(config('order.status_leveling') as $key => $status)
@@ -75,7 +75,7 @@
                                                 @endforelse
                                             </select>
                                         </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $paginateOrderNotice->id }}">删除</button>
+                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" lay-data="{{ $paginateOrderNotice->id }}">删除</button>
                                     </td>
                                 </tr>
                             @empty
