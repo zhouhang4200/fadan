@@ -53,8 +53,10 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             $this->changeConsultStatus();
 
             $this->after();
-
+            // 删除redis 申请验收订单
             delRedisCompleteOrders($this->orderNo);
+            // 如果还原前一个状态为 申请验收 ，redis 加订单
+            addRedisCompleteOrders($this->orderNo, $this->handledStatus);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
                 (new Lock)->run($orderNo, $userId);

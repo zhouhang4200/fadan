@@ -22,6 +22,7 @@ class LevelingController extends Controller
 	    	$fullUrl = $request->fullUrl();
 	    	$third = $request->third;
 	    	$filters = compact('third', 'startDate', 'endDate');
+            $ourStatus = config('order.status_leveling');
 	    	
 	    	$query = OrderNotice::where('complete', 0)->filter($filters);
 	    	$paginateOrderNotices = $query->with(['order' => function ($query) {
@@ -37,10 +38,16 @@ class LevelingController extends Controller
 	    		}
 	            return $this->export($excelOrderNotices);
 	    	}
+            // 特定的状态
+            foreach ($ourStatus as $key => $status) {
+                if (in_array($key, [1, 22, 24])) {
+                    unset($ourStatus[$key]);
+                }
+            }
     	} catch (OrderNoticeException $e) {
     		Log::info($e->getMessage());
     	}
-    	return view('backend.order.leveling.index', compact('startDate', 'endDate', 'fullUrl', 'third', 'paginateOrderNotices'));
+    	return view('backend.order.leveling.index', compact('startDate', 'endDate', 'fullUrl', 'third', 'ourStatus', 'paginateOrderNotices'));
     }
 
     public function export($excelOrderNotices)

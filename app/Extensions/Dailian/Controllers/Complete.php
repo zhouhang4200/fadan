@@ -52,7 +52,7 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
-
+            // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
 
     	} catch (Exception $e) {

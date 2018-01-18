@@ -69,7 +69,7 @@
                                             <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->order->amount }}" data-safe="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'security_deposit')->value('field_value') }}"
                                             data-effect="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'efficiency_deposit')->value('field_value') }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
                                                 <option value="">修改状态</option>
-                                                @forelse(config('order.status_leveling') as $key => $status)
+                                                @forelse($ourStatus as $key => $status)
                                                     <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
                                                 @empty
                                                 @endforelse

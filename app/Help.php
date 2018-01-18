@@ -2,6 +2,7 @@
 
 use App\Models\City;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 use App\Models\UserSetting;
 use App\Services\RedisConnect;
 use Illuminate\Support\Facades\Redis;
@@ -602,6 +603,16 @@ if (!function_exists('delRedisCompleteOrders')) {
                     break;
                 }
             }
+        }
+    }
+}
+
+if (!function_exists('addRedisCompleteOrders')) {
+
+    function addRedisCompleteOrders($no, $status) {
+        if ($status == 14) {
+            $now = Carbon::now()->toDateTimeString();
+            Redis::hSet('complete_orders', $no, $now);
         }
     }
 }

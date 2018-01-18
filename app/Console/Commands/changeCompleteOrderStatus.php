@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use Redis;
 use DB;
-use Exception;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
 class changeCompleteOrderStatus extends Command
@@ -59,7 +59,7 @@ class changeCompleteOrderStatus extends Command
                     DailianFactory::choose('complete')->run($orderNo, 1);
                 }
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
         }
         DB::commit();
