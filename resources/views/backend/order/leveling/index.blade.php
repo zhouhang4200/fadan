@@ -70,7 +70,7 @@
                                             data-effect="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'efficiency_deposit')->value('field_value') }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
                                                 <option value="">修改状态</option>
                                                 @forelse(config('order.status_leveling') as $key => $status)
-                                                    <option value="{{ $key }}" >{{ $status }}</option>
+                                                    <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
                                                 @empty
                                                 @endforelse
                                             </select>
@@ -206,6 +206,7 @@
             var orderAmount = data.elem.getAttribute("data-amount");
             var orderSafe = data.elem.getAttribute("data-safe");
             var orderEffect = data.elem.getAttribute("data-effect");
+            var changeStatus = $("#status"+data.value).attr("data-status");
 
             if (!orderAmount) {
                 orderAmount = 0;
@@ -245,6 +246,7 @@
                     });
                     layer.closeAll();
                     return false;
+                    window.location.href="{{ route('order.leveling.index') }}";
                 });
             } else if (data.value == 16) {
                 layer.open({
@@ -269,21 +271,25 @@
                     });
                     layer.closeAll();
                     return false;
+                    window.location.href="{{ route('order.leveling.index') }}";
                 });
             } else {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('order.leveling.change-status') }}",
-                    data:{orderNo:orderNo, status:status},
-                    success: function (data) {
-                        if (data.status) {
-                            layer.msg(data.message, {icon: 6, time:1000});
-                        } else {
-                            layer.msg('手动修改失败', {icon: 5, time:1500}); 
+                layer.confirm('确认修改订单状态为【'+changeStatus+'】吗？', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('order.leveling.change-status') }}",
+                        data:{orderNo:orderNo, status:status},
+                        success: function (data) {
+                            if (data.status) {
+                                layer.msg(data.message, {icon: 6, time:1000});
+                            } else {
+                                layer.msg('手动修改失败', {icon: 5, time:1500}); 
+                            }
                         }
-                    }
+                    });
+                    layer.close(index);
+                    window.location.href="{{ route('order.leveling.index') }}";
                 });
-            window.location.href="{{ route('order.leveling.index') }}";
             }
         });
     });

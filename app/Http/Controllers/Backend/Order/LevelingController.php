@@ -105,6 +105,6 @@ class LevelingController extends Controller
     		Log::info($e->getMessage());
     	}
     	DB::commit();
-    	return response()->ajax(1, '修改成功!');
+    	return response()->ajax(1, '修改状态为【'.config('order.status_leveling')[$request->status].'】成功!');
     }
 }
