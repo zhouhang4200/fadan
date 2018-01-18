@@ -387,9 +387,16 @@ class Show91
      * 订单补款
      * @param [type] $options [oid => 订单id， appwd => 订单密码, cash => 补款金额]
      */
-    public static function addPrice($options = [])
+    public static function addPrice($order, $bool = false)
     {
-    	return static::normalRequest(config('show91.url.addPrice'), $options);
+    	$options = [
+            'oid' => $order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+            'appwd' => '123456',
+            'cash' => $order->addAmount,
+        ];
+        $res = static::normalRequest(config('show91.url.addPrice'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -399,13 +406,14 @@ class Show91
      */
     public static function addLimitTime($order, $bool = 0)
     {
-         $options = [
+        $options = [
             'oid' => $order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-            'orderAddTime.days' => $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'),
-            'orderAddTime.hours' => $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'),
+            'orderAddTime.days' => $order->addDays,
+            'orderAddTime.hours' => $order->addHours,
             'orderAddTime.msg' => '',
         ];
-        $res = static::normalRequest(config('show91.url.addLimitTime2'), $options);
+
+        $res = static::normalRequest(config('show91.url.addLimitTime'), $options);
 
         return static::returnErrorMessage($res);
     }

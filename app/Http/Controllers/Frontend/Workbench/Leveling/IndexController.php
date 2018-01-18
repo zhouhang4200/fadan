@@ -531,6 +531,7 @@ class IndexController extends Controller
                 if (in_array($order->status, [13, 17])) {
                     // 加价 修改主单信息
                     if ($order->price < $requestData['game_leveling_amount']) {
+                        $addAmount = bcsub($request->data['game_leveling_amount'], $order->amount, 2);
                         $amount = $requestData['game_leveling_amount'] - $order->price;
                         Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
@@ -541,6 +542,9 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
+                        // 接口加价
+                        $order->addAmount = $addAmount;
+                        event(new AutoRequestInterface($order, 'addPrice'));
                     } else if ($order->price > $requestData['game_leveling_amount']) {
                         return response()->ajax(0, '代练价格只可增加');
                     }
@@ -554,6 +558,8 @@ class IndexController extends Controller
 
                     // 修改 游戏代练天
                     if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
+                        // 接口增加天数
+                        $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
                         // 更新值
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
                             'field_value' => $requestData['game_leveling_day']
@@ -565,19 +571,31 @@ class IndexController extends Controller
                     if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && ($requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']
                             || ($requestData['game_leveling_hour'] < $orderDetail['game_leveling_hour'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']))
                     ) {
+                        $addHours = bcsub($request->data['game_leveling_hour'], $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'), 0);
                         // 更新值
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                             'field_value' => $requestData['game_leveling_hour']
                         ]);
                     }
-                    // 加价
-                    $a = event(new AutoRequestInterface($order, 'addLimitTime2'));
 
-                    dd($a);
+                    if (isset($addDays) && !isset($addHours)) {
+                        $order->addDays = $addDays;
+                        $order->addHours = 0;
+                        event(new AutoRequestInterface($order, 'addLimitTime'));
+                    } elseif (!isset($addDays) && isset($addHours)) {
+                        $order->addDays = 0;
+                        $order->addHours = $addHours;
+                        event(new AutoRequestInterface($order, 'addLimitTime'));
+                    } elseif (isset($addDays) && isset($addHours)) {
+                        $order->addDays = $addDays;
+                        $order->addHours = $addHours;
+                        event(new AutoRequestInterface($order, 'addLimitTime'));
+                    }
                 }
                 // 待验收 可加价格
                 if ($order->status == 14) {
                     if ($order->price < $requestData['game_leveling_amount']) {
+                        $addAmount = bcsub($request->data['game_leveling_amount'], $order->amount, 2);
                         $amount = $requestData['game_leveling_amount'] - $order->price;
                         Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
@@ -588,6 +606,9 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
+                        // 接口加价
+                        $order->addAmount = $addAmount;
+                        event(new AutoRequestInterface($order, 'addPrice'));
                     } else {
                         return response()->ajax(1, '代练价格只可增加');
                     }
