@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Punish' => [
             'App\Listeners\Punish\SendMessage',
         ],
+        'App\Events\AutoRequestInterface' => [
+            'App\Listeners\Leveling\ChangeStatus',
+        ],
     ];
 
     /**

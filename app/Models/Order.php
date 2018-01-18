@@ -230,10 +230,10 @@ class Order extends Model
                     } else {
                         throw new OrderNoticeException('没有填写申请撤销表单！');
                     }
-                    PublicController::revokeFlows();
+                    PublicController::revokeFlows($this->no);
                 break;
                 case 20:
-                    PublicController::completeFlows();
+                    PublicController::completeFlows($this->no);
                 break;
                 case 21:
                     if ($datas) {
@@ -245,13 +245,13 @@ class Order extends Model
                     } else {
                         throw new OrderNoticeException('没有填写申请仲裁表单！');
                     }
-                    PublicController::arbitrationFlows();
+                    PublicController::arbitrationFlows($this->no);
                 break;
                 case 23:
-                    PublicController::forceRevokeFlows();
+                    PublicController::forceRevokeFlows($this->no);
                 break;
                 case 24:
-                    PublicController::deleteFlows();
+                    PublicController::deleteFlows($this->no);
                 break; 
             }
         }

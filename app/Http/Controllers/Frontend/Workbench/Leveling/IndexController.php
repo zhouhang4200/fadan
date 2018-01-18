@@ -34,6 +34,8 @@ use App\Services\Show91;
 use Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
+use App\Listeners\Leveling\ChangeStatus;
+use App\Events\AutoRequestInterface;
 
 /**
  * 代练订单
@@ -519,6 +521,10 @@ class IndexController extends Controller
                             }
                         }
                     }
+                    // 手动触发调用外部接口时间
+                    $order = OrderModel::where('no', $order->no)->first();
+               
+                    event(new AutoRequestInterface($order, 'addOrder', true));
                 }
 
                 // 已接单  异常 更新部分信息 （加价 加时间天 加时间小时 修改密码 ）
@@ -564,7 +570,10 @@ class IndexController extends Controller
                             'field_value' => $requestData['game_leveling_hour']
                         ]);
                     }
+                    // 加价
+                    $a = event(new AutoRequestInterface($order, 'addLimitTime2'));
 
+                    dd($a);
                 }
                 // 待验收 可加价格
                 if ($order->status == 14) {
@@ -606,11 +615,13 @@ class IndexController extends Controller
                         }
                     }
                 }
-            }
-
+            }      
         } catch (CustomException $customException) {
             DB::rollBack();
             return response()->ajax(0, '修改失败');
+        } catch (DailianException $e) {
+            DB::rollBack();
+            return response()->ajax(0, '修改失败'); 
         }
         DB::commit();
 
@@ -689,9 +700,9 @@ class IndexController extends Controller
                 return response()->ajax(0, '找不到订单对应的接单或发单人!');
             }
             // 存信息
-            LevelingConsult::UpdateOrcreate(['order_no' => $data['order_no']], $data);
+            LevelingConsult::updateOrCreate(['order_no' => $data['order_no']], $data);
             // 改状态
-            DailianFactory::choose('revoke')->run($data['order_no'], $data['user_id']);
+            DailianFactory::choose('revoke')->run($data['order_no'], Auth::id());
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());
@@ -710,6 +721,7 @@ class IndexController extends Controller
         DB::beginTransaction();
         try {
             $userId = Auth::id();
+            $data['user_id'] = Auth::id();
             $data['order_no'] = $request->orderNo;
             $data['complain_message'] = $request->data['complain_message'];
 
@@ -723,7 +735,7 @@ class IndexController extends Controller
                 return response()->ajax(0, '操作失败!');
             }
 
-            LevelingConsult::where('order_no', $data['order_no'])->UpdateOrcreate(['order_no' => $data['order_no']], $data);
+            LevelingConsult::where('order_no', $data['order_no'])->updateOrCreate(['order_no' => $data['order_no']], $data);
             // 改状态
             DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
         } catch (DailianException $e) {
