@@ -40,6 +40,77 @@
         .layui-form-mid {
             margin-right: 4px;
         }
+        .prom-wrap {
+            width: 100%;
+            left: 0;
+            bottom: 0;
+        }
+        .fixed {
+            position: fixed;
+        }
+        .prom-inner {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .prom-list {
+            background: white;
+            position: relative;
+            z-index: 100;
+            border: 1px solid #1E9FFF;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 290px;
+            margin: 5px;
+        }
+        .prom-list-header {
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 18px;
+            padding-left: 13px;
+            text-align: left;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .relative {
+            position: relative;
+        }
+        .prom-list-body {
+            padding: 20px 15px;
+            font-size: 13px;
+        }
+        .prom-list-footer {
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #1E9FFF;
+            border-top: 1px solid #1E9FFF;
+        }
+        .prom-list-footer .prom-list-footer-tab.get {
+            border-right: 1px solid #1E9FFF;
+        }
+        .prom-list-footer .prom-list-footer-tab {
+            width: 50%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .prom-list-contents span {
+            width: 48%;
+        }
+        .close-prom {
+            background-color: #1E9FFF;
+            color: white;
+            padding: 2px 6px;
+            top: 6px;
+            right: 6px;
+            line-height: 22px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+        }
 
     </style>
 @endsection
