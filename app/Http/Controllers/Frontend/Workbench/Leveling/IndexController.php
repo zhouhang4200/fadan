@@ -205,6 +205,8 @@ class IndexController extends Controller
 
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
+            } catch (DailianException $dailianException) {
+                return response()->ajax(0, $dailianException->getMessage());
             }
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
