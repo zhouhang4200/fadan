@@ -181,7 +181,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 代练
         Route::namespace('Leveling')->prefix('leveling')->group(function (){
             // 首页
-            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index');
+            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index')->middleware('permission:frontend.workbench.leveling.index');
             // 根据订单状态获取订单数据
             Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
             // 创建订单

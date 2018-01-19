@@ -28,15 +28,15 @@ class AutoAddFundsController
         $timestamp = $request->input('timestamp', 0);
 
         if (abs($timestamp - time()) > 120) {
-            return response()->ajax(1, '无效请求');
+            return response()->ajax(0, '无效请求');
         }
 
         if (!$data || !$sign || !$timestamp) {
-            return response()->ajax(1, '参数不完整');
+            return response()->ajax(0, '参数不完整');
         }
 
         if (md5($data . $token . $timestamp) != $sign) {
-            return response()->ajax(1, '签名错误');
+            return response()->ajax(0, '签名错误');
         }
 
         $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
@@ -46,17 +46,17 @@ class AutoAddFundsController
         try {
             $requestData = json_decode($cryptData);
         } catch (\Exception $e) {
-            return response()->ajax(1, '解密失败');
+            return response()->ajax(0, '解密失败');
         }
 
         if (!isset($requestData->user_id) || !isset($requestData->order_id) || !isset($requestData->money)) {
-            return response()->ajax(1, '业务参数不完整');
+            return response()->ajax(0, '业务参数不完整');
         }
 
         $userInfo = User::where('id', $requestData->user_id)->first();
 
         if (!$userInfo) {
-            return response()->ajax(1, '不存在的用户');
+            return response()->ajax(0, '不存在的用户');
         }
 
         // 是否存在 加款记录
@@ -67,13 +67,13 @@ class AutoAddFundsController
             ->first();
 
         if ($exist) {
-            return response()->ajax(1, '该订单号已经成功自动加款');
+            return response()->ajax(0, '该订单号已经成功自动加款');
         }
 
         // 加款
         try {
             Asset::handle(new Recharge($requestData->money, Recharge::TRADE_SUBTYPE_AUTO, $requestData->order_id, '银行卡自动充值', $requestData->user_id));
-            return response()->ajax(0, '加款成功');
+            return response()->ajax(1, '加款成功');
         } catch (AssetException $assetException) {
             return response()->ajax(0, '加款失败');
         }
