@@ -52,7 +52,7 @@ class GoodsTemplateWidgetRepository
             ->orderBy('field_sortord')
             ->with([
                 'values' => function($query){
-                    $query->select('goods_template_widget_id', 'field_value')
+                    $query->select('goods_template_widget_id', 'field_value', 'id')
                         ->where('user_id', 0);
                 }
             ])

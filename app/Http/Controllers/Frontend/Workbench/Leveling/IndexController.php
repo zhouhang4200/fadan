@@ -9,6 +9,7 @@ use App\Extensions\Order\Operations\CreateLeveling;
 use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Models\Game;
 use App\Models\GoodsTemplateWidget;
+use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
 use App\Models\SmsSendRecord;
@@ -231,6 +232,15 @@ class IndexController extends Controller
             $orderTemplateValue = OrderDetailRepository::getByOrderNo($request->no);
         }
         return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId, 'value' => $orderTemplateValue]);
+    }
+
+    /**
+     * 获取下拉项的子项
+     * @param Request $request
+     */
+    public function getSelectChild(Request $request)
+    {
+        return GoodsTemplateWidgetValue::where('parent_id', $request->parent_id)->get();
     }
 
     /**

@@ -183,6 +183,10 @@
                                 </form>
                             </div>
                             <div class="layui-tab-item">
+                                <div id="nestable-menu" class="layui-hide">
+                                    <button type="button" class="btn btn-primary expand-all">展开所有</button>
+                                    <button type="button" class="btn btn-danger collapse-all">折叠所有</button>
+                                </div>
                                 <form class="layui-form layui-form-pane" action=""   name="edit-option-form"  id="nestable">
 
                                 </form>
@@ -212,7 +216,7 @@
 
 @section('js')
 <script src="/backend/js/jquery.nestable.js"></script>
-
+<!--预览组件新 模版-->
 <script id="goodsTemplateNew" type="text/html">
 
     <div class="layui-row form-group">
@@ -238,11 +242,11 @@
                 @{{# } }}
 
                 @{{# if(item.field_type == 2) {  }}
-                <select name="@{{ item.field_name }}"  lay-search=""   display-name="@{{item.field_display_name}}">
+                <select name="@{{ item.field_name }}"  lay-search=""  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
                     <option value=""></option>
                         @{{#  if(item.values.length > 0){ }}
                             @{{#  layui.each(item.values, function(i, v){ }}
-                            <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                            <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
                             @{{#  }); }}
                         @{{#  }  }}
                 </select>
@@ -295,7 +299,6 @@
     </div>
 
 </script>
-
 <!--预览组件 模版-->
 <script id="goodsTemplate" type="text/html">
     @{{#  layui.each(d, function(index, item){ }}
@@ -525,7 +528,7 @@
 
         @{{#  layui.each(d.options, function(i, v){ }}
 
-            <li class="dd-item">
+            <li class="dd-item" data-id="@{{ i }}">
                 <div class="dd-handle">
                     @{{ v.field_value }}
                     <div class="nested-links">
@@ -667,6 +670,7 @@
                     layui.form.render()
                 });
             }, 'json');
+            reloadTemplate();
             return false;
         });
         // 编辑组件选项
@@ -683,11 +687,9 @@
                     layui.form.render()
                 });
             }, 'json');
-
-
+            reloadTemplate();
             return false;
         });
-
         // 删除组件按钮
         form.on('submit(destroy-widget)', function(data){
             layer.confirm('您确认要删除该组件吗？', function (index) {
@@ -700,9 +702,9 @@
                 }, 'json');
                 layer.close(index);
             });
+            reloadTemplate();
             return false;
         });
-
         // 保存组件编缉
         form.on('submit(edit-save)', function(data){
             $.post('{{ route('goods.template.widget.edit') }}', {id:data.field.id, data:data.field}, function (result) {
@@ -712,14 +714,12 @@
             }, 'json');
             return false;
         });
-
         // 当切换到添加时清空编辑表单
         element.on('tab(widgetTab)', function(data){
             if (data.index == 0) {
                 $('form[name=edit-form]').empty();
             }
         });
-
         // 如选择父级组件时则加载出他应对应有项的值输入框
         form.on('select(parent-widget)', function(data) {
             // 获取当前form id
@@ -733,12 +733,12 @@
                 });
             }, 'json');
         });
-
         // 模版预览 下拉框值
         form.on('select(change-select)', function(data){
             var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+            var choseId = $(data.elem).find("option:selected").attr("data-id");
             if($(subordinate).length > 0){
-                $.post('{{ route('goods.template.widget.show-select-child') }}', {parent_id:data.value}, function (result) {
+                $.post('{{ route('goods.template.widget.show-select-child') }}', {parent_id:choseId}, function (result) {
                     $(subordinate).html(result);
                     $(result).each(function (index, value) {
                         $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
@@ -748,21 +748,19 @@
             }
             return false;
         });
-
         // 保存添加选项
         form.on('submit(add-option)', function (data) {
             $.post('{{ route('goods.template.widget.add-option') }}', {id:data.field.id, parent_id:data.field.parent_id, value:data.field.value}, function (result) {
                 layer.msg(result.message);
                 layer.closeAll();
             }, 'json');
+            reloadTemplate();
             return false;
         });
-
         // 编缉选项
         form.on('submit(edit-option)', function (data) {
 
         });
-
         // 添加选项弹窗
         $('#nestable').on('click', '.add-option', function () {
             $('#add-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
@@ -774,9 +772,9 @@
                 area: ['500px', '300px'],
                 content: $('#add-option')
             });
+            reloadTemplate()
             return false;
         });
-
         // 编辑选项
         $('#nestable').on('click', '.edit-option', function () {
             $('#edit-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
@@ -789,7 +787,6 @@
             });
             return false;
         });
-
         // 删除选项
         $('#nestable').on('click', '.del-option', function () {
             var id = $(this).attr("data-id");
@@ -801,7 +798,6 @@
             });
             return false;
         });
-
         //重新加载模版
         function reloadTemplate() {
             {{--var getTpl = goodsTemplate.innerHTML, view = document.getElementById('goods-template');--}}
@@ -822,17 +818,6 @@
         }
     });
 
-    $('#nestable-menu').on('click', function (e) {
-        var target = $(e.target),
-                action = target.data('action');
-        if (action === 'expand-all') {
-            $('.dd').nestable('expandAll');
-        }
-        if (action === 'collapse-all') {
-            $('.dd').nestable('collapseAll');
-        }
-    });
-
     $('#button-control').on('click', function (e) {
         if ($(this).attr('data-status') == 'show') {
             $('.layui-btn-group').addClass('layui-hide');
@@ -846,6 +831,13 @@
         return  false;
     });
 
+    $('#nestable-menu').on('click', '.expand-all', function(e){
+        $('.dd').nestable('expandAll');
+    });
+
+    $('#nestable-menu').on('click', '.collapse-all', function(e){
+        $('.dd').nestable('collapseAll');
+    });
 
 </script>
 @endsection
