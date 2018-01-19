@@ -21,7 +21,7 @@ class OrderDetailRepository
      */
     public static function updateByOrderNo($orderNo, $fieldName, $fieldValue)
     {
-        return OrderDetail::where('order_no', $orderNo)->where('field_name', $fieldName)->update(['field_name' => $fieldValue]);
+        return OrderDetail::where('order_no', $orderNo)->where('field_name', $fieldName)->update(['field_value' => $fieldValue]);
     }
 
     /**

@@ -334,7 +334,7 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                    @elseif(in_array($item->field_name, ['order_source', 'foreign_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
@@ -434,20 +434,24 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">支付金额：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['payment_amount']?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">获得金额：</div>
+                            <div class="layui-col-md8">{{ $detail['get_amount']?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ isset($detail['poundage']) ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['poundage'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
 
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['left_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发布时间：</div>
@@ -459,15 +463,15 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">提验时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['check_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">结算时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['checkout_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['cstomer_service_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
@@ -741,7 +745,7 @@
             $('#effect').val(orderEffect);
 
             if (operation == 'wangWang') {
-                var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
+                var wangWang = this.getAttribute("data-wang-wang");
                 window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
             }
             if (operation == 'sendSms') {

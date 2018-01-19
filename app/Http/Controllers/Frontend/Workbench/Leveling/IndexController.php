@@ -116,8 +116,30 @@ class IndexController extends Controller
                 // 当前订单数据
                 $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
 
-                // 增加数据
-                $orderCurrent['payment_amount'] = '--'; // 待取值
+                if (!in_array($orderInfo['status'], [19, 20, 21])){
+                    $orderCurrent['payment_amount'] = '';
+                    $orderCurrent['get_amount'] = '';
+                    $orderCurrent['poundage'] = '';
+                    $orderCurrent['profit'] = '';
+                } else {
+                    // 支付金额
+                    if ($orderInfo['status'] == 21) {
+                        $amount = $orderInfo['leveling_consult']['api_amount'];
+                    } else {
+                        $amount = $orderInfo['leveling_consult']['amount'];
+                    }
+                    // 支付金额
+                    $orderCurrent['payment_amount'] = $amount !=0 ?  $amount:  $orderInfo['amount'];
+                    // 利润
+                    if (isset($orderCurrent['source_price'])) {
+                        $orderCurrent['profit'] = ($orderCurrent['source_price'] ?? 0) - ($orderCurrent['payment_amount']?? 0) +  ($orderCurrent['get_amount']?? 0) - ($orderCurrent['poundage']?? 0);
+                    }
+
+                    $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'];
+                    $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'];
+                    $orderCurrent['poundage'] = (float)$orderCurrent['poundage'];
+                    $orderCurrent['profit'] = (float)$orderCurrent['profit'];
+                }
 
                 $days = $orderCurrent['game_leveling_day'] ?? 0;
                 $hours = $orderCurrent['game_leveling_hour'] ?? 0;
@@ -172,6 +194,9 @@ class IndexController extends Controller
             $price = $orderData['game_leveling_amount']; // 代练价格
             $source = $orderData['order_source']; // 代练价格
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
+
+            // 获取当前下单人名字
+            $orderData['cstomer_service_name'] = Auth::user()->name;
 
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
@@ -228,6 +253,22 @@ class IndexController extends Controller
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
+
+        $days = $detail['game_leveling_day'] ?? 0;
+        $hours = $detail['game_leveling_hour'] ?? 0;
+        $detail['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+
+        // 如果存在接单时间
+        if (isset($detail['receiving_time']) && !empty($detail['receiving_time'])) {
+            // 计算到期的时间戳
+            $expirationTimestamp = strtotime($detail['receiving_time']) + $days * 86400 + $hours * 3600;
+            // 计算剩余时间
+            $leftSecond = $expirationTimestamp - time();
+            $detail['left_time'] = Sec2Time($leftSecond); // 剩余时间
+        } else {
+            $detail['left_time'] = '';
+        }
+
         // 撤销说明
         if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0) {
 
@@ -262,7 +303,7 @@ class IndexController extends Controller
         }
 
         // 仲裁结果
-        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complain'] == 2) {
+        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2) {
 
             $text = '客服进行了仲裁';
             if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
@@ -281,11 +322,11 @@ class IndexController extends Controller
 
     /**
      * 重下单
-     * @param Request $request
      * @param OrderRepository $orderRepository
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @internal param Request $request
      */
     public function repeat(OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository, $id)
     {
@@ -523,7 +564,7 @@ class IndexController extends Controller
                     }
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
-               
+
                     event(new AutoRequestInterface($order, 'addOrder', true));
                 }
 
@@ -632,17 +673,22 @@ class IndexController extends Controller
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value
                             ]);
+                            if ($key == 'source_price') {
+                                $order->original_amount = $requestData[$key];
+                                $order->save();
+                            }
 //                            $changeValue .= $orderDetailDisplayName[$key] . '更改前：' . $value . ' 更改后：' . $requestData[$key] . '<br/>';
                         }
                     }
                 }
-            }      
+            }
+
         } catch (CustomException $customException) {
             DB::rollBack();
             return response()->ajax(0, '修改失败');
         } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败'); 
+            return response()->ajax(0, '修改失败');
         }
         DB::commit();
 

@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
 use App\Extensions\Asset\Income;
@@ -104,6 +105,8 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
                     throw new Exception('流水记录写入失败');
                 }
             }
+            // 写入结算时间
+            OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
         } catch (Exception $e) {
             DB::rollback();
             throw new Exception($e->getMessage());

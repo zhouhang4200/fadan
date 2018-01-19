@@ -15,6 +15,13 @@ use Illuminate\Http\Request;
 
 Route::namespace('Api')->group(function () {
 
+
+    Route::prefix('auto-add-funds')->group(function (){
+        Route::any('member', 'AutoAddFundsController@member');
+        Route::post('self', 'AutoAddFundsController@self');
+    });
+
+
     Route::post('kamen', 'OrderController@KamenOrder');
     Route::any('test', 'OrderController@test');
 
