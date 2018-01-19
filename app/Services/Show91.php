@@ -100,7 +100,7 @@ class Show91
     public static function addOrder($order, $bool = 0)
     {
         // 我们的服
-        $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 2)->value('id'); //模板id
+        $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
         $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'serve')->value('id');
         $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
                 ->where('field_name', 'serve')
@@ -115,7 +115,7 @@ class Show91
 
         $options = [
             'orderType' => 0,
-            'order.game_id' => ThirdGame::where('game_id', 1)->where('third_id', 1)->value('third_game_id') ?: '', // 王者荣耀
+            'order.game_id' => ThirdGame::where('game_id', $order->game_id)->where('third_id', 1)->value('third_game_id') ?: '', // 王者荣耀
             'order.game_area_id' => ThirdArea::where('game_id', $order->game_id)
                                     ->where('third_id', 1)
                                     ->where('area_id', $areaId)
