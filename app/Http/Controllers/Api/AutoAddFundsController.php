@@ -22,6 +22,9 @@ class AutoAddFundsController
      */
     public function member(Request $request)
     {
+        if (!in_array(getClientIp(), ['120.26.205.22'])) {
+            return response()->ajax(0, 'IP不在白名单');
+        }
         $token = '4cdM8BQ894RnN9LrcwpdTJpHo7Ga4MIrm1';
         $data = $request->input('data', 0);
         $sign = $request->input('sign', 0);
