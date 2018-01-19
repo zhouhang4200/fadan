@@ -682,7 +682,7 @@
                     <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
                     @{{# } }}
 
-                    @{{# if(item.help_text != null || item.help_text != undefined || item.help_text != '') {  }}
+                    @{{# if(item.help_text != null || item.help_text != undefined || item.help_text != '无') {  }}
                     <a href="#" class="tooltip">
                         <i class="iconfont icon-wenhao" id="recharge"></i>
                         <span>@{{ item.help_text }}</span>
