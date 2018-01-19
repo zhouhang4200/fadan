@@ -220,7 +220,7 @@ class IndexController extends Controller
     public function getTemplate(Request $request, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
         // 获取对应的模版ID
-        $templateId = GoodsTemplate::getTemplateId(2, $request->game_id);
+        $templateId = GoodsTemplate::getTemplateId(4, $request->game_id);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
         // 如果有订单号则获取订单原来设置的值
@@ -245,7 +245,7 @@ class IndexController extends Controller
         // 获取订单数据
         $detail = $orderRepository->levelingDetail($request->no);
         // 获取订单对应模版ID
-        $templateId = GoodsTemplate::getTemplateId(2, $detail['game_id']);
+        $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
 
@@ -335,7 +335,7 @@ class IndexController extends Controller
         // 获取订单数据
         $detail = $orderRepository->levelingDetail($id);
         // 获取订单对应模版ID
-        $templateId = GoodsTemplate::getTemplateId(2, $detail['game_id']);
+        $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
         // 写入订单关联数据
