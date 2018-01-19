@@ -149,7 +149,8 @@
 
 <!--START 脚本-->
 @section('js')
-<script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?v20170927') }}"></script>
+<link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
+<script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?20180119') }}"></script>
 <script type="text/html" id="goodsTemplate">
     @{{#  layui.each(d, function(index, item){ }}
 
