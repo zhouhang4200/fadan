@@ -487,7 +487,7 @@
         //自定义验证规则
         form.verify({
             field_value: function(value){
-                if(currentWidgetType = 2 && value.length == 0){
+                if(currentWidgetType == 2 && value.length == 0){
                     return '这种展示方式必须填入可选值呢！';
                 }
             }
