@@ -49,7 +49,6 @@ class GoodsTemplateWidgetRepository
         return GoodsTemplateWidget::select('id', 'field_type', 'field_display_name', 'field_parent_id', 'field_name',
             'display_form', 'field_required', 'help_text', 'verify_rule', 'display')
             ->where('goods_template_id', $templateId)
-            ->where('display', 1)
             ->orderBy('field_sortord')
             ->with([
                 'values' => function($query){
