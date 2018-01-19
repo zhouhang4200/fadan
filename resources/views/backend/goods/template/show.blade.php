@@ -89,7 +89,7 @@
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">提示信息</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="">
+                                            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="" value="无">
                                         </div>
                                     </div>
 
@@ -103,7 +103,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件默认值</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input">
+                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="无">
                                         </div>
                                     </div>
 
