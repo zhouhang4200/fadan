@@ -96,9 +96,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
                 Route::post('add-option', 'TemplateWidgetController@addOption')->name('goods.template.widget.add-option');
                 // 删除组件选项
                 Route::post('del-option', 'TemplateWidgetController@delOption')->name('goods.template.widget.del-option');
-
-
-
+                // 预览 模版
+                Route::get('preview-template/{templateId}', 'TemplateWidgetController@previewTemplate')->name('goods.template.widget.preview-template');
                 // 组件配置
 //                Route::get('config', 'NewTemplateWidgetController@config')->name('goods.template.widget.config');
             });

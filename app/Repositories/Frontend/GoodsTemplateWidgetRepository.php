@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories\Backend;
+namespace App\Repositories\Frontend;
 
 use Auth;
 use App\Models\GoodsTemplateWidget;
@@ -55,6 +55,10 @@ class GoodsTemplateWidgetRepository
                 'values' => function($query){
                     $query->select('goods_template_widget_id', 'field_value')
                         ->where('user_id', 0);
+                },
+                'userValues' => function($query) {
+                    $query->select('goods_template_widget_id', 'field_value')
+                        ->where('user_id', Auth::user()->getPrimaryUserId());
                 }
             ])
             ->get();

@@ -7,6 +7,7 @@ use App\Models\GoodsTemplateWidgetValue;
 use App\Models\WidgetType;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Backend\GoodsTemplateWidgetValueRepository;
+use App\Repositories\Frontend\OrderDetailRepository;
 use Auth, Config, \Exception, DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -324,7 +325,7 @@ class TemplateWidgetController extends Controller
      */
     public function addOption(Request $request)
     {
-        $value = GoodsTemplateWidgetValue::where('goods_template_widget_id', $request->id)->first();
+        $value = GoodsTemplateWidget::where('id', $request->id)->first();
 
         $newValue = explode('|', $request->value);
 
@@ -451,5 +452,18 @@ class TemplateWidgetController extends Controller
             return jsonMessages(0, '添加失败');
         }
         return jsonMessages(1, '添加成功');
+    }
+
+    /**
+     * 预览 模版
+     * @param integer $templateId
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     * @return mixed
+     */
+    public function previewTemplate($templateId, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    {
+        // 获取对应的模版组件
+        $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+        return response()->ajax(1, 'success', ['template' => $template->toArray()]);
     }
 }

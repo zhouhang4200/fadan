@@ -13,7 +13,7 @@ use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
 use App\Models\SmsSendRecord;
 use App\Models\User;
-use App\Repositories\Backend\GoodsTemplateWidgetRepository;
+use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
