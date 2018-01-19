@@ -79,6 +79,7 @@ class TemplateWidgetController extends Controller
         $data['field_name'] = $tpeAndName[0];
         $data['field_type'] = $tpeAndName[1];
         $data['created_admin_user_id'] = Auth::user()->id;
+        $data['display'] = !isset($data['display']) ? 2 : 1;
 
         try {
             DB::beginTransaction();
@@ -157,6 +158,7 @@ class TemplateWidgetController extends Controller
     {
         $data = $request->data;
         $data['field_required'] = !isset($data['field_required']) ? 2 : 1;
+        $data['display'] = !isset($data['display']) ? 2 : 1;
 
         try {
             GoodsTemplateWidget::where('id', $data['id'])->update($data);

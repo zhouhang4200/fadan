@@ -189,7 +189,7 @@ class IndexController extends Controller
             $orderData = $request->data;
             $userId = Auth::user()->id; // 下单用户
             $gameId = $orderData['game_id']; // 模版ID
-            $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 2)->value('id'); // 模版ID
+            $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
             $originalPrice = $orderData['source_price']; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
             $source = $orderData['order_source']; // 代练价格
@@ -481,7 +481,7 @@ class IndexController extends Controller
                 // 删除原订单详情
                 OrderDetail::where('order_no', $orderNo)->delete();
                 // 找到对应的游戏ID模版ID
-                $templateId = GoodsTemplate::where('game_id', $requestData['game_id'])->where('service_id', 2)->value('id');
+                $templateId = GoodsTemplate::where('game_id', $requestData['game_id'])->where('service_id', 4)->value('id');
                 // 按模填入订单详情数据
                 OrderDetailRepository::create($templateId, $orderNo, $requestData);
                 // 本次修改与原单价不同则对进对应的资金操作

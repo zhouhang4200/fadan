@@ -114,6 +114,14 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">是否显示</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
+                                        </div>
+                                    </div>
+
                                     <div class="widget-value">
                                         <div class="layui-form-item layui-form-text">
                                             <label class="layui-form-label">组件可选值（多个值之间用 | 分隔 ）</label>
@@ -335,6 +343,17 @@
             <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1" checked="">
             @{{#  } else { }}
             <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
+            @{{#  } }}
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">是否显示</label>
+        <div class="layui-input-block">
+            @{{#  if(d.display ==  1 ){  }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1" checked="">
+            @{{#  } else { }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
             @{{#  } }}
         </div>
     </div>
