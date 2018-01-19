@@ -179,9 +179,8 @@ class PlatformController extends Controller
                     return response()->ajax(0, $e->getMessage());
                 }
                 break;
-            case 7:
             case 8:
-                // 7和8走奖惩流程
+                // 走奖惩流程
                 try {
                     PunishOrRewardRepository::createOrderAfterService($order->no, $request->amount, $request->remark);
                 }

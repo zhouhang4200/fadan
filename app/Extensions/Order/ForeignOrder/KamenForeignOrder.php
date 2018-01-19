@@ -25,7 +25,7 @@ class KamenForeignOrder extends ForeignOrder
 
         		return $outputData;
         	}
-            
+
         } catch (Exception $e) {
             Log::info('参数格式传入错误!', [ $e->getMessage(), 'data' => $data]);
         }
@@ -131,12 +131,18 @@ class KamenForeignOrder extends ForeignOrder
     		if ($fieldNames->count() > 0) {
 
     			foreach ($fieldNames as $key => $fieldName) {
-
-    				if ($fieldName == 'version') {
-    					$data['version'] = $this->version($model->details->region);
-    				}  else {
-    					$data[$fieldName] = $model->details->$fieldName ?: '';
-    				}
+                    switch ($fieldName) {
+                        case 'version':
+                            $data['version'] = $this->version($model->details->region);
+                            break;
+                        case 'game_gold':
+                        case 'game_gold_unit':
+                            $data[$fieldName] = $goods->$fieldName ?? 0;
+                            break;
+                        default:
+                            $data[$fieldName] = $model->details->$fieldName ?: '';
+                            break;
+                    }
     			}
     			// 如果与数量匹配则将下单数量改为1
     			if ($goods->quantity != 0) {
@@ -178,12 +184,12 @@ class KamenForeignOrder extends ForeignOrder
 			"GSitid" => $decodeArray['GSitid'] ?? '',
 			"BuyerIp" => $decodeArray['BuyerIp'] ?? '',
 			"OrderFrom" => $decodeArray['OrderFrom'] ?? '',
-			"role" => $decodeArray['RoleName'] ?? '',
+			"role" => !isset($decodeArray['JSitid']) ? $decodeArray['ChargeGame']  : $decodeArray['RoleName'] ?? '',
 			"RemainingNumber" => $decodeArray['RemainingNumber'] ?? '',
 			"ContactType" => $decodeArray['ContactType'] ?? '',
 			"ContactQQ" => $decodeArray['ContactQQ'] ?? '',
 			"UseAccount" => $decodeArray['UseAccount'] ?? '',
-			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? '',
+			"foreign_order_no" => $decodeArray['CustomerOrderNo'] ?? $decodeArray['OrderNo'] ,
 			"total_price" => $decodeArray['total_price'] ?? '',
 			"province" => $decodeArray['province'] ?? '',
 			"remark" => $decodeArray['remark'] ?? '',

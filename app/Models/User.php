@@ -49,6 +49,7 @@ class User extends Authenticatable
         'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id',
         'username', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
         'online', 'nickname', 'voucher', 'api_token', 'api_token_expire'
+        'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id', 'api_token'
     ];
 
     protected $dates = ['deleted_at'];
