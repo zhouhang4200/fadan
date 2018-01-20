@@ -206,7 +206,7 @@ class OrderRepository
             return $query->where('created_at', '<=', $endDate." 23:59:59");
         });
         $query->where('status', '!=', 24);
-        $query->where('service_id', 2)->with(['detail', 'levelingConsult']);
+        $query->where('service_id', 4)->with(['detail', 'levelingConsult']);
         $query->orderBy('id', 'desc');
         return $query->paginate($pageSize);
     }

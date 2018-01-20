@@ -2,8 +2,8 @@
 
 return [
     'uid' => 295769, // 平台的91用户id
-    'password' => 'qqq111',
-    'qs_userId' => 8456,
+    'password' => 'qqq111', // 91官方账号的交易密码
+    'qs_userId' => 8456, // 91在千手的用户ID
 	'account' => '558ED3FCAA3E4722A8F8FEFB741AE40D', // 账号
 	'sign' => 'f1ba344cc00d3063ba6a8c14e7d0fc4c', // 签名 md5(13FA3E0C456A4368A66D6D2FEAEBAD93 + EFAE2BC69B8D4E16A3649992F031BDDB)
 	'url' => [
