@@ -17,6 +17,16 @@ class LevelingController
 {	
     protected $sign = 'a46ae5de453bfaadc8548a3e48c151db';
 
+    /**
+     * LevelingController constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        myLog('91request', $request->all());
+    }
+
+
     public function checkSignAndOrderNo($sign, $orderNo)
     {
         if ($sign != $this->sign) {
