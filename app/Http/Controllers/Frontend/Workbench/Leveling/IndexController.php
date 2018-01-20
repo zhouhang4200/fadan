@@ -285,7 +285,6 @@ class IndexController extends Controller
             $detail['profit'] = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
         }
 
-
         $days = $detail['game_leveling_day'] ?? 0;
         $hours = $detail['game_leveling_hour'] ?? 0;
         $detail['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间

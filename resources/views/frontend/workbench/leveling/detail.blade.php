@@ -852,6 +852,24 @@
                     });
                     layer.close(index);
                 });
+            } else if (operation == 'agreeRevoke') {
+                layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
+                    $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                        orderNo:orderNo,
+                        keyWord:operation
+                    }, function (result) {
+                        if (result.status == 1) {
+                            layer.alert(result.message,function () {
+                                window.location.reload()
+                            });
+                        } else {
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
+                        }
+                    });
+                    layer.close(index);
+                });
             } else {
                 $.post("{{ route('frontend.workbench.leveling.status') }}", {
                     orderNo:orderNo,
