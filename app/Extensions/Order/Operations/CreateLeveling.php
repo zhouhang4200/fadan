@@ -117,7 +117,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->source = 1;
         $this->order->goods_id = 0; // 商品ID无
         $this->order->goods_name = ''; // 商品名为下单标题
-        $this->order->service_id = 2;// 服务类型;
+        $this->order->service_id = 4;// 服务类型;
         $this->order->service_name =  '游戏代练'; // 服务名;
         $this->order->game_id = $this->game->id; // 游戏ID
         $this->order->game_name = $this->game->name; // 游戏名

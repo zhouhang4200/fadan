@@ -80,7 +80,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         	throw new Exception('状态错误');
         }
 
-        if ($this->userId != 29) {
+        if ($this->userId != config('show91.qs_userId')) {
             throw new Exception('当前操作人不是该订单操作者本人!');
         }
 
