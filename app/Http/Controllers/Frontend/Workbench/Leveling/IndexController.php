@@ -131,17 +131,11 @@ class IndexController extends Controller
                     }
                     // 支付金额
                     $orderCurrent['payment_amount'] = $amount !=0 ?  $amount:  $orderInfo['amount'];
-                    // 利润
-//                    if (isset($orderCurrent['source_price'])) {
-//                        $orderCurrent['profit'] = (isset($orderCurrent['source_price']) && !empty($orderCurrent['source_price']) ? : 0) -
-//                            (isset($orderCurrent['payment_amount']) && !empty($orderCurrent['payment_amount']) ? $orderCurrent['payment_amount'] : 0) +
-//                            (isset($orderCurrent['get_amount']) && !empty($orderCurrent['get_amount']) ? $orderCurrent['get_amount'] : 0) -
-//                            (isset($orderCurrent['poundage']) && !empty($orderCurrent['poundage']) ? $orderCurrent['poundage'] : 0);
-//                    }
 
                     $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'];
                     $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'];
                     $orderCurrent['poundage'] = (float)$orderCurrent['poundage'];
+                    // 利润
                     $orderCurrent['profit'] = (float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage'];
                 }
 
@@ -267,6 +261,29 @@ class IndexController extends Controller
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
+
+
+        if (!in_array($detail['status'], [19, 20, 21])){
+            $detail['payment_amount'] = '';
+            $detail['get_amount'] = '';
+            $detail['poundage'] = '';
+            $detail['profit'] = '';
+        } else {
+            // 支付金额
+            if ($detail['status'] == 21) {
+                $amount = $detail['leveling_consult']['api_amount'];
+            } else {
+                $amount = $detail['leveling_consult']['amount'];
+            }
+            // 支付金额
+            $detail['payment_amount'] = $amount !=0 ?  $amount:  $detail['amount'];
+
+            $detail['payment_amount'] = (float)$detail['payment_amount'];
+            $detail['get_amount'] = (float)$detail['get_amount'];
+            $detail['poundage'] = (float)$detail['poundage'];
+            // 利润
+            $detail['profit'] = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
+        }
 
 
         $days = $detail['game_leveling_day'] ?? 0;
