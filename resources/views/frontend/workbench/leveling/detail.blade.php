@@ -249,7 +249,7 @@
                             @if ($detail['complain'] == 1 && $detail['status'] == 16)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                             @endif
-
+                        @else
                             @if ($detail['complain'] == 2 && $detail['status'] == 16)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                             @endif

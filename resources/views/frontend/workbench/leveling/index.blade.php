@@ -673,7 +673,7 @@
                         reload();
                         layer.close(index);
                     });
-                } else if (data.value ==  'agreeRevoke') {
+                } else if(data.value ==  'agreeRevoke') {
                     layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -689,8 +689,9 @@
                                     layer.closeAll();
                                 });
                             }
-                            reload();
                         });
+                        reload();
+                        layer.close(index);
                     });
                 }  else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
