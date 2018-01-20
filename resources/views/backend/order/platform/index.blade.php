@@ -148,7 +148,7 @@
                                     <td>{{ $order->price }}</td>
                                     <td>{{ $order->amount }}</td>
                                     <td> {{ $order->creator_primary_user_id }}</td>
-                                    <td>{{ $order->gainerUser->nickname ?? $order->gainer_primary_user_id }}</td>
+                                    <td>{{ $order->gainerPrimaryOrders->nickname ?? $order->gainer_primary_user_id }}</td>
                                     <td>{{ $order->created_at }}</td>
                                     <td>
                                         <div class="layui-input-inline">
