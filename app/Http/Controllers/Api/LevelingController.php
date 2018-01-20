@@ -271,6 +271,7 @@ class LevelingController
 				'complain' => 2,
 				'complain_message' => $content,
 			];
+            myLog('appeal', ['user' => $this->userId, 'message' => $content]);
 
 			LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 			DailianFactory::choose('applyArbitration')->run($order->no, $this->userId, 0);
