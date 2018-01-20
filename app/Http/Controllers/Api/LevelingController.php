@@ -29,7 +29,7 @@ class LevelingController
      */
     public function __construct(Request $request)
     {
-        myLog('91request', $request->all());
+        myLog('91request', [$request->all(), $request->url()]);
     }
 
 
