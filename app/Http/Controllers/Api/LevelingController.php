@@ -17,6 +17,10 @@ class LevelingController
 {	
     protected $sign = 'a46ae5de453bfaadc8548a3e48c151db';
 
+    /**
+     * 91平台在千手的用户ID
+     * @var int
+     */
     protected $userId = 8456;
     
     /**
