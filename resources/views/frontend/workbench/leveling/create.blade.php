@@ -193,9 +193,9 @@
 
         //自定义验证规则
         form.verify({
-            price: function(value){
+            zero: function(value){
                 if(value == 0){
-                    return '代练价格不能为0';
+                    return '该值不能为0';
                 }
             }
         });

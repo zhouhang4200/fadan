@@ -17,7 +17,9 @@ class OrderRepository
      */
     public function dataList($filter, $pageSize = 15)
     {
-        return Order::filter($filter)->orderBy('id', 'desc')->paginate($pageSize);
+        return Order::filter($filter)->orderBy('id', 'desc')
+            ->with(['gainerPrimaryUser'])
+            ->paginate($pageSize);
     }
 
     /**
