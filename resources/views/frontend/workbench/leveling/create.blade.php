@@ -194,8 +194,8 @@
         //自定义验证规则
         form.verify({
             zero: function(value){
-                if(value == 0){
-                    return '该值不能为0';
+                if(value <= 0){
+                    return '该数值需大于0';
                 }
             }
         });

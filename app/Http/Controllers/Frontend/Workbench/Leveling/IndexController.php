@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\ForeignOrder\ForeignOrder;
@@ -205,6 +206,8 @@ class IndexController extends Controller
                 return response()->ajax(0, $exception->getMessage());
             } catch (DailianException $dailianException) {
                 return response()->ajax(0, $dailianException->getMessage());
+            } catch (AssetException $assetException) {
+                return response()->ajax(0, $assetException->getMessage());
             }
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
