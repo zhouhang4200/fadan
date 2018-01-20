@@ -249,7 +249,7 @@
                             @if ($detail['complain'] == 1 && $detail['status'] == 16)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                             @endif
-
+                        @else
                             @if ($detail['complain'] == 2 && $detail['status'] == 16)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                             @endif
@@ -334,7 +334,7 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
-                                                    @elseif(in_array($item->field_name, ['order_source', 'foreign_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
@@ -434,20 +434,24 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">支付金额：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['payment_amount']?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">获得金额：</div>
+                            <div class="layui-col-md8">{{ $detail['get_amount']?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ isset($detail['poundage']) ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['poundage'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
 
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['left_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发布时间：</div>
@@ -459,15 +463,15 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">提验时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['check_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">结算时间：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['checkout_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">{{ $detail['amount']  }}</div>
+                            <div class="layui-col-md8">{{ $detail['cstomer_service_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
@@ -678,7 +682,7 @@
                     <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
                     @{{# } }}
 
-                    @{{# if(item.help_text != null || item.help_text != undefined) {  }}
+                    @{{# if(item.help_text != '无') {  }}
                     <a href="#" class="tooltip">
                         <i class="iconfont icon-wenhao" id="recharge"></i>
                         <span>@{{ item.help_text }}</span>
@@ -741,7 +745,7 @@
             $('#effect').val(orderEffect);
 
             if (operation == 'wangWang') {
-                var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
+                var wangWang = this.getAttribute("data-wang-wang");
                 window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
             }
             if (operation == 'sendSms') {
@@ -832,6 +836,24 @@
                 });
             } else if(operation == 'complete') {
                 layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                    $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                        orderNo:orderNo,
+                        keyWord:operation
+                    }, function (result) {
+                        if (result.status == 1) {
+                            layer.alert(result.message,function () {
+                                window.location.reload()
+                            });
+                        } else {
+                            layer.alert(result.message, function () {
+                                window.location.reload()
+                            });
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (operation == 'agreeRevoke') {
+                layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo,
                         keyWord:operation

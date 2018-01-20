@@ -269,4 +269,16 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetail::class, 'order_no', 'no');
     }
+
+    // 商品详情
+    public function goods()
+    {
+        return $this->belongsTo(Goods::class);
+    }
+
+    // 充值情况
+    public function orderCharge()
+    {
+        return $this->hasOne(OrderCharge::class, 'order_no', 'no');
+    }
 }

@@ -1,8 +1,10 @@
 <?php
 
 return [
-	'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB', // 账号
-	'sign' => '89abb1dfef56cdf21c315b3bc3670c5d', // 签名 md5(13FA3E0C456A4368A66D6D2FEAEBAD93 + EFAE2BC69B8D4E16A3649992F031BDDB)
+    'uid' => 295769, // 平台的91用户id
+    'password' => 'qqq111',
+	'account' => '558ED3FCAA3E4722A8F8FEFB741AE40D', // 账号
+	'sign' => 'f1ba344cc00d3063ba6a8c14e7d0fc4c', // 签名 md5(13FA3E0C456A4368A66D6D2FEAEBAD93 + EFAE2BC69B8D4E16A3649992F031BDDB)
 	'url' => [
 		'getGames' => 'http://www.show91.com/oauth/getGames', // 获得状态正常的游戏
 		'getAreas' => 'http://www.show91.com/oauth/getAreas', // 根据gameid获得游戏区
@@ -32,6 +34,4 @@ return [
 		'grounding' => 'http://www.show91.com/oauth/grounding', // 订单上下架
 		'addLimitTime2' => 'http://www.show91.com/oauth/addLimitTime2', // 增加代练时间，商家用
 	],
-
-	'uid' => 295769, // 平台的91用户id
 ];

@@ -42,6 +42,9 @@ class GoodsTemplateWidget extends Model
         'field_sortord',
         'created_admin_user_id',
         'updated_admin_user_id',
+        'display_form',
+        'help_text',
+        'verify_rule',
     ];
 
     /**

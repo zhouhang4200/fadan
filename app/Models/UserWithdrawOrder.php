@@ -40,7 +40,7 @@ class UserWithdrawOrder extends Model
 
 
     // 提现完成
-    public function complete()
+    public function complete($remark)
     {
         DB::beginTransaction();
 
@@ -53,6 +53,7 @@ class UserWithdrawOrder extends Model
         }
 
         $this->status = 2;
+        $this->admin_remark = $remark;
 
         if (!$this->save()) {
             DB::rollback();

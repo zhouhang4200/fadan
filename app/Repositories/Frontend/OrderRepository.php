@@ -95,7 +95,7 @@ class OrderRepository
 
             }
         }
-
+        $query->where('service_id', '!=', 4);
         return $query->paginate($pageSize);
     }
 

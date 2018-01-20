@@ -377,7 +377,7 @@
     </script>
     <script type="text/html" id="noTemplate">
         千手：@{{ d.no }} @{{# if(d.urgent_order == 1 && d.master) { }}<span style="color:red">急</span> @{{#  } }} <br/>
-        外部： @{{ d.foreign_order_no }}
+        外部： @{{ d.source_order_no }}
     </script>
     <script type="text/html" id="gameTemplate">
         @{{ d.game_name }} <br/>
@@ -468,9 +468,9 @@
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
                     {field: 'security_deposit', title: '安全保证金', width: '80'},
                     {field: 'payment_amount', title: '支付金额', width: '80'},
-                    {field: 'get_amount', title: '获得金额', width: '80',templet: '#getAmountTemplate'},
+                    {field: 'get_amount', title: '获得金额', width: '80'},
                     {field: 'poundage', title: '手续费', width: '80'},
-                    {field: 'poundage', title: '利润', width: '80'},
+                    {field: 'profit', title: '利润', width: '80'},
                     {field: 'leveling_time', title: '代练时间', width: '80'},
                     {field: 'left_time', title: '剩余时间', width: '120'},
                     {field: 'created_at', title: '发单时间', width: '150'},
@@ -531,7 +531,6 @@
                     where: {
                         status: status
                     },
-                    height: 'full-200',
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
                         layui.form.render();
@@ -674,7 +673,27 @@
                         reload();
                         layer.close(index);
                     });
-                } else {
+                } else if(data.value ==  'agreeRevoke') {
+                    layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo:orderNo,
+                            userId:userId,
+                            keyWord:data.value
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message, function () {
+                                    layer.closeAll();
+                                });
+                            } else {
+                                layer.alert(result.message, function () {
+                                    layer.closeAll();
+                                });
+                            }
+                        });
+                        reload();
+                        layer.close(index);
+                    });
+                }  else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo,
                         userId:userId,
@@ -725,9 +744,6 @@
                     layer.closeAll();
                 });
             }
-
-//            getQueryString(window.location, )
-
         });
     </script>
 @endsection

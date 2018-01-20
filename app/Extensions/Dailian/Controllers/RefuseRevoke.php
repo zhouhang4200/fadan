@@ -106,7 +106,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                     $options = [
                         'oid' => $thirdOrderNo,
                         'v' => 2,
-                        'p' => '123456',
+                        'p' => config('show91.password'),
                     ]; 
                     // 结果
                     Show91::confirmSc($options);

@@ -13,6 +13,44 @@
         .layui-tab-content{
             padding: 25px 0;
         }
+        .layui-form-switch i {
+            top: 1px;
+        }
+
+        #goods-template .layui-input-block{
+            margin-left: 50px;
+        }
+        #goods-template .form-group {
+            margin-bottom: 7px;
+            position: relative;
+        }
+
+        #goods-template .layui-form-mid {
+            text-align: right;
+        }
+        #goods-template .site-title {
+            margin: 10px 0 20px;
+        }
+        #goods-template .site-title fieldset {
+            border: none;
+            padding: 0;
+            border-top: 1px solid #eee;
+        }
+        #goods-template .site-title fieldset legend {
+            font-size: 17px;
+            font-weight: 300;
+        }
+        #goods-template .layui-form-checkbox[lay-skin=primary] {
+            height: 6px !important;
+        }
+        #goods-template .layui-layer-btn .layui-layer-btn0,.layui-layer-btn .layui-layer-btn1,.layui-layer-btn .layui-layer-btn2   {
+            border-color: #1E9FFF;
+            background-color: #1E9FFF;
+            color:#ffffff;
+        }
+        #goods-template .layui-layer-dialog .layui-layer-content {
+            text-align: center;
+        }
     </style>
 @endsection
 
@@ -30,11 +68,17 @@
             <div class="main-box">
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
+
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">模版预览</li>
+                            <li class="layui-this" lay-id="add">模版预览 </li>
+
                         </ul>
                         <div class="layui-tab-content">
+                            <div style="margin-bottom: 15px;text-align: right">
+                                <button class="layui-btn layui-btn-normal" id="button-control" data-status="show">隐藏所有操作按钮</button>
+                            </div>
                             <div class="layui-tab-item layui-show">
+
                                 <form class="layui-form layui-form-pane" id="goods-template">
                                 </form>
                             </div>
@@ -54,7 +98,7 @@
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
-                                <form class="layui-form layui-form-pane"   name="create-form">
+                                <form class="layui-form  layui-form-pane"   name="create-form">
                                     <input type="hidden" name="goods_template_id" value="{{ Route::input('templateId')}}">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件类型</label>
@@ -89,7 +133,7 @@
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">提示信息</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="">
+                                            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="" value="无">
                                         </div>
                                     </div>
 
@@ -103,7 +147,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件默认值</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input">
+                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="无">
                                         </div>
                                     </div>
 
@@ -111,6 +155,14 @@
                                         <label class="layui-form-label">是否必填</label>
                                         <div class="layui-input-block">
                                             <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">是否显示</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
                                         </div>
                                     </div>
 
@@ -131,6 +183,10 @@
                                 </form>
                             </div>
                             <div class="layui-tab-item">
+                                <div id="nestable-menu" class="layui-hide">
+                                    <button type="button" class="btn btn-primary expand-all">展开所有</button>
+                                    <button type="button" class="btn btn-danger collapse-all">折叠所有</button>
+                                </div>
                                 <form class="layui-form layui-form-pane" action=""   name="edit-option-form"  id="nestable">
 
                                 </form>
@@ -160,6 +216,89 @@
 
 @section('js')
 <script src="/backend/js/jquery.nestable.js"></script>
+<!--预览组件新 模版-->
+<script id="goodsTemplateNew" type="text/html">
+
+    <div class="layui-row form-group">
+        @{{# var row = 0;}}
+        @{{#  layui.each(d.template, function(index, item){ }}
+
+        @{{#  if(row == 0) { row = item.display_form;  }  }}
+
+        <div class="layui-col-md6">
+            <div class="layui-col-md3 layui-form-mid">
+                @{{# if (item.field_required == 1) {  }}<span style="color: orangered;">*</span>@{{# }  }} @{{ item.field_display_name  }}
+            </div>
+            <div class="layui-col-md8">
+
+                @{{# if(item.field_type == 1) {  }}
+                <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input"  display-name="@{{item.field_display_name}}">
+
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+
+                @{{# } }}
+
+                @{{# if(item.field_type == 2) {  }}
+                <select name="@{{ item.field_name }}"  lay-search=""  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
+                    <option value=""></option>
+                        @{{#  if(item.values.length > 0){ }}
+                            @{{#  layui.each(item.values, function(i, v){ }}
+                            <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
+                            @{{#  }); }}
+                        @{{#  }  }}
+                </select>
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="edit-widget-option"><i class="layui-icon">&#xe654;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.field_type == 3) {  }}
+                @{{# } }}
+
+                @{{# if(item.field_type == 4) {  }}
+                <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"   display-name="@{{item.field_display_name}}"></textarea>
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.field_type == 5) {  }}
+                <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  display-name="@{{item.field_display_name}}">
+                <br>
+                <div class="layui-btn-group" style="margin-top: 10px">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.help_text != '无') {  }}
+                <a href="#" class="tooltip">
+                    <i class="iconfont icon-wenhao" id="recharge"></i>
+                    <span>@{{ item.help_text }}</span>
+                </a>
+                @{{# }  }}
+
+            </div>
+
+        </div>
+
+        @{{#  row--; }}
+
+        @{{# if(row == 0) { }}
+    </div>
+    <div class="layui-row form-group">
+        @{{# }  }}
+
+        @{{# })  }}
+    </div>
+
+</script>
 <!--预览组件 模版-->
 <script id="goodsTemplate" type="text/html">
     @{{#  layui.each(d, function(index, item){ }}
@@ -339,6 +478,17 @@
         </div>
     </div>
 
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">是否显示</label>
+        <div class="layui-input-block">
+            @{{#  if(d.display ==  1 ){  }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1" checked="">
+            @{{#  } else { }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
+            @{{#  } }}
+        </div>
+    </div>
+
     {{--<div class="widget-value">--}}
         {{--@{{# if(d.value_group.length >  1){ }}--}}
             {{--@{{#  layui.each(d.value_group, function(i, v){ }}--}}
@@ -378,7 +528,7 @@
 
         @{{#  layui.each(d.options, function(i, v){ }}
 
-            <li class="dd-item">
+            <li class="dd-item" data-id="@{{ i }}">
                 <div class="dd-handle">
                     @{{ v.field_value }}
                     <div class="nested-links">
@@ -421,7 +571,6 @@
         @{{# })  }}
     </ol>
 </script>
-
 <!--父级组件 模版-->
 <script id="parentWidgetTemplate" type="text/html">
     <div class="layui-form-item">
@@ -468,12 +617,11 @@
         //自定义验证规则
         form.verify({
             field_value: function(value){
-                if(currentWidgetType > 1 && value.length == 0){
+                if(currentWidgetType == 2 && value.length == 0){
                     return '这种展示方式必须填入可选值呢！';
                 }
             }
         });
-
         // 监听 选择组件类型
         form.on('select(widget-type)', function(data){
            currentWidgetType = $(data.elem).find("option:selected").attr("data-type");
@@ -496,7 +644,6 @@
                 $('.show-select-widget').html('');
             }
         });
-
         // 添加表单组件
         form.on('submit(add-widget)', function(data){
 
@@ -523,6 +670,7 @@
                     layui.form.render()
                 });
             }, 'json');
+            reloadTemplate();
             return false;
         });
         // 编辑组件选项
@@ -539,11 +687,9 @@
                     layui.form.render()
                 });
             }, 'json');
-
-
+            reloadTemplate();
             return false;
         });
-
         // 删除组件按钮
         form.on('submit(destroy-widget)', function(data){
             layer.confirm('您确认要删除该组件吗？', function (index) {
@@ -556,9 +702,9 @@
                 }, 'json');
                 layer.close(index);
             });
+            reloadTemplate();
             return false;
         });
-
         // 保存组件编缉
         form.on('submit(edit-save)', function(data){
             $.post('{{ route('goods.template.widget.edit') }}', {id:data.field.id, data:data.field}, function (result) {
@@ -568,14 +714,12 @@
             }, 'json');
             return false;
         });
-
         // 当切换到添加时清空编辑表单
         element.on('tab(widgetTab)', function(data){
             if (data.index == 0) {
                 $('form[name=edit-form]').empty();
             }
         });
-
         // 如选择父级组件时则加载出他应对应有项的值输入框
         form.on('select(parent-widget)', function(data) {
             // 获取当前form id
@@ -589,12 +733,12 @@
                 });
             }, 'json');
         });
-
         // 模版预览 下拉框值
         form.on('select(change-select)', function(data){
             var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+            var choseId = $(data.elem).find("option:selected").attr("data-id");
             if($(subordinate).length > 0){
-                $.post('{{ route('goods.template.widget.show-select-child') }}', {parent_id:data.value}, function (result) {
+                $.post('{{ route('goods.template.widget.show-select-child') }}', {parent_id:choseId}, function (result) {
                     $(subordinate).html(result);
                     $(result).each(function (index, value) {
                         $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
@@ -604,21 +748,19 @@
             }
             return false;
         });
-
         // 保存添加选项
         form.on('submit(add-option)', function (data) {
             $.post('{{ route('goods.template.widget.add-option') }}', {id:data.field.id, parent_id:data.field.parent_id, value:data.field.value}, function (result) {
                 layer.msg(result.message);
                 layer.closeAll();
             }, 'json');
+            reloadTemplate();
             return false;
         });
-
         // 编缉选项
         form.on('submit(edit-option)', function (data) {
 
         });
-
         // 添加选项弹窗
         $('#nestable').on('click', '.add-option', function () {
             $('#add-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
@@ -630,9 +772,9 @@
                 area: ['500px', '300px'],
                 content: $('#add-option')
             });
+            reloadTemplate()
             return false;
         });
-
         // 编辑选项
         $('#nestable').on('click', '.edit-option', function () {
             $('#edit-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
@@ -645,7 +787,6 @@
             });
             return false;
         });
-
         // 删除选项
         $('#nestable').on('click', '.del-option', function () {
             var id = $(this).attr("data-id");
@@ -657,12 +798,19 @@
             });
             return false;
         });
-
         //重新加载模版
         function reloadTemplate() {
-            var getTpl = goodsTemplate.innerHTML, view = document.getElementById('goods-template');
-            $.get('{{ route('goods.template.widget.show.all', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {
-                layTpl(getTpl).render(result, function(html){
+            {{--var getTpl = goodsTemplate.innerHTML, view = document.getElementById('goods-template');--}}
+            {{--$.get('{{ route('goods.template.widget.show.all', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {--}}
+                {{--layTpl(getTpl).render(result, function(html){--}}
+                    {{--view.innerHTML = html;--}}
+                    {{--layui.form.render()--}}
+                {{--});--}}
+            {{--}, 'json');--}}
+            var getTpl = goodsTemplateNew.innerHTML, view = document.getElementById('goods-template');
+            $.get('{{ route('goods.template.widget.preview-template', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {
+                console.log(result.content.template.lenght);
+                layTpl(getTpl).render(result.content, function(html){
                     view.innerHTML = html;
                     layui.form.render()
                 });
@@ -670,15 +818,25 @@
         }
     });
 
-    $('#nestable-menu').on('click', function (e) {
-        var target = $(e.target),
-                action = target.data('action');
-        if (action === 'expand-all') {
-            $('.dd').nestable('expandAll');
+    $('#button-control').on('click', function (e) {
+        if ($(this).attr('data-status') == 'show') {
+            $('.layui-btn-group').addClass('layui-hide');
+            $(this).html('显示所有操作按钮');
+            $(this).attr('data-status', 'hide')
+        } else {
+            $('.layui-btn-group').removeClass('layui-hide');
+            $(this).html('隐藏所有操作按钮');
+            $(this).attr('data-status', 'show');
         }
-        if (action === 'collapse-all') {
-            $('.dd').nestable('collapseAll');
-        }
+        return  false;
+    });
+
+    $('#nestable-menu').on('click', '.expand-all', function(e){
+        $('.dd').nestable('expandAll');
+    });
+
+    $('#nestable-menu').on('click', '.collapse-all', function(e){
+        $('.dd').nestable('collapseAll');
     });
 
 </script>

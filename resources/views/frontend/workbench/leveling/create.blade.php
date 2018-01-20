@@ -138,16 +138,16 @@
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
-                        <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}">
+                        <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}"  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
                                 <option value=""></option>
                                 @{{#  if(item.user_values.length > 0){ }}
                                     @{{#  layui.each(item.user_values, function(i, v){ }}
-                                    <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                                    <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
                                     @{{#  }); }}
                                 @{{#  } else { }}
                                     @{{#  if(item.values.length > 0){ }}
                                         @{{#  layui.each(item.values, function(i, v){ }}
-                                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                                        <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
                                         @{{#  }); }}
                                     @{{#  }  }}
                                 @{{#  }  }}
@@ -165,7 +165,7 @@
                     <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}"  display-name="@{{item.field_display_name}}">
                     @{{# } }}
 
-                    @{{# if(item.help_text != null || item.help_text != undefined) {  }}
+                    @{{# if(item.help_text != '无') {  }}
                         <a href="#" class="tooltip">
                             <i class="iconfont icon-wenhao" id="recharge"></i>
                             <span>@{{ item.help_text }}</span>
@@ -193,9 +193,9 @@
 
         //自定义验证规则
         form.verify({
-            price: function(value){
+            zero: function(value){
                 if(value == 0){
-                    return '代练价格不能为0';
+                    return '该值不能为0';
                 }
             }
         });
@@ -241,6 +241,22 @@
         // 切换游戏时加截新的模版
         form.on('select(game)', function (data) {
             loadTemplate(data.value)
+        });
+
+        // 模版预览 下拉框值
+        form.on('select(change-select)', function(data){
+            var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+            var choseId = $(data.elem).find("option:selected").attr("data-id");
+            if($(subordinate).length > 0){
+                $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
+                    $(subordinate).html(result);
+                    $(result).each(function (index, value) {
+                        $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
+                    });
+                    layui.form.render();
+                }, 'json');
+            }
+            return false;
         });
         // 加载默认模板
         loadTemplate(1);

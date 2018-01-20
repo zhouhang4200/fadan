@@ -96,7 +96,7 @@ $('#date-start').datepicker();
 $('#date-end').datepicker();
 
 $('#export-flow').click(function () {
-    var url = "{{ route('finance.platform-asset-daily.export') }}?" + $('#search-flow').serialize();
+    var url = "{{ route('finance.user-asset-daily') }}?export=1" + $('#search-flow').serialize();
     window.location.href = url;
 });
 </script>

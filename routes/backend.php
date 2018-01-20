@@ -96,9 +96,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
                 Route::post('add-option', 'TemplateWidgetController@addOption')->name('goods.template.widget.add-option');
                 // 删除组件选项
                 Route::post('del-option', 'TemplateWidgetController@delOption')->name('goods.template.widget.del-option');
-
-
-
+                // 预览 模版
+                Route::get('preview-template/{templateId}', 'TemplateWidgetController@previewTemplate')->name('goods.template.widget.preview-template');
                 // 组件配置
 //                Route::get('config', 'NewTemplateWidgetController@config')->name('goods.template.widget.config');
             });
@@ -324,11 +323,20 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('execute/forbidden', 'ExecuteController@forbidden')->name('execute.forbidden')->middleware('permission:execute.forbidden');
         // 后台详情里面的操作
         Route::post('execute/pass', 'ExecuteController@pass')->name('execute.pass')->middleware('permission:execute.pass');
-        Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');  
+        Route::post('execute/refuse', 'ExecuteController@refuse')->name('execute.refuse')->middleware('permission:execute.refuse');
     });
 
     // 违规管理
     Route::namespace('Data')->prefix('datas')->group(function () {
-        Route::get('index', 'DayDataController@index')->name('datas.index')->middleware('permission:datas.index');  
+        Route::get('index', 'DayDataController@index')->name('datas.index')->middleware('permission:datas.index');
+    });
+
+    // App管理
+    Route::namespace('App')->prefix('app')->group(function () {
+        Route::get('version', 'VersionController@index')->name('app.version.index')->middleware('permission:app.version.index');
+        Route::post('version/store', 'VersionController@store')->name('app.version.store')->middleware('permission:app.version.store');
+
+        Route::get('order-charge', 'OrderChargeController@index')->name('app.order-charge.index')->middleware('permission:app.order-charge.index');
+        Route::get('order-charge/{id}', 'OrderChargeController@detail')->name('app.order-charge.detail')->middleware('permission:app.order-charge.detail');
     });
 });

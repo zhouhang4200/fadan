@@ -49,16 +49,11 @@ class GoodsTemplateWidgetRepository
         return GoodsTemplateWidget::select('id', 'field_type', 'field_display_name', 'field_parent_id', 'field_name',
             'display_form', 'field_required', 'help_text', 'verify_rule', 'display')
             ->where('goods_template_id', $templateId)
-            ->where('display', 1)
             ->orderBy('field_sortord')
             ->with([
                 'values' => function($query){
-                    $query->select('goods_template_widget_id', 'field_value')
+                    $query->select('goods_template_widget_id', 'field_value', 'id')
                         ->where('user_id', 0);
-                },
-                'userValues' => function($query) {
-                    $query->select('goods_template_widget_id', 'field_value')
-                        ->where('user_id', Auth::user()->getPrimaryUserId());
                 }
             ])
             ->get();

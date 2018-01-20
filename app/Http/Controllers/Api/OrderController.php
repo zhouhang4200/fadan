@@ -63,7 +63,8 @@ class OrderController extends Controller
                     waitReceivingAdd(Order::get()->no,
                         Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
                         Order::get()->created_at->toDateTimeString(),
-                        $wangWang
+                        $wangWang,
+                        Order::get()->creator_primary_user_id
                     );
                     // 更新订单状态
                     return 'success';

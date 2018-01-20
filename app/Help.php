@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Redis;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
 
+if (!function_exists('myLog')) {
+    /**
+     * 自定义日志写入
+     * @param $fileName
+     * @param array $data
+     */
+    function myLog($fileName, $data = [])
+    {
+        $log = new \Monolog\Logger($fileName);
+        $log->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '/logs/' . $fileName . '-' . date('Y-m-d') .'.log'));
+        $log->addInfo($fileName, $data);
+    }
+}
+
 if (!function_exists('loginDetail')) {
 
     /**
@@ -180,9 +194,10 @@ if (!function_exists('waitReceivingAdd')) {
      * @param string $receivingDate 可接单时间
      * @param string $createdDate 订单创建时间
      * @param string $wangWang 关联的旺旺
+     * @param integer $sendUser 发单用户ID
      * @return mixed
      */
-    function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '')
+    function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '', $sendUser = 0)
     {
         $redis = RedisConnect::order();
 
@@ -190,6 +205,7 @@ if (!function_exists('waitReceivingAdd')) {
             'receiving_date' => $receivingDate,
             'created_date' => $createdDate,
             'wang_wang' => $wangWang,
+            'creator_primary_user_id' => $sendUser,
         ]));
     }
 }

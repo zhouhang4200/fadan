@@ -7,6 +7,7 @@ use App\Models\GoodsTemplateWidgetValue;
 use App\Models\WidgetType;
 use App\Repositories\Backend\GoodsTemplateWidgetRepository;
 use App\Repositories\Backend\GoodsTemplateWidgetValueRepository;
+use App\Repositories\Frontend\OrderDetailRepository;
 use Auth, Config, \Exception, DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -79,6 +80,7 @@ class TemplateWidgetController extends Controller
         $data['field_name'] = $tpeAndName[0];
         $data['field_type'] = $tpeAndName[1];
         $data['created_admin_user_id'] = Auth::user()->id;
+        $data['display'] = !isset($data['display']) ? 2 : 1;
 
         try {
             DB::beginTransaction();
@@ -157,6 +159,7 @@ class TemplateWidgetController extends Controller
     {
         $data = $request->data;
         $data['field_required'] = !isset($data['field_required']) ? 2 : 1;
+        $data['display'] = !isset($data['display']) ? 2 : 1;
 
         try {
             GoodsTemplateWidget::where('id', $data['id'])->update($data);
@@ -322,7 +325,7 @@ class TemplateWidgetController extends Controller
      */
     public function addOption(Request $request)
     {
-        $value = GoodsTemplateWidgetValue::where('goods_template_widget_id', $request->id)->first();
+        $value = GoodsTemplateWidget::where('id', $request->id)->first();
 
         $newValue = explode('|', $request->value);
 
@@ -449,5 +452,18 @@ class TemplateWidgetController extends Controller
             return jsonMessages(0, '添加失败');
         }
         return jsonMessages(1, '添加成功');
+    }
+
+    /**
+     * 预览 模版
+     * @param integer $templateId
+     * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
+     * @return mixed
+     */
+    public function previewTemplate($templateId, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    {
+        // 获取对应的模版组件
+        $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+        return response()->ajax(1, 'success', ['template' => $template->toArray()]);
     }
 }

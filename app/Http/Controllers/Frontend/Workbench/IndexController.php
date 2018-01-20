@@ -102,7 +102,9 @@ class IndexController extends Controller
                     // 写入待分配订单hash
                     waitReceivingAdd(Order::get()->no,
                         Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
-                        Order::get()->created_at->toDateTimeString()
+                        Order::get()->created_at->toDateTimeString(),
+                        '',
+                        Order::get()->creator_primary_user_id
                     );
                     // 待接单数量
                     event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));

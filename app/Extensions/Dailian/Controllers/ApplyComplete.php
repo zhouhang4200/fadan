@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Redis;
 use Carbon\Carbon;
@@ -52,6 +53,8 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
 
             $this->after();
 
+            // 写入提验时间
+            OrderDetailRepository::updateByOrderNo($this->orderNo, 'check_time', date('Y-m-d H:i:s'));
     	} catch (Exception $e) {
     		DB::rollBack();
             throw new Exception($e->getMessage());
