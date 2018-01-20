@@ -314,11 +314,11 @@ class IndexController extends Controller
             }
 
             if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
-                $text .= '你支付代练费' . $detail['leveling_consult']['api_service'] . '元';
-                $text .= '对方支付保证金' . $detail['leveling_consult']['api_deposit'] . '元' . '原因：' . $detail['leveling_consult']['revoke_message'];
+                $text .= '你支付代练费' . $detail['leveling_consult']['amount'] . '元';
+                $text .= '对方支付保证金' . $detail['leveling_consult']['deposit'] . '元' . '原因：' . $detail['leveling_consult']['revoke_message'];
             } else {
-                $text .= '对方支付代练费' . $detail['leveling_consult']['api_service'] . '元';
-                $text .= '你支付保证金' . $detail['leveling_consult']['api_deposit'] . '元' . '原因：' . $detail['leveling_consult']['revoke_message'];
+                $text .= '对方支付代练费' . $detail['leveling_consult']['amount'] . '元';
+                $text .= '你支付保证金' . $detail['leveling_consult']['deposit'] . '元' . '原因：' . $detail['leveling_consult']['revoke_message'];
             }
             $detail['consult_desc'] = $text;
         }
@@ -339,10 +339,10 @@ class IndexController extends Controller
 
             $text = '客服进行了仲裁';
             if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
-                $text .= '你支付代练费' .  $detail['leveling_consult']['api_service'] . '元';
+                $text .= '你支付代练费' .  $detail['leveling_consult']['api_amount'] . '元';
                 $text .= '对方支付保证金' . $detail['leveling_consult']['api_deposit'] . '元';
             } else {
-                $text .= '对方支付代练费' . $detail['leveling_consult']['api_service'] . '元';
+                $text .= '对方支付代练费' . $detail['leveling_consult']['api_amount'] . '元';
                 $text .= '你支付保证金' . $detail['leveling_consult']['api_deposit'] . '元';
             }
 
