@@ -57,6 +57,10 @@
         tr > .laytable-cell-2-label {
             padding: 0 !important;
         }
+        .layui-table-view .layui-table[lay-size=sm] .layui-table-cell {
+            height: 40px;
+            line-height: 20px;
+        }
     </style>
 @endsection
 
