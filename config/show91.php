@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'uid' => 295769, // 平台的91用户id
+    'uid' => 314027, // 平台的91用户id
     'password' => 'qqq111', // 91官方账号的交易密码
     'qs_userId' => 8456, // 91在千手的用户ID
 	'account' => '558ED3FCAA3E4722A8F8FEFB741AE40D', // 账号
