@@ -391,7 +391,7 @@ class Show91
     {
     	$options = [
             'oid' => $order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-            'appwd' => '123456',
+            'appwd' => config('show91.password'),
             'cash' => $order->addAmount,
         ];
         $res = static::normalRequest(config('show91.url.addPrice'), $options);

@@ -368,7 +368,7 @@ class Revoked extends DailianAbstract implements DailianInterface
                     $options = [
                         'oid' => $thirdOrderNo, 
                         'v' => 1,
-                        'p' => '123456',
+                        'p' => config('show91.password'),
                     ];
                     // 结果
                     Show91::confirmSc($options);

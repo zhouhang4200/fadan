@@ -2,6 +2,7 @@
 
 return [
     'uid' => 295769, // 平台的91用户id
+    'password' => 'qqq111',
 	'account' => '558ED3FCAA3E4722A8F8FEFB741AE40D', // 账号
 	'sign' => 'f1ba344cc00d3063ba6a8c14e7d0fc4c', // 签名 md5(13FA3E0C456A4368A66D6D2FEAEBAD93 + EFAE2BC69B8D4E16A3649992F031BDDB)
 	'url' => [
