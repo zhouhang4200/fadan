@@ -699,7 +699,7 @@ class IndexController extends Controller
                 // 其它信息只需改订单详情表
                 foreach ($requestData as $key => $value) {
                     if (isset($orderDetail[$key])) {
-                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'foreign_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'cstomer_service_remark'])) {
+                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'cstomer_service_remark'])) {
                             // 更新值
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value

@@ -673,8 +673,8 @@
                             } else {
                                 layer.alert(result.message);
                             }
+                            reload();
                         });
-                        reload();
                         layer.close(index);
                     });
                 } else if(data.value ==  'agreeRevoke') {
