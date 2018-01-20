@@ -116,7 +116,7 @@ class Complete extends DailianAbstract implements DailianInterface
     }
 
     /**
-     * 订单验收结算
+     * 订单验收结算 
      * @return [type] [description]
      */
     public function after()

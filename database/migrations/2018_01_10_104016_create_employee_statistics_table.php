@@ -20,7 +20,7 @@ class CreateEmployeeStatisticsTable extends Migration
             $table->string('name')->comment('账号');
             $table->string('user_name')->nullable()->default('')->comment('账号昵称');
             $table->integer('complete_order_count')->default(0)->unsigned()->comment('已结算单数');
-            $table->decimal('send_order_amount', 10, 4)->default(0)->comment('已结算发单金额');
+            $table->decimal('complete_order_amount', 10, 4)->default(0)->comment('已结算发单金额');
             $table->integer('revoke_order_count')->default(0)->unsigned()->comment('已撤销单数');
             $table->integer('arbitrate_order_count')->unsigned()->default(0)->comment('已仲裁单数');
             $table->decimal('profit', 10, 4)->default(0)->comment('利润');

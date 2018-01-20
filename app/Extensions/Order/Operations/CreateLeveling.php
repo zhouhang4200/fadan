@@ -246,7 +246,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
                 $result = Show91::addOrder($this->order);
 
-                $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'); // 第三方订单号
+                $thirdOrderNo = $result['data']; // 第三方订单号
                 //将第三方订单号更新到order_detail中
                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
                     'field_value' => $thirdOrderNo,

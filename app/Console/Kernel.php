@@ -26,7 +26,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\WriteDataEveryDay',
         'App\Console\Commands\EmployeeStatistic',
         'App\Console\Commands\OrderStatistic',
-        'App\Console\Commands\changeCompleteOrderStatus',
+        'App\Console\Commands\ChangeCompleteOrderStatus',
+        'App\Console\Commands\PlatformOrderStatistic',
     ];
 
     /**
@@ -48,6 +49,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('employee:statistic')->daily();
         $schedule->command('order:statistic')->daily();
         $schedule->command('change:status')->everyMinute();
+        $schedule->command('order:statistic')->daily('platformOrder:statistic');
     }
 
     /**

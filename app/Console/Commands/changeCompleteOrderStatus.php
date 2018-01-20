@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
-class changeCompleteOrderStatus extends Command
+class ChangeCompleteOrderStatus extends Command
 {
     /**
      * The name and signature of the console command.
