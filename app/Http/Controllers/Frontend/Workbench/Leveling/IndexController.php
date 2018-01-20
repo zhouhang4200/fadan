@@ -132,17 +132,17 @@ class IndexController extends Controller
                     // 支付金额
                     $orderCurrent['payment_amount'] = $amount !=0 ?  $amount:  $orderInfo['amount'];
                     // 利润
-                    if (isset($orderCurrent['source_price'])) {
-                        $orderCurrent['profit'] = (isset($orderCurrent['source_price']) && !empty($orderCurrent['source_price']) ? : 0) -
-                            (isset($orderCurrent['payment_amount']) && !empty($orderCurrent['payment_amount']) ? $orderCurrent['payment_amount'] : 0) +
-                            (isset($orderCurrent['get_amount']) && !empty($orderCurrent['get_amount']) ? $orderCurrent['get_amount'] : 0) -
-                            (isset($orderCurrent['poundage']) && !empty($orderCurrent['poundage']) ? $orderCurrent['poundage'] : 0);
-                    }
+//                    if (isset($orderCurrent['source_price'])) {
+//                        $orderCurrent['profit'] = (isset($orderCurrent['source_price']) && !empty($orderCurrent['source_price']) ? : 0) -
+//                            (isset($orderCurrent['payment_amount']) && !empty($orderCurrent['payment_amount']) ? $orderCurrent['payment_amount'] : 0) +
+//                            (isset($orderCurrent['get_amount']) && !empty($orderCurrent['get_amount']) ? $orderCurrent['get_amount'] : 0) -
+//                            (isset($orderCurrent['poundage']) && !empty($orderCurrent['poundage']) ? $orderCurrent['poundage'] : 0);
+//                    }
 
                     $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'];
                     $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'];
                     $orderCurrent['poundage'] = (float)$orderCurrent['poundage'];
-                    $orderCurrent['profit'] = (float)$orderCurrent['profit'];
+                    $orderCurrent['profit'] = (float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage'];
                 }
 
                 $days = $orderCurrent['game_leveling_day'] ?? 0;
