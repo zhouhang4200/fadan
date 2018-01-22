@@ -10,7 +10,7 @@
     <tbody>
     @forelse($dataList as $key => $data)
         <tr>
-            <td>{{ $data->user->username ?? '' }}</td>
+            <td>{{ $data->user_id == 0 ? '系统' : $data->user->username ?? '' }}</td>
             <td>{{ $data->name }}</td>
             <td>{{ $data->description }}</td>
             <td>{{ $data->created_at }}</td>
