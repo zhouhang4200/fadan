@@ -925,7 +925,7 @@ class IndexController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         $orders = \App\Models\ForeignOrder::filter(compact('no', 'wangWang', 'startDate', 'endDate'))
-            ->where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
+            ->where('user_id', Auth::user()->getPrimaryUserId())
             ->where('status', 1)
             ->paginate(30);
 
