@@ -48,6 +48,10 @@ class ChangeStatus
                 return true;
             break;
         }
+
+        if (! $third) {
+            $this->requestShow91Interface($order, $name, $bool);
+        }
     }
 
     public function requestShow91Interface($order, $name, $bool)
