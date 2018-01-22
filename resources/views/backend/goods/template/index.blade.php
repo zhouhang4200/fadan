@@ -64,6 +64,7 @@
                                         @endif
                                         <button data-route="{{ route('goods.template.show', ['id' => $item->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="edit">编缉</button>
                                         <a href="{{ route('goods.template.config', ['id' => $item->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini">配置</a>
+                                        <button data-id="{{ $item->id }}" class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="copy">复制</button>
                                     </td>
                                 </tr>
                             @empty
@@ -198,6 +199,16 @@
                     layer.msg(result.message);
                 }, 'json');
                 reload();
+                return false;
+            });
+            // 复制模模
+            form.on('submit(copy)', function (data) {
+                layer.confirm('你确定要复制这个模版吗？', function (index) {
+                    $.post('{{ route('goods.template.copy-template') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+
+                    }, 'json');
+                });
+                layer.cloak(index);
                 return false;
             });
 

@@ -228,12 +228,14 @@
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                             @elseif ($detail['consult'] == 2 && ($detail['status'] == 15 || $detail['status'] == 16))
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                             @endif
                         @else
                             @if ($detail['consult'] == 2 && $detail['status'] == 15)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                             @elseif ($detail['consult'] == 1 && ($detail['status'] == 15 || $detail['status'] == 16))
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                             @endif
                         @endif
 
@@ -241,7 +243,7 @@
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤销</button>
                         @endif
 
-                        @if ($detail['status'] == 15)
+                        @if (in_array($detail['status'], [13,14,15]))
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请仲裁</button>
                         @endif
 

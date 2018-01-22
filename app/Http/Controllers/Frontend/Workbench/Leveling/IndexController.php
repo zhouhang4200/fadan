@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\ForeignOrder\ForeignOrder;
@@ -205,6 +206,8 @@ class IndexController extends Controller
                 return response()->ajax(0, $exception->getMessage());
             } catch (DailianException $dailianException) {
                 return response()->ajax(0, $dailianException->getMessage());
+            } catch (AssetException $assetException) {
+                return response()->ajax(0, $assetException->getMessage());
             }
         } catch (CustomException $customException) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
@@ -699,7 +702,7 @@ class IndexController extends Controller
                 // 其它信息只需改订单详情表
                 foreach ($requestData as $key => $value) {
                     if (isset($orderDetail[$key])) {
-                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'foreign_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'cstomer_service_remark'])) {
+                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'cstomer_service_remark'])) {
                             // 更新值
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value

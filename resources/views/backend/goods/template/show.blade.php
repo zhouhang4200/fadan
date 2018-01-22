@@ -152,12 +152,18 @@
                                     </div>
 
                                     <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">验证规则</label>
+                                        <div class="layui-input-block">
+                                            <input type="text"  name="verify_rule" class="layui-input"  title="" value="">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">是否必填</label>
                                         <div class="layui-input-block">
                                             <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
                                         </div>
                                     </div>
-
 
                                     <div class="layui-form-item" pane="">
                                         <label class="layui-form-label">是否显示</label>
@@ -464,6 +470,13 @@
         <label class="layui-form-label">组件默认值</label>
         <div class="layui-input-block">
             <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="@{{ d.field_default_value }}">
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">验证规则</label>
+        <div class="layui-input-block">
+            <input type="text"  name="verify_rule" class="layui-input"  title="" value="@{{ d.verify_rule }}">
         </div>
     </div>
 
