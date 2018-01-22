@@ -155,10 +155,7 @@ class Show91
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             $options['order.order_id'] = $order->detail()->where('field_name', 'third_order_no')->value('field_value');
-            mylog('options', $options);
         }
-
-        mylog('options', $options);
 
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
 
