@@ -138,20 +138,23 @@ class PlatformOrderStatistic extends Command
         ");
 
         if ($playformOrders) {         
-            $playformOrders = array_map(function ($userData) {
-                return (array) $userData;
+            $playformOrders = array_map(function ($data) {
+                return (array) $data;
             }, $playformOrders);
 
-            $userDataCheck = $playformOrders[0];
+            $dataCheck = $playformOrders[0];
 
-            if ($userDataCheck) {
-                $date = $userDataCheck['date'];
-                $has = PlatformOrderStatisticModel::where('date', $date)->first();
-
-                if ($has) {
-                    throw new Exception('数据已存在!');
-                }
+            if (! $dataCheck) {
+                throw new Exception('不存在数据');
             }
+
+            $date = $dataCheck['date'];
+            $has = PlatformOrderStatisticModel::where('date', $date)->first();
+
+            if ($has) {
+                throw new Exception('数据已存在!');
+            }
+
             PlatformOrderStatisticModel::insert($playformOrders);
 
             echo '写入成功！';

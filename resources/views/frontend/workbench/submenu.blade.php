@@ -7,7 +7,7 @@
 		{{--<a href="{{ route('frontend.workbench.index') }}">代充发布</a>--}}
 		{{--<div class="arrow"></div>--}}
 	{{--</li>--}}
-	@can('frontend.frontend.workbench.leveling.index')
+	@can('frontend.workbench.leveling.index')
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.index' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
 		<div class="arrow"></div>
