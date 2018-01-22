@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use DB;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use DebugBar\DebugBarException;
 use Illuminate\Http\Request;
 use App\Models\OrderNotice;
 use App\Services\Show91;
@@ -268,7 +267,7 @@ class LevelingController
             DB::beginTransaction();
             try {
                 myLog('exception-appeal', ['进入']);
-                $content = $request->content ?? '无';
+                $content = $request->input('content', '无');
 
                 $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -450,7 +449,7 @@ class LevelingController
             OrderNotice::updateOrCreate(['order_no' => $order->no], $data);
         } catch (OrderNoticeException $e) {
             DB::rollback();
-            \Log::info($e->getMessage());
+            myLog('order-notice-e', [$e->getMessage()]);
         }
         DB::commit();
         return true;

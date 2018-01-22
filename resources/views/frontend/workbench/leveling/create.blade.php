@@ -215,6 +215,12 @@
         });
         // 下单
         form.on('submit(order)', function (data) {
+
+            if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
+                layer.msg('代练时间不能都为0');
+                return false;
+            }
+
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
 
                 if (result.status == 1) {

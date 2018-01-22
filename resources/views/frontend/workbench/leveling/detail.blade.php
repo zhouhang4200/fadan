@@ -345,19 +345,19 @@
                                                 @endif
 
                                                 @if($item->field_type == 2 && in_array($detail['status'], [1, 23]) || $item->field_name == 'label')
-                                                    <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif">
+                                                    <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
                                                         @if(count($item->user_values) > 0)
 
                                                             @foreach($item->user_values as $v)
-                                                                <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
 
                                                         @else
 
                                                             @if(count($item->values) > 0)
                                                                 @foreach($item->values as $v)
-                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                    <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                                 @endforeach
                                                             @endif
 
@@ -369,14 +369,14 @@
                                                         @if(count($item->user_values) > 0)
 
                                                             @foreach($item->user_values as $v)
-                                                                <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
 
                                                         @else
 
                                                             @if(count($item->values) > 0)
                                                                 @foreach($item->values as $v)
-                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                    <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                                 @endforeach
                                                             @endif
 
@@ -657,11 +657,11 @@
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
-                    <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}">
+                    <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
                         <option value=""></option>
                         @{{#  if(item.user_values.length > 0){ }}
                         @{{#  layui.each(item.user_values, function(i, v){ }}
-                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        <option data-id="@{{ v.id }}" value="@{{ v.field_value }}">@{{ v.field_value }}</option>
                         @{{#  }); }}
                         @{{#  } else { }}
                         @{{#  if(item.values.length > 0){ }}
@@ -722,6 +722,21 @@
                 $(data.elem).remove();
                 $('.layui-form').append('<input type="hidden" name="' + $(data.elem).attr("name") + '" value="0"/>');
             }
+        });
+        // 模版预览 下拉框值
+        form.on('select(change-select)', function(data){
+            var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+            var choseId = $(data.elem).find("option:selected").attr("data-id");
+            if($(subordinate).length > 0){
+                $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
+                    $(subordinate).html(result);
+                    $(result).each(function (index, value) {
+                        $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
+                    });
+                    layui.form.render();
+                }, 'json');
+            }
+            return false;
         });
 
         form.on('submit(operation)', function () {
@@ -892,6 +907,12 @@
         });
         // 修改
         form.on('submit(save-update)', function (data) {
+
+            if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
+                layer.msg('代练时间不能都为0');
+                return false;
+            }
+
             $.post('{{ route('frontend.workbench.leveling.update') }}', {data: data.field}, function (result) {
                 if (result.status == 1) {
                     layer.open({
