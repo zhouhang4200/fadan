@@ -58,6 +58,8 @@ class Revoked extends DailianAbstract implements DailianInterface
 
             $this->after();
 
+            LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
+
             delRedisCompleteOrders($this->orderNo);
         } catch (Exception $e) {
             DB::rollBack();
@@ -373,7 +375,6 @@ class Revoked extends DailianAbstract implements DailianInterface
                     // 结果
                     Show91::confirmSc($options);
                 }
-                LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
                 return true;
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());

@@ -54,6 +54,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
 		    $this->after();
+
+		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
+
+			delRedisCompleteOrders($this->orderNo);
     	} catch (Exception $e) {
     		DB::rollBack();
 
@@ -336,14 +340,5 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	    } else {
 	    	throw new Exception('参数传入错误或不满足条件');
 	    }
-	}
-
-	public function after()
-	{
-		if ($this->runAfter) {
-			LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
-
-			delRedisCompleteOrders($this->orderNo);
-		}
 	}
 }
