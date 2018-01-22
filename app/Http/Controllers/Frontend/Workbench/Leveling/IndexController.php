@@ -630,6 +630,16 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
                             'field_value' => $requestData['password']
                         ]);
+
+                        event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+                    }
+
+                    if ($requestData['account'] != $orderDetail['account']) {
+                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'account')->update([
+                            'field_value' => $requestData['password']
+                        ]);
+
+                        event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
                     }
 
                     // 修改 游戏代练天
@@ -667,7 +677,6 @@ class IndexController extends Controller
                         $order->addHours = $addHours;
                         event(new AutoRequestInterface($order, 'addLimitTime'));
                     }
-                    event(new AutoRequestInterface($order, 'addOrder', true));
                 }
                 // 待验收 可加价格
                 if ($order->status == 14) {

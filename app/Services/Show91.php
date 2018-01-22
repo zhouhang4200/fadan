@@ -169,9 +169,19 @@ class Show91
      * @param  [type] $options [oid => 订单id， newAcc => 游戏账号, newAccPwd => 游戏密码]
      * @return [type]          [description]
      */
-    public static function editOrderAccPwd($options = [])
+    public static function editOrderAccPwd($order, $bool = false)
     {
-    	return static::normalRequest(config('show91.url.editOrderAccPwd'), $options);
+        $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+
+        $options = [
+            'oid' => $orderDetails['third_order_no'],
+            'newAcc' => $orderDetails['account'],
+            'newAccPwd' => $orderDetails['password'],
+        ];
+
+    	$res = static::normalRequest(config('show91.url.editOrderAccPwd'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
