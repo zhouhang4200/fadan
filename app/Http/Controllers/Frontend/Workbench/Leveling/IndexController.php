@@ -264,6 +264,7 @@ class IndexController extends Controller
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
+        $detail['consult_type'] = $detail['leveling_consult']['complain'] ?? '';
 
 
         if (!in_array($detail['status'], [19, 20, 21])){
