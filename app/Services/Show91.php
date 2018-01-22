@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use App\Models\OrderDetail;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
 use App\Models\ThirdServer;
@@ -104,13 +105,13 @@ class Show91
         $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'serve')->value('id');
         $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
                 ->where('field_name', 'serve')
-                ->where('field_value', $order->detail()->where('field_name', 'serve')->value('field_value'))
+                ->where('field_value', OrderDetail::where('order_no', $order->no)->where('field_name', 'serve')->value('field_value'))
                 ->value('id');
         // 我们的区
         $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'region')->value('id');
         $areaId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $areaTemplateWidgetId)
                 ->where('field_name', 'region')
-                ->where('field_value', $order->detail()->where('field_name', 'region')->value('field_value'))
+                ->where('field_value', OrderDetail::where('order_no', $order->no)->where('field_name', 'region')->value('field_value'))
                 ->value('id');
 
         $options = [
