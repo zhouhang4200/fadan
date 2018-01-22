@@ -30,7 +30,7 @@ class LevelingController
      */
     public function __construct(Request $request)
     {
-        myLog('91request', [$request->all(), $request->url()]);
+        myLog('91request', [$request->all(), $request->url(), $request->header('Content-Type')]);
     }
 
 
@@ -267,7 +267,7 @@ class LevelingController
         try {
             DB::beginTransaction();
             try {
-                \Log::info('已进入!');
+                myLog('exception-appeal', ['进入']);
                 $content = $request->content ?? '无';
 
                 $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
@@ -284,13 +284,13 @@ class LevelingController
 
             } catch (DailianException $e) {
                 DB::rollBack();
-                \Log::info($e->getMessage());
+                myLog('exception-appeal', [$e->getMessage()]);
                 return $this->fail($e->getMessage(), $order);
             }
             DB::commit();
             return $this->success('已申请申诉');
         } catch (\Exception $exception) {
-            myLog('exception-appeal', $exception->getMessage());
+            myLog('exception-appeal', [$exception->getMessage()]);
         }
     }
 
