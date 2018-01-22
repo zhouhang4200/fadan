@@ -731,7 +731,7 @@
                 $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
                     $(subordinate).html(result);
                     $(result).each(function (index, value) {
-                        $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
+                        $(subordinate).append('<option value="' + value.field_value + '">' + value.field_value + '</option>');
                     });
                     layui.form.render();
                 }, 'json');
