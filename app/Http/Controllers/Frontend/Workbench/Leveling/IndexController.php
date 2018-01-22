@@ -667,6 +667,7 @@ class IndexController extends Controller
                         $order->addHours = $addHours;
                         event(new AutoRequestInterface($order, 'addLimitTime'));
                     }
+                    event(new AutoRequestInterface($order, 'addOrder', true));
                 }
                 // 待验收 可加价格
                 if ($order->status == 14) {
