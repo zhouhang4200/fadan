@@ -157,11 +157,8 @@ class Show91
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             $options['order.order_id'] = $orderDetails['third_order_no'];
-            mylog('options', $options);
-            mylog('options', $orderDetails);
         }
-mylog('options', $orderDetails);
-mylog('options', $options);
+
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
 
         return static::returnErrorMessage($res);

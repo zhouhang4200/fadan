@@ -196,7 +196,7 @@ class Order extends Model
             switch ($status) {
                 case 15:
                     if ($datas) {
-                        $arr['user_id'] = 1;
+                        $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
                         $arr['amount'] = $datas['amount'] ?? 0;
                         $arr['deposit'] = $datas['deposit'] ?? 0;
@@ -209,7 +209,7 @@ class Order extends Model
                 break;
                 case 16:
                     if ($datas) {
-                        $arr['user_id'] = 1;
+                        $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
                         $arr['complain'] = $datas['who'] ?? 0;
                         $arr['complain_message'] = $datas['complain_message'];
@@ -220,7 +220,7 @@ class Order extends Model
                 break;
                 case 19:
                     if ($datas) {
-                        $arr['user_id'] = 1;
+                        $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
                         $arr['amount'] = $datas['amount'] ?? 0;
                         $arr['deposit'] = $datas['deposit'] ?? 0;
@@ -237,7 +237,7 @@ class Order extends Model
                 break;
                 case 21:
                     if ($datas) {
-                        $arr['user_id'] = 1;
+                        $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
                         $arr['complain'] = $datas['who'] ?? 0;
                         $arr['complain_message'] = $datas['complain_message'];
