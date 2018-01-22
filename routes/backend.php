@@ -68,6 +68,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('status', 'TemplateController@status')->name('goods.template.status')->middleware('permission:goods.template.status');
             // 保存修改
             Route::post('edit', 'TemplateController@edit')->name('goods.template.edit')->middleware('permission:goods.template.edit');
+            // 复制模版
+            Route::post('copy-template', 'TemplateController@copyTemplate')->name('goods.template.copy-template');
 
             Route::prefix('widget')->group(function (){
                 // 获取指定组件

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Goods;
 
+use App\Models\GoodsTemplateWidget;
 use App\Models\WidgetType;
 use App\Repositories\Backend\GameRepository;
 use App\Repositories\Backend\ServiceRepository;
@@ -138,12 +139,20 @@ class TemplateController extends Controller
         }
     }
 
+
     /**
+     * 复制模版
      * @param Request $request
-     * @param $Id
      */
-    public function destroy(Request $request, $Id)
+    public function copyTemplate(Request $request)
     {
+//        DB::beginTransaction();
+
+        $template = GoodsTemplate::where('id', $request->id)->first();
+        $template->replicate()->save();
+
+        GoodsTemplateWidget::where('goods_template_id', $template->id)->get();
 
     }
+
 }
