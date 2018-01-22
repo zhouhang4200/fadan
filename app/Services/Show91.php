@@ -158,7 +158,9 @@ class Show91
         if ($bool) {
             $options['order.order_id'] = $orderDetails['third_order_no'];
             mylog('options', $options);
+            mylog('options', $orderDetails);
         }
+mylog('options', $orderDetails);
 mylog('options', $options);
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
 
