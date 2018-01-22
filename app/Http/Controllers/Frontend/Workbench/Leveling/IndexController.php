@@ -54,7 +54,7 @@ class IndexController extends Controller
      */
     public function __construct(GameRepository $gameRepository)
     {
-        $this->game = $gameRepository->available();
+        $this->game = $gameRepository->availableByServiceId(4);
     }
 
     /**
