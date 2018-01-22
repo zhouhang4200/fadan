@@ -100,18 +100,19 @@ class Show91
      */
     public static function addOrder($order, $bool = 0)
     {
+        $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
         // 我们的服
         $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
         $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'serve')->value('id');
         $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
                 ->where('field_name', 'serve')
-                ->where('field_value', OrderDetail::where('order_no', $order->no)->where('field_name', 'serve')->value('field_value'))
+                ->where('field_value', $orderDetails['serve'])
                 ->value('id');
         // 我们的区
         $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)->where('field_name', 'region')->value('id');
         $areaId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $areaTemplateWidgetId)
                 ->where('field_name', 'region')
-                ->where('field_value', OrderDetail::where('order_no', $order->no)->where('field_name', 'region')->value('field_value'))
+                ->where('field_value', $orderDetails['region'])
                 ->value('id');
 
         $options = [
@@ -125,36 +126,37 @@ class Show91
                                     ->where('third_id', 1)
                                     ->where('server_id', $serverId)
                                     ->value('third_server_id') ?: '', // QQ服
-            'order.title' => $order->detail()->where('field_name', 'game_leveling_title')->value('field_value') ?: '无',
+
+            'order.title' => $orderDetails['game_leveling_title'] ?: '无',
             'order.price' => $order->amount,
-            'order.bond4safe' => $order->detail()->where('field_name', 'security_deposit')->value('field_value') ?: 0,
-            'order.bond4eff' => $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value') ?: 0,
-            'order.timelimit_days' => $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'),
-            'order.timelimit_hour' => $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'),
-            'order.account' => $order->detail()->where('field_name', 'account')->value('field_value'),// 游戏账号
-            'order.account_pwd' => $order->detail()->where('field_name', 'password')->value('field_value'), //账号密码
-            'order.role_name' => $order->detail()->where('field_name', 'role')->value('field_value'),//角色名字
+            'order.bond4safe' => $orderDetails['security_deposit'] ?: 0,
+            'order.bond4eff' => $orderDetails['efficiency_deposit'] ?: 0,
+            'order.timelimit_days' => $orderDetails['game_leveling_day'],
+            'order.timelimit_hour' => $orderDetails['game_leveling_hour'],
+            'order.account' => $orderDetails['account'],// 游戏账号
+            'order.account_pwd' => $orderDetails['password'], //账号密码
+            'order.role_name' => $orderDetails['role'],//角色名字
             'order.order_pwd' => '',//订单密码
-            'order.current_info' => $order->detail()->where('field_name', 'game_leveling_instructions')->value('field_value'),
+            'order.current_info' => $orderDetails['game_leveling_instructions'],
             'initPic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'initPic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'initPic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'order.require_info' => $order->detail()->where('field_name', 'game_leveling_requirements')->value('field_value') ?: 1,// 代练要求
-            'order.remark' => $order->detail()->where('field_name', 'cstomer_service_remark')->value('field_value') ?: '无',//订单备注
+            'order.remark' => $orderDetails['cstomer_service_remark'] ?: '无',//订单备注
             'order.linkman' => $order->creator_primary_user_id, // 联系人
-            'order.linkphone' => $order->detail()->where('field_name', 'user_phone')->value('field_value'),
-            'order.linkqq' => $order->detail()->where('field_name', 'user_qq')->value('field_value'),
+            'order.linkphone' => $orderDetails['user_phone'],
+            'order.linkqq' => $orderDetails['user_qq'],
             'order.sms_notice' => 0, // 短信通知
             'order.sms_mobphone' => '1', // 短信通知电话
             'micro' => 0, // 验证码订单
-            'haozhu' => $order->detail()->where('field_name', 'client_phone')->value('field_value'),
+            'haozhu' => $orderDetails['client_phone'],
             'istop' => 0,
             'forAuth' => 0,
             'order.game_play_id' => 1,
         ];
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
-            $options['order.order_id'] = $order->detail()->where('field_name', 'third_order_no')->value('field_value');
+            $options['order.order_id'] = $orderDetails['third_order_no'];
         }
 
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
