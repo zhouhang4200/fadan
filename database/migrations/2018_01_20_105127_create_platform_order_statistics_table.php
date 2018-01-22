@@ -17,7 +17,7 @@ class CreatePlatformOrderStatisticsTable extends Migration
             $table->increments('id');
             $table->date('date')->comment('日期');
             $table->integer('user_id')->unsigned()->comment('账号');
-            $table->integer('parnet_id')->unsigned()->comment('主账号');
+            $table->integer('parent_id')->unsigned()->comment('主账号');
             $table->integer('total_order_count')->unsigned()->comment('发布单数');
             $table->double('wang_wang_order_evg', 8, 2)->unsigned()->comment('单旺旺号平均发单');
             $table->string('use_time')->comment('完单耗时时间戳');
