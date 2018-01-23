@@ -7,6 +7,9 @@ use App\Models\OrderHistory;
 use App\Services\Show91;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 取消撤销操作
+ */
 class RefuseRevoke extends DailianAbstract implements DailianInterface
 {
     //取消撤销

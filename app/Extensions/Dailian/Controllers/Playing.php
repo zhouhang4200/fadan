@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use App\Exceptions\DailianException as Exception;
 
 /**
- * Class Playing
+ * 接单操作
  * @package App\Extensions\Dailian\Controllers
  */
 class Playing extends DailianAbstract implements DailianInterface

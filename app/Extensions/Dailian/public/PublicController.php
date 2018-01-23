@@ -11,6 +11,9 @@ use App\Extensions\Asset\Expend;
 use App\Exceptions\OrderNoticeException;
 use App\Repositories\Frontend\OrderDetailRepository;
 
+/**
+ * 订单报警中 公共操作类（流水信息）
+ */
 class PublicController
 {
 	public static function revokeFlows($orderNo)

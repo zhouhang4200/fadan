@@ -6,6 +6,9 @@ use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限 模块管理
+ */
 class AdminModuleController extends Controller
 {
     /**

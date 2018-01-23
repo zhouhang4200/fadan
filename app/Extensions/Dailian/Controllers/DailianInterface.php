@@ -2,6 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+/**
+ * 代练操作接口
+ */
 interface DailianInterface
 {
 	// 获取订单对象

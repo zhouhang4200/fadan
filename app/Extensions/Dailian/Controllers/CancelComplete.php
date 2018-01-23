@@ -5,6 +5,9 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 取消验收操作
+ */
 class CancelComplete extends DailianAbstract implements DailianInterface
 {
      //取消验收 -》 代练中

@@ -6,6 +6,9 @@ use DB;
 use App\Services\Show91;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 上架操作
+ */
 class NoReceive extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus   = [22]; // 已下架

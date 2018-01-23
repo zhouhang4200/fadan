@@ -2,13 +2,16 @@
 
 namespace App\Console\Commands;
 
-use Redis;
 use DB;
+use Redis;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 
+/**
+ * 代练平台 申请完成订单 24小时，发单没有点完成操作， 系统自动完成该订单
+ */
 class ChangeCompleteOrderStatus extends Command
 {
     /**
@@ -36,7 +39,7 @@ class ChangeCompleteOrderStatus extends Command
     }
 
     /**
-     * Execute the console command.
+     * 24小时自动更改订单状态为已结算
      *
      * @return mixed
      */
@@ -55,7 +58,7 @@ class ChangeCompleteOrderStatus extends Command
   
                 if ($readyOnTime <= 0) {
                     Redis::hDel('complete_orders', $orderNo);
-
+                    // 订单完成操作
                     DailianFactory::choose('complete')->run($orderNo, 0);
                 }
             }

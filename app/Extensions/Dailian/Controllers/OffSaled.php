@@ -6,6 +6,9 @@ use DB;
 use App\Services\Show91;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 下架操作
+ */
 class OffSaled extends DailianAbstract implements DailianInterface
 {
     //已下架

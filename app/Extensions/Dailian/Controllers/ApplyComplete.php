@@ -8,6 +8,9 @@ use Redis;
 use Carbon\Carbon;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 申请验收操作
+ */
 class ApplyComplete extends DailianAbstract implements DailianInterface
 {
 	protected $acceptableStatus = [13]; // 状态：13代练中

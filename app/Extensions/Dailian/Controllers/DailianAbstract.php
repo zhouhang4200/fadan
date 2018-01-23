@@ -12,6 +12,9 @@ use App\Extensions\Asset\Expend;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 代练操作构造类
+ */
 abstract class DailianAbstract
 {
     protected $orderNo;             // 订单编号

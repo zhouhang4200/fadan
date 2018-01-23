@@ -13,6 +13,9 @@ use App\Models\GoodsTemplate;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 
+/**
+ * 91接口类
+ */
 class Show91
 {
     /**

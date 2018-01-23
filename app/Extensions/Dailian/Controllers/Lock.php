@@ -6,6 +6,9 @@ use DB;
 use App\Services\Show91;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 锁定操作
+ */
 class Lock extends DailianAbstract implements DailianInterface
 {
      //锁定

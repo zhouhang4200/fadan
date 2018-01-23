@@ -6,9 +6,11 @@ use DB;
 use Redis;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 异常操作
+ */
 class Abnormal extends DailianAbstract implements DailianInterface
 {
-     //强制撤销 -》 撤销
     protected $acceptableStatus = [13]; // 状态：代练中
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 17; // 状态：异常

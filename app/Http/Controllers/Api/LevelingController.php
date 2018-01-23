@@ -13,6 +13,9 @@ use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Exceptions\OrderNoticeException;
 
+/**
+ * 我们提供给91的代练接口
+ */
 class LevelingController
 {
     protected $sign = 'a46ae5de453bfaadc8548a3e48c151db';
@@ -32,7 +35,12 @@ class LevelingController
         myLog('91request', [$request->all(), $request->url(), $request->header('Content-Type')]);
     }
 
-
+    /**
+     * 检查签名和订单号
+     * @param  [type] $sign    [description]
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
     public function checkSignAndOrderNo($sign, $orderNo)
     {
         if ($sign != $this->sign) {
@@ -52,6 +60,11 @@ class LevelingController
         }
     }
 
+    /**
+     * 成功信息
+     * @param  [type] $message [description]
+     * @return [type]          [description]
+     */
     public function success($message)
     {
         return json_encode([
@@ -60,6 +73,12 @@ class LevelingController
         ]);
     }
 
+    /**
+     * 失败信息
+     * @param  [type] $message [description]
+     * @param  [type] $order   [description]
+     * @return [type]          [description]
+     */
     public function fail($message, $order)
     {
         // 异常写入order_notices 表

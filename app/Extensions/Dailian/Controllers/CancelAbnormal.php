@@ -6,6 +6,9 @@ use DB;
 use Redis;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 取消异常操作
+ */
 class CancelAbnormal extends DailianAbstract implements DailianInterface
 {
      //取消异常 -》 代练中

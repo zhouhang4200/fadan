@@ -8,6 +8,9 @@ use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 取消仲裁操作
+ */
 class CancelArbitration extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus   = [16]; // 状态：16仲裁中

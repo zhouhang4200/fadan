@@ -19,6 +19,9 @@ use App\Http\Controllers\Controller;
 use App\Models\PunishOrRewardRevision;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * 后台奖惩列表
+ */
 class PunishController extends Controller
 {
     protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
@@ -68,69 +71,6 @@ class PunishController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function create()
-    // {
-    //     $users = User::where('parent_id', 0)->get();
-
-    //     $start = Carbon::now()->subDays(2)->startOfDay()->toDateTimeString();
-
-    //     $end = Carbon::now()->toDateTimeString();
-
-    //     $orders = Order::whereBetween('created_at', [$start, $end])->pluck('no');
-
-    //     return view('backend.punish.create', compact('users', 'orders'));
-    // }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function store(Request $request)
-    // {
-    //     $orderNo = static::createOrderId();
-
-    //     $data = $request->all();
-
-    //     $data['type'] = 0;
-
-    //     $data['deadline'] = $request->deadline . ' 23:59:59';
-
-    //     $data['no'] = $orderNo;
-
-    //     $this->validate($request, PunishOrReward::rules(), PunishOrReward::messages());
-
-    //     $res = PunishOrReward::create($data);
-
-    //     if (! $res) {
-
-    //         return back()->withInput()->with('createFail', '添加失败！');
-    //     }
-    //     return redirect(route('punishes.index'))->with('succ', '添加成功!');
-
-
-    // }
-
-    /**
-     * 创建订单号
-     * @return string
-     */
-    // public static function createOrderId()
-    // {
-    //     // 14位长度当前的时间 20150709105750
-    //     $orderdate = date('YmdHis');
-    //     // 今日订单数量
-    //     $orderquantity = Redis::incr('market:order:punish:' . date('Ymd'));
-
-    //     return $orderdate . str_pad($orderquantity, 9, 0, STR_PAD_LEFT);
-    // }
-
-    /**
      * 奖惩详细
      *
      * @param  int  $id
@@ -142,46 +82,6 @@ class PunishController extends Controller
 
         return view('backend.punish.show', compact('punish'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function edit($id)
-    // {
-    //     $punish = PunishOrReward::find($id);
-
-    //     return view('backend.punish.edit', compact('punish'));
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function update(Request $request, $id)
-    // {
-    //     $this->validate($request, PunishOrReward::rules($id), PunishOrReward::messages());
-
-    //     $data['money'] = $request->money;
-
-    //     $data['remark'] = $request->remark;
-
-    //     $punish = PunishOrReward::find($id);
-
-    //     $int = $punish->update($data);
-
-    //     if ($int > 0) {
-
-    //         return redirect(route('punishes.index'))->with('succ', '更新成功!');
-    //     }
-
-    //     return back()->withInput()->with('updateFail', '更新失败!');
-    // }
 
     /**
      * 列表页，直接撤销某个商户还未确认以及未申诉的奖惩记录
@@ -212,15 +112,6 @@ class PunishController extends Controller
 
     }
 
-    // public function orders(Request $request)
-    // {
-    //     $userId = $request->id;
-
-    //     $orders = Order::where('gainer_primary_user_id', $userId)->pluck('no');
-
-    //     return response()->json(['orders' => $orders]);
-    // }
-
     /**
      * 点击图片 ajax 上传
      * @param  Illuminate\Http\Request
@@ -229,11 +120,8 @@ class PunishController extends Controller
     public function uploadImages(Request $request)
     {
         if ($request->hasFile('file')) {
-
             $file = $request->file('file');
-
             $path = public_path("/resources/punish/".date('Ymd')."/");
-
             $imagePath = $this->uploadImage($file, $path);
 
             return response()->json(['code' => 1, 'path' => $imagePath]);
@@ -251,25 +139,20 @@ class PunishController extends Controller
         $extension = $file->getClientOriginalExtension();
 
         if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
-
             return response()->json(['code' => 2, 'path' => $imagePath]);
         }
 
         if (! $file->isValid()) {
-
             return response()->json(['code' => 2, 'path' => $imagePath]);
         }
 
         if (!file_exists($path)) {
-
             mkdir($path, 0755, true);
         }
+
         $randNum = rand(1, 100000000) . rand(1, 100000000);
-
         $fileName = time().substr($randNum, 0, 6).'.'.$extension;
-
         $path = $file->move($path, $fileName);
-
         $path = strstr($path, '/resources');
 
         return str_replace('\\', '/', $path);
@@ -293,9 +176,7 @@ class PunishController extends Controller
                 if ($bool) {
                     // 如果商户没确认，撤销同时，改为撤销状态并软删除该条记录
                     if ($punish->confirm == 0) {
-
                         PunishOrReward::where('id', $id)->update(['status' => 11, 'confirm' => 1]);
-
                         $punish = PunishOrReward::find($id);
 
                         $data = [
@@ -329,7 +210,6 @@ class PunishController extends Controller
                     } else {
                         // 如果商户确认了，就不删除，显示撤销状态
                         PunishOrReward::where('id', $id)->update(['status' => 11]);
-
                         $punish = PunishOrReward::find($id);
 
                         $data = [
@@ -393,42 +273,7 @@ class PunishController extends Controller
         $orderNo = $request->order_no;
         // 生成查询数组
         $filters = compact('startDate', 'endDate', 'orderNo');
-
         $punishRecords = PunishOrRewardRevision::filter($filters)->paginate(config('backend.page'));
-
-        // $query = \DB::table('revisions')
-        //         ->select(\DB::raw("revisions.id, revisions.revisionable_id, revisions.key, revisions.old_value, revisions.new_value, revisions.created_at, punish_or_rewards.order_id, punish_or_rewards.order_no , admin_users.name"))
-        //         ->leftjoin('punish_or_rewards', function ($join) {
-        //             $join->on('punish_or_rewards.id', '=', 'revisions.revisionable_id');
-        //         })
-        //         ->leftjoin('admin_users', function ($join) {
-        //             $join->on('admin_users.id', '=', 'revisions.user_id');
-        //         })
-        //         ->where('revisions.revisionable_type', 'App\Models\PunishOrReward');
-
-        // if ($startDate && empty($endDate)) {
-
-        //     $query->where('created_at', '>=', $startDate);
-        // }
-
-        // if ($endDate && empty($startDate)) {
-
-        //     $query->where('created_at', '<=', $endDate . " 23:59:59");
-        // }
-
-        // if ($endDate && $startDate) {
-
-        //     $query->whereBetween('created_at', [$startDate, $endDate . " 23:59:59"]);
-        // }
-
-        // if ($orderId) {
-
-        //     $punishIds = PunishOrReward::where('order_no', $orderId)->pluck('id');
-
-        //     $query->whereIn('revisionable_id', $punishIds);
-        // }
-
-        // $punishRecords = $query->latest('created_at')->paginate(config('backend.page'));
 
         return view('backend.punish.record', compact('punishRecords', 'startDate', 'endDate', 'orderNo'));
     }
@@ -442,7 +287,6 @@ class PunishController extends Controller
     {
         try {
             $punishes = PunishOrReward::filter($filters)->latest('created_at')->withTrashed()->get();
-
             // 标题
             $title = [
                 '序号',
@@ -506,7 +350,6 @@ class PunishController extends Controller
                     });
                 }
             })->export('xls');
-
         } catch (Exception $e) {
 
         }

@@ -9,6 +9,9 @@ use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 申请仲裁操作
+ */
 class Arbitrationing extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [13, 14, 15]; // 状态：15撤销中

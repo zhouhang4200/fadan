@@ -10,6 +10,9 @@ use App\Models\Order;
 use Illuminate\Console\Command;
 use App\Models\OrderStatistic as OrderStatisticModel;
 
+/**
+ * 订单统计
+ */
 class OrderStatistic extends Command
 {
     /**
