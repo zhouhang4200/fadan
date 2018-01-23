@@ -494,11 +494,11 @@ class LevelingController
         // 如果状态为代练中，需要详细区分到底是哪个状态
         // 此处有可能同时存在，会有分不清情况出现
         if ($res['data']['inAppeal'] && ! $res['data']['inSelfCancel']) {
-            $thirdStatus = 13; // 协商中
+            $thirdStatus = 14; // 申诉中
         }
 
         if ($res['data']['inSelfCancel'] && ! $res['data']['inAppeal']) {
-            $thirdStatus = 14; // 申诉中
+            $thirdStatus = 13; // 协商中
         }
 
         if ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
