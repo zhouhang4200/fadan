@@ -8,6 +8,9 @@ use Asset;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 强制撤销操作
+ */
 class ForceRevoke extends DailianAbstract implements DailianInterface
 {
      //强制撤销 -》 撤销

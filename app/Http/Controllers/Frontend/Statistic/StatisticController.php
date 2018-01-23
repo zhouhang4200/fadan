@@ -12,7 +12,7 @@ use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
 
 /**
- * 统计
+ * 代练平台统计 员工和订单统计
  */
 class StatisticController extends Controller
 {
@@ -142,16 +142,30 @@ class StatisticController extends Controller
     	return view('frontend.statistic.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
     }
 
+/**
+ * 价格统计
+ * @return [type] [description]
+ */
     public function price()
     {
 
     }
 
+    /**
+     * 短信统计
+     * @return [type] [description]
+     */
     public function message()
     {
 
     }
 
+    /**
+     * 统计导出
+     * @param  [type] $excelDatas [description]
+     * @param  [type] $totalData  [description]
+     * @return [type]             [description]
+     */
     public function exportEmployee($excelDatas, $totalData)
     {
         try {
@@ -210,6 +224,12 @@ class StatisticController extends Controller
         }
     }
 
+    /**
+     * 代练订单统计导出
+     * @param  [type] $excelDatas [description]
+     * @param  [type] $totalData  [description]
+     * @return [type]             [description]
+     */
     public function exportOrder($excelDatas, $totalData)
     {
         try {
@@ -281,7 +301,6 @@ class StatisticController extends Controller
                     });
                 }
             })->export('xls');
-
         } catch (Exception $e) {
             
         }

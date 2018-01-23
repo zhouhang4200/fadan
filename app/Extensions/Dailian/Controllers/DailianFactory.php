@@ -4,6 +4,9 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\DailianException;
 
+/**
+ * 代练操作工厂
+ */
 class DailianFactory
 {
 	/**

@@ -12,6 +12,9 @@ use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 仲裁操作
+ */
 class Arbitrationed extends DailianAbstract implements DailianInterface
 {
 	// 已仲裁

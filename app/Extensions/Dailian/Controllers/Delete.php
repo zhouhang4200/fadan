@@ -8,6 +8,9 @@ use App\Services\Show91;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 删除操作
+ */
 class Delete extends DailianAbstract implements DailianInterface
 {
      //删除 -》 删除

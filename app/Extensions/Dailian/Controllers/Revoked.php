@@ -14,6 +14,9 @@ use App\Models\LevelingConsult;
 use App\Services\Show91;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 同意撤销操作
+ */
 class Revoked extends DailianAbstract implements DailianInterface
 {
      //同意撤销-》已撤销

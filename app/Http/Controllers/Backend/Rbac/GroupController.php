@@ -8,6 +8,9 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限  管理组 管理
+ */
 class GroupController extends Controller
 {
     /**
@@ -18,7 +21,6 @@ class GroupController extends Controller
     public function index()
     {
         $groups = User::where('parent_id', 0)->whereHas('roles')->latest('id')->paginate(config('backend.page'));
-
         return view('backend.rbac.group.index', compact('groups'));
     }
 
@@ -30,7 +32,6 @@ class GroupController extends Controller
     public function create(Request $request)
     {
         $user = User::find($request->id);
-
         $roles = Role::where('guard_name', 'web')->get();
 
         return view('backend.rbac.group.create', compact('roles', 'user'));
@@ -45,16 +46,13 @@ class GroupController extends Controller
     public function store(Request $request)
     {
         if (! $request->roles) {
-
             return back()->with('missRole', '请选择角色!');
         }
 
         $user = User::find($request->userId);
-
         $array = $user->roles()->sync($request->roles);
 
         if ($array['attached'] || $array['detached'] || $array['updated']) {
-
             return redirect(route('groups.index'))->with('succ', '赋予角色成功!');
         }
 
@@ -70,7 +68,6 @@ class GroupController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-
         return view('backend.rbac.group.show', compact('user'));
     }
 
@@ -83,7 +80,6 @@ class GroupController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-
         $roles = Role::where('guard_name', 'web')->get();
 
         return view('backend.rbac.group.edit', compact('user', 'roles'));
@@ -100,24 +96,19 @@ class GroupController extends Controller
     {
         try {
             if (! $request->roles) {
-
                 return back()->with('missRole', '请选择角色!');
             }
 
             $user = User::find($id);
 
             if ($request->roles == $user->roles->pluck('id')->toArray()) {
-
                 $roleIds = \DB::table('model_has_roles')->where('model_id', 27)->pluck('role_id');
-
                 $permissionIds = [];
 
                 foreach ($roleIds as $roleId) {
-
                     $permissionIds[] = \DB::table('role_has_permissions')->where('role_id', $roleId)->pluck('permission_id');
                 }
                 $permissionIds = collect($permissionIds)->flatten();
-
                 $children = User::where('parent_id', $user->id)->get();
 
                 foreach ($children as $child) {
@@ -133,17 +124,13 @@ class GroupController extends Controller
             }
 
             $array = $user->roles()->sync($request->roles);
-
             $roleIds = \DB::table('model_has_roles')->where('model_id', 27)->pluck('role_id');
-
             $permissionIds = [];
 
             foreach ($roleIds as $roleId) {
-
                 $permissionIds[] = \DB::table('role_has_permissions')->where('role_id', $roleId)->pluck('permission_id');
             }
             $permissionIds = collect($permissionIds)->flatten();
-
             $children = User::where('parent_id', $user->id)->get();
 
             foreach ($children as $child) {
@@ -157,7 +144,6 @@ class GroupController extends Controller
             }
 
             if ($array['attached'] || $array['detached'] || $array['updated']) {
-
                 return redirect(route('groups.index'))->with('succ', '修改账号角色成功!');
             }
             return back()->with('updateError', '修改账号角色失败!');
@@ -176,13 +162,10 @@ class GroupController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-
         $roleIds = $user->roles->pluck('id')->toArray(); 
-
         $int = $user->roles()->detach($roleIds);
 
         if ($int > 0) {
-
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
         return response()->json(['code' => '2', 'message' => '删除失败!']);

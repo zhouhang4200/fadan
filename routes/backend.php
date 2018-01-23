@@ -341,4 +341,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('order-charge', 'OrderChargeController@index')->name('app.order-charge.index')->middleware('permission:app.order-charge.index');
         Route::get('order-charge/{id}', 'OrderChargeController@detail')->name('app.order-charge.detail')->middleware('permission:app.order-charge.detail');
     });
+    // 统计
+    Route::namespace('Statistic')->prefix('statistic')->group(function () {
+        Route::get('platform', 'StatisticController@index')->name('statistic:platform');
+    });
 });

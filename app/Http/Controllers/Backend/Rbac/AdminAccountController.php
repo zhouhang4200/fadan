@@ -6,6 +6,9 @@ use App\Models\AdminUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 后台账号
+ */
 class AdminAccountController extends Controller
 {
     public function index()

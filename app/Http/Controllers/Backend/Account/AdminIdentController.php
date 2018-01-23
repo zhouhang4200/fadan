@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\RealNameIdent;
 use App\Http\Controllers\Controller;
 
+/**
+ * 后台审核
+ */
 class AdminIdentController extends Controller
 {
     /**

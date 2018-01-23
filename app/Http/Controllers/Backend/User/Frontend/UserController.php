@@ -12,6 +12,9 @@ use App\Models\User;
 use App\Extensions\Asset\Recharge;
 use App\Http\Controllers\Controller;
 
+/**
+ * 前台 用户管理
+ */
 class UserController extends Controller
 {
     /**

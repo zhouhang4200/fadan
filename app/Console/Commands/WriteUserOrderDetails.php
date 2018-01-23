@@ -10,6 +10,9 @@ use App\Models\Order;
 use Illuminate\Console\Command;
 use App\Models\UserOrderDetail;
 
+/**
+ * 新老订单集市以及苹果卡库存等等数据统计
+ */
 class WriteUserOrderDetails extends Command
 {
     /**

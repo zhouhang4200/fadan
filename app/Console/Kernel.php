@@ -24,10 +24,10 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay',
-        'App\Console\Commands\EmployeeStatistic',
-        'App\Console\Commands\OrderStatistic',
-        'App\Console\Commands\ChangeCompleteOrderStatus',
-        'App\Console\Commands\PlatformOrderStatistic',
+        'App\Console\Commands\EmployeeStatistic', // 代练平台员工统计
+        'App\Console\Commands\OrderStatistic', // 代练平台订单统计
+        'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
+        'App\Console\Commands\PlatformOrderStatistic', // 代练平台订单统计(阿里要求数据)
     ];
 
     /**

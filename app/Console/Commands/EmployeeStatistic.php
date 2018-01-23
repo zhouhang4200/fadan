@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\EmployeeStatistic as EmployeeStatisticModel;
 
+/**
+ * 代练平台员工统计
+ */
 class EmployeeStatistic extends Command
 {
     /**
@@ -36,7 +39,7 @@ class EmployeeStatistic extends Command
     }
 
     /**
-     * Execute the console command.
+     * 每天更新员工数据到员工统计表
      *
      * @return mixed
      */
@@ -46,7 +49,7 @@ class EmployeeStatistic extends Command
         try {
             $yestodayDate = Carbon::now()->subDays(1)->toDateString();
             $todayDate = Carbon::now()->toDateString();
-
+            //订单表根据接单者（creator_user_id）分组，获取每天接单者相关数据，存入员工统计表
             $userDatas = DB::select("
                 SELECT 
                     n.name, 
@@ -90,7 +93,7 @@ class EmployeeStatistic extends Command
                         ) c LEFT JOIN orders d ON c.no = d.no 
                     GROUP BY d.creator_user_id ) m LEFT JOIN users n ON m.creator_user_id = n.id
                 ");
-
+            
             if ($userDatas) {
                 $userDatas = array_map(function ($userData) {
                     return (array) $userData;

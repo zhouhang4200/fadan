@@ -9,6 +9,9 @@ use App\Services\Show91;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 订单完成操作
+ */
 class Complete extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus   = [14]; // 状态：14待验收

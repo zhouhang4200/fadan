@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Exceptions\OrderNoticeException;
 
+/**
+ * 订单报警
+ */
 class LevelingController extends Controller
 {
     public function index(Request $request )
@@ -25,11 +28,13 @@ class LevelingController extends Controller
             $ourStatus = config('order.status_leveling');
 	    	
 	    	$query = OrderNotice::where('complete', 0)->filter($filters);
+            // 订单报警数据列表
 	    	$paginateOrderNotices = $query->with(['order' => function ($query) {
 	    		$query->with(['orderDetails' => function ($query) {
 	    			$query->where('field_name', 'security_deposit')->orwhere('field_name', 'efficiency_deposit');
 	    		}]);
 	    	}])->paginate(config('backend.page'));
+
 	    	$excelOrderNotices = $query->get();
 
 	    	if ($request->export) {
@@ -50,6 +55,11 @@ class LevelingController extends Controller
     	return view('backend.order.leveling.index', compact('startDate', 'endDate', 'fullUrl', 'third', 'ourStatus', 'paginateOrderNotices'));
     }
 
+    /**
+     * 导出
+     * @param  [type] $excelOrderNotices [description]
+     * @return [type]                    [description]
+     */
     public function export($excelOrderNotices)
     {
     	$title = [
@@ -86,6 +96,11 @@ class LevelingController extends Controller
         })->export('xls');
     }
 
+    /**
+     * 手动改订单状态
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function changeStatus(Request $request)
     {
     	DB::beginTransaction();
@@ -95,7 +110,7 @@ class LevelingController extends Controller
     		if (! $order) {
     			throw new OrderNoticeException('订单不存在!');
     		}
-
+            //已撤销，已完成，已结算，强制撤销状态不允许手动改状态
     		if (in_array($request->status, [19, 20, 21, 23])) {
     			throw new OrderNoticeException('订单状态不可更改!');
     		}
@@ -105,6 +120,7 @@ class LevelingController extends Controller
     		} else {
     			$data = null;
     		}
+            // 手动改状态
     		$order->handChangeStatus($request->status, Auth::user(), $data);
     	} catch (OrderNoticeException $e) {
     		DB::rollback();
@@ -115,6 +131,11 @@ class LevelingController extends Controller
     	return response()->ajax(1, '修改状态为【'.config('order.status_leveling')[$request->status].'】成功!');
     }
 
+    /**
+     * 软删除订单
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function destroy(Request $request)
     {
         $res = OrderNotice::destroy($request->orderId);

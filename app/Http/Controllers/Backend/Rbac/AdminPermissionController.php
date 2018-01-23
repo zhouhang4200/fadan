@@ -7,6 +7,9 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限 权限管理
+ */
 class AdminPermissionController extends Controller
 {
     /**

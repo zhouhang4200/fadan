@@ -9,6 +9,9 @@ use App\Models\Order;
 use App\Models\UserOrderMoney;
 use Illuminate\Console\Command;
 
+/**
+ * 统计新老订单集市等等每天发单和接单金额
+ */
 class WriteUserOrderMoney extends Command
 {
     /**
@@ -44,13 +47,10 @@ class WriteUserOrderMoney extends Command
     {
         try {
             $users = User::where('parent_id', 0)->pluck('id');
-
             $start = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-
             $end = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
 
             foreach ($users as $user) {
-
                 $has = Order::where(function ($query) use ($user) {
                         $query->where('creator_primary_user_id', $user)
                         ->orWhere('gainer_primary_user_id', $user);
@@ -59,14 +59,11 @@ class WriteUserOrderMoney extends Command
                     ->first();
 
                 if (! $has) {
-
                     continue;
                 }
-
                 static::write($user);
             }
         } catch (Exception $e) {
-
             Log::error('写入数据失败', ['table' => 'user_order_moneys']);
         }
     }
@@ -74,11 +71,8 @@ class WriteUserOrderMoney extends Command
     protected static function write($masterUser)
     {
         try {
-
             $start = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-
             $end = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
-
             // 不分渠道 , 接单和发单
             $statusMoney = Order::where(function ($query) use ($masterUser) {
                         $query->where('creator_primary_user_id', $masterUser)
@@ -132,8 +126,6 @@ class WriteUserOrderMoney extends Command
             $dataTotal['time']               =  $start;
             $dataTotal['created_at']         =  Carbon::now()->toDateTimeString();
             $dataTotal['updated_at']         =  Carbon::now()->toDateTimeString();
-
-
             // 分渠道 , 接单和发单
             $sourceTotal = [];
 
@@ -156,7 +148,6 @@ class WriteUserOrderMoney extends Command
                 $sourceTotal[$k]['created_at']         =  Carbon::now()->toDateTimeString();
                 $sourceTotal[$k]['updated_at']         =  Carbon::now()->toDateTimeString();
             }
-
              // 分渠道 ，接单
             $receiveTotal = [];
 
@@ -179,7 +170,6 @@ class WriteUserOrderMoney extends Command
                 $receiveTotal[$k]['created_at']         =  Carbon::now()->toDateTimeString();
                 $receiveTotal[$k]['updated_at']         =  Carbon::now()->toDateTimeString();
             }
-
             // 分渠道， 发单
             $sendTotal = [];
 
@@ -217,9 +207,7 @@ class WriteUserOrderMoney extends Command
             } else {
                 Log::info('请勿重复写入数据!', ['table' => 'user_order_moneys']);
             }
-
         } catch (Exception $e) {
-
             Log::error('写入数据失败!', ['table' => 'user_order_moneys']);
         }
     }

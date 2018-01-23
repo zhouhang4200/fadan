@@ -95,27 +95,12 @@ class PlatformOrderStatistic extends Command
                         DATE_format(m.updated_at, '%Y-%m-%d') AS date, n.*, j.name, j.username, j.parent_id
                     FROM orders m
                     LEFT JOIN 
-                        (SELECT aa.order_no, aa.client_wang_wang, bb.security_deposit, cc.efficiency_deposit, dd.receiving_time, ee.checkout_time
-                        FROM
-                            (SELECT order_no, field_value AS client_wang_wang
-                            FROM order_details WHERE field_name = 'client_wang_wang') aa
-                        LEFT JOIN 
-                            (SELECT order_no, field_value AS security_deposit
-                            FROM order_details WHERE field_name = 'security_deposit' ) bb
-                        ON aa.order_no = bb.order_no
-                        LEFT JOIN 
-                            (SELECT order_no, field_value AS efficiency_deposit
-                            FROM order_details WHERE field_name = 'efficiency_deposit' ) cc
-                        ON aa.order_no = cc.order_no
-                        LEFT JOIN 
-                            (SELECT order_no, field_value AS receiving_time
-                            FROM order_details WHERE field_name = 'receiving_time' ) dd
-                        ON aa.order_no = dd.order_no 
-                        LEFT JOIN 
-                            (SELECT order_no, field_value AS checkout_time
-                            FROM order_details WHERE field_name = 'checkout_time' ) ee
-                        ON aa.order_no = ee.order_no 
-                        ) n
+                        (SELECT order_no, MAX(CASE WHEN field_name='client_wang_wang' THEN field_value ELSE '' END) AS client_wang_wang,
+                            MAX(CASE WHEN field_name='security_deposit' THEN field_value ELSE 0 END) AS security_deposit,
+                            MAX(CASE WHEN field_name='efficiency_deposit' THEN field_value ELSE 0 END) AS efficiency_deposit,
+                            MAX(CASE WHEN field_name='receiving_time' THEN field_value ELSE 0 END) AS receiving_time,
+                            MAX(CASE WHEN field_name='checkout_time' THEN field_value ELSE 0 END) AS checkout_time
+                            FROM order_details GROUP BY order_no) n
                     ON m.no = n.order_no
                     LEFT JOIN users j
                     ON m.creator_user_id = j.id

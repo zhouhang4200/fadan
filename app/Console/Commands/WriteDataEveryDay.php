@@ -9,6 +9,9 @@ use App\Models\Order;
 use App\Models\DayData;
 use Illuminate\Console\Command;
 
+/**
+ * 订单集市以及苹果卡等等各订单统计
+ */
 class WriteDataEveryDay extends Command
 {
     /**
@@ -48,70 +51,10 @@ class WriteDataEveryDay extends Command
 
             // 新订单集市
             $newOrderMarket = Order::where('status', 8)
-                            ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-                            ->select(DB::raw('sum(amount) as total'))
-                            ->value('total');
-
-            // $oldOrderMarket = DB::connection('qianshou')
-            //                 ->table('thousand_client_orders')
-            //                 ->select(DB::raw('sum(total_price) as total'))
-            //                 ->whereIn('status', [3, 20])
-            //                 ->where('recharge_channel', 12)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-
-            // $orderMarket = bcadd($newOrderMarket, $oldOrderMarket, 2);
-            // //转单市场
-            // $transferTransaction = DB::connection('qianshou')
-            //                 ->table('thousand_client_orders')
-            //                 ->select(DB::raw('sum(total_price) as total'))
-            //                 ->whereIn('status', [3, 20])
-            //                 ->where('recharge_channel', 4)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-            // // 库存托管
-            // $stock = DB::connection('qianshou')
-            //                 ->table('plugin_voucher')
-            //                 ->select(DB::raw('sum(denomination) as total'))
-            //                 ->where('status', 1)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-
-            // $apiOrder = DB::connection('qianshou')
-            //                 ->table('thousand_client_orders')
-            //                 ->select(DB::raw('sum(total_price) as total'))
-            //                 ->whereIn('status', [3, 20])
-            //                 ->where('recharge_channel', 3)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-
-            // $stockTrusteeship = bcadd($stock, $apiOrder, 2);
-            // // 库存交易市场
-            // $stockTransaction = DB::connection('qianshou')
-            //                 ->table('stock_trading_record')
-            //                 ->select(DB::raw('sum(expense) as total'))
-            //                 ->where('type', 1)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-            // // 慢充
-            // $slowRecharge = DB::connection('qianshou')
-            //                 ->table('apple_id_slow_charge')
-            //                 ->select(DB::raw('sum(amount_payable) as total'))
-            //                 ->where('status', 13)
-            //                 ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
-            //                 ->value('total');
-            // 写入数据库                 
-            // $datas = [
-            //     'date' => Carbon::now()->subDays(1)->startOfDay()->toDateTimeString(),
-            //     'stock_trusteeship' => $stockTrusteeship,
-            //     'stock_transaction' => $stockTransaction,
-            //     'transfer_transaction' => $transferTransaction,
-            //     'slow_recharge' => $slowRecharge,
-            //     'order_market' => $orderMarket,
-            //     'created_at' => Carbon::now()->toDateTimeString(),
-            //     'updated_at' => Carbon::now()->toDateTimeString(),
-            // ];
-
+                ->whereBetween('updated_at', [$yestodayStart, $yestodayEnd])
+                ->select(DB::raw('sum(amount) as total'))
+                ->value('total');
+                
             $datas = [
                 'date' => Carbon::now()->subDays(1)->startOfDay()->toDateTimeString(),
                 'stock_trusteeship' => 0,

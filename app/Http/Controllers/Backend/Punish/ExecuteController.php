@@ -19,6 +19,9 @@ use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Recharge;
 use App\Http\Controllers\Controller;
 
+/**
+ * 后台订单列表里面奖惩操作
+ */
 class ExecuteController extends Controller
 {
 	/**
@@ -54,7 +57,6 @@ class ExecuteController extends Controller
 	        	return response()->json(['code' => 1, 'message' => '成功创建一条罚单!']);
 	        }
 	        return response()->json(['code' => 2, 'message' => '罚单创建失败!']);
-
     	} catch (Exception $e) {
     		
     	}
@@ -99,7 +101,6 @@ class ExecuteController extends Controller
 	        $punish = PunishOrReward::create($data);
 
 	        if ($punish) {
-
 	        	$bool = Asset::handle(new Recharge($punish->add_money, 3, $punish->no, '奖励加款', $punish->user_id));
                 // 状态改为已加钱
 	        	if ($bool) {
@@ -275,9 +276,7 @@ class ExecuteController extends Controller
             ];
             // 操作日志状态改为撤销
             DB::table('punish_or_reward_revisions')->insert($data);
-
 	    	return response()->json(['code' => 1, 'message' => '同意申诉并撤销该条记录!']);
-
 	    } catch (Exception $e) {
 
 	    }
@@ -380,7 +379,6 @@ class ExecuteController extends Controller
                 ];
                 // 奖惩日志
                 DB::table('punish_or_reward_revisions')->insert($data);
-
                 return response()->json(['code' => 1, 'message' => '申诉驳回，并已对商家进行权重处罚!']);
 	    	}
     		 return response()->json(['code' => 2, 'message' => '系统错误!']);

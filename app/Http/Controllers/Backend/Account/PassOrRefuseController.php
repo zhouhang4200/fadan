@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\RealNameIdent;
 use App\Http\Controllers\Controller;
 
+/**
+ * 审核通过与否类
+ */
 class PassOrRefuseController extends Controller
 {
      /**

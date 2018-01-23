@@ -7,6 +7,9 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限 权限增删改查
+ */
 class PermissionController extends Controller
 {
     /**
@@ -42,24 +45,17 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         if (! $request->module_id) {
-
             return back()->withInput()->with('missModule', '请选择模块!');
         }
 
         $this->validate($request, Permission::rules(), Permission::messages());
-
         $data['guard_name'] = 'web';
-
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $data['module_id'] = $request->module_id;
-
         $res = Permission::create($data);
         
         if (! $res) {
-
             return back()->withInput()->with('createFail', '添加失败！');
         }
         return redirect(route('permissions.index'))->with('succ', '添加成功!');
@@ -85,7 +81,6 @@ class PermissionController extends Controller
     public function edit($id)
     {
         $permission = Permission::find($id);
-
         $modules = Module::where('guard_name', 'web')->get();
 
         return view('backend.rbac.permission.edit', compact('permission', 'modules'));
@@ -101,24 +96,19 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         if (! $request->module_id) {
-
             return back()->withInput()->with('missModule', '请选择模块!');
         }
         
         $this->validate($request, Permission::updateRules($id), Permission::messages());
 
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $data['module_id'] = $request->module_id;
-
         $permission = Permission::find($id);
 
         $int = $permission->update($data);
 
-        if ($int > 0) {
-            
+        if ($int > 0) {    
             return redirect(route('permissions.index'))->with('succ', '更新成功!');
         }
 
@@ -126,7 +116,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 删除权限
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -134,11 +124,9 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         $permission = Permission::find($id);
-
         $bool = $permission->delete();
 
         if ($bool) {
-
             $permission->rbacGroups()->detach($permission->id);
 
             return response()->json(['code' => '1', 'message' => '删除成功!']);

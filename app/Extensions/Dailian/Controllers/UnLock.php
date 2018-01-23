@@ -6,6 +6,9 @@ use DB;
 use App\Models\OrderHistory;
 use App\Exceptions\DailianException as Exception; 
 
+/**
+ * 取消锁定操作
+ */
 class UnLock extends DailianAbstract implements DailianInterface
 {
      //取消锁定 -> 锁定前的状态

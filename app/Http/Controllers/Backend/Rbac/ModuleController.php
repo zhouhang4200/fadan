@@ -6,6 +6,9 @@ use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限 模块增删改查
+ */
 class ModuleController extends Controller
 {
     /**
@@ -41,11 +44,8 @@ class ModuleController extends Controller
         $this->validate($request, Module::rules(), Module::messages());
 
         $data['guard_name'] = 'web';
-
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $res = Module::create($data);
         
         if (! $res) {
@@ -74,7 +74,6 @@ class ModuleController extends Controller
     public function edit($id)
     {
         $module = Module::find($id);
-
         return view('backend.rbac.module.edit', compact('module'));
     }
 
@@ -88,15 +87,10 @@ class ModuleController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, Module::updateRules($id), Module::messages());
-
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $module = Module::find($id);
-
         $int = $module->update($data);
-
         if ($int > 0) {
             return redirect(route('modules.index'))->with('succ', '更新成功!');
         }
@@ -113,9 +107,7 @@ class ModuleController extends Controller
     public function destroy($id)
     {
         $bool = Module::find($id)->delete();
-
         if ($bool) {
-
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
         return response()->json(['code' => '2', 'message' => '删除失败!']);
