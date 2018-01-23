@@ -292,6 +292,11 @@ class OrderRepository
                         $payment = '';
                         $haveMoney = '';
                         $poundage = '';
+                        $profit = '';
+                        $leftTime = '';
+                        $status = '';
+                        $time = '';
+
                         if ($v['status'] == 15 || $v['status'] == 16) {
                             $levelingConsult = LevelingConsult::where('order_no', $v['no'])->first();
                             if ($levelingConsult) {
@@ -308,11 +313,8 @@ class OrderRepository
                         // 利润
                         if ($v['status'] == 19 || $v['status'] == 20 || $v['status'] == 21 && isset($detail['source_price'])) {
                             $profit = bcsub(bcadd($haveMoney, bcsub($detail['source_price'], $payment)), $poundage);
-                        } else {
-                            $profit = '';
                         }
                         // 如果存在接单时间
-                        $leftTime = '';
                         if (isset($orderDetail['receiving_time']) && !empty($orderDetail['receiving_time'])) {
                             // 计算到期的时间戳
                             $expirationTimestamp = strtotime($orderDetail['receiving_time']) + $orderDetail['game_leveling_day'] * 86400 + $orderDetail['game_leveling_hour'] * 3600;
@@ -321,11 +323,9 @@ class OrderRepository
                             $leftTime = Sec2Time($leftSecond); // 剩余时间
                         }
                         // 状态转为文字
-                        $status = '';
                         if ($v['status']) {
                             $status = isset(config('order.status_leveling')[$v['status']]) ? config('order.status_leveling')[$v['status']] : config('order.status')[$v['status']];
                         }
-                        $time = '';
                         if (isset($detail['game_leveling_day'])) {
                             $time = bcadd(bcmul($detail['game_leveling_day'], 8600), bcmul($detail['game_leveling_hour'], 60)) ?? 0;
                         }
