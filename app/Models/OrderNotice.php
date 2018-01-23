@@ -11,7 +11,7 @@ class OrderNotice extends Model
 	
     protected $fillable = [
     	'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'creator_user_name', 'order_no',
-    	'third_order_no', 'third', 'status', 'third_status', 'create_order_time', 'created_at', 'updated_at'
+    	'third_order_no', 'third', 'status', 'third_status', 'create_order_time', 'created_at', 'updated_at', 'amount', 'security_deposit', 'efficiency_deposit',
     ];
 
     protected $dates = ['deleted_at'];
