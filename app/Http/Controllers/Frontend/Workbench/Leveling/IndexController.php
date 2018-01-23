@@ -304,7 +304,7 @@ class IndexController extends Controller
         }
 
         // 撤销说明
-        if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0) {
+        if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
 
             //发起人的主ID 与 当前主ID一样则撤销发起人
             $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
@@ -325,7 +325,7 @@ class IndexController extends Controller
             $detail['consult_desc'] = $text;
         }
         // 仲裁说明
-        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complain'] != 0) {
+        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complain'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
             //发起人的主ID 与 当前主ID一样则仲裁发起人
             $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
             if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
