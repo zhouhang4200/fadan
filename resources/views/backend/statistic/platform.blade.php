@@ -1,13 +1,13 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 代练订单报警')
+@section('title', ' | 代练平台订单统计')
 
 @section('content')
     <div class="row">
         <div class="col-lg-12">
             <ol class="breadcrumb">
                 <li class=""><span>首页</span></li>
-                <li class="active"><span>代练订单报警</span></li>
+                <li class="active"><span>代练平台订单统计</span></li>
             </ol>
         </div>
     </div>
@@ -18,16 +18,7 @@
                     <form class="layui-form">
                         <div class="row">
                             <div class="layui-form-item">
-                                <label class="layui-form-label">接单平台</label>
-                                <div class="form-group col-xs-2">
-                                    <select name="third" lay-filter="">                
-                                        <option value="">请输入岗位名称</option>
-                                        @forelse(config('order.third') as $key => $thirdItem)
-                                            <option value="{{ $key }}" {{ $key == $third ? 'selected' : '' }} >{{ $thirdItem }}</option>
-                                        @empty
-                                        @endforelse
-                                    </select>
-                                </div>
+                                
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="form-group col-xs-1">
                                     <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ $startDate }}">

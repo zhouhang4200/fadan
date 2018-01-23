@@ -21,11 +21,8 @@
                                 <label class="layui-form-label">接单平台</label>
                                 <div class="form-group col-xs-2">
                                     <select name="third" lay-filter="">                
-                                        <option value="">请输入岗位名称</option>
-                                        @forelse(config('order.third') as $key => $thirdItem)
-                                            <option value="{{ $key }}" {{ $key == $third ? 'selected' : '' }} >{{ $thirdItem }}</option>
-                                        @empty
-                                        @endforelse
+                                        <option value="">请选择</option>
+                                            <option value="{{ 1 }}" {{ 1 == $third ? 'selected' : '' }} >91代练平台</option>
                                     </select>
                                 </div>
                                 <label class="layui-form-label">发布时间</label>
