@@ -382,8 +382,7 @@ if (!function_exists('whoCanReceiveOrder')) {
                         ->pluck('other_user_id')
                         ->toArray();
 
-            $goodsWhite = UserReceivingGoodsControl::where('service_id', $serviceId)
-                ->where('user_id', $sendUserId)
+            $goodsWhite = UserReceivingGoodsControl::where('user_id', $sendUserId)
                 ->where('goods_id', $goodsId)
                 ->where('type', 1)
                 ->pluck('other_user_id')
