@@ -76,7 +76,7 @@ class LevelingController extends Controller
                         $data['order_no'] ?? '--',
                         $data['status'] ? config("order.status_leveling")[$data['status']] : '--',
                         $data['third_status'] ? config("order.show91")[$data['third_status']] : '--',
-                        $data['third'] ? config("order.third")[$data['third_status']] : '--',
+                        $data['third'] ? config("order.third")[$data['third']] : '--',
                         $data['create_order_time'] ?? '--',
                     ];
                 }
