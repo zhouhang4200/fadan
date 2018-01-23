@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Exceptions\AssetException;
+use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\ForeignOrder\ForeignOrder;
@@ -874,6 +875,13 @@ class IndexController extends Controller
             $orderArr = array_merge($orderInfo->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo->toArray());
 
             if (isset($orderArr['client_phone']) && $orderArr['client_phone']) {
+                // 扣款
+                try {
+                    Asset::handle(new Consume(0.1, 4, $orderInfo->no, '短信费', Auth::user()->getPrimaryUserId()));
+                } catch (CustomException $exception) {
+                    return response()->ajax(0, $exception->getMessage());
+                }
+
                 $sendResult = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
 
                 if ((bool)strpos($sendResult, "mterrcode=000")) {
@@ -885,6 +893,8 @@ class IndexController extends Controller
                         'client_phone' => $orderArr['client_phone'],
                         'content' => $request->contents,
                     ]);
+
+
                     return response()->ajax(1, '发送成功!');
                 }
             } else {

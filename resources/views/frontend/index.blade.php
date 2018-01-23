@@ -361,6 +361,7 @@
                 }
             });
             layer.closeAll();
+            window.location.href="{{ route('users.persional') }}";
             return false;
         });
          // 修改头像
@@ -380,7 +381,7 @@
                     layer.msg(result.message, {
                         time:1500,
                         icon:6
-                    })
+                    });
                      var styles="url('"+result.path+"')";
                     $('#user-img').css('background-image', styles);
                 } else {
