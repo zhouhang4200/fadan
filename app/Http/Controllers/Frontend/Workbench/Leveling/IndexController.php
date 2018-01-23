@@ -265,8 +265,6 @@ class IndexController extends Controller
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
-        $detail['consult_type'] = $detail['leveling_consult']['complain'] ?? '';
-
 
         if (!in_array($detail['status'], [19, 20, 21])){
             $detail['payment_amount'] = '';
@@ -894,7 +892,6 @@ class IndexController extends Controller
                         'content' => $request->contents,
                     ]);
 
-
                     return response()->ajax(1, '发送成功!');
                 }
             } else {
@@ -919,7 +916,7 @@ class IndexController extends Controller
         $endDate = $request->endDate ?? 0;
         $status = $request->status ?? 0;
         $urgentOrder = $request->urgentOrder ?? 0;
-        $serviceId = 2;
+        $serviceId = 4;
 
         $orderRepository->levelingExport(compact('serviceId', 'status', 'no', 'foreignOrderNo', 'gameId', 'wangWang', 'urgentOrder', 'startDate', 'endDate'));
     }

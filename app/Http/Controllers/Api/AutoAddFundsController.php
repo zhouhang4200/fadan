@@ -22,7 +22,7 @@ class AutoAddFundsController
      */
     public function member(Request $request)
     {
-        if (!in_array(getClientIp(), ['120.26.205.22'])) {
+        if (!in_array(getClientIp(), ['113.57.130.18'])) {
             return response()->ajax(0, 'IP不在白名单');
         }
         $token = '4cdM8BQ894RnN9LrcwpdTJpHo7Ga4MIrm1';
@@ -46,6 +46,7 @@ class AutoAddFundsController
 
         $cryptData = $crypt->decrypt(base64_decode($data));
 
+        myLog('auto-funds', [$cryptData]);
         try {
             $requestData = json_decode($cryptData);
         } catch (\Exception $e) {
