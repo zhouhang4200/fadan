@@ -469,7 +469,7 @@ class LevelingController
             $data['security_deposit'] = $orderDetail['security_deposit'];
             $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
 
-            OrderNotice::updateOrCreate(['order_no' => $order->no], $data);
+            OrderNotice::create($data);
         } catch (OrderNoticeException $e) {
             DB::rollback();
             myLog('order-notice-e', [$e->getMessage()]);
