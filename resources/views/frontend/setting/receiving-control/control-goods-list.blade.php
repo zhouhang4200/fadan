@@ -1,18 +1,10 @@
 <form class="layui-form" id="category-form">
     <div class="layui-form-item">
         <div class="layui-input-inline">
-            <select name="service_id">
-                <option value="">所有类型</option>
-                @foreach ($services as $key => $value)
-                    <option value="{{ $key }}" {{ $key == $serviceId ? 'selected' : '' }}>{{ $value }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="layui-input-inline">
-            <select name="game_id"   lay-search="">
+            <select name="goods_id"   lay-search="">
                 <option value="">所有商品</option>
-                @foreach ($games as $key => $value)
-                    <option value="{{ $key }}" {{ $key == $gameId ? 'selected' : '' }}>{{ $value }}</option>
+                @foreach ($goods as $key => $value)
+                    <option value="{{ $key }}" {{ $key == $goodsId ? 'selected' : '' }}>{{ $value }}</option>
                 @endforeach
             </select>
         </div>
@@ -56,7 +48,7 @@
     @empty
 
         <tr>
-            @if($otherUserId || $serviceId || $gameId)
+            @if($otherUserId  || $goodsId)
                 <td colspan="10">没有搜索到相关数据</td>
             @else
                 <td colspan="10">您还没有添加{{ $type == 1 ? '白' : '黑' }}名单用户ID</td>
@@ -66,4 +58,4 @@
     </tbody>
 </table>
 
-{{ $controlCategoryList->appends(['type' => $type, 'service_id' => $serviceId, 'game_id' => $gameId,'other_user_id' => $otherUserId,])->links() }}
+{{ $controlCategoryList->appends(['type' => $type, 'goods_od' => $goodsId,'other_user_id' => $otherUserId,])->links() }}

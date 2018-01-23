@@ -32,7 +32,7 @@ class UserGoodsRepository
                 return $query->where('foreign_goods_id',  $foreignGoodsId);
             })
             ->when(!empty($name), function ($query) use ($name){
-                return $query->where('name',  '%' . $name . '%');
+                return $query->where('name',  'like', '%' . $name . '%');
             })
             ->orderBy('service_id')
             ->orderBy('game_id')

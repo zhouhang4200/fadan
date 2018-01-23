@@ -200,18 +200,15 @@ class ReceivingControlController extends Controller
 
     /**
      * @param Request $request
-     * @param ServiceRepository $serviceRepository
      * @param GameRepository $gameRepository
      * @return JsonResponse
      */
-    public function getControlGoods(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
+    public function getControlGoods(Request $request, GameRepository $gameRepository)
     {
         $type = $request->input('type', 1);
         $goodsId = $request->input('goods_id');
         $otherUserId = $request->input('other_user_id');
 
-        $services = $serviceRepository->available();
-        $games  = $gameRepository->available();
 
         // 获取数据
         $controlCategoryList = $this->receivingControlRepository->goodsList($type, $otherUserId, $goodsId);
@@ -223,11 +220,9 @@ class ReceivingControlController extends Controller
             return response()->json(\View::make('frontend.setting.receiving-control.control-goods-list', [
                 'controlCategoryList' => $controlCategoryList,
                 'type' => $type,
-                'gameId' => $gameId,
-                'serviceId' => $serviceId,
+                'goodsId' => $goodsId,
                 'otherUserId' => $otherUserId,
-                'services' => $services,
-                'games' => Goods::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id'),
+                'goods' => Goods::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id'),
             ])->render());
         }
     }
