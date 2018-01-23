@@ -27,21 +27,15 @@ class LevelingController extends Controller
 	    	$filters = compact('third', 'startDate', 'endDate');
             $ourStatus = config('order.status_leveling');
 	    	
-	    	$query = OrderNotice::where('complete', 0)->filter($filters);
+	    	$query = OrderNotice::where('complete', 0)->filter($filters)->latest('id');
             // 订单报警数据列表
-	    	$paginateOrderNotices = $query->with(['order' => function ($query) {
-	    		$query->with(['orderDetails' => function ($query) {
-	    			$query->where('field_name', 'security_deposit')->orwhere('field_name', 'efficiency_deposit');
-	    		}]);
-	    	}])->paginate(config('backend.page'));
-
-	    	$excelOrderNotices = $query->get();
+	    	$paginateOrderNotices = $query->paginate(config('backend.page'));
 
 	    	if ($request->export) {
-	    		if ($excelOrderNotices->count() < 1) {
+	    		if ($paginateOrderNotices->count() < 1) {
 	    			throw new OrderNoticeException('数据为空!');
 	    		}
-	            return $this->export($excelOrderNotices);
+	            return $this->export($paginateOrderNotices->toArray()['data']);
 	    	}
             // 特定的状态
             foreach ($ourStatus as $key => $status) {
@@ -57,10 +51,10 @@ class LevelingController extends Controller
 
     /**
      * 导出
-     * @param  [type] $excelOrderNotices [description]
+     * @param  [type] $paginateOrderNotices [description]
      * @return [type]                    [description]
      */
-    public function export($excelOrderNotices)
+    public function export($paginateOrderNotices)
     {
     	$title = [
     		'订单号',
@@ -70,9 +64,9 @@ class LevelingController extends Controller
     		'发布时间',
     	];
 
-    	$chunkDatas = array_chunk(array_reverse($excelOrderNotices->toArray()), 100);
+    	$chunkDatas = array_chunk($paginateOrderNotices, 50);
 
-        Excel::create('订单报警', function ($excel) use ($chunkDatas, $title, $totalData) {
+        Excel::create('订单报警', function ($excel) use ($chunkDatas, $title) {
 
             foreach ($chunkDatas as $chunkData) {
                 // 内容

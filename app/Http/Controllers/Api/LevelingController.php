@@ -452,18 +452,22 @@ class LevelingController
     {
         DB::beginTransaction();
         try {
+            $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
             $data = [];
             $data['creator_user_id'] = $order->creator_user_id;
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
             $data['gainer_user_id'] = $order->gainer_user_id;
             $data['creator_user_name'] = $order->creatorUser->name;
             $data['order_no'] = $order->no;
-            $data['third_order_no'] = $order->detail()->where('field_name', 'third_order_no')->value('field_value');
-            $data['third'] = $order->detail()->where('field_name', 'third')->value('field_value');
+            $data['third_order_no'] = $orderDetail['third_order_no'];
+            $data['third'] = $orderDetail['third'];
             $data['status'] = $order->status;
             $data['third_status'] = $this->getThirdOrderStatus($data['third_order_no']);
             $data['create_order_time'] = $order->created_at;
             $data['complete'] = 0;
+            $data['amount'] = $order->amount;
+            $data['security_deposit'] = $orderDetail['security_deposit'];
+            $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
 
             OrderNotice::updateOrCreate(['order_no' => $order->no], $data);
         } catch (OrderNoticeException $e) {

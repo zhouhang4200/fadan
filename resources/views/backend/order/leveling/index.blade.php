@@ -20,7 +20,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">接单平台</label>
                                 <div class="form-group col-xs-2">
-                                    <select name="station" lay-filter="">                
+                                    <select name="third" lay-filter="">                
                                         <option value="">请输入岗位名称</option>
                                         @forelse(config('order.third') as $key => $thirdItem)
                                             <option value="{{ $key }}" {{ $key == $third ? 'selected' : '' }} >{{ $thirdItem }}</option>
@@ -66,8 +66,8 @@
                                     <td>{{ $paginateOrderNotice->create_order_time }}</td>
                                     <td>
                                         <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
-                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->order->amount }}" data-safe="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'security_deposit')->value('field_value') }}"
-                                            data-effect="{{ $paginateOrderNotice->order->orderDetails()->where('field_name', 'efficiency_deposit')->value('field_value') }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
+                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->amount }}" data-safe="{{ $paginateOrderNotice->security_deposit }}"
+                                            data-effect="{{ $paginateOrderNotice->efficiency_deposit }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
                                                 <option value="">修改状态</option>
                                                 @forelse($ourStatus as $key => $status)
                                                     <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
@@ -228,7 +228,7 @@
                     type: 1,
                     shade: 0.2,
                     title: '申请撤销',
-                    area: ['650px', '550px'],
+                    area: ['650px', '700px'],
                     content: $('.consult')
                 });
                 form.on('submit(consult)', function(data){
@@ -245,15 +245,15 @@
                         }
                     });
                     layer.closeAll();
+                window.location.href="{{ route('order.leveling.index') }}";
                     return false;
-                    window.location.href="{{ route('order.leveling.index') }}";
                 });
             } else if (data.value == 16) {
                 layer.open({
                     type: 1,
                     shade: 0.2,
                     title: '申请仲裁',
-                    area: ['500px', '280px'],
+                    area: ['500px', '350px'],
                     content: $('.complain')
                 });
                 form.on('submit(complain)', function(data){
@@ -270,8 +270,8 @@
                         }
                     });
                     layer.closeAll();
-                    return false;
                     window.location.href="{{ route('order.leveling.index') }}";
+                    return false;
                 });
             } else {
                 layer.confirm('确认修改订单状态为【'+changeStatus+'】吗？', {icon: 3, title:'提示'}, function(index){
