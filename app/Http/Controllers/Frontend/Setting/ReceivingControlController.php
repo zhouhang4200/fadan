@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
+use App\Extensions\Asset\Recharge;
+use App\Models\Goods;
 use App\Models\UserSetting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,6 +46,7 @@ class ReceivingControlController extends Controller
 
         $services = $serviceRepository->available();
         $games  = $gameRepository->available();
+        $goods = Goods::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id');
 
         // 用户白名单
         $userWitheList = $this->receivingControlRepository->userList(1);
@@ -54,7 +57,7 @@ class ReceivingControlController extends Controller
         $receivingControl = isset(Auth::user()->getUserSetting()['receiving_control']) ?
             Auth::user()->getUserSetting()['receiving_control'] : 0;
 
-        return view('frontend.setting.receiving-control.index', compact('services', 'games',
+        return view('frontend.setting.receiving-control.index', compact('services', 'games', 'goods',
             'gameId', 'serviceId', 'otherUserId', 'userWitheList', 'userBlacklist', 'receivingControl'));
     }
 
@@ -110,6 +113,28 @@ class ReceivingControlController extends Controller
                 $request->data['service_id'],
                 $request->data['game_id'],
                 $request->data['other_user_id'],
+                $request->data['remark']);
+            return response()->ajax(1, '添加成功');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+    }
+
+
+    /**
+     * 按商品添加
+     * @param Request $request
+     * @return mixed
+     */
+    public function addGoods(Request $request)
+    {
+        if (!in_array($request->data['type'], [1 , 2]) || !is_numeric($request->data['other_user_id'])) {
+            return response()->ajax(0, '添加失败');
+        }
+        try {
+            $this->receivingControlRepository->addGoods($request->data['type'],
+                $request->data['other_user_id'],
+                $request->data['goods_id'],
                 $request->data['remark']);
             return response()->ajax(1, '添加成功');
         } catch (CustomException $exception) {
@@ -175,6 +200,42 @@ class ReceivingControlController extends Controller
 
     /**
      * @param Request $request
+     * @param ServiceRepository $serviceRepository
+     * @param GameRepository $gameRepository
+     * @return JsonResponse
+     */
+    public function getControlGoods(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
+    {
+        $type = $request->input('type', 1);
+        $gameId = $request->input('game_id');
+        $serviceId = $request->input('service_id');
+        $otherUserId = $request->input('other_user_id');
+
+        $services = $serviceRepository->available();
+        $games  = $gameRepository->available();
+
+        // 获取数据
+        $controlCategoryList = $this->receivingControlRepository->goodsList($type, $otherUserId, $serviceId, $gameId);
+
+        if ($request->ajax()) {
+            if (!in_array($type, [1 , 2])) {
+                return response()->ajax(0, '不存在的类型');
+            }
+            return response()->json(\View::make('frontend.setting.receiving-control.control-goods-list', [
+                'controlCategoryList' => $controlCategoryList,
+                'type' => $type,
+                'gameId' => $gameId,
+                'serviceId' => $serviceId,
+                'otherUserId' => $otherUserId,
+                'services' => $services,
+                'games' => Goods::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id'),
+            ])->render());
+        }
+    }
+
+
+    /**
+     * @param Request $request
      */
     public function deleteControlUser(Request $request)
     {
@@ -194,6 +255,20 @@ class ReceivingControlController extends Controller
     {
         try {
             $this->receivingControlRepository->deleteCategory($request->id);
+            return response()->ajax(1, '删除成功');
+        } catch (CustomException $customException) {
+            return response()->ajax(0, $customException->getMessage());
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function  deleteControlGoods(Request $request)
+    {
+        try {
+            $this->receivingControlRepository->deleteGoods($request->id);
             return response()->ajax(1, '删除成功');
         } catch (CustomException $customException) {
             return response()->ajax(0, $customException->getMessage());

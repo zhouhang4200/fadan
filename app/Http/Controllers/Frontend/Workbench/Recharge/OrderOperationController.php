@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Frontend\Workbench;
+namespace App\Http\Controllers\Frontend\Workbench\Recharge;
 
 use Order;
 use Carbon\Carbon;
@@ -36,8 +36,8 @@ class OrderOperationController extends Controller
     {
         // 惩罚-》有罚单没交
         $deadline = PunishOrReward::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('type', 2)
-                ->whereIn('status', ['3', '9'])
+                ->whereIn('type', [2, 6])
+                ->whereIn('status', [1, 9])
                 ->orderBy('deadline')
                 ->value('deadline');
 
@@ -88,13 +88,13 @@ class OrderOperationController extends Controller
         $order = OrderModel::where('no', $orderNo)->first();
 
         // 检测是否允许接单，允许则写入队列中否则不写入
-        if (whoCanReceiveOrder($order->creator_primary_user_id, $primaryUserId, $order->service_id, $order->game_id)) {
+        if (whoCanReceiveOrder($order->creator_primary_user_id, $primaryUserId, $order->service_id, $order->game_id, $order->goods_id)) {
             // 接单成功，将主账号ID与订单关联写入redis 防止用户多次接单
             receivingRecord($primaryUserId, $orderNo);
             // 接单后，将当前接单用户的ID写入相关的订单号的队列中
             receiving($currentUserId, $orderNo);
         } else {
-            return response()->ajax(1, "此订单您无权接单，请联系商家（" . $order->creator_primary_user_id . "）");
+            return response()->ajax(0, "此订单您无权接单，请联系商家（" . $order->creator_primary_user_id . "）");
         }
         // 提示用户：接单成功等待系统分配
         return response()->ajax(1, '抢单成功,等待系统分配');
@@ -190,7 +190,7 @@ class OrderOperationController extends Controller
             // 调用退回
             Order::handle(new TurnBack($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -205,9 +205,9 @@ class OrderOperationController extends Controller
     {
         try {
             // 调用退回
-            Order::handle(new AskForAfterService($request->no, Auth::user()->id));
+            Order::handle(new AskForAfterService($request->no, Auth::user()->id, $request->remark));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
@@ -223,7 +223,7 @@ class OrderOperationController extends Controller
             // 调用退回
             Order::handle(new Payment($request->no, Auth::user()->id));
             // 返回操作成功
-            return response()->ajax(0, '操作成功');
+            return response()->ajax(1, '操作成功');
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }

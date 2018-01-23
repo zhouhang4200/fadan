@@ -32,7 +32,8 @@
     <div class="layui-tab  @if($receivingControl != 1) layui-hide  @endif" lay-filter="whitelist" id="whitelist">
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="1">用户接单白名单</li>
-            <li lay-id="2">商品接单白名单</li>
+            <li lay-id="2">游戏接单白名单</li>
+            <li lay-id="3">商品接单白名单</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -40,6 +41,9 @@
             </div>
             <div class="layui-tab-item">
                 <div class="whitelist-category-box"></div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="whitelist-goods-box"></div>
             </div>
         </div>
     </div>
@@ -104,6 +108,36 @@
             </div>
         </form>
     </div>
+
+    <div id="goods-add" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="required">
+                    @foreach ($services as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <select name="goods_id" lay-verify="required">
+                    @foreach ($goods as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
+                <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('js')
@@ -118,8 +152,10 @@
                 white = this.getAttribute('lay-id');
                 if (white == 1) {
                     loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}'  + '?type=' + type);
-                } else {
+                } else if(white == 2) {
                     loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type)
+                } else {
+                    loadGoodsList('{{ route('frontend.setting.receiving-control.get-control-goods') }}'  + '?type=' + type)
                 }
             });
             element.on('tab(blacklist)', function(){
@@ -184,6 +220,18 @@
                 });
                 return false;
             });
+            // 按商品添加
+            form.on('submit(category-add)', function (data) {
+                var title = data.elem.getAttribute('data-type') == 1 ? '商品接单白名单添加' : '商品接单黑名单添加';
+                $('#goods-add-form > input[name=type]').val(data.elem.getAttribute('data-type'));
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: title,
+                    content: $('#goods-add')
+                });
+                return false;
+            });
             // 保存按用户添加的数据
             form.on('submit(user-add-save)', function (data) {
                 $.post('{{ route('frontend.setting.receiving-control.add-user') }}', {data:data.field}, function (result) {
@@ -206,6 +254,17 @@
                 }, 'json');
                 return false;
             });
+            // 保存按商品添加的数据
+            form.on('submit(goods-add-save)', function (data) {
+                $.post('{{ route('frontend.setting.receiving-control.add-goods') }}', {data:data.field}, function (result) {
+                    layer.closeAll();
+                    layer.msg(result.message);
+                    if (result.status == 1) {
+                        loadGoodsList('{{ route('frontend.setting.receiving-control.get-control-goods') }}'  + '?type=' + type);
+                    }
+                }, 'json');
+                return false;
+            });
             // 删除用户名单中的用户ID
             form.on('submit(delete-user)', function (data) {
                 layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
@@ -222,6 +281,16 @@
                     $.post('{{ route('frontend.setting.receiving-control.delete-control-category') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
                         layer.msg(result.message);
                         loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type);
+                    }, 'json');
+                });
+                return false;
+            });
+            // 删除商品中的用户ID
+            form.on('submit(delete-goods)', function (data) {
+                layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
+                    $.post('{{ route('frontend.setting.receiving-control.delete-control-goods') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        loadGoodsList('{{ route('frontend.setting.receiving-control.get-control-goods') }}'  + '?type=' + type);
                     }, 'json');
                 });
                 return false;
@@ -265,6 +334,18 @@
                         layui.form.render();
                     } else {
                         $('.blacklist-category-box').html(result);
+                        layui.form.render();
+                    }
+                }, 'json');
+            }
+            // 按商品加载数据
+            function loadGoodsList(url) {
+                $.get(url, function (result) {
+                    if (type == 1) {
+                        $('.whitelist-goods-box').html(result);
+                        layui.form.render();
+                    } else {
+                        $('.blacklist-goods-box').html(result);
                         layui.form.render();
                     }
                 }, 'json');

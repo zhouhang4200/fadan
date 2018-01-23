@@ -35,12 +35,13 @@ class GoodsController extends Controller
         $serviceId = $request->service_id;
         $gameId = $request->game_id;
         $foreignGoodsId = $request->foreign_goods_id;
+        $name = $request->name;
 
         $services = $serviceRepository->available();
         $games  = $gameRepository->available();
-        $goods  = $userGoodsRepository->getList($serviceId, $gameId, $foreignGoodsId);
+        $goods  = $userGoodsRepository->getList($serviceId, $gameId, $foreignGoodsId, $name);
 
-        return view('frontend.goods.index', compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId'));
+        return view('frontend.goods.index', compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId', 'name'));
     }
 
     /**

@@ -127,10 +127,13 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'ReceivingControlController@index')->name('frontend.setting.receiving-control.index')->middleware('permission:frontend.setting.receiving-control.index');
             Route::get('get-control-user', 'ReceivingControlController@getControlUser')->name('frontend.setting.receiving-control.get-control-user')->middleware('permission:frontend.setting.receiving-control.get-control-user');
             Route::get('get-control-category', 'ReceivingControlController@getControlCategory')->name('frontend.setting.receiving-control.get-control-category')->middleware('permission:frontend.setting.receiving-control.get-control-category');
+            Route::get('get-control-goods', 'ReceivingControlController@getControlGoods')->name('frontend.setting.receiving-control.get-control-goods')->middleware('permission:frontend.setting.receiving-control.get-control-goods');
             Route::post('add-user', 'ReceivingControlController@addUser')->name('frontend.setting.receiving-control.add-user')->middleware('permission:frontend.setting.receiving-control.add-user');
             Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category')->middleware('permission:frontend.setting.receiving-control.add-category');
+            Route::post('add-goods', 'ReceivingControlController@addGoods')->name('frontend.setting.receiving-control.add-goods')->middleware('permission:frontend.setting.receiving-control.add-goods');
             Route::post('delete-control-user', 'ReceivingControlController@deleteControlUser')->name('frontend.setting.receiving-control.delete-control-user')->middleware('permission:frontend.setting.receiving-control.delete-control-user');
             Route::post('delete-control-category', 'ReceivingControlController@deleteControlCategory')->name('frontend.setting.receiving-control.delete-control-category')->middleware('permission:frontend.setting.receiving-control.delete-control-category');
+            Route::post('delete-control-goods', 'ReceivingControlController@deleteControlGoods')->name('frontend.setting.receiving-control.delete-control-goods')->middleware('permission:frontend.setting.receiving-control.delete-control-goods');
             Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode')->middleware('permission:frontend.setting.receiving-control.control-mode');
         });
         // api 风控设置
@@ -173,10 +176,37 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 工作台
 	Route::namespace('Workbench')->prefix('workbench')->group(function () {
 
+        // 首页
+        Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
+
         // 代充
         Route::namespace('Recharge')->prefix('recharge')->group(function (){
             // 首页
             Route::get('/', 'IndexController@index')->name('frontend.workbench.recharge.index')->middleware('permission:frontend.workbench.recharge.index');
+
+            // 订单操作
+            Route::prefix('order-operation')->group(function (){
+                // 订单详情
+                Route::get('detail', 'OrderOperationController@detail')->name('frontend.workbench.order-operation.detail')->middleware('permission:frontend.workbench.order-operation.detail');
+                // 订单发货
+                Route::post('delivery', 'OrderOperationController@delivery')->name('frontend.workbench.order-operation.delivery')->middleware('permission:frontend.workbench.order-operation.delivery');
+                // 失败订单
+                Route::post('fail', 'OrderOperationController@fail')->name('frontend.workbench.order-operation.fail')->middleware('permission:frontend.workbench.order-operation.fail');
+                // 取消订单
+                Route::post('cancel', 'OrderOperationController@cancel')->name('frontend.workbench.order-operation.cancel')->middleware('permission:frontend.workbench.order-operation.cancel');
+                // 确认收货
+                Route::post('confirm', 'OrderOperationController@confirm')->name('frontend.workbench.order-operation.confirm')->middleware('permission:frontend.workbench.order-operation.confirm');
+                // 返回集市
+                Route::post('turn-back', 'OrderOperationController@turnBack')->name('frontend.workbench.order-operation.turnBack')->middleware('permission:frontend.workbench.order-operation.turnBack');
+                // 申请售后
+                Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('permission:frontend.workbench.order-operation.after-sales');
+                // 接单
+                Route::group(['middleware'=>'throttle:30'],function(){
+                    Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('permission:frontend.workbench.order-operation.receiving');
+                });
+                // 支付
+                Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
+            });
         });
 
         // 代练
@@ -184,7 +214,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 获取下单项的子菜单
             Route::post('get-select-child', 'IndexController@getSelectChild')->name('frontend.workbench.get-select-child');
             // 首页
-//            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index')->middleware('permission:frontend.workbench.leveling.index');
             Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index');
             // 根据订单状态获取订单数据
             Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
@@ -228,8 +257,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('send-sms', 'IndexController@sendSms')->name('frontend.workbench.leveling.send-sms');
         });
 
-        // 首页
-        Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods')->middleware('permission:frontend.workbench.goods');
         // 商品模版
@@ -247,29 +274,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 修改当前账号状态
         Route::post('set-status', 'IndexController@setStatus')->name('frontend.workbench.set-status');
 
-        // 订单操作
-        Route::prefix('order-operation')->group(function (){
-            // 订单详情
-            Route::get('detail', 'OrderOperationController@detail')->name('frontend.workbench.order-operation.detail')->middleware('permission:frontend.workbench.order-operation.detail');
-            // 订单发货
-            Route::post('delivery', 'OrderOperationController@delivery')->name('frontend.workbench.order-operation.delivery')->middleware('permission:frontend.workbench.order-operation.delivery');
-            // 失败订单
-            Route::post('fail', 'OrderOperationController@fail')->name('frontend.workbench.order-operation.fail')->middleware('permission:frontend.workbench.order-operation.fail');
-            // 取消订单
-            Route::post('cancel', 'OrderOperationController@cancel')->name('frontend.workbench.order-operation.cancel')->middleware('permission:frontend.workbench.order-operation.cancel');
-            // 确认收货
-            Route::post('confirm', 'OrderOperationController@confirm')->name('frontend.workbench.order-operation.confirm')->middleware('permission:frontend.workbench.order-operation.confirm');
-            // 返回集市
-            Route::post('turn-back', 'OrderOperationController@turnBack')->name('frontend.workbench.order-operation.turnBack')->middleware('permission:frontend.workbench.order-operation.turnBack');
-            // 申请售后
-            Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('permission:frontend.workbench.order-operation.after-sales');
-			// 接单
-            Route::group(['middleware'=>'throttle:30'],function(){
-                Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('permission:frontend.workbench.order-operation.receiving');
-            });
-        	// 支付
-            Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('permission:frontend.workbench.order-operation.payment');
-           });
 	});
 
 	Route::namespace('Data')->prefix('data')->group(function () {

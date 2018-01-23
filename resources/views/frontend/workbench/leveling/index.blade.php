@@ -61,6 +61,9 @@
             height: 40px;
             line-height: 20px;
         }
+        .layui-form-select dl {
+            max-height: 500px;
+        }
     </style>
 @endsection
 

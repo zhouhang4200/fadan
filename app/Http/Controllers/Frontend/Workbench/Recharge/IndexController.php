@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend\Workbench;
+namespace App\Http\Controllers\Frontend\Workbench\Recharge;
 
 use App\Events\NotificationEvent;
 use App\Extensions\Order\Operations\CreateLeveling;

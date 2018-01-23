@@ -28,7 +28,7 @@ class AutoAddFundsController
         $token = '4cdM8BQ894RnN9LrcwpdTJpHo7Ga4MIrm1';
         $data = $request->input('data', 0);
         $sign = $request->input('sign', 0);
-        $timestamp = $request->input('timestamp', 0);
+        $timestamp = $request->input('timestamp', time());
 
         if (abs($timestamp - time()) > 120) {
             return response()->ajax(0, '无效请求');
@@ -43,7 +43,6 @@ class AutoAddFundsController
         }
 
         $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
-
         $cryptData = $crypt->decrypt(base64_decode($data));
 
         myLog('auto-funds', [$cryptData]);

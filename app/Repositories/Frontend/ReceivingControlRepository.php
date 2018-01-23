@@ -2,6 +2,7 @@
 namespace App\Repositories\Frontend;
 
 use App\Exceptions\CustomException;
+use App\Models\UserReceivingGoodsControl;
 use Auth;
 use DB;
 use Exception;
@@ -65,6 +66,33 @@ class ReceivingControlRepository
     }
 
     /**
+     * 商品列表
+     * @param $type
+     * @param $otherUserId
+     * @param int $serviceId
+     * @param $goodsId
+     * @param int $pageSize
+     * @return mixed
+     */
+    public function goodsList($type, $otherUserId, $serviceId = 0, $goodsId, $pageSize = 20)
+    {
+        return UserReceivingGoodsControl::where('user_id', Auth::user()->getPrimaryUserId())
+            ->when($serviceId, function ($query) use ($serviceId) {
+                return $query->where('service_id', $serviceId);
+            })
+            ->when($goodsId, function ($query) use ($goodsId) {
+                return $query->where('goods_id', $goodsId);
+            })
+            ->when($pageSize === 0, function ($query) {
+                return $query->limit(10000)->get();
+            })
+            ->where('type', $type)
+            ->when($pageSize, function ($query) use ($pageSize) {
+                return $query->paginate($pageSize);
+            });
+    }
+
+    /**
      * 按用户添加
      * @param $type
      * @param $otherUserId
@@ -112,6 +140,30 @@ class ReceivingControlRepository
     }
 
     /**
+     * 添加控制商品
+     * @param $type
+     * @param $otherUserId
+     * @param $goodsId
+     * @param string $remark
+     * @return mixed
+     * @throws CustomException
+     */
+    public function addGoods($type, $otherUserId, $goodsId, $remark = '')
+    {
+        if (!$otherUserId || !in_array($type, [1, 2])) {
+            throw new CustomException('添加失败');
+        } else {
+            return UserReceivingGoodsControl::create([
+                'user_id' => Auth::user()->getPrimaryUserId(),
+                'goods_id' => $goodsId,
+                'other_user_id' => $otherUserId,
+                'type' => $type,
+                'remark' => $remark,
+            ]);
+        }
+    }
+
+    /**
      * @return string
      */
     public function deleteUser($id)
@@ -130,6 +182,18 @@ class ReceivingControlRepository
     {
         try {
             UserReceivingCategoryControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+        } catch (CustomException $customException) {
+            return $customException->getMessage();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function deleteGoods($id)
+    {
+        try {
+            UserReceivingGoodsControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
         } catch (CustomException $customException) {
             return $customException->getMessage();
         }
