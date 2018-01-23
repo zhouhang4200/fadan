@@ -74,12 +74,9 @@ class ReceivingControlRepository
      * @param int $pageSize
      * @return mixed
      */
-    public function goodsList($type, $otherUserId, $serviceId = 0, $goodsId, $pageSize = 20)
+    public function goodsList($type, $otherUserId,  $goodsId, $pageSize = 20)
     {
         return UserReceivingGoodsControl::where('user_id', Auth::user()->getPrimaryUserId())
-            ->when($serviceId, function ($query) use ($serviceId) {
-                return $query->where('service_id', $serviceId);
-            })
             ->when($goodsId, function ($query) use ($goodsId) {
                 return $query->where('goods_id', $goodsId);
             })

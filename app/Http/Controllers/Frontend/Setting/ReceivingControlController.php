@@ -207,15 +207,14 @@ class ReceivingControlController extends Controller
     public function getControlGoods(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
     {
         $type = $request->input('type', 1);
-        $gameId = $request->input('game_id');
-        $serviceId = $request->input('service_id');
+        $goodsId = $request->input('goods_id');
         $otherUserId = $request->input('other_user_id');
 
         $services = $serviceRepository->available();
         $games  = $gameRepository->available();
 
         // 获取数据
-        $controlCategoryList = $this->receivingControlRepository->goodsList($type, $otherUserId, $serviceId, $gameId);
+        $controlCategoryList = $this->receivingControlRepository->goodsList($type, $otherUserId, $goodsId);
 
         if ($request->ajax()) {
             if (!in_array($type, [1 , 2])) {
