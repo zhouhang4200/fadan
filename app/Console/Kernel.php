@@ -52,6 +52,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('order:statistic')->daily();
         $schedule->command('change:status')->everyMinute();
         $schedule->command('platformOrder:statistic')->daily();
+        $schedule->command('platformGame:statistic')->daily();
+        $schedule->command('platformThird:statistic')->daily();
     }
 
     /**
