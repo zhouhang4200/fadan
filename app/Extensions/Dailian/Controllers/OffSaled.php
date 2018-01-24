@@ -67,7 +67,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $order->no)
+                $orderDetails = OrderDetail::where('order_no', $this->order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 

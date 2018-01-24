@@ -38,26 +38,56 @@
                     <table class="layui-table" lay-size="sm">
                             <thead>
                             <tr>
-                                <th>订单号</th>
-                                <th>千手状态</th>
-                                <th>外部状态</th>
-                                <th>接单平台</th>
                                 <th>发布时间</th>
-                                <th>操作</th>
+                                <th>发布单数</th>
+                                <th>单旺旺号平均发送</th>
+                                <th>被接单数</th>
+                                <th>已结算单数</th>
+                                <th>已结算占比</th>
+                                <th>已撤销单数</th>
+                                <th>已撤销占比</th>
+                                <th>已仲裁单数</th>
+                                <th>已仲裁占比</th>
+                                <th>完单平均代练时间</th>
+                                <th>完单平均安全保证金</th>
+                                <th>完单平均效率保证金</th>
+                                <th>完单平均来源价格</th>
+                                <th>完单总来源价格</th>
+                                <th>完单平均发单价格</th>
+                                <th>完单总发单价格</th>
+                                <th>结算平均支付</th>
+                                <th>结算总支付</th>
+                                <th>撤销平均支付</th>
+                                <th>撤销总支付</th>
+                                <th>撤销平均赔偿</th>
+                                <th>撤销总赔偿</th>
+                                <th>仲裁平均支付</th>
+                                <th>仲裁总支付</th>
+                                <th>仲裁平均赔偿</th>
+                                <th>仲裁总赔偿</th>
+                                <th>平均手续费</th>
+                                <th>总手续费</th>
+                                <th>商户平均利润</th>
+                                <th>商户总利润</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse($paginateOrderNotices as $paginateOrderNotice)
+                            @forelse($paginatePlatformOrderStatistics as $paginatePlatformOrderStatistic)
                                 <tr>
-                                    <td>{{ $paginateOrderNotice->order_no }}</td>
-                                    <td>{{ config('order.status_leveling')[$paginateOrderNotice->status] }}</td>
-                                    <td>{{ config('order.show91')[$paginateOrderNotice->third_status] }}</td>
-                                    <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
-                                    <td>{{ $paginateOrderNotice->create_order_time }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->date }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->wang_wang_order_evg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->receive_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->revoke_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->revoke_order_rate }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_rate }}</td>
+                                    
                                     <td>
                                         <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
-                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->amount }}" data-safe="{{ $paginateOrderNotice->security_deposit }}"
-                                            data-effect="{{ $paginateOrderNotice->efficiency_deposit }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
+                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginatePlatformOrderStatistic->amount }}" data-safe="{{ $paginatePlatformOrderStatistic->security_deposit }}"
+                                            data-effect="{{ $paginatePlatformOrderStatistic->efficiency_deposit }}" lay-data="{{ $paginatePlatformOrderStatistic->order_no }}">                
                                                 <option value="">修改状态</option>
                                                 @forelse($ourStatus as $key => $status)
                                                     <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
@@ -65,7 +95,7 @@
                                                 @endforelse
                                             </select>
                                         </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginateOrderNotice->id }}">删除</button>
+                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginatePlatformOrderStatistic->id }}">删除</button>
                                     </td>
                                 </tr>
                             @empty
@@ -75,7 +105,7 @@
                         </form>
                     <div class="row">
                         <div class="col-xs-3">
-                            总数：{{ $paginateOrderNotices->total() }}　本页显示：{{ $paginateOrderNotices->count() }}
+                            总数：{{ $paginatePlatformOrderStatistics->total() }}　本页显示：{{ $paginatePlatformOrderStatistics->count() }}
                         </div>
                             <div class="col-xs-9">
 
