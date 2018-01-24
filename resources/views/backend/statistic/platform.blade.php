@@ -69,6 +69,8 @@
                                 <th>总手续费</th>
                                 <th>商户平均利润</th>
                                 <th>商户总利润</th>
+                                <th>平台平均利润</th>
+                                <th>平台总利润</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -79,24 +81,34 @@
                                     <td>{{ $paginatePlatformOrderStatistic->wang_wang_order_evg }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->receive_order_count }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->complete_order_count }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_rate }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->revoke_order_count }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->revoke_order_rate }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_count }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_rate }}</td>
-                                    
-                                    <td>
-                                        <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
-                                            <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginatePlatformOrderStatistic->amount }}" data-safe="{{ $paginatePlatformOrderStatistic->security_deposit }}"
-                                            data-effect="{{ $paginatePlatformOrderStatistic->efficiency_deposit }}" lay-data="{{ $paginatePlatformOrderStatistic->order_no }}">                
-                                                <option value="">修改状态</option>
-                                                @forelse($ourStatus as $key => $status)
-                                                    <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginatePlatformOrderStatistic->id }}">删除</button>
-                                    </td>
+                                    <td>{{ $paginatePlatformOrderStatistic->use_time_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->security_deposit_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->efficiency_deposit_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->original_amount_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_original_amount }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->amount_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_amount }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_amount_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_amount }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->revoke_payment_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_revoke_payment }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->revoke_income_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_revoke_income }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complain_income_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_complain_payment }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->revoke_income_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_complain_income }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->poundage_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->total_poundage }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->user_profit_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->user_total_profit }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->platform_profit_avg }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->platform_total_profit }}</td>
                                 </tr>
                             @empty
                             @endforelse
@@ -116,96 +128,6 @@
             </div>
         </div>
     </div>
-
-    <div class="consult" style="display: none; padding:  0 20px">
-        <div class="layui-tab-content">
-            <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以再订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div style="width: 80%" id="info">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">*我愿意支付代练费（元）</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入代练费" class="layui-input" style="width:400px">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">我已支付代练费（元）</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="order_amount" id="order_amount" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">*需要对方赔付保证金</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入保证金" class="layui-input" style="width:400px">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">对方已预付安全保证金（元）</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">对方已预付效率保证金（元）</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">撤销理由</label>
-                        <div class="layui-input-block">
-                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">发起人</label>
-                        <div class="layui-input-block">
-                            <input type="radio" name="who" value="1" title="发单">
-                            <input type="radio" name="who" value="2" title="接单">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"></label>
-                        <div class="layui-input-block">
-                            <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="complain" style="display: none; padding: 10px 10px 0 10px">
-        <div class="layui-tab-content">
-            <form class="layui-form">
-            <input type="hidden" id="order_no" name="order_no">
-                <div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin:0px">
-                            <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">发起人</label>
-                        <div class="layui-input-block">
-                            <input type="radio" name="who" value="1" title="发单">
-                            <input type="radio" name="who" value="2" title="接单">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
 @endsection
 
 @section('js')
