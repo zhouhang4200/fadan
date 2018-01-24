@@ -27,8 +27,9 @@ class SendMessage
      */
     public function handle(Punish $event)
     {
-        $userId = $event->userId;
-
-        return PunishOrReward::where('user_id', $userId)->where('type', 2)->whereIn('status', ['3', '9'])->first() ? true : false;
+        return PunishOrReward::where('user_id', $event->userId)
+            ->where('type', 2)
+            ->whereIn('status', ['3', '9'])
+            ->first() ? true : false;
     }
 }

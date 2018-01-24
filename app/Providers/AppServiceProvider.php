@@ -18,7 +18,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // 设置默认长度，不然php artisan 会报错
         Schema::defaultStringLength(191);
     }
 

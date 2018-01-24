@@ -4,14 +4,12 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use App\Models\OrderHistory;
-use App\Exceptions\DailianException as Exception; 
-
+use App\Exceptions\DailianException; 
 /**
  * 取消锁定操作
  */
 class UnLock extends DailianAbstract implements DailianInterface
 {
-     //取消锁定 -> 锁定前的状态
     protected $acceptableStatus = [18]; // 状态：18锁定
 	protected $beforeHandleStatus = 18; // 操作之前的状态:18锁定
     protected $handledStatus;   // 操作后状态：
@@ -54,14 +52,12 @@ class UnLock extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 如果还原前一个状态为 申请验收 ，redis 加订单
             addRedisCompleteOrders($this->orderNo, $this->handledStatus);
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
-
 }

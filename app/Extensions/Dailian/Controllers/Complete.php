@@ -4,10 +4,10 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use App\Extensions\Asset\Income;
 use App\Services\Show91;
+use App\Extensions\Asset\Income;
+use App\Exceptions\DailianException; 
 use App\Repositories\Frontend\OrderDetailRepository;
-use App\Exceptions\DailianException as Exception; 
 
 /**
  * 订单完成操作
@@ -58,10 +58,10 @@ class Complete extends DailianAbstract implements DailianInterface
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
 
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
 
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -77,11 +77,11 @@ class Complete extends DailianAbstract implements DailianInterface
             Asset::handle(new Income($this->order->amount, 12, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('流水记录写入失败');
+                throw new DailianException('流水记录写入失败');
             }
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('流水记录写入失败');
+                throw new DailianException('流水记录写入失败');
             }
 
             if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {    
@@ -89,11 +89,11 @@ class Complete extends DailianAbstract implements DailianInterface
                 Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
             }
 
@@ -102,18 +102,18 @@ class Complete extends DailianAbstract implements DailianInterface
                 Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
             }
             // 写入结算时间
             OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
         }
         DB::commit();
     }
@@ -126,23 +126,25 @@ class Complete extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
 
                     $options = [
-                        'oid' => $thirdOrderNo, 
+                        'oid' => $orderDetails['third_order_no'], 
                         'p' => config('show91.password'),
                     ];
                     // 结果
                     Show91::accept($options);
                 }
                 return true;
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

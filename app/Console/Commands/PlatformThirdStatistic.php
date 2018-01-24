@@ -5,24 +5,27 @@ namespace App\Console\Commands;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use App\Models\PlatformThirdStatistic as PlatformThirdStatisticModel;
 use Illuminate\Console\Command;
-use App\Models\PlatformOrderStatistic as PlatformOrderStatisticModel;
 
-class PlatformOrderStatistic extends Command
+/**
+ * 第三方平台代练数据统计
+ */
+class PlatformThirdStatistic extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'platformOrder:statistic';
+    protected $signature = 'platformThird:statistic';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '平台订单统计';
+    protected $description = '每天将订单按第三方平台分组统计数据写入第三方数据统计表';
 
     /**
      * Create a new command instance.
@@ -47,7 +50,7 @@ class PlatformOrderStatistic extends Command
 
             $platformOrders = DB::select("
                 SELECT 
-                    mm.date, mm.creator_user_id AS user_id, mm.parent_id, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
+                    mm.date, mm.third, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
                     COUNT(mm.no) AS total_order_count, /*发布单数*/
                     SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END) AS use_time, /*完单总接单时间戳*/
                     IFNULL(ROUND(SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END)
@@ -99,7 +102,8 @@ class PlatformOrderStatistic extends Command
                             MAX(CASE WHEN field_name='security_deposit' THEN field_value ELSE 0 END) AS security_deposit,
                             MAX(CASE WHEN field_name='efficiency_deposit' THEN field_value ELSE 0 END) AS efficiency_deposit,
                             MAX(CASE WHEN field_name='receiving_time' THEN field_value ELSE 0 END) AS receiving_time,
-                            MAX(CASE WHEN field_name='checkout_time' THEN field_value ELSE 0 END) AS checkout_time
+                            MAX(CASE WHEN field_name='checkout_time' THEN field_value ELSE 0 END) AS checkout_time,
+                            MAX(CASE WHEN field_name='third' THEN field_value ELSE 0 END) AS third
                             FROM order_details GROUP BY order_no) n
                     ON m.no = n.order_no
                     LEFT JOIN users j
@@ -119,8 +123,8 @@ class PlatformOrderStatistic extends Command
                     
                     GROUP BY trade_no) nn
                 ON mm.no = nn.no
-                WHERE mm.updated_at >= '$yestodayDate' AND mm.updated_at < '$todayDate' AND mm.service_id = 4
-                GROUP BY mm.creator_user_id
+                WHERE mm.updated_at >= '$yestodayDate' AND mm.updated_at < '$todayDate' AND mm.service_id = 4 AND mm.third != ''
+                GROUP BY mm.third
             ");
 
             if ($platformOrders) {         
@@ -133,15 +137,14 @@ class PlatformOrderStatistic extends Command
                 if (! $dataCheck) {
                     throw new Exception('不存在数据');
                 }
-
                 $date = $dataCheck['date'];
-                $has = PlatformOrderStatisticModel::where('date', $date)->first();
+                $has = PlatformThirdStatisticModel::where('third', "2018-01-23")->first();
 
                 if ($has) {
                     throw new Exception('数据已存在!');
                 }
 
-                PlatformOrderStatisticModel::insert($platformOrders);
+                PlatformThirdStatisticModel::insert($platformOrders);
 
                 echo '写入成功！';
             } else {

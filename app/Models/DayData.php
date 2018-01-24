@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class DayData extends Model
 {
-    protected $fillable = ['stock_trusteeship', 'stock_transaction', 'transfer_transaction', 'slow_recharge', 'order_market', 'date'];
+    protected $fillable = [
+    	'stock_trusteeship', 
+    	'stock_transaction', 
+    	'transfer_transaction', 
+    	'slow_recharge', 
+    	'order_market', 
+    	'date',
+    ];
 
     public static function scopeFilter($query, $date)
     {

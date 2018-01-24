@@ -6,23 +6,26 @@ use DB;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Models\PlatformOrderStatistic as PlatformOrderStatisticModel;
+use App\Models\PlatformGameStatistic as PlatformGameStatisticModel;
 
-class PlatformOrderStatistic extends Command
+/**
+ * 平台统计 按游戏分类统计数据
+ */
+class PlatformGameStatistic extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'platformOrder:statistic';
+    protected $signature = 'platformGame:statistic';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '平台订单统计';
+    protected $description = '每天将订单表按游戏分类取得数据存到平台游戏表';
 
     /**
      * Create a new command instance.
@@ -47,7 +50,7 @@ class PlatformOrderStatistic extends Command
 
             $platformOrders = DB::select("
                 SELECT 
-                    mm.date, mm.creator_user_id AS user_id, mm.parent_id, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
+                    mm.date, mm.game_id, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
                     COUNT(mm.no) AS total_order_count, /*发布单数*/
                     SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END) AS use_time, /*完单总接单时间戳*/
                     IFNULL(ROUND(SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END)
@@ -91,7 +94,7 @@ class PlatformOrderStatistic extends Command
                     IFNULL(ROUND((SUM(nn.revoke_payment)+SUM(nn.complain_payment)+SUM(nn.poundage)+SUM(CASE WHEN mm.STATUS = 20 THEN mm.amount ELSE 0 END)-SUM(nn.revoke_income)-SUM(nn.complain_income))
                         /SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN 1 ELSE 0 END), 2), 0) AS platform_profit_avg /*平台平均利润*/
                 FROM
-                    (SELECT m.no, m.status, m.original_amount, m.amount, m.creator_user_id,m.service_id, m.updated_at,
+                    (SELECT m.no, m.game_id, m.status, m.original_amount, m.amount, m.creator_user_id, m.service_id, m.updated_at,
                         DATE_format(m.updated_at, '%Y-%m-%d') AS date, n.*, j.name, j.username, j.parent_id
                     FROM orders m
                     LEFT JOIN 
@@ -120,7 +123,7 @@ class PlatformOrderStatistic extends Command
                     GROUP BY trade_no) nn
                 ON mm.no = nn.no
                 WHERE mm.updated_at >= '$yestodayDate' AND mm.updated_at < '$todayDate' AND mm.service_id = 4
-                GROUP BY mm.creator_user_id
+                GROUP BY mm.game_id
             ");
 
             if ($platformOrders) {         
@@ -135,13 +138,13 @@ class PlatformOrderStatistic extends Command
                 }
 
                 $date = $dataCheck['date'];
-                $has = PlatformOrderStatisticModel::where('date', $date)->first();
+                $has = PlatformGameStatisticModel::where('date', $date)->first();
 
                 if ($has) {
                     throw new Exception('数据已存在!');
                 }
 
-                PlatformOrderStatisticModel::insert($platformOrders);
+                PlatformGameStatisticModel::insert($platformOrders);
 
                 echo '写入成功！';
             } else {

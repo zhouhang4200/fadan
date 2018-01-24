@@ -4,14 +4,12 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use App\Services\Show91;
-use App\Exceptions\DailianException as Exception; 
-
+use App\Exceptions\DailianException; 
 /**
  * 下架操作
  */
 class OffSaled extends DailianAbstract implements DailianInterface
 {
-    //已下架
     protected $acceptableStatus = [1]; // 状态：1未接单
     protected $beforeHandleStatus; // 操作之前的状态:1未接单
     protected $handledStatus    = 22; // 状态：22已下架
@@ -31,7 +29,6 @@ class OffSaled extends DailianAbstract implements DailianInterface
     {	
     	DB::beginTransaction();
     	try {
-    		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
@@ -50,18 +47,15 @@ class OffSaled extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->after();
-
+            // 状态不在申请验收自动删除
             delRedisCompleteOrders($this->orderNo);
-
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
 
@@ -73,21 +67,23 @@ class OffSaled extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
 
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $orderDetails['third_order_no'],
                     ]; 
-                    // 结果
+
                     Show91::grounding($options);
                 }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

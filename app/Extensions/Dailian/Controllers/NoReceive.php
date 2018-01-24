@@ -4,7 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use App\Services\Show91;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 上架操作
@@ -51,16 +51,14 @@ class NoReceive extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
-
+            // 申请验收状态不存在自动删除
             delRedisCompleteOrders($this->orderNo);
-
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
 
@@ -72,21 +70,23 @@ class NoReceive extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
 
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $orderDetails['third_order_no'],
                     ]; 
                     // 结果
                     Show91::grounding($options);
                 }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

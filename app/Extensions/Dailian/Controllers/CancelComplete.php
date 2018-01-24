@@ -3,21 +3,19 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 取消验收操作
  */
 class CancelComplete extends DailianAbstract implements DailianInterface
 {
-     //取消验收 -》 代练中
     protected $acceptableStatus = [14]; // 状态：待验收
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 29; // 操作：取消验收
 
 	/**
-     * 
      * @param  [type] $orderNo     [订单号]
      * @param  [type] $userId      [操作人]
      * @param  [type] $apiAmount   [回传代练费/安全保证金]
@@ -50,14 +48,11 @@ class CancelComplete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             delRedisCompleteOrders($this->orderNo);
-
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
         return true;
     }
 }

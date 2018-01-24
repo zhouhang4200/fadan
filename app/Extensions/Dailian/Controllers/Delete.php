@@ -6,14 +6,13 @@ use DB;
 use Asset;
 use App\Services\Show91;
 use App\Extensions\Asset\Income;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 删除操作
  */
 class Delete extends DailianAbstract implements DailianInterface
 {
-     //删除 -》 删除
     protected $acceptableStatus = [1, 22]; // 状态：1未接单， 22已下架
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 24; // 状态：24已删除
@@ -51,18 +50,13 @@ class Delete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->after();
-
             delRedisCompleteOrders($this->orderNo);
-
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
         return true;
     }
 
@@ -78,15 +72,15 @@ class Delete extends DailianAbstract implements DailianInterface
             Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('流水记录写入失败');
+                throw new DailianException('流水记录写入失败');
             }
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('流水记录写入失败');
+                throw new DailianException('流水记录写入失败');
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
         }
         DB::commit();
     }
@@ -99,21 +93,24 @@ class Delete extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
+                    
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $orderDetails['third_order_no'],
                     ]; 
                     // 结果
                     Show91::chedan($options);
                 }
                 return true;
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

@@ -18,7 +18,6 @@
                     <form class="layui-form">
                         <div class="row">
                             <div class="layui-form-item">
-                                
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="form-group col-xs-1">
                                     <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ $startDate }}">

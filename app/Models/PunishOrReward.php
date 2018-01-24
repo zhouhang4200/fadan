@@ -13,10 +13,17 @@ class PunishOrReward extends Model
 
     public $timestamps = true;
 
-    protected $fillable = ['user_id', 'order_no', 'sub_money', 'deadline', 'status', 'remark', 'no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time'];
+    protected $fillable = [
+        'user_id', 'order_no', 'sub_money', 'deadline', 'status', 
+        'remark', 'no', 'type', 'voucher', 'add_money', 'ratio', 
+        'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time',
+    ];
 
     protected $keepRevisionOf = array(
-        'user_id', 'order_no', 'sub_money', 'deadline', 'status', 'remark', 'no', 'type', 'voucher', 'add_money', 'ratio', 'after_weight_value', 'before_weight_value', 'confirm', 'start_time', 'end_time', 'deleted_at'
+        'user_id', 'order_no', 'sub_money', 'deadline', 
+        'status', 'remark', 'no', 'type', 'voucher', 'add_money', 
+        'ratio', 'after_weight_value', 'before_weight_value', 
+        'confirm', 'start_time', 'end_time', 'deleted_at'
     );
 
     protected $dates = ['deleted_at'];
@@ -187,37 +194,30 @@ class PunishOrReward extends Model
     public static function scopeFilter($query, $filters = [])
     {
         if (is_numeric($filters['type'])) {
-
             $query->where('type', $filters['type']);
         }
 
         if (is_numeric($filters['orderNo'])) {
-
             $query->where('order_no', $filters['orderNo']);
         }
 
         if (is_numeric($filters['status'])) {
-
             $query->where('status', $filters['status']);
         }
 
         if ($filters['userId']) {
-
             $query->where('user_id', $filters['userId']);
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
-
             $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
-
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
-
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
@@ -242,27 +242,22 @@ class PunishOrReward extends Model
     public static function scopeHomeFilter($query, $filters = [])
     {
         if (is_numeric($filters['type'])) {
-
             $query->where('type', $filters['type']);
         }
 
         if (is_numeric($filters['status'])) {
-
             $query->where('status', $filters['status']);
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
-
             $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
-
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
-
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 

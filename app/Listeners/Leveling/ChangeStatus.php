@@ -35,11 +35,13 @@ class ChangeStatus
 
     public function requestApiInterface($order, $name, $bool) 
     {
-        $third = $order->detail()->where('field_name', 'third')->value('field_value');
+        $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-        switch ($third) {
+        switch ($orderDetails['third']) {
             case 1: // 91平台
-                $this->requestShow91Interface($order, $name, $bool);
+                call_user_func_array([Show91::class, $name], [$order, $bool]);
             break;
             case 2:
                 return true;
@@ -52,20 +54,8 @@ class ChangeStatus
             break;
         }
 
-        if (! $third) {
-            $this->requestShow91Interface($order, $name, $bool);
+        if (! $orderDetails['third']) {
+            call_user_func_array([Show91::class, $name], [$order, $bool]);
         }
-    }
-
-    /**
-     * 91接口
-     * @param  [type] $order [description]
-     * @param  [type] $name  [description]
-     * @param  [type] $bool  [description]
-     * @return [type]        [description]
-     */
-    public function requestShow91Interface($order, $name, $bool)
-    {
-        return call_user_func_array([Show91::class, $name], [$order, $bool]);
     }
 }

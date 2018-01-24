@@ -4,7 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Redis;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 异常操作
@@ -51,21 +51,17 @@ class Abnormal extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
-
-    	} catch (Exception $e) {
+            // 24H自动完成订单
+            delRedisCompleteOrders($this->orderNo);
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
         return true;
     }
 
     public function after()
     {
-        if ($this->runAfter) {
-            delRedisCompleteOrders($this->orderNo);
-        }
     }
 }

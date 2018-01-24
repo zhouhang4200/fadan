@@ -15,9 +15,7 @@ class KamenForeignOrder extends ForeignOrder
     public function outputOrder($data)
     {
         try {
-
         	$decodeArray =  $this->urldecodeData($data);
-
         	$model = $this->createForeignOrder($decodeArray);
 
         	if ($model) {
@@ -36,12 +34,10 @@ class KamenForeignOrder extends ForeignOrder
     	foreach ($array as $k => &$v) {
 
     		if (! $v) {
-
     			$v = '';
     		}
 
     		if ($v && ! is_array($v)) {
-
     			$v = urldecode($v);
     		}
     	}
@@ -107,7 +103,6 @@ class KamenForeignOrder extends ForeignOrder
     {
         // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
         $siteId = !empty($model->details->JSitid) ? $model->details->JSitid : 0;
-
         $userId = SiteInfo::where('kamen_site_id', $siteId)->value('user_id');
 
         $goods = Goods::where([
@@ -199,15 +194,10 @@ class KamenForeignOrder extends ForeignOrder
     protected function version($version)
     {
     	if (preg_match('/微信/', $version)) {
-
     		return '微信';
-
     	} else if (preg_match('/QQ/', $version)) {
-
     		return 'QQ';
-
     	} else {
-
     		return '';
     	}
     }

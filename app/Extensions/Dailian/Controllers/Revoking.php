@@ -5,14 +5,13 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 申请撤销操作
  */
 class Revoking extends DailianAbstract implements DailianInterface
 {
-     //撤销中
     protected $acceptableStatus = [13, 14, 17, 18]; // 状态：18锁定
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 15; // 状态：15撤销中
@@ -52,17 +51,15 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->setDescription();
             // 保存操作日志
             $this->saveLog();
-
             $this->after();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
-
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
 
@@ -74,20 +71,23 @@ class Revoking extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
+
                 $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
                 if (! $consult) {
-                    throw new Exception('不存在申诉和协商记录');
+                    throw new DailianException('不存在申诉和协商记录');
                 }
 
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
-
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
+                    
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $orderDetails['third_order_no'],
                         'selfCancel.pay_price' => $consult->amount,
                         'selfCancel.pay_bond' => $consult->deposit,
                         'selfCancel.content' => $consult->revoke_message,
@@ -95,8 +95,8 @@ class Revoking extends DailianAbstract implements DailianInterface
                     // 结果
                     Show91::addCancelOrder($options);
                 }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

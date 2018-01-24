@@ -4,12 +4,12 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserAsset;
-use App\Extensions\Asset\Expend;
 use App\Models\OrderDetail;
-use Carbon\Carbon;
-use App\Exceptions\DailianException as Exception;
+use App\Extensions\Asset\Expend;
+use App\Exceptions\DailianException;
 
 /**
  * 接单操作
@@ -17,12 +17,10 @@ use App\Exceptions\DailianException as Exception;
  */
 class Playing extends DailianAbstract implements DailianInterface
 {
-     //接单
     protected $acceptableStatus = [1]; // 状态：未接单
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 27; // 操作：接单
-
 	/**
      * 
      * @param  [type] $orderNo     [订单号]
@@ -43,7 +41,6 @@ class Playing extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-            
         	$this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
@@ -57,18 +54,15 @@ class Playing extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->after();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
-
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
 
@@ -80,7 +74,7 @@ class Playing extends DailianAbstract implements DailianInterface
         $this->order->gainer_primary_user_id = User::find($this->userId)->getPrimaryUserId();
 
         if (!$this->order->save()) {
-            throw new Exception('订单操作失败');
+            throw new DailianException('订单操作失败');
         }
 
         return $this->order;
@@ -94,8 +88,12 @@ class Playing extends DailianAbstract implements DailianInterface
     {
         DB::beginTransaction();
         try {
-            $safePayment = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
-            $effectPayment = $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+            $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
+
+            $safePayment = $orderDetails['security_deposit'];
+            $effectPayment = $orderDetails['efficiency_deposit'];
             // 检测接单账号余额
             $this->checkGainerMoney($safePayment, $effectPayment);
             if ($safePayment > 0) {                      
@@ -103,11 +101,11 @@ class Playing extends DailianAbstract implements DailianInterface
                 Asset::handle(new Expend($safePayment, 4, $this->order->no, '安全保证金支出', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
             }
 
@@ -116,16 +114,16 @@ class Playing extends DailianAbstract implements DailianInterface
                 Asset::handle(new Expend($effectPayment, 5, $this->order->no, '效率保证金支出', $this->order->gainer_primary_user_id));
 
                 if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
 
                 if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new Exception('流水记录写入失败');
+                    throw new DailianException('流水记录写入失败');
                 }
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             DB::rollback();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
         }
         DB::commit();
     }
@@ -142,7 +140,7 @@ class Playing extends DailianAbstract implements DailianInterface
         $doublePayment = bcadd($safePayment, $effectPayment);
 
         if (! $leftAmount || $leftAmount < $doublePayment) {
-            throw new Exception('商户余额不足');
+            throw new DailianException('商户余额不足');
         }
     }
 

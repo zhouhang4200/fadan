@@ -30,11 +30,8 @@ class WriteLoginRecord
     public function handle(Login $event)
     {
         if ($event->user->getTable() == 'admin_users') {
-
             AdminLoginHistory::writeLoginHistory(getClientIp());
-
         } else {
-
             LoginHistory::writeLoginHistory(getClientIp());
         }
     }

@@ -10,7 +10,7 @@ use App\Models\OrderHistory;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use Illuminate\Support\Facades\Auth;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 代练操作构造类
@@ -39,12 +39,12 @@ abstract class DailianAbstract
     	$this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
 
         if (empty($this->order)) {
-            throw new Exception('订单不存在');
+            throw new DailianException('订单不存在');
         }
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
             \Log::alert('订单：' .$this->order->no . '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus);
-            throw new Exception('订单状态不允许更改');
+            throw new DailianException('订单状态不允许更改');
         }
     }
     // 创建操作前的订单
@@ -69,7 +69,7 @@ abstract class DailianAbstract
     {
     	$this->order->status = $this->handledStatus;
         if (!$this->order->save()) {
-            throw new Exception('订单操作失败');
+            throw new DailianException('订单操作失败');
         }
 
         return $this->order;
@@ -97,7 +97,7 @@ abstract class DailianAbstract
         $this->orderHistory->description = $this->description;
 
         if (!$this->orderHistory->save()) {
-            throw new Exception('操作记录失败');
+            throw new DailianException('操作记录失败');
         }
     }
 

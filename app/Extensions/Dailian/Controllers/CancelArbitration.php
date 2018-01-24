@@ -3,10 +3,10 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use App\Models\OrderHistory;
 use App\Services\Show91;
+use App\Models\OrderHistory;
 use App\Models\LevelingConsult;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 取消仲裁操作
@@ -51,21 +51,17 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->changeConsultStatus();
-
             $this->after();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
             // 如果还原前一个状态为 申请验收 ，redis 加订单
             addRedisCompleteOrders($this->orderNo, $this->handledStatus);
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
         return true;
     }
 
@@ -74,7 +70,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
         $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
         if (! $beforeStatus) {
-            throw new Exception('订单操作记录不存在');
+            throw new DailianException('订单操作记录不存在');
         }
         if ($beforeStatus == 16 || $beforeStatus == 18) {
             $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
@@ -105,28 +101,29 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
+
+                if ($orderDetails['third'] == 1) { //91代练
                     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
                     if (! $consult) {
-                        throw new Exception('订单申诉和协商记录不存在');
+                        throw new DailianException('订单申诉和协商记录不存在');
                     }
 
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
-
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
 
                     $options = [
-                        'aid' => $thirdOrderNo, // 撤销id 可以用单号
+                        'aid' => $orderDetails['third_order_no'], // 撤销id 可以用单号
                     ];
                     // 结果
                     Show91::cancelAppeal($options);
                 }
-                
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

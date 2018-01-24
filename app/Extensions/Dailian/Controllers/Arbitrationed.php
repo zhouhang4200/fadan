@@ -2,7 +2,6 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Asset;
 use Redis;
@@ -10,14 +9,14 @@ use App\Models\User;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
+use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
  * 仲裁操作
  */
 class Arbitrationed extends DailianAbstract implements DailianInterface
 {
-	// 已仲裁
     protected $acceptableStatus = [16]; // 状态：16仲裁中
 	protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
     protected $handledStatus    = 21; // 状态：21已仲裁
@@ -59,12 +58,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->after();
 
 		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
-
+		    // 24H自动完成
 			delRedisCompleteOrders($this->orderNo);
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
 
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -84,11 +83,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
         if (! $consult) {
-        	throw new Exception('状态错误');
+        	throw new DailianException('状态错误');
         }
 
         if ($this->userId != config('show91.qs_userId')) {
-            throw new Exception('当前操作人不是该订单操作者本人!');
+            throw new DailianException('当前操作人不是该订单操作者本人!');
         }
 
         $apiAmount = $consult->api_amount;
@@ -118,11 +117,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	                Asset::handle(new Income($leftAmount, 7, $this->order->no, '退还代练费', $this->order->creator_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new Exception('流水记录写入失败');
+	                    throw new DailianException('流水记录写入失败');
 	                }
 
 	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new Exception('流水记录写入失败');
+	                    throw new DailianException('流水记录写入失败');
 	                }
         		}
 
@@ -131,11 +130,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	                Asset::handle(new Income($apiAmount, 12, $this->order->no, '代练费收入', $this->order->gainer_primary_user_id));
 
 	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new Exception('流水记录写入失败');
+	                    throw new DailianException('流水记录写入失败');
 	                }
 
 	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new Exception('流水记录写入失败');
+	                    throw new DailianException('流水记录写入失败');
 	                }
                 }
 
@@ -147,11 +146,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
                 	}
 
@@ -160,11 +159,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -175,11 +174,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($leftSecurity, 8, $this->order->no, '退还安全保证金', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -188,11 +187,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -201,11 +200,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
                 } else if (bcsub($security, $apiDeposit) == 0) {
@@ -214,11 +213,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
                 	}
 
@@ -227,11 +226,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -240,11 +239,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -253,11 +252,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
                 } else {
@@ -266,11 +265,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	                	Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
                 	}
 
@@ -281,11 +280,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -294,11 +293,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -309,11 +308,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
 
@@ -322,11 +321,11 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
 
 		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 
 		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new Exception('流水记录写入失败');
+		                    throw new DailianException('流水记录写入失败');
 		                }
 	                }
                 }
@@ -336,12 +335,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
                 OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
                 // 写入结算时间
                 OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
-	        } catch (Exception $e) {
+	        } catch (DailianException $e) {
 	            DB::rollBack();
 	        }
 	        DB::commit();
 	    } else {
-	    	throw new Exception('参数传入错误或不满足条件');
+	    	throw new DailianException('参数传入错误或不满足条件');
 	    }
 	}
 }

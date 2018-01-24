@@ -7,7 +7,7 @@ use Redis;
 use Image;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 申请仲裁操作
@@ -56,9 +56,9 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             $this->after();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
     	// 返回
@@ -77,13 +77,13 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
                     if (! $consult) {
-                        throw new Exception('订单申诉和协商记录不存在');
+                        throw new DailianException('订单申诉和协商记录不存在');
                     }
 
                     $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
 
                     if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                        throw new DailianException('第三方订单号不存在');
                     }
 
                     $options = [
@@ -97,8 +97,8 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                     // 结果
                     Show91::addappeal($options);
                 }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

@@ -85,7 +85,6 @@ return [
         25 => '强制撤销',
         26 => '客服仲裁',
         27 => '接单',
-
         28 => '申请完成',
         29 => '取消验收',
         30 => '异常',
@@ -103,59 +102,61 @@ return [
 
     // 外部订单
     'parsers' => [
-        'jd' => JdForeignOrder::class,
+        'jd'    => JdForeignOrder::class,
         'tmall' => TmallForeignOrder::Class,
         'kamen' => KamenForeignOrder::Class,
     ],
 
     // 代练
     'dailians' => [
-        'complete' => Complete::class, // 完成 -> 已结算
-        'onSale' => NoReceive::class, // 上架 ->未接单 *
-        'offSale' => OffSaled::class, // 下架 -> 已下架 *
-        'lock' => Lock::class, // 锁定 -> 锁定
-        'cancelLock' => UnLock::class, // 取消锁定 -> 锁定前状态
-        'revoke' => Revoking::class, // 撤销 -> 撤销中
-        'cancelRevoke' => UnRevoke::class, // 取消撤销 -> 撤销前的状态
-        'agreeRevoke' => Revoked::class, // 同意撤销 -> 已撤销
-        'applyArbitration' => Arbitrationing::class, // 申请仲裁 -》 仲裁中
-        'cancelArbitration' => CancelArbitration::class, // 取消仲裁 -》 仲裁申请前状态
-        'delete' => Delete::class, // 删除 -》 删除
-        'forceRevoke' => ForceRevoke::class, // 外面接口传的 强制撤销操作 -》 强制撤销
-        'arbitration' => Arbitrationed::class, // 同意仲裁 -》 已仲裁
-        'receive' => Playing::class, // 接单 -> 代练中
-        'applyComplete' => ApplyComplete::class, // 申请验收 -》 待验收
-        'cancelComplete' => CancelComplete::class, // 取消验收 -》代练中
-        'abnormal' => Abnormal::class, // 异常 -》 异常
-        'cancelAbnormal' => CancelAbnormal::class, // 取消异常-》代练中
-        'refuseRevoke' => RefuseRevoke::class, // 不同意协商
+        'onSale'            => NoReceive::class, // 上架 
+        'offSale'           => OffSaled::class, // 下架 
+        'receive'           => Playing::class, // 接单
+        'lock'              => Lock::class, // 锁定 
+        'cancelLock'        => UnLock::class, // 取消锁定 
+        'revoke'            => Revoking::class, // 申请撤销 
+        'cancelRevoke'      => UnRevoke::class, // 取消撤销 
+        'agreeRevoke'       => Revoked::class, // 同意撤销 
+        'forceRevoke'       => ForceRevoke::class, // 强制撤销 
+        'refuseRevoke'      => RefuseRevoke::class, // 不同意撤销
+        'applyArbitration'  => Arbitrationing::class, // 申请仲裁 
+        'cancelArbitration' => CancelArbitration::class, // 取消仲裁 
+        'arbitration'       => Arbitrationed::class, // 同意仲裁 
+        'delete'            => Delete::class, // 删除
+        'applyComplete'     => ApplyComplete::class, // 申请验收 
+        'cancelComplete'    => CancelComplete::class, // 取消验收 
+        'abnormal'          => Abnormal::class, // 异常 
+        'cancelAbnormal'    => CancelAbnormal::class, // 取消异常
+        'complete'          => Complete::class, // 完成 
     ],
 
     // 91平台订单状态
     'show91' => [
-        0 => "已发布",
-        1 => "代练中",
-        2 => "待验收",
-        3 => "待结算",
-        4 => "已结算",
-        5 => "已挂起",
-        6 => "已撤单",
-        7 => "已取消",
+        0  => "已发布",
+        1  => "代练中",
+        2  => "待验收",
+        3  => "待结算",
+        4  => "已结算",
+        5  => "已挂起",
+        6  => "已撤单",
+        7  => "已取消",
         10 => "等待工作室接单",
         11 => "等待玩家付款",
         12 => "玩家超时未付款",
-        13 => '协商中',
-        14 => '仲裁中',
-        15 => '协商/仲裁中',
+        13 => '协商中', // 他们没有此状态，自己加的
+        14 => '仲裁中', // 他们没有此状态，自己加的
+        15 => '协商/仲裁中', // 他们没有此状态，自己加的
     ],
 
+    // 外部平台
     'third' => [
         1 => '91平台',
         2 => '代练妈妈',
         3 => '代练通',
         4 => '易代练',
     ],
- 
+    
+    // 91平台代练类型
     'show91_plays' => [
         1 => '排位',
         3 => '陪玩',

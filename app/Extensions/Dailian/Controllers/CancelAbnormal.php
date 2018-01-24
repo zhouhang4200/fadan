@@ -4,14 +4,13 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Redis;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 取消异常操作
  */
 class CancelAbnormal extends DailianAbstract implements DailianInterface
 {
-     //取消异常 -》 代练中
     protected $acceptableStatus = [17]; // 状态：待验收
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
@@ -50,23 +49,17 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->after();
-
-    	} catch (Exception $e) {
+            delRedisCompleteOrders($this->orderNo);
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
         return true;
     }
 
     public function after()
     {
-        if ($this->runAfter) {
-            delRedisCompleteOrders($this->orderNo);
-        }
     }
 }

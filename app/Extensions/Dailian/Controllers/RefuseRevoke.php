@@ -3,16 +3,15 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use App\Models\OrderHistory;
 use App\Services\Show91;
-use App\Exceptions\DailianException as Exception; 
+use App\Models\OrderHistory;
+use App\Exceptions\DailianException; 
 
 /**
  * 取消撤销操作
  */
 class RefuseRevoke extends DailianAbstract implements DailianInterface
 {
-    //取消撤销
     protected $acceptableStatus = [15]; // 状态：15撤销中
 	protected $beforeHandleStatus = 15; // 操作之前的状态:15撤销中
     protected $handledStatus; // 状态：操作之后的状态
@@ -51,21 +50,18 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             $this->setDescription();
             // 保存操作日志
             $this->saveLog();
-
             $this->after();
-
             delRedisCompleteOrders($this->orderNo);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
                 (new Lock)->run($orderNo, $userId);
             }
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-    	// 返回
+
         return true;
     }
 
@@ -74,10 +70,11 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
         $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
         if (! $beforeStatus) {
-            throw new Exception('订单操作记录不存在');
+            throw new DailianException('订单操作记录不存在');
         }
         if ($beforeStatus == 16 || $beforeStatus == 18) {
             $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
+            
             $arr = [];
             foreach ($orderHistories as $key => $orderHistory) {
                 $status = unserialize($orderHistory->before);
@@ -100,23 +97,26 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+                $orderDetails = OrderDetail::where('order_no', $order->no)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
-                    if (! $thirdOrderNo) {
-                        throw new Exception('第三方订单号不存在');
+                if ($orderDetails['third'] == 1) { //91代练
+                    if (! $orderDetails['third_order_no']) {
+                        throw new DailianException('第三方订单号不存在');
                     }
+
                     $options = [
-                        'oid' => $thirdOrderNo,
+                        'oid' => $orderDetails['third_order_no'],
                         'v' => 2,
                         'p' => config('show91.password'),
                     ]; 
-                    // 结果
+
                     Show91::confirmSc($options);
                 }
                 return true;
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
             }
         }
     }

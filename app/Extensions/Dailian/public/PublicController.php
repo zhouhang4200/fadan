@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\LevelingConsult;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
@@ -21,6 +22,9 @@ class PublicController
     	// 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $orderNo)->first();
         $order = Order::where('no', $orderNo)->first();
+        $orderDetails = OrderDetail::where('order_no', $orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
         $amount = $consult->amount;
         $writeDeposit = $consult->deposit;
@@ -31,9 +35,9 @@ class PublicController
         // $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;
         // 订单的安全保证金
-        $security = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+        $security = $orderDetails['security_deposit'];
         // 订单的效率保证金
-        $efficiency = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+        $efficiency = $orderDetails['efficiency_deposit'];
         // 剩余代练费 = 订单代练费 - 回传代练费
         $leftAmount = bcsub($order->amount, $amount);
         // 订单双金 = 订单安全保证金 + 订单效率保证金
@@ -284,6 +288,9 @@ class PublicController
     	DB::beginTransaction();
         try {
             $order = Order::where('no', $orderNo)->first();
+            $orderDetails = OrderDetail::where('order_no', $orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
         	// 接单 代练收入
             Asset::handle(new Income($order->amount, 12, $order->no, '代练订单完成收入', $order->gainer_primary_user_id));
 
@@ -297,7 +304,7 @@ class PublicController
 
             if ($order->detail()->where('field_name', 'security_deposit')->value('field_value')) {    
                 // 接单 退回安全保证金
-                Asset::handle(new Income($order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $order->no, '退回安全保证金', $order->gainer_primary_user_id));
+                Asset::handle(new Income($orderDetails['security_deposit'], 8, $order->no, '退回安全保证金', $order->gainer_primary_user_id));
 
                 if (!$order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new OrderNoticeException('流水记录写入失败');
@@ -310,7 +317,7 @@ class PublicController
 
             if ($order->detail()->where('field_name', 'efficiency_deposit')->value('field_value')) {
                 // 接单 退效率保证金
-                Asset::handle(new Income($order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $order->no, '退回效率保证金', $order->gainer_primary_user_id));
+                Asset::handle(new Income($orderDetails['efficiency_deposit'], 9, $order->no, '退回效率保证金', $order->gainer_primary_user_id));
 
                 if (!$order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new OrderNoticeException('流水记录写入失败');
@@ -333,6 +340,9 @@ class PublicController
     	// 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $orderNo)->first();
         $order = Order::where('no', $orderNo)->first();
+        $orderDetails = OrderDetail::where('order_no', $orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
         if (!$consult) {
         	throw new OrderNoticeException('状态错误');
@@ -341,9 +351,9 @@ class PublicController
         $apiDeposit = $consult->api_deposit;
         $apiService = $consult->api_service;
 		// 订单的安全保证金
-		$security = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
+		$security = $orderDetails['security_deposit'];
 		// 订单的效率保证金 efficiency_deposit
-		$efficiency = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+		$efficiency = $orderDetails['efficiency_deposit'];
 		// 剩余代练费 = 订单代练费 - 回传代练费
         $leftAmount = bcsub($order->amount, $apiAmount);
         // 订单双金 = 订单安全保证金 + 订单效率保证金
@@ -593,6 +603,9 @@ class PublicController
     {
     	DB::beginTransaction();
         try {
+            $orderDetails = OrderDetail::where('order_no', $orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
             $order = Order::where('no', $orderNo)->first();
             // 发单 退回代练费
             Asset::handle(new Income($order->amount, 7, $order->no, '退回代练费', $order->creator_primary_user_id));
@@ -607,7 +620,7 @@ class PublicController
 
             if ($order->detail()->where('field_name', 'security_deposit')->value('field_value')) {        
                 // 接单 退回安全保证金
-                Asset::handle(new Income($order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $order->no, '安全保证金退回', $order->gainer_primary_user_id));
+                Asset::handle(new Income($orderDetails['security_deposit'], 8, $order->no, '安全保证金退回', $order->gainer_primary_user_id));
 
                 if (!$order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new OrderNoticeException('流水记录写入失败');
@@ -620,7 +633,7 @@ class PublicController
 
             if ($order->detail()->where('field_name', 'efficiency_deposit')->value('field_value')) {        
                 // 接单 退效率保证金
-                Asset::handle(new Income($order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $order->no, '效率保证金退回', $order->gainer_primary_user_id));
+                Asset::handle(new Income($orderDetails['efficiency_deposit'], 9, $order->no, '效率保证金退回', $order->gainer_primary_user_id));
 
                 if (!$order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                     throw new OrderNoticeException('流水记录写入失败');

@@ -60,7 +60,6 @@ class Game extends Model
     public static function scopeFilter($query, $filters = [])
     {
         if ($filters['name']) {
-
             $query->where('name', $filters['name']);
         }
         return $query;

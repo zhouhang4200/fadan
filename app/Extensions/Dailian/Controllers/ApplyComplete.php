@@ -6,7 +6,7 @@ use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Redis;
 use Carbon\Carbon;
-use App\Exceptions\DailianException as Exception; 
+use App\Exceptions\DailianException; 
 
 /**
  * 申请验收操作
@@ -53,14 +53,13 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
+            // redis 存提交验收时间，到期自动完成
             $this->after();
-
             // 写入提验时间
             OrderDetailRepository::updateByOrderNo($this->orderNo, 'check_time', date('Y-m-d H:i:s'));
-    	} catch (Exception $e) {
+    	} catch (DailianException $e) {
     		DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw new DailianException($e->getMessage());
     	}
     	DB::commit();
     	// 返回
