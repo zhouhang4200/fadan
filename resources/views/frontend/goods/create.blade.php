@@ -23,7 +23,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">游戏</label>
             <div class="layui-input-block">
-                <select name="game_id" lay-filter="aihao" lay-verify="required">
+                <select name="game_id" lay-filter="aihao" lay-verify="required" lay-search="">
                     <option value=""></option>
                     @forelse($games as $key => $val)
                         <option value="{{ $key }}">{{ $val }}</option>
@@ -106,8 +106,6 @@
                 $.post("{{ route('frontend.goods.store') }}", {data:data.field}, function (result) {
                     layer.alert(result.message, {
                         title: '最终的提交信息'
-                    }, function () {
-                        window.location.reload();
                     });
                 }, 'json');
                 return false;

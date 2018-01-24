@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\City;
+use App\Models\UserReceivingGoodsControl;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Models\UserSetting;
@@ -354,9 +355,10 @@ if (!function_exists('whoCanReceiveOrder')) {
      * @param $receiveUserId
      * @param string $serviceId
      * @param string $gameId
+     * @param string $goodsId
      * @return bool
      */
-    function whoCanReceiveOrder($sendUserId, $receiveUserId, $serviceId = '', $gameId = '')
+    function whoCanReceiveOrder($sendUserId, $receiveUserId, $serviceId = '', $gameId = '', $goodsId = '')
     {
         // 0,未设置， 1白名单， 2黑名单
         $type = UserSetting::where('user_id', $sendUserId)->where('option', 'receiving_control')->value('value');
@@ -372,28 +374,34 @@ if (!function_exists('whoCanReceiveOrder')) {
                 ->pluck('other_user_id')
                 ->toArray();
 
-            // 获取 发单用户的商品白名单
-            $goodsWhite = UserReceivingCategoryControl::where('service_id', $serviceId)
+            // 获取 发单用户的游戏白名单
+            $gameWhite = UserReceivingCategoryControl::where('service_id', $serviceId)
                         ->where('user_id', $sendUserId)
                         ->where('game_id', $gameId)
                         ->where('type', 1)
                         ->pluck('other_user_id')
                         ->toArray();
-            // 如果开启了白名单，但商品与用户白名单中都没有数据则所有人可以接单
-            if (!$userWhite && !$goodsWhite) {
+
+            $goodsWhite = UserReceivingGoodsControl::where('user_id', $sendUserId)
+                ->where('goods_id', $goodsId)
+                ->where('type', 1)
+                ->pluck('other_user_id')
+                ->toArray();
+            // 如果开启了白名单，但游戏、商品、用户白名单中都没有数据则所有人可以接单
+            if (!$userWhite && !$gameWhite && !$goodsWhite) {
                 return true;
             }
-            // 如果在白名单中，并且商品没有有单独设置白名单 可以接单
-            if (in_array($receiveUserId, $userWhite) && !$goodsWhite) {
+            // 如果在白名单中，并且游戏、商品没有有单独设置白名单 可以接单
+            if (in_array($receiveUserId, $userWhite) && !$gameWhite && !$goodsWhite) {
                 return true;
             }
-            // 如果在商品白名单中，则可以接单
-            if ($goodsWhite && in_array($receiveUserId, $goodsWhite)) {
+            // 如果没有商品白名单，有游戏白名单且用户在游戏白名单中，则可以接单
+            if (!$goodsWhite && $gameWhite && in_array($receiveUserId, $gameWhite)) {
                 return true;
             }
-            // 如果有商品白名单，但用户并没有在商品白名单也则不可以接单
-            if ($goodsWhite && !in_array($receiveUserId, $goodsWhite)) {
-                return false;
+            // 如果没有游戏白名单，有商品白名单且用户在商品白名单中，则可以接单
+            if (!$gameWhite && $goodsWhite && in_array($receiveUserId, $goodsWhite)) {
+                return true;
             }
             return false;
         } else if ($type == 2) {

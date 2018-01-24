@@ -40,6 +40,9 @@
                 <input type="text" class="layui-input" name="foreign_goods_id" placeholder="外部商品ID" value="{{ $foreignGoodsId  }}">
             </div>
             <div class="layui-input-inline" style="width: 200px;">
+                <input type="text" class="layui-input" name="name" placeholder="商品名" value="{{ $name  }}">
+            </div>
+            <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
             </div>
             <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
@@ -85,6 +88,7 @@
     {{ $goods->appends([
     'service_id' => $serviceId,
     'game_id' => $gameId,
+    'name' => $name,
     'foreign_goods_id' => $foreignGoodsId,
     ])->links() }}
 @endsection

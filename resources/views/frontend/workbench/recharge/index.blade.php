@@ -385,7 +385,7 @@
                 maxmin: true, //开启最大化最小化按钮
                 area: ['600px', '630px'],
                 scrollbar: false,
-                content: "{{ url('/workbench/order-operation/detail') }}?no=" + no
+                content: "{{ url('/workbench/recharge/order-operation/detail') }}?no=" + no
             });
         }
         // 订单发货
