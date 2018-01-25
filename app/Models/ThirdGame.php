@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ThirdGame extends Model
 {
-    //
+    protected $fillable = [
+    	'third_id', 'game_id', 'third_game_id', 'crated_at', 'updated_at',
+    ];
 }
