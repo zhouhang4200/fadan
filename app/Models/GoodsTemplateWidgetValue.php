@@ -15,4 +15,9 @@ class GoodsTemplateWidgetValue extends Model
       'field_value',
       'field_content',
     ];
+
+    public function getFieldValueAttribute($value)
+    {
+    	return trim($value);
+    }
 }

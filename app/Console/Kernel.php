@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\PlatformOrderStatistic', // 代练平台订单统计(阿里要求数据)
         'App\Console\Commands\PlatformGameStatistic', // 代练平台按游戏分类订单统计
         'App\Console\Commands\PlatformThirdStatistic', // 代练平台按第三方平台分类订单统计
+        'App\Console\Commands\writeLOL', // 写入英雄联盟的区服信息
     ];
 
     /**

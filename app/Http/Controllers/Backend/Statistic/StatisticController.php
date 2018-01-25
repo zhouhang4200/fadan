@@ -22,7 +22,39 @@ class StatisticController extends Controller
     	// $filters = compact('userName', 'startDate', 'endDate');
 
     	// $paginatePlatformOrderStatistics = PlatformOrderStatistic::filter($filters)
-    	// 		->selcet()
+    	// 		->selcet(DB::raw("
+    	// 			date, SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+					// SUM(total_order_count) AS total_order_count,
+    	// 			"))
     	// 		->
     }
 }

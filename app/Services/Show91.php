@@ -84,7 +84,9 @@ class Show91
      */
     public static function getAreas($options)
     {
-    	return static::normalRequest(config('show91.url.getAreas'), $options);
+    	$res = static::normalRequest(config('show91.url.getAreas'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
@@ -94,7 +96,9 @@ class Show91
      */
     public static function getServer($options)
     {
-    	return static::normalRequest(config('show91.url.getServer'), $options);
+    	$res = static::normalRequest(config('show91.url.getServer'), $options);
+
+        return static::returnErrorMessage($res);
     }
 
     /**
