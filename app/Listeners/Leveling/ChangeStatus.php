@@ -29,7 +29,7 @@ class ChangeStatus
      * @param  autoRequestInterface  $event
      * @return void
      */
-    public function handle(autoRequestInterface $event)
+    public function handle(AutoRequestInterface $event)
     {
         $this->requestApiInterface($event->order, $event->name, $event->bool);
     }
