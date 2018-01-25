@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use App\Extensions\Asset\Income;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException; 
 use App\Repositories\Frontend\OrderDetailRepository;
 

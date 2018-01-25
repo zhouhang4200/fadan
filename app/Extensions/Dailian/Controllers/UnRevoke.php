@@ -6,6 +6,7 @@ use DB;
 use App\Models\OrderHistory;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException; 
 
 /**

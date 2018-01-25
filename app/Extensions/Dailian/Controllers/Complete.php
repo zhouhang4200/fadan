@@ -7,6 +7,7 @@ use Asset;
 use App\Services\Show91;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
+use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**

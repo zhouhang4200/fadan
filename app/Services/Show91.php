@@ -74,7 +74,9 @@ class Show91
      */
     public static function getGames($options = [])
     {
-    	return static::normalRequest(config('show91.url.getGames'), $options = []);
+    	$res = static::normalRequest(config('show91.url.getGames'), $options = []);
+
+        return static::returnErrorMessage($res);
     }
 
     /**

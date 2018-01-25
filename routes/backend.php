@@ -343,6 +343,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
     // 统计
     Route::namespace('Statistic')->prefix('statistic')->group(function () {
-        Route::get('platform', 'StatisticController@index')->name('statistic:platform');
+        Route::get('platform', 'StatisticController@index')->name('statistic.platform');
+    });
+
+    Route::namespace('Config')->prefix('config')->group(function () {
+        Route::get('game', 'ConfigController@game')->name('config.game');
     });
 });

@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderHistory;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException; 
 
 /**
