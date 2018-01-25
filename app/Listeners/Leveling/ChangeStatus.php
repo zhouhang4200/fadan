@@ -3,6 +3,7 @@
 namespace App\Listeners\Leveling;
 
 use App\Services\Show91;
+use App\Models\OrderDetail;
 use App\Events\AutoRequestInterface;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
