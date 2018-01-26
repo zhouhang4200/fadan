@@ -83,7 +83,8 @@
 
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
-                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="config-game">导出</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="">导出</button>
+                                            <button type="button" class="layui-btn layui-btn-normal" id="test3">导入</button>
                                         </div>
                                     </div>
                                 </div>
@@ -97,18 +98,24 @@
 
 @section('js')
     <script>
-        layui.use(['form', 'layedit', 'laydate'], function(){
+        layui.use(['form', 'layedit', 'laydate', 'upload'], function(){
             var laydate = layui.laydate;
-            //常规用法
-            laydate.render({
-            elem: '#test1'
-            });
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
-
-           
-                
-        
+            var upload = layui.upload; //得到 upload 对象
+            upload.render({
+                elem: '#test3'
+                ,url: '{{ Route('config.import') }}'
+                ,accept: 'file' //普通文件
+                ,exts: 'xls'
+                ,done: function(res){
+                    if (res.status == 1) {
+                        layer.alert(res.message);
+                    } else {
+                        layer.alert(res.message);
+                    }
+                }
+            });            
         form.render();
     });  
     </script>

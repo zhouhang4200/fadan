@@ -278,15 +278,16 @@ class ConfigController extends Controller
 	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
 
 	    	$goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-	                            ->where('field_name', 'region')
-	                            ->value('id');
+                ->where('field_name', 'region')
+                ->value('id');
 
 	        $goodsTemplateWidgetServerId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-	                            ->where('field_name', 'serve')
-	                            ->value('id');
+                ->where('field_name', 'serve')
+                ->value('id');
 
 	        $ourAreas = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
-	                ->pluck('field_value', 'id')->toArray();
+	                ->pluck('field_value', 'id')
+	                ->toArray();
 
 	        $servers = DB::select("
 	        	SELECT m.id, CONCAT(m.field_value, '(', n.field_value, ')') AS server_name FROM goods_template_widget_values m
@@ -301,25 +302,39 @@ class ConfigController extends Controller
 	        	throw new DailianException('我们的服不存在!');
 	        }
 
+	        // 我们的区
+	        $ourAreaArr = [];
+	        foreach ($ourAreas as $id => $area) {
+	        	$ourAreaArr[$id]['area_id'] = $id;
+	        	$ourAreaArr[$id]['area'] = $area;
+	        }
+			$ourAreaArr = array_values($ourAreaArr); // 我们的区
+
 	        if (! $ourAreas) {
 	        	throw new DailianException('我们的区不存在!');
 	        }
 
 	        $ourServers = collect($servers)->pluck('server_name', 'id');
 
+	        $ourServerArr = [];
+	        foreach ($ourServers as $ourServerId => $ourServer) {
+	        	$ourServerArr[$ourServerId]['server_id'] = $ourServerId;
+	        	$ourServerArr[$ourServerId]['server'] = $ourServer;
+	        }
+	        $ourServerArr = array_values($ourServerArr); // 我们的服
 	        // 第三方服
 	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
-
 	        $options = ['gid' => $thirdGameId];
-	            
 	        $res = Show91::getAreas($options);
 
 	        $thirdAreas = [];
+	        $thirdAreaArr = [];
 	        foreach ($res['areas'] as $key => $area) {
-	            $thirdAreas[$area['id']]['third_area_id'] = $area['id'];
-	            $thirdAreas[$area['id']]['third_area'] = $area['area_name'];
+	            $thirdAreas[$area['id']] = $area['area_name'];
+	            $thirdAreaArr[$area['id']]['third_area_id'] = $area['id'];
+	            $thirdAreaArr[$area['id']]['third_area'] = $area['area_name'];
 	        }
-
+	        $thirdAreaArr = array_values($thirdAreaArr); // 第三方区
 	        // 遍历区找所有的服
 	        $thirdServers = [];
 	        foreach ($thirdAreas as $thirdAreaId => $thirdArea) {
@@ -331,10 +346,9 @@ class ConfigController extends Controller
 	        		$thirdServers[$thirdServer['id']]['third_server'] = $thirdServer['server_name']."(".$thirdArea.")";
 	        	}
 	        }
-	        dd($thirdServers);
+	        $thirdServers = array_values($thirdServers);
 	        // 导出
-	        // static::exports($gameId, $ourAreas, $thirdAreas, $ourServers, $thirdAreas);
-
+	        return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers);
     	} else {
     		return view('backend.config.export', compact('games'));
     	}
@@ -345,21 +359,140 @@ class ConfigController extends Controller
      * @param  [type] $filters [description]
      * @return [type]          [description]
      */
-    // public static function exports($gameId, $ourAreas, $thirdAreas, $ourServers, $thirdAreas)
-    // {
-        	// $game = Game::find($gameId);
-         //    $ourAreaTitle = ['序号', '我们的区名'];
-         //    $thirdAreaTitle = ['序号', '第三方区名'];
-         //    $ourServerTitle = ['序号', '我们的服名'];
-         //    $thirdServerTitle = ['序号', '第三方服名'];
+    public static function exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers)
+    {
+    	$game = Game::find($gameId);
+        $ourAreaTitle = ['序号', '我们的区名'];
+        $thirdAreaTitle = ['序号', '第三方区名'];
+        $ourServerTitle = ['序号', '我们的服名'];
+        $thirdServerTitle = ['序号', '第三方服名'];
 
-         //    $ourAreaArr = [];
+        array_unshift($ourAreaArr, $ourAreaTitle);
+        array_unshift($thirdAreaArr, $thirdAreaTitle);
+        array_unshift($ourServerArr, $ourServerTitle);
+        array_unshift($thirdServers, $thirdServerTitle);
 
+        Excel::create("游戏名(序号 $game->id)：$game->name", function ($excel) use ($ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers) {
+            $excel->sheet("我们的区", function ($sheet) use ($ourAreaArr) {
+                $sheet->rows($ourAreaArr);
+            });
+            $excel->sheet("第三方区", function ($sheet) use ($thirdAreaArr) {
+                $sheet->rows($thirdAreaArr);
+            });
+            $excel->sheet("我们的服", function ($sheet) use ($ourServerArr) {
+                $sheet->rows($ourServerArr);
+            });
+            $excel->sheet("第三方服", function ($sheet) use ($thirdServers) {
+                $sheet->rows($thirdServers);
+            });
+        })->export('xls');
+    }
 
-         //    Excel::create("游戏名(序号 $game->id)：$game->name", function ($excel) use ($ourAreas, $ourAreaTitle) {
-         //            $excel->sheet("页数", function ($sheet) use ($datas) {
-         //                $sheet->rows($datas);
-         //            });
-         //    })->export('xls');
-    // }
+    /**
+     * 导入excel数据
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function import(Request $request)
+    {
+    	try {
+    		if ($request->hasFile('file')) {
+	    		$file = $request->file('file');
+	    		$path = $file->path();
+		    	$res = [];
+		    	$title = '';
+		    	Excel::load($path, function ($reader) use (&$res, &$title) {
+		            $reader = $reader->getSheet(0);
+		            $title = $reader->getTitle();
+		            $res = $reader->toArray();
+		        });
+		    	if (! $res) {
+		    		return response()->ajax(0, '导入数据为空!');
+		    	}
+
+		    	if (! $title) {
+		    		return response()->ajax(0, '请写明文件标题!');
+		    	}
+		    	switch ($title) {
+		    		case '区':
+		    			foreach ($res as $k => $thirdArea) {
+		    				if (! $thirdArea) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
+		    				}
+
+		    				if (! $thirdArea[0] || !$thirdArea[1] || !$thirdArea[2] || !$thirdArea[3]) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据存在空值!');
+		    				}
+
+		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1]) || ! is_numeric($thirdArea[2]) || ! is_numeric($thirdArea[3])) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据存在不是一个整数的值!');
+		    				}
+
+		    				$has = ThirdArea::where('game_id', $thirdArea[0])
+			    				->where('third_id', $thirdArea[1])
+			    				->where('area_id', $thirdArea[2])
+			    				->where('third_area_id', $thirdArea[3])
+			    				->first();
+
+			    			if ($has) {
+			    				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
+			    			}
+			    			$thirdAreas['game_id'] = $thirdArea[0];
+			    			$thirdAreas['third_id'] = $thirdArea[1];
+			    			$thirdAreas['area_id'] = $thirdArea[2];
+			    			$thirdAreas['third_area_id'] = $thirdArea[3];
+			    			$thirdAreas['crated_at'] = date('Y-m-d H:i:s', time());
+			    			$thirdAreas['updated_at'] = date('Y-m-d H:i:s', time());
+			    			ThirdArea::create($thirdAreas);
+		    			}
+		    		break;
+		    		case '服':
+		    			foreach ($res as $k => $thirdServer) {
+		    				if (! $thirdServer) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
+		    				}
+
+		    				if (! $thirdServer[0] || !$thirdServer[1] || !$thirdServer[2] || !$thirdServer[3]) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据存在空值!');
+		    				}
+
+		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1]) || ! is_numeric($thirdServer[2]) || ! is_numeric($thirdServer[3])) {
+		    					return response()->ajax(0, '第'.($k+1).'行数据存在不是一个整数的值!');
+		    				}
+
+		    				$has = ThirdServer::where('game_id', $thirdServer[0])
+			    				->where('third_id', $thirdServer[1])
+			    				->where('server_id', $thirdServer[2])
+			    				->where('third_server_id', $thirdServer[3])
+			    				->first();
+
+			    			if ($has) {
+			    				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
+			    			}
+			    			$thirdServers['game_id'] = $thirdServer[0];
+			    			$thirdServers['third_id'] = $thirdServer[1];
+			    			$thirdServers['server_id'] = $thirdServer[2];
+			    			$thirdServers['third_server_id'] = $thirdServer[3];
+			    			$thirdServers['crated_at'] = date('Y-m-d H:i:s', time());
+			    			$thirdServers['updated_at'] = date('Y-m-d H:i:s', time());
+
+			    			$bool = ThirdServer::create($thirdServers);
+
+			    			if ($bool) {
+	    						return response()->ajax(1, '导入成功!');
+			    			} else {
+			    				return response()->ajax(0, '导入失败!');
+			    			}
+		    			}
+		    		break;
+		    		default:
+		    			return response()->ajax(0, '文件标题不正确!');
+		    	}
+	    	} else {
+	    		return response()->ajax(0, '未找到上传文件！');
+	    	}
+    	} catch (Exception $e) {
+    		throw new Exception($e->getMessage());
+    	}
+    }
 }

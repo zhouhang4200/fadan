@@ -373,5 +373,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('get/servers', 'ConfigController@getServers')->name('config.get-servers');
 
         Route::get('export', 'ConfigController@export')->name('config.export');
+        Route::post('import', 'ConfigController@import')->name('config.import');
     });
 });
