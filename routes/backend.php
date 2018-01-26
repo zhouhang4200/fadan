@@ -346,7 +346,19 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('platform', 'StatisticController@index')->name('statistic.platform');
     });
 
+    // 与第三方游戏区服对应
     Route::namespace('Config')->prefix('config')->group(function () {
         Route::get('game', 'ConfigController@game')->name('config.game');
+        Route::post('third/games', 'ConfigController@getThirdGames')->name('config.third-games');
+
+        Route::get('area', 'ConfigController@area')->name('config.area');
+        Route::post('add/areas', 'ConfigController@addAreas')->name('config.add-areas');
+        Route::post('get/areas', 'ConfigController@getAreas')->name('config.get-areas');
+
+        Route::get('server', 'ConfigController@server')->name('config.server');
+        Route::post('add/servers', 'ConfigController@addServers')->name('config.add-servers');
+        Route::post('get/servers', 'ConfigController@getServers')->name('config.get-servers');
+
+        Route::get('export', 'ConfigController@export')->name('config.export');
     });
 });

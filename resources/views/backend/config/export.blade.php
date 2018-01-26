@@ -27,7 +27,7 @@
             border-color: #1E9FFF;
         }
         .layui-form-label {
-            width: 150px;
+            width: 200px;
         }
 
         .layui-select-title {
@@ -62,51 +62,28 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">建立第三方游戏对应关系</li>
+                            <li class="layui-this" lay-id="add">建立第三方区对应关系</li>
                         </ul>
                         <div class="layui-tab-content">
-                            <form class="layui-form" method="">
+                            <form class="layui-form" method="get" action="{{ route('config.export') }}">
                             {!! csrf_field() !!}
                                 <div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">第三方平台</label>
-                                            <div class="layui-input-inline">
-                                            <select name="third_id" lay-verify="required" lay-filter="third" lay-search="">
-                                                <option value="">请选择</option>
-                                                <option value="1" selected>91代练</option>
-                                            </select>
-                                            </div>
-                                    </div>
-
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">游戏名称</label>
+                                        <label class="layui-form-label">输入或选择游戏名</label>
                                         <div class="layui-input-inline">
-                                            <select name="game_id" lay-verify="required" lay-search="">
+                                            <select name="game_id" lay-verify="required" lay-filter="game_id" lay-search="">
                                                 <option value="">请选择</option>
-                                                @forelse($games as $k => $game)
+                                            @forelse($games as $game)
                                                 <option value="{{ $game->id }}">{{ $game->name }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">第三方游戏名称</label>
-                                        <div class="layui-input-inline">
-                                            <select name="third_game_id" lay-verify="required" lay-search="">
-                                                <option value="">请选择</option>
-                                                @forelse($gameArr as $thirdGameKey => $thirdGame)
-                                                <option value="{{ $thirdGameKey }}">{{ $thirdGame }}</option>
-                                                @empty
-                                                @endforelse
+                                            @empty
+                                            @endforelse
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
-                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="config-game">立即提交</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="config-game">导出</button>
                                         </div>
                                     </div>
                                 </div>
@@ -128,18 +105,11 @@
             });
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
-            form.on('submit(config-game)', function (data) {
-                console.log(data.field);
-                 $.post('{{ route('config.third-games') }}', {data:data.field}, function(result){
-                        if (result.status == 1) {
-                            layer.alert(result.message);
-                        } else {
-                            layer.alert(result.message);
-                        }
-                    }, 'json');
-                return false;
-            });
-          form.render();
+
+           
+                
+        
+        form.render();
     });  
     </script>
 @endsection

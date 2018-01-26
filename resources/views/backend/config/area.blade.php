@@ -27,7 +27,7 @@
             border-color: #1E9FFF;
         }
         .layui-form-label {
-            width: 150px;
+            width: 200px;
         }
 
         .layui-select-title {
@@ -62,51 +62,53 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">建立第三方游戏对应关系</li>
+                            <li class="layui-this" lay-id="add">建立第三方区对应关系</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="">
                             {!! csrf_field() !!}
                                 <div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">第三方平台</label>
-                                            <div class="layui-input-inline">
-                                            <select name="third_id" lay-verify="required" lay-filter="third" lay-search="">
-                                                <option value="">请选择</option>
-                                                <option value="1" selected>91代练</option>
-                                            </select>
-                                            </div>
-                                    </div>
-
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">游戏名称</label>
+                                        <label class="layui-form-label">输入或选择游戏名</label>
                                         <div class="layui-input-inline">
-                                            <select name="game_id" lay-verify="required" lay-search="">
+                                            <select name="game_id" lay-verify="required" lay-filter="game_id" lay-search="">
                                                 <option value="">请选择</option>
-                                                @forelse($games as $k => $game)
+                                            @forelse($games as $game)
                                                 <option value="{{ $game->id }}">{{ $game->name }}</option>
-                                                @empty
-                                                @endforelse
+                                            @empty
+                                            @endforelse
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">第三方游戏名称</label>
+                                        <label class="layui-form-label">输入或选择第三方平台名</label>
                                         <div class="layui-input-inline">
-                                            <select name="third_game_id" lay-verify="required" lay-search="">
-                                                <option value="">请选择</option>
-                                                @forelse($gameArr as $thirdGameKey => $thirdGame)
-                                                <option value="{{ $thirdGameKey }}">{{ $thirdGame }}</option>
-                                                @empty
-                                                @endforelse
+                                            <select name="third" lay-verify="required" lay-search="">
+                                                <option value="1" selected>91代练</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">输入或选择游戏区</label>
+                                        <div class="layui-input-inline">
+                                            <select name="area_id" id="area_id" lay-verify="required" lay-search="">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">输入或选择第三方游戏区</label>
+                                        <div class="layui-input-inline">
+                                            <select name="third_area_id" id="third_area_id" lay-verify="required" lay-search="">
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="layui-form-item">
                                         <div class="layui-input-block">
-                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="config-game">立即提交</button>
+                                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="config-area">立即提交</button>
                                         </div>
                                     </div>
                                 </div>
@@ -128,18 +130,39 @@
             });
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
-            form.on('submit(config-game)', function (data) {
-                console.log(data.field);
-                 $.post('{{ route('config.third-games') }}', {data:data.field}, function(result){
+
+            form.on('submit(config-area)', function (data) {
+                $.post('{{ route('config.add-areas') }}', {data:data.field}, function(result){
                         if (result.status == 1) {
-                            layer.alert(result.message);
+                            layer.alert('添加成功!');
                         } else {
                             layer.alert(result.message);
                         }
                     }, 'json');
                 return false;
             });
-          form.render();
+            // 
+            form.on('select(game_id)', function (data) {
+                $.post('{{ route('config.get-areas') }}', {game_id:data.value}, function(result){
+                    if (result.status == 1) {
+                        var ourOptions = '';
+                        var thirdOptions = '';
+                        $.each(result.our, function (i, item) {
+                            ourOptions += "<option value='"+i+"'>"+item+"</option>";
+                        })
+                        $('#area_id').html('<option value="请选择"></option>' + ourOptions);
+                        $.each(result.third, function (i, item) {
+                            thirdOptions += "<option value='"+i+"'>"+item+"</option>";
+                        })
+                        $('#third_area_id').html('<option value="请选择"></option>' + thirdOptions);
+                        form.render('select');
+                    } else {
+                        layer.alert(result.message);
+                    }
+                }, 'json');
+                
+            });
+        form.render();
     });  
     </script>
 @endsection
