@@ -142,9 +142,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
         });
         // 商户保证金
-        Route::prefix('caution-moneys')->group(function(){
-            Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-moneys.index');
-            Route::post('store', 'CautionMoneyController@store')->name('businessman.caution-moneys.store');
+        Route::prefix('caution-money')->group(function(){
+            Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-money.index')->middleware('permission:businessman.caution-money.index');
         });
     });
 

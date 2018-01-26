@@ -18,4 +18,16 @@ class CautionMoney extends Model
         'status',
         'remark',
     ];
+
+    /**
+     * @param $query
+     * @param $filter
+     */
+    public static function scopeFilter($query, $filter)
+    {
+        if (isset($filter['userId']) && $filter['userId']) {
+            $query->where('user_id', $filter['userId']);
+        }
+        return $query;
+    }
 }

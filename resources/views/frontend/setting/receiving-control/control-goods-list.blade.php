@@ -1,4 +1,4 @@
-<form class="layui-form" id="category-form">
+<form class="layui-form" id="goods-form">
     <div class="layui-form-item">
         <div class="layui-input-inline">
             <select name="goods_id"   lay-search="">
@@ -14,7 +14,7 @@
         <div class="layui-input-inline" style="width: 200px;">
             <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>
         </div>
-        <button class="layui-btn layui-btn-normal fr" data-type="{{ $type }}" lay-submit lay-filter="category-add">添加用户ID</button>
+        <button class="layui-btn layui-btn-normal fr" data-type="{{ $type }}" lay-submit lay-filter="goods-add">添加用户ID</button>
     </div>
 </form>
 
