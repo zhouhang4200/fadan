@@ -1,13 +1,16 @@
 <?php
-namespace App\Http\Controllers\Backend\User\Frontend;
+namespace App\Http\Controllers\Backend\Businessman;
 
-use App\Models\User;
 use App\Models\UserWeight;
 use Auth, \Exception;
-use App\Models\Game;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 商户权重
+ * Class WeightController
+ * @package App\Http\Controllers\Backend\User\Frontend
+ */
 class WeightController extends Controller
 {
     /**
@@ -22,12 +25,16 @@ class WeightController extends Controller
 
         $userWeights = UserWeight::with(['createdAdmin', 'updatedAdmin'])->filter($filters)->paginate(30);
 
-        return view('backend.user.weight.index')->with([
+        return view('backend.businessman.weight.index')->with([
             'userWeights' => $userWeights,
             'userId' => $userId,
         ]);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function show($id)
     {
         return UserWeight::find($id);

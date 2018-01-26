@@ -519,7 +519,7 @@ class IndexController extends Controller
                     // 加价
                     if ($order->price < $requestData['game_leveling_amount']) {
                         $amount = $requestData['game_leveling_amount'] - $order->price;
-                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                        Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
                         $order->amount = $requestData['game_leveling_amount'];
@@ -530,7 +530,7 @@ class IndexController extends Controller
                         ]);
                     } else { // 减价
                         $amount = $order->price - $requestData['game_leveling_amount'];
-                        Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+                        Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
                         $order->amount = $requestData['game_leveling_amount'];
@@ -557,7 +557,7 @@ class IndexController extends Controller
                         // 加价
                         if ($order->price < $requestData['game_leveling_amount']) {
                             $amount = $requestData['game_leveling_amount'] - $order->price;
-                            Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                            Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
                             $order->amount = $requestData['game_leveling_amount'];
@@ -568,7 +568,7 @@ class IndexController extends Controller
                             ]);
                         } else { // 减价
                             $amount = $order->price - $requestData['game_leveling_amount'];
-                            Asset::handle(new Income($amount, 814, $orderNo, '代练改价退款', $order->creator_primary_user_id));
+                            Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
                             $order->amount = $requestData['game_leveling_amount'];
@@ -604,7 +604,7 @@ class IndexController extends Controller
                     if ($order->price < $requestData['game_leveling_amount']) {
                         $addAmount = bcsub($request->data['game_leveling_amount'], $order->amount, 2);
                         $amount = $requestData['game_leveling_amount'] - $order->price;
-                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                        Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
                         $order->amount = $requestData['game_leveling_amount'];
@@ -678,7 +678,7 @@ class IndexController extends Controller
                     if ($order->price < $requestData['game_leveling_amount']) {
                         $addAmount = bcsub($request->data['game_leveling_amount'], $order->amount, 2);
                         $amount = $requestData['game_leveling_amount'] - $order->price;
-                        Asset::handle(new Expend($amount, 77, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                        Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
                         $order->amount = $requestData['game_leveling_amount'];

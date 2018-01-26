@@ -142,6 +142,15 @@ class User extends Authenticatable
     }
 
     /**
+     * 转账信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transferAccountInfo()
+    {
+        return $this->hasOne(UserTransferAccountInfo::class, 'user_id', 'id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent()
