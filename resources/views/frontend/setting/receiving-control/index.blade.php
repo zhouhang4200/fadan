@@ -221,7 +221,7 @@
                 return false;
             });
             // 按商品添加
-            form.on('submit(category-add)', function (data) {
+            form.on('submit(goods-add)', function (data) {
                 var title = data.elem.getAttribute('data-type') == 1 ? '商品接单白名单添加' : '商品接单黑名单添加';
                 $('#goods-add-form > input[name=type]').val(data.elem.getAttribute('data-type'));
                 layer.open({
