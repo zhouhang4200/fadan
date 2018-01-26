@@ -170,7 +170,7 @@ class BatchCardController extends Controller
 
         $totalPage = $datArr ? ceil((int)$result->count / $pageSize) : 0;
         $pageDate = $datArr;
-        return view('frontend.steambatchcard.batch')->with([
+        return view('frontend.steam.steambatchcard.batch')->with([
             'totalPage' => $totalPage,
             'dataList' => $pageDate,
             'pageSize' => $pageSize,
@@ -218,7 +218,7 @@ class BatchCardController extends Controller
         $result = $steamImportAccountAip->show($page, $pageSize, $data);
         $data = $result->data;
         $totalPage = $data ? ceil((int)$result->count / $pageSize) : 0;
-        return view('frontend.steambatchcard.show')->with([
+        return view('frontend.steam.steambatchcard.show')->with([
             'data' => $data,
             'totalPage' => $totalPage,
             'pageSize' => $pageSize,
@@ -256,7 +256,7 @@ class BatchCardController extends Controller
         $result = $steamImportAccountAip->listData($page, $pageSize, $data);
         $data = $result->data;
         $totalPage = $data ? ceil((int)$result->count / $pageSize) : 0;
-        return view('frontend.steambatchcard.list')->with([
+        return view('frontend.steam.steambatchcard.list')->with([
             'data' => $data,
             'totalPage' => $totalPage,
             'pageSize' => $pageSize,
@@ -309,7 +309,7 @@ class BatchCardController extends Controller
         }
 
 
-        return view('frontend.steambatchcard.seal')->with([
+        return view('frontend.steam.steambatchcard.seal')->with([
             'data' => $data,
             'totalPage' => $totalPage,
             'pageSize' => $pageSize,
@@ -359,7 +359,7 @@ class BatchCardController extends Controller
         $result = $steamImportAccountAip->getZhiChongList($page, $pageSize, $data);
         $data = $result->data;
         $totalPage = $data ? ceil((int)$result->count / $pageSize) : 0;
-        return view('frontend.steambatchcard.zclist')->with([
+        return view('frontend.steam.steambatchcard.zclist')->with([
             'data' => $data,
             'totalPage' => $totalPage,
             'pageSize' => $pageSize,
@@ -413,7 +413,7 @@ class BatchCardController extends Controller
         } else {
             $data = isset($result->data) ? $result->data : null;
         }
-        return view('frontend.steambatchcard.game')->with([
+        return view('frontend.steam.steambatchcard.game')->with([
             'data' => $data,
         ]);
 

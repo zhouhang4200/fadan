@@ -76,7 +76,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.goods.submenu')
+    @include('frontend.steam.submenu')
 @endsection
 
 @section('main')
@@ -137,14 +137,19 @@
 
 @section('js')
     <script>
+        function redirect(str) {
+            setTimeout(function () {
+                window.location.href=str;
+            }, 900);
+        }
         layui.use(['form', 'layedit', 'laydate','upload'], function(){
             var form = layui.form, $ =layui.jquery , upload = layui.upload , layer = layui.layer;
             //监听提交
             form.on('submit(add)', function(data){
-                $.post("{{ route('frontend.goods.store') }}", {data:data.field}, function (result) {
+                $.post("{{ route('frontend.steam.goods.store') }}", {data:data.field}, function (result) {
                     if(result.status == 1){
                         layer.alert(result.message);
-                        redirect('/goods');
+                        redirect('/steam/goods');
                     }else {
                         layer.alert(result.message);
                     }
@@ -154,7 +159,7 @@
 
             upload.render({
                 elem: '.upload-images',
-                url: "{{ route('frontend.game.upload-images') }}",
+                url: "{{ route('frontend.steam.goods.upload-images') }}",
                 size: 3000,
                 accept: 'file',
                 exts: 'jpg|jpeg|png|gif',

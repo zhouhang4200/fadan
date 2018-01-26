@@ -43,7 +43,7 @@ class CdkeyController extends Controller
             $query->where('is_show', 1);
         }
         ])->where($where)->orderBy('id', 'desc')->paginate(config('frontend.page'));
-        return view('frontend.cdkey.index', compact('cdkies'));
+        return view('frontend.steam.cdkey.index', compact('cdkies'));
     }
 
     /**
@@ -86,7 +86,7 @@ class CdkeyController extends Controller
     {
         $goods = SteamGoods::find($id);
 
-        return view('frontend.goods.edit', compact('goods'));
+        return view('frontend.steam.goods.edit', compact('goods'));
     }
 
     /**

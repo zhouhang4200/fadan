@@ -20,7 +20,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.goods.submenu')
+    @include('frontend.steam.submenu')
 @endsection
 
 @section('main')
@@ -32,7 +32,7 @@
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
             </div>
-            <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
+            <a  href="{{ route('frontend.steam.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
         </div>
     </form>
 
@@ -60,7 +60,7 @@
                 <td>
                     <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit=""
                             lay-filter="show"
-                            data-route="{{ route('frontend.cdkey.show', ['id' => $item->id]) }}">生成CDK
+                            data-route="{{ route('frontend.steam.cdkey.show', ['id' => $item->id]) }}">生成CDK
                     </button>
                 </td>
             </tr>
@@ -140,8 +140,8 @@
                         shade: [0.2, '#000']
                     });
                     layer.close(index);
-                    $.post("{{ route('frontend.cdkey.store') }}", {data:data.field}, function (result) {
-                        var id ='/cdkeylibrary?id='+result.content.cdkey_id;
+                    $.post("{{ route('frontend.steam.cdkey.store') }}", {data:data.field}, function (result) {
+                        var id ='/steam/cdkeylibrary?id='+result.content.cdkey_id;
                         if(result.status == 1){
                             layer.open({
                                 type: 1

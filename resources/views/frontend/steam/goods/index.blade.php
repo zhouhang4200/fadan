@@ -14,7 +14,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.goods.submenu')
+    @include('frontend.steam.submenu')
 @endsection
 
 @section('main')
@@ -26,7 +26,7 @@
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
             </div>
-            <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
+            <a  href="{{ route('frontend.steam.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
         </div>
     </form>
 
@@ -89,7 +89,7 @@
 
             //监听提交
             form.on('submit(add-goods)', function(data){
-                window.location.href =  "{{ route('frontend.goods.create') }}";
+                window.location.href =  "{{ route('frontend.steam.goods.create') }}";
                 return false;
             });
 
@@ -97,13 +97,13 @@
                 layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('frontend.goods.destroy') }}",
+                        url: "{{ route('frontend.steam.goods.destroy') }}",
                         data:{id: data.elem.getAttribute('data-id')},
                         success: function (data) {
                             if (data.status.code == 1) {
                                 layer.msg('删除成功', {icon: 6, time:1000});
                                 setTimeout(function () {
-                                    window.location.href = "{{ route('frontend.goods.index') }}";
+                                    window.location.href = "{{ route('frontend.steam.goods.index') }}";
                                 }, 1000);
                             } else {
                                 layer.msg('删除失败', {icon: 5, time:1000});

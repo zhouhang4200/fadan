@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
         Route::post('self', 'AutoAddFundsController@self');
     });
 
-
     Route::post('kamen', 'OrderController@KamenOrder');
     Route::any('test', 'OrderController@test');
 
@@ -44,6 +43,10 @@ use Illuminate\Http\Request;
     Route::post('apply/complete', 'LevelingController@applyComplete'); //申请验收
     Route::post('cancel/complete', 'LevelingController@cancelComplete'); //取消验收
     Route::post('refuse/consult', 'LevelingController@refuseConsult'); //拒绝验收
+
+    Route::any('getOrder', 'SteamOrderController@getOrder');
+    Route::any('returnOrderStatus', 'SteamOrderController@returnOrderStatus');
+    Route::any('returnOrderData', 'SteamOrderController@returnOrderData');
 
 
 //Route::post('kamen', 'OrderController@KamenOrder');

@@ -22,7 +22,7 @@ class ExchangeController extends Controller
 
     public function index()
     {
-        return view('frontend.exchange.index');
+        return view('frontend.steam.exchange.index');
     }
 
     /**
@@ -59,7 +59,7 @@ class ExchangeController extends Controller
             }
         }
 
-        return view('frontend.exchange.info', compact('cdkeyLibrary', 'order', 'orderError'));
+        return view('frontend.steam.exchange.info', compact('cdkeyLibrary', 'order', 'orderError'));
     }
 
     /**
@@ -74,7 +74,7 @@ class ExchangeController extends Controller
                 $query->with('goodses');
             }
         ])->where('cdk', $request->cdk)->first();
-        return view('frontend.exchange.login', compact('cdkey'));
+        return view('frontend.steam.exchange.login', compact('cdkey'));
     }
 
     /**
@@ -202,7 +202,7 @@ class ExchangeController extends Controller
         $steamId = $data->steamLogin;
         $authToken = $data->steamLoginSecure;
         SteamAccount::where('account', $account)->delete();
-            Helper::log('steam-order-password', ['sid' => $sip, 'steam_id' => $steamId,'aoth_token'=>$authToken]);
+        Helper::log('steam-order-password', ['sid' => $sip, 'steam_id' => $steamId,'aoth_token'=>$authToken]);
         return $this->order($cdkeyLibrary,$cdk, $steamId ,$authToken , $account, $password, $sip);
 
 

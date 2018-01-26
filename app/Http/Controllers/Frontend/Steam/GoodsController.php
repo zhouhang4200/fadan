@@ -36,7 +36,7 @@ class GoodsController extends Controller
             $query->where('user_id', Auth::user()->id);
         };
         $goods = SteamGoods::where($where)->paginate(config('frontend.page'));
-        return view('frontend.goods.index', compact('goods'));
+        return view('frontend.steam.goods.index', compact('goods'));
     }
 
     /**
@@ -44,7 +44,7 @@ class GoodsController extends Controller
      */
     public function create()
     {
-        return view('frontend.goods.create');
+        return view('frontend.steam.goods.create');
     }
 
     /**
@@ -77,7 +77,7 @@ class GoodsController extends Controller
     {
         $goods = SteamGoods::find($id);
 
-        return view('frontend.goods.edit', compact('goods'));
+        return view('frontend.steam.goods.edit', compact('goods'));
     }
 
     public function update(Request $request)
@@ -125,7 +125,7 @@ class GoodsController extends Controller
             $query->where('is_show', true);
         };
         $goods = SteamGoods::where($where)->where('is_examine', true)->paginate(config('frontend.page'));
-        return view('frontend.goods.examine-goods', compact('goods'));
+        return view('frontend.steam.goods.examine-goods', compact('goods'));
     }
 
     /**

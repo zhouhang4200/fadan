@@ -39,7 +39,7 @@ class OrderController extends Controller
         };
 
         $orders = SteamOrder::with('goodses')->where($where)->orderBy('id','desc')->paginate(config('backend.page'));
-        return view('frontend.order.index',compact('orders'));
+        return view('frontend.steam.order.index',compact('orders'));
     }
 
 }

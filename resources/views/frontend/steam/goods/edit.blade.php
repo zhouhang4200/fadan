@@ -73,7 +73,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.goods.submenu')
+    @include('frontend.steam.submenu')
 @endsection
 
 @section('main')

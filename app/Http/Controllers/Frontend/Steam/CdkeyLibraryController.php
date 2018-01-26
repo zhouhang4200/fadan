@@ -56,7 +56,7 @@ class CdkeyLibraryController extends Controller
                 }
             }
         }
-        return view('frontend.cdkey.cdkeylibrary.index', compact('cdkeyLibraries', 'cdkey'));
+        return view('frontend.steam.cdkey.cdkeylibrary.index', compact('cdkeyLibraries', 'cdkey'));
     }
 
     public function search(Request $request)
@@ -69,17 +69,17 @@ class CdkeyLibraryController extends Controller
         };
 
         if ($request->has('cdk') and $request->cdk == '') {
-            return redirect(route('frontend.cdkey.index'));
+            return redirect(route('frontend.steam.cdkey.index'));
         }
 
         $cdkey_id = SteamCdkeyLibrary::where('cdk', $request->cdk)->value('cdkey_id');
         if (!$cdkey_id) {
-            return redirect(route('frontend.cdkey.index'));
+            return redirect(route('frontend.steam.cdkey.index'));
         }
 
         $cdkey = SteamCdkey::with('goodses')->find($cdkey_id);
         $cdkeyLibraries = SteamCdkeyLibrary::where($where)->orderBy('id', 'desc')->paginate(config('frontend.page'));
-        return view('frontend.cdkey.cdkeylibrary.search', compact('cdkeyLibraries', 'cdkey'));
+        return view('frontend.steam.cdkey.cdkeylibrary.search', compact('cdkeyLibraries', 'cdkey'));
 
     }
 
