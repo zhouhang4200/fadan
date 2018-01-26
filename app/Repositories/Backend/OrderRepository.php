@@ -56,7 +56,7 @@ class OrderRepository
             'created_at',
         ])
             ->filter($filters)
-            ->with(['gainerUser', 'detail', 'history', 'foreignOrder']);
+            ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder']);
 
         $response = new StreamedResponse(function () use ($order){
             $out = fopen('php://output', 'w');
@@ -107,7 +107,7 @@ class OrderRepository
                     $data = [
                         $v['creator_primary_user_id'],
                         $v['gainer_primary_user_id'],
-                        $v['gainer_user']['nickname'] ?? '',
+                        $v['gainer_primary_user']['nickname'] ?? '',
                         $v['no']  . "\t",
                         $v['foreign_order_no']  . "\t",
                         $v['game_name'],

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Backend\Businessman;
 
+use App\Models\CautionMoney;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,7 +19,11 @@ class CautionMoneyController extends Controller
      */
     public function index(Request $request)
     {
-        return view('backend.businessman.caution-money.index');
+        $userId = $request->user_id;
+
+        $cautionMoneys = CautionMoney::filter(compact('userId'))->paginate(30);
+
+        return view('backend.businessman.caution-money.index', compact('cautionMoneys', 'userId'));
     }
 
     /**

@@ -99,6 +99,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </li>
                             @endcan
 
+                            @can('businessman.caution-money.index')
+                                <li>
+                                    <a href="{{ route('businessman.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
+                                        商户保证金列表
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
 
