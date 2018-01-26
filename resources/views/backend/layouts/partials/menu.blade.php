@@ -418,6 +418,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     服
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    导入导出
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
