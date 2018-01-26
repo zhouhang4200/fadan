@@ -276,11 +276,113 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
 	});
 
-	Route::namespace('Data')->prefix('data')->group(function () {
-		// 日常数据
-		Route::get('index', 'DataController@index')->name('data.index');
-		// Route::get('index', 'DataController@index')->name('data.index')->middleware('permission:data.index');
-	});
+    Route::namespace('Data')->prefix('data')->group(function () {
+        // 日常数据
+        Route::get('index', 'DataController@index')->name('data.index');
+        // Route::get('index', 'DataController@index')->name('data.index')->middleware('permission:data.index');
+    });
+
+    //上传excel
+    Route::group(['prefix' => 'file'], function () {
+        Route::post('fileExcel', 'FileController@fileExcel')->name('file.fileExcel');
+    });
+
+    // steam
+    Route::namespace('Steam')->prefix('steam')->group(function () {
+        // 商品
+        Route::prefix('goods')->group(function () {
+            // 商品列表
+            Route::get('/', 'GoodsController@index')->name('frontend.steam.goods.index');
+            // 添加视图
+            Route::get('create', 'GoodsController@create')->name('frontend.steam.goods.create');
+            // 审核商品
+            Route::get('examine-goods', 'GoodsController@examineGoods')->name('frontend.steam.examine.examine-goods');
+            // 保存商品
+            Route::post('store', 'GoodsController@store')->name('frontend.steam.goods.store');
+            // 编辑视图
+            Route::get('edit/{id}', 'GoodsController@edit')->name('frontend.steam.goods.edit');
+            // 修改商品
+            Route::post('update', 'GoodsController@update')->name('frontend.steam.goods.update');
+            // 删除商品
+            Route::post('destroy', 'GoodsController@destroy')->name('frontend.steam.goods.destroy');
+            //文件上传
+            Route::post('upload-images', 'GoodsController@uploadImages')->name('frontend.steam.goods.upload-images');
+        });
+
+        // 平台卡
+        Route::prefix('cdkey')->group(function () {
+            // 平台卡列表
+            Route::get('/', 'CdkeyController@index')->name('frontend.steam.cdkey.index');
+            // 添加视图
+            Route::get('create', 'CdkeyController@create')->name('frontend.steam.cdkey.create');
+            // 查看
+            Route::get('/{id}', 'CdkeyController@show')->name('frontend.steam.cdkey.show');
+            // 保存商品
+            Route::post('store', 'CdkeyController@store')->name('frontend.steam.cdkey.store');
+            // 编辑视图
+            Route::get('edit/{id}', 'CdkeyController@edit')->name('frontend.steam.cdkey.edit');
+            // 修改商品
+            Route::post('update', 'CdkeyController@update')->name('frontend.steam.cdkey.update');
+            // 删除商品
+            Route::post('destroy', 'CdkeyController@destroy')->name('frontend.steam.cdkey.destroy');
+            // 是否冻结
+            Route::patch('is-frozen', 'CdkeyController@isFrozen')->name('frontend.steam.cdkey.isrozen');
+
+            Route::post('remarks', 'CdkeyController@remarks')->name('frontend.steam.cdkey.remarks');
+        });
+
+        //steam充值
+        Route::group(['prefix' => 'card'], function () {
+            Route::get('recharge', 'BatchCardController@getAccountList')->name('frontend.steam.card.recharge');
+            Route::post('import-card', 'BatchCardController@importCard')->name('frontend.steam.card.import-card');
+            Route::get('send/status', 'BatchCardController@updateStatus');
+            Route::post('all', 'BatchCardController@all')->name('frontend.steam.card.all');
+            Route::post('balance', 'BatchCardController@balance')->name('frontend.steam.card.balance');
+            Route::post('updateZhichongState', 'BatchCardController@updateZhichongState')->name('frontend.steam.card.updateZhichongState');
+            Route::post('updatePwd', 'BatchCardController@updatePwd')->name('frontend.steam.card.updatePwd');
+            Route::get('show', 'BatchCardController@show')->name('frontend.steam.card.show');
+            //取号使用记录
+            Route::get('list', 'BatchCardController@listData')->name('frontend.steam.card.list');
+            Route::get('seal', 'BatchCardController@seal')->name('frontend.steam.card.seal');
+            Route::get('zclist', 'BatchCardController@getZhiChongList')->name('frontend.steam.card.zclist');
+
+            Route::get('game', 'BatchCardController@game')->name('frontend.steam.card.game');
+            Route::post('addGame', 'BatchCardController@addGame')->name('frontend.steam.card.addGame');
+            Route::post('delGameTmp', 'BatchCardController@delGameTmp')->name('frontend.steam.card.delGameTmp');
+            Route::post('updateIsUsing', 'BatchCardController@updateIsUsing')->name('frontend.steam.card.updateIsUsing');
+            Route::post('updateAuthType', 'BatchCardController@updateAuthType')->name('frontend.steam.card.updateAuthType');
+        });
+
+        // 平台卡库
+        Route::prefix('cdkeylibrary')->group(function () {
+
+            Route::get('/', 'CdkeyLibraryController@index')->name('frontend.steam.cdkeylibrary.index');
+
+            Route::get('search', 'CdkeyLibraryController@search')->name('frontend.steam.cdkeylibrary.search');
+            // 是否冻结
+            Route::patch('is-something', 'CdkeyLibraryController@isSomething')->name('frontend.steam.cdkeylibrary.isSomething');
+
+        });
+
+        // 订单
+        Route::prefix('order')->group(function () {
+            // 订单列表
+            Route::get('/', 'OrderController@index')->name('frontend.steam.order.index');
+        });
+
+    });
+
+
+});
+
+Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {
+    Route::get('/', 'ExchangeController@index')->name('exchange.index');
+    // 兑换登录
+    Route::post('login-exchange', 'ExchangeController@loginExchange')->name('exchange.login-exchange');
+    // 兑换登录
+    Route::post('info', 'ExchangeController@info')->name('exchange.info');
+    Route::get('login', 'ExchangeController@login')->name('exchange.login');;
+    Route::get('code', 'ExchangeController@code');
 });
 
 Route::namespace('Frontend\Auth')->group(function () {

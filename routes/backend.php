@@ -258,7 +258,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 订单列表
             Route::get('/', 'ForeignController@index')->name('order.foreign.index')->middleware('permission:order.platform.index');
         });
-        // 售后订单
+        /*// 售后订单
         Route::prefix('after-service')->group( function () {
             // 订单列表
             Route::get('/', 'AfterServiceController@index')->name('order.after-service.index')->middleware('permission:order.after-service.index');
@@ -268,7 +268,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('auditing', 'AfterServiceController@auditing')->name('order.after-service.auditing')->middleware('permission:order.after-service.auditing');
             // 确认售后
             Route::post('confirm', 'AfterServiceController@confirm')->name('order.after-service.confirm')->middleware('permission:order.after-service.confirm');
-        });
+        });*/
 
         // 代练订单报警
         Route::prefix('leveling')->group(function () {
