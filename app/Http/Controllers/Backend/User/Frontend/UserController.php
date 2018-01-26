@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\User\Frontend;
 
 use App\Exceptions\CustomException;
 use App\Models\RealNameIdent;
+use App\Models\UserTransferAccountInfo;
 use App\Repositories\Api\UserRechargeOrderRepository;
 use Illuminate\Http\Request;
 
@@ -85,5 +86,30 @@ class UserController extends Controller
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
+    }
+
+    /**
+     * 商户对应的转账信息
+     * 商户转账到指定账号后自动加款
+     * @param Request $request
+     * @return View
+     */
+    public function transferAccountInfo(Request $request, $userId)
+    {
+        $transferInfo = UserTransferAccountInfo::where('user_id', $userId)->first();
+
+        return view('backend.user.frontend.transfer-account-info', compact('transferInfo'));
+    }
+
+    public function transferAccountInfoUpdate(Request $request)
+    {
+        UserTransferAccountInfo::updateOrCreate(['user_id' =>  $request->id], [
+           'user_id' => $request->id,
+           'name' => $request->name,
+           'bank_name' => $request->bank_name,
+           'bank_card' => $request->bank_card,
+           'admin_user_id' => Auth::user()->id,
+        ]);
+        return response()->ajax(1, '修改成功');
     }
 }

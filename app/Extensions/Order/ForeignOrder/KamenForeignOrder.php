@@ -73,6 +73,11 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['province'] = $jSitd == 0 ? $decodeArray['ChargeServer'] : loginDetail($decodeArray['BuyerIp'])['province'];
         }
 
+        // 旺旺黑名单检测
+        if ($this->blacklist($wangWang)) {
+            return false;
+        }
+
 		$data['channel']          =  $siteInfo->channel;
 		$data['channel_name']     =  $siteInfo->name;
 		$data['kamen_order_no']   =  $decodeArray['OrderNo'] ?? '';
@@ -211,5 +216,14 @@ class KamenForeignOrder extends ForeignOrder
     protected function tmallOrderInfo($kamenSite, $orderId)
     {
         return TmallOrderApi::getOrder($kamenSite, $orderId);
+    }
+
+    /**
+     * 旺旺黑名单
+     * @param $wangWang
+     */
+    protected function blacklist($wangWang)
+    {
+
     }
 }

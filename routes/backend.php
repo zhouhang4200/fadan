@@ -107,6 +107,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     // 用户
+    Route::namespace('Customer')->prefix('customer')->group(function (){
+        // 旺旺黑名单
+        Route::get('wang-wang-blacklist', 'WangWangBlacklistController@index')->name('customer.wang-wang-blacklist.index');
+        Route::post('wang-wang-blacklist/store', 'WangWangBlacklistController@store')->name('customer.wang-wang-blacklist.store');
+        Route::post('wang-wang-blacklist/delete', 'WangWangBlacklistController@delete')->name('customer.wang-wang-blacklist.delete');
+    });
+
+    // 用户
     Route::namespace('User')->prefix('user')->group(function (){
         // 用户账号列表
         Route::namespace('Frontend')->prefix('frontend')->group(function () {
@@ -117,6 +125,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
             // 用户资料
             Route::get('show/{userId}', 'UserController@show')->name('frontend.user.show')->middleware('permission:frontend.user.show');
+            // 转账信息
+            Route::get('transfer-account/{userId?}', 'UserController@transferAccountInfo')->name('frontend.user.transfer-account-info')->middleware('permission:frontend.user.transfer-account-info');
+            // 转账信息更新
+            Route::post('transfer-account/{userId?}', 'UserController@transferAccountInfoUpdate')->name('frontend.user.transfer-account-info-update')->middleware('permission:frontend.user.transfer-account-info-update');
             // 实名认证
             Route::get('authentication/{userId}', 'UserController@authentication')->name('frontend.user.authentication')->middleware('permission:frontend.user.authentication');
             // 权重

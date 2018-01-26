@@ -78,6 +78,7 @@
                             <ul class="layui-tab-title">
                                 <li  lay-id="detail"><a href="{{ route('frontend.user.show', ['id' => Route::input('userId')])  }}">用户资料</a></li>
                                 <li  class="layui-this"  lay-id="authentication"><a href="{{ route('frontend.user.authentication', ['id' => Route::input('userId')])  }}">实名认证</a></li>
+                                <li lay-id="authentication"><a href="{{ route('frontend.user.transfer-account-info', ['id' => Route::input('userId')])  }}">转账信息</a></li>
                             </ul>
                             <div class="layui-tab-content">
                                 <div class="layui-tab-item detail"></div>

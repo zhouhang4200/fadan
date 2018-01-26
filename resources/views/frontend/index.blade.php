@@ -404,7 +404,12 @@
                 ,btn: ['确定']
                 ,btnAlign: 'c'
                 ,moveType: 1 //拖拽模式，0或者1
-                ,content: '<div style="padding: 15px; line-height: 22px;">请往以下银行卡转账完成充值，转账金额即充值金额，<font color="#e51c23">转账时需要填写“备注”，请保证与下方“转账备注”相同，否则可能出现充值失败</font>。<br>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>账号：asdf<br/>户名：asdf<br/>开户行：asdf<br/>转账备注：asdf<br/></div>'
+                ,content: '<div style="padding: 15px; line-height: 22px;">请往以下银行卡转账完成充值，转账金额即充值金额，' +
+                '<font color="#e51c23">转账时需要填写“备注”，请保证与下方“转账备注”相同，否则可能出现充值失败</font>。' +
+                '<br>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>' +
+                '账号：<?= $transferInfo->bank_card ?? ''  ?><br/>户名：<?= $transferInfo->bank_card ?? ''  ?><br/>' +
+                '开户行：<?= $transferInfo->bank_card ?? ''  ?><br/>' +
+                '转账备注：<?= $user->id ?? ''  ?><br/></div>'
             });
         });
 

@@ -47,6 +47,8 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </ul>
                         </li>
                     @endcan
+
+
                     <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-users"></i>
@@ -99,6 +101,22 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
                         </ul>
                     </li>
+
+                    <li @if($currentOneLevelMenu == 'customer') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>用户</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('customer.wang-wang-blacklist.index') }}" @if($currentRouteName == 'customer.wang-wang-blacklist.index') class="active" @endif>
+                                    旺旺黑名单
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-copy"></i>
