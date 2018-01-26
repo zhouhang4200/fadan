@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Services;
 
 use GuzzleHttp\Client;
 
 /**
+ * 卡门订单状态变更API
  * Class KamenOrderApi
  * @package App\Services
  */
@@ -92,5 +92,26 @@ class KamenOrderApi
         } catch(\Exception $e){
             return false;
         }
+    }
+
+    /**
+     * 更新订单状态
+     * @param $kmOrderId integer 卡门订单号
+     * @return bool|string
+     */
+    public  function ing($kmOrderId)
+    {
+        $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('处理中'))
+            . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode(generateUuid())) . '&ChargeUse=';
+
+        $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+
+        $url = $this->apiUrl[rand(0, 11)] .  'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
+
+        // 发送请求
+        $client = new Client();
+        $response = $client->request('GET', str_replace(' ', '+', $url));
+        $result =  $response->getBody()->getContents();
+        return $result;
     }
 }

@@ -17,8 +17,8 @@ class WangWangBlacklist extends Model
      */
     public static function scopeFilter($query, $condition)
     {
-        if (isset($condition['wang_wang']) && $condition['wang_wang']) {
-            $query->where('wang_wang', $condition['wang_wang']);
+        if (isset($condition['wangWang']) && $condition['wangWang']) {
+            $query->where('wang_wang', 'like', '%' . $condition['wangWang'] . '%');
         }
         return $query;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use App\Models\WangWangBlacklist;
+use App\Services\KamenOrderApi;
 use App\Services\TmallOrderApi;
 use App\Models\SiteInfo;
 use Log;
@@ -73,8 +75,14 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['province'] = $jSitd == 0 ? $decodeArray['ChargeServer'] : loginDetail($decodeArray['BuyerIp'])['province'];
         }
 
-        // 旺旺黑名单检测
+        // 旺旺黑名单检测,如果在黑名单中则直接失败订单
         if ($this->blacklist($wangWang)) {
+            // 将订单改为处理中
+            (KamenOrderApi::share()->ing($decodeArray['OrderNo']));
+            // 将订单改为失败
+            (KamenOrderApi::share()->fail($decodeArray['OrderNo']));
+
+            myLog('blacklist', [$decodeArray['OrderNo'], $wangWang]);
             return false;
         }
 
@@ -221,9 +229,14 @@ class KamenForeignOrder extends ForeignOrder
     /**
      * 旺旺黑名单
      * @param $wangWang
+     * @return bool
      */
     protected function blacklist($wangWang)
     {
-
+        $exist = WangWangBlacklist::where('wang_wang', $wangWang)->first();
+        if ($exist) {
+            return true;
+        }
+        return false;
     }
 }

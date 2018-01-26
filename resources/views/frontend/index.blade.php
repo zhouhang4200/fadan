@@ -405,9 +405,10 @@
                 ,btnAlign: 'c'
                 ,content: '<div style="padding: 15px; line-height: 22px;"><span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span>' +
                 '<br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>' +
-                '账号：<?= $transferInfo->bank_card ?? ''  ?><br/>户名：<?= $transferInfo->name ?? ''  ?><br/>' +
-                '开户行：<?= $transferInfo->bank_name ?? ''  ?><br/>' +
-                '转账备注：<?= $user->id ?? ''  ?><br/></div>'
+                '账号：{{ optional($transferInfo)->bank_card  }}<br/>' +
+                '户名：{{ optional($transferInfo)->name }}<br/>' +
+                '开户行：{{ optional($transferInfo)->bank_name }}<br/>' +
+                '转账备注：{{ $user->id }}<br/></div>'
             });
         });
 
