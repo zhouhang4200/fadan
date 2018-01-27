@@ -415,6 +415,7 @@ class ConfigController extends Controller
 		    	}
 		    	switch ($title) {
 		    		case '区':
+		    			$thirdAreas = [];
 		    			foreach ($res as $k => $thirdArea) {
 		    				if (! $thirdArea) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
@@ -437,16 +438,23 @@ class ConfigController extends Controller
 			    			if ($has) {
 			    				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
 			    			}
-			    			$thirdAreas['game_id'] = $thirdArea[0];
-			    			$thirdAreas['third_id'] = $thirdArea[1];
-			    			$thirdAreas['area_id'] = $thirdArea[2];
-			    			$thirdAreas['third_area_id'] = $thirdArea[3];
-			    			$thirdAreas['crated_at'] = date('Y-m-d H:i:s', time());
-			    			$thirdAreas['updated_at'] = date('Y-m-d H:i:s', time());
-			    			ThirdArea::create($thirdAreas);
+			    			$thirdAreas[$k]['game_id'] = $thirdArea[0];
+			    			$thirdAreas[$k]['third_id'] = $thirdArea[1];
+			    			$thirdAreas[$k]['area_id'] = $thirdArea[2];
+			    			$thirdAreas[$k]['third_area_id'] = $thirdArea[3];
+			    			$thirdAreas[$k]['created_at'] = date('Y-m-d H:i:s', time());
+			    			$thirdAreas[$k]['updated_at'] = date('Y-m-d H:i:s', time());
+		    			}
+		    			$bool = ThirdArea::insert($thirdAreas);
+
+		    			if ($bool) {
+		    				return response()->ajax(1, '导入成功');
+		    			} else {
+		    				return response()->ajax(0, '导入失败');
 		    			}
 		    		break;
 		    		case '服':
+		    			$thirdServers = [];
 		    			foreach ($res as $k => $thirdServer) {
 		    				if (! $thirdServer) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
@@ -469,20 +477,19 @@ class ConfigController extends Controller
 			    			if ($has) {
 			    				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
 			    			}
-			    			$thirdServers['game_id'] = $thirdServer[0];
-			    			$thirdServers['third_id'] = $thirdServer[1];
-			    			$thirdServers['server_id'] = $thirdServer[2];
-			    			$thirdServers['third_server_id'] = $thirdServer[3];
-			    			$thirdServers['crated_at'] = date('Y-m-d H:i:s', time());
-			    			$thirdServers['updated_at'] = date('Y-m-d H:i:s', time());
+			    			$thirdServers[$k]['game_id'] = $thirdServer[0];
+			    			$thirdServers[$k]['third_id'] = $thirdServer[1];
+			    			$thirdServers[$k]['server_id'] = $thirdServer[2];
+			    			$thirdServers[$k]['third_server_id'] = $thirdServer[3];
+			    			$thirdServers[$k]['created_at'] = date('Y-m-d H:i:s', time());
+			    			$thirdServers[$k]['updated_at'] = date('Y-m-d H:i:s', time());
+		    			}
+		    			$bool = ThirdServer::insert($thirdServers);
 
-			    			$bool = ThirdServer::create($thirdServers);
-
-			    			if ($bool) {
-	    						return response()->ajax(1, '导入成功!');
-			    			} else {
-			    				return response()->ajax(0, '导入失败!');
-			    			}
+		    			if ($bool) {
+		    				return response()->ajax(1, '导入成功');
+		    			} else {
+		    				return response()->ajax(0, '导入失败');
 		    			}
 		    		break;
 		    		default:

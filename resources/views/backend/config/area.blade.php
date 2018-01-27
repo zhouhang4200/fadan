@@ -84,7 +84,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">输入或选择第三方平台名</label>
                                         <div class="layui-input-inline">
-                                            <select name="third" lay-verify="required" lay-search="">
+                                            <select name="third_id" lay-verify="required" lay-search="">
                                                 <option value="1" selected>91代练</option>
                                             </select>
                                         </div>
