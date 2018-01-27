@@ -100,7 +100,7 @@
     <script>
         layui.use(['form', 'layedit', 'laydate', 'upload'], function(){
             var laydate = layui.laydate;
-            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            var form = layui.form; //只有执行了这一步,部分表单元素才会自动修饰成功
             var layer = layui.layer;
             var upload = layui.upload; //得到 upload 对象
             upload.render({
