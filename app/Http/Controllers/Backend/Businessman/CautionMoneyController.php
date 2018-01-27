@@ -1,6 +1,10 @@
 <?php
 namespace App\Http\Controllers\Backend\Businessman;
 
+use App\Exceptions\CustomException;
+use Asset, DB, Auth;
+use App\Exceptions\AssetException;
+use App\Extensions\Asset\Income;
 use App\Models\CautionMoney;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,11 +31,59 @@ class CautionMoneyController extends Controller
     }
 
     /**
-     * 添加
+     * 退款
      * @param Request $request
      */
-    public function store(Request $request)
+    public function refund(Request $request)
     {
+        DB::beginTransaction();
+        try {
+            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
 
+            if ($cautionMoney) {
+                Asset::handle(new Income($cautionMoney->amount, 15, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
+                $cautionMoney->status = 2;
+                $cautionMoney->save();
+            } else {
+                return response()->ajax(0, '单据已退款');
+            }
+        } catch (AssetException $assetException) {
+            DB::rollback();
+            return response()->ajax(0, $assetException->getMessage());
+        } catch (CustomException $customException) {
+            DB::rollback();
+            return response()->ajax(0, $customException->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '退款成功');
+    }
+
+    /**
+     * 扣除保证金
+     * @param Request $request
+     * @return mixed
+     */
+    public function deduction(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
+
+            if ($cautionMoney) {
+                Asset::handle(new Income($cautionMoney->amount, 15, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
+                $cautionMoney->status = 3;
+                $cautionMoney->save();
+            } else {
+                return response()->ajax(0, '单据已退款');
+            }
+        } catch (AssetException $assetException) {
+            DB::rollback();
+            return response()->ajax(0, $assetException->getMessage());
+        } catch (CustomException $customException) {
+            DB::rollback();
+            return response()->ajax(0, $customException->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '退款成功');
     }
 }
