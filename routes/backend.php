@@ -144,6 +144,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 商户保证金
         Route::prefix('caution-money')->group(function(){
             Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-money.index')->middleware('permission:businessman.caution-money.index');
+            Route::post('refund', 'CautionMoneyController@refund')->name('businessman.caution-money.refund')->middleware('permission:businessman.caution-money.refund');
+            Route::post('deduction', 'CautionMoneyController@deduction')->name('businessman.caution-money.deduction')->middleware('permission:businessman.caution-money.deduction');
         });
     });
 

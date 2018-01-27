@@ -64,7 +64,7 @@
                                                         <div class="main-box clearfix" style="border: 1px solid #ddd">
                                                             <header class="main-box-header clearfix">
                                                                 <div class="row" style="font-size: 15px">
-                                                                    <div class="col-xs-3">状态：{{ config('order.status')[$content->status] }}</div>
+                                                                    <div class="col-xs-3">状态：{{ $content->service_id == 4 ? config('order.status_leveling')[$content->status] : config('order.status')[$content->status] }}</div>
                                                                     <div class="col-xs-4">平台订单号：{{ $content->no }} </div>
                                                                     <div class="col-xs-4">外部订单号：{{ $content->foreign_order_no }}</div>
                                                                 </div>
