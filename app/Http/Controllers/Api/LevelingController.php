@@ -87,9 +87,11 @@ class LevelingController
      */
     public function fail($message, $order)
     {
-        // 异常写入order_notices 表
-        $this->addOrderNotice($order);
-        $this->addActionToOrderNotice($order);
+        if ($order) {
+            // 异常写入order_notices 表
+            $this->addOrderNotice($order);
+            $this->addActionToOrderNotice($order);      
+        }
 
         return json_encode([
             'status' => 0,
@@ -123,6 +125,7 @@ class LevelingController
 	 */
     public function receiveOrder(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -144,6 +147,7 @@ class LevelingController
      */
     public function agreeConsult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiDeposit = $request->apiDeposit;
@@ -192,6 +196,7 @@ class LevelingController
     */
     public function agreeAppeal(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiAmount = $request->apiAmount;
@@ -243,6 +248,7 @@ class LevelingController
      */
     public function consult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiAmount = $request->apiAmount;
@@ -305,6 +311,7 @@ class LevelingController
      */
     public function appeal(Request $request)
     {
+        $order = null;
         try {
             DB::beginTransaction();
             try {
@@ -342,6 +349,7 @@ class LevelingController
      */
     public function cancelConsult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
@@ -366,6 +374,7 @@ class LevelingController
      */
     public function cancelAppeal(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -387,6 +396,7 @@ class LevelingController
      */
     public function forceConsult(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -405,6 +415,7 @@ class LevelingController
      */
     public function unusualOrder(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -424,6 +435,7 @@ class LevelingController
      */
     public function cancelUnusual(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -442,6 +454,7 @@ class LevelingController
      */
     public function applyComplete(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -460,6 +473,7 @@ class LevelingController
      */
     public function cancelComplete(Request $request)
     {
+        $order = null;
         try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
