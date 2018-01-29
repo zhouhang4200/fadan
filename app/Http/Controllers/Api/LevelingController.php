@@ -49,17 +49,14 @@ class LevelingController
         $orderDetail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->first();
 
         if (! $orderDetail) {
-            return false;
             throw new DailianException('订单号缺失或错误');
         } else {
             $order = Order::where('no', $orderDetail->order_no)->first();
 
             if (! $order) {
-                return false;
                 throw new DailianException('内部订单号缺失,请联系我们');
-            } else {
-                return $order;
-            }
+            } 
+            return $order;
         }
     }
 
