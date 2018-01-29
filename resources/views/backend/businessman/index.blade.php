@@ -79,7 +79,7 @@
                                             审核通过
                                         @elseif ($user->realNameIdent && $user->realNameIdent->status === 2)
                                             审核不通过
-                                        @else 
+                                        @else
                                             --
                                         @endif
                                         </td>
@@ -162,7 +162,7 @@
                 <div class="layui-input-block">
                     <select name="type" lay-verify="required">
                         <option value=""></option>
-                        @foreach(config('cautionmoney') as $key => $value)
+                        @foreach(config('cautionmoney.type') as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>

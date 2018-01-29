@@ -16,7 +16,11 @@ class UserAmountFlowRepository
                 return $query->where('trade_no', $tradeNo);
             })
             ->when(!empty($tradeType), function ($query) use ($tradeType) {
-                return $query->where('trade_type', $tradeType);
+                if ($tradeType == 7) {
+                    return $query->whereIn('trade_type', [5, 7]);
+                } else if ($tradeType == 8) {
+                    return $query->whereIn('trade_type', [6, 8]);
+                }
             })
             ->when(!empty($timeStart), function ($query) use ($timeStart) {
                 return $query->where('created_at', '>=', $timeStart);
