@@ -19,7 +19,7 @@ class LevelingController extends Controller
 {
     public function index(Request $request )
     {
-    	try {
+    	try {       
 	    	$startDate = $request->start_date;
 	    	$endDate = $request->end_date;
 	    	$fullUrl = $request->fullUrl();
@@ -27,7 +27,7 @@ class LevelingController extends Controller
 	    	$filters = compact('third', 'startDate', 'endDate');
             $ourStatus = config('order.status_leveling');
 	    	
-	    	$query = OrderNotice::where('complete', 0)->filter($filters)->latest('id');
+	    	$query = OrderNotice::where('complete', 0)->filter($filters)->latest('updated_at');
             // 订单报警数据列表
 	    	$paginateOrderNotices = $query->paginate(config('backend.page'));
 
@@ -61,7 +61,9 @@ class LevelingController extends Controller
     		'千手状态',
     		'外部状态',
     		'接单平台',
+            '接单平台操作',
     		'发布时间',
+            '操作时间',
     	];
 
     	$chunkDatas = array_chunk($paginateOrderNotices, 50);
@@ -75,9 +77,11 @@ class LevelingController extends Controller
                     $datas[] = [
                         $data['order_no'] ?? '--',
                         $data['status'] ? config("order.status_leveling")[$data['status']] : '--',
-                        $data['third_status'] ? config("order.show91")[$data['third_status']] : '--',
+                        $data['child_third_status'] != 100 ? config("order.show91")[$data['third_status']].'('.config("order.show91")[$data['child_third_status']].')' : config("order.show91")[$data['third_status']],
                         $data['third'] ? config("order.third")[$data['third']] : '--',
+                        $data['operate'] ?: '--',
                         $data['create_order_time'] ?? '--',
+                        $data['created_at'] ?? '--',
                     ];
                 }
                 // 将标题加入到数组

@@ -10,7 +10,7 @@ class OrderNotice extends Model
 	use SoftDeletes;
 	
     protected $fillable = [
-    	'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'creator_user_name', 'order_no', 'complete', 
+    	'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'creator_user_name', 'order_no', 'complete', 'child_third_status',
     	'third_order_no', 'third', 'status', 'third_status', 'create_order_time', 'created_at', 'updated_at', 'amount', 'security_deposit', 'efficiency_deposit',
     ];
 

@@ -362,32 +362,40 @@ class ConfigController extends Controller
     public static function exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers)
     {
     	$game = Game::find($gameId);
-        $ourAreaTitle = ['序号', '我们的区名'];
+        $ourAreaTitle = ['序号', '代练平台区名'];
         $thirdAreaTitle = ['序号', '第三方区名'];
-        $ourServerTitle = ['序号', '我们的服名'];
+        $ourServerTitle = ['序号', '代练平台服名'];
         $thirdServerTitle = ['序号', '第三方服名'];
 
-        $importArea = ['游戏id', '第三方id', '我们的区id', '第三方区id'];
-        $importServer = ['游戏id', '第三方id', '我们的服id', '第三方服id'];
+        $importArea = [['游戏ID', '第三方ID', '代练平台区ID', '第三方区ID'], ['0', '0', '0', '0']];
+        $importServer = [['游戏ID', '第三方ID', '代练平台服ID', '第三方服ID'], ['0', '0', '0', '0']];
 
         array_unshift($ourAreaArr, $ourAreaTitle);
         array_unshift($thirdAreaArr, $thirdAreaTitle);
         array_unshift($ourServerArr, $ourServerTitle);
         array_unshift($thirdServers, $thirdServerTitle);
 
-        Excel::create("$game->name($game->id)：$game->name", function ($excel) use ($ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers, $importArea, $importServer) {
-            $excel->sheet("我们的区", function ($sheet) use ($ourAreaArr) {
+        Excel::create("$game->name($game->id)", function ($excel) use ($ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers, $importArea, $importServer) {
+            $excel->sheet("代练平台区", function ($sheet) use ($ourAreaArr) {
                 $sheet->rows($ourAreaArr);
             });
             $excel->sheet("第三方区", function ($sheet) use ($thirdAreaArr) {
                 $sheet->rows($thirdAreaArr);
             });
-            $excel->sheet("我们的服", function ($sheet) use ($ourServerArr) {
+            $excel->sheet("代练平台服", function ($sheet) use ($ourServerArr) {
                 $sheet->rows($ourServerArr);
             });
             $excel->sheet("第三方服", function ($sheet) use ($thirdServers) {
                 $sheet->rows($thirdServers);
             });
+            /**  可以优化的,先放着 
+            $excel->sheet("区", function ($sheet) use ($importArea) {
+                $sheet->rows($importArea);
+            });
+            $excel->sheet("服", function ($sheet) use ($importServer) {
+                $sheet->rows($importServer);
+            });
+            **/
         })->export('xls');
     }
 
@@ -400,6 +408,38 @@ class ConfigController extends Controller
     {
     	try {
     		if ($request->hasFile('file')) {
+    			/** @var [type] [可以优化的，先放着] 
+    			$file = $request->file('file');
+	    		$path = $file->path();
+	    		$areaArr = [];
+	    		$serverArr = [];
+	    		$areaTitle = '';
+	    		$serverTitle = '';
+	    		Excel::load($path, function ($reader) use (&$areaArr, &$serverArr, &$areaTitle, &$serverTitle) {
+		            $readerArea = $reader->getSheet(0);
+		            $readerServer= $reader->getSheet(1);
+		            $areaTitle = $readerArea->getTitle(0);
+		            $serverTitle = $readerServer->getTitle(1);
+		            $areaArr = $readerArea->toArray();
+		            $serverArr = $readerServer->toArray();
+		        });
+		        dd($areaTitle, $serverTitle, $areaArr, $serverArr);
+	    		if (! $areaTitle || $areaTitle != '区') {
+	    			return response()->ajax(0, '第一页页脚名称必须为‘区’!');
+	    		}
+
+	    		if (! $serverTitle || $serverTitle != '服') {
+	    			return response()->ajax(0, '第二页页脚名称必须为‘服’!');
+	    		}
+
+	    		if (! $areaArr) {
+	    			return response()->ajax(0, '导入区数据为空!');
+	    		}
+
+	    		if (! $serverArr) {
+	    			return response()->ajax(0, '导入服数据为空!');
+	    		}
+				**/
 	    		$file = $request->file('file');
 	    		$path = $file->path();
 		    	$res = [];
@@ -419,17 +459,14 @@ class ConfigController extends Controller
 		    	switch ($title) {
 		    		case '区':
 		    			$thirdAreas = [];
-		    			foreach ($res as $k => $thirdArea) {
-		    				if (! $thirdArea) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
-		    				}
 
-		    				if (! $thirdArea[0] || !$thirdArea[1] || !$thirdArea[2] || !$thirdArea[3]) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据存在空值!');
+		    			foreach ($res as $k => $thirdArea) {
+		    				if (count($thirdArea) == 0 || array_sum($thirdArea) == 0) {
+		    					continue;
 		    				}
 
 		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1]) || ! is_numeric($thirdArea[2]) || ! is_numeric($thirdArea[3])) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据存在不是一个整数的值!');
+		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
 
 		    				$has = ThirdArea::where('game_id', $thirdArea[0])
@@ -459,16 +496,12 @@ class ConfigController extends Controller
 		    		case '服':
 		    			$thirdServers = [];
 		    			foreach ($res as $k => $thirdServer) {
-		    				if (! $thirdServer) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据不存在!');
-		    				}
-
-		    				if (! $thirdServer[0] || !$thirdServer[1] || !$thirdServer[2] || !$thirdServer[3]) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据存在空值!');
+		    				if (count($thirdServer) == 0 || array_sum($thirdServer) == 0) {
+		    					continue;
 		    				}
 
 		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1]) || ! is_numeric($thirdServer[2]) || ! is_numeric($thirdServer[3])) {
-		    					return response()->ajax(0, '第'.($k+1).'行数据存在不是一个整数的值!');
+		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
 
 		    				$has = ThirdServer::where('game_id', $thirdServer[0])
