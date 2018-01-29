@@ -367,12 +367,15 @@ class ConfigController extends Controller
         $ourServerTitle = ['序号', '我们的服名'];
         $thirdServerTitle = ['序号', '第三方服名'];
 
+        $importArea = ['游戏id', '第三方id', '我们的区id', '第三方区id'];
+        $importServer = ['游戏id', '第三方id', '我们的服id', '第三方服id'];
+
         array_unshift($ourAreaArr, $ourAreaTitle);
         array_unshift($thirdAreaArr, $thirdAreaTitle);
         array_unshift($ourServerArr, $ourServerTitle);
         array_unshift($thirdServers, $thirdServerTitle);
 
-        Excel::create("游戏名(序号 $game->id)：$game->name", function ($excel) use ($ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers) {
+        Excel::create("$game->name($game->id)：$game->name", function ($excel) use ($ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers, $importArea, $importServer) {
             $excel->sheet("我们的区", function ($sheet) use ($ourAreaArr) {
                 $sheet->rows($ourAreaArr);
             });
