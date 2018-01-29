@@ -80,7 +80,7 @@ class SteamOrderController extends Controller
                 'consume_money' => $request['consume_money'],
                 'message' => $request['message'] ?? '',
                 'filled_account' => $request['filled_account'],
-                'success_time' => $request['status'] == '1' ? Carbon::now() : '',
+                'success_time' => Carbon::now(),
             ]);
 
             $userId = SteamOrder::where('no', $request['order_no'])->value('user_id');

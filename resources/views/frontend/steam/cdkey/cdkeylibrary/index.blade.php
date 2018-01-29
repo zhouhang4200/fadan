@@ -3,7 +3,14 @@
 @section('title',$cdkey->goodses->game_name.' - '.$cdkey->goodses->name)
 
 @section('css')
-
+    <style>
+        .red{
+            background-color: #dd514c;
+        }
+        .green{
+            background-color: #5eb95e;
+        }
+    </style>
 @endsection
 
 @section('submenu')

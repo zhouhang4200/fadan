@@ -1,6 +1,3 @@
-<?php
-	echo Route::currentRouteName();
-?>
 <ul class="seller_center_left_menu">
 	<li class="{{ in_array(Route::currentRouteName(), ['frontend.steam.goods.index','frontend.steam.goods.create']) ? 'current' : '' }}">
 
@@ -25,6 +22,11 @@
 
 	<li class="{{ in_array(Route::currentRouteName(), ['frontend.steam.order.index']) ? 'current' : '' }}">
 		<a href="{{ route('frontend.steam.order.index') }}">订单列表</a>
+		<div class="arrow"></div>
+	</li>
+
+	<li class="">
+		<a href="{{ route('exchange.index') }}">CDK兑换</a>
 		<div class="arrow"></div>
 	</li>
 

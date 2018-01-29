@@ -37,7 +37,7 @@
         <tr>
             <th width="12%">订单号</th>
             <th width="11%">下单时间</th>
-            <th width="11%">成功下单时间</th>
+            <th width="11%">完成时间</th>
             <th>游戏名</th>
             <th>版本名</th>
             <th>商户号</th>

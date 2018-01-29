@@ -104,7 +104,7 @@ class ExchangeController extends Controller
             return $this->response(10, '购买人数太多，请稍候再试！');
         }
 
-        $cdkeyLibrary = CdkeyLibrary::with(['cdkey' => function ($query) {
+        $cdkeyLibrary = SteamCdkeyLibrary::with(['cdkey' => function ($query) {
             $query->with('goodses');
         }
         ])->where('cdk', $cdk)->first();

@@ -45,7 +45,6 @@ use Illuminate\Http\Request;
     Route::post('refuse/consult', 'LevelingController@refuseConsult'); //拒绝验收
 
     Route::any('getOrder', 'SteamOrderController@getOrder');
-    Route::any('returnOrderStatus', 'SteamOrderController@returnOrderStatus');
     Route::any('returnOrderData', 'SteamOrderController@returnOrderData');
 
 

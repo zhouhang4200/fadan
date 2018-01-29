@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<script src="/frontend/client-v1/js/jquery-1.11.0.min.js"></script>
+<script src="/js/jquery-1.11.0.min.js"></script>
 <script src="/frontend/exchange/js/layui/layui.js"></script>
 <script>
     if (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") ==

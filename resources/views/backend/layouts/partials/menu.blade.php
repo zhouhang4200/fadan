@@ -348,6 +348,34 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         @endcan
                         </ul>
                     </li>
+
+                    <li @if($currentOneLevelMenu == 'backend') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Steam管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('backend.steam.goods.index') }}" @if($currentRouteName == 'backend.steam.goods.index') class="active" @endif>
+                                    商品列表
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.steam.goods.getGameNameList') }}" @if($currentRouteName == 'backend.steam.goods.getGameNameList') class="active" @endif>
+                                    Steam直充游戏名
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.steam.order.index') }}" @if($currentRouteName == 'backend.steam.order.index') class="active" @endif>
+                                    订单列表
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
