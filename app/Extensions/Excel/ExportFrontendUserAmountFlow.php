@@ -31,7 +31,7 @@ class ExportFrontendUserAmountFlow extends \Maatwebsite\Excel\Files\NewExcelFile
                 '相关单号',
                 '类型',
                 '金额',
-                '备注',
+                '说明',
                 '时间',
             ));
             $sheet->fromArray($exportData, null, 'A2', true, false);

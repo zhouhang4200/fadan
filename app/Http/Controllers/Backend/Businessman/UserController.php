@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend\Businessman;
 
 use App\Exceptions\AssetException;
 use App\Exceptions\CustomException;
-use App\Extensions\Asset\Expend;
+use App\Extensions\Asset\Consume;
 use App\Models\CautionMoney;
 use App\Models\RealNameIdent;
 use App\Models\UserTransferAccountInfo;
@@ -21,8 +21,10 @@ use App\Http\Controllers\Controller;
  */
 class UserController extends Controller
 {
+
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return View
      */
     public function index(Request $request)
     {
@@ -137,7 +139,7 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $no = generateOrderNo();
-            Asset::handle(new Expend($request->amount, 8, $no, config('cautionmoney')[$request->type], $request->user_id, Auth::user()->id));
+            Asset::handle(new Consume($request->amount, 5, $no, config('cautionmoney.type')[$request->type], $request->user_id, Auth::user()->id));
 
             CautionMoney::create([
                'no' => $no,

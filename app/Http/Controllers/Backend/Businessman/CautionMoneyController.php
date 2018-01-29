@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Businessman;
 
 use App\Exceptions\CustomException;
+use App\Extensions\Asset\Refund;
 use Asset, DB, Auth;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Income;
@@ -41,7 +42,7 @@ class CautionMoneyController extends Controller
             $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
 
             if ($cautionMoney) {
-                Asset::handle(new Income($cautionMoney->amount, 15, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
+                Asset::handle(new Refund($cautionMoney->amount, 3, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
                 $cautionMoney->status = 2;
                 $cautionMoney->save();
             } else {
@@ -70,7 +71,6 @@ class CautionMoneyController extends Controller
             $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
 
             if ($cautionMoney) {
-                Asset::handle(new Income($cautionMoney->amount, 15, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
                 $cautionMoney->status = 3;
                 $cautionMoney->save();
             } else {

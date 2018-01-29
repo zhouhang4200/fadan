@@ -26,16 +26,19 @@
             <div class="layui-input-inline">
                 <select name="game_id" lay-search="">
                     <option value="">请选择</option>
+                    @foreach (config('tradetype.user_sub') as $key => $value)
+                        <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}> {{ $value }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-mid">类型：</label>
             <div class="layui-input-inline">
-                <select name="game_id" lay-search="">
+                <select name="trade_type" lay-search="">
                     <option value="">所有类型</option>
-                    @foreach (config('tradetype.user') as $key => $value)
-                        <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}>{{ $key }}. {{ $value }}</option>
+                    @foreach (config('tradetype.user_display') as $key => $value)
+                        <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}> {{ $value }}</option>
                     @endforeach
                 </select>
             </div>
@@ -82,7 +85,7 @@
             <tr>
                 <td>{{ $data->id }}</td>
                 <td>{{ $data->remark }}</td>
-                <td>{{ config('tradetype.user')[$data->trade_type] }}</td>
+                <td>{{  config('tradetype.user')[$data->trade_type] }}</td>
                 <td>{{ $data->fee + 0 }}</td>
                 <td>{{ $data->balance + 0 }}</td>
                 <td>{{ $data->trade_no }}</td>

@@ -50,6 +50,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
 
                     <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
+                    <li @if(in_array($currentOneLevelMenu, [ 'frontend', 'groups','roles', 'permissions', 'modules', 'businessman'])) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-users"></i>
                             <span>商户</span>
