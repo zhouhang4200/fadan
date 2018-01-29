@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Backend\Customer;
 
-use App\Models\WangWangBlacklist;
-use Excel;
-use Carbon\Carbon;
-use App\Models\DayData;
+use Auth;
 use Illuminate\Http\Request;
+use App\Models\WangWangBlacklist;
 use App\Http\Controllers\Controller;
 
 /**
@@ -37,7 +34,12 @@ class WangWangBlacklistController extends Controller
      */
     public function store(Request $request)
     {
+        $wangWangBlacklist = WangWangBlacklist::firstOrNew(['wang_wang' => $request->wang_wang]);
+        $wangWangBlacklist->wang_wang = $request->wang_wang;
+        $wangWangBlacklist->admin_user_id = Auth::id();
+        $wangWangBlacklist->save();
 
+        return response()->ajax(1, '添加成功');
     }
 
     /**
@@ -46,6 +48,7 @@ class WangWangBlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-
+        WangWangBlacklist::where('id', $request->id)->delete();
+        return response()->ajax(1, '删除成功');
     }
 }

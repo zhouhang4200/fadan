@@ -17,12 +17,12 @@
 			<div class="arrow"></div>
 		</li>
 	@endcan
-	@can('frontend.setting.tb-auth.index')
-		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.index' ? 'current' : '' }}">
-			<a href="{{ route('frontend.setting.tb-auth.index') }}">加款旺旺绑定</a>
+
+		<li class="{{  Route::currentRouteName()  == 'frontend.automatically-grab.goods' ? 'current' : '' }}">
+			<a href="{{ route('frontend.automatically-grab.goods') }}">抓取商品配置</a>
 			<div class="arrow"></div>
 		</li>
-	@endcan
+
 	@can('frontend.setting.tb-auth.store')
 		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.store' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.tb-auth.store') }}">店铺旺旺绑定</a>

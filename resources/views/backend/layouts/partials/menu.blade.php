@@ -50,6 +50,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
 
                     <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
+                    <li @if(in_array($currentOneLevelMenu, [ 'frontend', 'groups','roles', 'permissions', 'modules', 'businessman'])) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-users"></i>
                             <span>商户</span>
@@ -99,6 +100,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </li>
                             @endcan
 
+                            @can('businessman.caution-money.index')
+                                <li>
+                                    <a href="{{ route('businessman.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
+                                        商户保证金列表
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
 
@@ -414,6 +422,36 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                         @endcan
+                        </ul>
+                    </li>
+
+                    <li @if($currentOneLevelMenu == 'config') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>建立区服关系</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('config.game') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    游戏
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('config.area') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    区
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('config.server') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    服
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    导入导出
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

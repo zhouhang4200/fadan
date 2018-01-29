@@ -37,17 +37,18 @@
         <div class="col-lg-12">
             <div class="main-box">
                 <header class="main-box-header clearfix">
-                    <form class="layui-form">
-                        <div class="row">
-                            <div class="form-group col-xs-3">
-                                <input type="text" class="layui-input" name="wang_wang"  placeholder="旺旺号" value="{{ $wangWang }}">
+                    <div class="filter-block pull-left">
+                        <form class="form-inline" role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="wang_wang"  placeholder="旺旺号" value="{{ $wangWang }}">
                             </div>
+                            <button type="submit" class="btn btn-success">搜索</button>
+                        </form>
+                    </div>
+                    <div class="filter-block pull-right">
+                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="create">添加</button>
+                    </div>
 
-                            <div class="form-group col-xs-2">
-                                <button type="submit" class="layui-btn layui-btn-normal">搜索</button>
-                            </div>
-                        </div>
-                    </form>
                 </header>
                 <div class="main-box-body clearfix">
 
@@ -67,8 +68,8 @@
                         <thead>
                         <tr>
                             <th>旺旺号</th>
-                            <th>添加时间</th>
                             <th>添加人</th>
+                            <th>添加时间</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -76,10 +77,10 @@
                         @forelse($wangWangBlacklist as $item)
                             <tr>
                                 <td>{{ $item->wang_wang }}</td>
-                                <td>{{ $item->adminUser->name }}</td>
+                                <td>{{ optional($item->adminUser)->name }}</td>
                                 <td>{{ $item->created_at }}</td>
                                 <td>
-                                    <button class="layui-btn layui-btn-normal">删除</button>
+                                    <button class="layui-btn layui-btn-normal" data-id="{{ $item->id }}"  lay-submit="" lay-filter="delete">删除</button>
                                 </td>
                             </tr>
                         @empty
@@ -103,21 +104,54 @@
             </div>
         </div>
     </div>
+    <div class="add-blacklist-box" style="display: none;padding: 20px">
+        <form class="layui-form layui-form-pane" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">旺旺名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="wang_wang" lay-verify="required" placeholder="请输入旺旺名" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="create-save">保存</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('js')
     <script>
         //Demo
         layui.use(['form', 'layedit', 'laytpl', 'element', 'laydate', 'table', 'upload'], function(){
-            var form = layui.form, layer = layui.layer, laydate = layui.laydate, layTpl = layui.laytpl,
-                    element = layui.element, table=layui.table, upload = layui.upload;
+            var form = layui.form, layer = layui.layer, element = layui.element, table=layui.table;
 
-            // 订单操作
-            form.on('select(create)', function (data) {
-                eval(data.value + "('" + data.elem.getAttribute('data-no')  + "',"+data.elem.getAttribute('data-id')+")");
+            // 添加弹窗
+            form.on('submit(create)', function (data) {
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: '添加黑名单',
+                    content: $('.add-blacklist-box')
+                });
             });
-            form.on('select(delete)', function (data) {
-                eval(data.value + "('" + data.elem.getAttribute('data-no')  + "',"+data.elem.getAttribute('data-id')+")");
+            // 保存
+            form.on('submit(create-save)', function (data) {
+                $.post('{{ route('customer.wang-wang-blacklist.store') }}', {wang_wang:data.field.wang_wang}, function (result) {
+                    layer.msg(result.message);
+                    reload();
+                }, 'json');
+                return false;
+            });
+            // 删除
+            form.on('submit(delete)', function (data) {
+                layer.confirm('确定要删除吗？', function () {
+                    $.post('{{ route('customer.wang-wang-blacklist.delete') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        reload();
+                    }, 'json');
+                });
+                return false;
             });
         });
 

@@ -146,6 +146,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'SkinController@index')->name('frontend.setting.skin.index')->middleware('permission:frontend.setting.skin.index');
             Route::post('set', 'SkinController@set')->name('frontend.setting.skin.set')->middleware('permission:frontend.setting.skin.set');
         });
+        // 自动抓取订单配置
+        Route::prefix('automatically-grab')->group(function (){
+            Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.automatically-grab.goods');
+        });
+
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('permission:frontend.setting.tb-auth.index');

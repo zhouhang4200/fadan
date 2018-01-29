@@ -55,7 +55,7 @@ class LevelingController
 
             if (! $order) {
                 throw new DailianException('内部订单号缺失,请联系我们');
-            }
+            } 
             return $order;
         }
     }
@@ -65,8 +65,11 @@ class LevelingController
      * @param  [type] $message [description]
      * @return [type]          [description]
      */
-    public function success($message)
+    public function success($message, $order)
     {
+        // 写入第三方操作
+        $this->addActionToOrderNotice($order);
+
         return json_encode([
             'status' => 1,
             'message' => $message,
@@ -81,8 +84,11 @@ class LevelingController
      */
     public function fail($message, $order)
     {
-        // 异常写入order_notices 表
-        $this->addOrderNotice($order);
+        if ($order) {
+            // 异常写入order_notices 表
+            $this->addOrderNotice($order);
+            $this->addActionToOrderNotice($order);      
+        }
 
         return json_encode([
             'status' => 0,
@@ -90,6 +96,22 @@ class LevelingController
         ]);
         \Log::info($message);
         throw new DailianException($message);
+    }
+
+    /**
+     * 记录第三方做的操作，写入订单预警表
+     * @param [type] $order [description]
+     */
+    public function addActionToOrderNotice($order) 
+    {
+        $action = \Route::currentRouteAction();
+        $actionName = preg_replace('~.*@~', '', $action, -1);
+        $orderNotice = OrderNotice::where('order_no', $order->no)->latest('updated_at')->first();
+
+        if ($orderNotice) {
+            $orderNotice->operate = config('ordernotice.operate')[$actionName] ?? '空';
+            $orderNotice->save();
+        }
     }
 
 	/**
@@ -100,12 +122,13 @@ class LevelingController
 	 */
     public function receiveOrder(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('receive')->run($order->no, $this->userId);
 
-			return $this->success('接单成功');
+			return $this->success('接单成功', $order);
     	} catch (DailianException $e) {
             return $this->fail($e->getMessage(), $order);
     	}
@@ -121,6 +144,7 @@ class LevelingController
      */
     public function agreeConsult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiDeposit = $request->apiDeposit;
@@ -155,7 +179,7 @@ class LevelingController
             return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
-        return $this->success('已同意撤销');
+        return $this->success('已同意撤销', $order);
     }
 
    /**
@@ -169,6 +193,7 @@ class LevelingController
     */
     public function agreeAppeal(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiAmount = $request->apiAmount;
@@ -209,7 +234,7 @@ class LevelingController
             return $this->fail($exception->getMessage(), $order);
         }
         DB::commit();
-        return $this->success('已同意申诉');
+        return $this->success('已同意申诉', $order);
     }
 
     /**
@@ -220,6 +245,7 @@ class LevelingController
      */
     public function consult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $apiAmount = $request->apiAmount;
@@ -271,7 +297,7 @@ class LevelingController
             return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
-        return $this->success('已申请协商');
+        return $this->success('已申请协商', $order);
     }
 
     /**
@@ -282,6 +308,7 @@ class LevelingController
      */
     public function appeal(Request $request)
     {
+        $order = null;
         try {
             DB::beginTransaction();
             try {
@@ -306,7 +333,7 @@ class LevelingController
                 return $this->fail($e->getMessage(), $order);
             }
             DB::commit();
-            return $this->success('已申请申诉');
+            return $this->success('已申请申诉', $order);
         } catch (\Exception $exception) {
             myLog('exception-appeal', [$exception->getMessage()]);
         }
@@ -319,6 +346,7 @@ class LevelingController
      */
     public function cancelConsult(Request $request)
     {
+        $order = null;
         DB::beginTransaction();
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
@@ -333,7 +361,7 @@ class LevelingController
     		return $this->fail($e->getMessage(), $order);
     	}
         DB::commit();
-        return $this->success('已取消协商');
+        return $this->success('已取消协商', $order);
     }
 
      /**
@@ -343,6 +371,7 @@ class LevelingController
      */
     public function cancelAppeal(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
@@ -350,7 +379,7 @@ class LevelingController
             // DailianFactory::choose('cancelRevoke')->run($order->no, $this->userId, 0);
 			// DailianFactory::choose('cancelLock')->run($order->no, $this->userId, 0);
 
-            return $this->success('已取消申诉');
+            return $this->success('已取消申诉', $order);
     	} catch (DailianException $e) {
     		return $this->fail($e->getMessage(), $order);
     	}
@@ -364,12 +393,13 @@ class LevelingController
      */
     public function forceConsult(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('forceRevoke')->run($order->no, $this->userId);
 
-            return $this->success('已强制协商');
+            return $this->success('已强制协商', $order);
     	} catch (DailianException $e) {
     		return $this->fail($e->getMessage(), $order);
     	}
@@ -382,12 +412,13 @@ class LevelingController
      */
     public function unusualOrder(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('abnormal')->run($order->no, $this->userId);
 
-            return $this->success('已将订单标记为异常');
+            return $this->success('已将订单标记为异常', $order);
     	} catch (DailianException $e) {
     		return $this->fail($e->getMessage(), $order);
     	}
@@ -401,12 +432,13 @@ class LevelingController
      */
     public function cancelUnusual(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('cancelAbnormal')->run($order->no, $this->userId);
 
-            return $this->success('已取消异常订单');
+            return $this->success('已取消异常订单', $order);
     	} catch (DailianException $e) {
     		return $this->fail($e->getMessage(), $order);
     	}
@@ -419,12 +451,13 @@ class LevelingController
      */
     public function applyComplete(Request $request)
     {
+        $order = null;
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('applyComplete')->run($order->no, $this->userId);
 
-            return $this->success('已申请验收');
+            return $this->success('已申请验收', $order);
     	} catch (DailianException $e) {
     		return $this->fail($e->getMessage(), $order);
     	}
@@ -437,17 +470,22 @@ class LevelingController
      */
     public function cancelComplete(Request $request)
     {
+        $order = null;
         try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
             DailianFactory::choose('cancelComplete')->run($order->no, $this->userId);
 
-            return $this->success('已取消验收');
+            return $this->success('已取消验收', $order);
         } catch (DailianException $e) {
             return $this->fail($e->getMessage(), $order);
         }
     }
 
+    /**
+     * 添加订单报警
+     * @param [type] $order [description]
+     */
     public function addOrderNotice($order)
     {
         DB::beginTransaction();
@@ -462,12 +500,19 @@ class LevelingController
             $data['third_order_no'] = $orderDetail['third_order_no'];
             $data['third'] = $orderDetail['third'];
             $data['status'] = $order->status;
-            $data['third_status'] = $this->getThirdOrderStatus($data['third_order_no']);
             $data['create_order_time'] = $order->created_at;
             $data['complete'] = 0;
             $data['amount'] = $order->amount;
             $data['security_deposit'] = $orderDetail['security_deposit'];
             $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
+            $twoStatus = $this->getThirdOrderStatus($data['third_order_no']);
+            if (count($twoStatus) == 2) {
+                $data['third_status'] = $twoStatus[0];
+                $data['child_third_status'] = $twoStatus[1];
+            } else {
+                $data['third_status'] = $twoStatus;
+                $data['child_third_status'] = 100;
+            }
 
             OrderNotice::create($data);
         } catch (OrderNoticeException $e) {
@@ -478,6 +523,11 @@ class LevelingController
         return true;
     }
 
+    /**
+     * 获取第三方平台状态和子状态
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
     public function getThirdOrderStatus($orderNo)
     {
         if (! $orderNo) {
@@ -494,15 +544,19 @@ class LevelingController
         // 如果状态为代练中，需要详细区分到底是哪个状态
         // 此处有可能同时存在，会有分不清情况出现
         if ($res['data']['inAppeal'] && ! $res['data']['inSelfCancel']) {
-            $thirdStatus = 14; // 申诉中
+            $childThirdStatus = 14; // 申诉中
         }
 
         if ($res['data']['inSelfCancel'] && ! $res['data']['inAppeal']) {
-            $thirdStatus = 13; // 协商中
+            $childThirdStatus = 13; // 协商中
         }
 
         if ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
-            $thirdStatus = 15;
+            $childThirdStatus = 15;
+        }
+
+        if (isset($childThirdStatus)) {
+            return [$thirdStatus, $childThirdStatus];
         }
         return $thirdStatus;
     }

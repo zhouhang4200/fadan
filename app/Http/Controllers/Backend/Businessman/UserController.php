@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Backend\User\Frontend;
+namespace App\Http\Controllers\Backend\Businessman;
 
+use App\Exceptions\AssetException;
 use App\Exceptions\CustomException;
+use App\Extensions\Asset\Consume;
+use App\Models\CautionMoney;
 use App\Models\RealNameIdent;
 use App\Models\UserTransferAccountInfo;
 use App\Repositories\Api\UserRechargeOrderRepository;
 use Illuminate\Http\Request;
 
-use Asset, Auth, View;
+use Asset, Auth, View, DB;
 use App\Models\User;
 use App\Extensions\Asset\Recharge;
 use App\Http\Controllers\Controller;
@@ -18,8 +21,10 @@ use App\Http\Controllers\Controller;
  */
 class UserController extends Controller
 {
+
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return View
      */
     public function index(Request $request)
     {
@@ -32,7 +37,7 @@ class UserController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(config('frontend.page'));
 
-    	return view('backend.user.frontend.index', compact('users', 'name', 'nickname', 'id'));
+    	return view('backend.businessman.index', compact('users', 'name', 'nickname', 'id'));
     }
 
     /**
@@ -41,7 +46,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return view('backend.user.frontend.show')->with([
+        return view('backend.businessman.show')->with([
             'user' => User::find($id),
         ]);
     }
@@ -68,7 +73,7 @@ class UserController extends Controller
      */
     public function authentication($userId)
     {
-        return view('backend.user.frontend.authentication')->with([
+        return view('backend.businessman.authentication')->with([
             'authentication' => RealNameIdent::where('user_id', $userId)->first(),
         ]);
     }
@@ -98,9 +103,14 @@ class UserController extends Controller
     {
         $transferInfo = UserTransferAccountInfo::where('user_id', $userId)->first();
 
-        return view('backend.user.frontend.transfer-account-info', compact('transferInfo'));
+        return view('backend.businessman.transfer-account-info', compact('transferInfo'));
     }
 
+    /**
+     * 更新商户的转账信息
+     * @param Request $request
+     * @return mixed
+     */
     public function transferAccountInfoUpdate(Request $request)
     {
         UserTransferAccountInfo::updateOrCreate(['user_id' =>  $request->id], [
@@ -111,5 +121,40 @@ class UserController extends Controller
            'admin_user_id' => Auth::user()->id,
         ]);
         return response()->ajax(1, '修改成功');
+    }
+
+    /**
+     * 扣保证金
+     * @param Request $request
+     */
+    public function cautionMoney(Request $request)
+    {
+        $exist = CautionMoney::where('user_id', $request->user_id)
+            ->where('type', $request->type)
+            ->where('status', 1)
+            ->first();
+        if ($exist) {
+            return response()->ajax(0, '该商户已经扣过保证金');
+        }
+        DB::beginTransaction();
+        try {
+            $no = generateOrderNo();
+            Asset::handle(new Consume($request->amount, 5, $no, config('cautionmoney.type')[$request->type], $request->user_id, Auth::user()->id));
+
+            CautionMoney::create([
+               'no' => $no,
+               'user_id' => $request->user_id,
+               'amount' => $request->amount,
+               'type' => $request->type,
+            ]);
+        } catch (CustomException $customException) {
+            DB::rollback();
+            return response()->ajax(0, '扣款失败');
+        } catch (AssetException $assetException) {
+            DB::rollback();
+            return response()->ajax(0, $assetException->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '扣款成功');
     }
 }

@@ -49,7 +49,9 @@
                                 <th>千手状态</th>
                                 <th>外部状态</th>
                                 <th>接单平台</th>
+                                <th>接单平台操作</th>
                                 <th>发布时间</th>
+                                <th>操作时间</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -58,9 +60,17 @@
                                 <tr>
                                     <td>{{ $paginateOrderNotice->order_no }}</td>
                                     <td>{{ config('order.status_leveling')[$paginateOrderNotice->status] }}</td>
-                                    <td>{{ config('order.show91')[$paginateOrderNotice->third_status] }}</td>
+                                    <td>
+                                    @if($paginateOrderNotice->child_third_status == 100)
+                                    {{ config('order.show91')[$paginateOrderNotice->third_status] }}
+                                    @else
+                                    {{ config('order.show91')[$paginateOrderNotice->third_status].' ('.config('order.show91')[$paginateOrderNotice->child_third_status].')' }}
+                                    @endif
+                                    </td>
                                     <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
+                                    <td>{{ $paginateOrderNotice->operate }}</td>
                                     <td>{{ $paginateOrderNotice->create_order_time }}</td>
+                                    <td>{{ $paginateOrderNotice->created_at }}</td>
                                     <td>
                                         <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
                                             <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->amount }}" data-safe="{{ $paginateOrderNotice->security_deposit }}"
@@ -85,7 +95,11 @@
                             总数：{{ $paginateOrderNotices->total() }}　本页显示：{{ $paginateOrderNotices->count() }}
                         </div>
                             <div class="col-xs-9">
-
+                                {{ $paginateOrderNotices->appends([
+                                    'third' => $third,
+                                    'startDate' => $startDate,
+                                    'endDate' => $endDate,
+                                ])->render()}}
                             </div>
                         </div>
                     </div>

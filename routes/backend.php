@@ -114,36 +114,38 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('wang-wang-blacklist/delete', 'WangWangBlacklistController@delete')->name('customer.wang-wang-blacklist.delete');
     });
 
-    // 用户
-    Route::namespace('User')->prefix('user')->group(function (){
-        // 用户账号列表
-        Route::namespace('Frontend')->prefix('frontend')->group(function () {
-            Route::get('/', 'UserController@index')->name('frontend.user.index')->middleware('permission:frontend.user.index');
-            // 更新用户资料
-            Route::post('edit', 'UserController@edit')->name('frontend.user.edit')->middleware('permission:frontend.user.edit');
-            // 手动加款
-            Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
-            // 用户资料
-            Route::get('show/{userId}', 'UserController@show')->name('frontend.user.show')->middleware('permission:frontend.user.show');
-            // 转账信息
-            Route::get('transfer-account/{userId?}', 'UserController@transferAccountInfo')->name('frontend.user.transfer-account-info')->middleware('permission:frontend.user.transfer-account-info');
-            // 转账信息更新
-            Route::post('transfer-account/{userId?}', 'UserController@transferAccountInfoUpdate')->name('frontend.user.transfer-account-info-update')->middleware('permission:frontend.user.transfer-account-info-update');
-            // 实名认证
-            Route::get('authentication/{userId}', 'UserController@authentication')->name('frontend.user.authentication')->middleware('permission:frontend.user.authentication');
-            // 权重
-            Route::prefix('weight')->group(function () {
-                // 用户权重列表
-                Route::get('/', 'WeightController@index')->name('frontend.user.weight.index')->middleware('permission:frontend.user.weight.index');
-                // 查看
-                Route::get('/{id}', 'WeightController@show')->name('frontend.user.weight.show')->middleware('permission:frontend.user.weight.show');
-                // 修改用户权重
-                Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
-            });
+    // 商户
+    Route::namespace('Businessman')->prefix('businessman')->group(function (){
+        // 商户列表
+        Route::get('/', 'UserController@index')->name('frontend.user.index')->middleware('permission:frontend.user.index');
+        // 更新商户资料
+        Route::post('edit', 'UserController@edit')->name('frontend.user.edit')->middleware('permission:frontend.user.edit');
+        // 手动加款
+        Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
+        // 扣保证金
+        Route::post('caution-money', 'UserController@cautionMoney')->name('businessman.caution-money')->middleware('permission:businessman.caution-money');
+        // 商户资料
+        Route::get('show/{userId}', 'UserController@show')->name('frontend.user.show')->middleware('permission:frontend.user.show');
+        // 转账信息
+        Route::get('transfer-account/{userId?}', 'UserController@transferAccountInfo')->name('frontend.user.transfer-account-info')->middleware('permission:frontend.user.transfer-account-info');
+        // 转账信息更新
+        Route::post('transfer-account/{userId?}', 'UserController@transferAccountInfoUpdate')->name('frontend.user.transfer-account-info-update')->middleware('permission:frontend.user.transfer-account-info-update');
+        // 实名认证
+        Route::get('authentication/{userId}', 'UserController@authentication')->name('frontend.user.authentication')->middleware('permission:frontend.user.authentication');
+        // 权重
+        Route::prefix('weight')->group(function () {
+            // 商户权重列表
+            Route::get('/', 'WeightController@index')->name('frontend.user.weight.index')->middleware('permission:frontend.user.weight.index');
+            // 查看
+            Route::get('/{id}', 'WeightController@show')->name('frontend.user.weight.show')->middleware('permission:frontend.user.weight.show');
+            // 修改商户权重
+            Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
         });
-        // 后台账号列表
-        Route::namespace('Frontend')->prefix('backend')->group(function () {
-            Route::get('/', 'UserController@index')->name('backend.user.index')->middleware('permission:backend.user.index');
+        // 商户保证金
+        Route::prefix('caution-money')->group(function(){
+            Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-money.index')->middleware('permission:businessman.caution-money.index');
+            Route::post('refund', 'CautionMoneyController@refund')->name('businessman.caution-money.refund')->middleware('permission:businessman.caution-money.refund');
+            Route::post('deduction', 'CautionMoneyController@deduction')->name('businessman.caution-money.deduction')->middleware('permission:businessman.caution-money.deduction');
         });
     });
 
@@ -258,7 +260,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 订单列表
             Route::get('/', 'ForeignController@index')->name('order.foreign.index')->middleware('permission:order.platform.index');
         });
-        /*// 售后订单
+        // 售后订单
         Route::prefix('after-service')->group( function () {
             // 订单列表
             Route::get('/', 'AfterServiceController@index')->name('order.after-service.index')->middleware('permission:order.after-service.index');
@@ -268,7 +270,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('auditing', 'AfterServiceController@auditing')->name('order.after-service.auditing')->middleware('permission:order.after-service.auditing');
             // 确认售后
             Route::post('confirm', 'AfterServiceController@confirm')->name('order.after-service.confirm')->middleware('permission:order.after-service.confirm');
-        });*/
+        });
 
         // 代练订单报警
         Route::prefix('leveling')->group(function () {
@@ -358,6 +360,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('platform', 'StatisticController@index')->name('statistic.platform');
     });
 
+    // 与第三方游戏区服对应
     // Steam
     Route::namespace('Steam')->prefix('steam')->group(function () {
 
@@ -401,5 +404,17 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::namespace('Config')->prefix('config')->group(function () {
         Route::get('game', 'ConfigController@game')->name('config.game');
+        Route::post('third/games', 'ConfigController@getThirdGames')->name('config.third-games');
+
+        Route::get('area', 'ConfigController@area')->name('config.area');
+        Route::post('add/areas', 'ConfigController@addAreas')->name('config.add-areas');
+        Route::post('get/areas', 'ConfigController@getAreas')->name('config.get-areas');
+
+        Route::get('server', 'ConfigController@server')->name('config.server');
+        Route::post('add/servers', 'ConfigController@addServers')->name('config.add-servers');
+        Route::post('get/servers', 'ConfigController@getServers')->name('config.get-servers');
+
+        Route::get('export', 'ConfigController@export')->name('config.export');
+        Route::post('import', 'ConfigController@import')->name('config.import');
     });
 });
