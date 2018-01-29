@@ -28,11 +28,11 @@ class Show91
     public static function formDataRequest($url, $options = [], $method = 'POST')
     {
         $params = [
-            // 'account' => config('show91.account'),
-            // 'sign' => config('show91.sign'),
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
 
-            'account' => env('ACCOUNT'),
-            'sign' => env('SIGN'),
+            // 'account' => env('ACCOUNT'),
+            // 'sign' => env('SIGN'),
         ];
 
         $options = array_merge($params, $options);
@@ -58,11 +58,11 @@ class Show91
     public static function normalRequest($url, $options = [], $method = 'POST')
     {
         $params = [
-            // 'account' => config('show91.account'),
-            // 'sign' => config('show91.sign'),
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
 
-            'account' => env('ACCOUNT'),
-            'sign' => env('SIGN'),
+            // 'account' => env('ACCOUNT'),
+            // 'sign' => env('SIGN'),
         ];
 
         $options = array_merge($params, $options);

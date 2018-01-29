@@ -17,7 +17,7 @@ use App\Exceptions\OrderNoticeException;
  */
 class LevelingController extends Controller
 {
-    public function index(Request $request )
+    public function index(Request $request)
     {
     	try {       
 	    	$startDate = $request->start_date;

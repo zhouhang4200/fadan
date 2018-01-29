@@ -482,6 +482,10 @@ class LevelingController
         }
     }
 
+    /**
+     * 添加订单报警
+     * @param [type] $order [description]
+     */
     public function addOrderNotice($order)
     {
         DB::beginTransaction();
@@ -519,6 +523,11 @@ class LevelingController
         return true;
     }
 
+    /**
+     * 获取第三方平台状态和子状态
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
     public function getThirdOrderStatus($orderNo)
     {
         if (! $orderNo) {
