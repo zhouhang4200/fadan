@@ -26,7 +26,7 @@
 	</li>
 
 	<li class="">
-		<a href="{{ route('exchange.index') }}">CDK兑换</a>
+		<a target="_blank" href="{{ route('exchange.index') }}">CDK兑换</a>
 		<div class="arrow"></div>
 	</li>
 
