@@ -361,6 +361,47 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
     });
 
     // 与第三方游戏区服对应
+    // Steam
+    Route::namespace('Steam')->prefix('steam')->group(function () {
+
+        Route::prefix('goods')->group(function () {
+            // 商品列表
+            Route::get('/', 'GoodsController@index')->name('backend.steam.goods.index');
+            // 添加视图
+            Route::get('create', 'GoodsController@create')->name('backend.steam.goods.create');
+            // 审核商品
+            Route::get('examine-goods', 'GoodsController@examineGoods')->name('backend.steam.examine.examine-goods');
+            // 保存商品
+            Route::post('store', 'GoodsController@store')->name('backend.steam.goods.store');
+            // 编辑视图
+            Route::get('edit/{id}', 'GoodsController@edit')->name('backend.steam.goods.edit');
+            // 修改商品
+            Route::post('update', 'GoodsController@update')->name('backend.steam.goods.update');
+            // 删除商品
+            Route::post('destroy', 'GoodsController@destroy')->name('backend.steam.goods.destroy');
+
+            Route::patch('is-something', 'GoodsController@isSomething')->name('backend.steam.goods.isSomething');
+
+            Route::post('edit-something', 'GoodsController@editSomething')->name('backend.steam.goods.edit-something');
+
+            Route::post('updateGameName', 'GoodsController@updateGameName')->name('backend.steam.goods.updateGameName');
+
+            Route::get('getGameNameList', 'GoodsController@getGameNameList')->name('backend.steam.goods.getGameNameList');
+
+            Route::post('insertGameName', 'GoodsController@insertGameName')->name('backend.steam.goods.insertGameName');
+
+            Route::post('upload-images', 'GoodsController@uploadImages')->name('backend.steam.goods.upload-images');
+
+        });
+
+        // 订单
+        Route::prefix('order')->group(function () {
+            // 订单列表
+            Route::get('/', 'OrderController@index')->name('backend.steam.order.index');
+        });
+
+    });
+
     Route::namespace('Config')->prefix('config')->group(function () {
         Route::get('game', 'ConfigController@game')->name('config.game');
         Route::post('third/games', 'ConfigController@getThirdGames')->name('config.third-games');

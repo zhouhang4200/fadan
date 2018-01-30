@@ -102,6 +102,18 @@
             location.reload();
         }, 900);
     }
+
+    function reloadHref() {
+        setTimeout(function () {
+            location.href = location.href;
+        }, 900);
+    }
+
+    function redirect(str) {
+        setTimeout(function () {
+            window.location.href=str;
+        }, 900);
+    }
     function logout() {
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
