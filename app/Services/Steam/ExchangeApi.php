@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\Frontend\Steam\Services;
+namespace App\Services\Steam;
 
-use App\Http\Controllers\Frontend\Steam\Custom\Aes;
+use App\Services\Aes;
 use GuzzleHttp\Client;
 
 class ExchangeApi

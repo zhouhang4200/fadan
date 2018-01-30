@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Frontend\Steam\Excel;
+namespace App\Extensions\Excel;
 
 use Maatwebsite\Excel\Facades\Excel;
 

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Frontend\Steam;
 
-use App\Http\Controllers\Frontend\Steam\Excel\CdkeyLlibrarytExport;
+
+use App\Extensions\Excel\CdkeyLlibrarytExport;
 use App\Models\SteamCdkey;
 use App\Models\SteamCdkeyLibrary;
 use Carbon\Carbon;

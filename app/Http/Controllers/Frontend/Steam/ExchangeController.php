@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Steam;
 
-use App\Http\Controllers\Frontend\Steam\Custom\Helper;
+
 use App\Http\Controllers\Controller;
 use App\Models\SteamCdkey;
 use App\Models\SteamCdkeyLibrary;
@@ -10,7 +10,9 @@ use App\Models\SteamOrder;
 use App\Models\SteamAccount;
 use App\Models\User;
 use App\Models\UserAsset;
-use App\Http\Controllers\Frontend\Steam\Services\ExchangeApi;
+
+use App\Services\Helper;
+use App\Services\Steam\ExchangeApi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

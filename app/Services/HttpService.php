@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Frontend\Steam\Services;
+namespace App\Services;
 
 use App\Http\Controllers\Frontend\Steam\Custom\Helper;
 use App\Http\Controllers\Frontend\Steam\Custom\Mcrypt3Des;

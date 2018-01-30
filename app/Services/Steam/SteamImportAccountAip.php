@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Frontend\Steam\Services;
+namespace App\Services\Steam;
 
+use App\Services\HttpService;
 use GuzzleHttp\Client;
 
 /**

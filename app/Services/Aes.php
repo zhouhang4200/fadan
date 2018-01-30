@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Frontend\Steam\Custom;
+namespace App\Services;
 
 /**
  * AES128加解密类

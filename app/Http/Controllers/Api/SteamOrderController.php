@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Frontend\Steam\Custom\Helper;
-use App\Http\Controllers\Frontend\Steam\Services\UserMoney;
+use App\Extensions\Asset\Consume;
+use App\Extensions\Asset\Facades\Asset;
 use App\Models\SteamCdkeyLibrary;
 use App\Models\SteamOrder;
+use App\Services\Helper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -87,7 +88,8 @@ class SteamOrderController extends Controller
 
             if ($order) {
                 if ($request['status'] == '1') {
-                    UserMoney::userDebit($request['order_no'], $userId, $request['consume_money']);
+					$debit_money = bcmul(0.01, $request['consume_money'], 4);
+					Asset::handle(new Consume($debit_money, Consume::TRADE_SUBTYPE_BROKERAGE, $request['order_no'], 'Steam手续费', $userId));
                 }
             }
             DB::commit();
