@@ -27,15 +27,31 @@
                         <div class="row">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">发单商户</label>
-                                    <div class="form-group col-xs-2">
-                                        <select name="username" lay-filter="">                
-                                            <option value="">请选择</option>
-                                                @forelse($users as $id => $user)
-                                                <option value="{{ $user->user_id }}" {{ $user->user_id == $username ? 'selected' : '' }} >{{ $user->username }}</option>
-                                                @empty
-                                                @endforelse
-                                        </select>
-                                    </div>
+                                <div class="form-group col-xs-1">
+                                    <select name="user_id" lay-filter="">                
+                                        <option value="">请选择</option>
+                                            @forelse($users as $user)
+                                            <option value="{{ $user->user_id }}" {{ $user->user_id == $userId ? 'selected' : '' }} >{{ $user->username }}</option>
+                                            @empty
+                                            @endforelse
+                                    </select>
+                                </div>
+                                <label class="layui-form-label">第三方平台</label>
+                                <div class="form-group col-xs-1">
+                                    <select name="third" lay-filter="">                
+                                        <option value="1" selected>91平台</option>
+                                    </select>
+                                </div>
+                                <label class="layui-form-label">游戏名称</label>
+                                <div class="form-group col-xs-1">
+                                    <select name="game_id" lay-filter="">                
+                                        <option value="" >请选择</option>
+                                        @forelse($games as $game)
+                                        <option value="{{ $game->id }}" {{ $game->id == $gameId ? 'selected' : '' }} >{{ $game->name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="form-group col-xs-1">
                                     <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ $startDate }}">
@@ -92,41 +108,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse($paginatePlatformOrderStatistics as $paginatePlatformOrderStatistic)
+                            @forelse($paginatePlatformStatistics as $paginatePlatformStatistic)
                                 <tr>
-                                    <td>{{ $paginatePlatformOrderStatistic->date }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->wang_wang_order_evg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->receive_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_rate }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->revoke_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->revoke_order_rate }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complain_order_rate }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->use_time_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->security_deposit_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->efficiency_deposit_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->original_amount_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_original_amount }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->amount_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_amount }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_amount_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complete_order_amount }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->revoke_payment_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_revoke_payment }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->revoke_income_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_revoke_income }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->complain_income_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_complain_payment }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->revoke_income_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_complain_income }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->poundage_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->total_poundage }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->user_profit_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->user_total_profit }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->platform_profit_avg }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->platform_total_profit }}</td>
+                                    <td>{{ $paginatePlatformStatistic->date }}</td>
+                                    <td>{{ $paginatePlatformStatistic->order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->wang_wang_order_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->receive_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->complete_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->complete_order_rate }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_order_rate }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_rate }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_use_time_avg }}s</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_security_deposit_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_efficiency_deposit_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_original_amount_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_original_amount }}</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_amount_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_amount }}</td>
+                                    <td>{{ $paginatePlatformStatistic->complete_order_amount_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->complete_order_amount }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_payment_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_payment }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_income_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_income }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_payment_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_payment }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_income_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_income }}</td>
+                                    <td>{{ $paginatePlatformStatistic->poundage_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->poundage }}</td>
+                                    <td>{{ $paginatePlatformStatistic->user_profit_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->user_profit }}</td>
+                                    <td>{{ $paginatePlatformStatistic->platform_profit_avg }}</td>
+                                    <td>{{ $paginatePlatformStatistic->platform_profit }}</td>
                                 </tr>
                             @empty
                             @endforelse
@@ -135,10 +151,16 @@
                         </form>
                     <div class="row">
                         <div class="col-xs-3">
-                            总数：{{ $paginatePlatformOrderStatistics->total() }}　本页显示：{{ $paginatePlatformOrderStatistics->count() }}
+                            总数：{{ $paginatePlatformStatistics->total() }}　本页显示：{{ $paginatePlatformStatistics->count() }}
                         </div>
                             <div class="col-xs-9">
-
+                                {{ $paginatePlatformStatistics->appends([
+                                    'userId' => $userId,
+                                    'third' => $third,
+                                    'gameId' => $gameId,
+                                    'startDate' => $startDate,
+                                    'endDate' => $endDate,
+                                ])->render() }}
                             </div>
                         </div>
                     </div>

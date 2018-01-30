@@ -454,31 +454,16 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'config') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'statistic') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>建立区服关系</span>
+                            <span>平台统计</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ route('config.game') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    游戏
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('config.area') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    区
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('config.server') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    服
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    导入导出
+                                <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
+                                    平台统计
                                 </a>
                             </li>
                         </ul>

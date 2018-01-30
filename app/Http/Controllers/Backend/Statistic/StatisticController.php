@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Backend\Statistic;
 
 use DB;
+use Excel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PlatformStatistic;
 use App\Http\Controllers\Controller;
-use App\Models\PlatformOrderStatistic;
-use App\Models\PlatformGameStatistic;
-use App\Models\PlatformThirdStatistic;
 
 /**
  * 代练平台订单数据统计
@@ -16,11 +16,25 @@ class StatisticController extends Controller
 {
     public function index(Request $request)
     {
-    	$username = $request->username;
-    	$startDate = $request->start_date;
-    	$endDate = $request->end_date;
-    	$fullUrl = $request->fullUrl();
-    	$filters = compact('startDate', 'endDate', 'username');
+    	$userId    = $request->user_id;
+		$third     = $request->thrid;
+		$gameId    = $request->game_id;
+		$startDate = $request->start_date;
+		$endDate   = $request->end_date;
+		$fullUrl   = $request->fullUrl();
+
+		if ($request->user_id) {
+			$user = User::where('id', $request->user_id)->first();
+			if ($user->parent_id == 0) {
+				$userIds = [$userId];
+			} else {
+				$userIds = $user->children->pluck('id')->merge($userId);
+			}
+		} else {
+			$userIds = [];
+		}
+
+		$filters = compact('startDate', 'endDate', 'userIds', 'third', 'gameId');
 
     	$users = DB::select("
     		SELECT DISTINCT b.name as username, a.user_id
@@ -29,142 +43,147 @@ class StatisticController extends Controller
 	    	ON a.user_id = b.id
     	");
 
-    	$gameFilters = compact('startDate', 'endDate', 'gameId');
-    	$thirdFilters = compact('startDate', 'endDate', 'thirdId');
+    	$games = DB::select("
+			SELECT a.id, a.name 
+			FROM games a 
+			LEFT JOIN third_games b
+			ON a.id = b.game_id
+    	");
 
-    	if ($request->game_id && $request->third_id) {
-    		// return back()->withErrors('游戏和第三方平台以及发单商户只能选择一个');
-    	} elseif ($request->game_id && ! $request->third_id) {
-    // 		$paginatePlatformOrderStatistics = PlatformGameStatistic::filter($gameFilters)
-				// ->select(DB::raw("
-				// 	date, 
-				// 	SUM(total_order_count) AS total_order_count,
-				// 	IFNULL(FLOOR(SUM(wang_wang_order_evg)/COUNT(user_id)), 0) AS wang_wang_order_evg,
-				// 	SUM(use_time) AS use_time,
-				// 	IFNULL(FLOOR(SUM(use_time)/COUNT(user_id)), 0) AS use_time_avg,
-				// 	SUM(receive_order_count) AS receive_order_count,
-				// 	SUM(complete_order_count) AS complete_order_count,
-				// 	IFNULL(ROUND(SUM(complete_order_rate)/COUNT(user_id), 2), 0) AS complete_order_rate,
-				// 	SUM(complete_order_amount) AS complete_order_amount,
-				// 	IFNULL(ROUND(SUM(complete_order_amount_avg)/COUNT(user_id), 2), 0) AS complete_order_amount_avg,
-				// 	SUM(revoke_order_count) AS revoke_order_count,
-				// 	IFNULL(ROUND(SUM(revoke_order_rate)/COUNT(user_id), 2), 0) AS revoke_order_rate,
-				// 	SUM(arbitrate_order_count) AS arbitrate_order_count,
-				// 	IFNULL(ROUND(SUM(complain_order_rate)/COUNT(user_id), 2), 0) AS complain_order_rate,
-				// 	SUM(done_order_count) AS done_order_count,
-				// 	SUM(total_security_deposit) AS total_security_deposit,
-				// 	IFNULL(ROUND(SUM(security_deposit_avg)/COUNT(user_id), 2), 0) AS security_deposit_avg,
-				// 	SUM(total_efficiency_deposit) AS total_efficiency_deposit,
-				// 	IFNULL(ROUND(SUM(efficiency_deposit_avg)/COUNT(user_id), 2), 0) AS efficiency_deposit_avg,
-				// 	SUM(total_original_amount) AS total_original_amount,
-				// 	IFNULL(ROUND(SUM(original_amount_avg)/COUNT(user_id), 2), 0) AS original_amount_avg,
-				// 	SUM(total_amount) AS total_amount,
-				// 	IFNULL(ROUND(SUM(amount_avg)/COUNT(user_id), 2), 0) AS amount_avg,
-				// 	SUM(total_revoke_payment) AS total_revoke_payment,
-				// 	IFNULL(ROUND(SUM(revoke_payment_avg)/COUNT(user_id), 2), 0) AS revoke_payment_avg,
-				// 	SUM(total_complain_payment) AS total_complain_payment,
-				// 	IFNULL(ROUND(SUM(complain_payment_avg)/COUNT(user_id), 2), 0) AS complain_payment_avg,
-				// 	SUM(total_revoke_income) AS total_revoke_income,
-				// 	IFNULL(ROUND(SUM(revoke_income_avg)/COUNT(user_id), 2), 0) AS revoke_income_avg,
-				// 	SUM(total_complain_income) AS total_complain_income,
-				// 	IFNULL(ROUND(SUM(complain_income_avg)/COUNT(user_id), 2), 0) AS complain_income_avg,
-				// 	SUM(total_poundage) AS total_poundage,
-				// 	IFNULL(ROUND(SUM(poundage_avg)/COUNT(user_id), 2), 0) AS poundage_avg,
-				// 	SUM(user_total_profit) AS user_total_profit,
-				// 	IFNULL(ROUND(SUM(user_profit_avg)/COUNT(user_id), 2), 0) AS user_profit_avg,
-				// 	SUM(platform_total_profit) AS platform_total_profit,
-				// 	IFNULL(ROUND(SUM(platform_profit_avg)/COUNT(user_id), 2), 0) AS platform_profit_avg
-				// "))
-				// ->groupBy('date')
-				// ->paginate(config('backend.page'));
-    	} elseif ($request->third_id && ! $request->game_id) {
-    // 		$paginatePlatformOrderStatistics = PlatformThirdStatistic::filter($thirdFilters)
-				// ->select(DB::raw("
-				// 	date, 
-				// 	SUM(total_order_count) AS total_order_count,
-				// 	IFNULL(FLOOR(SUM(wang_wang_order_evg)/COUNT(user_id)), 0) AS wang_wang_order_evg,
-				// 	SUM(use_time) AS use_time,
-				// 	IFNULL(FLOOR(SUM(use_time)/COUNT(user_id)), 0) AS use_time_avg,
-				// 	SUM(receive_order_count) AS receive_order_count,
-				// 	SUM(complete_order_count) AS complete_order_count,
-				// 	IFNULL(ROUND(SUM(complete_order_rate)/COUNT(user_id), 2), 0) AS complete_order_rate,
-				// 	SUM(complete_order_amount) AS complete_order_amount,
-				// 	IFNULL(ROUND(SUM(complete_order_amount_avg)/COUNT(user_id), 2), 0) AS complete_order_amount_avg,
-				// 	SUM(revoke_order_count) AS revoke_order_count,
-				// 	IFNULL(ROUND(SUM(revoke_order_rate)/COUNT(user_id), 2), 0) AS revoke_order_rate,
-				// 	SUM(arbitrate_order_count) AS arbitrate_order_count,
-				// 	IFNULL(ROUND(SUM(complain_order_rate)/COUNT(user_id), 2), 0) AS complain_order_rate,
-				// 	SUM(done_order_count) AS done_order_count,
-				// 	SUM(total_security_deposit) AS total_security_deposit,
-				// 	IFNULL(ROUND(SUM(security_deposit_avg)/COUNT(user_id), 2), 0) AS security_deposit_avg,
-				// 	SUM(total_efficiency_deposit) AS total_efficiency_deposit,
-				// 	IFNULL(ROUND(SUM(efficiency_deposit_avg)/COUNT(user_id), 2), 0) AS efficiency_deposit_avg,
-				// 	SUM(total_original_amount) AS total_original_amount,
-				// 	IFNULL(ROUND(SUM(original_amount_avg)/COUNT(user_id), 2), 0) AS original_amount_avg,
-				// 	SUM(total_amount) AS total_amount,
-				// 	IFNULL(ROUND(SUM(amount_avg)/COUNT(user_id), 2), 0) AS amount_avg,
-				// 	SUM(total_revoke_payment) AS total_revoke_payment,
-				// 	IFNULL(ROUND(SUM(revoke_payment_avg)/COUNT(user_id), 2), 0) AS revoke_payment_avg,
-				// 	SUM(total_complain_payment) AS total_complain_payment,
-				// 	IFNULL(ROUND(SUM(complain_payment_avg)/COUNT(user_id), 2), 0) AS complain_payment_avg,
-				// 	SUM(total_revoke_income) AS total_revoke_income,
-				// 	IFNULL(ROUND(SUM(revoke_income_avg)/COUNT(user_id), 2), 0) AS revoke_income_avg,
-				// 	SUM(total_complain_income) AS total_complain_income,
-				// 	IFNULL(ROUND(SUM(complain_income_avg)/COUNT(user_id), 2), 0) AS complain_income_avg,
-				// 	SUM(total_poundage) AS total_poundage,
-				// 	IFNULL(ROUND(SUM(poundage_avg)/COUNT(user_id), 2), 0) AS poundage_avg,
-				// 	SUM(user_total_profit) AS user_total_profit,
-				// 	IFNULL(ROUND(SUM(user_profit_avg)/COUNT(user_id), 2), 0) AS user_profit_avg,
-				// 	SUM(platform_total_profit) AS platform_total_profit,
-				// 	IFNULL(ROUND(SUM(platform_profit_avg)/COUNT(user_id), 2), 0) AS platform_profit_avg
-				// "))
-				// ->groupBy('date')
-				// ->paginate(config('backend.page'));
-    	} else {
-	    	$paginatePlatformOrderStatistics = PlatformOrderStatistic::filter($filters)
-				->select(DB::raw("
-					date, 
-					SUM(total_order_count) AS total_order_count,
-					IFNULL(FLOOR(SUM(wang_wang_order_evg)/COUNT(user_id)), 0) AS wang_wang_order_evg,
-					SUM(use_time) AS use_time,
-					IFNULL(FLOOR(SUM(use_time)/COUNT(user_id)), 0) AS use_time_avg,
-					SUM(receive_order_count) AS receive_order_count,
-					SUM(complete_order_count) AS complete_order_count,
-					IFNULL(ROUND(SUM(complete_order_rate)/COUNT(user_id), 2), 0) AS complete_order_rate,
-					SUM(complete_order_amount) AS complete_order_amount,
-					IFNULL(ROUND(SUM(complete_order_amount_avg)/COUNT(user_id), 2), 0) AS complete_order_amount_avg,
-					SUM(revoke_order_count) AS revoke_order_count,
-					IFNULL(ROUND(SUM(revoke_order_rate)/COUNT(user_id), 2), 0) AS revoke_order_rate,
-					SUM(arbitrate_order_count) AS arbitrate_order_count,
-					IFNULL(ROUND(SUM(complain_order_rate)/COUNT(user_id), 2), 0) AS complain_order_rate,
-					SUM(done_order_count) AS done_order_count,
-					SUM(total_security_deposit) AS total_security_deposit,
-					IFNULL(ROUND(SUM(security_deposit_avg)/COUNT(user_id), 2), 0) AS security_deposit_avg,
-					SUM(total_efficiency_deposit) AS total_efficiency_deposit,
-					IFNULL(ROUND(SUM(efficiency_deposit_avg)/COUNT(user_id), 2), 0) AS efficiency_deposit_avg,
-					SUM(total_original_amount) AS total_original_amount,
-					IFNULL(ROUND(SUM(original_amount_avg)/COUNT(user_id), 2), 0) AS original_amount_avg,
-					SUM(total_amount) AS total_amount,
-					IFNULL(ROUND(SUM(amount_avg)/COUNT(user_id), 2), 0) AS amount_avg,
-					SUM(total_revoke_payment) AS total_revoke_payment,
-					IFNULL(ROUND(SUM(revoke_payment_avg)/COUNT(user_id), 2), 0) AS revoke_payment_avg,
-					SUM(total_complain_payment) AS total_complain_payment,
-					IFNULL(ROUND(SUM(complain_payment_avg)/COUNT(user_id), 2), 0) AS complain_payment_avg,
-					SUM(total_revoke_income) AS total_revoke_income,
-					IFNULL(ROUND(SUM(revoke_income_avg)/COUNT(user_id), 2), 0) AS revoke_income_avg,
-					SUM(total_complain_income) AS total_complain_income,
-					IFNULL(ROUND(SUM(complain_income_avg)/COUNT(user_id), 2), 0) AS complain_income_avg,
-					SUM(total_poundage) AS total_poundage,
-					IFNULL(ROUND(SUM(poundage_avg)/COUNT(user_id), 2), 0) AS poundage_avg,
-					SUM(user_total_profit) AS user_total_profit,
-					IFNULL(ROUND(SUM(user_profit_avg)/COUNT(user_id), 2), 0) AS user_profit_avg,
-					SUM(platform_total_profit) AS platform_total_profit,
-					IFNULL(ROUND(SUM(platform_profit_avg)/COUNT(user_id), 2), 0) AS platform_profit_avg
-				"))
-			->groupBy('date')
-			->paginate(config('backend.page'));
-    	}
+    	$paginatePlatformStatistics = PlatformStatistic::filter($filters)
+			->select(DB::raw("
+				date, 
+				SUM(order_count) AS order_count,
+				IFNULL(FLOOR(SUM(client_wang_wang_count)/SUM(distinct_client_wang_wang_count)), 0) AS wang_wang_order_avg,
+				SUM(receive_order_count) AS receive_order_count,
+				SUM(complete_order_count) AS complete_order_count,
+				IFNULL(ROUND(SUM(complete_order_count)/SUM(receive_order_count), 2), 0) AS complete_order_rate,
+				SUM(revoke_order_count) AS revoke_order_count,
+				IFNULL(ROUND(SUM(revoke_order_count)/SUM(receive_order_count), 2), 0) AS revoke_order_rate,
+				SUM(arbitrate_order_count) AS arbitrate_order_count,
+				IFNULL(ROUND(SUM(arbitrate_order_count)/SUM(receive_order_count), 2), 0) AS arbitrate_order_rate,
+				IFNULL(FLOOR(SUM(done_order_use_time)/SUM(done_order_count)), 0) AS done_order_use_time_avg,
+				IFNULL(ROUND(SUM(done_order_security_deposit)/SUM(done_order_count), 2), 0) AS done_order_security_deposit_avg,
+				IFNULL(ROUND(SUM(done_order_efficiency_deposit)/SUM(done_order_count), 2), 0) AS done_order_efficiency_deposit_avg,
+				IFNULL(ROUND(SUM(done_order_original_amount)/SUM(done_order_count), 2), 0) AS done_order_original_amount_avg,
+				SUM(done_order_original_amount) as done_order_original_amount,
+				IFNULL(ROUND(SUM(done_order_amount)/SUM(done_order_count), 2), 0) AS done_order_amount_avg,
+				SUM(done_order_amount) as done_order_amount,
+				IFNULL(ROUND(SUM(complete_order_amount)/SUM(complete_order_count), 2), 0) AS complete_order_amount_avg,
+				SUM(complete_order_amount) as complete_order_amount,
+				IFNULL(ROUND(SUM(revoke_payment)/SUM(revoke_order_count), 2), 0) AS revoke_payment_avg,
+				SUM(revoke_payment) as revoke_payment,
+				IFNULL(ROUND(SUM(revoke_income)/SUM(revoke_order_count), 2), 0) AS revoke_income_avg,
+				SUM(revoke_income) as revoke_income,
+				IFNULL(ROUND(SUM(arbitrate_payment)/SUM(arbitrate_order_count), 2), 0) AS arbitrate_payment_avg,
+				SUM(arbitrate_payment) as arbitrate_payment,
+				IFNULL(ROUND(SUM(arbitrate_income)/SUM(arbitrate_order_count), 2), 0) AS arbitrate_income_avg,
+				SUM(arbitrate_income) as arbitrate_income,
+				IFNULL(ROUND(SUM(poundage)/(SUM(arbitrate_order_count)+SUM(revoke_order_count)), 2), 0) AS poundage_avg,
+				SUM(poundage) as poundage,
+				IFNULL(ROUND(SUM(user_profit)/SUM(done_order_count), 2), 0) AS user_profit_avg,
+				SUM(user_profit) as user_profit,
+				IFNULL(ROUND(SUM(platform_profit)/SUM(done_order_count), 2), 0) AS platform_profit_avg,
+				SUM(platform_profit) as platform_profit
+			"))
+		->groupBy('date')
+		->paginate(config('backend.page'));
 
-    	return view('backend.statistic.platform', compact('startDate', 'users', 'endDate', 'username', 'fullUrl', 'paginatePlatformOrderStatistics'));
+		if ($request->export && $paginatePlatformStatistics->count() > 0) {
+			static::export($paginatePlatformStatistics->toArray()['data']);
+		}
+    	return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics'));
+    }
+
+    public static function export($datas)
+    {
+    	$title = [
+    		'发布时间',
+            '发布单数',
+            '单旺旺号平均发送',
+            '被接单数',
+            '已结算单数',
+            '已结算占比',
+            '已撤销单数',
+            '已撤销占比',
+            '已仲裁单数',
+            '已仲裁占比',
+            '完单平均代练时间',
+            '完单平均安全保证金',
+            '完单平均效率保证金',
+            '完单平均来源价格',
+            '完单总来源价格',
+            '完单平均发单价格',
+            '完单总发单价格',
+            '结算平均支付',
+            '结算总支付',
+            '撤销平均支付',
+            '撤销总支付',
+            '撤销平均赔偿',
+            '撤销总赔偿',
+            '仲裁平均支付',
+            '仲裁总支付',
+            '仲裁平均赔偿',
+            '仲裁总赔偿',
+            '平均手续费',
+            '总手续费',
+            '商户平均利润',
+            '商户总利润',
+            '平台平均利润',
+            '平台总利润'
+    	];
+
+    	$chunkDatas = array_chunk($datas, 100);
+
+    	Excel::create('代练平台统计', function ($excel) use ($chunkDatas, $title) {
+
+            foreach ($chunkDatas as $chunkData) {
+                // 内容
+                $arr = [];
+                foreach ($chunkData as $key => $data) {
+                    $arr[] = [
+                        $data['date'],
+                        $data['order_count'],
+                        $data['wang_wang_order_avg'],
+                        $data['receive_order_count'],
+                        $data['complete_order_count'],
+                        $data['complete_order_rate'],
+                        $data['revoke_order_count'],
+                        $data['revoke_order_rate'],
+                        $data['arbitrate_order_count'],
+                        $data['arbitrate_order_rate'],
+                        $data['done_order_use_time_avg'],
+                        $data['done_order_security_deposit_avg'],
+                        $data['done_order_efficiency_deposit_avg'],
+                        $data['done_order_original_amount_avg'],
+                        $data['done_order_original_amount'],
+                        $data['done_order_amount_avg'],
+                        $data['done_order_amount'],
+                        $data['complete_order_amount_avg'],
+                        $data['complete_order_amount'],
+                        $data['revoke_payment_avg'],
+                        $data['revoke_payment'],
+                        $data['revoke_income_avg'],
+                        $data['revoke_income'],
+                        $data['arbitrate_payment_avg'],
+                        $data['arbitrate_payment'],
+                        $data['arbitrate_income_avg'],
+                        $data['arbitrate_income'],
+                        $data['poundage_avg'],
+                        $data['poundage'],
+                        $data['user_profit_avg'],
+                        $data['user_profit'],
+                        $data['platform_profit_avg'],
+                        $data['platform_profit'],
+                    ];
+                }
+                // 将标题加入到数组
+                array_unshift($arr, $title);
+                // 每页多少数据
+                $excel->sheet("页数", function ($sheet) use ($arr) {
+                    $sheet->rows($arr);
+                });
+            }
+        })->export('xls');
     }
 }
