@@ -2,6 +2,14 @@
 
 @section('title', ' | 代练平台订单统计')
 
+@section('css')
+    <style>
+        .layui-form-label {
+            width:110px;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -12,12 +20,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-20">
             <div class="main-box">
                 <header class="main-box-header clearfix">
                     <form class="layui-form">
                         <div class="row">
                             <div class="layui-form-item">
+                                <label class="layui-form-label">发单商户</label>
+                                    <div class="form-group col-xs-2">
+                                        <select name="username" lay-filter="">                
+                                            <option value="">请选择</option>
+                                                @forelse($users as $id => $user)
+                                                <option value="{{ $user->user_id }}" {{ $user->user_id == $username ? 'selected' : '' }} >{{ $user->username }}</option>
+                                                @empty
+                                                @endforelse
+                                        </select>
+                                    </div>
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="form-group col-xs-1">
                                     <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ $startDate }}">
@@ -85,7 +103,7 @@
                                     <td>{{ $paginatePlatformOrderStatistic->revoke_order_count }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->revoke_order_rate }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_count }}</td>
-                                    <td>{{ $paginatePlatformOrderStatistic->arbitrate_order_rate }}</td>
+                                    <td>{{ $paginatePlatformOrderStatistic->complain_order_rate }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->use_time_avg }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->security_deposit_avg }}</td>
                                     <td>{{ $paginatePlatformOrderStatistic->efficiency_deposit_avg }}</td>

@@ -49,9 +49,9 @@ class PlatformOrderStatistic extends Command
                 SELECT 
                     mm.date, mm.creator_user_id AS user_id, mm.parent_id, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
                     COUNT(mm.no) AS total_order_count, /*发布单数*/
-                    SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END) AS use_time, /*完单总接单时间戳*/
-                    IFNULL(ROUND(SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END)
-                        /SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN 1 ELSE 0 END), 2), 0) AS use_time_avg, /*平均完单总接单时间戳*/
+                    FLOOR(SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END)) AS use_time, /*完单总接单时间戳*/
+                    IFNULL(FLOOR(SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(mm.checkout_time)-UNIX_TIMESTAMP(mm.receiving_time) ELSE 0 END)
+                        /SUM(CASE WHEN mm.STATUS IN (19, 20, 21) THEN 1 ELSE 0 END)), 0) AS use_time_avg, /*平均完单总接单时间戳*/
                     CASE WHEN mm.client_wang_wang='' THEN 0 ELSE IFNULL(ROUND(COUNT(mm.no)/COUNT(DISTINCT(mm.client_wang_wang)), 2), 0) END AS wang_wang_order_evg, /*单旺旺号平均发单*/
                     SUM(CASE WHEN mm.STATUS NOT IN (1, 22, 24) THEN 1 ELSE 0 END) AS receive_order_count, /*被接单数*/
                     SUM(CASE WHEN mm.STATUS = 20 THEN 1 ELSE 0 END) AS complete_order_count, /*已结算单数*/

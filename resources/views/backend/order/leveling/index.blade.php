@@ -68,7 +68,7 @@
                                     @endif
                                     </td>
                                     <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
-                                    <td>{{ $paginateOrderNotice->operate }}</td>
+                                    <td>{{ $paginateOrderNotice->operate ?: '--' }}</td>
                                     <td>{{ $paginateOrderNotice->create_order_time }}</td>
                                     <td>{{ $paginateOrderNotice->created_at }}</td>
                                     <td>
