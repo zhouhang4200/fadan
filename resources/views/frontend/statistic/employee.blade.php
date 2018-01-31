@@ -63,7 +63,7 @@
                         <td>{{ $data->username ?? '--' }}</td>
                         <td>{{ $data->name }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
-                        <td>{{ number_format($data->send_order_amount, 2) ?? '--' }}</td>
+                        <td>{{ number_format($data->complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
                         <td>{{ $data->arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->profit, 2) ?? '--' }}</td>
@@ -74,7 +74,7 @@
                         <td>总计</td>
                         <td>{{ $totalData->total_user_id_count ?? '--' }}</td>
                         <td>{{ $totalData->total_complete_order_count ?? '--' }}</td>
-                        <td>{{ number_format($totalData->total_send_order_amount, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalData->total_complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($totalData->total_profit, 2) ?? '--' }}</td>

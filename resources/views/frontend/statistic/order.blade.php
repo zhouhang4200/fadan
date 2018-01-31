@@ -59,7 +59,7 @@
                         <td>{{ $data->send_order_count }}</td>
                         <td>{{ $data->receive_order_count ?? '--' }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
-                        <td>{{ $data->complete_order_rate ? $data->complete_order_rate.'%' : '--' }}</td>
+                        <td>{{ $data->complete_order_rate ? bcmul($data->complete_order_rate, 100).'%' : '--' }}</td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
                         <td>{{ $data->arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->three_status_original_amount, 2) ?? '--' }}</td>
@@ -76,7 +76,7 @@
                         <td>{{ $totalData->total_send_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_receive_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_complete_order_count ?? '--' }}</td>
-                        <td>{{ $totalData->total_complete_order_rate ? $totalData->total_complete_order_rate.'%' : '--' }}</td>
+                        <td>{{ $totalData->total_complete_order_rate ? bcmul($totalData->total_complete_order_rate, 100).'%' : '--' }}</td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($totalData->total_three_status_original_amount, 2) ?? '--' }}</td>

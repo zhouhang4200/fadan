@@ -42,13 +42,14 @@ class StatisticController extends Controller
     				->filter($filters)
     				->select(DB::raw('
                         user_id, 
-                        user_name, 
+                        username, 
                         name, 
                         sum(complete_order_count) as complete_order_count, 
                         sum(revoke_order_count) as revoke_order_count, 
                         sum(arbitrate_order_count) as arbitrate_order_count, 
                         sum(profit) as profit, 
-                        sum(complete_order_amount) as complete_order_amount'))
+                        sum(complete_order_amount) as complete_order_amount
+                    '))
     				->groupBy('user_id');
 
     	$datas = $query->paginate(config('frontend.page'));
@@ -62,7 +63,8 @@ class StatisticController extends Controller
                         sum(arbitrate_order_count) as total_arbitrate_order_count, 
                         sum(profit) as total_profit, 
                         sum(complete_order_amount) as total_complete_order_amount, 
-                        count(distinct(user_id)) as total_user_id_count'))
+                        count(distinct(user_id)) as total_user_id_count
+                    '))
     				->first();
 
     	if ($request->export) {
@@ -99,7 +101,7 @@ class StatisticController extends Controller
 					sum(send_order_count) as send_order_count,
 				 	sum(receive_order_count) as receive_order_count, 
 				 	sum(complete_order_count) as complete_order_count,
-				 	sum(complete_order_rate) as complete_order_rate, 
+				 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 2), 0) as complete_order_rate, 
 				 	sum(revoke_order_count) as revoke_order_count, 
 					sum(arbitrate_order_count) as arbitrate_order_count,
 					sum(three_status_original_amount) as three_status_original_amount,
@@ -117,7 +119,7 @@ class StatisticController extends Controller
 					sum(send_order_count) as total_send_order_count,
 				 	sum(receive_order_count) as total_receive_order_count, 
 				 	sum(complete_order_count) as total_complete_order_count,
-				 	sum(complete_order_rate) as total_complete_order_rate, 
+				 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 2), 0) as total_complete_order_rate, 
 				 	sum(revoke_order_count) as total_revoke_order_count, 
 					sum(arbitrate_order_count) as total_arbitrate_order_count,
 					sum(three_status_original_amount) as total_three_status_original_amount,
@@ -128,8 +130,8 @@ class StatisticController extends Controller
 					sum(profit) as total_profit
 				'))
 				->first();
-
         $excelDatas = $query->get();
+
         $datas = $query->paginate(config('frontend.page'));
 
 		if ($request->export) {
