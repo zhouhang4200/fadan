@@ -81,12 +81,12 @@
                         <td>{{ config('user.type')[$user->type] }}</td>
                         <td>{{ $user->rbacGroups->pluck('name')->count() > 0 ? implode(' |
                         ', $user->rbacGroups->pluck('name')->toArray()) : '--' }}</td>
-                        <td>{{ $user->QQ ?? '--' }}</td>
+                        <td>{{ $user->qq ?? '--' }}</td>
                         <td>{{ $user->wechat ?? '--' }}</td>
                         <td>{{ $user->phone ?? '--' }}</td>
                         <td>{{ $user->updated_at ?? '--' }}</td>
                         <td>{{ $user->remark ?? '--' }}</td>
-                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 1 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
+                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->deleted_at ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
                         <td>
                             <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
                             <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $user->id }}">删除</button>

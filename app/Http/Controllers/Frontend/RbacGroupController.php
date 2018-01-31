@@ -31,8 +31,6 @@ class RbacGroupController extends Controller
         $rbacGroups = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())
             ->whereHas('permissions')
             ->paginate(config('frontend.page'));
-        $parent = User::find(Auth::user()->getPrimaryUserId());
-        $childIds = $parent->children->pluck('id');
 
         return view('frontend.user.rbacgroup.index', compact('rbacGroups'));
     }

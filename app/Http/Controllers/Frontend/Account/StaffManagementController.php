@@ -22,7 +22,7 @@ class StaffManagementController extends Controller
     	$children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
     	$filters = compact('name', 'userName', 'station');
 
-    	$users = User::staffManagementFilter($filters)->paginate(config('frontend.page'));
+    	$users = User::staffManagementFilter($filters)->withTrashed()->paginate(config('frontend.page'));
 
     	return view('frontend.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'groups', 'children'));
     }
@@ -49,8 +49,13 @@ class StaffManagementController extends Controller
     	if ($request->role) {
     		$data['role'] = $request->role;
     		$user->rbacgroups()->sync($request->role);
-    		$permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
-    		$user->permissions()->sync($permissions->toArray());
+    		$rbacGroups = RbacGroup::whereIn('id', $request->role)->get();
+
+            $permissions = [];
+            foreach ($rbacGroups as $k => $rbacGroup) {
+                $permissions[$k] = $rbacGroup->permissions()->pluck('id');
+            } 
+            $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
     	}
     	
     	try {
@@ -67,13 +72,12 @@ class StaffManagementController extends Controller
     {
     	DB::beginTransaction();
     	try {
-	    	$user = User::find($request->id);
-	    	if (! $user->status) {    		
-		    	$user->status = 1;
-		    	$user->save();
+	    	$user = User::withTrashed()->find($request->id);
+
+	    	if (! $user->deleted_at) {    		
+		    	$user->delete();
 	    	} else {
-	    		$user->status = 0;
-		    	$user->save();
+	    		$user->restore();
 	    	}
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -81,10 +85,10 @@ class StaffManagementController extends Controller
     		throw new Exception($e->getMessage());
     	}
     	DB::commit();
-    	if ($user->status) {
-    		return response()->ajax(1, '启用成功');
+    	if ($user->deleted_at) {
+    		return response()->ajax(1, '已开启');
     	} else {
-    		return response()->ajax(1, '禁用成功');
+    		return response()->ajax(1, '已关闭');
     	}
     }
 
@@ -112,10 +116,8 @@ class StaffManagementController extends Controller
     public function store(Request $request)
     {
     	DB::beginTransaction();
-
-    	try {
+        try {
             $this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
-
             $data = $request->except('role');
             $data['password'] = bcrypt($request->password);
             $data['api_token'] = Str::random(25);
@@ -125,8 +127,14 @@ class StaffManagementController extends Controller
             if ($request->role) {
                 $data['role'] = $request->role;
                 $user->rbacgroups()->sync($request->role);
-                $permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
-                $user->permissions()->sync($permissions->toArray());
+                $rbacGroups = RbacGroup::whereIn('id', $request->role)->get();
+
+                $permissions = [];
+                foreach ($rbacGroups as $k => $rbacGroup) {
+                    $permissions[$k] = $rbacGroup->permissions()->pluck('id');
+                } 
+
+                $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
             }
 
     	} catch (Exception $e) {

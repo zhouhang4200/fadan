@@ -46,7 +46,7 @@
             <label class="layui-form-label">岗位</label>
             <div class="layui-input-block">
                 @forelse($roles as $role)
-                <input type="radio" name="role" value="{{ $role->id }}" title="{{ $role->name }}">
+                <input type="checkbox" name="role[]" value="{{ $role->id }}" lay-skin="primary" title="{{ $role->name }}" >
                 @empty
                 @endforelse
             </div>
