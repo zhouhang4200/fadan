@@ -16,7 +16,7 @@ class StaffManagementController extends Controller
     {
     	$name = $request->name;
     	$station = $request->station;
-    	$userName = $request->user_name;
+    	$userName = $request->username;
 
     	$groups = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
     	$children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
@@ -114,26 +114,25 @@ class StaffManagementController extends Controller
     	DB::beginTransaction();
 
     	try {
-	    	$this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
+            $this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
 
-	    	$data = $request->except('role');
-	    	$data['password'] = bcrypt($request->password);
-	    	$data['api_token'] = Str::random(25);
-	    	$data['parent_id'] = Auth::id();
+            $data = $request->except('role');
+            $data['password'] = bcrypt($request->password);
+            $data['api_token'] = Str::random(25);
+            $data['parent_id'] = Auth::id();
+            $user = User::create($data);
 
-	    	$user = User::create($data);
-
-	    	if ($request->role) {
-	    		$data['role'] = $request->role;
-	    		$user->rbacgroups()->sync($request->role);
-	    		$permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
-	    		$user->permissions()->sync($permissions->toArray());
-	    	}
+            if ($request->role) {
+                $data['role'] = $request->role;
+                $user->rbacgroups()->sync($request->role);
+                $permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
+                $user->permissions()->sync($permissions->toArray());
+            }
 
     	} catch (Exception $e) {
-    		dd($e->getMessage());
     		DB::rollBack();
     		return back()->withInput()->with('fail', '添加失败');
+            throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	return redirect(route('staff-management.index'))->with('succ', '添加成功');

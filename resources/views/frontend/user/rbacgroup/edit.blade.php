@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 修改权限组')
+@section('title', '账号 - 修改岗位')
 
 @section('css')
     <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
@@ -45,8 +45,7 @@
                     <thead>
                     <tr>
                         <th class="col-md-1 text-center">模块名</th>
-                        <th class="col-md-1 text-center" style="
-    width: 668px;">权限清单名</th>
+                        <th class="col-md-1 text-center" style="width: 668px;">权限清单名</th>
                     </tr>
                     </thead>
                     <tbody>

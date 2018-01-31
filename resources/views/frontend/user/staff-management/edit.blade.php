@@ -13,7 +13,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">员工姓名</label>
             <div class="layui-input-block">
-                <input type="text" name="user_name" lay-verify="required|length" value="{{ old('user_name') ?: $user->user_name }}" autocomplete="off" placeholder="" class="layui-input">
+                <input type="text" name="username" lay-verify="required|length" value="{{ old('username') ?: $user->username }}" autocomplete="off" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">

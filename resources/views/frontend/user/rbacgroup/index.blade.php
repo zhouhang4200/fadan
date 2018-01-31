@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 权限组列表')
+@section('title', '账号 - 岗位列表')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -17,7 +17,7 @@
 
 @section('main')
     <div style="padding-top:5px; padding-bottom:10px; float:right">
-        <a href="{{ route('rbacgroups.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加权限组</button></a>
+        <a href="{{ route('rbacgroups.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加岗位</button></a>
     </div>
     <table class="layui-table" lay-size="sm">
         <thead>

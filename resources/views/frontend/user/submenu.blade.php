@@ -17,11 +17,11 @@
         @can('login.history')
             <li class="{{ in_array(Route::currentRouteName(), ['login.history']) ? 'current' : '' }}"><a href="{{ route('login.history') }}"> 登录记录 </a><div class="arrow"></div></li>
         @endcan
-        @can('users.index')
+        @can('users.indexs')
             <li class="{{ in_array(Route::currentRouteName(), ['users.index', 'users.create', 'users.edit', 'user-groups.create']) ? 'current' : '' }}"><a href="{{ route('users.index') }}"> 子账号管理 </a><div class="arrow"></div></li>
         @endcan
         @can('rbacgroups.index')
-            <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create', 'rbacgroups.edit']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}"> 权限组管理 </a><div class="arrow"></div></li>
+            <li class="{{ in_array(Route::currentRouteName(), ['rbacgroups.index', 'rbacgroups.create', 'rbacgroups.edit']) ? 'current' : '' }}"><a href="{{ route('rbacgroups.index') }}"> 岗位管理 </a><div class="arrow"></div></li>
         @endcan
         
             <li class="{{ in_array(Route::currentRouteName(), ['staff-management.index', 'staff-management.edit']) ? 'current' : '' }}"><a href="{{ route('staff-management.index') }}"> 员工管理 </a><div class="arrow"></div></li>

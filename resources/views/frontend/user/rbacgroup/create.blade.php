@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 添加权限组')
+@section('title', '账号 - 添加岗位')
 
 @section('css')
     <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
@@ -34,7 +34,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入中文组名" class="layui-input">
+                    <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入中文岗位名" class="layui-input">
                 </div>
             </div>
 
@@ -45,8 +45,7 @@
                         <thead>
                         <tr>
                             <th class="col-md-1 text-center">模块名</th>
-                            <th class="col-md-1 text-center" style="
-    width: 668px;">权限清单名</th>
+                            <th class="col-md-1 text-center" style="width: 668px;">权限清单</th>
                         </tr>
                         </thead>
                         <tbody>

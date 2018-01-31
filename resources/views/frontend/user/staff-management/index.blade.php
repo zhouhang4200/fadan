@@ -21,7 +21,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
                 <div class="layui-input-inline">               
-                    <select name="user_name" lay-verify="" lay-search="">
+                    <select name="username" lay-verify="" lay-search="">
                         <option value="">请输入员工姓名</option>
                         @forelse($children as $child)
                             <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->username }}</option>
