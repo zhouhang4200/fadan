@@ -49,12 +49,15 @@
             ,layer = layui.layer;
           
             var GeetestError = "{{ $errors->count() > 0  && array_key_exists('geetest_challenge', $errors->toArray()) ? '请正确完成验证码操作!' : '' }}";
-            var error = "{{ $errors->count() > 0 ? '账号或密码错误！' : '' }}";
+            var error = "{{ $errors->count() > 0 ? '账号被禁用或密码错误！' : '' }}";
             var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
+            var forbidden = "{{ session('forbidden') ?: '' }}";
 
             if(GeetestError) {
                 layer.msg(GeetestError, {icon: 5, time:1500});
-            }else if (error) {
+            } else if(forbidden) {
+                layer.msg(loginError, {icon: 5, time:1500});
+            } else if (error) {
                 layer.msg(error, {icon: 5, time:1500});
             } else if(loginError) {
                 layer.msg(loginError, {icon: 5, time:1500});

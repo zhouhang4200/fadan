@@ -86,10 +86,14 @@
                         <td>{{ $user->phone ?? '--' }}</td>
                         <td>{{ $user->updated_at ?? '--' }}</td>
                         <td>{{ $user->remark ?? '--' }}</td>
-                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->deleted_at ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
+                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ !$user->deleted_at ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
                         <td>
+                        @if(!$user->deleted_at)
                             <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
                             <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $user->id }}">删除</button>
+                        @else
+                            --
+                        @endif
                         </td>
                     </tr>
                 @empty
@@ -126,6 +130,7 @@
                         } else {
                             layer.msg('启用失败', {icon: 5, time:1500}); 
                         }
+                    window.location.href="{{ route('staff-management.index') }}";
                     }
                 });
             });
