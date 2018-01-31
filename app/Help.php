@@ -9,6 +9,8 @@ use App\Services\RedisConnect;
 use Illuminate\Support\Facades\Redis;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
+use App\Models\UserRbacGroup;
+use App\Models\User;
 
 if (!function_exists('myLog')) {
     /**
@@ -671,5 +673,24 @@ if (!function_exists('subOperate')) {
             return substr($operate, 0, -1);
         } 
         return $operate;
+    }
+}
+
+if (!function_exists('employees')) {
+    /**
+     * 生成一个 UUID
+     * @param string $prefix
+     * @return string
+     */
+    function employees($groupId)
+    {
+        $groupUserIds = UserRbacGroup::where('rbac_group_id', $groupId)->pluck('user_id');
+
+        $userNames = User::whereIn('id', $groupUserIds)->pluck('username')->toArray();
+
+        if ($userNames) {
+            return implode($userNames, '、');
+        }
+        return '';
     }
 }

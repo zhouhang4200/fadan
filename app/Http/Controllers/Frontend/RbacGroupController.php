@@ -28,7 +28,11 @@ class RbacGroupController extends Controller
      */
     public function index()
     {
-        $rbacGroups = RbacGroup::where('user_id', Auth::id())->whereHas('permissions')->paginate(config('frontend.page'));
+        $rbacGroups = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())
+            ->whereHas('permissions')
+            ->paginate(config('frontend.page'));
+        $parent = User::find(Auth::user()->getPrimaryUserId());
+        $childIds = $parent->children->pluck('id');
 
         return view('frontend.user.rbacgroup.index', compact('rbacGroups'));
     }
@@ -43,10 +47,10 @@ class RbacGroupController extends Controller
         $permissionIds = Auth::user()->getAllPermissions()->pluck('id');
 
         $modulePermissions = Module::where('guard_name', 'web')
-                        ->with(['permissions' => function ($query) use ($permissionIds) {
-                            $query->whereIn('id', $permissionIds);
-                        }])            
-                        ->get();      
+            ->with(['permissions' => function ($query) use ($permissionIds) {
+                $query->whereIn('id', $permissionIds);
+            }])            
+            ->get();      
 
         return view('frontend.user.rbacgroup.create', compact('modulePermissions'));
     }

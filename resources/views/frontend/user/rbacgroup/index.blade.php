@@ -5,6 +5,9 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
+        .layui-form-label {
+            width:100px;
+        }
         .layui-table th, .layui-table td {
             text-align:center;
         }
@@ -22,10 +25,10 @@
     <table class="layui-table" lay-size="sm">
         <thead>
         <tr>
-            <th style="width:5%">序号</th>
-            <th style="width:7%">组名</th>
-            <th>权限名</th>
-            <th style="width:10%">注册时间</th>
+            <th>序号</th>
+            <th>岗位名称</th>
+            <th>岗位员工</th>
+            <th>拥有权限</th>
             <th style="width:12%">操作</th>
         </tr>
         </thead>
@@ -34,12 +37,12 @@
             <tr class="rbacGroup-td">
                 <td>{{ $rbacGroup->id }}</td>
                 <td>{{ $rbacGroup->name }}</td>
+                <td>{{ employees($rbacGroup->id) }}</td>
                 <td>
                 @foreach($rbacGroup->permissions as $permission)
                 {{ $permission->alias }} &nbsp;&nbsp;
                 @endforeach
                 </td>
-                <td>{{ $rbacGroup->created_at }}</td>
                 <td>
                     <div style="text-align: center">
                     <a href="{{ route('rbacgroups.edit', ['id' => $rbacGroup->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
@@ -61,7 +64,7 @@
          layui.use(['form', 'layedit', 'laydate',], function(){
             var form = layui.form
             ,layer = layui.layer;
-            layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+            layer.confirm('确定删除岗位吗?', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
                     url: '/rbacgroups/'+id,

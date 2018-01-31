@@ -73,7 +73,7 @@
                     <tr style="color:red">
                         <td>总计</td>
                         <td>{{ $totalData->total_user_id_count ?? '--' }}</td>
-                        <td>{{ $totalData->total_complete_order_count ?? '--' }}</td>
+                        <td>{{ $totalData->total_complete_order_count ?? '' }}</td>
                         <td>{{ number_format($totalData->total_complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_arbitrate_order_count ?? '--' }}</td>

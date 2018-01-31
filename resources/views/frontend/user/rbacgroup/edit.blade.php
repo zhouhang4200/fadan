@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '账号 - 修改岗位')
+@section('title', '账号 - 岗位编辑')
 
 @section('css')
     <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
@@ -10,6 +10,9 @@
         }
         .table {
             width:800px;
+        }
+        .layui-form-label {
+            width:100px;
         }
         .layui-form-item .layui-input-inline {
             float: left;
@@ -32,20 +35,20 @@
 <input type="hidden" name="_method" value="PUT">
     <div style="width: 100%">
         <div class="layui-form-item">
-            <label class="layui-form-label">名称</label>
+            <label class="layui-form-label">岗位名称</label>
             <div class="layui-input-block">
-                <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $rbacGroup->name }}" autocomplete="off" placeholder="请输入组名" class="layui-input">
+                <input type="text" name="name" lay-verify="title" value="{{ old('name') ?: $rbacGroup->name }}" autocomplete="off" placeholder="请输入" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">权限清单</label>
+            <label class="layui-form-label">拥有权限</label>
                 <div class="layui-input-block">
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th class="col-md-1 text-center">模块名</th>
-                        <th class="col-md-1 text-center" style="width: 668px;">权限清单名</th>
+                        <th class="col-md-1 text-center">模块</th>
+                        <th class="col-md-1 text-center" style="width: 668px;">权限</th>
                     </tr>
                     </thead>
                     <tbody>
