@@ -97,7 +97,8 @@ class StatisticController extends Controller
 
     	$query = OrderStatistic::whereIn('user_id', $userIds)
 				->filter($filters)
-				->select(DB::raw('user_id, date, 
+				->select(DB::raw('
+                    user_id, date, 
 					sum(send_order_count) as send_order_count,
 				 	sum(receive_order_count) as receive_order_count, 
 				 	sum(complete_order_count) as complete_order_count,
@@ -115,7 +116,8 @@ class StatisticController extends Controller
 
 		$totalData = OrderStatistic::whereIn('user_id', $userIds)
 				->filter($filters)
-				->select(DB::raw('user_id,
+				->select(DB::raw('
+                    user_id,
 					sum(send_order_count) as total_send_order_count,
 				 	sum(receive_order_count) as total_receive_order_count, 
 				 	sum(complete_order_count) as total_complete_order_count,

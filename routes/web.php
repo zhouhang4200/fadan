@@ -91,8 +91,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
         Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee')->middleware('permission:frontend.statistic.employee');
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('permission:frontend.statistic.order');
-        Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
-        Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
+        // Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
+        // Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
     });
 
     // 商品

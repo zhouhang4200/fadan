@@ -87,6 +87,7 @@ class StatisticController extends Controller
 				SUM(platform_profit) as platform_profit
 			"))
 		->groupBy('date')
+        ->latest('date')
 		->paginate(config('backend.page'));
 
 		if ($request->export && $paginatePlatformStatistics->count() > 0) {
@@ -95,6 +96,11 @@ class StatisticController extends Controller
     	return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics'));
     }
 
+    /**
+     * 导出
+     * @param  [type] $datas [description]
+     * @return [type]        [description]
+     */
     public static function export($datas)
     {
     	$title = [

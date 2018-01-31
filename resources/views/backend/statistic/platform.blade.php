@@ -82,7 +82,7 @@
                                 <th>已撤销占比</th>
                                 <th>已仲裁单数</th>
                                 <th>已仲裁占比</th>
-                                <th>完单平均代练时间</th>
+                                <th>完单平均所用时间</th>
                                 <th>完单平均安全保证金</th>
                                 <th>完单平均效率保证金</th>
                                 <th>完单平均来源价格</th>
@@ -115,12 +115,12 @@
                                     <td>{{ $paginatePlatformStatistic->wang_wang_order_avg }}</td>
                                     <td>{{ $paginatePlatformStatistic->receive_order_count }}</td>
                                     <td>{{ $paginatePlatformStatistic->complete_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->complete_order_rate }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->complete_order_rate ? bcmul($paginatePlatformStatistic->complete_order_rate, 100) : 0 }}%</td>
                                     <td>{{ $paginatePlatformStatistic->revoke_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_order_rate }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->revoke_order_rate ? bcmul($paginatePlatformStatistic->revoke_order_rate, 100) : 0 }}%</td>
                                     <td>{{ $paginatePlatformStatistic->arbitrate_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_rate }}%</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_use_time_avg }}s</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_rate ? bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100) : 0 }}%</td>
+                                    <td>{{ $paginatePlatformStatistic->done_order_use_time_avg < 60 ? $paginatePlatformStatistic->done_order_use_time_avg.'秒' : sec2Time($paginatePlatformStatistic->done_order_use_time_avg) }}</td>
                                     <td>{{ $paginatePlatformStatistic->done_order_security_deposit_avg }}</td>
                                     <td>{{ $paginatePlatformStatistic->done_order_efficiency_deposit_avg }}</td>
                                     <td>{{ $paginatePlatformStatistic->done_order_original_amount_avg }}</td>

@@ -67,8 +67,9 @@ class LevelingController
      */
     public function success($message, $order)
     {
-        // 写入第三方操作
-        $this->addActionToOrderNotice($order);
+        if ($order) {
+            $this->checkOrderNotice($order);
+        }
 
         return json_encode([
             'status' => 1,
@@ -85,9 +86,7 @@ class LevelingController
     public function fail($message, $order)
     {
         if ($order) {
-            // 异常写入order_notices 表
-            $this->addOrderNotice($order);
-            $this->addActionToOrderNotice($order);      
+            $this->addOrderNotice($order);      
         }
 
         return json_encode([
@@ -96,22 +95,6 @@ class LevelingController
         ]);
         \Log::info($message);
         throw new DailianException($message);
-    }
-
-    /**
-     * 记录第三方做的操作，写入订单预警表
-     * @param [type] $order [description]
-     */
-    public function addActionToOrderNotice($order) 
-    {
-        $action = \Route::currentRouteAction();
-        $actionName = preg_replace('~.*@~', '', $action, -1);
-        $orderNotice = OrderNotice::where('order_no', $order->no)->latest('updated_at')->first();
-
-        if ($orderNotice) {
-            $orderNotice->operate = config('ordernotice.operate')[$actionName] ?? '空';
-            $orderNotice->save();
-        }
     }
 
 	/**
@@ -486,7 +469,7 @@ class LevelingController
      * 添加订单报警
      * @param [type] $order [description]
      */
-    public function addOrderNotice($order)
+    public function addOrderNotice($order, $bool = false)
     {
         DB::beginTransaction();
         try {
@@ -506,6 +489,18 @@ class LevelingController
             $data['security_deposit'] = $orderDetail['security_deposit'];
             $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
             $twoStatus = $this->getThirdOrderStatus($data['third_order_no']);
+            // 操作
+            $action = \Route::currentRouteAction();
+            $actionName = preg_replace('~.*@~', '', $action, -1);
+            if ($actionName) {
+                if ($bool) {
+                    $data['operate'] = config('ordernotice.operate')[$actionName].'@' ?: '';
+                } else {
+                    $data['operate'] = config('ordernotice.operate')[$actionName] ?: '';
+                }
+            } else {
+                $data['operate'] = '';
+            }
             if (count($twoStatus) == 2) {
                 $data['third_status'] = $twoStatus[0];
                 $data['child_third_status'] = $twoStatus[1];
@@ -559,5 +554,42 @@ class LevelingController
             return [$thirdStatus, $childThirdStatus];
         }
         return $thirdStatus;
+    }
+
+    /**
+     * 检查order_notices 表订单状态，一样的话不走处理，不一样再生成一条报警
+     */
+    public function checkOrderNotice($order)
+    {
+        $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+
+        if (! $orderDetail['third_order_no']) {
+            throw new OrderNoticeException('第三方订单号不存在');
+        }
+
+        $options = [
+            'oid' => $orderDetail['third_order_no'],
+        ]; 
+
+        $res = Show91::orderDetail($options);
+        // 91平台订单状态
+        $thirdStatus =  $res['data']['order_status'];
+
+        switch ($thirdStatus) {
+            case 1:
+                if ($order->status != 13) {
+                    $this->addOrderNotice($order, true);
+                }
+                return true;
+            break;
+            case 2:
+                if ($order->status != 14) {
+                    $this->addOrderNotice($order, true); 
+                }
+                return true;
+            break;
+            default:
+                return true;
+        }
     }
 }

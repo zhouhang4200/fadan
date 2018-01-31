@@ -658,3 +658,18 @@ if (!function_exists('generateUuid')) {
         return $prefix . $uuid;
     }
 }
+
+if (!function_exists('subOperate')) {
+    /**
+     * 生成一个 UUID
+     * @param string $prefix
+     * @return string
+     */
+    function subOperate($operate)
+    {
+        if (substr($operate, -1) == '@') {
+            return substr($operate, 0, -1);
+        } 
+        return $operate;
+    }
+}

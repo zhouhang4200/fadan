@@ -68,7 +68,15 @@
                                     @endif
                                     </td>
                                     <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
-                                    <td>{{ $paginateOrderNotice->operate ?: '--' }}</td>
+                                    @if(substr($paginateOrderNotice->operate, -1) == '@')
+                                    <td style="color:green;">
+                                        {{ subOperate($paginateOrderNotice->operate) ?: '--' }}
+                                    </td>
+                                    @else
+                                    <td style="color:red;">
+                                        {{ $paginateOrderNotice->operate ?: '--' }}
+                                    </td>
+                                    @endif
                                     <td>{{ $paginateOrderNotice->create_order_time }}</td>
                                     <td>{{ $paginateOrderNotice->created_at }}</td>
                                     <td>
