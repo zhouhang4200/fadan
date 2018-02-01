@@ -28,7 +28,7 @@ class StatisticController extends Controller
 			if ($user->parent_id == 0) {
 				$userIds = [$userId];
 			} else {
-				$userIds = $user->children->pluck('id')->merge($userId);
+				$userIds = $user->children()->withTrashed()->pluck('id')->merge($userId);
 			}
 		} else {
 			$userIds = [];
