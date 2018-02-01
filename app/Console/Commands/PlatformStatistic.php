@@ -107,8 +107,7 @@ class PlatformStatistic extends Command
                     FROM orders a LEFT JOIN user_amount_flows b ON a.no = b.trade_no AND b.user_id = a.creator_user_id
                 GROUP BY trade_no) nn
                 ON mm.no = nn.no
-                /*WHERE mm.date >= '$yestodayDate' AND mm.date <= '$todayDate' AND mm.service_id = 4*/
-                WHERE mm.date > '$yestodayDate' AND mm.date <= '$todayDate' AND mm.service_id = 4
+                WHERE mm.date >= '$yestodayDate' AND mm.date <= '$todayDate' AND mm.service_id = 4
                 GROUP BY mm.creator_user_id, mm.third, mm.game_id 
             ");
 
