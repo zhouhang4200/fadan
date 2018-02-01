@@ -115,11 +115,35 @@
                                     <td>{{ $paginatePlatformStatistic->wang_wang_order_avg }}</td>
                                     <td>{{ $paginatePlatformStatistic->receive_order_count }}</td>
                                     <td>{{ $paginatePlatformStatistic->complete_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->complete_order_rate ? bcmul($paginatePlatformStatistic->complete_order_rate, 100) : 0 }}%</td>
+                                    <td>
+                                    @if($paginatePlatformStatistic->complete_order_rate == 0)
+                                    0%
+                                    @elseif($paginatePlatformStatistic->complete_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $paginatePlatformStatistic->complete_order_rate ? bcmul($paginatePlatformStatistic->complete_order_rate, 100) : 0 }}%
+                                    @endif
+                                    </td>
                                     <td>{{ $paginatePlatformStatistic->revoke_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_order_rate ? bcmul($paginatePlatformStatistic->revoke_order_rate, 100) : 0 }}%</td>
+                                    <td>
+                                    @if($paginatePlatformStatistic->revoke_order_rate == 0)
+                                    0%
+                                    @elseif($paginatePlatformStatistic->revoke_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $paginatePlatformStatistic->revoke_order_rate ? bcmul($paginatePlatformStatistic->revoke_order_rate, 100) : 0 }}%
+                                    @endif
+                                    </td>
                                     <td>{{ $paginatePlatformStatistic->arbitrate_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_rate ? bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100) : 0 }}%</td>
+                                    <td>
+                                    @if($paginatePlatformStatistic->arbitrate_order_rate == 0)
+                                    0%
+                                    @elseif($paginatePlatformStatistic->arbitrate_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $paginatePlatformStatistic->arbitrate_order_rate ? bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100) : 0 }}%
+                                    @endif
+                                    </td>
                                     <td>{{ $paginatePlatformStatistic->done_order_use_time_avg < 60 ? $paginatePlatformStatistic->done_order_use_time_avg.'秒' : sec2Time($paginatePlatformStatistic->done_order_use_time_avg) }}</td>
                                     <td>{{ $paginatePlatformStatistic->done_order_security_deposit_avg }}</td>
                                     <td>{{ $paginatePlatformStatistic->done_order_efficiency_deposit_avg }}</td>
