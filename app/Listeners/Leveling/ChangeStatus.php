@@ -44,7 +44,7 @@ class ChangeStatus
             case 1: // 91平台
                 call_user_func_array([Show91::class, $name], [$order, $bool]);
             break;
-            case 2:
+            case 2: // 代练妈妈
                 return true;
             break;
             case 3:

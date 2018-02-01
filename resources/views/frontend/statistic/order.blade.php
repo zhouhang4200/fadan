@@ -65,7 +65,7 @@
                         @elseif($data->complete_order_rate == 1)
                         100%
                         @else
-                        {{ $data->complete_order_rate ? bcmul($data->complete_order_rate, 100).'%' : '--' }}
+                        {{ $data->complete_order_rate ? round(bcmul($data->complete_order_rate, 100), 2).'%' : '--' }}
                         @endif
                         </td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>

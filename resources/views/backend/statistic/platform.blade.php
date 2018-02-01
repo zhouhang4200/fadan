@@ -121,7 +121,7 @@
                                     @elseif($paginatePlatformStatistic->complete_order_rate == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->complete_order_rate ? bcmul($paginatePlatformStatistic->complete_order_rate, 100) : 0 }}%
+                                    {{ $paginatePlatformStatistic->complete_order_rate ? round(bcmul($paginatePlatformStatistic->complete_order_rate, 100), 2) : 0 }}%
                                     @endif
                                     </td>
                                     <td>{{ $paginatePlatformStatistic->revoke_order_count }}</td>
@@ -131,7 +131,7 @@
                                     @elseif($paginatePlatformStatistic->revoke_order_rate == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->revoke_order_rate ? bcmul($paginatePlatformStatistic->revoke_order_rate, 100) : 0 }}%
+                                    {{ $paginatePlatformStatistic->revoke_order_rate ? round(bcmul($paginatePlatformStatistic->revoke_order_rate, 100), 2) : 0 }}%
                                     @endif
                                     </td>
                                     <td>{{ $paginatePlatformStatistic->arbitrate_order_count }}</td>
@@ -141,7 +141,7 @@
                                     @elseif($paginatePlatformStatistic->arbitrate_order_rate == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->arbitrate_order_rate ? bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100) : 0 }}%
+                                    {{ $paginatePlatformStatistic->arbitrate_order_rate ? round(bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100), 2) : 0 }}%
                                     @endif
                                     </td>
                                     <td>{{ $paginatePlatformStatistic->done_order_use_time_avg < 60 ? $paginatePlatformStatistic->done_order_use_time_avg.'秒' : sec2Time($paginatePlatformStatistic->done_order_use_time_avg) }}</td>

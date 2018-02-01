@@ -12,26 +12,24 @@ use App\Models\UserOrderMoney;
 use App\Models\UserOrderDetail;
 use App\Http\Controllers\Controller;
 
+/**
+ * 统计每天各业务的订单
+ */
 class DataController extends Controller
 {
     public function index(Request $request)
     {
     	try {
 	    	$startDate = $request->startDate;
-
 	    	$endDate = $request->endDate;
-
 	    	$masterUser = Auth::user()->getPrimaryUserId();
 
 	    	if (($startDate && ! $endDate) || (! $startDate && $endDate)) {
-
 	    		return back()->with('timeError', '请选择开始日期和结束日期！');
 	    	}
 
 	    	if ($startDate && $endDate) {
-
 	    		$start = $startDate . ' 00:00:00';
-
 	    		$end = $endDate . ' 23:59:59';
 
 	    		// 接单+发单，所有渠道
@@ -126,9 +124,7 @@ class DataController extends Controller
 			    		->select(DB::raw('sum(total) as total, sum(waite_user_receive) as waite_user_receive, sum(distributing) as distributing, sum(received) as received, sum(sended) as sended, sum(failed) as failed, sum(after_saling) as after_saling, sum(after_saled) as after_saled, sum(successed) as successed, sum(canceled) as canceled, sum(waite_pay) as waite_pay, source'))
 			    		->get();
     		} else {
-
 	    		$start = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-
 	    		$end = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
 
 	    		// 接单+发单，所有渠道
@@ -235,7 +231,6 @@ class DataController extends Controller
     public function show()
     {
     	$startDate = $request->startDate;
-
     	$endDate = $request->endDate;
 
     	$masterUser = Auth::user()->getPrimaryUserId();
@@ -248,7 +243,6 @@ class DataController extends Controller
     	if ($startDate && $endDate) {
 
     		$start = $startDate . ' 00:00:00';
-
     		$end = $endDate . ' 23:59:59';
 
 	    	$alls = Order::where(function ($query) use ($masterUser) {
@@ -310,7 +304,6 @@ class DataController extends Controller
 
     	} else {
     		$start = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-
     		$end = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
 
     		$alls = Order::where(function ($query) use ($masterUser) {
@@ -376,32 +369,23 @@ class DataController extends Controller
     public function money(Request $request)
     {
     	$startDate = $request->startDate;
-
     	$endDate = $request->endDate;
 
     	$masterUser = Auth::user()->getPrimaryUserId();
 
     	if (($startDate && ! $endDate) || (! $startDate && $endDate)) {
-
     		return back()->with('timeError', '请选择开始日期和结束日期！');
     	}
 
     	if ($startDate && $endDate) {
-
     		$start = $startDate . ' 00:00:00';
-
     		$end = $endDate . ' 23:59:59';
 
     		$datas = UserOrderDetail::where('user_id', $masterUser)->whereBetween('time', [$start, $end])->get();
 
     	} else {
     		$start = Carbon::now()->subDays(1)->startOfDay()->toDateTimeString();
-
     		$end = Carbon::now()->subDays(1)->endOfDay()->toDateTimeString();
-
-    		// $start = Carbon::now()->startOfDay()->toDateTimeString();
-
-    		// $end = Carbon::now()->endOfDay()->toDateTimeString();
 
     		$statusMoney = Order::where(function ($query) use ($masterUser) {
 					$query->where('creator_primary_user_id', $masterUser)
@@ -426,7 +410,6 @@ class DataController extends Controller
     			->groupBy(['source'])
 				->select(DB::raw('sum(case when status = 1 then amount else 0 end) as waite, sum(case when status = 2 then amount else 0 end) as fenpei, sum(case when status = 3 then amount else 0 end) as jiedan, sum(case when status = 4 then amount else 0 end) as fahuo, sum(case when status = 5 then amount else 0 end) as shibai, sum(case when status = 6 then amount else 0 end) as shouhou, sum(case when status = 7 then amount else 0 end) as shouhouwancheng, sum(case when status = 8 then amount else 0 end) as dingdanwancheng, sum(case when status = 10 then amount else 0 end) as quxiao, sum(case when status = 11 then amount else 0 end) as weifukuan'))
 				->get();
-
 			// 接单
 			$receiveMoney = Order::where('gainer_primary_user_id', $masterUser)
     			->whereBetween('created_at', [$start, $end])
@@ -435,7 +418,6 @@ class DataController extends Controller
 				->get();
 			dd($statusMoney);
     	}
-
     	return view('frontend.data.show', compact('datas', 'startDate', 'endDate'));
     }
 }

@@ -29,9 +29,9 @@ class StaffManagementController extends Controller
 
         //状态是2时表示删除不显示
     	$users = User::staffManagementFilter($filters)
-        ->withTrashed()
-        ->where('status', '!=', 2)
-        ->paginate(config('frontend.page'));
+            ->withTrashed()
+            ->where('status', '!=', 2)
+            ->paginate(config('frontend.page'));
 
     	return view('frontend.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'groups', 'children'));
     }
@@ -43,7 +43,7 @@ class StaffManagementController extends Controller
      */
     public function edit($id)
     {
-    	$roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
+        $roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
     	$user = User::find($id);
 
     	return view('frontend.user.staff-management.edit', compact('roles', 'user'));
@@ -175,7 +175,6 @@ class StaffManagementController extends Controller
                 } 
                 $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
             }
-
     	} catch (Exception $e) {
     		DB::rollBack();
     		return back()->withInput()->with('fail', '添加失败');
