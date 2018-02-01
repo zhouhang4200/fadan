@@ -112,6 +112,7 @@ class StatisticController extends Controller
 					sum(poundage) as poundage,
 					sum(profit) as profit
 				'))
+                ->latest('date')
 				->groupBy('date');
 
 		$totalData = OrderStatistic::whereIn('user_id', $userIds)
