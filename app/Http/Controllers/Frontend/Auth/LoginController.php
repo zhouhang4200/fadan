@@ -111,15 +111,11 @@ class LoginController extends Controller
         User::where('id', Auth::user()->id)->update(['online' => 1]);
 
         $user = Auth::user();
-
         $redis = RedisConnect::session();
-
         $sessionId = $redis->get(config('redis.user')['loginSession'] . $user->id);
 
         if ($sessionId) {
-
             $redis->del($sessionId);
-
             $redis->del($redis->get(config('redis.user')['loginSession'] . $user->id));
         }
         $redis->set(config('redis.user')['loginSession'] . $user->id, session()->getId());
@@ -138,7 +134,6 @@ class LoginController extends Controller
         User::where('id', Auth::user()->id)->update(['online' => 0]);
 
         $this->guard()->logout();
-
         $request->session()->invalidate();
 
         return redirect('/login');

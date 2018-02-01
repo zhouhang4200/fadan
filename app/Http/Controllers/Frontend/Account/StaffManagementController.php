@@ -12,6 +12,11 @@ use App\Http\Controllers\Controller;
 
 class StaffManagementController extends Controller
 {
+    /**
+     * 岗位管理列表
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function index(Request $request)
     {
     	$name = $request->name;
@@ -22,11 +27,20 @@ class StaffManagementController extends Controller
     	$children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
     	$filters = compact('name', 'userName', 'station');
 
-    	$users = User::staffManagementFilter($filters)->withTrashed()->paginate(config('frontend.page'));
+        //状态是2时表示删除不显示
+    	$users = User::staffManagementFilter($filters)
+        ->withTrashed()
+        ->where('status', '!=', 2)
+        ->paginate(config('frontend.page'));
 
     	return view('frontend.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'groups', 'children'));
     }
 
+    /**
+     * 岗位编辑
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function edit($id)
     {
     	$roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
@@ -35,6 +49,12 @@ class StaffManagementController extends Controller
     	return view('frontend.user.staff-management.edit', compact('roles', 'user'));
     }
 
+    /**
+     * 员工岗位修改
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function update(Request $request, $id)
     {
     	DB::beginTransaction();
@@ -45,7 +65,7 @@ class StaffManagementController extends Controller
     	if ($request->password) {
     		$data['password'] = bcrypt($request->password);
     	}
-
+        // $request->role 是一个数组
     	if ($request->role) {
     		$data['role'] = $request->role;
     		$user->rbacgroups()->sync($request->role);
@@ -68,6 +88,11 @@ class StaffManagementController extends Controller
     	return redirect(route('staff-management.index'))->with('succ', '修改成功!');
     }
 
+    /**
+     * 禁止员工登录
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function forbidden(Request $request)
     {
     	DB::beginTransaction();
@@ -92,10 +117,16 @@ class StaffManagementController extends Controller
     	}
     }
 
+    /**
+     * 岗位删除
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function delete(Request $request)
     {
     	DB::beginTransaction();
     	try {
+            User::where('id', $request->id)->update(['status' => 2]);
     		User::destroy($request->id);
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -106,6 +137,10 @@ class StaffManagementController extends Controller
     	return response()->ajax(1, '删除成功');
     }
 
+    /**
+     * 岗位添加
+     * @return [type] [description]
+     */
     public function create()
     {
     	$roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
@@ -113,6 +148,11 @@ class StaffManagementController extends Controller
     	return view('frontend.user.staff-management.create', compact('roles'));
     }
 
+    /**
+     * 岗位保存
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function store(Request $request)
     {
     	DB::beginTransaction();
@@ -133,7 +173,6 @@ class StaffManagementController extends Controller
                 foreach ($rbacGroups as $k => $rbacGroup) {
                     $permissions[$k] = $rbacGroup->permissions()->pluck('id');
                 } 
-
                 $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
             }
 

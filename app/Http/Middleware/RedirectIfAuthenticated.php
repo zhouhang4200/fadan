@@ -25,20 +25,16 @@ class RedirectIfAuthenticated
     {
 
         if ($guard == 'web' && $request->isMethod('post') && $this->checkLoginError($request)) {
-
             return redirect('/login')->withInput()->with('loginError', '异地登录!');
         }
 
         if (Auth::guard('web')->check()) {
-
             return redirect('/');
         }
 
         if (Auth::guard('admin')->check()) {
-
             return redirect('/admin');
         }
-
         return $next($request);
     }
 
@@ -64,7 +60,6 @@ class RedirectIfAuthenticated
                         ->value('city_id');
             
             $loginDetail = loginDetail($request->ip());
-
             $loginCity = $loginDetail['city_id'] ?: 0;
 
             if ($loginCity != $mostLoginCityId) {  
