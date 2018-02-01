@@ -32,10 +32,10 @@ class StatisticController extends Controller
 
         if (Auth::user()->parent_id == 0) {
             $parent = Auth::user();
-            $userIds = Auth::user()->children->pluck('id')->merge(Auth::id());
+            $userIds = Auth::user()->children()->withTrashed()->pluck('id')->merge(Auth::id());
         } else {
             $parent = Auth::user()->parent;
-            $userIds = Auth::user()->parent->children->pluck('id')->merge(Auth::user()->parent->id);
+            $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
         }
 
     	$query = EmployeeStatistic::whereIn('user_id', $userIds)
@@ -90,9 +90,9 @@ class StatisticController extends Controller
     	$filters = compact('startDate', 'endDate');
 
         if (Auth::user()->parent_id == 0) {
-            $userIds = Auth::user()->children->pluck('id')->merge(Auth::id());
+            $userIds = Auth::user()->children()->withTrashed()->pluck('id')->merge(Auth::id());
         } else {
-            $userIds = Auth::user()->parent->children->pluck('id')->merge(Auth::user()->parent->id);
+            $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
         }
 
     	$query = OrderStatistic::whereIn('user_id', $userIds)
@@ -144,24 +144,6 @@ class StatisticController extends Controller
         }
 
     	return view('frontend.statistic.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
-    }
-
-/**
- * 价格统计
- * @return [type] [description]
- */
-    public function price()
-    {
-
-    }
-
-    /**
-     * 短信统计
-     * @return [type] [description]
-     */
-    public function message()
-    {
-
     }
 
     /**
