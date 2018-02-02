@@ -90,10 +90,49 @@ class StatisticController extends Controller
         ->latest('date')
 		->paginate(config('backend.page'));
 
+        // 总计
+        $totalPlatformStatistics = PlatformStatistic::filter($filters)
+            ->select(DB::raw("
+                SUM(order_count) AS order_count,
+                IFNULL(FLOOR(SUM(client_wang_wang_count)/SUM(distinct_client_wang_wang_count)), 0) AS wang_wang_order_avg,
+                SUM(receive_order_count) AS receive_order_count,
+                SUM(complete_order_count) AS complete_order_count,
+                IFNULL(ROUND(SUM(complete_order_count)/SUM(receive_order_count), 4), 0) AS complete_order_rate,
+                SUM(revoke_order_count) AS revoke_order_count,
+                IFNULL(ROUND(SUM(revoke_order_count)/SUM(receive_order_count), 4), 0) AS revoke_order_rate,
+                SUM(arbitrate_order_count) AS arbitrate_order_count,
+                IFNULL(ROUND(SUM(arbitrate_order_count)/SUM(receive_order_count), 4), 0) AS arbitrate_order_rate,
+                IFNULL(FLOOR(SUM(done_order_use_time)/SUM(done_order_count)), 0) AS done_order_use_time_avg,
+                IFNULL(ROUND(SUM(done_order_security_deposit)/SUM(done_order_count), 2), 0) AS done_order_security_deposit_avg,
+                IFNULL(ROUND(SUM(done_order_efficiency_deposit)/SUM(done_order_count), 2), 0) AS done_order_efficiency_deposit_avg,
+                IFNULL(ROUND(SUM(done_order_original_amount)/SUM(done_order_count), 2), 0) AS done_order_original_amount_avg,
+                SUM(done_order_original_amount) as done_order_original_amount,
+                IFNULL(ROUND(SUM(done_order_amount)/SUM(done_order_count), 2), 0) AS done_order_amount_avg,
+                SUM(done_order_amount) as done_order_amount,
+                IFNULL(ROUND(SUM(complete_order_amount)/SUM(complete_order_count), 2), 0) AS complete_order_amount_avg,
+                SUM(complete_order_amount) as complete_order_amount,
+                IFNULL(ROUND(SUM(revoke_payment)/SUM(revoke_order_count), 2), 0) AS revoke_payment_avg,
+                SUM(revoke_payment) as revoke_payment,
+                IFNULL(ROUND(SUM(revoke_income)/SUM(revoke_order_count), 2), 0) AS revoke_income_avg,
+                SUM(revoke_income) as revoke_income,
+                IFNULL(ROUND(SUM(arbitrate_payment)/SUM(arbitrate_order_count), 2), 0) AS arbitrate_payment_avg,
+                SUM(arbitrate_payment) as arbitrate_payment,
+                IFNULL(ROUND(SUM(arbitrate_income)/SUM(arbitrate_order_count), 2), 0) AS arbitrate_income_avg,
+                SUM(arbitrate_income) as arbitrate_income,
+                IFNULL(ROUND(SUM(poundage)/(SUM(arbitrate_order_count)+SUM(revoke_order_count)), 2), 0) AS poundage_avg,
+                SUM(poundage) as poundage,
+                IFNULL(ROUND(SUM(user_profit)/SUM(done_order_count), 2), 0) AS user_profit_avg,
+                SUM(user_profit) as user_profit,
+                IFNULL(ROUND(SUM(platform_profit)/SUM(done_order_count), 2), 0) AS platform_profit_avg,
+                SUM(platform_profit) as platform_profit
+            "))
+            ->first();
+
 		if ($request->export && $paginatePlatformStatistics->count() > 0) {
 			static::export($paginatePlatformStatistics->toArray()['data']);
 		}
-    	return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics'));
+    	return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 
+            'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics', 'totalPlatformStatistics'));
     }
 
     /**
