@@ -27,8 +27,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\EmployeeStatistic', // 代练平台员工统计
         'App\Console\Commands\OrderStatistic', // 代练平台订单统计
         'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
-        'App\Console\Commands\writeLOL', // 写入英雄联盟的区服信息
         'App\Console\Commands\PlatformStatistic', // 平台订单统计
+        'App\Console\Commands\AddNoticeOrderFromRedis',
     ];
 
     /**
@@ -51,6 +51,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('order:statistic')->daily();
         $schedule->command('change:status')->everyMinute();
         $schedule->command('platform:statistic')->daily();
+        $schedule->command('order:notice')->everyMinute();
     }
 
     /**

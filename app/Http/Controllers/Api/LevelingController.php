@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use DB;
+use Redis;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -68,7 +69,9 @@ class LevelingController
     public function success($message, $order)
     {
         if ($order) {
-            $this->checkOrderNotice($order);
+            $action = \Route::currentRouteAction();
+            $this->checkAndAddOrderToRedis($order, '1-'.$action);
+            // $this->checkOrderNotice($order);
         }
 
         return json_encode([
@@ -86,7 +89,9 @@ class LevelingController
     public function fail($message, $order)
     {
         if ($order) {
-            $this->addOrderNotice($order);      
+            // $this->addOrderNotice($order);  
+            $action = \Route::currentRouteAction();
+            $this->checkAndAddOrderToRedis($order, '0-'.$action);
         }
 
         return json_encode([
@@ -532,7 +537,7 @@ class LevelingController
         $options = [
             'oid' => $orderNo,
         ]; 
-
+        sleep(3);
         $res = Show91::orderDetail($options);
         // 91平台订单状态
         $thirdStatus =  $res['data']['order_status'];
@@ -588,5 +593,26 @@ class LevelingController
             default:
                 return true;
         }
+    }
+
+    /**
+     * 操作成功的时候，检查订单报警有没有此单，有的话再次写入redis
+     * @param  [type] $order [description]
+     * @return [type]        [description]
+     */
+    public function checkAndAddOrderToRedis($order, $status)
+    {
+        if ($order) {
+            if ($status == 1) {
+                $orderNotice = OrderNotice::where('order_no', $order->no)->first();
+
+                if ($orderNotice) {
+                    Redis::hSet('notice_orders', $order->no, $status);
+                }      
+            } else {
+                Redis::hSet('notice_orders', $order->no, $status);
+            }
+        }
+        return true;
     }
 }
