@@ -55,15 +55,15 @@ class PlatformStatistic extends Model
             $query->where('game_id', $filters['gameId']);
         }
 
-        if (isset($filters['startDate']) && empty($filters['endDate'])) {
+        if ($filters['startDate'] && empty($filters['endDate'])) {
             $query->where('date', '>=', $filters['startDate']);
         }
 
-        if (isset($filters['endDate']) && empty($filters['startDate'])) {
+        if ($filters['endDate'] && empty($filters['startDate'])) {
             $query->where('date', '<=', $filters['endDate']);
         }
 
-        if (isset($filters['endDate']) && $filters['startDate']) {
+        if ($filters['endDate'] && $filters['startDate']) {
             $query->whereBetween('date', [$filters['startDate'], $filters['endDate']]);
         }
         return $query;

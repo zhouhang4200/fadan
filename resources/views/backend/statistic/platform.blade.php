@@ -170,6 +170,65 @@
                                 </tr>
                             @empty
                             @endforelse
+                                <tr style="color:red">
+                                    <td>总计</td>
+                                    <td>{{ $totalPlatformStatistics->order_count }}</td>
+                                    <td>{{ $totalPlatformStatistics->wang_wang_order_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->receive_order_count }}</td>
+                                    <td>{{ $totalPlatformStatistics->complete_order_count }}</td>
+                                    <td>
+                                    @if($totalPlatformStatistics->complete_order_rate == 0)
+                                    0%
+                                    @elseif($totalPlatformStatistics->complete_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $totalPlatformStatistics->complete_order_rate ? round(bcmul($totalPlatformStatistics->complete_order_rate, 100), 2) : 0 }}%
+                                    @endif
+                                    </td>
+                                    <td>{{ $totalPlatformStatistics->revoke_order_count }}</td>
+                                    <td>
+                                    @if($totalPlatformStatistics->revoke_order_rate == 0)
+                                    0%
+                                    @elseif($totalPlatformStatistics->revoke_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $totalPlatformStatistics->revoke_order_rate ? round(bcmul($totalPlatformStatistics->revoke_order_rate, 100), 2) : 0 }}%
+                                    @endif
+                                    </td>
+                                    <td>{{ $totalPlatformStatistics->arbitrate_order_count }}</td>
+                                    <td>
+                                    @if($totalPlatformStatistics->arbitrate_order_rate == 0)
+                                    0%
+                                    @elseif($totalPlatformStatistics->arbitrate_order_rate == 1)
+                                    100%
+                                    @else
+                                    {{ $totalPlatformStatistics->arbitrate_order_rate ? round(bcmul($totalPlatformStatistics->arbitrate_order_rate, 100), 2) : 0 }}%
+                                    @endif
+                                    </td>
+                                    <td>{{ $totalPlatformStatistics->done_order_use_time_avg < 60 ? $totalPlatformStatistics->done_order_use_time_avg.'秒' : sec2Time($totalPlatformStatistics->done_order_use_time_avg) }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_security_deposit_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_efficiency_deposit_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_original_amount_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_original_amount }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_amount_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->done_order_amount }}</td>
+                                    <td>{{ $totalPlatformStatistics->complete_order_amount_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->complete_order_amount }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoke_payment_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoke_payment }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoke_income_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoke_income }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrate_payment_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrate_payment }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrate_income_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrate_income }}</td>
+                                    <td>{{ $totalPlatformStatistics->poundage_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->poundage }}</td>
+                                    <td>{{ $totalPlatformStatistics->user_profit_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->user_profit }}</td>
+                                    <td>{{ $totalPlatformStatistics->platform_profit_avg }}</td>
+                                    <td>{{ $totalPlatformStatistics->platform_profit }}</td>
+                                </tr>
                             </tbody>
                         </table>
                         </form>
