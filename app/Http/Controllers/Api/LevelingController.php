@@ -536,17 +536,14 @@ class LevelingController
         $res = Show91::orderDetail($options);
         // 91平台订单状态
         $thirdStatus =  $res['data']['order_status'];
+
         // 如果状态为代练中，需要详细区分到底是哪个状态
         // 此处有可能同时存在，会有分不清情况出现
-        if ($res['data']['inAppeal'] && ! $res['data']['inSelfCancel']) {
+        if ($res['data']['inAppeal'] && empty($res['data']['inSelfCancel'])) {
             $childThirdStatus = 14; // 申诉中
-        }
-
-        if ($res['data']['inSelfCancel'] && ! $res['data']['inAppeal']) {
+        } elseif ($res['data']['inSelfCancel'] && empty($res['data']['inAppeal'])) {
             $childThirdStatus = 13; // 协商中
-        }
-
-        if ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
+        } elseif ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
             $childThirdStatus = 15;
         }
 

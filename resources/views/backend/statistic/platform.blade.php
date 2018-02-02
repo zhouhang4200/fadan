@@ -7,6 +7,11 @@
         .layui-form-label {
             width:110px;
         }
+        .layui-table thead tr th{
+              height: 50px;
+              text-align: center;
+        }
+
     </style>
 @endsection
 
@@ -68,8 +73,8 @@
                     </form>
                 </header>
                 <div class="main-box-body clearfix">
-                    <form class="layui-form" action="">
-                    <table class="layui-table" lay-size="sm">
+                    <form class="layui-form" action="" style="overflow: auto;">
+                    <table class="layui-table" lay-size="sm" style="width: 3050px;">
                             <thead>
                             <tr>
                                 <th>发布时间</th>
@@ -257,7 +262,7 @@
 <script>
     //Demo
     layui.use(['form', 'laytpl', 'element', 'laydate'], function(){
-        var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+        var form = layui.form, layer = layui.layer, laydate = layui.laydate, table = layui.table;
 
         //日期
         laydate.render({
@@ -266,6 +271,7 @@
         laydate.render({
             elem: '#endDate'
         });
+
     });
 </script>
 @endsection
