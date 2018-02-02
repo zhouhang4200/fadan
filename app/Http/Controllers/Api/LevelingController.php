@@ -600,17 +600,18 @@ class LevelingController
      * @param  [type] $order [description]
      * @return [type]        [description]
      */
-    public function checkAndAddOrderToRedis($order, $status)
+    public function checkAndAddOrderToRedis($order, $statusAndAction)
     {
         if ($order) {
+                $status = explode('-', $statusAndAction)[0];
             if ($status == 1) {
                 $orderNotice = OrderNotice::where('order_no', $order->no)->first();
 
                 if ($orderNotice) {
-                    Redis::hSet('notice_orders', $order->no, $status);
+                    Redis::hSet('notice_orders', $order->no, $statusAndAction);
                 }      
             } else {
-                Redis::hSet('notice_orders', $order->no, $status);
+                Redis::hSet('notice_orders', $order->no, $statusAndAction);
             }
         }
         return true;
