@@ -74,7 +74,7 @@ class GoodsController extends Controller
             Goods::create($goodsData);
             return response()->ajax('1', '添加成功');
         } catch (Exception $exception) {
-            return response()->ajax(0, '添加失败');
+            return response()->ajax(0, '添加失败' . $exception->getMessage());
         }
     }
 
