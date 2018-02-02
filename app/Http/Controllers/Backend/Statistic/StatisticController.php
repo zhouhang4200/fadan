@@ -44,10 +44,10 @@ class StatisticController extends Controller
     	");
 
     	$games = DB::select("
-			SELECT a.id, a.name 
-			FROM games a 
-			LEFT JOIN third_games b
-			ON a.id = b.game_id
+			SELECT b.id, b.name 
+			FROM third_games a 
+			LEFT JOIN games b
+			ON a.game_id = b.id
     	");
 
     	$paginatePlatformStatistics = PlatformStatistic::filter($filters)
