@@ -32,6 +32,7 @@ class Test extends Command
      */
     public function handle()
     {
+        echo str_random(32);die;
         for ($i = 1; $i <=100; $i++)
             app('weight')->run([8072,8073], $i);
     }

@@ -25,12 +25,7 @@ class GoodsController extends Controller
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(
-        Request $request,
-        UserGoodsRepository $userGoodsRepository,
-        ServiceRepository $serviceRepository,
-        GameRepository $gameRepository
-    )
+    public function index(Request $request, UserGoodsRepository $userGoodsRepository, ServiceRepository $serviceRepository, GameRepository $gameRepository )
     {
         $serviceId = $request->service_id;
         $gameId = $request->game_id;
@@ -49,10 +44,7 @@ class GoodsController extends Controller
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(
-        ServiceRepository $serviceRepository,
-        GameRepository $gameRepository
-    )
+    public function create(  ServiceRepository $serviceRepository, GameRepository $gameRepository )
     {
         $services = $serviceRepository->available();
         $games = $gameRepository->available();
@@ -78,6 +70,12 @@ class GoodsController extends Controller
         }
     }
 
+    /**
+     * @param ServiceRepository $serviceRepository
+     * @param GameRepository $gameRepository
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(ServiceRepository $serviceRepository, GameRepository $gameRepository, $id)
     {
         $goods = Goods::find($id);

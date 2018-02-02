@@ -297,7 +297,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 商品
         Route::prefix('goods')->group(function () {
             // 商品列表
-            Route::get('/', 'GoodsController@index')->name('frontend.steam.goods.index');
+            Route::get('/', 'GoodsController@index')->name('frontend.steam.goods.index')->middleware('permission:frontend.steam.goods.index');;
             // 添加视图
             Route::get('create', 'GoodsController@create')->name('frontend.steam.goods.create');
             // 审核商品
@@ -376,7 +376,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
 
     });
-
 
 });
 
