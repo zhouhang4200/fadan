@@ -19,13 +19,19 @@
         {{--</ul>--}}
     {{--</div>--}}
     <form class="layui-form layui-form-pane" action="">
-        <div class="layui-inline">
-            <label class="layui-form-label">交易QQ</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">交易qq</label>
             <div class="layui-input-inline">
                 <input type="text" name="qq" autocomplete="off" class="layui-input" value="{{ $skinTradeQQ }}" placeholder="请输入QQ号"  lay-verify="required|number">
             </div>
-            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">交易wx</label>
+            <div class="layui-input-inline">
+                <input type="text" name="wx" autocomplete="off" class="layui-input" value="{{ $skinTradeWX }}" placeholder="请输入WX号"  lay-verify="required">
+            </div>
+        </div>
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
     </form>
 @endsection
 
@@ -35,7 +41,7 @@
             var form = layui.form ,layer = layui.layer ,element = layui.element;
 
             form.on('submit(save)', function () {
-                $.post('{{ route('frontend.setting.skin.set') }}', {qq:$('input[name=qq]').val()}, function (result) {
+                $.post('{{ route('frontend.setting.skin.set') }}', {qq:$('input[name=qq]').val(), wx:$('input[name=wx]').val()}, function (result) {
                     layer.msg(result.message);
                 });
                return false;

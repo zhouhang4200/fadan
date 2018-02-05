@@ -90,6 +90,22 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                     \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
                 }
             }
+
+            if ($this->order->game_id == 21 && $this->order->creator_primary_user_id == 8311) {
+                // 发送短信
+                try {
+                    $userSet = User::where(['id' => $this->order->gainer_primary_user_id])->first();
+                    $userSetArr = $userSet->getUserSetting();
+
+                    $content = '皮肤订单请添加客服QQ: ' . $userSetArr['skin_trade_qq'] . ' 微信: ' . $userSetArr['skin_trade_wx']
+                        . ' 添加后按照客服指引进行操作完成交易，不加客服将无法获得皮肤。';
+
+                    sendSms($this->order->creator_primary_user_id,  $this->order->no, $this->order->detail->client_qq, $content, '皮肤交易短信费');
+
+                } catch(CustomException $exception) {
+                    \Log::alert($exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);
+                }
+            }
         }
     }
 }

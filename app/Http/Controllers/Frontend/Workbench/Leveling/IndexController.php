@@ -873,28 +873,30 @@ class IndexController extends Controller
             $orderArr = array_merge($orderInfo->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo->toArray());
 
             if (isset($orderArr['client_phone']) && $orderArr['client_phone']) {
-                // 扣款
-                try {
-                    Asset::handle(new Consume(0.1, 4, $orderInfo->no, '短信费', Auth::user()->getPrimaryUserId()));
-                } catch (CustomException $exception) {
-                    return response()->ajax(0, $exception->getMessage());
-                }
-
-                $sendResult = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
-
-                if ((bool)strpos($sendResult, "mterrcode=000")) {
-                    // 发送成功写发送记录
-                    SmsSendRecord::create([
-                        'primary_user_id' => Auth::user()->getPrimaryUserId(),
-                        'user_id' => Auth::user()->id,
-                        'order_no' => $orderInfo->no,
-                        'client_phone' => $orderArr['client_phone'],
-                        'contents' => $request->contents,
-                        'date' => date('Y-m-d'),
-                    ]);
-
-                    return response()->ajax(1, '发送成功!');
-                }
+                $result = sendSms(Auth::user()->getPrimaryUserId(), $orderInfo->no, $orderArr['client_phone'], $request->contents, '代练短信费');
+//                // 扣款
+//                try {
+//                    Asset::handle(new Consume(0.1, 4, $orderInfo->no, '短信费', Auth::user()->getPrimaryUserId()));
+//                } catch (CustomException $exception) {
+//                    return response()->ajax(0, $exception->getMessage());
+//                }
+//
+//                $sendResult = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
+//
+//                if ((bool)strpos($sendResult, "mterrcode=000")) {
+//                    // 发送成功写发送记录
+//                    SmsSendRecord::create([
+//                        'primary_user_id' => Auth::user()->getPrimaryUserId(),
+//                        'user_id' => Auth::user()->id,
+//                        'order_no' => $orderInfo->no,
+//                        'client_phone' => $orderArr['client_phone'],
+//                        'contents' => $request->contents,
+//                        'date' => date('Y-m-d'),
+//                    ]);
+//
+//                    return response()->ajax(1, '发送成功!');
+//                }
+                return response()->ajax($result['status'], $result['message']);
             } else {
                 return response()->ajax(0, '您没有填写客户手机号');
             }
