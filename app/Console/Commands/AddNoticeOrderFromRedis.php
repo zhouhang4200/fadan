@@ -110,8 +110,8 @@ class AddNoticeOrderFromRedis extends Command
                 $res = Show91::orderDetail($options);
                 // 91平台订单状态
                 $thirdStatus =  $res['data']['order_status'];
-                $thirdConsult = $res['data']['inSelfCancel'] ? 13 : null;
-                $thirdComplain = $res['data']['inAppeal'] ? 14 : null;
+                $thirdConsult = $res['data']['inSelfCancel'] ? 13 : false;
+                $thirdComplain = $res['data']['inAppeal'] ? 14 : false;
 
                 $beforeStatus = $this->getBeforeStatus($orderNo);
 
