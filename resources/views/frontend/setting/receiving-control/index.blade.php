@@ -281,7 +281,7 @@
                     $.post('{{ route('frontend.setting.receiving-control.delete-control-category') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
                         layer.msg(result.message);
                         loadCategoryList('{{ route('frontend.setting.receiving-control.get-control-category') }}'  + '?type=' + type);
-                    }, 'json');
+                    });
                 });
                 return false;
             });

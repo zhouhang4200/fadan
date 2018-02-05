@@ -694,3 +694,32 @@ if (!function_exists('employees')) {
         return '';
     }
 }
+
+
+// 淘宝aes128cbc加密
+if (!function_exists('taobaoAesEncrypt')) {
+    function taobaoAesEncrypt($str)
+    {
+        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $iv = '0102030405060708';
+
+        return base64_encode(openssl_encrypt($str, 'aes-128-cbc', base64_decode($key), true, $iv));
+    }
+}
+
+// 淘宝aes128cbc解密
+if (!function_exists('taobaoAesDecrypt')) {
+    function taobaoAesDecrypt($str, $ifJsonDecode = true)
+    {
+        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $iv = '0102030405060708';
+
+        $result = openssl_decrypt(base64_decode($str), 'aes-128-cbc', base64_decode($key), true, $iv);
+
+        if ($ifJsonDecode) {
+            $result = json_decode($result, true);
+        }
+
+        return $result;
+    }
+}

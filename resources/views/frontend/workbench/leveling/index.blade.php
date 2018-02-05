@@ -247,26 +247,31 @@
             </form>
         </div>
     </div>
-    <div class="send-message" style="display: none; padding: 10px 10px 0 10px">
-        <div class="layui-tab-content">
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div >
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin:0">
-                            <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+
+
+    <div class="send-message" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
+                    <option value="">选择模版</option>
+                    @forelse($smsTemplate as $item)
+                        <option value="{{ $item->contents }}" data-template="">{{ $item->name }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="margin:auto;height:150px !important;"></textarea>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
+                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+            </div>
+        </form>
     </div>
+
 @endsection
 
 <!--START 底部-->
@@ -431,7 +436,7 @@
                 overflow: unset;
             }
             .layui-table-mend {
-                width：0px !important;
+                width：0 !important;
             }
         </style>
     </script>
@@ -593,7 +598,7 @@
                         type: 1,
                         shade: 0.2,
                         title: '发送短信',
-                        area: ['500px', '280px'],
+                        area: ['500px'],
                         content: $('.send-message')
                     });
                     return false
@@ -742,6 +747,10 @@
                 var fields = data.field;
                 var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
                 window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
+            });
+            // 选择短信模板
+            form.on('select(chose-sms-template)', function(data){
+                $('textarea[name=contents]').val(data.value);
             });
 
             var hasData = "{{ session('message') }}";

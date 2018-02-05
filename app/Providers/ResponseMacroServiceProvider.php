@@ -32,5 +32,21 @@ class ResponseMacroServiceProvider extends ServiceProvider
 
             return response()->json($data);
         });
+
+        // 淘宝接收已授权店铺订单 API 响应
+        Response::macro('tb', function ($status = 1, $message = 'success', $content= []) {
+            return response()->json(['status' => $status, 'message' => $message, 'content' => $content], 200, ["Content-type" => "application/json;charset=utf-8"], JSON_UNESCAPED_UNICODE);
+        });
+
+        // 接口响应
+        Response::macro('api', function ($status = 1, $message = 'success', $content= []) {
+            $data = ['status' => $status, 'message' => $message, 'content' => $content, 'time' => time()];
+
+            // 加密
+            $data = ['data' => (new Aes(config('custom.aes.key'), config('custom.aes.iv')))->encrypt(json_encode($data, JSON_UNESCAPED_UNICODE))];
+
+            return response()->json($data);
+        });
+
     }
 }

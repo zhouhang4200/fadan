@@ -23,6 +23,11 @@
 			<div class="arrow"></div>
 		</li>
 
+		<li class="{{  Route::currentRouteName()  == 'frontend.sms.index' ? 'current' : '' }}">
+			<a href="{{ route('frontend.sms.index') }}">短信管理</a>
+			<div class="arrow"></div>
+		</li>
+
 	@can('frontend.setting.tb-auth.store')
 		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.store' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.tb-auth.store') }}">店铺旺旺绑定</a>

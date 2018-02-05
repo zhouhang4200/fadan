@@ -12,6 +12,7 @@ use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
 use App\Models\SmsSendRecord;
+use App\Models\SmsTemplate;
 use App\Models\User;
 use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -64,8 +65,9 @@ class IndexController extends Controller
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
         $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
+        $smsTemplate = SmsTemplate::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->get();
 
-        return view('frontend.workbench.leveling.index', compact('game', 'employee', 'tags'));
+        return view('frontend.workbench.leveling.index', compact('game', 'employee', 'tags', 'smsTemplate'));
     }
 
     /**
@@ -879,13 +881,14 @@ class IndexController extends Controller
                 $sendResult = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
 
                 if ((bool)strpos($sendResult, "mterrcode=000")) {
-                    // 发送成功写发送记录 , Auth::user()->getPrimaryUserId()
+                    // 发送成功写发送记录
                     SmsSendRecord::create([
                         'primary_user_id' => Auth::user()->getPrimaryUserId(),
                         'user_id' => Auth::user()->id,
                         'order_no' => $orderInfo->no,
                         'client_phone' => $orderArr['client_phone'],
-                        'content' => $request->contents,
+                        'contents' => $request->contents,
+                        'date' => date('Y-m-d'),
                     ]);
 
                     return response()->ajax(1, '发送成功!');

@@ -93,6 +93,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('permission:frontend.statistic.order');
         // Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
         // Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
+
+        // 短信
+        Route::prefix('sms')->group(function (){
+            Route::get('/', 'SmsController@index')->name('frontend.statistic.sms');
+            Route::get('show/{date}', 'SmsController@show')->name('frontend.statistic.show');
+        });
     });
 
     // 商品
@@ -109,7 +115,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('update', 'GoodsController@update')->name('frontend.goods.update')->middleware('permission:frontend.goods.update');
         // 删除商品
         Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy')->middleware('permission:frontend.goods.destroy');
-
     });
 
     // 订单
@@ -149,8 +154,17 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 自动抓取订单配置
         Route::prefix('automatically-grab')->group(function (){
             Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.automatically-grab.goods');
+            Route::post('add', 'AutomaticallyGrabController@add')->name('frontend.automatically-grab.add');
+            Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.automatically-grab.delete');
         });
-
+        // 短信管理
+        Route::prefix('sms')->group(function () {
+            Route::get('/', 'SmsController@index')->name('frontend.sms.index');
+            Route::post('show', 'SmsController@show')->name('frontend.sms.show');
+            Route::post('add', 'SmsController@add')->name('frontend.sms.add');
+            Route::post('edit', 'SmsController@edit')->name('frontend.sms.edit');
+            Route::post('delete', 'SmsController@delete')->name('frontend.sms.delete');
+        });
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('permission:frontend.setting.tb-auth.index');
