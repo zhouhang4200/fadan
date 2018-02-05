@@ -741,7 +741,7 @@ if (!function_exists('sendSms')){
     {
         // 扣款
         try {
-            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, Auth::user()->getPrimaryUserId()));
+            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, $sendUserId));
         } catch (CustomException $exception) {
             return ['status' => 0, 'message' => $exception->getMessage()];
         }
@@ -751,8 +751,8 @@ if (!function_exists('sendSms')){
         if ((bool)strpos($sendResult, "mterrcode=000")) {
             // 发送成功写发送记录
             SmsSendRecord::create([
-                'primary_user_id' => Auth::user()->getPrimaryUserId(),
-                'user_id' => Auth::user()->id,
+                'primary_user_id' => $sendUserId,
+                'user_id' => $sendUserId,
                 'order_no' => $orderNo,
                 'client_phone' => $phone,
                 'contents' => $content,

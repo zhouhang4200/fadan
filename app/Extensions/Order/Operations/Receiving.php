@@ -98,7 +98,10 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                     $userSetArr = $userSet->getUserSetting();
 
                     $contact = '';
-                    if (strtolower($this->order->detail->version) == 'qq') {
+
+                    $detail = $this->order->detail->pluck('field_value', 'field_name');
+
+                    if (strtolower($detail['version']) == 'qq') {
                         $contact = 'QQ: ' . $userSetArr['skin_trade_qq'];
                     } else {
                         $contact = '微信: ' . $userSetArr['skin_trade_wx'];
@@ -106,9 +109,11 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 
                     $content = '皮肤订单请添加客服 ' .  $contact  .' 添加后按照客服指引进行操作完成交易，不加客服将无法获得皮肤。';
 
-                    sendSms($this->order->creator_primary_user_id,  $this->order->no, $this->order->detail->client_qq, $content, '皮肤交易短信费');
+                    sendSms($this->order->creator_primary_user_id,  $this->order->no, $detail['client_qq'], $content, '皮肤交易短信费');
 
                 } catch(CustomException $exception) {
+                    myLog('send-message', $exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);
+                } catch(\ErrorException $exception) {
                     myLog('send-message', $exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);
                 }
             }
