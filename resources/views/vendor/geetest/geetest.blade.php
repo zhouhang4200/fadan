@@ -1,4 +1,4 @@
-<script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="/js/jquery-1.11.0.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <div id="geetest-captcha"></div>
 <p id="wait" class="show">正在加载验证码...</p>

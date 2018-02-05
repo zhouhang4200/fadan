@@ -1,7 +1,7 @@
 <script src="/vendor/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script src="/frontend/js/helper.js"></script>
-{{--<script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>--}}
+<script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
 
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
