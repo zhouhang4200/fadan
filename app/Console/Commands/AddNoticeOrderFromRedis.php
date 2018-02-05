@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Services\Show91;
 use App\Models\OrderNotice;
 use App\Models\OrderDetail;
+use App\Models\OrderHistory;
 use Illuminate\Console\Command;
 
 class AddNoticeOrderFromRedis extends Command
@@ -109,19 +110,33 @@ class AddNoticeOrderFromRedis extends Command
                 $res = Show91::orderDetail($options);
                 // 91平台订单状态
                 $thirdStatus =  $res['data']['order_status'];
+                $thirdConsult = $res['data']['inSelfCancel'] ? 13 : null;
+                $thirdComplain = $res['data']['inAppeal'] ? 14 : null;
+
+                $beforeStatus = $this->getBeforeStatus($orderNo);
 
                 switch ($thirdStatus) {
                     case 1:
-                        if ($order->status != 13) {
+                        if (!$thirdComplain && !$thirdConsult && $order->status == 13) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 13 && $order->status == 16) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } else {
                             $this->addOrderNotice($order, $status, $action);
                         }
-                        return true;
                     break;
                     case 2:
-                        if ($order->status != 14) {
-                            $this->addOrderNotice($order, $status, $action); 
+                        if (!$thirdComplain && !$thirdConsult && $order->status == 14) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 14 && $order->status == 16) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
+                            $this->delRedisNoticeOrder($orderNo);
+                        } else {
+                            $this->addOrderNotice($order, $status, $action);
                         }
-                        return true;
                     break;
                     default:
                         return true;
@@ -194,5 +209,26 @@ class AddNoticeOrderFromRedis extends Command
     public function delRedisNoticeOrder($orderNo)
     {
         Redis::hDel('notice_orders', $orderNo);
+    }
+
+    // 我们订单的前一个状态
+    public function getBeforeStatus($orderNo)
+    {
+        $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+        // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        if ($beforeStatus == 16 || $beforeStatus == 18) {
+            $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
+            $arr = [];
+            foreach ($orderHistories as $key => $orderHistory) {
+                $status = unserialize($orderHistory->before);
+
+                if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
+                    $arr[$key] = $status['status'];
+                }
+            }
+            return current($arr);
+        } else {
+            return $beforeStatus;
+        }
     }
 }
