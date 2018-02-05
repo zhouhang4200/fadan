@@ -773,7 +773,7 @@
                     type: 1,
                     shade: 0.2,
                     title: '发送短信',
-                    area: ['500px', '280px'],
+                    area: ['500px'],
                     content: $('.send-message')
                 });
                 return false;
