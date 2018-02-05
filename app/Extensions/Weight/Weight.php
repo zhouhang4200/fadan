@@ -62,7 +62,7 @@ class Weight
         }
 
         // 记录计算后的值
-        \Log::alert(json_encode(['订单号' =>  $orderNo, '权重值' => $this->afterSum], JSON_UNESCAPED_UNICODE));
+//        \Log::alert(json_encode(['订单号' =>  $orderNo, '权重值' => $this->afterSum], JSON_UNESCAPED_UNICODE));
 
         $receivingUserId = $this->getUserId($orderNo);
         // 返回最终的商户ID
