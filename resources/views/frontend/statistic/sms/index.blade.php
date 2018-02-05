@@ -50,7 +50,9 @@
             </tr>
             </thead>
             <tbody>
+                <?php $count = 0; ?>
                 @forelse($record as $item)
+                    <?php $count +=$item->count ?>
                     <tr>
                         <td width="10%">{{ $item->date }}</td>
                         <td>{{ $item->count }}</td>
@@ -63,6 +65,11 @@
                         <td colspan="10">暂时没有数据</td>
                     </tr>
                 @endforelse
+                <tr>
+                    <td  width="10%">总计</td>
+                    <td>{{ $count  }}</td>
+                    <td  width="10%"></td>
+                </tr>
             </tbody>
         </table>
         </form>
