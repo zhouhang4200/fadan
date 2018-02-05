@@ -68,7 +68,6 @@ class AddNoticeOrderFromRedis extends Command
         $options = [
             'oid' => $orderNo,
         ]; 
-        sleep(3);
         $res = Show91::orderDetail($options);
         // 91平台订单状态
         $thirdStatus =  $res['data']['order_status'];
