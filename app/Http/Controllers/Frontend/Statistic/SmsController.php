@@ -29,6 +29,7 @@ class SmsController extends Controller
         $record = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))->where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('startDate', 'endDate'))
             ->groupBy('date')
+            ->orderBy('date', 'desc')
             ->paginate(20);
 
         return view('frontend.statistic.sms.index', compact('record', 'startDate', 'endDate', 'fullUrl'));
