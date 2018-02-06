@@ -49,7 +49,6 @@ class AddNoticeOrderFromRedis extends Command
         foreach ($orderNos as $orderNo => $statusAndAction) {
             $status = explode('-', $statusAndAction)[0];
             $action = explode('-', $statusAndAction)[1];
-
             $this->checkOrderNotice($orderNo, $status, $action);
         }
     }
@@ -93,57 +92,65 @@ class AddNoticeOrderFromRedis extends Command
      */
     public function checkOrderNotice($orderNo, $status, $action)
     {
-        $order = Order::where('no', $orderNo)->first();
-        if ($order) {
-            if ($status == 1) {
-                $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+        DB::beginTransaction();
+        try {
+            $this->delRedisNoticeOrder($orderNo);
+            $order = Order::where('no', $orderNo)->first();
+            if ($order) {
+                if ($status == 1) {
+                    $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
-                if (! $orderDetail['third_order_no']) {
-                    throw new Exception('第三方订单号不存在');
+                    if (! $orderDetail['third_order_no']) {
+                        throw new Exception('第三方订单号不存在');
+                    }
+
+                    $options = [
+                        'oid' => $orderDetail['third_order_no'],
+                    ]; 
+
+                    $res = Show91::orderDetail($options);
+                    // 91平台订单状态
+                    $thirdStatus =  $res['data']['order_status'];
+                    $thirdConsult = $res['data']['inSelfCancel'] ? 13 : false;
+                    $thirdComplain = $res['data']['inAppeal'] ? 14 : false;
+
+                    $beforeStatus = $this->getBeforeStatus($orderNo);
+
+                    switch ($thirdStatus) {
+                        case 1:
+                            if (!$thirdComplain && !$thirdConsult && $order->status == 13) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 13 && $order->status == 16) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } else {
+                                $this->addOrderNotice($order, $status, $action);
+                            }
+                        break;
+                        case 2:
+                            if (!$thirdComplain && !$thirdConsult && $order->status == 14) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 14 && $order->status == 16) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
+                                $this->delRedisNoticeOrder($orderNo);
+                            } else {
+                                $this->addOrderNotice($order, $status, $action);
+                            }
+                        break;
+                        default:
+                            return true;
+                    }
+                } else {
+                    $this->addOrderNotice($order, $status, $action);
                 }
-
-                $options = [
-                    'oid' => $orderDetail['third_order_no'],
-                ]; 
-
-                $res = Show91::orderDetail($options);
-                // 91平台订单状态
-                $thirdStatus =  $res['data']['order_status'];
-                $thirdConsult = $res['data']['inSelfCancel'] ? 13 : false;
-                $thirdComplain = $res['data']['inAppeal'] ? 14 : false;
-
-                $beforeStatus = $this->getBeforeStatus($orderNo);
-
-                switch ($thirdStatus) {
-                    case 1:
-                        if (!$thirdComplain && !$thirdConsult && $order->status == 13) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 13 && $order->status == 16) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } else {
-                            $this->addOrderNotice($order, $status, $action);
-                        }
-                    break;
-                    case 2:
-                        if (!$thirdComplain && !$thirdConsult && $order->status == 14) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 14 && $order->status == 16) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
-                            $this->delRedisNoticeOrder($orderNo);
-                        } else {
-                            $this->addOrderNotice($order, $status, $action);
-                        }
-                    break;
-                    default:
-                        return true;
-                }
-            } else {
-                $this->addOrderNotice($order, $status, $action);
             }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-notice-e', [$e->getMessage()]);
         }
+        DB::commit();
     }
 
     /**
@@ -152,52 +159,42 @@ class AddNoticeOrderFromRedis extends Command
      */
     public function addOrderNotice($order, $status, $action)
     {
-        DB::beginTransaction();
-        try {
-            $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
-            $data = [];
-            $data['creator_user_id'] = $order->creator_user_id;
-            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
-            $data['gainer_user_id'] = $order->gainer_user_id;
-            $data['creator_user_name'] = $order->creatorUser->name;
-            $data['order_no'] = $order->no;
-            $data['third_order_no'] = $orderDetail['third_order_no'];
-            $data['third'] = $orderDetail['third'];
-            $data['status'] = $order->status;
-            $data['create_order_time'] = $order->created_at;
-            $data['complete'] = 0;
-            $data['amount'] = $order->amount;
-            $data['security_deposit'] = $orderDetail['security_deposit'];
-            $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
-            $twoStatus = $this->getThirdOrderStatus($data['third_order_no']);
-            // 操作
-            // $action = \Route::currentRouteAction();
-            $actionName = preg_replace('~.*@~', '', $action, -1);
-            if ($actionName) {
-                if ($status) {
-                    $data['operate'] = config('ordernotice.operate')[$actionName].'@' ?: '';
-                } else {
-                    $data['operate'] = config('ordernotice.operate')[$actionName] ?: '';
-                }
+        $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+        $data = [];
+        $data['creator_user_id'] = $order->creator_user_id;
+        $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+        $data['gainer_user_id'] = $order->gainer_user_id;
+        $data['creator_user_name'] = $order->creatorUser->name;
+        $data['order_no'] = $order->no;
+        $data['third_order_no'] = $orderDetail['third_order_no'];
+        $data['third'] = $orderDetail['third'];
+        $data['status'] = $order->status;
+        $data['create_order_time'] = $order->created_at;
+        $data['complete'] = 0;
+        $data['amount'] = $order->amount;
+        $data['security_deposit'] = $orderDetail['security_deposit'];
+        $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
+        $twoStatus = $this->getThirdOrderStatus($data['third_order_no']);
+        // 操作
+        // $action = \Route::currentRouteAction();
+        $actionName = preg_replace('~.*@~', '', $action, -1);
+        if ($actionName) {
+            if ($status) {
+                $data['operate'] = config('ordernotice.operate')[$actionName].'@' ?: '';
             } else {
-                $data['operate'] = '';
+                $data['operate'] = config('ordernotice.operate')[$actionName] ?: '';
             }
-            if (count($twoStatus) == 2) {
-                $data['third_status'] = $twoStatus[0];
-                $data['child_third_status'] = $twoStatus[1];
-            } else {
-                $data['third_status'] = $twoStatus;
-                $data['child_third_status'] = 100; // 表示没有子状态
-            }
-
-            OrderNotice::create($data);
-            $this->delRedisNoticeOrder($order->no);
-        } catch (Exception $e) {
-            DB::rollback();
-            myLog('order-notice-e', [$e->getMessage()]);
+        } else {
+            $data['operate'] = '';
         }
-        DB::commit();
-        return true;
+        if (count($twoStatus) == 2) {
+            $data['third_status'] = $twoStatus[0];
+            $data['child_third_status'] = $twoStatus[1];
+        } else {
+            $data['third_status'] = $twoStatus;
+            $data['child_third_status'] = 100; // 表示没有子状态
+        }
+        OrderNotice::create($data);
     }
 
     /**

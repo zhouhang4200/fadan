@@ -604,7 +604,7 @@ class LevelingController
     {
         if ($order) {
                 $status = explode('-', $statusAndAction)[0];
-            if ($status == 1) {
+            if ($status && $status == 1) {
                 $orderNotice = OrderNotice::where('order_no', $order->no)->first();
 
                 if ($orderNotice) {
