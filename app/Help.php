@@ -1,7 +1,12 @@
 <?php
 
+use App\Exceptions\CustomException;
+use App\Extensions\Asset\Consume;
+use App\Extensions\Asset\Facades\Asset;
 use App\Models\City;
+use App\Models\SmsSendRecord;
 use App\Models\UserReceivingGoodsControl;
+use App\Services\SmSApi;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Models\UserSetting;
@@ -721,5 +726,40 @@ if (!function_exists('taobaoAesDecrypt')) {
         }
 
         return $result;
+    }
+}
+if (!function_exists('sendSms')){
+    /**
+     * @param $sendUserId integer 发送用户ID
+     * @param $orderNo string 关联单号
+     * @param $phone  integer 接收手机号
+     * @param $content string 发送内容
+     * @param $remark string 备注
+     * @return array
+     */
+    function sendSms($sendUserId, $orderNo, $phone, $content, $remark)
+    {
+        // 扣款
+        try {
+            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, $sendUserId));
+        } catch (CustomException $exception) {
+            return ['status' => 0, 'message' => $exception->getMessage()];
+        }
+
+        $sendResult = (new SmSApi())->send(2, $phone, $content, $sendUserId);
+
+        if ((bool)strpos($sendResult, "mterrcode=000")) {
+            // 发送成功写发送记录
+            SmsSendRecord::create([
+                'primary_user_id' => $sendUserId,
+                'user_id' => $sendUserId,
+                'order_no' => $orderNo,
+                'client_phone' => $phone,
+                'contents' => $content,
+                'date' => date('Y-m-d'),
+            ]);
+            return ['status' => 1, 'message' => '发送成功'];
+        }
+        return ['status' => 0, 'message' => '发送失败'];
     }
 }

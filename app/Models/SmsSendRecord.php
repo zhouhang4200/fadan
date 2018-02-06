@@ -27,6 +27,9 @@ class SmsSendRecord extends Model
         if (isset($filter['endDate']) && $filter['endDate']) {
             $query->where('date', '<=', $filter['endDate']);
         }
+        if (isset($filter['startDate']) && isset($filter['endDate']) && $filter['startDate'] && $filter['endDate']) {
+            $query->whereBetween('date', [$filter['startDate'], $filter['endDate'] . ' 23:59:59']);
+        }
         return $query;
     }
 

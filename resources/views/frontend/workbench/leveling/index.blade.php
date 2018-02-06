@@ -248,7 +248,6 @@
         </div>
     </div>
 
-
     <div class="send-message" style="display: none;padding: 20px">
         <form class="layui-form" action="" id="goods-add-form">
             <input type="hidden" name="type" value="">
@@ -760,6 +759,14 @@
                     layer.closeAll();
                 });
             }
+
+            $('.message').click(function () {
+                alert(1);
+                layer.open({
+                    type: 2,
+                    content: 'http://baidu.com'
+                });
+            });
         });
     </script>
 @endsection
