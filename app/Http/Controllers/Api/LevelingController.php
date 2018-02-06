@@ -499,7 +499,7 @@ class LevelingController
             $actionName = preg_replace('~.*@~', '', $action, -1);
             if ($actionName) {
                 if ($bool) {
-                    $data['operate'] = config('ordernotice.operate')[$actionName].'@' ?: '';
+                    $data['operate'] = config('ordernotice.operate')[$actionName] ? config('ordernotice.operate')[$actionName].'@' : '';
                 } else {
                     $data['operate'] = config('ordernotice.operate')[$actionName] ?: '';
                 }
