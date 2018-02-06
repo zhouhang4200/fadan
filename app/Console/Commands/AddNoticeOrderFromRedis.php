@@ -187,7 +187,7 @@ class AddNoticeOrderFromRedis extends Command
                 $data['child_third_status'] = $twoStatus[1];
             } else {
                 $data['third_status'] = $twoStatus;
-                $data['child_third_status'] = 100;
+                $data['child_third_status'] = 100; // 表示没有子状态
             }
 
             OrderNotice::create($data);

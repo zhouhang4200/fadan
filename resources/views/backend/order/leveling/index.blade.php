@@ -169,7 +169,7 @@
                         <label class="layui-form-label"></label>
                         <div class="layui-input-block">
                             <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                            <span class="layui-btn  layui-btn-normal" onclick="closeAll()" >取消</span>
                         </div>
                     </div>
                 </div>
@@ -197,7 +197,7 @@
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
                             <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                            <span class="layui-btn  layui-btn-normal" onclick="closeAll()" >取消</span>
                         </div>
                     </div>
                 </div>
@@ -209,6 +209,10 @@
 
 @section('js')
 <script>
+    function closeAll()
+    {
+        layer.closeAll();
+    }
     //Demo
     layui.use(['form', 'laytpl', 'element', 'laydate'], function(){
         var form = layui.form, layer = layui.layer, laydate = layui.laydate;
@@ -311,6 +315,8 @@
                 });
             }
         });
+
+        
 
         form.on('submit(delete)', function (data) {
             var orderId = data.elem.getAttribute("data-id");
