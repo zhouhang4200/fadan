@@ -80,7 +80,6 @@
                     $('.layui-table').html('<tr><td colspan="5" align="center">暂时没有留言</td></tr>');
                 }
             }, 'json');
-            return false;
         });
     });
 </script>
