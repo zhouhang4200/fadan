@@ -26,7 +26,8 @@ class SmsController extends Controller
         $endDate = $request->end_date;
         $fullUrl = $request->fullUrl();
 
-        $record = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))->where('user_id', Auth::user()->getPrimaryUserId())
+        $record = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))
+            ->where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('startDate', 'endDate'))
             ->groupBy('date')
             ->orderBy('date', 'desc')

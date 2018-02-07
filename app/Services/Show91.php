@@ -176,6 +176,9 @@ class Show91
         ];
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
+            if (! $orderDetails['third_order_no']) {
+                throw new DailianException('订单详情无第三方订单，修改失败!');
+            }
             $options['order.order_id'] = $orderDetails['third_order_no'];
         }
 

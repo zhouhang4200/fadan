@@ -29,7 +29,7 @@ class AutoRequestInterface
      *
      * @return void
      */
-    public function __construct(Order $order, $name, $bool = 0)
+    public function __construct(Order $order, $name, $bool = false)
     {
         $this->order = $order;
         $this->name = $name;
