@@ -22,7 +22,7 @@
                 <td width="30%">千手订单：{{ $item->order_no }}</td>
                 <td>{{ $item->created_at }}  留言：{{ str_limit( $item->contents, 38) }}</td>
                 <td width="15%">
-                    <span  class="opt">详情</span> <span class="opt" lay-submit=""  lay-filter="del" data-id="{{ $item->id }}">删除</span>
+                    <a href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item->order_no }}&tab=1" class="opt"  target="_blank">详情</a> <span class="opt" lay-submit=""  lay-filter="del" data-id="{{ $item->id }}">删除</span>
                 </td>
             </tr>
         @empty
