@@ -399,7 +399,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 订单列表
             Route::get('/', 'OrderController@index')->name('backend.steam.order.index');
         });
-
     });
 
     Route::namespace('Config')->prefix('config')->group(function () {
