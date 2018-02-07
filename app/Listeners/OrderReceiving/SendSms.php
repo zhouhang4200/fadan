@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  * Class tb
  * @package App\Listeners\OrderReceiving
  */
-class tb
+class SendSms
 {
 
     /**

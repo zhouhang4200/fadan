@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  * Class tb
  * @package App\Listeners\OrderFinish
  */
-class tb
+class SendSms
 {
     /**
      * Handle the event.
