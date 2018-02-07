@@ -77,6 +77,7 @@ class GetMessage extends Command
                                 'order_no' => $data->order_no,
                                 'contents' => $messageArr[$i]['mess'],
                                 'date' => $messageArr[$i]['created_on'],
+                                'send_time' => $messageArr[$i]['created_on'],
                             ];
                         }
                         LevelingMessage::insert($message);
