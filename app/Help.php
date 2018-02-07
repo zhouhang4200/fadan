@@ -807,6 +807,7 @@ if (!function_exists('levelingMessageAdd')) {
 
         return $redis->hset(config('redis.order.levelingMessage'), $orderNo, json_encode([
             'user_id' => $userId,
+            'order_no' => $orderNo,
             'foreign_order_no' => $foreignOrderNo,
             'platform' => $platform,
             'count' => $count,
