@@ -73,8 +73,8 @@ class PlatformStatistic extends Command
                     SUM(nn.revoke_payment)+SUM(nn.arbitrate_payment)+SUM(nn.poundage)+SUM(CASE WHEN mm.STATUS = 20 THEN mm.amount ELSE 0 END)-SUM(nn.revoke_income)-SUM(nn.arbitrate_income)
                         AS platform_profit /*平台总利润*/
                 FROM
-                    (SELECT m.no, m.game_id, m.status, m.original_amount, m.amount, m.creator_user_id,m.service_id, m.updated_at,
-                        DATE_FORMAT(m.updated_at, '%Y-%m-%d') AS DATE, n.*, j.name, j.username, j.parent_id
+                    (SELECT m.no, m.game_id, m.status, m.original_amount, m.amount, m.creator_user_id,m.service_id, m.created_at,
+                        DATE_FORMAT(m.created_at, '%Y-%m-%d') AS DATE, n.*, j.name, j.username, j.parent_id
                     FROM orders m
                     LEFT JOIN 
                         (
@@ -92,7 +92,7 @@ class PlatformStatistic extends Command
                     ON m.creator_user_id = j.id
                     ) mm
                 LEFT JOIN 
-                    (SELECT a.no, a.creator_user_id, a.status, a.updated_at,
+                    (SELECT a.no, a.creator_user_id, a.status, a.created_at,
                         SUM(CASE WHEN b.trade_subtype = 76 THEN b.fee ELSE 0 END) AS complete_payment,
                          /* 发单总支出代练费*/
                         SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment, 
