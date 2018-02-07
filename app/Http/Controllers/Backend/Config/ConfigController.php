@@ -11,6 +11,7 @@ use App\Models\ThirdArea;
 use App\Models\ThirdServer;
 use Illuminate\Http\Request;
 use App\Models\GoodsTemplate;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Http\Controllers\Controller;
@@ -272,8 +273,9 @@ class ConfigController extends Controller
     	$existGames = ThirdGame::pluck('game_id');
     	$games = Game::whereIn('id', $existGames)->get(); // 我们的游戏
     	$gameId = $request->game_id;
+    	$third = $request->third;
 
-    	if ($gameId) {
+    	if ($gameId && $third) {
 	    	// 获取我们的游戏区
 	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
 
@@ -325,7 +327,16 @@ class ConfigController extends Controller
 	        // 第三方服
 	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
 	        $options = ['gid' => $thirdGameId];
-	        $res = Show91::getAreas($options);
+
+	        switch ($request->third) {
+	        	case 1:
+	        		$res = Show91::getAreas($options);
+	        	break;
+	        	case 2:
+	        		//
+	        	break;
+	        }
+
 
 	        $thirdAreas = [];
 	        $thirdAreaArr = [];
@@ -459,20 +470,19 @@ class ConfigController extends Controller
 		    	switch ($title) {
 		    		case '区':
 		    			$thirdAreas = [];
-
 		    			foreach ($res as $k => $thirdArea) {
 		    				if (count($thirdArea) == 0 || array_sum($thirdArea) == 0) {
 		    					continue;
 		    				}
 
-		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1]) || ! is_numeric($thirdArea[2]) || ! is_numeric($thirdArea[3])) {
+		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1]) || ! is_numeric($thirdArea[2]) || ! is_numeric($thirdArea[4])) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
 
 		    				$has = ThirdArea::where('game_id', $thirdArea[0])
 			    				->where('third_id', $thirdArea[1])
 			    				->where('area_id', $thirdArea[2])
-			    				->where('third_area_id', $thirdArea[3])
+			    				->where('third_area_id', $thirdArea[4])
 			    				->first();
 
 			    			if ($has) {
@@ -481,7 +491,9 @@ class ConfigController extends Controller
 			    			$thirdAreas[$k]['game_id'] = $thirdArea[0];
 			    			$thirdAreas[$k]['third_id'] = $thirdArea[1];
 			    			$thirdAreas[$k]['area_id'] = $thirdArea[2];
-			    			$thirdAreas[$k]['third_area_id'] = $thirdArea[3];
+			    			$thirdAreas[$k]['area_name'] = $thirdArea[3];
+			    			$thirdAreas[$k]['third_area_id'] = $thirdArea[4];
+			    			$thirdAreas[$k]['third_area_name'] = $thirdArea[5];
 			    			$thirdAreas[$k]['created_at'] = date('Y-m-d H:i:s', time());
 			    			$thirdAreas[$k]['updated_at'] = date('Y-m-d H:i:s', time());
 		    			}
@@ -496,30 +508,47 @@ class ConfigController extends Controller
 		    		case '服':
 		    			$thirdServers = [];
 		    			foreach ($res as $k => $thirdServer) {
+		    				// 去除第一行标题和最后一行空数据
 		    				if (count($thirdServer) == 0 || array_sum($thirdServer) == 0) {
 		    					continue;
 		    				}
-
-		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1]) || ! is_numeric($thirdServer[2]) || ! is_numeric($thirdServer[3])) {
+		    				// 检查必填项是否为空
+		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1]) || ! is_numeric($thirdServer[2]) || ! is_numeric($thirdServer[4])) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
-
+		    				// 检查是否重复添加
 		    				$has = ThirdServer::where('game_id', $thirdServer[0])
 			    				->where('third_id', $thirdServer[1])
 			    				->where('server_id', $thirdServer[2])
-			    				->where('third_server_id', $thirdServer[3])
+			    				->where('third_server_id', $thirdServer[4])
 			    				->first();
 
 			    			if ($has) {
 			    				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
 			    			}
+
+			    			// 写入数据
 			    			$thirdServers[$k]['game_id'] = $thirdServer[0];
 			    			$thirdServers[$k]['third_id'] = $thirdServer[1];
 			    			$thirdServers[$k]['server_id'] = $thirdServer[2];
-			    			$thirdServers[$k]['third_server_id'] = $thirdServer[3];
+			    			$thirdServers[$k]['server_name'] = $thirdServer[3];
+			    			$thirdServers[$k]['third_server_id'] = $thirdServer[4];
+				    		$thirdServers[$k]['third_server_name'] = $thirdServer[5];
 			    			$thirdServers[$k]['created_at'] = date('Y-m-d H:i:s', time());
 			    			$thirdServers[$k]['updated_at'] = date('Y-m-d H:i:s', time());
+			    			// 去除括号
+			    			preg_match('~(.*?)(\(.*\))~', $thirdServer[3], $matchServerNames);
+			    			preg_match('~(.*?)(\(.*\))~', $thirdServer[5], $matchThirdServerNames);
+
+			    			if ($matchServerNames) {
+				    			$thirdServers[$k]['server_name'] = $matchServerNames[1];
+			    			}
+
+			    			if ($matchThirdServerNames) {
+				    			$thirdServers[$k]['third_server_name'] = $matchThirdServerNames[1];
+			    			}
 		    			}
+		    			// 插入数据
 		    			$bool = ThirdServer::insert($thirdServers);
 
 		    			if ($bool) {
