@@ -862,7 +862,7 @@ class IndexController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function sendSms(Request $request)
+    public function tb(Request $request)
     {
         $orderInfo = OrderModel::where('no', $request->no)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
@@ -873,7 +873,7 @@ class IndexController extends Controller
             $orderArr = array_merge($orderInfo->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo->toArray());
 
             if (isset($orderArr['client_phone']) && $orderArr['client_phone']) {
-                $result = sendSms(Auth::user()->getPrimaryUserId(), $orderInfo->no, $orderArr['client_phone'], $request->contents, '代练短信费');
+                $result = tb(Auth::user()->getPrimaryUserId(), $orderInfo->no, $orderArr['client_phone'], $request->contents, '代练短信费');
 //                // 扣款
 //                try {
 //                    Asset::handle(new Consume(0.1, 4, $orderInfo->no, '短信费', Auth::user()->getPrimaryUserId()));

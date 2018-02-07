@@ -27,6 +27,14 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\AutoRequestInterface' => [
             'App\Listeners\Leveling\ChangeStatus',
         ],
+        // 订单完成事件
+        'App\Events\OrderFinish' => [
+            'App\Listeners\OrderFinish\tb',
+        ],
+        // 订单被接单事件
+        'App\Events\OrderReceiving' => [
+            'App\Listeners\OrderReceiving\tb',
+        ],
     ];
 
     /**

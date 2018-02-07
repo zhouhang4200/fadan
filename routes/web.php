@@ -14,6 +14,12 @@
 Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
+    // 代练留言
+    Route::prefix('message')->group(function (){
+        Route::get('/', 'LevelingMessageController@index')->name('frontend.message-list');
+        Route::post('del', 'LevelingMessageController@del')->name('frontend.message-del');
+        Route::post('del-all', 'LevelingMessageController@delAll')->name('frontend.message-del-all');
+    });
 	// 登录管理
 	Route::prefix('login')->group(function () {
 		// 账号登录记录

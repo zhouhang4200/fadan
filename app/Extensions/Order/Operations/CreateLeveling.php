@@ -208,6 +208,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 throw new DailianException($dailian->getMessage());
             }
             DB::commit();
+            // 写入留言获取
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $thirdOrderNo, 91, 0);
         }
     }
 }

@@ -42,9 +42,17 @@ class SmsController extends Controller
      */
     public function show(Request $request)
     {
-        $recordDetail = SmsSendRecord::where('user_id', Auth::user()->getPrimaryUserId())
-            ->where('date', $request->date)->paginate(20);
+        $orderNo = $request->order_no;
+        $clientPhone = $request->client_phone;
+        $foreignOrderNo = $request->foreign_order_no;
+        $fullUrl = $request->fullUrl();
 
-        return view('frontend.statistic.sms.show', compact('recordDetail'));
+        $recordDetail = SmsSendRecord::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('startDate', 'endDate', 'orderNo', 'clientPhone', 'foreignOrderNo'))
+            ->orderBy('id', 'desc')
+            ->where('date', $request->date)
+            ->paginate(15);
+
+        return view('frontend.statistic.sms.show', compact('recordDetail', 'orderNo', 'clientPhone', 'foreignOrderNo'));
     }
 }

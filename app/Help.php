@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Facades\Asset;
@@ -728,16 +729,17 @@ if (!function_exists('taobaoAesDecrypt')) {
         return $result;
     }
 }
-if (!function_exists('sendSms')){
+if (!function_exists('tb')){
     /**
      * @param $sendUserId integer 发送用户ID
      * @param $orderNo string 关联单号
      * @param $phone  integer 接收手机号
      * @param $content string 发送内容
      * @param $remark string 备注
+     * @param $foreignOrderNo string 外部订单号
      * @return array
      */
-    function sendSms($sendUserId, $orderNo, $phone, $content, $remark)
+    function tb($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
     {
         // 扣款
         try {
@@ -751,7 +753,7 @@ if (!function_exists('sendSms')){
         if ((bool)strpos($sendResult, "mterrcode=000")) {
             // 发送成功写发送记录
             SmsSendRecord::create([
-                'primary_user_id' => $sendUserId,
+                'foreign_order_no' => $foreignOrderNo,
                 'user_id' => $sendUserId,
                 'order_no' => $orderNo,
                 'client_phone' => $phone,
@@ -761,5 +763,82 @@ if (!function_exists('sendSms')){
             return ['status' => 1, 'message' => '发送成功'];
         }
         return ['status' => 0, 'message' => '发送失败'];
+    }
+}
+
+if (!function_exists('levelingMessageGet')) {
+    /**
+     * 获取 所有要获取留言的订单
+     */
+    function levelingMessageGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.levelingMessage'));
+    }
+}
+
+if (!function_exists('levelingMessageDel')) {
+    /**
+     * 删除 要获取留言的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function levelingMessageDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.levelingMessage'), $orderNo);
+    }
+}
+
+if (!function_exists('levelingMessageAdd')) {
+
+    /**
+     * 添加 要获取留言的订单
+     * @param integer $userId 用户ID
+     * @param integer $orderNo 千手订单号
+     * @param string $foreignOrderNo 外部平台单号
+     * @param integer $platform  平台
+     * @param integer $count 上一次留言数
+     * @return mixed
+     */
+    function levelingMessageAdd($userId, $orderNo, $foreignOrderNo, $platform, $count = 0)
+    {
+        $redis = RedisConnect::order();
+
+        return $redis->hset(config('redis.order.levelingMessage'), $orderNo, json_encode([
+            'user_id' => $userId,
+            'foreign_order_no' => $foreignOrderNo,
+            'platform' => $platform,
+            'count' => $count,
+        ]));
+    }
+}
+if (!function_exists('levelingMessageCount')) {
+
+    /**
+     *  留言数量
+     * @param integer $userId 用户ID
+     * @param int $count
+     * @param integer $mode 1 设置  2 获取
+     * @return mixed
+     * @internal param int $count
+     */
+    function levelingMessageCount($userId,  $mode = 1, $count = 0)
+    {
+        $redis = RedisConnect::order();
+
+        $currentCount = $redis->get(config('redis.order.levelingMessageCount') . $userId);
+
+        if ($mode == 1) { // 加 N
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount + $count);
+        } else if ($mode == 2) { // 减一
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, --$currentCount);
+        } else if ($mode == 3) { // 清空
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, 0);
+        }
+        $lastCount =  $redis->get(config('redis.order.levelingMessageCount') . $userId);
+        // 推送到前端
+        event(new NotificationEvent('LevelingMessageQuantity', ['user_id' => $userId, 'quantity' => $lastCount]));
+        return $lastCount;
     }
 }

@@ -34,9 +34,9 @@
         </div>
         <div class="user">
             <ul class="layui-nav layui-bg-blue" lay-filter="demo">
-                <li class="layui-nav-item message">
-                    <a href="#">
-                        <i class="layui-icon" style="padding-right: 7px;">&#xe611;</i>代练留言<span class="layui-badge layui-bg-gray" style="border-radius: 50%;margin-top:-15px">1</span>
+                <li class="layui-nav-item ">
+                    <a href="#" id="leveling-message">
+                        <i class="layui-icon" style="padding-right: 7px;">&#xe611;</i>代练留言<span class="layui-badge layui-bg-gray leveling-message-quantity @if(levelingMessageCount(auth()->user()->getPrimaryUserId(), 4) == 0) layui-hide  @endif" style="border-radius: 50%;margin-top:-15px">{{ levelingMessageCount(auth()->user()->getPrimaryUserId(), 4) }}</span>
                     </a>
                 </li>
 

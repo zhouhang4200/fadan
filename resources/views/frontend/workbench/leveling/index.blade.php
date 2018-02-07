@@ -759,14 +759,6 @@
                     layer.closeAll();
                 });
             }
-
-            $('.message').click(function () {
-                alert(1);
-                layer.open({
-                    type: 2,
-                    content: 'http://baidu.com'
-                });
-            });
         });
     </script>
 @endsection
