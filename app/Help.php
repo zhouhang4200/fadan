@@ -832,7 +832,9 @@ if (!function_exists('levelingMessageCount')) {
 
         if ($mode == 1) { // 加 N
             $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount + $count);
-        } else if ($mode == 2) { // 减一
+        } else if ($mode == 2 && $count != 0) { // 减少指定数量
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount - $count);
+        } else if ($mode == 2 && $count == 0) { // 减一
             $redis->set(config('redis.order.levelingMessageCount') . $userId, --$currentCount);
         } else if ($mode == 3) { // 清空
             $redis->set(config('redis.order.levelingMessageCount') . $userId, 0);
