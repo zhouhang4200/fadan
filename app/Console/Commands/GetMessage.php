@@ -70,7 +70,7 @@ class GetMessage extends Command
                 $message = [];
 
                 if ($currentCount != $data->count) {
-                    for ($i = $addCount; $i >= 1; $i--) {
+                    for ($i = $addCount - 1; $i >= 0; $i--) {
                         $message[] = [
                             'user_id' => $data->user_id,
                             'order_no' => $orderNo,
