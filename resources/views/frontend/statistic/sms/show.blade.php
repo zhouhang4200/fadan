@@ -55,14 +55,13 @@
                         <td width="20%">千手单号：{{ $item->order_no }} <br/> 外部单号：{{ $item->foreign_order_no }}</td>
                         <td width="13%">{{ $item->client_phone }}</td>
                         <td>{{ $item->contents }}</td>
-                        <td width="10%">{{ $item->date }}</td>
+                        <td width="10%">{{ $item->create_at }}</td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="10">暂时没有数据</td>
                     </tr>
                 @endforelse
-
             </tbody>
         </table>
         </form>
