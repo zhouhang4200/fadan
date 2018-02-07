@@ -21,8 +21,8 @@ class SmsController extends Controller
     public function index(Request $request)
     {
         $type = $request->input('type', 1);
-        $autoSmsTemplate = SmsTemplate::where('type', 1)->paginate(10);
-        $userSmsTemplate = SmsTemplate::where('type', 2)->paginate(10);
+        $autoSmsTemplate = SmsTemplate::where('user_id', auth()->user()->getPrimaryUserId())->where('type', 1)->paginate(10);
+        $userSmsTemplate = SmsTemplate::where('user_id', auth()->user()->getPrimaryUserId())->where('type', 2)->paginate(10);
 
         if ($request->ajax()) {
             if ($type == 1) {
