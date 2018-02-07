@@ -26,17 +26,21 @@ abstract class Trade
 
     public function __construct($fee, $subtype, $no = '', $remark  = '', $userId, $adminUserId = 0)
     {
-        if ($fee <= 0) {
-            throw new AssetException('金额不合法');
+        if ($fee > -0.0001 && $fee < 0.0001) {
+            throw new AssetException('金额太小');
         }
+
+        // 判断是否存在科学计数法
+        if (strpos(strtolower($fee), 'e')) {
+            throw new AssetException('金额范围不正确');
+        }
+
         $this->userId      = $userId;
         $this->adminUserId = $adminUserId;
         $this->fee         = $fee;
         $this->subtype     = $subtype;
         $this->no          = $no;
         $this->remark      = $remark;
-
-
     }
 
     // 用户前置操作

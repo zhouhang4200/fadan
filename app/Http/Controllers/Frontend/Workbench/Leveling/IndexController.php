@@ -522,7 +522,10 @@ class IndexController extends Controller
                 if ($order->price != $requestData['game_leveling_amount']) {
                     // 加价
                     if ($order->price < $requestData['game_leveling_amount']) {
-                        $amount = $requestData['game_leveling_amount'] - $order->price;
+                        $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                        if (abs($order->price) == $amount) {
+                            throw new CustomException('金额不合法');
+                        }
                         Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
@@ -533,7 +536,10 @@ class IndexController extends Controller
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
                     } else { // 减价
-                        $amount = $order->price - $requestData['game_leveling_amount'];
+                        $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                        if (abs($order->price) == $amount) {
+                            throw new CustomException('金额不合法');
+                        }
                         Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
@@ -560,7 +566,10 @@ class IndexController extends Controller
                     if ($order->price != $requestData['game_leveling_amount']) {
                         // 加价
                         if ($order->price < $requestData['game_leveling_amount']) {
-                            $amount = $requestData['game_leveling_amount'] - $order->price;
+                            $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                            if (abs($order->price) == $amount) {
+                                throw new CustomException('金额不合法');
+                            }
                             Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
@@ -571,7 +580,10 @@ class IndexController extends Controller
                                 'field_value' => $requestData['game_leveling_amount']
                             ]);
                         } else { // 减价
-                            $amount = $order->price - $requestData['game_leveling_amount'];
+                            $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                            if (abs($order->price) == $amount) {
+                                throw new CustomException('金额不合法');
+                            }
                             Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
@@ -729,10 +741,13 @@ class IndexController extends Controller
 
         } catch (CustomException $customException) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败');
+            return response()->ajax(0, $customException->getMessage());
         } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败');
+            return response()->ajax(0, $e->getMessage());
+        } catch (AssetException $e) {
+            DB::rollBack();
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
 
