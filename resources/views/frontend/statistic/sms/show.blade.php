@@ -58,7 +58,7 @@
                         <td width="10%">{{ $item->date }}</td>
                     </tr>
                 @empty
-                    <tr style="color:red">
+                    <tr>
                         <td colspan="10">暂时没有数据</td>
                     </tr>
                 @endforelse
