@@ -73,7 +73,7 @@ class GetMessage extends Command
                     for ($i = $addCount - 1; $i >= 0; $i--) {
                         $message[] = [
                             'user_id' => $data->user_id,
-                            'order_no' => $orderNo,
+                            'order_no' => $data->order_no,
                             'contents' => $messageArr[$i]['mess'],
                             'date' => $messageArr[$i]['created_on'],
                         ];
