@@ -63,7 +63,7 @@ class GetMessage extends Command
                 // 用ID倒序
                 array_multisort($ids, SORT_DESC, $messageArr);
                 // 本次获取的留言数量
-                $currentCount = count($messageArr) - 1;
+                $currentCount = count($messageArr) == 1 ? count($messageArr) :  count($messageArr) - 1;
 
                 $addCount = $currentCount - $data->count;
 
