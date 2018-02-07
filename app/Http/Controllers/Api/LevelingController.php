@@ -610,8 +610,9 @@ class LevelingController
                 if ($orderNotice) {
                     $result = Redis::hSet('notice_orders', $order->no, $statusAndAction);
                     \Log::info('操作成功!记录正在写入redis，结果：'.$result, ['order_no' => $order->no, 'status' => $status]);
+                } else {
+                    \Log::info('操作成功!记录没有写入redis.', ['order_no' => $order->no, 'status' => $status]);
                 }      
-                \Log::info('操作成功!记录没有写入redis.', ['order_no' => $order->no, 'status' => $status]);
             } else {
                 $result = Redis::hSet('notice_orders', $order->no, $statusAndAction);
                 \Log::info('操作失败!记录正在写入redis，结果：'.$result, ['order_no' => $order->no, 'status' => $status]);
