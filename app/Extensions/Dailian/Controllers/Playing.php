@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderFinish;
 use DB;
 use Asset;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class Playing extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 27; // 操作：接单
+
 	/**
      * 
      * @param  [type] $orderNo     [订单号]
@@ -57,6 +59,7 @@ class Playing extends DailianAbstract implements DailianInterface
             $this->after();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
+            event(new OrderFinish($this->order));
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());

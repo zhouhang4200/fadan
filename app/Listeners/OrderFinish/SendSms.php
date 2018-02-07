@@ -33,7 +33,7 @@ class tb
                 $detail = $event->order->detail->pluck('field_value', 'field_name');
                 if (isset($detail['client_phone'])) {
                     // 发送短信
-                    tb($event->order->creator_primary_user_id, $event->order->no, $event->order->detail, $template->contents, '代练订单完成短信', $detail['source_order_no']);
+                    sendSms($event->order->creator_primary_user_id, $event->order->no, $event->order->detail, $template->contents, '代练订单完成短信', $detail['source_order_no']);
                 }
             }
         }
