@@ -120,6 +120,14 @@
                 return false;
             });
 
+            //监听指定开关
+            form.on('switch(test)', function(data){
+                var status = this.checked ? 1 : 2;
+                $.post('{{ route('frontend.sms.status') }}', {id:data.elem.getAttribute('data-id'), status: status}, function (result) {
+                    layer.msg(result.message);
+                }, 'json');
+            });
+
             // 修改
             $('.content').on('click', '.template-edit', function () {
                 var id  = $(this).attr('data-id');

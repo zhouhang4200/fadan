@@ -170,6 +170,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('add', 'SmsController@add')->name('frontend.sms.add');
             Route::post('edit', 'SmsController@edit')->name('frontend.sms.edit');
             Route::post('delete', 'SmsController@delete')->name('frontend.sms.delete');
+            Route::post('status', 'SmsController@status')->name('frontend.sms.status');
         });
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
