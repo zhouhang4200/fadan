@@ -1063,6 +1063,7 @@
 
         var tab = getQueryString(window.location.href, 'tab');
         if (tab == '1') {
+            loadMessage();
             element.tabChange('myFilter', 'leave-message')
         } else if(tab == '2') {
             loadHistory();
