@@ -30,11 +30,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         // 订单完成事件
         'App\Events\OrderFinish' => [
-            'App\Listeners\OrderFinish\tb',
+            'App\Listeners\OrderFinish\SendSms',
         ],
         // 订单被接单事件
         'App\Events\OrderReceiving' => [
-            'App\Listeners\OrderReceiving\tb',
+            'App\Listeners\OrderReceiving\SendSms',
         ],
     ];
 
