@@ -109,7 +109,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 
                     $content = '皮肤订单请添加客服 ' .  $contact  .' 添加后按照客服指引进行操作完成交易，不加客服将无法获得皮肤。';
 
-                    $result = tb($this->order->creator_primary_user_id,  $this->order->no, $detail['client_qq'], $content, '皮肤交易短信费');
+                    $result = sendSms($this->order->creator_primary_user_id,  $this->order->no, $detail['client_qq'], $content, '皮肤交易短信费');
 
                 } catch(CustomException $exception) {
                     myLog('send-message', $exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);

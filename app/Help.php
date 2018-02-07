@@ -729,7 +729,7 @@ if (!function_exists('taobaoAesDecrypt')) {
         return $result;
     }
 }
-if (!function_exists('tb')){
+if (!function_exists('sendSms')){
     /**
      * @param $sendUserId integer 发送用户ID
      * @param $orderNo string 关联单号
@@ -739,7 +739,7 @@ if (!function_exists('tb')){
      * @param $foreignOrderNo string 外部订单号
      * @return array
      */
-    function tb($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
+    function sendSms($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
     {
         // 扣款
         try {
