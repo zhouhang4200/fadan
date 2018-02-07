@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderFinish;
+use App\Events\OrderReceiving;
 use DB;
 use Asset;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use App\Models\UserAsset;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
+use Psy\Exception\ErrorException;
 
 /**
  * 接单操作
@@ -59,7 +61,7 @@ class Playing extends DailianAbstract implements DailianInterface
             $this->after();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
-            event(new OrderFinish($this->order));
+
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -155,6 +157,14 @@ class Playing extends DailianAbstract implements DailianInterface
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
+
+            try {
+                event(new OrderReceiving($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('receiving', [$errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('receiving', [$exception->getMessage()]);
+            }
         }
     }
 }
