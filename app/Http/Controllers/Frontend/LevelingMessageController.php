@@ -23,7 +23,7 @@ class LevelingMessageController extends Controller
      */
     public function index()
     {
-        $message = LevelingMessage::where('user_id', Auth::user()->getPrimaryUserId())->get();
+        $message = LevelingMessage::where('user_id', Auth::user()->getPrimaryUserId())->orderBy('date', 'desc')->get();
         return view('frontend.leveling-message.index', compact('message'));
     }
 
