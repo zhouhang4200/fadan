@@ -55,7 +55,7 @@ class GetMessage extends Command
                 $ids = [];
                 $messageArr = [];
                 foreach ($messageListArr as $item) {
-                    if (isset($item['id']) && $item['uid'] != config('show91.uid')) {
+                    if (isset($item['id']) && $item['uid'] == config('show91.uid')) {
                         $ids[] = $item['id'];
                         $messageArr[] = $item;
                     }
