@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderFinish;
 use DB;
 use Asset;
 use App\Services\Show91;
@@ -9,6 +10,7 @@ use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
 use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
+use ErrorException;
 
 /**
  * 订单完成操作
@@ -142,6 +144,13 @@ class Complete extends DailianAbstract implements DailianInterface
                     ];
                     // 结果
                     Show91::accept($options);
+                }
+                try {
+                    event(new OrderFinish($this->order));
+                } catch (ErrorException $errorException) {
+                    myLog('finish', [$errorException->getMessage()]);
+                } catch (\Exception $exception) {
+                    myLog('finish', [$exception->getMessage()]);
                 }
                 return true;
             } catch (DailianException $e) {
