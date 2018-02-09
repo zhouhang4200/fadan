@@ -13,6 +13,7 @@ use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
 use App\Models\SmsSendRecord;
 use App\Models\SmsTemplate;
+use App\Models\TaobaoTrade;
 use App\Models\User;
 use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -933,19 +934,21 @@ class IndexController extends Controller
      */
     public function waitList(Request $request)
     {
-        $no = $request->no;
-        $wangWang = $request->wang_wang;
+        $tid = $request->tid;
+        $buyerNick = $request->buyer_nick;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-        $orders = \App\Models\ForeignOrder::filter(compact('no', 'wangWang', 'startDate', 'endDate'))
-            ->where('user_id', Auth::user()->getPrimaryUserId())
-            ->where('status', 1)
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('status', 0)
+            ->where('service_id', 4)
             ->paginate(30);
 
         return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [
-            'no' => $no,
+            'tid' => $tid,
             'orders' => $orders,
-            'wangWang' => $wangWang,
+            'buyerNick' => $buyerNick,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ])->render());

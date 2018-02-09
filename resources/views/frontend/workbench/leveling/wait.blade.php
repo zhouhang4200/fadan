@@ -59,14 +59,14 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="no" autocomplete="off" class="layui-input">
+                    <input type="text" name="tid" autocomplete="off" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-inline">
                 <label class="layui-form-mid">旺旺号：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input">
+                    <input type="text" name="buyer_nick" autocomplete="off" class="layui-input">
                 </div>
             </div>
 
@@ -111,14 +111,14 @@
             getOrder();
             // 获取订单
             function getOrder(no, wangWang, startDate, endDate) {
-                $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {no:no, wang_wang: wangWang, start_date: startDate, end_date:endDate}, function (result) {
+                $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {tid:tid, buyer_nick: wangWang, start_date: startDate, end_date:endDate}, function (result) {
                     $('.order').html(result);
                     layui.form.render();
                 }, 'json');
             }
 
             form.on('submit(search)', function (data) {
-               getOrder(data.field.no, data.field.wang_wang, data.field.start_date, data.field.end_date);
+               getOrder(data.field.tid, data.field.buyer_nick, data.field.start_date, data.field.end_date);
             });
         });
     </script>
