@@ -23,7 +23,7 @@ class TaobaoApi
             $request->data = taobaoAesDecrypt($requestAll['data']);
             myLog('api-request', ['淘宝data解密', $request->url(), $_SERVER['QUERY_STRING'],  $request->data]);
         } else {
-            return response()->jsonReturn(0, '请求格式错误');
+            return response()->tb(0, '请求格式错误');
         }
 
         return $next($request);

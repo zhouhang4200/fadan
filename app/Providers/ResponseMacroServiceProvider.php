@@ -21,7 +21,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
         });
 
         /*
-         * 站外调用接口返回
+         * app 接口返回
          */
         Response::macro('jsonReturn', function ($status = 1, $message = 'success', $content = []) {
             $data = ['status' => $status, 'message' => $message, 'content' => $content, 'time' => time()];
