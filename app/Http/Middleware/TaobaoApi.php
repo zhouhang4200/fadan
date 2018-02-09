@@ -25,7 +25,6 @@ class TaobaoApi
         } else {
             return response()->tb(0, '请求格式错误');
         }
-
         return $next($request);
     }
 }
