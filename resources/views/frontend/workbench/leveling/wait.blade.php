@@ -110,7 +110,7 @@
 
             getOrder();
             // 获取订单
-            function getOrder(no, wangWang, startDate, endDate) {
+            function getOrder(tid, wangWang, startDate, endDate) {
                 $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {tid:tid, buyer_nick: wangWang, start_date: startDate, end_date:endDate}, function (result) {
                     $('.order').html(result);
                     layui.form.render();

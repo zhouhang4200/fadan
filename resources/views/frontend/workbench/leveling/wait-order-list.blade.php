@@ -14,16 +14,19 @@
         <tbody>
         @forelse($orders as $item)
             <tr data-no="{{ $item->tid }}">
+                <td>{{ $item->tid }}</td>
                 <td>{{ $item->buyer_nick }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->num }}</td>
                 <td>{{ $item->payment }}</td>
                 <td>{{ $item->created }}</td>
-                <td><button class="layui-btn layui-btn-normal">编辑</button></td>
+                <td>
+                    {{--<button class="layui-btn layui-btn-normal">编辑</button>--}}
+                </td>
             </tr>
         @empty
             <tr><td colspan="11">没有数据</td></tr>
         @endforelse
         </tbody>
     </table>
-{!! $orders->appends(['tid' => $tid, 'buyer_nick' => $wangWang, 'start_date' => $startDate ])->render() !!}
+{!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate ])->render() !!}

@@ -941,7 +941,7 @@ class IndexController extends Controller
 
         $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('status', 0)
+            ->where('handle_status', 0)
             ->where('service_id', 4)
             ->paginate(30);
 
