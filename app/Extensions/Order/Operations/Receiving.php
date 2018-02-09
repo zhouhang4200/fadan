@@ -112,9 +112,9 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                     $result = sendSms($this->order->creator_primary_user_id,  $this->order->no, $detail['client_qq'], $content, '皮肤交易短信费');
 
                 } catch(CustomException $exception) {
-                    myLog('send-message', $exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);
+                    myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
                 } catch(\ErrorException $exception) {
-                    myLog('send-message', $exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no);
+                    myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
                 }
             }
         }
