@@ -10,6 +10,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <option value="">请选择搜索类型</option>
             <option value="1" @if($searchType == 1) selected  @endif>千手订单号</option>
             <option value="2" @if($searchType == 2) selected  @endif>外部订单号</option>
+            <option value="3" @if($searchType == 3) selected  @endif>账号</option>
         </select>
     </div>
     <div class="layui-inline">

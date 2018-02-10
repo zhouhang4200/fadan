@@ -90,7 +90,8 @@ class OrderRepository
             } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
                 $query->where('foreign_order_no', $searchContent);
             } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
-
+                $orderNo = OrderDetail::findOrdersBy('account', $searchContent);
+                $query->whereIn('no', $orderNo);
             } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
 
             }
