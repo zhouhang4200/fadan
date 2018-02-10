@@ -28,6 +28,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th>类型</th>
             <th>游戏</th>
             <th>商品</th>
+            <th>账号</th>
             <th>数量</th>
             <th>单价</th>
             <th>总价</th>
@@ -41,11 +42,13 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         </thead>
         <tbody>
         @forelse($orders as $item)
+            <?php $detail = $item->detail->pluck('field_value', 'field_name')->toArray() ?>
             <tr data-no="{{ $item->no }}">
                 <td>千手：{{ $item->no }}<br>外部：{{ $item->foreign_order_no }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
                 <td>{{ $item->goods_name }}</td>
+                <td>{{ $detail['account'] ?? '' }}</td>
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
