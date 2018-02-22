@@ -6,6 +6,7 @@ use App\Exceptions\CustomException;
 use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Weight;
+use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\FuluAppApi;
 
 // 接单
@@ -79,7 +80,14 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
             try {
                 receivingUserDel($this->order->no);
             } catch (CustomException $exception) {
-                \Log::alert($exception->getMessage() . '删除接单队列');
+                \Log::alert($exception->getMessage() . ' 删除接单队列');
+            }
+
+            // 更新订单详情接单商户ID
+            try {
+                OrderDetailRepository::updateGainerPrimaryUserIdBy($this->order->no, $this->order->gainer_primary_user_id);
+            } catch (CustomException $exception) {
+                \Log::alert($exception->getMessage() . ' 更新接单人异常');
             }
 
             // 如果是王者皮肤订单者并是APP订单则发送QQ号

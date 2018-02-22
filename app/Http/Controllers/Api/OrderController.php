@@ -72,7 +72,7 @@ class OrderController extends Controller
                     return 'success';
                 }
             } else {
-                return 'fail1';
+                return 'fail';
             }
         }
         dd(getClientIp());
