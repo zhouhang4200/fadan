@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Exceptions\AssetException;
-use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\Operations\CreateLeveling;
@@ -11,7 +10,6 @@ use App\Models\Game;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
-use App\Models\SmsSendRecord;
 use App\Models\SmsTemplate;
 use App\Models\TaobaoTrade;
 use App\Models\User;
@@ -20,7 +18,6 @@ use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
-use App\Services\SmSApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -79,7 +76,8 @@ class IndexController extends Controller
     public function orderList(Request $request, OrderRepository $orderRepository)
     {
         $no = $request->input('no', 0);
-        $foreignOrderNo = $request->input('foreign_order_no', 0);
+        $sourceOrderNo = $request->input('source_order_no', 0);
+        $customerServiceName = $request->input('customer_service_name', 0);
         $gameId = $request->input('game_id', 0);
         $status = $request->input('status', 0);
         $wangWang = $request->input('wang_wang', 0);
@@ -96,7 +94,7 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName);
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {

@@ -83,7 +83,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">外部单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="foreign_order_no" autocomplete="off" class="layui-input">
+                    <input type="text" name="source_order_no" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -114,10 +114,10 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="game" lay-search="">
+                    <select name="customer_service_name" lay-search="">
                         <option value="">请选择或输入</option>
                         @forelse($employee as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            <option value="{{ $item->name }}">{{ $item->name }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -467,7 +467,7 @@
                     {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
-                    {field: 'cstomer_service_remark', title: '客服备注', width: '150'},
+                    {field: 'customer_service_remark', title: '客服备注', width: '150'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {field: 'status_text', title: '订单状态', width: '120'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
@@ -519,14 +519,15 @@
                     where: {
                         status: status,
                         no: data.field.no,
-                        foreign_order_no: data.field.foreign_order_no,
+                        source_order_no: data.field.source_order_no,
                         game_id: data.field.game_id,
                         need: data.field.status,
                         wang_wang: data.field.wang_wang,
                         urgent_order: urgentOrder,
                         start_date: data.field.start_date,
                         end_date: data.field.end_date,
-                        label: data.field.label
+                        label: data.field.label,
+                        customer_service_name: data.field.customer_service_name
                     },
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
@@ -744,7 +745,7 @@
             // 导出
             form.on('submit(export)', function (data) {
                 var fields = data.field;
-                var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
+                var datas = '?no=' + fields.no+'&source_order_no='+fields.source_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
                 window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
             });
             // 选择短信模板

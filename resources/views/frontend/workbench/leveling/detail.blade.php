@@ -270,7 +270,7 @@
                         @endif
 
                         @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">删除</button>
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                         @endif
 
                         @if (!$detail['master'] && ($detail['status'] == 13))
@@ -1075,8 +1075,6 @@
             $('textarea[name=contents]').val(data.value);
         });
     });
-
-
 
     function loadHistory() {
         // 加载订单操作记录

@@ -68,7 +68,8 @@ class OrderRepository
             } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
                 $query->where('foreign_order_no', $searchContent);
             } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
-
+                $orderNo = OrderDetail::findOrdersBy('account', $searchContent);
+                $query->whereIn('no', $orderNo);
             } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
 
             }
@@ -148,7 +149,7 @@ class OrderRepository
      * 代练订单
      * @param $status
      * @param $no
-     * @param $foreignOrderNo
+     * @param $sourceOrderNo
      * @param $gameId
      * @param $wangWang
      * @param $urgentOrder
@@ -156,9 +157,10 @@ class OrderRepository
      * @param $pageSize
      * @param $startDate
      * @param $endDate
+     * @param $customerServiceName
      * @return mixed
      */
-    public function levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize)
+    public function levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->type; // 账号类型是接单还是发单
@@ -182,8 +184,9 @@ class OrderRepository
         $query->when($no != 0, function ($query) use ($no) {
             return $query->where('no', $no);
         });
-        $query->when($foreignOrderNo != 0, function ($query) use ($foreignOrderNo) {
-            return $query->where('foreign_order_no', $foreignOrderNo);
+        $query->when($sourceOrderNo != 0, function ($query) use ($sourceOrderNo) {
+            $orderNo = OrderDetail::findOrdersBy('source_order_no', $sourceOrderNo);
+            return $query->whereIn('no', $orderNo);
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
@@ -192,7 +195,11 @@ class OrderRepository
             $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when($urgentOrder !=0, function ($query) use ($urgentOrder) {
+        $query->when($customerServiceName != 0, function ($query) use ($customerServiceName) {
+            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when($urgentOrder != 0, function ($query) use ($urgentOrder) {
             $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder);
             return $query->whereIn('no', $orderNo);
         });
@@ -204,7 +211,7 @@ class OrderRepository
             return $query->where('created_at', '>=', $startDate);
         });
         $query->when($endDate !=0, function ($query) use ($endDate) {
-            return $query->where('created_at', '<=', $endDate." 23:59:59");
+            return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
         $query->where('status', '!=', 24);
         $query->where('service_id', 4)->with(['detail', 'levelingConsult']);
