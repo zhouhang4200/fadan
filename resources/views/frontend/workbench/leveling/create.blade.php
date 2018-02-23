@@ -197,12 +197,14 @@
                 if(value <= 0){
                     return '该数值需大于0';
                 }
-                var temp  = value.split(".");
-                if (temp.length > 2) {
-                    return '请输入合法的金额';
-                }
-                if (temp[1].length > 2) {
-                    return '输入的小数请不要大于两位';
+                if (value.indexOf(".") > -1) {
+                    var temp  = value.split(".");
+                    if (temp.length > 2) {
+                        return '请输入合法的金额';
+                    }
+                    if (temp[1].length > 2) {
+                        return '输入的小数请不要大于两位';
+                    }
                 }
             }
         });
