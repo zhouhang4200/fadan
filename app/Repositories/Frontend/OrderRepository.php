@@ -310,7 +310,7 @@ class OrderRepository
                             $levelingConsult = LevelingConsult::where('order_no', $v['no'])->first();
                             if ($levelingConsult) {
                                 $payment = $levelingConsult->amount;
-                                $haveMoney = $levelingConsult->deposit;
+                                $getAmount = $levelingConsult->deposit;
                                 $poundage = $levelingConsult->api_service ?? 0;
                             }
                         } else if(isset($detail['price_markup'])) {
