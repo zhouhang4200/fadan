@@ -367,7 +367,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
-                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">删除</option>
+                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</option>
                 @{{# }  }}
 
                 @{{# if (!d.master && (d.status == 13)) {  }}
