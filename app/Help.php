@@ -847,9 +847,7 @@ if (!function_exists('levelingMessageCount')) {
     }
 }
 
-
 if (!function_exists('export')) {
-
     /**
      * 导出数据
      * @param $title
@@ -871,6 +869,44 @@ if (!function_exists('export')) {
             'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
         ]);
         $response->send();
+    }
+}
+
+if (!function_exists('autoRevokeGet')) {
+
+    /**
+     * 获取自动下架的订单
+     */
+    function autoRevokeGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.autoRevoke'));
+    }
+}
+
+if (!function_exists('autoRevokeAdd')) {
+
+    /**
+     * 添加自动下架的订单
+     */
+    function autoRevokeAdd()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.levelingMessage'), $orderNo);
+    }
+}
+
+if (!function_exists('autoRevokeDel')) {
+
+    /**
+     * 删除自动下架的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function autoRevokeDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.autoRevoke'), $orderNo);
     }
 }
 
