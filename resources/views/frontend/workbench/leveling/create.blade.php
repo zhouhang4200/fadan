@@ -197,6 +197,8 @@
                 if(value <= 0){
                     return '该数值需大于0';
                 }
+            },
+            money:function (value) {
                 if (value.indexOf(".") > -1) {
                     var temp  = value.split(".");
                     if (temp.length > 2) {
