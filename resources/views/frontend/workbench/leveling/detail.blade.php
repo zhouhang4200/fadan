@@ -450,7 +450,18 @@
                             <div class="layui-col-md4 text_right">利润：</div>
                             <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
-
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手呢称：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手电话：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手QQ：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
                             <div class="layui-col-md8">{{ $detail['left_time'] ?? ''  }}</div>
@@ -473,7 +484,7 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">{{ $detail['cstomer_service_name'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['customer_service_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>

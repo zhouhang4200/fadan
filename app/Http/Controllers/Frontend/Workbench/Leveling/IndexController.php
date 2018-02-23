@@ -193,7 +193,7 @@ class IndexController extends Controller
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
 
             // 获取当前下单人名字
-            $orderData['cstomer_service_name'] = Auth::user()->name;
+            $orderData['customer_service_name'] = Auth::user()->username;
 
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
@@ -280,7 +280,7 @@ class IndexController extends Controller
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount:  $detail['amount'];
 
-            $detail['payment_amount'] = (float)$detail['payment_amount'];
+//            $detail['payment_amount'] = (float)$detail['payment_amount'];
             $detail['get_amount'] = (float)$detail['get_amount'];
             $detail['poundage'] = (float)$detail['poundage'];
             // 利润

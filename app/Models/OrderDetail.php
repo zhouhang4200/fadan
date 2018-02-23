@@ -19,12 +19,12 @@ class OrderDetail extends Model
      * 通过字段名与字段值找到订单号
      * @param string $fieldName 字段名
      * @param string $fieldValue 字段值
-     * @param integer $type 类型 1 发单主账号 2 接单产账号
+     * @param integer $type 类型 1 接单产账号 2 发单主账号
      * @return array 订单号
      */
-    public static function findOrdersBy($fieldName, $fieldValue, $type = 1)
+    public static function findOrdersBy($fieldName, $fieldValue, $type = 2)
     {
-        if ($type == 1) {
+        if ($type == 2) {
             return OrderDetail::where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
                 ->where('field_name', $fieldName)
                 ->where('field_value', $fieldValue)

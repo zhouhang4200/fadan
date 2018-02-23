@@ -33,8 +33,7 @@
                 </div>
             </div>
             <button class="layui-btn layui-btn-normal" type="submit">查询</button>
-            <button class="layui-btn layui-btn-normal" type="button" function="query" lay-submit="" lay-filter="export">导出</button>
-
+            <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
         </div>
     </form>
 

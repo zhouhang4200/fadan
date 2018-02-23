@@ -117,7 +117,7 @@
                     <select name="customer_service_name" lay-search="">
                         <option value="">请选择或输入</option>
                         @forelse($employee as $item)
-                            <option value="{{ $item->name }}">{{ $item->name }}</option>
+                            <option value="{{ $item->username }}">{{ $item->username }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -129,7 +129,7 @@
                     <select name="label">
                         <option value="">全部</option>
                         @foreach ($tags as $tag)
-                            <option>{{ $tag }}</option>
+                            <option value="{{ $tag }}">{{ $tag }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -464,7 +464,7 @@
                 method: 'post',
                 size: 'sm',
                 cols: [[
-                    {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
+                    {title: '订单号',width: '225',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
                     {field: 'customer_service_remark', title: '客服备注', width: '150'},

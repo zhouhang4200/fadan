@@ -68,7 +68,7 @@ class OrderRepository
             } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
                 $query->where('foreign_order_no', $searchContent);
             } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
-                $orderNo = OrderDetail::findOrdersBy('account', $searchContent, 2);
+                $orderNo = OrderDetail::findOrdersBy('account', $searchContent, 1);
                 $query->whereIn('no', $orderNo);
             } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
 
@@ -184,27 +184,27 @@ class OrderRepository
         $query->when($no != 0, function ($query) use ($no) {
             return $query->where('no', $no);
         });
-        $query->when($sourceOrderNo != 0, function ($query) use ($sourceOrderNo) {
-            $orderNo = OrderDetail::findOrdersBy('source_order_no', $sourceOrderNo);
+        $query->when($sourceOrderNo != 0, function ($query) use ($sourceOrderNo, $type) {
+            $orderNo = OrderDetail::findOrdersBy('source_order_no', $sourceOrderNo, $type);
             return $query->whereIn('no', $orderNo);
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
         });
-        $query->when($wangWang, function ($query) use ($wangWang, $primaryUserId) {
-            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang);
+        $query->when($wangWang, function ($query) use ($wangWang, $primaryUserId, $type) {
+            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when($customerServiceName != 0, function ($query) use ($customerServiceName) {
-            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName);
+        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName, $type) {
+            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when($urgentOrder != 0, function ($query) use ($urgentOrder) {
-            $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder);
+        $query->when($urgentOrder != 0, function ($query) use ($urgentOrder, $type) {
+            $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder, $type);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when(!empty($label), function ($query) use ($label) {
-            $orderNo = OrderDetail::findOrdersBy('label', $label);
+        $query->when(!empty($label), function ($query) use ($label, $type) {
+            $orderNo = OrderDetail::findOrdersBy('label', $label, $type);
             return $query->whereIn('no', $orderNo);
         });
         $query->when($startDate !=0, function ($query) use ($startDate) {
@@ -216,6 +216,7 @@ class OrderRepository
         $query->where('status', '!=', 24);
         $query->where('service_id', 4)->with(['detail', 'levelingConsult']);
         $query->orderBy('id', 'desc');
+
         return $query->paginate($pageSize);
     }
 
@@ -298,7 +299,7 @@ class OrderRepository
                         $detail = collect($v['detail'])->pluck( 'field_value','field_name');
                         // 支付金额
                         $payment = '';
-                        $haveMoney = '';
+                        $getAmount = '';
                         $poundage = '';
                         $profit = '';
                         $leftTime = '';
@@ -315,13 +316,29 @@ class OrderRepository
                         } else if(isset($detail['price_markup'])) {
 
                             $payment = bcadd($v['amount'], $detail['price_markup']);
-                            $haveMoney = 0;
+                            $getAmount = 0;
                             $poundage = 0;
                         }
                         // 利润
                         if ($v['status'] == 19 || $v['status'] == 20 || $v['status'] == 21 && isset($detail['source_price'])) {
-                            $profit = bcsub(bcadd($haveMoney, bcsub($detail['source_price'], $payment)), $poundage);
+                            $profit = bcsub(bcadd($getAmount, bcsub($detail['source_price'], $payment)), $poundage);
                         }
+
+                        if (in_array($detail['status'], [19, 20, 21])){
+                            // 支付金额
+                            if ($detail['status'] == 21) {
+                                $amount = $detail['leveling_consult']['api_amount'];
+                            } else {
+                                $amount = $detail['leveling_consult']['amount'];
+                            }
+                            // 支付金额
+                            $payment = $amount !=0 ?  $amount:  $detail['amount'];
+                            $getAmount = (float)$detail['get_amount'];
+                            $poundage  = (float)$detail['poundage'];
+                            // 利润
+                            $profit = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
+                        }
+
                         // 如果存在接单时间
                         if (isset($orderDetail['receiving_time']) && !empty($orderDetail['receiving_time'])) {
                             // 计算到期的时间戳
@@ -342,7 +359,7 @@ class OrderRepository
                             $v['no'],
                             $detail['order_source'] ?? '',
                             $detail['label'] ?? '',
-                            $detail['cstomer_service_remark'] ?? '',
+                            $detail['customer_service_remark'] ?? '',
                             $detail['game_leveling_title'] ?? '',
                             $detail['game_name'] ?? '',
                             $detail['version'] ?? '',
@@ -357,8 +374,8 @@ class OrderRepository
                             $detail['security_deposit'] ?? '',
                             $detail['efficiency_deposit'] ?? '',
                             $payment,
-                            $haveMoney,
-                            $detail['poundage'] ?? '',
+                            $getAmount,
+                            $poundage,
                             $profit,
                             $time,
                             $leftTime,
