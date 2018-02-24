@@ -51,7 +51,11 @@ class IndexController extends Controller
      */
     public function clearCount(Request $request)
     {
-        return orderStatusCount(auth()->user()->getPrimaryUserId(), $request->status, 2);
+        try {
+            orderStatusCount(auth()->user()->getPrimaryUserId(), $request->status, 2);
+        } catch (\ErrorException $exception) {
+
+        }
     }
 
     /**
