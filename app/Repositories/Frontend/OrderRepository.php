@@ -221,7 +221,7 @@ class OrderRepository
         $query->orderBy('id', 'desc');
 
         $data = $query->paginate($pageSize);
-        myLog('query', [\DB::getQueryLog()]);
+        myLog('query', [\DB::getQueryLog(), $type]);
 
         return $data;
     }
