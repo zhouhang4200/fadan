@@ -101,7 +101,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->price = $price;
         $this->templateId = $templateId;
         $this->game = Game::find($gameId);
-        $this->runAfter = 1;
+        $this->runAfter = false;
     }
 
     // 获取订单
@@ -142,6 +142,16 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->field_display_name = $v;
                 $orderDetail->field_value = $this->details[$k] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
+
+                // 如果有设置自动下架时间，则将此订单加入自动下架任务中
+                if ($k == 'auto_unshelve_time' && !empty($this->details[$k])) {
+                    $str = trim($this->details[$k]);
+                    if (preg_match('/\d+/', $str, $result)) {
+                        if (is_numeric($result[0])) {
+                            autoUnShelveAdd($this->order->no, $this->userId, date('Y-m-d H:i:s'), $result[0]);
+                        }
+                    }
+                }
 
                 if (!$orderDetail->save()) {
                     throw new Exception('详情记录失败');

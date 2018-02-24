@@ -154,18 +154,26 @@
             <li class="layui-this" lay-id="need">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
             <li class="" lay-id="1">未接单</li>
             <li class="" lay-id="13">代练中</li>
-            <li class="" lay-id="14">待验收</li>
-            <li class="" lay-id="15">撤销中</li>
-            <li class="" lay-id="16">仲裁中</li>
-            <li class="" lay-id="17">异常</li>
-            <li class="" lay-id="18">锁定</li>
+            <li class="" lay-id="14">待验收
+                <span class="layui-badge layui-bg-blue quantity-14 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) }}</span>
+            </li>
+            <li class="" lay-id="15">撤销中
+                <span class="layui-badge layui-bg-blue quantity-15 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) }}</span>
+            </li>
+            <li class="" lay-id="16">仲裁中
+                <span class="layui-badge layui-bg-blue quantity-16 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) }}</span>
+            </li>
+            <li class="" lay-id="17">异常
+                <span class="layui-badge layui-bg-blue quantity-17 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) }}</span>
+            </li>
+            <li class="" lay-id="18">锁定
+                <span class="layui-badge layui-bg-blue quantity-18 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) }}</span>
+            </li>
             <li class="" lay-id="19">已撤销</li>
             <li class="" lay-id="20">已结算</li>
             <li class="" lay-id="21">已仲裁</li>
             <li class="" lay-id="22">已下架</li>
             <li class="" lay-id="23">强制撤销</li>
-
-            <span class="layui-badge layui-bg-blue layui-hide  market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
         </ul>
         <div class="layui-tab-content"></div>
     </div>
@@ -499,6 +507,9 @@
 
             element.on('tab(order-list)', function () {
                  status = this.getAttribute('lay-id');
+                // 清空角标
+                $.post('{{ route("frontend.workbench.clear-count") }}', {status:status}, function () {
+                }, 'json');
                 //执行重载
                 table.reload('order', {
                     where: {
@@ -701,8 +712,8 @@
                                     layer.closeAll();
                                 });
                             }
+                            reload();
                         });
-                        reload();
                         layer.close(index);
                     });
                 }  else {

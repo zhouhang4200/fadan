@@ -872,41 +872,78 @@ if (!function_exists('export')) {
     }
 }
 
-if (!function_exists('autoRevokeGet')) {
+if (!function_exists('autoUnShelveGet')) {
 
     /**
      * 获取自动下架的订单
      */
-    function autoRevokeGet()
+    function autoUnShelveGet()
     {
         $redis = RedisConnect::order();
-        return $redis->hgetall(config('redis.order.autoRevoke'));
+        return $redis->hgetall(config('redis.order.autoUnShelve'));
     }
 }
 
-if (!function_exists('autoRevokeAdd')) {
+if (!function_exists('autoUnShelveAdd')) {
 
     /**
      * 添加自动下架的订单
+     * @param string $orderNo 订单号
+     * @param integer $userId 用户ID
+     * @param string $time 下单时间
+     * @param integer $days 自动下架天数
+     * @return mixed
      */
-    function autoRevokeAdd()
+    function autoUnShelveAdd($orderNo, $userId, $time, $days)
     {
         $redis = RedisConnect::order();
-        return $redis->hdel(config('redis.order.levelingMessage'), $orderNo);
+        return $redis->hset(config('redis.order.autoUnShelve'), $orderNo, json_encode([
+            'user_id' => $userId,
+            'time' => $time,
+            'days' => $days,
+        ]));
     }
 }
 
-if (!function_exists('autoRevokeDel')) {
-
+if (!function_exists('autoUnShelveDel')) {
     /**
      * 删除自动下架的订单
      * @param $orderNo
      * @return mixed
      */
-    function autoRevokeDel($orderNo)
+    function autoUnShelveDel($orderNo)
     {
         $redis = RedisConnect::order();
-        return $redis->hdel(config('redis.order.autoRevoke'), $orderNo);
+        return $redis->hdel(config('redis.order.autoUnShelve'), $orderNo);
+    }
+}
+if (!function_exists('orderStatusCount')) {
+    /**
+     * 订单待处理数量角标
+     * @param integer $userId 用户
+     * @param integer $status 状态
+     * @param int $method 方法 1 增加 2 清空  3 获取
+     * @return bool
+     */
+    function orderStatusCount($userId, $status, $method = 1)
+    {
+        $redis = RedisConnect::order();
+        // 数量加1
+        if ($method == 1) {
+            $redis->incr(config('redis.order.statusCount') . $userId .'_'. $status);
+        }
+        // 获取数量
+        if ($method == 2) {
+            $redis->set(config('redis.order.statusCount') . $userId .'_' . $status, 0);
+        }
+        // 数量清空
+        $count = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+        event((new NotificationEvent('OrderCount', ['user_id' => $userId, 'status' => $status, 'quantity' => $count])));
+
+        if ($method == 3) {
+            return $count;
+        }
+        return true;
     }
 }
 

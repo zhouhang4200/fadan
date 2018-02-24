@@ -191,7 +191,7 @@ class OrderRepository
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
         });
-        $query->when($wangWang, function ($query) use ($wangWang, $primaryUserId, $type) {
+        $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
             $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
             return $query->whereIn('no', $orderNo);
         });
@@ -207,10 +207,10 @@ class OrderRepository
             $orderNo = OrderDetail::findOrdersBy('label', $label, $type);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when($startDate !=0, function ($query) use ($startDate) {
+        $query->when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);
         });
-        $query->when($endDate !=0, function ($query) use ($endDate) {
+        $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
         $query->where('status', '!=', 24);

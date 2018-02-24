@@ -55,6 +55,11 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->after();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
+            // 写入数量角标
+            // 接单人
+            orderStatusCount($this->order->gainer_primary_user_id, $this->handledStatus);
+            // 发单人
+            orderStatusCount($this->order->creator_primary_user_id, $this->handledStatus);
         } catch (DailianException $e) {
             DB::rollBack();
             throw new DailianException($e->getMessage());

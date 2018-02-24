@@ -80,10 +80,10 @@ class IndexController extends Controller
         $customerServiceName = $request->input('customer_service_name', 0);
         $gameId = $request->input('game_id', 0);
         $status = $request->input('status', 0);
-        $wangWang = $request->input('wang_wang', 0);
+        $wangWang = $request->input('wang_wang');
         $urgentOrder = $request->input('urgent_order', 0);
-        $startDate = $request->input('start_date', 0);
-        $endDate = $request->input('end_date', 0);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $label = $request->input('label');
         $pageSize = $request->input('limit', 10);
 

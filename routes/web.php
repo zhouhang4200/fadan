@@ -204,6 +204,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
         // 首页
         Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
+        // 清空角标
+        Route::post('clear-count', 'IndexController@clearCount')->name('frontend.workbench.clear-count');
 
         // 代充
         Route::namespace('Recharge')->prefix('recharge')->group(function (){
