@@ -151,7 +151,7 @@
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="need">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+            <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
             <li class="" lay-id="1">未接单</li>
             <li class="" lay-id="13">代练中</li>
             <li class="" lay-id="14">待验收
