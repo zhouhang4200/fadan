@@ -176,6 +176,8 @@ class OrderRepository
             } else {
                 $query->where('creator_primary_user_id', $primaryUserId); // 发单
             }
+        } else {
+            $query->where('creator_primary_user_id', $primaryUserId); // 发单
         }
 
         $query->when($status != 0, function ($query) use ($status) {
