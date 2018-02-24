@@ -101,7 +101,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->price = $price;
         $this->templateId = $templateId;
         $this->game = Game::find($gameId);
-        $this->runAfter = false;
+        $this->runAfter = 1;
     }
 
     // 获取订单
