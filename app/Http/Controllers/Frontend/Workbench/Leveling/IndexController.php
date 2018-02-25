@@ -596,9 +596,9 @@ class IndexController extends Controller
                             }
                         }
                     }
-                    // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 
+                    // 修改订单, 91和代练妈妈通用
                     event(new AutoRequestInterface($order, 'addOrder', true));
                 }
 
@@ -617,8 +617,9 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        // 接口加价
                         $order->addAmount = $addAmount;
+                        
+                        // 加价
                         event(new AutoRequestInterface($order, 'addPrice'));
                     } else if ($order->price > $requestData['game_leveling_amount']) {
                         return response()->ajax(0, '代练价格只可增加');

@@ -6,8 +6,10 @@ use DB;
 use Asset;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Services\Show91;
 use App\Models\UserAsset;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
 
@@ -152,6 +154,8 @@ class Playing extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             $now = Carbon::now()->toDateTimeString();
+            // 订单详情
+            $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
             // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
@@ -165,7 +169,12 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'third')
                         ->update(['field_value' => config('order.third_client')['show91']]);
 
+                    // 更新 third_order_no 为对应平台的订单号
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third_order_no')
+                        ->update(['field_value' => $orderDetails['show91_order_no']]);
                     // 下架其他代练平台订单
+                    DailianMama::closeOrder($this->order);
                     break;
                 case 8505: 
                     // 更新第三方平台为 dailianmam
@@ -173,10 +182,17 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'third')
                         ->update(['field_value' => config('order.third_client')['dailianmama']]);
 
+                    // 更新 third_order_no 为对应平台的订单号
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third_order_no')
+                        ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
+
                     // 下架其他代练平台订单
+                    $options = ['oid' => $orderDetails['show91_order_no']]; 
+                    Show91::grounding($options);
                     break;
                 default:
-                    # code...
+                    throw new DailianException('未找到订单对应的第三方平台!');
                     break;
             }
         }

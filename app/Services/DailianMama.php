@@ -97,7 +97,7 @@ class DailianMama
      */
     public static function releaseOrder($order, $bool = false)
     {
-    	$orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+    	$orderDetails = static::getOrderDetails($order->no);
         // 我们的服
         $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
         $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
@@ -159,10 +159,10 @@ class DailianMama
     	];
 
         if ($bool) {
-            if (! $orderDetails['third_order_no']) {
+            if (! $orderDetails['dailianmama_order_no']) {
                 throw new DailianException('无第三方订单，修改失败!');
             }
-            $options['orderid'] => $orderDetails['third_order_no'];
+            $options['orderid'] => $orderDetails['dailianmama_order_no'];
         }
 
     	$res = static::formDataRequest(config('dailianmama.url.releaseOrder'), $options);
@@ -178,8 +178,10 @@ class DailianMama
      */
     public static function upOrder($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-    		'orderid' => $order->no, // 订单id
+    		'orderid' => $orderDetails['dailianmama_order_no'], // 代练妈妈订单id
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
@@ -193,10 +195,12 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public static function closeOrder($order, $bool)
+    public static function closeOrder($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-    		'orderid' => $order->id,
+    		'orderid' => $orderDetails['dailianmama_order_no'],
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
@@ -210,11 +214,13 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public static function deleteOrder($order, $bool= false)
+    public static function deleteOrder($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->id,
-    	];
+    	$orderDetails = static::getOrderDetails($order->no);
+
+        $options = [
+            'orderid' => $orderDetails['dailianmama_order_no'],
+        ];
 
     	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
 
@@ -227,11 +233,14 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public static function orderinfo($order, $bool)
+    public static function orderinfo($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->id,
-    	];
+    	$orderDetails = static::getOrderDetails($order->no);
+
+        $options = [
+            'orderid' => $orderDetails['dailianmama_order_no'],
+        ]; 
+
 	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
 
 	    return static::returnErrorMessage($res);
@@ -288,13 +297,16 @@ class DailianMama
     /**
      * 订单操作
      * @param  [type] $order [description]
+     * @param  [type] $operate [操作编号，要看代练妈妈文档]
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
     public static function operationOrder($order, $operate, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-            'orderid'          => $order->no,
+            'orderid'          => $orderDetails['dailianmama_order_no'],
             'control'          => $operate, // 2002, 20010...
             // 'checkTradePwdRDM' => '', // 支付密码验证?
             // 'reason'           => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
@@ -319,7 +331,7 @@ class DailianMama
                 $options['requiretimehadd'] = bcadd(bcmul($order->addDays, 24), $order->addHours);
             break;
             case 22002: // 补款
-                $options['unitpriceadd'] = $order->addMoney; // 这里需要注意，这里要问仁德
+                $options['unitpriceadd'] = $order->addAmount; // 这里需要注意，这里要问仁德
             break;
             case 22003: // 修改密码
                 $options['accountpwd'] = $order->password;
@@ -338,8 +350,10 @@ class DailianMama
      */
     public static function chatOldList($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-	    	'orderid' => $order->no,
+	    	'orderid' => $orderDetails['dailianmama_order_no'],
 	    	'beginid' => '', // 开始id？
     	];
 
@@ -356,8 +370,10 @@ class DailianMama
      */
     public static function getOrderPictureList($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-    		'orderid' => $order->no, 
+    		'orderid' => $orderDetails['dailianmama_order_no'], 
     	];
     	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
 
@@ -371,8 +387,10 @@ class DailianMama
      */
     public static function addChat($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-    		'orderid' => $order->no,
+    		'orderid' => $orderDetails['dailianmama_order_no'],
     		'content' => '', // 订单留言,最大100
     	];
     	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
@@ -391,8 +409,10 @@ class DailianMama
      */
     public static function savePicture($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-    		'orderid' => $order->no,
+    		'orderid' => $orderDetails['dailianmama_order_no'],
     		'imgurl' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
     		'description' => '截图说明', // 截图说明
     	];
@@ -450,11 +470,23 @@ class DailianMama
      */
     public static function getOrderPrice($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
     	$options = [
-	    	'orderid' => $order->no,
+	    	'orderid' => $orderDetails['dailianmama_order_no'],
     	];
     	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
 
 	    return static::returnErrorMessage($res);
+    }
+
+    /**
+     * 获取订单详情
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
+    public static function getOrderDetails($orderNo)
+    {
+        return OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name')->toArray();
     }
 }

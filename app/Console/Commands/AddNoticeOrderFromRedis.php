@@ -46,6 +46,7 @@ class AddNoticeOrderFromRedis extends Command
     {
         $orderNos = Redis::hGetAll('notice_orders');
 
+        // 操作成功状态为1， 操作失败状态为0
         foreach ($orderNos as $orderNo => $statusAndAction) {
             $status = explode('-', $statusAndAction)[0];
             $action = explode('-', $statusAndAction)[1];
@@ -97,7 +98,7 @@ class AddNoticeOrderFromRedis extends Command
             $this->delRedisNoticeOrder($orderNo);
             $order = Order::where('no', $orderNo)->first();
             if ($order) {
-                if ($status == 1) {
+                if ($status == 1) { // 第三方做了成功的操作
                     $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
                     if (! $orderDetail['third_order_no']) {
