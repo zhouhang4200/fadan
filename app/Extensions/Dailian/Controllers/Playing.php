@@ -144,14 +144,41 @@ class Playing extends DailianAbstract implements DailianInterface
         }
     }
 
+    /**
+     * 接单之后，计算接单时间
+     * @return [type] [description]
+     */
     public function after()
     {
         if ($this->runAfter) {
             $now = Carbon::now()->toDateTimeString();
-
+            // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
+
+            // 根据userid, 判断是哪个平台接单
+            switch ($this->userId) {
+                case 8456: 
+                    // 更新第三方平台为 show91
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third')
+                        ->update(['field_value' => config('order.third_client')['show91']]);
+
+                    // 下架其他代练平台订单
+                    break;
+                case 8505: 
+                    // 更新第三方平台为 dailianmam
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third')
+                        ->update(['field_value' => config('order.third_client')['dailianmama']]);
+
+                    // 下架其他代练平台订单
+                    break;
+                default:
+                    # code...
+                    break;
+            }
         }
     }
 }

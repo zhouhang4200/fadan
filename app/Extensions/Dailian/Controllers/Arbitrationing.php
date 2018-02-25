@@ -6,6 +6,7 @@ use DB;
 use Redis;
 use Image;
 use App\Services\Show91;
+use App\Services\DailianMama;
 use App\Models\LevelingConsult;
 use App\Exceptions\DailianException; 
 
@@ -73,30 +74,58 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                    if (! $consult) {
-                        throw new DailianException('订单申诉和协商记录不存在');
-                    }
-
-                    $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
-
-                    if (! $thirdOrderNo) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-                        'appeal.title' => '申请仲裁',
-                        'appeal.content' => $consult->complain_message,
-                        'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                        'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                        'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                    ];
-                    // 结果
-                    Show91::addappeal($options);
+                if (! $consult) {
+                    throw new DailianException('订单申诉或协商记录不存在!');
                 }
+
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91申请仲裁接口
+                        $options = [
+                            'oid' => $orderDetails['show91_order_no'],
+                            'appeal.title' => '申请仲裁',
+                            'appeal.content' => $consult->complain_message,
+                            'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                            'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                            'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                        ];
+                        Show91::addappeal($options);
+                        break;
+                    case 2:
+                        // 代练妈妈申请仲裁接口
+                        DailianMama::operationOrder($this->order, 20007);
+                        break;
+                    default:
+                        throw new DailianException('不存在第三方接单平台!');
+                        break;
+                }
+                // if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
+                //     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                //     if (! $consult) {
+                //         throw new DailianException('订单申诉和协商记录不存在');
+                //     }
+
+                //     $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
+
+                //     if (! $thirdOrderNo) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
+                //         'appeal.title' => '申请仲裁',
+                //         'appeal.content' => $consult->complain_message,
+                //         'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                //         'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                //         'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                //     ];
+                //     // 结果
+                //     Show91::addappeal($options);
+                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Config;
 
+use DB;
+use Log;
 use Excel;
-use DB, Log, Exception;
+use Exception;
 use App\Models\Game;
+use GuzzleHttp\Client;
 use App\Services\Show91;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
@@ -333,10 +336,16 @@ class ConfigController extends Controller
 	        		$res = Show91::getAreas($options);
 	        	break;
 	        	case 2:
-	        		//
+	        		// $client = new Client;
+			        // $response = $client->request('GET', config('dailianmama.url.gameInfo'));
+			        // $res = $response->getBody()->getContents();
+
+			        // if (! $res) {
+			        // 	throw new DailianException('请求接口错误!');
+			        // }
+			        // $res = json_decode($res, true);
 	        	break;
 	        }
-
 
 	        $thirdAreas = [];
 	        $thirdAreaArr = [];

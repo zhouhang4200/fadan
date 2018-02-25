@@ -5,9 +5,10 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use App\Services\Show91;
+use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
-use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
@@ -40,7 +41,7 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-
+            // 之前的状态
             $this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
@@ -54,14 +55,12 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
+            // 后续操作
             $this->after();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
-
     	} catch (DailianException $e) {
     		DB::rollBack();
-
             throw new DailianException($e->getMessage());
     	}
     	DB::commit();
@@ -127,22 +126,41 @@ class Complete extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'oid' => $orderDetails['third_order_no'], 
-                        'p' => config('show91.password'),
-                    ];
-                    // 结果
-                    Show91::accept($options);
+                switch ($orderDetails['thrid']) {
+                    case 1:
+                        // 91 完成接口
+                        $options = [
+                            'oid' => $orderDetails['show91_order_no'], 
+                            'p' => config('show91.password'),
+                        ];
+                        Show91::accept($options);
+                        break;
+                    case 2:
+                        // 代练妈妈完成接口
+                        DailianMama::operationOrder($this->order, 20013);
+                        break;
+                    default:
+                        throw new DailianException('第三方接单平台不存在!');
+                        break;
                 }
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'], 
+                //         'p' => config('show91.password'),
+                //     ];
+                //     // 结果
+                //     Show91::accept($options);
+                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

@@ -276,8 +276,9 @@ class LevelingController
                 'consult' => 2,
                 'revoke_message' => $content,
             ];
-
+            // 更新协商信息到协商表
             LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+            // 调用工厂模式协商操作
 			DailianFactory::choose('revoke')->run($order->no, $this->userId, 0);
 
     	} catch (DailianException $e) {

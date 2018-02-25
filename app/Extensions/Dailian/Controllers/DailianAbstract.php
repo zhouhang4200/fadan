@@ -6,6 +6,7 @@ use DB;
 use Asset;
 use App\Models\User;
 use App\Models\Order; 
+use App\Models\OrderDetail;
 use App\Models\OrderHistory; 
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
@@ -110,5 +111,21 @@ abstract class DailianAbstract
     public function after() 
     {
         
+    }
+
+    public function checkShow91AndDailianMamaOrder($order)
+    {
+        $orderDetails = OrderDetail::where('order_no', $order->no)
+            ->pluck('field_value', 'field_name')
+            ->toArray();
+
+        if (! $orderDetails['show91_order_no']) {
+            throw new DailianException('91订单号不存在');
+        }
+
+        if (! $orderDetails['dailianmama_order_no']) {
+            throw new DailianException('代练妈妈订单号不存在');
+        }
+        return $orderDetails;
     }
 }

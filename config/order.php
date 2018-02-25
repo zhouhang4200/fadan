@@ -156,6 +156,12 @@ return [
         3 => '代练通',
         4 => '易代练',
     ],
+
+    // 外部平台对应关系
+    'third_client' => [
+        'show91' => 1,
+        'dailianmama' => 2,
+    ],
     
     // 91平台代练类型
     'show91_plays' => [

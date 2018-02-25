@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Redis;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
 /**
@@ -63,5 +64,26 @@ class Abnormal extends DailianAbstract implements DailianInterface
 
     public function after()
     {
+        if ($this->runAfter) {
+            try {
+                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+
+                switch ($orderDetails['third']) {
+                    case 1:
+                        throw new Exception('91平台没有此操作!');
+                        break;
+                    case 2:
+                        // 代练妈妈异常接口
+                        DailianMama::operationOrder($this->order, 20004);
+                        break;
+                    default:
+                        throw new DailianException('不存在第三方接单平台!');
+                        break;
+                }
+                return true;
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
+            }
+        }
     }
 }

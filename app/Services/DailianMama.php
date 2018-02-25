@@ -25,8 +25,10 @@ class DailianMama
     public static function formDataRequest($url, $options = [], $method = 'POST')
     {
         $params = [
-            'account' => config('show91.account'),
-            'sign' => config('show91.sign'),
+            'subid' => '', // 子账号id?
+            'sourceid' => 1, // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign' => 1, // 签名 
         ];
 
         $options = array_merge($params, $options);
@@ -52,8 +54,10 @@ class DailianMama
     public static function normalRequest($url, $options = [], $method = 'POST')
     {
         $params = [
-            'account' => config('show91.account'),
-            'sign' => config('show91.sign'),
+            'subid' => '', // 子账号id?
+            'sourceid' => 1, // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign' => 1, // 签名 
         ];
 
         $options = array_merge($params, $options);
@@ -62,7 +66,27 @@ class DailianMama
         $response = $client->request($method, $url, [
             'query' => $options,
         ]);
+
         return $response->getBody()->getContents();
+    }
+
+    /**
+     * 返回接口自定义错误信息
+     * @param  [type] $res [description]
+     * @return [type]      [description]
+     */
+    public static function returnErrorMessage($res = null)
+    {
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res;
     }
 
     /**
@@ -71,7 +95,7 @@ class DailianMama
      * @param  boolean $bool  [默认为false， 为true时修改订单]
      * @return [type]         [description]
      */
-    public function releaseOrder($order, $bool = false)
+    public static function releaseOrder($order, $bool = false)
     {
     	$orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
         // 我们的服
@@ -92,50 +116,54 @@ class DailianMama
                 ->where('field_value', $orderDetails['region'])
                 ->value('id');
         // 第三方区
-        $thirdAreaId = ThirdArea::where('game_id', $order->game_id)
+        $thirdAreaName = ThirdArea::where('game_id', $order->game_id)
                 ->where('third_id', 2)
                 ->where('area_id', $areaId)
-                ->value('third_area_id') ?: '';
+                ->value('third_area_name') ?: '';
         // 第三方服
-        $thirdServerId = ThirdServer::where('game_id', $order->game_id)
+        $thirdServerName = ThirdServer::where('game_id', $order->game_id)
                 ->where('third_id', 2)
                 ->where('server_id', $serverId)
-                ->value('third_server_id') ?: '';
+                ->value('third_server_name') ?: '';
         // 第三方游戏
-        $thirdGameId = ThirdGame::where('game_id', $order->game_id)
+        $thirdGameName = ThirdGame::where('game_id', $order->game_id)
                 ->where('third_id', 2)
-                ->value('third_game_id') ?: '';
+                ->value('third_game_name') ?: '';
 
     	$options = [
-    		'orderid' => $order->no,
-    		'game_name' => $order->game_name,
-    		'areaname' => $order->area_name,
-    		'servername' => $order->server_name,
-    		'ordertitle' => $order->title,
-    		'orderorgin' => 0, // 0普通， 1私有， 2优质
-    		'unitprice' => $order->amount, // 订单金额
-    		'safedeposit' => $orderDetails['security_deposit'], // 安全保证金
-    		'efficiency' => $orderDetails['efficiency_deposit'], // 效率保证金
-    		'requiretime' => $orderDetails['efficiency_deposit'] ? bcadd(bcmul($orderDetails['efficiency_deposit'], 24), $orderDetails['game_leveling_hour']) : $orderDetails['game_leveling_hour'], // 要求代练时间
-    		'accountvalue' => $orderDetails['account'],
-    		'accountpwd' => $orderDetails['password'],
-    		'rolename' => $orderDetails['role'],
-    		'dlcontent' => $orderDetails['game_leveling_requirements'], // 代练要求
-    		'dltype' => '排位', // 排位，陪玩， 晋级， 定位, 其他...?
-    		// 'orginuserid' => '', // 发布私有订单使用?
-    		'otherdesc' => '无', // 当前游戏说明?
-    		'price' => '0', // 备注金额?
-    		'title' => '无', // 备注标题?
-    		'content' => '无', // 备注内容?
-    		// 'linktel' => '', // 发单人联系电话?
-    		// 'qq' => '', // 发单人联系qq？
-    		// 'saveuserbak' => '' // 值为save时只修改备注 ?
-    		'autologinphone' => $orderDetails['client_phone'], // 号主电话?
-    		// 'subid' => '', // 子账号id?
-    		'sourceid' => 1, // 与代练妈妈约定的标识
-    		'timestamp' => time(), // unix时间戳
-    		'sign' => 1, // 签名 
+            'game_name'      => $thirdGameName,
+            'areaname'       => $thirdAreaName,
+            'servername'     => $thirdServerName,
+            'ordertitle'     => $orderDetails['game_leveling_title'], // 代练标题
+            'orderorgin'     => 0, // 0普通， 1私有， 2优质
+            'unitprice'      => $order->amount, // 订单金额
+            'safedeposit'    => $orderDetails['security_deposit'], // 安全保证金
+            'efficiency'     => $orderDetails['efficiency_deposit'], // 效率保证金
+            'requiretime'    => $orderDetails['efficiency_deposit'] ? 
+            bcadd(bcmul($orderDetails['efficiency_deposit'], 24), $orderDetails['game_leveling_hour'])
+            : $orderDetails['game_leveling_hour'], // 要求代练时间
+            'accountvalue'   => $orderDetails['account'],
+            'accountpwd'     => $orderDetails['password'],
+            'rolename'       => $orderDetails['role'],
+            'dlcontent'      => $orderDetails['game_leveling_requirements'], // 代练要求
+            'dltype'         => '排位', // 排位，陪玩， 晋级， 定位, 其他...?
+            // 'orginuserid' => '', // 发布私有订单使用?
+            'otherdesc'      => '无', // 当前游戏说明?
+            'price'          => $order->original_amount, // 备注金额? => 来源价格
+            'title'          => '无', // 备注标题?
+            'content'        => $orderDetails['cstomer_service_remark'], // 备注内容?
+            // 'linktel'     => '', // 发单人联系电话?
+            // 'qq'          => '', // 发单人联系qq？
+            // 'saveuserbak' => '' // 值为save时只修改备注 ?
+            'autologinphone' => $orderDetails['client_phone'], // 号主电话?
     	];
+
+        if ($bool) {
+            if (! $orderDetails['third_order_no']) {
+                throw new DailianException('无第三方订单，修改失败!');
+            }
+            $options['orderid'] => $orderDetails['third_order_no'];
+        }
 
     	$res = static::formDataRequest(config('dailianmama.url.releaseOrder'), $options);
 
@@ -148,17 +176,13 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function upOrder($order, $bool = false)
+    public static function upOrder($order, $bool = false)
     {
     	$options = [
     		'orderid' => $order->no, // 订单id
-    		'subid' => '', // 子账号id？
-    		'sourceid' => 1, // 与代练妈妈约定的商户标识
-    		'timestamp' => time(), 
-    		'sign' => '', // 签名
     	];
 
-    	$res = static::formDataRequest(config('dailianmama.url.upOrder'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
 
         return static::returnErrorMessage($res);
     }
@@ -169,17 +193,13 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function closeOrder($order, $bool)
+    public static function closeOrder($order, $bool)
     {
     	$options = [
     		'orderid' => $order->id,
-    		'subid' => '', // 子账号id?
-    		'sourceid' => '', 
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
 
-    	$res = static::formDataRequest(config('dailianmama.url.closeOrder'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
 
         return static::returnErrorMessage($res);
     }
@@ -190,17 +210,13 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function deleteOrder($order, $bool= false)
+    public static function deleteOrder($order, $bool= false)
     {
     	$options = [
     		'orderid' => $order->id,
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
 
-    	$res = static::formDataRequest(config('dailianmama.url.deleteOrder'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
 
         return static::returnErrorMessage($res);
     }
@@ -211,16 +227,12 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function orderinfo($order, $bool)
+    public static function orderinfo($order, $bool)
     {
     	$options = [
     		'orderid' => $order->id,
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
-	    $res = static::formDataRequest(config('dailianmama.url.orderinfo'), $options);
+	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -231,15 +243,10 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function refreshAllOrderTime($order = null, $bool = false)
+    public static function refreshAllOrderTime($order = null, $bool = false)
     {
-    	$options = [
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-	    $res = static::formDataRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
+    	$options = [];
+	    $res = static::normalRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -251,16 +258,12 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getReleaseOrderStatusList($order = null, $bool = false)
+    public static function getReleaseOrderStatusList($order = null, $bool = false)
     {
     	$options = [
     		'orderstatus' => '', // 订单状态
-    		'subid' => '', // 子账号id
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -271,17 +274,13 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function checkTradePassword($order = null, $bool = false)
+    public static function checkTradePassword($order = null, $bool = false)
     {
     	$options = [
     		'tradePassword' => '', // 支付密码
     		'type' => md5(''), // 类型
-    		'subid' => '', 
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.checkTradePassword'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.checkTradePassword'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -292,24 +291,41 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function operationOrder($order, $bool = false)
+    public static function operationOrder($order, $operate, $bool = false)
     {
     	$options = [
-    		'orderid' => $order->no,
-    		'control' => '', // 2002, 20010...
-    		'checkTradePwdRDM' => '', // 支付密码验证?
-    		'reason' => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
-    		'refundment' => '', // 上家支付的代练费: 20006 申请撤销?
-    		'bail' => '', // 赔偿打手的双金：20006 申请撤销 ?
-    		'requiretimehadd' => '', // 增加的小时数 22001补时?
-    		'unitpriceadd' => '', // 增加的金额数, 22002 补款?
-    		'accountpwd' => '', // 密码， 22003修改密码?
-    		'subid' => '', 
-    		'sourceid' => '',
-    		'timestamp' => time(), 
-    		'sign' => '', 
+            'orderid'          => $order->no,
+            'control'          => $operate, // 2002, 20010...
+            // 'checkTradePwdRDM' => '', // 支付密码验证?
+            // 'reason'           => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
+            // 'refundment'       => '', // 上家支付的代练费: 20006 申请撤销?
+            // 'bail'             => '', // 赔偿打手的双金：20006 申请撤销 ?
+            // 'requiretimehadd'  => '', // 增加的小时数 22001补时?
+            // 'unitpriceadd'     => '', // 增加的金额数, 22002 补款?
+            // 'accountpwd'       => '', // 密码， 22003修改密码?
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.operationOrder'), $options);
+
+        $consult = LevelingConsult::where('order_no', $order->no)->first();
+        switch ($operate) {
+            case 20006: // 申请撤销
+                $options['reason'] = $consult->revoke_message;
+                $options['refundment'] = $consult->amount;
+                $options['bail'] = $consult->deposit;
+            break;
+            case 20007: // 申请仲裁
+                $options['reason'] = $consult->complain_message;
+            break;
+            case 22001: // 补时
+                $options['requiretimehadd'] = bcadd(bcmul($order->addDays, 24), $order->addHours);
+            break;
+            case 22002: // 补款
+                $options['unitpriceadd'] = $order->addMoney; // 这里需要注意，这里要问仁德
+            break;
+            case 22003: // 修改密码
+                $options['accountpwd'] = $order->password;
+            break;
+        }
+    	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -320,18 +336,14 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function chatOldList($order, $bool = false)
+    public static function chatOldList($order, $bool = false)
     {
     	$options = [
 	    	'orderid' => $order->no,
 	    	'beginid' => '', // 开始id？
-	    	'subid' => '',
-	    	'sourceid' => '',
-	    	'timestamp' => time(),
-	    	'sign' =>'',
     	];
 
-    	$res = static::formDataRequest(config('dailianmama.url.chatOldList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.chatOldList'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -342,16 +354,12 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getOrderPictureList($order, $bool = false)
+    public static function getOrderPictureList($order, $bool = false)
     {
     	$options = [
     		'orderid' => $order->no, 
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.getOrderPictureList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -361,17 +369,13 @@ class DailianMama
      * @param [type]  $order [description]
      * @param boolean $bool  [description]
      */
-    public function addChat($order, $bool = false)
+    public static function addChat($order, $bool = false)
     {
     	$options = [
     		'orderid' => $order->no,
     		'content' => '', // 订单留言,最大100
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.addChat'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -385,16 +389,12 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function savePicture($order, $bool = false)
+    public static function savePicture($order, $bool = false)
     {
     	$options = [
     		'orderid' => $order->no,
     		'imgurl' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
     		'description' => '截图说明', // 截图说明
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
     	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
 
@@ -408,15 +408,9 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getTempUploadKey($order = null, $bool = false)
+    public static function getTempUploadKey($order = null, $bool = false)
     {
-    	$options = [
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-    	$res = static::formDataRequest(config('dailianmama.url.getTempUploadKey'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options = []);
 
 	    return static::returnErrorMessage($res);	
     }
@@ -427,7 +421,7 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function releaseOrderManageList($order, $bool = false)
+    public static function releaseOrderManageList($order, $bool = false)
     {
     	$options = [
     		'orderstatus' => '', // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
@@ -441,13 +435,9 @@ class DailianMama
     						// 27状态降序， 28状态升序， 29申请验收时间升序， 30申请验收时间降序?
     		'currentNo' => '', // 要查询当前页数，默认查询第一页?
     		'pageSize' => '', // 每页条数， 为空默认10条?
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
     	];
 
-    	$res = static::formDataRequest(config('dailianmama.url.releaseOrderManageList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.releaseOrderManageList'), $options);
 
 	    return static::returnErrorMessage($res);
     }
@@ -458,16 +448,12 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getOrderPrice($order, $bool = false)
+    public static function getOrderPrice($order, $bool = false)
     {
     	$options = [
 	    	'orderid' => $order->no,
-	    	'subid' => '',
-	    	'sourceid' => '',
-	    	'timestamp' => time(),
-	    	'sign' => '',
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.getOrderPrice'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
 
 	    return static::returnErrorMessage($res);
     }

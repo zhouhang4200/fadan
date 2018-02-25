@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'urls' => [
+	'url' => [
 			'releaseOrder'              => 'http://inf.dailianmama.com/releaseOrder.intf', // 发布订单和修改订单接口
 			'upOrder'                   => 'http://inf.dailianmama.com/upOrder.intf', // 上架
 			'closeOrder'                => 'http://inf.dailianmama.com/closeOrder.intf', // 下架
@@ -20,5 +20,6 @@ return [
 			'releaseOrderManageList'    => 'http://inf.dailianmama.com/releaseOrderManageList.intf', 
 											//发单管理接口，查询发布时间在3个月内的订单
 			'getOrderPrice'             => 'http://inf.dailianmama.com/getOrderPrice.intf', // 获得订单价格
+			'gameInfo' 					=> 'http://static.dailianmama.com/tool/dlmm/gameinfo.html', // 游戏区服详情
 	],
 ];
