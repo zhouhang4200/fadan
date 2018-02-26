@@ -359,17 +359,17 @@ class OrderRepository
 
                         $days = $detail['game_leveling_day'] ?? 0;
                         $hours = $detail['game_leveling_hour'] ?? 0;
-                        $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+                        $detail['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
 
                         // 如果存在接单时间
-                        if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+                        if (isset($detail['receiving_time']) && !empty($detail['receiving_time'])) {
                             // 计算到期的时间戳
-                            $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+                            $expirationTimestamp = strtotime($detail['receiving_time']) + $days * 86400 + $hours * 3600;
                             // 计算剩余时间
                             $leftSecond = $expirationTimestamp - time();
                             $leftTime = Sec2Time($leftSecond); // 剩余时间
                         } else {
-                            $orderCurrent['left_time'] = '';
+                            $leftTime = '';
                         }
 
                         if (isset($detail['game_leveling_day'])) {
