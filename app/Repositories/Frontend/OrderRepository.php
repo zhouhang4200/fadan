@@ -163,7 +163,7 @@ class OrderRepository
     public function levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
-        $type = Auth::user()->type; // 账号类型是接单还是发单
+        $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
 
         \DB::connection()->enableQueryLog();
         $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id',

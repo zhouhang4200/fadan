@@ -36,10 +36,17 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
+            <label class="layui-form-label">代充</label>
             <div class="layui-input-block">
                 <input type="radio" name="type" value="1" title="接单" checked>
                 <input type="radio" name="type" value="2" title="发单">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">代练</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="leveling_type" value="1" title="接单" >
+                <input type="radio" name="leveling_type" value="2" title="发单" checked >
             </div>
         </div>
         <div class="layui-form-item">
