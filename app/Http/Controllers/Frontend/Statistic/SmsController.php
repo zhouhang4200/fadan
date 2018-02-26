@@ -28,8 +28,8 @@ class SmsController extends Controller
         $fullUrl = $request->fullUrl();
 
 
-        $record = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))
-            ->where('user_id', Auth::user()->getPrimaryUserId())
+        // $record = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))
+        //     ->where('user_id', Auth::user()->getPrimaryUserId())
 
         $query = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))->where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('startDate', 'endDate'))
