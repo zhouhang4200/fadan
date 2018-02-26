@@ -130,13 +130,13 @@ class IndexController extends Controller
                         $amount = $orderInfo['leveling_consult']['amount'];
                     }
                     // 支付金额
-                    $orderCurrent['payment_amount'] = $amount !=0 ?  $amount:  $orderInfo['amount'];
+                    $orderCurrent['payment_amount'] = $amount !=0 ?  $amount + 0:  $orderInfo['amount'] + 0;
 
-                    $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'];
-                    $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'];
-                    $orderCurrent['poundage'] = (float)$orderCurrent['poundage'];
+                    $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'] + 0;
+                    $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'] + 0;
+                    $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
                     // 利润
-                    $orderCurrent['profit'] = (float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage'];
+                    $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
                 }
 
                 $days = $orderCurrent['game_leveling_day'] ?? 0;
@@ -154,14 +154,14 @@ class IndexController extends Controller
                     $orderCurrent['left_time'] = '';
                 }
                 // 去掉所有金额后面的无效0
-                $orderCurrent['payment_amount'] = empty($orderCurrent['payment_amount']) ?  ''  :  (float)$orderCurrent['payment_amount']  + 0;
-                $orderCurrent['get_amount'] = empty($orderCurrent['get_amount']) ?  '' :  (float)$orderCurrent['get_amount']  + 0;
-                $orderCurrent['poundage'] = empty($orderCurrent['poundage']) ?  ''  :  (float)$orderCurrent['poundage']  + 0;
-                $orderCurrent['profit'] = empty($orderCurrent['profit']) ?  '' : (float)$orderCurrent['profit'] + 0;
-                $orderCurrent['source_price'] = empty($orderCurrent['source_price']) ?  '' :  (float)$orderCurrent['source_price'] + 0;
-                $orderCurrent['game_leveling_amount'] = empty($orderCurrent['game_leveling_amount']) ?  '' :  (float)$orderCurrent['game_leveling_amount'] + 0;
-                $orderCurrent['amount'] = empty($orderCurrent['amount']) ?  '' : (float)$orderCurrent['amount'] + 0;
-                $orderCurrent['original_amount'] = empty($orderCurrent['original_amount']) ?  '' :  (float)$orderCurrent['original_amount'] + 0;
+//                $orderCurrent['payment_amount'] = empty($orderCurrent['payment_amount']) ?  ''  :  (float)$orderCurrent['payment_amount']  + 0;
+//                $orderCurrent['get_amount'] = empty($orderCurrent['get_amount']) ?  '' :  (float)$orderCurrent['get_amount']  + 0;
+//                $orderCurrent['poundage'] = empty($orderCurrent['poundage']) ?  ''  :  (float)$orderCurrent['poundage']  + 0;
+//                $orderCurrent['profit'] = empty($orderCurrent['profit']) ?  '' : (float)$orderCurrent['profit'] + 0;
+//                $orderCurrent['source_price'] = empty($orderCurrent['source_price']) ?  '' :  (float)$orderCurrent['source_price'] + 0;
+//                $orderCurrent['game_leveling_amount'] = empty($orderCurrent['game_leveling_amount']) ?  '' :  (float)$orderCurrent['game_leveling_amount'] + 0;
+//                $orderCurrent['amount'] = empty($orderCurrent['amount']) ?  '' : (float)$orderCurrent['amount'] + 0;
+//                $orderCurrent['original_amount'] = empty($orderCurrent['original_amount']) ?  '' :  (float)$orderCurrent['original_amount'] + 0;
 
                 $orderArr[] = $orderCurrent;
             }
@@ -288,23 +288,23 @@ class IndexController extends Controller
                 $amount = $detail['leveling_consult']['amount'];
             }
             // 支付金额
-            $detail['payment_amount'] = $amount !=0 ?  $amount:  $detail['amount'];
+            $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $detail['amount'] + 0;
 
 //            $detail['payment_amount'] = (float)$detail['payment_amount'];
-            $detail['get_amount'] = (float)$detail['get_amount'];
-            $detail['poundage'] = (float)$detail['poundage'];
+            $detail['get_amount'] = (float)$detail['get_amount'] + 0;
+            $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
-            $detail['profit'] = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
+            $detail['profit'] = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
         }
-        // 去掉所有金额后面的无效0
-        $detail['payment_amount'] = empty($detail['payment_amount']) ?  ''  :  (float)$detail['payment_amount']  + 0;
-        $detail['get_amount'] = empty($detail['get_amount']) ?  '' :  (float)$detail['get_amount']  + 0;
-        $detail['poundage'] = empty($detail['poundage']) ?  ''  :  (float)$detail['poundage']  + 0;
-        $detail['profit'] = empty($detail['profit']) ?  '' : (float)$detail['profit'] + 0;
-        $detail['source_price'] = empty($detail['source_price']) ?  '' :  (float)$detail['source_price'] + 0;
-        $detail['game_leveling_amount'] = empty($detail['game_leveling_amount']) ?  '' :  (float)$detail['game_leveling_amount'] + 0;
-        $detail['amount'] = empty($detail['amount']) ?  '' : (float)$detail['amount'] + 0;
-        $detail['original_amount'] = empty($detail['original_amount']) ?  '' :  (float)$detail['original_amount'] + 0;
+//        // 去掉所有金额后面的无效0
+//        $detail['payment_amount'] = empty($detail['payment_amount']) ?  ''  :  (float)$detail['payment_amount']  + 0;
+//        $detail['get_amount'] = empty($detail['get_amount']) ?  '' :  (float)$detail['get_amount']  + 0;
+//        $detail['poundage'] = empty($detail['poundage']) ?  ''  :  (float)$detail['poundage']  + 0;
+//        $detail['profit'] = empty($detail['profit']) ?  '' : (float)$detail['profit'] + 0;
+//        $detail['source_price'] = empty($detail['source_price']) ?  '' :  (float)$detail['source_price'] + 0;
+//        $detail['game_leveling_amount'] = empty($detail['game_leveling_amount']) ?  '' :  (float)$detail['game_leveling_amount'] + 0;
+//        $detail['amount'] = empty($detail['amount']) ?  '' : (float)$detail['amount'] + 0;
+//        $detail['original_amount'] = empty($detail['original_amount']) ?  '' :  (float)$detail['original_amount'] + 0;
 
         $days = $detail['game_leveling_day'] ?? 0;
         $hours = $detail['game_leveling_hour'] ?? 0;
