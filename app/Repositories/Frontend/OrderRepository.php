@@ -341,7 +341,7 @@ class OrderRepository
                             $getAmount = (float)$detail['get_amount'];
                             $poundage  = (float)$detail['poundage'];
                             // 利润
-                            $profit = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
+                            $profit = (float)$detail['source_price'] - (float)$detail['payment_amount'] + (float)$detail['get_amount'] - (float)$detail['poundage'];
                         }
 
                         // 如果存在接单时间
