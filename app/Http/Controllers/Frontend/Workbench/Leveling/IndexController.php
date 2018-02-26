@@ -153,6 +153,15 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
+                // 去掉所有金额后面的无效0
+                $orderCurrent['payment_amount'] = $orderCurrent['payment_amount']  + 0;
+                $orderCurrent['get_amount'] = $orderCurrent['get_amount']  + 0;
+                $orderCurrent['poundage'] = $orderCurrent['poundage']  + 0;
+                $orderCurrent['profit'] = $orderCurrent['profit'] + 0;
+                $orderCurrent['source_price'] = $orderCurrent['source_price'] + 0;
+                $orderCurrent['game_leveling_amount'] = $orderCurrent['game_leveling_amount'] + 0;
+                $orderCurrent['amount'] = $orderCurrent['amount'] + 0;
+                $orderCurrent['original_amount'] = $orderCurrent['original_amount'] + 0;
 
                 $orderArr[] = $orderCurrent;
             }
@@ -287,6 +296,13 @@ class IndexController extends Controller
             // 利润
             $detail['profit'] = (float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage'];
         }
+        // 去掉所有金额后面的无效0
+        $detail['payment_amount'] = $detail['payment_amount']  + 0;
+        $detail['get_amount'] = $detail['get_amount']  + 0;
+        $detail['poundage'] = $detail['poundage']  + 0;
+        $detail['profit'] = $detail['profit'] + 0;
+        $detail['source_price'] = $detail['source_price'] + 0;
+        $detail['game_leveling_amount'] = $detail['game_leveling_amount'] + 0;
 
         $days = $detail['game_leveling_day'] ?? 0;
         $hours = $detail['game_leveling_hour'] ?? 0;
