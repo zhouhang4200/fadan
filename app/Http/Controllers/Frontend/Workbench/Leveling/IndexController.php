@@ -597,30 +597,6 @@ class IndexController extends Controller
                         }
                     }
 
-                    // 其它信息只需改订单详情表
-//                    foreach ($requestData as $key => $value) {
-//                        if (isset($orderDetail[$key])) {
-//                            if ($orderDetail[$key] != $value) {
-//                                // 更新值
-//                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
-//                                    'field_value' => $value
-//                                ]);
-//                                $changeHistory = $orderDetailDisplayName[$key] . '更改前：' . $orderDetail[$key] . ' 更改后：' . $requestData[$key];
-//                                $history[] = [
-//                                    'order_no' => $orderNo,
-//                                    'user_id' => auth()->user()->id,
-//                                    'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
-//                                    'name' => '编辑',
-//                                    'type' => 22,
-//                                    'before' => serialize($orderDetail[$key]),
-//                                    'after' => serialize($requestData[$key]),
-//                                    'description' => $changeHistory,
-//                                ];
-//                            }
-//                        }
-//                    }
-
-
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 

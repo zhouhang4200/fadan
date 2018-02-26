@@ -165,7 +165,6 @@ class OrderRepository
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
 
-        \DB::connection()->enableQueryLog();
         $query = Order::select('id','no', 'foreign_order_no', 'source','status','goods_id','goods_name','service_id',
             'service_name', 'game_id','game_name','original_price','price','quantity','original_amount','amount','remark',
             'creator_user_id','creator_primary_user_id','gainer_user_id','gainer_primary_user_id','created_at'
@@ -221,7 +220,6 @@ class OrderRepository
         $query->orderBy('id', 'desc');
 
         $data = $query->paginate($pageSize);
-        myLog('query', [\DB::getQueryLog(), $type]);
 
         return $data;
     }
@@ -330,9 +328,9 @@ class OrderRepository
                             $profit = bcsub(bcadd($getAmount, bcsub($detail['source_price'], $payment)), $poundage);
                         }
 
-                        if (in_array($detail['status'], [19, 20, 21])){
+                        if (in_array($v['status'], [19, 20, 21])){
                             // 支付金额
-                            if ($detail['status'] == 21) {
+                            if ($v['status'] == 21) {
                                 $amount = $detail['leveling_consult']['api_amount'];
                             } else {
                                 $amount = $detail['leveling_consult']['amount'];
