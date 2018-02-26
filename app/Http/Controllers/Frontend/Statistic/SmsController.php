@@ -33,7 +33,7 @@ class SmsController extends Controller
             ->orderBy('date', 'desc');
 
         if ($export) {
-            export(['发送时间', '发送条数'], '短信发送统计',$query,  function ($query, $out){
+            export(['发送时间', '发送条数'], '短信发送统计', $query,  function ($query, $out){
                 $query->chunk(1000, function ($items) use ($out) {
                     $data = $items->toArray();
                     foreach ($data as $k => $v) {
