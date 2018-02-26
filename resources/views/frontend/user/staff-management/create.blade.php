@@ -92,12 +92,10 @@
             var error = "{{ $errors->count() > 0 ? '账号或昵称已经存在!' : '' }}";
             var fail = "{{ session('fail') ?: '' }}";
 
-            if(fail) {
-                layer.msg(fail, {icon: 5, time:1500});
-            }
-
             if (error) {
                 layer.msg(error, {icon: 5, time:1500});
+            } else if (fail) {
+                layer.msg(fail, {icon: 5, time:1500});
             }
   
             form.verify({

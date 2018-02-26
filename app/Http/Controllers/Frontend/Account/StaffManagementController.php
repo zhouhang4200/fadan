@@ -155,9 +155,9 @@ class StaffManagementController extends Controller
      */
     public function store(Request $request)
     {
-    	DB::beginTransaction();
+        $this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
+        DB::beginTransaction();
         try {
-            $this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
             $data = $request->except('role');
             $data['password'] = bcrypt($request->password);
             $data['api_token'] = Str::random(25);

@@ -211,7 +211,7 @@ class TestController extends Controller
 
     public function index()
     {
-        
+        $this->testClone();
         try {
             $order = Order::find(9);
             throw new Exception('我是错误信息');
@@ -426,4 +426,22 @@ Iuli3G2IJNYc9Cwu
             return false;
         }
     }
+
+    public function testClone()
+    {
+        $order = Order::find(12);
+
+        $cloneOrder = clone $order;
+        // $order->no = 1231;
+        $this->copyClone($cloneOrder);
+        dd($cloneOrder);
+
+    }
+
+    public function copyClone($order)
+    {
+        // $order->no = 000;
+        dd($order->no);
+    }
+
 }

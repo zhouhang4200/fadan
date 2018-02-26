@@ -56,11 +56,8 @@ class UserController extends Controller
     public function uploadImages(Request $request)
     {
         if ($request->hasFile('file')) {
-
             $file = $request->file('file');
-
             $path = public_path("/resources/users/".date('Ymd')."/");
-
             $imagePath = $this->uploadImage($file, $path);
 
             return response()->json(['code' => 1, 'path' => $imagePath]);
@@ -78,25 +75,19 @@ class UserController extends Controller
         $extension = $file->getClientOriginalExtension();
 
         if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
-
             return response()->json(['code' => 2, 'path' => $imagePath]);
         }
 
         if (! $file->isValid()) {
-
             return response()->json(['code' => 2, 'path' => $imagePath]);
         }
 
         if (!file_exists($path)) {
-
             mkdir($path, 0755, true);
         }
         $randNum = rand(1, 100000000) . rand(1, 100000000);
-
         $fileName = time().substr($randNum, 0, 6).'.'.$extension;
-
         $path = $file->move($path, $fileName);
-
         $path = strstr($path, '/resources');
 
         return str_replace('\\', '/', $path);

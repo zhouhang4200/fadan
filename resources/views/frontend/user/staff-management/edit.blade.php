@@ -31,8 +31,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
-                <input type="radio" name="type" value="1" title="接单" checked="">
-                <input type="radio" name="type" value="2" title="发单">
+                <input type="radio" name="type" value="1" title="接单" {{ $user->type == 1 ? 'checked' : '' }}>
+                <input type="radio" name="type" value="2" title="发单" {{ $user->type == 2 ? 'checked' : '' }}>
             </div>
         </div>
         <div class="layui-form-item">

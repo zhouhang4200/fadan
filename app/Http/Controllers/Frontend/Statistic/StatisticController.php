@@ -39,33 +39,33 @@ class StatisticController extends Controller
         }
 
     	$query = EmployeeStatistic::whereIn('user_id', $userIds)
-    				->filter($filters)
-    				->select(DB::raw('
-                        user_id, 
-                        username, 
-                        name, 
-                        sum(complete_order_count) as complete_order_count, 
-                        sum(revoke_order_count) as revoke_order_count, 
-                        sum(arbitrate_order_count) as arbitrate_order_count, 
-                        sum(profit) as profit, 
-                        sum(complete_order_amount) as complete_order_amount
-                    '))
-    				->groupBy('user_id');
+			->filter($filters)
+			->select(DB::raw('
+                user_id, 
+                username, 
+                name, 
+                sum(complete_order_count) as complete_order_count, 
+                sum(revoke_order_count) as revoke_order_count, 
+                sum(arbitrate_order_count) as arbitrate_order_count, 
+                sum(profit) as profit, 
+                sum(complete_order_amount) as complete_order_amount
+            '))
+			->groupBy('user_id');
 
     	$datas = $query->paginate(config('frontend.page'));
         $excelDatas = $query->get();
 
     	$totalData = EmployeeStatistic::whereIn('user_id', $userIds)
-    				->filter($filters)
-    				->select(DB::raw('
-                        sum(complete_order_count) as total_complete_order_count, 
-                        sum(revoke_order_count) as total_revoke_order_count, 
-                        sum(arbitrate_order_count) as total_arbitrate_order_count, 
-                        sum(profit) as total_profit, 
-                        sum(complete_order_amount) as total_complete_order_amount, 
-                        count(distinct(user_id)) as total_user_id_count
-                    '))
-    				->first();
+			->filter($filters)
+			->select(DB::raw('
+                sum(complete_order_count) as total_complete_order_count, 
+                sum(revoke_order_count) as total_revoke_order_count, 
+                sum(arbitrate_order_count) as total_arbitrate_order_count, 
+                sum(profit) as total_profit, 
+                sum(complete_order_amount) as total_complete_order_amount, 
+                count(distinct(user_id)) as total_user_id_count
+            '))
+			->first();
 
     	if ($request->export) {
     		if ($datas->count() < 1) {
@@ -95,46 +95,49 @@ class StatisticController extends Controller
             $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
         }
 
+        // query桥
     	$query = OrderStatistic::whereIn('user_id', $userIds)
-				->filter($filters)
-				->select(DB::raw('
-                    user_id, date, 
-					sum(send_order_count) as send_order_count,
-				 	sum(receive_order_count) as receive_order_count, 
-				 	sum(complete_order_count) as complete_order_count,
-				 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as complete_order_rate, 
-				 	sum(revoke_order_count) as revoke_order_count, 
-					sum(arbitrate_order_count) as arbitrate_order_count,
-					sum(three_status_original_amount) as three_status_original_amount,
-					sum(complete_order_amount) as complete_order_amount,
-					sum(two_status_payment) as two_status_payment,
-					sum(two_status_income) as two_status_income,
-					sum(poundage) as poundage,
-					sum(profit) as profit
-				'))
-                ->latest('date')
-				->groupBy('date');
+			->filter($filters)
+			->select(DB::raw('
+                user_id, date, 
+				sum(send_order_count) as send_order_count,
+			 	sum(receive_order_count) as receive_order_count, 
+			 	sum(complete_order_count) as complete_order_count,
+			 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as complete_order_rate, 
+			 	sum(revoke_order_count) as revoke_order_count, 
+				sum(arbitrate_order_count) as arbitrate_order_count,
+				sum(three_status_original_amount) as three_status_original_amount,
+				sum(complete_order_amount) as complete_order_amount,
+				sum(two_status_payment) as two_status_payment,
+				sum(two_status_income) as two_status_income,
+				sum(poundage) as poundage,
+				sum(profit) as profit
+			'))
+            ->latest('date')
+			->groupBy('date');
 
+        // 统计总计
 		$totalData = OrderStatistic::whereIn('user_id', $userIds)
-				->filter($filters)
-				->select(DB::raw('
-                    user_id,
-					sum(send_order_count) as total_send_order_count,
-				 	sum(receive_order_count) as total_receive_order_count, 
-				 	sum(complete_order_count) as total_complete_order_count,
-				 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as total_complete_order_rate, 
-				 	sum(revoke_order_count) as total_revoke_order_count, 
-					sum(arbitrate_order_count) as total_arbitrate_order_count,
-					sum(three_status_original_amount) as total_three_status_original_amount,
-					sum(complete_order_amount) as total_complete_order_amount,
-					sum(two_status_payment) as total_two_status_payment,
-					sum(two_status_income) as total_two_status_income,
-					sum(poundage) as total_poundage,
-					sum(profit) as total_profit
-				'))
-				->first();
+			->filter($filters)
+			->select(DB::raw('
+                user_id,
+				sum(send_order_count) as total_send_order_count,
+			 	sum(receive_order_count) as total_receive_order_count, 
+			 	sum(complete_order_count) as total_complete_order_count,
+			 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as total_complete_order_rate, 
+			 	sum(revoke_order_count) as total_revoke_order_count, 
+				sum(arbitrate_order_count) as total_arbitrate_order_count,
+				sum(three_status_original_amount) as total_three_status_original_amount,
+				sum(complete_order_amount) as total_complete_order_amount,
+				sum(two_status_payment) as total_two_status_payment,
+				sum(two_status_income) as total_two_status_income,
+				sum(poundage) as total_poundage,
+				sum(profit) as total_profit
+			'))
+			->first();
+        // 导出数据
         $excelDatas = $query->get();
-
+        // 页面统计分页数据
         $datas = $query->paginate(config('frontend.page'));
 
 		if ($request->export) {
@@ -180,7 +183,6 @@ class StatisticController extends Controller
             $chunkDatas = array_chunk(array_reverse($excelDatas->toArray()), 500);
 
             Excel::create('员工统计', function ($excel) use ($chunkDatas, $title, $totalData) {
-
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
                     $datas = [];
@@ -205,7 +207,6 @@ class StatisticController extends Controller
                     });
                 }
             })->export('xls');
-
         } catch (Exception $e) {
 
         }
@@ -252,12 +253,10 @@ class StatisticController extends Controller
 				$totalData->total_poundage,
 				$totalData->total_profit,
             ];
-
-
+            // 
             $chunkDatas = array_chunk(array_reverse($excelDatas->toArray()), 500);
 
             Excel::create('订单统计', function ($excel) use ($chunkDatas, $title, $totalData) {
-
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
                     $datas = [];
