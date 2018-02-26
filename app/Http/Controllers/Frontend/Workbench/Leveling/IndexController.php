@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Exceptions\AssetException;
-use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Extensions\Order\Operations\CreateLeveling;
@@ -11,15 +10,14 @@ use App\Models\Game;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
-use App\Models\SmsSendRecord;
 use App\Models\SmsTemplate;
+use App\Models\TaobaoTrade;
 use App\Models\User;
 use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
-use App\Services\SmSApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -78,13 +76,14 @@ class IndexController extends Controller
     public function orderList(Request $request, OrderRepository $orderRepository)
     {
         $no = $request->input('no', 0);
-        $foreignOrderNo = $request->input('foreign_order_no', 0);
+        $sourceOrderNo = $request->input('source_order_no', 0);
+        $customerServiceName = $request->input('customer_service_name', 0);
         $gameId = $request->input('game_id', 0);
         $status = $request->input('status', 0);
-        $wangWang = $request->input('wang_wang', 0);
+        $wangWang = $request->input('wang_wang');
         $urgentOrder = $request->input('urgent_order', 0);
-        $startDate = $request->input('start_date', 0);
-        $endDate = $request->input('end_date', 0);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $label = $request->input('label');
         $pageSize = $request->input('limit', 10);
 
@@ -95,7 +94,7 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no, $foreignOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName);
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {
@@ -194,7 +193,7 @@ class IndexController extends Controller
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
 
             // 获取当前下单人名字
-            $orderData['cstomer_service_name'] = Auth::user()->name;
+            $orderData['customer_service_name'] = Auth::user()->username;
 
             try {
                 Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
@@ -281,7 +280,7 @@ class IndexController extends Controller
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount:  $detail['amount'];
 
-            $detail['payment_amount'] = (float)$detail['payment_amount'];
+//            $detail['payment_amount'] = (float)$detail['payment_amount'];
             $detail['get_amount'] = (float)$detail['get_amount'];
             $detail['poundage'] = (float)$detail['poundage'];
             // 利润
@@ -522,7 +521,10 @@ class IndexController extends Controller
                 if ($order->price != $requestData['game_leveling_amount']) {
                     // 加价
                     if ($order->price < $requestData['game_leveling_amount']) {
-                        $amount = $requestData['game_leveling_amount'] - $order->price;
+                        $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                        if (abs($order->price) == $amount) {
+                            throw new CustomException('金额不合法');
+                        }
                         Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
@@ -533,7 +535,10 @@ class IndexController extends Controller
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
                     } else { // 减价
-                        $amount = $order->price - $requestData['game_leveling_amount'];
+                        $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                        if (abs($order->price) == $amount) {
+                            throw new CustomException('金额不合法');
+                        }
                         Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                         $order->price = $requestData['game_leveling_amount'];
@@ -560,7 +565,10 @@ class IndexController extends Controller
                     if ($order->price != $requestData['game_leveling_amount']) {
                         // 加价
                         if ($order->price < $requestData['game_leveling_amount']) {
-                            $amount = $requestData['game_leveling_amount'] - $order->price;
+                            $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                            if (abs($order->price) == $amount) {
+                                throw new CustomException('金额不合法');
+                            }
                             Asset::handle(new Expend($amount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
@@ -571,7 +579,10 @@ class IndexController extends Controller
                                 'field_value' => $requestData['game_leveling_amount']
                             ]);
                         } else { // 减价
-                            $amount = $order->price - $requestData['game_leveling_amount'];
+                            $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                            if (abs($order->price) == $amount) {
+                                throw new CustomException('金额不合法');
+                            }
                             Asset::handle(new Income($amount, 14, $orderNo, '代练改价退款', $order->creator_primary_user_id));
 
                             $order->price = $requestData['game_leveling_amount'];
@@ -712,7 +723,7 @@ class IndexController extends Controller
                 // 其它信息只需改订单详情表
                 foreach ($requestData as $key => $value) {
                     if (isset($orderDetail[$key])) {
-                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'cstomer_service_remark'])) {
+                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'customer_service_remark'])) {
                             // 更新值
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value
@@ -729,10 +740,13 @@ class IndexController extends Controller
 
         } catch (CustomException $customException) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败');
+            return response()->ajax(0, $customException->getMessage());
         } catch (DailianException $e) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败');
+            return response()->ajax(0, $e->getMessage());
+        } catch (AssetException $e) {
+            DB::rollBack();
+            return response()->ajax(0, $e->getMessage());
         }
         DB::commit();
 
@@ -862,7 +876,7 @@ class IndexController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function tb(Request $request)
+    public function sendSms(Request $request)
     {
         $orderInfo = OrderModel::where('no', $request->no)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
@@ -873,29 +887,7 @@ class IndexController extends Controller
             $orderArr = array_merge($orderInfo->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo->toArray());
 
             if (isset($orderArr['client_phone']) && $orderArr['client_phone']) {
-                $result = tb(Auth::user()->getPrimaryUserId(), $orderInfo->no, $orderArr['client_phone'], $request->contents, '代练短信费');
-//                // 扣款
-//                try {
-//                    Asset::handle(new Consume(0.1, 4, $orderInfo->no, '短信费', Auth::user()->getPrimaryUserId()));
-//                } catch (CustomException $exception) {
-//                    return response()->ajax(0, $exception->getMessage());
-//                }
-//
-//                $sendResult = (new SmSApi())->send(2, $orderArr['client_phone'], $request->contents, $orderInfo->creator_primary_user_id);
-//
-//                if ((bool)strpos($sendResult, "mterrcode=000")) {
-//                    // 发送成功写发送记录
-//                    SmsSendRecord::create([
-//                        'primary_user_id' => Auth::user()->getPrimaryUserId(),
-//                        'user_id' => Auth::user()->id,
-//                        'order_no' => $orderInfo->no,
-//                        'client_phone' => $orderArr['client_phone'],
-//                        'contents' => $request->contents,
-//                        'date' => date('Y-m-d'),
-//                    ]);
-//
-//                    return response()->ajax(1, '发送成功!');
-//                }
+                $result = sendSms(Auth::user()->getPrimaryUserId(), $orderInfo->no, $orderArr['client_phone'], $request->contents, '代练短信费', $orderArr['source_order_no']);
                 return response()->ajax($result['status'], $result['message']);
             } else {
                 return response()->ajax(0, '您没有填写客户手机号');
@@ -940,19 +932,21 @@ class IndexController extends Controller
      */
     public function waitList(Request $request)
     {
-        $no = $request->no;
-        $wangWang = $request->wang_wang;
+        $tid = $request->tid;
+        $buyerNick = $request->buyer_nick;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-        $orders = \App\Models\ForeignOrder::filter(compact('no', 'wangWang', 'startDate', 'endDate'))
-            ->where('user_id', Auth::user()->getPrimaryUserId())
-            ->where('status', 1)
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 0)
+            ->where('service_id', 4)
             ->paginate(30);
 
         return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [
-            'no' => $no,
+            'tid' => $tid,
             'orders' => $orders,
-            'wangWang' => $wangWang,
+            'buyerNick' => $buyerNick,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ])->render());

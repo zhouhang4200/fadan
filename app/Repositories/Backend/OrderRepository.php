@@ -89,7 +89,7 @@ class OrderRepository
 
                     $status = '';
                     if ($v['status']) {
-                        $status = isset(config('order.status')[$v['status']]) ? config('order.status')[$v['status']] : config('order.status')[$v['status_leveling']];
+                        $status = isset(config('order.status')[$v['status']]) ? config('order.status')[$v['status']] : config('order.status_leveling')[$v['status']];
                     }
                     if ($v['source']) {
                         $v['source'] = config('order.source')[$v['source']];

@@ -77,14 +77,14 @@
 
             // 添加
             form.on('submit(template-add-save)', function (data) {
-                $.post('{{ route('frontend.sms.add') }}', {
+                $.post('{{ route('frontend.setting.sms.add') }}', {
                     name: data.field.name,
                     contents: data.field.contents
                 }, function (result) {
                     layer.closeAll();
                     layer.msg(result.message);
                     if (result.status == 1) {
-                        loadData('{{ route('frontend.sms.index') }}?type=' + type);
+                        loadData('{{ route('frontend.setting.sms.index') }}?type=' + type);
                     }
                 }, 'json');
                 return false;
@@ -93,10 +93,10 @@
             // 删除
             form.on('submit(template-delete)', function (data) {
                 layer.confirm('您确定要删除吗?', {icon: 3, title: '提示'}, function () {
-                    $.post('{{ route('frontend.sms.delete') }}', {id: data.elem.getAttribute('data-id')}, function (result) {
+                    $.post('{{ route('frontend.setting.sms.delete') }}', {id: data.elem.getAttribute('data-id')}, function (result) {
                         layer.msg(result.message);
                         if (result.status == 1) {
-                            loadData('{{ route('frontend.sms.index') }}?type=' + type);
+                            loadData('{{ route('frontend.setting.sms.index') }}?type=' + type);
                         }
                     }, 'json');
                 });
@@ -106,7 +106,7 @@
             // 保存修改
             form.on('submit(template-edit-save)', function (data) {
                 type = data.field.type;
-                $.post('{{ route('frontend.sms.edit') }}', {
+                $.post('{{ route('frontend.setting.sms.edit') }}', {
                     id:data.field.id,
                     name: data.field.name,
                     contents: data.field.contents
@@ -114,16 +114,24 @@
                     layer.closeAll();
                     layer.msg(result.message);
                     if (result.status == 1) {
-                        loadData('{{ route('frontend.sms.index') }}?type=' + type);
+                        loadData('{{ route('frontend.setting.sms.index') }}?type=' + type);
                     }
                 }, 'json');
                 return false;
             });
 
+            //监听指定开关
+            form.on('switch(test)', function(data){
+                var status = this.checked ? 1 : 2;
+                $.post('{{ route('frontend.setting.sms.status') }}', {id:data.elem.getAttribute('data-id'), status: status}, function (result) {
+                    layer.msg(result.message);
+                }, 'json');
+            });
+
             // 修改
             $('.content').on('click', '.template-edit', function () {
                 var id  = $(this).attr('data-id');
-                $.post('{{ route("frontend.sms.show") }}', {id:id}, function (result) {
+                $.post('{{ route("frontend.setting.sms.show") }}', {id:id}, function (result) {
                     if (result) {
                         layer.open({
                             type: 1,

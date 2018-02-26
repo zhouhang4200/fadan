@@ -30,6 +30,10 @@ return [
         'waitConfirm' => 'order:wait:confirm',
         // 数据类型队列，用与检测 是否可以进行下一次订单分配
         'assignStatus' => 'order:assign:status',
+        // 自动下架订单
+        'autoUnShelve' => 'order:autoUnShelve',
+        // 订单角标
+        'statusCount' => 'order:statusCount:',
     ],
     // 用户模型
     'user' => [

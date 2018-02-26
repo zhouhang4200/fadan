@@ -134,7 +134,7 @@
                 <div class="layui-col-md8">
 
                     @{{# if(item.field_type == 1) {  }}
-                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}">
+                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}" value="@{{# if (item.field_default_value != "null") { item.field_default_value  } }}">
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
@@ -196,6 +196,17 @@
             zero: function(value){
                 if(value <= 0){
                     return '该数值需大于0';
+                }
+            },
+            money:function (value) {
+                if (value.indexOf(".") > -1) {
+                    var temp  = value.split(".");
+                    if (temp.length > 2) {
+                        return '请输入合法的金额';
+                    }
+                    if (temp[1].length > 2) {
+                        return '输入的小数请不要大于两位';
+                    }
                 }
             }
         });

@@ -24,11 +24,20 @@ socket.on('notification:orderRefund', function (data) {
 // 留言数量
 socket.on('notification:LevelingMessageQuantity', function (data) {
     if (data.user_id == {{ Auth::user()->id }}) {
-        console.log(data);
         if (data.quantity == 0) {
             $('.leveling-message-quantity').addClass('layui-hide');
         } else {
             $('.leveling-message-quantity').removeClass('layui-hide').html(data.quantity);
+        }
+    }
+});
+// 订单数量角标
+socket.on('notification:OrderCount', function (data) {
+    if (data.user_id == {{ Auth::user()->id }}) {
+        if (data.quantity == 0) {
+            $('.quantity-' + data.status).addClass('layui-hide');
+        } else {
+            $('.quantity-' + data.status).removeClass('layui-hide').html(data.quantity);
         }
     }
 });

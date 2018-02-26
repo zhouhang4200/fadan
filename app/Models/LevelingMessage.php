@@ -11,5 +11,6 @@ class LevelingMessage extends Model
       'order_no',
       'contents',
       'date',
+      'send_time',
     ];
 }
