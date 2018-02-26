@@ -323,19 +323,19 @@ class DailianMama
                 $options['reason'] = $consult->revoke_message;
                 $options['refundment'] = $consult->amount;
                 $options['bail'] = $consult->deposit;
-            break;
+                break;
             case 20007: // 申请仲裁
                 $options['reason'] = $consult->complain_message;
-            break;
+                break;
             case 22001: // 补时
                 $options['requiretimehadd'] = bcadd(bcmul($order->addDays, 24), $order->addHours);
-            break;
+                break;
             case 22002: // 补款
-                $options['unitpriceadd'] = $order->addAmount; // 这里需要注意，这里要问仁德
-            break;
+                $options['unitpriceadd'] = $order->addAmount; // 这里要问仁德
+                break;
             case 22003: // 修改密码
                 $options['accountpwd'] = $order->password;
-            break;
+                break;
         }
     	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
 

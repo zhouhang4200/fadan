@@ -56,6 +56,7 @@ return [
         24 => '已删除',
     ],
 
+    // 操作类型
     'operation_type' => [
         1  => '创建',
         2  => '关闭抢单',
@@ -100,14 +101,14 @@ return [
         6 => '福禄API',
     ],
 
-    // 外部订单
+    // 外部订单,前面是工厂模式需要传入的操作名字，后面是对应的操作类
     'parsers' => [
         'jd'    => JdForeignOrder::class,
         'tmall' => TmallForeignOrder::Class,
         'kamen' => KamenForeignOrder::Class,
     ],
 
-    // 代练
+    // 代练操作，前面是工厂要传入的操作名字，后面是对应操作类
     'dailians' => [
         'onSale'            => NoReceive::class, // 上架 
         'offSale'           => OffSaled::class, // 下架 
@@ -149,7 +150,7 @@ return [
         100 => '', // 子状态：无
     ],
 
-    // 外部平台
+    // 外部平台代号对应名字，如果改了这里，下面那个也要对应改
     'third' => [
         1 => '91平台',
         2 => '代练妈妈',
@@ -157,13 +158,13 @@ return [
         4 => '易代练',
     ],
 
-    // 外部平台对应关系
+    // 根据平台名字找对应的代号，以后如果要改代号，只用在这改
     'third_client' => [
         'show91' => 1,
         'dailianmama' => 2,
     ],
     
-    // 91平台代练类型
+    // 91平台下单的时候选择的代练类型,他们是根据游戏区分的，我们没有按游戏区分，差距有点大
     'show91_plays' => [
         1 => '排位',
         3 => '陪玩',

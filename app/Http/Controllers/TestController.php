@@ -211,6 +211,7 @@ class TestController extends Controller
 
     public function index()
     {
+        return $this->testSwitch('hang', 10);
         $this->testClone();
         try {
             $order = Order::find(9);
@@ -442,6 +443,29 @@ Iuli3G2IJNYc9Cwu
     {
         // $order->no = 000;
         dd($order->no);
+    }
+
+    public function testSwitch($name, $age)
+    {
+        switch ($name) {
+            case 'zhou':
+                echo 'my name is zhou';
+                break;
+            case 'hang':
+                switch ($age) {
+                    case 10:
+                        $age = 'ten';
+                        break;
+                    case 20:
+                        $age = 'twity';
+                        break;
+                }
+                echo 'my name is '. $name .' and my age is '. $age;
+                break;
+            default:
+                echo 'i have no name';
+                break;
+        }
     }
 
 }

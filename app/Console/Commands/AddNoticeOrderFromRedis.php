@@ -98,53 +98,63 @@ class AddNoticeOrderFromRedis extends Command
             $this->delRedisNoticeOrder($orderNo);
             $order = Order::where('no', $orderNo)->first();
             if ($order) {
-                if ($status == 1) { // 第三方做了成功的操作
-                    $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+                // 获取游戏详情，看是哪个平台的订单
+                $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
-                    if (! $orderDetail['third_order_no']) {
-                        throw new Exception('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'oid' => $orderDetail['third_order_no'],
-                    ]; 
-
-                    $res = Show91::orderDetail($options);
-                    // 91平台订单状态
-                    $thirdStatus =  $res['data']['order_status'];
-                    $thirdConsult = $res['data']['inSelfCancel'] ? 13 : false;
-                    $thirdComplain = $res['data']['inAppeal'] ? 14 : false;
-
-                    $beforeStatus = $this->getBeforeStatus($orderNo);
-
-                    switch ($thirdStatus) {
-                        case 1:
-                            if (!$thirdComplain && !$thirdConsult && $order->status == 13) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 13 && $order->status == 16) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } else {
-                                $this->addOrderNotice($order, $status, $action);
+                switch ($orderDetails['third']) {
+                    case 1:
+                        if ($status == 1) { // 第三方做了成功的操作
+                            if (! $orderDetail['third_order_no']) {
+                                throw new Exception('第三方订单号不存在');
                             }
-                        break;
-                        case 2:
-                            if (!$thirdComplain && !$thirdConsult && $order->status == 14) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 14 && $order->status == 16) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
-                                $this->delRedisNoticeOrder($orderNo);
-                            } else {
-                                $this->addOrderNotice($order, $status, $action);
+
+                            $options = [
+                                'oid' => $orderDetail['third_order_no'],
+                            ]; 
+
+                            $res = Show91::orderDetail($options);
+                            // 91平台订单状态
+                            $thirdStatus =  $res['data']['order_status'];
+                            $thirdConsult = $res['data']['inSelfCancel'] ? 13 : false;
+                            $thirdComplain = $res['data']['inAppeal'] ? 14 : false;
+
+                            $beforeStatus = $this->getBeforeStatus($orderNo);
+
+                            switch ($thirdStatus) {
+                                case 1: // 91平台状态，代练中
+                                    if (!$thirdComplain && !$thirdConsult && $order->status == 13) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 13 && $order->status == 16) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } else {
+                                        $this->addOrderNotice($order, $status, $action);
+                                    }
+                                break;
+                                case 2: // 91平台代练状态，待验收
+                                    if (!$thirdComplain && !$thirdConsult && $order->status == 14) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } elseif ($thirdComplain && !$thirdConsult && $beforeStatus == 14 && $order->status == 16) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } elseif (!$thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } else {
+                                        $this->addOrderNotice($order, $status, $action);
+                                    }
+                                break;
+                                default:
+                                    return true;
                             }
+                        } else {
+                            $this->addOrderNotice($order, $status, $action);
+                        }
                         break;
-                        default:
-                            return true;
-                    }
-                } else {
-                    $this->addOrderNotice($order, $status, $action);
+                    case 2:
+                        break;
+                    default:
+                        # code...
+                        break;
                 }
             }
         } catch (Exception $e) {

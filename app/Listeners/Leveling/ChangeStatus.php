@@ -37,13 +37,15 @@ class ChangeStatus
 
     /**
      * 根据传过来的订单号，查找对应平台，根据平台找对应的接口
-     * @param  [type] $order [description]
-     * @param  [type] $name  [description]
-     * @param  [type] $bool  [description]
-     * @return [type]        [description]
+     * @param  [type] $order [订单模型]
+     * @param  [type] $name  [方法名称]
+     * @param  [type] $bool  [ 这里有的接口有的参数需要传和不传，bool为true表示要传某个参数，此
+     *                       时会得到不同的结果，比如下单和修改订单是一个接口]
+     * @return [null]        [根据代练平台，选择对应代练类里面的方法执行对应操作]
      */
     public function requestApiInterface($order, $name, $bool = false) 
     {
+        // 订单详情，接单后third_order_no会有对应的相应接单平台的订单号
         $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
@@ -52,7 +54,7 @@ class ChangeStatus
             case 1: // 91平台
                 call_user_func_array([Show91::class, $name], [$order, $bool]);
                 break;
-            case 2: // 代练妈妈
+            case 2: // 代练妈妈,由于代练妈妈类里面的方法与91不同所以根据传进来的方法名对应代练妈妈方法名
                 switch ($name) {
                     case 'addPrice':
                         $operate = 22002; // 补款
