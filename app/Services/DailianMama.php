@@ -24,15 +24,6 @@ class DailianMama
      */
     public static function formDataRequest($url, $options = [], $method = 'POST')
     {
-        $params = [
-            'subid' => '', // 子账号id?
-            'sourceid' => 1, // 与代练妈妈约定的标识
-            'timestamp' => time(), // unix时间戳
-            'sign' => 1, // 签名 
-        ];
-
-        $options = array_merge($params, $options);
-
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -53,15 +44,6 @@ class DailianMama
      */
     public static function normalRequest($url, $options = [], $method = 'POST')
     {
-        $params = [
-            'subid' => '', // 子账号id?
-            'sourceid' => 1, // 与代练妈妈约定的标识
-            'timestamp' => time(), // unix时间戳
-            'sign' => 1, // 签名 
-        ];
-
-        $options = array_merge($params, $options);
-
         $client = new Client;
         $response = $client->request($method, $url, [
             'query' => $options,
@@ -146,7 +128,7 @@ class DailianMama
             'accountpwd'     => $orderDetails['password'],
             'rolename'       => $orderDetails['role'],
             'dlcontent'      => $orderDetails['game_leveling_requirements'], // 代练要求
-            'dltype'         => '排位', // 排位，陪玩， 晋级， 定位, 其他...?
+            'dltype'         => $orderDetails['game_leveling_type'], // 排位，陪玩， 晋级， 定位, 其他...?
             // 'orginuserid' => '', // 发布私有订单使用?
             'otherdesc'      => '无', // 当前游戏说明?
             'price'          => $order->original_amount, // 备注金额? => 来源价格
@@ -156,6 +138,12 @@ class DailianMama
             // 'qq'          => '', // 发单人联系qq？
             // 'saveuserbak' => '' // 值为save时只修改备注 ?
             'autologinphone' => $orderDetails['client_phone'], // 号主电话?
+            // 'subid'          => '', // 子账号id?
+            'sourceid'       => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp'      => time(), // unix时间戳
+            'sign'           => md5("areaname=$thirdAreaName&accountvalue=$orderDetails['account']&accountpwd=$orderDetails['password']&autologinphone=$orderDetails['client_phone']&content=$orderDetails['cstomer_service_remark']&dlcontent=$orderDetails['game_leveling_requirements']&dltype=$orderDetails['game_leveling_type']&efficiency=$orderDetails['efficiency_deposit']&game_name=$thirdGameName&ordertitle= $orderDetails['game_leveling_title']&orderorgin=0&otherdesc=无&price=$order->original_amount&".requiretime=$orderDetails['efficiency_deposit'] ? 
+            bcadd(bcmul($orderDetails['efficiency_deposit'], 24), $orderDetails['game_leveling_hour'])
+            : $orderDetails['game_leveling_hour']."&rolename=$orderDetails['role']&servername=$thirdServerName&safedeposit=$orderDetails['security_deposit']&sourceid=".env('SOURCE_ID')."&title=无&timestamp=".time()."&unitprice=$order->amount&sign=".env('SHARE_KEY')), // 签名
     	];
 
         if ($bool) {
@@ -181,7 +169,11 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-    		'orderid' => $orderDetails['dailianmama_order_no'], // 代练妈妈订单id
+            'orderid'   => $orderDetails['dailianmama_order_no'], // 代练妈妈订单id
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&sign=".env('SHARE_KEY')), // 签名
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
@@ -200,7 +192,11 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-    		'orderid' => $orderDetails['dailianmama_order_no'],
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
@@ -219,7 +215,11 @@ class DailianMama
     	$orderDetails = static::getOrderDetails($order->no);
 
         $options = [
-            'orderid' => $orderDetails['dailianmama_order_no'],
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
         ];
 
     	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
@@ -238,7 +238,11 @@ class DailianMama
     	$orderDetails = static::getOrderDetails($order->no);
 
         $options = [
-            'orderid' => $orderDetails['dailianmama_order_no'],
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
         ]; 
 
 	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
@@ -254,7 +258,12 @@ class DailianMama
      */
     public static function refreshAllOrderTime($order = null, $bool = false)
     {
-    	$options = [];
+    	$options = [
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
+        ];
 	    $res = static::normalRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
 
 	    return static::returnErrorMessage($res);
@@ -270,7 +279,11 @@ class DailianMama
     public static function getReleaseOrderStatusList($order = null, $bool = false)
     {
     	$options = [
-    		'orderstatus' => '', // 订单状态
+            'orderstatus' => '', // 订单状态
+            // 'subid'       => '', // 子账号id?
+            'sourceid'    => 1, // 与代练妈妈约定的标识
+            'timestamp'   => time(), // unix时间戳
+            'sign'        => md5("orderstatus=&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::normalRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
 
@@ -286,8 +299,12 @@ class DailianMama
     public static function checkTradePassword($order = null, $bool = false)
     {
     	$options = [
-    		'tradePassword' => '', // 支付密码
-    		'type' => md5(''), // 类型
+            'tradePassword' => md5(md5(env('PAY_PASSWORD').'dlapp')), // 支付密码
+            'type'          =>'md5', // 类型
+            // 'subid'         => '', // 子账号id?
+            'sourceid'      => 1, // 与代练妈妈约定的标识
+            'timestamp'     => time(), // unix时间戳
+            'sign'          => md5("tradePassword=".md5(md5(env('PAY_PASSWORD').'dlapp'))."&type=md5&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::normalRequest(config('dailianmama.url.checkTradePassword'), $options);
 
@@ -306,8 +323,8 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-            'orderid'          => $orderDetails['dailianmama_order_no'],
-            'control'          => $operate, // 2002, 20010...
+            'orderid'             => $orderDetails['dailianmama_order_no'],
+            'control'             => $operate, // 2002, 20010...
             // 'checkTradePwdRDM' => '', // 支付密码验证?
             // 'reason'           => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
             // 'refundment'       => '', // 上家支付的代练费: 20006 申请撤销?
@@ -315,6 +332,10 @@ class DailianMama
             // 'requiretimehadd'  => '', // 增加的小时数 22001补时?
             // 'unitpriceadd'     => '', // 增加的金额数, 22002 补款?
             // 'accountpwd'       => '', // 密码， 22003修改密码?
+            // 'subid'               => '', // 子账号id?
+            'sourceid'            => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp'           => time(), // unix时间戳
+            'sign'                => md5("orderid=$orderDetails['dailianmama_order_no']&control=$operate&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
 
         $consult = LevelingConsult::where('order_no', $order->no)->first();
@@ -353,8 +374,12 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-	    	'orderid' => $orderDetails['dailianmama_order_no'],
-	    	'beginid' => '', // 开始id？
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'beginid'   => '', // 开始id？
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.chatOldList'), $options);
@@ -373,7 +398,11 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-    		'orderid' => $orderDetails['dailianmama_order_no'], 
+            'orderid'   => $orderDetails['dailianmama_order_no'], 
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
 
@@ -390,8 +419,12 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-    		'orderid' => $orderDetails['dailianmama_order_no'],
-    		'content' => '', // 订单留言,最大100
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            'content'   => '', // 订单留言,最大100
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&content=无&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
 
@@ -412,9 +445,13 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-    		'orderid' => $orderDetails['dailianmama_order_no'],
-    		'imgurl' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
-    		'description' => '截图说明', // 截图说明
+            'orderid'     => $orderDetails['dailianmama_order_no'],
+            'imgurl'      => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
+            'description' => '截图说明', // 截图说明
+            // 'subid'       => '', // 子账号id?
+            'sourceid'    => 1, // 与代练妈妈约定的标识
+            'timestamp'   => time(), // unix时间戳
+            'sign'        => md5("orderid=$orderDetails['dailianmama_order_no']&imgurl=".new \CURLFile(public_path('frontend/images/123.png'), 'image/png')."&description=截图说明&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
 
@@ -430,7 +467,12 @@ class DailianMama
      */
     public static function getTempUploadKey($order = null, $bool = false)
     {
-    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options = []);
+    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options = [
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
+        ]);
 
 	    return static::returnErrorMessage($res);	
     }
@@ -444,17 +486,22 @@ class DailianMama
     public static function releaseOrderManageList($order, $bool = false)
     {
     	$options = [
-    		'orderstatus' => '', // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
+    		'orderstatus' => 1, // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
     							//7,8已结算，5,10已撤销，iszhc已仲裁,qzcx客服强制撤销
-    		'keyword' => '', // 关键词查询, 订单号，标题，接单人?
-    		'sort' => '', // 排序条件， 1降序，2升序， 3总时间降序， 4总时间升序, 5区服降序，6区服升序
+    		// 'keyword'   => '', // 关键词查询, 订单号，标题，接单人?
+    		// 'sort'      => '', 
+                            // 排序条件， 1降序，2升序， 3总时间降序， 4总时间升序, 5区服降序，6区服升序
     						// 9，发布时间降序， 10发布时间升序, 13解散时间降序， 14， 结算时间升序
     						// 15, 发单账号降序, 16, 发单账号升序， 17接单人降序， 18接单人升序
     						// 19,接单时间降序， 20接单时间升序， 21颜色降序， 22颜色升序
     						// 23,结算时间升序， 24结算时间降序, 25,来源降序， 26来源升序
     						// 27状态降序， 28状态升序， 29申请验收时间升序， 30申请验收时间降序?
-    		'currentNo' => '', // 要查询当前页数，默认查询第一页?
-    		'pageSize' => '', // 每页条数， 为空默认10条?
+            // 'currentNo' => '', // 要查询当前页数，默认查询第一页?
+            // 'pageSize'  => '', // 每页条数， 为空默认10条?
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderstatus=1&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
 
     	$res = static::normalRequest(config('dailianmama.url.releaseOrderManageList'), $options);
@@ -473,7 +520,11 @@ class DailianMama
         $orderDetails = static::getOrderDetails($order->no);
 
     	$options = [
-	    	'orderid' => $orderDetails['dailianmama_order_no'],
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => md5("orderid=$orderDetails['dailianmama_order_no']&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY')), // 签名
     	];
     	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
 

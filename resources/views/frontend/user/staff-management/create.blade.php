@@ -89,7 +89,7 @@
          layui.use('form', function(){
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
-            var error = "{{ $errors->count() > 0 ? '账号或昵称已经存在!' : '' }}";
+            var error = "{{ $errors->count() > 0 ? '账号已经存在!' : '' }}";
             var fail = "{{ session('fail') ?: '' }}";
 
             if(fail) {
