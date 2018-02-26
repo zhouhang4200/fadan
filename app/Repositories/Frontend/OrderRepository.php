@@ -345,17 +345,33 @@ class OrderRepository
                         }
 
                         // 如果存在接单时间
-                        if (isset($orderDetail['receiving_time']) && !empty($orderDetail['receiving_time'])) {
-                            // 计算到期的时间戳
-                            $expirationTimestamp = strtotime($orderDetail['receiving_time']) + $orderDetail['game_leveling_day'] * 86400 + $orderDetail['game_leveling_hour'] * 3600;
-                            // 计算剩余时间
-                            $leftSecond = $expirationTimestamp - time();
-                            $leftTime = Sec2Time($leftSecond); // 剩余时间
-                        }
+//                        if (isset($orderDetail['receiving_time']) && !empty($orderDetail['receiving_time'])) {
+//                            // 计算到期的时间戳
+//                            $expirationTimestamp = strtotime($orderDetail['receiving_time']) + $orderDetail['game_leveling_day'] * 86400 + $orderDetail['game_leveling_hour'] * 3600;
+//                            // 计算剩余时间
+//                            $leftSecond = $expirationTimestamp - time();
+//                            $leftTime = Sec2Time($leftSecond); // 剩余时间
+//                        }
                         // 状态转为文字
                         if ($v['status']) {
                             $status = isset(config('order.status_leveling')[$v['status']]) ? config('order.status_leveling')[$v['status']] : config('order.status')[$v['status']];
                         }
+
+                        $days = $detail['game_leveling_day'] ?? 0;
+                        $hours = $detail['game_leveling_hour'] ?? 0;
+                        $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+
+                        // 如果存在接单时间
+                        if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+                            // 计算到期的时间戳
+                            $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+                            // 计算剩余时间
+                            $leftSecond = $expirationTimestamp - time();
+                            $leftTime = Sec2Time($leftSecond); // 剩余时间
+                        } else {
+                            $orderCurrent['left_time'] = '';
+                        }
+
                         if (isset($detail['game_leveling_day'])) {
                             $time = bcadd(bcmul($detail['game_leveling_day'], 8600), bcmul($detail['game_leveling_hour'], 60)) ?? 0;
                         }
@@ -366,8 +382,8 @@ class OrderRepository
                             $detail['label'] ?? '',
                             $detail['customer_service_remark'] ?? '',
                             $detail['game_leveling_title'] ?? '',
-                            $detail['game_name'] ?? '',
-                            $detail['version'] ?? '',
+                            $v['game_name'] ?? '',
+                            $detail['region'] ?? '',
                             $detail['serve'] ?? '',
                             $detail['game_leveling_type'] ?? '',
                             $detail['account'] ?? '',
@@ -378,10 +394,10 @@ class OrderRepository
                             $v['amount'] ?? '',
                             $detail['security_deposit'] ?? '',
                             $detail['efficiency_deposit'] ?? '',
-                            $payment,
-                            $getAmount,
-                            $poundage,
-                            $profit,
+                            (float)$payment,
+                            (float)$getAmount,
+                            (float)$poundage,
+                            (float)$profit,
                             $time,
                             $leftTime,
                             $v['created_at'] ?? '',
