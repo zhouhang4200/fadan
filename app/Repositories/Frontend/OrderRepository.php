@@ -337,6 +337,7 @@ class OrderRepository
                             }
                             // 支付金额
                             $payment = $amount !=0 ?  $amount:  $detail['amount'];
+                            $detail['payment_amount'] = $amount !=0 ?  $amount:  $detail['amount'];
                             $getAmount = (float)$detail['get_amount'];
                             $poundage  = (float)$detail['poundage'];
                             // 利润
