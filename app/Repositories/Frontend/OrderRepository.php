@@ -260,7 +260,7 @@ class OrderRepository
             'created_at',
         ])
             ->filter($filters)
-            ->with(['gainerUser', 'detail', 'history', 'foreignOrder']);
+            ->with(['gainerUser', 'detail', 'history', 'foreignOrder', 'levelingConsult']);
 
         return Excel::create('代练订单', function ($excel) use($order) {
 
@@ -331,9 +331,9 @@ class OrderRepository
                         if (in_array($v['status'], [19, 20, 21])){
                             // 支付金额
                             if ($v['status'] == 21) {
-                                $amount = $detail['leveling_consult']['api_amount'];
+                                $amount = $v['leveling_consult']['api_amount'];
                             } else {
-                                $amount = $detail['leveling_consult']['amount'];
+                                $amount = $v['leveling_consult']['amount'];
                             }
                             // 支付金额
                             $payment = $amount !=0 ?  $amount:  $detail['amount'];
