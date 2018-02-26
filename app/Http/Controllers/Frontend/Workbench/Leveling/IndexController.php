@@ -10,6 +10,7 @@ use App\Models\Game;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderDetail;
 use App\Models\Order as OrderModel;
+use App\Models\OrderHistory;
 use App\Models\SmsTemplate;
 use App\Models\TaobaoTrade;
 use App\Models\User;
@@ -502,6 +503,7 @@ class IndexController extends Controller
         $requestData = $request->data;
         $orderNo = $requestData['no'];
 
+        $history = [];
         DB::beginTransaction();
         try {
 
@@ -596,17 +598,29 @@ class IndexController extends Controller
                     }
 
                     // 其它信息只需改订单详情表
-                    foreach ($requestData as $key => $value) {
-                        if (isset($orderDetail[$key])) {
-                            if ($orderDetail[$key] != $value) {
-                                // 更新值
-                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
-                                    'field_value' => $value
-                                ]);
-                                $changeValue .= $orderDetailDisplayName[$key] . '更改前：' . $value . ' 更改后：' . $requestData[$key] . '<br/>';
-                            }
-                        }
-                    }
+//                    foreach ($requestData as $key => $value) {
+//                        if (isset($orderDetail[$key])) {
+//                            if ($orderDetail[$key] != $value) {
+//                                // 更新值
+//                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
+//                                    'field_value' => $value
+//                                ]);
+//                                $changeHistory = $orderDetailDisplayName[$key] . '更改前：' . $orderDetail[$key] . ' 更改后：' . $requestData[$key];
+//                                $history[] = [
+//                                    'order_no' => $orderNo,
+//                                    'user_id' => auth()->user()->id,
+//                                    'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+//                                    'name' => '编辑',
+//                                    'type' => 22,
+//                                    'before' => serialize($orderDetail[$key]),
+//                                    'after' => serialize($requestData[$key]),
+//                                    'description' => $changeHistory,
+//                                ];
+//                            }
+//                        }
+//                    }
+
+
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 
@@ -721,9 +735,12 @@ class IndexController extends Controller
                 }
 
                 // 其它信息只需改订单详情表
+
                 foreach ($requestData as $key => $value) {
+
                     if (isset($orderDetail[$key])) {
-                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'customer_service_remark'])) {
+//                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'customer_service_remark'])) {
+                        if ($orderDetail[$key] != $value) {
                             // 更新值
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value
@@ -732,9 +749,22 @@ class IndexController extends Controller
                                 $order->original_amount = $requestData[$key];
                                 $order->save();
                             }
-//                            $changeValue .= $orderDetailDisplayName[$key] . '更改前：' . $value . ' 更改后：' . $requestData[$key] . '<br/>';
+                             $changeHistory = '编辑:' . $orderDetailDisplayName[$key] . '   编辑前：' . $value . ' 编辑后：' . $requestData[$key];
+                            $history[] = [
+                                'order_no' => $orderNo,
+                                'user_id' => auth()->user()->id,
+                                'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+                                'name' => '编辑',
+                                'type' => 22,
+                                'before' => serialize($value),
+                                'after' => serialize($requestData[$key]),
+                                'description' => $changeHistory,
+                            ];
                         }
                     }
+                }
+                if ($history) {
+                    \DB::table('order_histories')->insert($history);
                 }
             }
 
