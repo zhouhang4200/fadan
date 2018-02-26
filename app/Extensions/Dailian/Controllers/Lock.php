@@ -56,8 +56,12 @@ class Lock extends DailianAbstract implements DailianInterface
             // 写入待验收数量角标
             // 接单人
             orderStatusCount($this->order->gainer_primary_user_id, $this->handledStatus);
+            orderStatusCount($this->order->gainer_primary_user_id, $this->beforeHandleStatus, 4);
+
             // 发单人
             orderStatusCount($this->order->creator_primary_user_id, $this->handledStatus);
+            orderStatusCount($this->order->creator_primary_user_id, $this->beforeHandleStatus, 4);
+
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());

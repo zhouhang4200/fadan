@@ -936,6 +936,14 @@ if (!function_exists('orderStatusCount')) {
         if ($method == 2) {
             $redis->set(config('redis.order.statusCount') . $userId .'_' . $status, 0);
         }
+        // 数量减1
+        if ($method == 4) {
+            $currentCount = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+            if ($currentCount > 0) {
+                $redis->decr(config('redis.order.statusCount') . $userId .'_'. $status);
+            }
+        }
+
         // 数量清空
         $count = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
         event((new NotificationEvent('OrderCount', ['user_id' => $userId, 'status' => $status, 'quantity' => $count])));

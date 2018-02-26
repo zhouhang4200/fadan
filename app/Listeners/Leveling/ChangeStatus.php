@@ -31,7 +31,7 @@ class ChangeStatus
      */
     public function handle(AutoRequestInterface $event)
     {
-        //$this->requestApiInterface($event->order, $event->name, $event->bool);
+        $this->requestApiInterface($event->order, $event->name, $event->bool);
     }
 
     /**
