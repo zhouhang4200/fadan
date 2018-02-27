@@ -954,4 +954,31 @@ if (!function_exists('orderStatusCount')) {
         return true;
     }
 }
+if(!function_exists('taobaoAccessToken')){
 
+    /**
+     * 用授权旺旺获取淘宝token
+     * @param $nickName
+     * @return bool|\Illuminate\Contracts\Cache\Repository|string
+     */
+    function taobaoAccessToken($nickName)
+    {
+        $token = '';
+        // 取缓存
+        $token = cache()->get(config('redis.taobaoAccessToken') . $nickName);
+        if ($token) {
+            return $token;
+        }
+        // 获取token
+        $client = new Client();
+        $response = $client->request('POST', 'http://fulutop.kamennet.com/session/index', [
+            'query' => http_build_query([
+                'nickName' => $nickName,
+                'sign' => strtoupper(md5('nickName' . $nickName . 'fltop31bf3856ad364e35'))
+            ]),
+        ]);
+        $result = json_decode($response->getBody()->getContents());
+        $token = cache()->add(config('redis.taobaoAccessToken') . $nickName, $result->access_token, 259200);
+        return $token;
+    }
+}

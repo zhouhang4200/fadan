@@ -750,9 +750,10 @@ class IndexController extends Controller
                                 'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
                                 'name' => '编辑',
                                 'type' => 22,
-                                'before' => serialize($value),
+                                'before' => serialize($orderDetail[$key]),
                                 'after' => serialize($requestData[$key]),
                                 'description' => $changeHistory,
+                                'created_at' => date('Y-m-d'),
                             ];
                         }
                     }

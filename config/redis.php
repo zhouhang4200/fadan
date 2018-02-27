@@ -47,5 +47,7 @@ return [
         'setting' => 'user:setting:id:'
     ],
     // 自有天猫订单token
-    'tmallStoreToken' => 'tmallStoreToken:'
+    'tmallStoreToken' => 'tmallStoreToken:',
+    // 淘宝授权token 缓存
+    'taobaoAccessToken' => 'taobaoAccessToken:'
 ];
