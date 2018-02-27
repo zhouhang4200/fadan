@@ -743,7 +743,7 @@ class IndexController extends Controller
                                 $order->original_amount = $requestData[$key];
                                 $order->save();
                             }
-                             $changeHistory = '编辑:' . $orderDetailDisplayName[$key] . '   编辑前：' . $value . ' 编辑后：' . $requestData[$key];
+                             $changeHistory = '编辑:' . $orderDetailDisplayName[$key] . '   编辑前：' . $orderDetail[$key] . ' 编辑后：' . $requestData[$key];
                             $history[] = [
                                 'order_no' => $orderNo,
                                 'user_id' => auth()->user()->id,
@@ -753,7 +753,7 @@ class IndexController extends Controller
                                 'before' => serialize($orderDetail[$key]),
                                 'after' => serialize($requestData[$key]),
                                 'description' => $changeHistory,
-                                'created_at' => date('Y-m-d'),
+                                'created_at' => date('Y-m-d H:i:s'),
                             ];
                         }
                     }
