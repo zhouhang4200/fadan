@@ -36,12 +36,13 @@ class Test extends Command
     {
         $c = new TopClient;
         $c->appkey = '12141884';
+        $c->format = 'json';
         $c->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
 
         $req = new TradeFullinfoGetRequest;
         $req->setFields("tid, type, status, payment, orders, seller_memo");
-        $req->setTid("132193655830396707");
+        $req->setTid("129119112592396707");
         $resp = $c->execute($req, taobaoAccessToken('漆黑fin'));
-        dd($resp);
+        dd($resp->trade->seller_memo);
     }
 }

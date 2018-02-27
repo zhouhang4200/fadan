@@ -169,6 +169,18 @@ class User extends Authenticatable
     }
 
     /**
+     * 获取主账号信息
+     */
+    public function getPrimaryInfo()
+    {
+        if ($this->parent_id == 0) {
+            return $this;
+        } else {
+            return self::find($this->parent_id);
+        }
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function loginHistories()

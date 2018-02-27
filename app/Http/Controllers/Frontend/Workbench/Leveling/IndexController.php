@@ -35,6 +35,8 @@ use Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
+use TopClient;
+use TradeFullinfoGetRequest;
 
 /**
  * 代练订单
@@ -170,10 +172,34 @@ class IndexController extends Controller
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(GameRepository $gameRepository)
+    public function create(Request $request, GameRepository $gameRepository)
     {
         $game = $this->game;
-        return view('frontend.workbench.leveling.create', compact('game'));
+        $tid = $request->tid;
+        $businessmanInfo = auth()->user()->getPrimaryInfo();
+
+        // 有淘宝订单则更新淘宝订单卖家备注
+        $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
+
+        if ($taobaoTrade && empty($taobaoTrade->seller_memo)) {
+            // 获取备注并更新
+            $c = new TopClient;
+            $c->format = 'json';
+            $c->appkey = '12141884';
+            $c->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+
+            $req = new TradeFullinfoGetRequest;
+            $req->setFields("tid, type, status, payment, orders, seller_memo");
+            $req->setTid($tid);
+            $resp = $c->execute($req, taobaoAccessToken($businessmanInfo->store_wang_wang));
+
+            if (!empty($resp->trade->seller_memo)) {
+                $taobaoTrade->seller_memo = $resp->trade->seller_memo;
+                $taobaoTrade->save();
+            }
+        }
+
+        return view('frontend.workbench.leveling.create', compact('game', 'tid'));
     }
 
     /**
@@ -221,16 +247,27 @@ class IndexController extends Controller
      */
     public function getTemplate(Request $request, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
+        $businessmanInfo = auth()->user()->getPrimaryInfo();
+
         // 获取对应的模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $request->game_id);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+        // 获取订单备注
+        $sellerMemo = TaobaoTrade::where('tid', $request->tid)->value('seller_memo');
+
         // 如果有订单号则获取订单原来设置的值
         $orderTemplateValue = [];
         if ($request->no) {
             $orderTemplateValue = OrderDetailRepository::getByOrderNo($request->no);
         }
-        return response()->ajax(1, 'success', ['template' => $template->toArray(), 'id' => $templateId, 'value' => $orderTemplateValue]);
+        return response()->ajax(1, 'success', [
+            'id' => $templateId,
+            'value' => $orderTemplateValue,
+            'sellerMemo' => $sellerMemo,
+            'businessmanInfoMemo' => $businessmanInfo,
+            'template' => $template->toArray(),
+        ]);
     }
 
     /**

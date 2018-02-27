@@ -21,7 +21,7 @@
                 <td>{{ $item->payment }}</td>
                 <td>{{ $item->created }}</td>
                 <td>
-                    {{--<button class="layui-btn layui-btn-normal">编辑</button>--}}
+                    <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
                 </td>
             </tr>
         @empty

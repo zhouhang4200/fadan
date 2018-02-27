@@ -285,12 +285,22 @@
         // 加载模板
         function loadTemplate(id) {
             var getTpl = goodsTemplate.innerHTML, view = $('#template');
-            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id}, function (result) {
-                var template = '游戏：\r\n';
-                $.each(result.content.template, function(index,element){
-                    template += element.field_display_name + '：\r\n'
-                });
-                $('#user-template').val(template);
+            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, tid:'{{ $tid  }}'}, function (result) {
+                var template;
+                if (result.content.sellerMemo) {
+                    template = result.content.sellerMemo  + '\r\n';
+                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    $('#user-template').val(template);
+                } else {
+                    template = '游戏：\r\n';
+                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    $.each(result.content.template, function(index,element){
+                        template += element.field_display_name + '：\r\n'
+                    });
+                    $('#user-template').val(template);
+                }
 
                 layTpl(getTpl).render(result.content, function(html){
                     view.html(html);
