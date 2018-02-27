@@ -34,6 +34,8 @@ class Test extends Command
      */
     public function handle()
     {
+        define("TOP_SDK_WORK_DIR", "/tmp/");
+
         $c = new TopClient;
         $c->appkey = '12141884';
         $c->format = 'json';

@@ -1,4 +1,5 @@
 <?php
+
 class TopClient
 {
 	public $appkey;
@@ -203,9 +204,9 @@ class TopClient
 	protected function logCommunicationError($apiName, $requestUrl, $errorCode, $responseTxt)
 	{
 		$localIp = isset($_SERVER["SERVER_ADDR"]) ? $_SERVER["SERVER_ADDR"] : "CLI";
-//		$logger = new TopLogger;
-//		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
-//		$logger->conf["separator"] = "^_^";
+		$logger = new TopLogger;
+		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
+		$logger->conf["separator"] = "^_^";
 		$logData = array(
             date("Y-m-d H:i:s"),
             $apiName,
@@ -217,8 +218,7 @@ class TopClient
             $errorCode,
             str_replace("\n","",$responseTxt)
 		);
-//		$logger->log($logData);
-        myLog('taobao', $logData);
+		$logger->log($logData);
 	}
 
 	public function execute($request, $session = null,$bestUrl = null)
