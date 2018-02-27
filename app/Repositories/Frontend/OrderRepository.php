@@ -360,7 +360,7 @@ class OrderRepository
                             $orderCurrent['account'] ?? '',
                             $orderCurrent['password'] ?? '',
                             $orderCurrent['role'] ?? '',
-                            $status ?? '',
+                            $orderCurrent['status_text'] ?? '',
                             $orderCurrent['source_price'] ?? '',
                             $orderCurrent['amount'] ?? '',
                             $orderCurrent['security_deposit'] ?? '',
