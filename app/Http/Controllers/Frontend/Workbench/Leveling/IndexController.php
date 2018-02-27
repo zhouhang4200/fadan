@@ -153,15 +153,6 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
-                // 去掉所有金额后面的无效0
-//                $orderCurrent['payment_amount'] = empty($orderCurrent['payment_amount']) ?  ''  :  (float)$orderCurrent['payment_amount']  + 0;
-//                $orderCurrent['get_amount'] = empty($orderCurrent['get_amount']) ?  '' :  (float)$orderCurrent['get_amount']  + 0;
-//                $orderCurrent['poundage'] = empty($orderCurrent['poundage']) ?  ''  :  (float)$orderCurrent['poundage']  + 0;
-//                $orderCurrent['profit'] = empty($orderCurrent['profit']) ?  '' : (float)$orderCurrent['profit'] + 0;
-//                $orderCurrent['source_price'] = empty($orderCurrent['source_price']) ?  '' :  (float)$orderCurrent['source_price'] + 0;
-//                $orderCurrent['game_leveling_amount'] = empty($orderCurrent['game_leveling_amount']) ?  '' :  (float)$orderCurrent['game_leveling_amount'] + 0;
-//                $orderCurrent['amount'] = empty($orderCurrent['amount']) ?  '' : (float)$orderCurrent['amount'] + 0;
-//                $orderCurrent['original_amount'] = empty($orderCurrent['original_amount']) ?  '' :  (float)$orderCurrent['original_amount'] + 0;
 
                 $orderArr[] = $orderCurrent;
             }
