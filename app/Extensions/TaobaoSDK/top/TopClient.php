@@ -6,7 +6,8 @@ class TopClient
 
 	public $secretKey;
 
-	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
+//	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
+	public $gatewayUrl = "http://apitaobao.kamennet.com:30001/router/rest";
 
 	public $format = "xml";
 

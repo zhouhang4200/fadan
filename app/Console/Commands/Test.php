@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
 use TopClient;
@@ -45,6 +46,6 @@ class Test extends Command
         $req->setFields("tid, type, status, payment, orders, seller_memo");
         $req->setTid("129119112592396707");
         $resp = $c->execute($req, taobaoAccessToken('漆黑fin'));
-        dd($resp->trade->seller_memo);
+        dd($resp);
     }
 }
