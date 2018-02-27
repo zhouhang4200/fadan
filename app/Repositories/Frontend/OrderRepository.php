@@ -347,11 +347,12 @@ class OrderRepository
                             $orderCurrent['left_time'] = '';
                         }
 
+
                         $data[] = [
                             $orderCurrent['no'],
                             $orderCurrent['order_source'],
                             $orderCurrent['label'],
-                            $orderCurrent['customer_service_remark'],
+                            $orderCurrent['customer_service_remark'] ?? "",
                             $orderCurrent['game_leveling_title'],
                             $orderCurrent['game_name'],
                             $orderCurrent['region'],
@@ -365,10 +366,10 @@ class OrderRepository
                             $orderCurrent['amount'],
                             $orderCurrent['security_deposit'],
                             $orderCurrent['efficiency_deposit'],
-                            $orderCurrent['payment_amount'],
-                            $orderCurrent['get_amount'],
-                            $orderCurrent['poundage'],
-                            $orderCurrent['profit'],
+                            (string)$orderCurrent['payment_amount'],
+                            (string)$orderCurrent['get_amount'],
+                            (string)$orderCurrent['poundage'],
+                            (string)$orderCurrent['profit'],
                             $orderCurrent['leveling_time'],
                             $orderCurrent['left_time'],
                             $orderCurrent['created_at'] ?? '',
