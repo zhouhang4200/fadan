@@ -457,7 +457,8 @@ class IndexController extends Controller
         $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
 
         try {
-            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+//            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
 
             // 转为数组
             $messageListArr = json_decode(json_encode($dataList), true);
@@ -466,7 +467,7 @@ class IndexController extends Controller
             $messageArr = [];
             foreach ($messageListArr as $item) {
                 if (isset($item['id'])) {
-                    $ids[] = $item['id'];
+                    $ids[] = $item['created_on'];
                 } else {
                     $ids[] = 0;
                 }
