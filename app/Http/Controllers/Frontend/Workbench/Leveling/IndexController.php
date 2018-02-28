@@ -457,8 +457,8 @@ class IndexController extends Controller
         $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
 
         try {
-//            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
-            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
+            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+//            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
 
             // 转为数组
             $messageListArr = json_decode(json_encode($dataList), true);
