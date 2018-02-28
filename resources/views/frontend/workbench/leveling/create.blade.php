@@ -316,7 +316,9 @@
         });
 
         function analysis() {
+
             var fieldArrs = $('[name="desc"]').val().split('\n');
+            console.log(2);
             for (var i = fieldArrs.length - 1; i >= 0; i--) {
                 var arr = fieldArrs[i].split('：');
 
@@ -354,8 +356,11 @@
                         break;
                 }
             }
-            form.render();
+            layui.form.render();
         }
+
     });
+
+
 </script>
 @endsection

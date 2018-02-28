@@ -458,13 +458,29 @@ class IndexController extends Controller
 
         try {
             $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+
+            // 转为数组
+            $messageListArr = json_decode(json_encode($dataList), true);
+
+            $ids = [];
+            $messageArr = [];
+            foreach ($messageListArr as $item) {
+                if (isset($item['id'])) {
+                    $ids[] = $item['id'];
+                } else {
+                    $ids[] = 0;
+                }
+                $messageArr[] = $item;
+            }
+            // 用ID倒序
+            array_multisort($ids, SORT_ASC, $messageArr);
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
         $show91Uid = config('show91.uid');
 
-        $html = view('frontend.workbench.leveling.leave-message', compact('dataList', 'show91Uid'))->render();
+        $html = view('frontend.workbench.leveling.leave-message', compact('messageArr', 'show91Uid'))->render();
         return response()->ajax(1, 'success', $html);
     }
 
