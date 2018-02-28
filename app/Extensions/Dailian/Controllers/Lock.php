@@ -81,7 +81,7 @@ class Lock extends DailianAbstract implements DailianInterface
                         break;
                     case 2:
                         // 代练妈妈锁定接口
-                        DailianMama::operationOrder($order, 20002);
+                        DailianMama::operationOrder($this->order, 20002);
                         break;
                     default:
                         throw new DailianException('第三方接单平台不存在!');

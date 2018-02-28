@@ -49,8 +49,9 @@ class AddNoticeOrderFromRedis extends Command
         // 操作成功状态为1， 操作失败状态为0
         foreach ($orderNos as $orderNo => $statusAndAction) {
             $status = explode('-', $statusAndAction)[0];
-            $action = explode('-', $statusAndAction)[1];
-            $this->checkOrderNotice($orderNo, $status, $action);
+            $third = explode('-', $statusAndAction)[1];
+            $action = explode('-', $statusAndAction)[2];
+            $this->checkOrderNotice($orderNo, $status, $action, $third);
         }
     }
 
@@ -91,7 +92,7 @@ class AddNoticeOrderFromRedis extends Command
     /**
      * 检查order_notices 表订单状态，一样的话不走处理，不一样再生成一条报警
      */
-    public function checkOrderNotice($orderNo, $status, $action)
+    public function checkOrderNotice($orderNo, $status, $action, $third)
     {
         DB::beginTransaction();
         try {
@@ -101,7 +102,7 @@ class AddNoticeOrderFromRedis extends Command
                 // 获取游戏详情，看是哪个平台的订单
                 $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
-                switch ($orderDetails['third']) {
+                switch ($third) {
                     case 1:
                         if ($status == 1) { // 第三方做了成功的操作
                             if (! $orderDetail['third_order_no']) {

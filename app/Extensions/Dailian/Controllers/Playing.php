@@ -156,6 +156,7 @@ class Playing extends DailianAbstract implements DailianInterface
             $now = Carbon::now()->toDateTimeString();
             // 订单详情
             $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+
             // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
@@ -189,6 +190,7 @@ class Playing extends DailianAbstract implements DailianInterface
 
                     // 下架其他代练平台订单
                     $options = ['oid' => $orderDetails['show91_order_no']]; 
+                    // 91代练下单
                     Show91::grounding($options);
                     break;
                 default:

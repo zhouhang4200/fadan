@@ -61,7 +61,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             addRedisCompleteOrders($this->orderNo, $this->handledStatus);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
-                (new Lock)->run($orderNo, $userId);
+                (new Lock)->run($orderNo, $userId, $runAfter = false);
             }
     	} catch (DailianException $e) {
     		DB::rollBack();

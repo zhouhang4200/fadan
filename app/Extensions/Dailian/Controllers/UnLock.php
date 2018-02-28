@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use App\Services\DailianMama;
 use App\Models\OrderHistory;
 use App\Exceptions\DailianException; 
 /**
@@ -81,7 +82,7 @@ class UnLock extends DailianAbstract implements DailianInterface
                         break;
                     case 2:
                         // 代练妈妈解除锁定接口
-                        DailianMama::operationOrder($order, 20010);
+                        DailianMama::operationOrder($this->order, 20010);
                         break;
                     default:
                         throw new DailianException('第三方接单平台不存在!');

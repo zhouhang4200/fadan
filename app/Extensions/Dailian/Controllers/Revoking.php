@@ -39,7 +39,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-            // 获取锁定前的状态
+            // 获取撤销前的状态
             $this->beforeHandleStatus = $this->getOrder()->status;
             // 创建操作前的订单日志详情
             $this->createLogObject();
@@ -61,7 +61,6 @@ class Revoking extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-
         return true;
     }
 

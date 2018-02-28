@@ -219,7 +219,11 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             }
             DB::commit();
             // 写入留言获取
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $thirdOrderNo, 91, 0);
+            $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['show91_order_no'], 91, 0);
         }
     }
 }

@@ -18,7 +18,7 @@ class CreateThirdAreasTable extends Migration
             $table->integer('game_id')->unsigned()->comment('我们的游戏id');
             $table->tinyInteger('third_id')->unsigned()->comment('第三方平台id，1：91代练');
             $table->integer('area_id')->unsigned()->comment('我们的区id');
-            $table->integer('third_area_id')->unsigned()->comment('第三方区id');
+            $table->string('third_area_id')->unsigned()->comment('第三方区id');
             $table->timestamps();
         });
     }
