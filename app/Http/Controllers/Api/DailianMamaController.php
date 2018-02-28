@@ -186,10 +186,11 @@ class DailianMamaController extends Controller
 		                    ->pluck('field_value', 'field_name')
 		                    ->toArray();
 			    		// 接收到的信息，写到申诉表
-			    		$apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
+			    		// $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
+			    		$apiAmount = $request->price_pay; // 发单商家获得代练费, 
 			    																//由于我们这里字段是接单获得的代练费，所以要减
 			            $apiDeposit = $request->price_get ?? 0; // 发单商家获得的双金
-			            $content = $request->reason ?: '无'; // 理由
+			            $content = $request->reason; // 理由
 			            $apiService = $request->price_pay_fee ?? 0; // 发单商家支付的手续费
 
 						if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
@@ -356,7 +357,7 @@ class DailianMamaController extends Controller
 			            	// 记录日志
 			                myLog('exception-appeal', ['进入']);
 			                // 原因
-			                $content = $request->input('reason', '无');
+			                $content = $request->reason;
 			                // 验证订单号是否存在
 			                $order = $this->checkOrder($datas['orderid']);
 
@@ -403,7 +404,8 @@ class DailianMamaController extends Controller
 	    		if ($request->operationuserid != 100308582) {
 	    			DB::beginTransaction();
 			    	try {
-			            $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
+			            // $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
+			            $apiAmount = $request->price_pay; // 发单商家获得代练费, 
 			   			//由于我们这里字段是接单获得的代练费，所以要减
 			            $apiDeposit = $request->price_get; // 发单商家获得的双金
 			            $apiService = $request->price_pay_fee; // 发单商家支付的手续费

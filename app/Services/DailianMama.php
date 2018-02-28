@@ -69,7 +69,16 @@ class DailianMama
         // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
         // 根据每个接口返回的错误信息格式返回错误信息
         if ($res && $res['result'] !== 1) {
-            throw new DailianException('操作失败!');
+            if (null !== $res['data'])
+            {
+                // 发布订单
+                if (is_array($res['data'])) {
+                    $error = $res['data']['message'];
+                }
+            } else {
+                $error = '失败';
+            }
+            throw new DailianException($error);
         }
         return $res;
     }
@@ -166,7 +175,19 @@ class DailianMama
         }
         $res = static::normalRequest(config('dailianmama.url.releaseOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        // 
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['message']);
+        }
+        return $res;
     }
 
     /**
@@ -193,7 +214,18 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['message']);
+        }
+        return $res;
     }
 
     /**
@@ -220,7 +252,18 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res;
     }
 
     /**
@@ -247,7 +290,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res;
     }
 
     /**
@@ -274,7 +329,19 @@ class DailianMama
 
 	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败！');
+        }
+        return $res; 
     }
 
     /**
@@ -298,7 +365,19 @@ class DailianMama
 
 	    $res = static::normalRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res; 
     }
 
     /**
@@ -324,7 +403,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -350,7 +441,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.checkTradePassword'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['msg']);
+        }
+        return $res; 
     }
 
     /**
@@ -367,7 +470,7 @@ class DailianMama
         // 支付密码验证
         $passwordKey = static::checkTradePassword();
 
-        $sign = md5("checkTradePwdRDM=".env('PAY_PASSWORD')."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'             => $orderDetails['dailianmama_order_no'],
@@ -392,9 +495,9 @@ class DailianMama
                 // $options['refundment'] = $consult->amount;
                 // $options['bail'] = $consult->deposit;
 
-                $sign = md5("bail=".$consult->deposit."checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&refundment={$consult->amount}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("bail=".$consult->deposit."&checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&refundment={$consult->amount}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
 
-                $options = "bail=".urlencode($consult->deposit)."checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&refundment=".urlencode($consult->amount)."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "bail=".urlencode($consult->deposit)."&checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&refundment=".urlencode($consult->amount)."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20007: // 申请仲裁
                 // $options['reason'] = $consult->complain_message;
@@ -431,12 +534,16 @@ class DailianMama
                 $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20013: // 验收完成
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+
                 $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20012: // 取消撤销
                 $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20009: // 同意撤销
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+
                 $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20008: // 取消仲裁
@@ -452,7 +559,23 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            if ($res['data'] == '对不起，订单状态可能已经改变！') {
+                $res['data'] = '该订单被代练妈妈平台接单，该状态没有【申请仲裁】操作！';
+            }
+            throw new DailianException($res['data']);
+        }
+
+        return $res; 
     }
 
     /**
@@ -480,7 +603,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.chatOldList'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -507,7 +642,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -534,7 +681,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;  
     }
 
     /**
@@ -566,7 +725,19 @@ class DailianMama
 
     	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
 
-	    return static::returnErrorMessage($res);  	
+	    // return static::returnErrorMessage($res);  	
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;   
     }
 
     /**
@@ -584,7 +755,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options);
 
-	    return static::returnErrorMessage($res);	
+	    // return static::returnErrorMessage($res);	
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;   
     }
 
     /**
@@ -620,7 +803,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.releaseOrderManageList'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;   
     }
 
     /**
@@ -647,7 +842,19 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['msg']);
+        }
+        return $res;   
     }
 
     /**

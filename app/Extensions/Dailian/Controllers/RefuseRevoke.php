@@ -112,7 +112,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                         Show91::confirmSc($options);
                         break;
                     case 2:
-                        throw new DailianException('代练妈妈没有同意撤销操作!');
+                        throw new DailianException('该订单被代练妈妈平台接单，该平台没有【不同意撤销】操作!');
                         break;
                     default:
                         throw new DailianException('不存在第三方接单平台!');

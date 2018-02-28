@@ -128,7 +128,7 @@ class Complete extends DailianAbstract implements DailianInterface
             try {
                 $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
 
-                switch ($orderDetails['thrid']) {
+                switch ($orderDetails['third']) {
                     case 1:
                         // 91 完成接口
                         $options = [

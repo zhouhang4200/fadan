@@ -188,10 +188,10 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'third_order_no')
                         ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
 
-                    // 下架其他代练平台订单
+                    // 撤单91平台订单
                     $options = ['oid' => $orderDetails['show91_order_no']]; 
                     // 91代练下单
-                    Show91::grounding($options);
+                    Show91::chedan($options);
                     break;
                 default:
                     throw new DailianException('未找到订单对应的第三方平台!');
