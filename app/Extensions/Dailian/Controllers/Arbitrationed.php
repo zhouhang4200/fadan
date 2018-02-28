@@ -57,16 +57,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 
 		    $this->after();
 
+            $this->orderCount();
 		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
 		    // 24H自动完成
 			delRedisCompleteOrders($this->orderNo);
-            // 写入待验收数量角标
-            // 接单人
-            orderStatusCount($this->order->gainer_primary_user_id, $this->handledStatus);
-            orderStatusCount($this->order->gainer_primary_user_id, $this->beforeHandleStatus, 4);
-            // 发单人
-            orderStatusCount($this->order->creator_primary_user_id, $this->handledStatus);
-            orderStatusCount($this->order->creator_primary_user_id, $this->beforeHandleStatus, 4);
 
     	} catch (DailianException $e) {
     		DB::rollBack();

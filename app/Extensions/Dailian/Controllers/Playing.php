@@ -59,6 +59,7 @@ class Playing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
 

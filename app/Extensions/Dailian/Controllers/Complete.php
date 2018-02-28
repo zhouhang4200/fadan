@@ -58,13 +58,10 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
+            $this->orderCount();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
-            // 写入待验收数量角标
-            // 接单人
-            orderStatusCount($this->order->gainer_primary_user_id, $this->beforeHandleStatus);
-            // 发单人
-            orderStatusCount($this->order->creator_primary_user_id, $this->beforeHandleStatus);
+
     	} catch (DailianException $e) {
     		DB::rollBack();
 
@@ -131,7 +128,7 @@ class Complete extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        if ($this->runAfter) {
+        if (!$this->runAfter) {
             try {
                 $orderDetails = OrderDetail::where('order_no', $this->order->no)
                     ->pluck('field_value', 'field_name')

@@ -18,6 +18,7 @@ class Delete extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 24; // 状态：24已删除
     protected $type             = 23; // 操作：23删除
+
 	/**
      * [run 删除 -》 删除]
      * @param  [type] $orderNo     [订单号]
@@ -52,6 +53,7 @@ class Delete extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {
     		DB::rollBack();
