@@ -292,6 +292,7 @@
                     template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
                     template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                     $('#user-template').val(template);
+                    analysis();
                 } else {
                     template = '游戏：\r\n';
                     template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
@@ -311,6 +312,10 @@
 
         // 解析模板
         $('#parse').click(function () {
+            analysis();
+        });
+
+        function analysis() {
             var fieldArrs = $('[name="desc"]').val().split('\n');
             for (var i = fieldArrs.length - 1; i >= 0; i--) {
                 var arr = fieldArrs[i].split('：');
@@ -350,7 +355,7 @@
                 }
             }
             form.render();
-        });
+        }
     });
 </script>
 @endsection
