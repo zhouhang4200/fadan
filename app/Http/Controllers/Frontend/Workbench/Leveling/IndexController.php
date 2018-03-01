@@ -660,9 +660,18 @@ class IndexController extends Controller
                         }
                     }
 
+                    // 其它信息只需改订单详情表
+                    foreach ($requestData as $key => $value) {
+                        if (isset($orderDetail[$key])) {
+                            if ($orderDetail[$key] != $value) {
+                                // 更新值
+                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
+                                    'field_value' => $value
+                                ]);
+                            }
+                        }
+                    }
                     // 手动触发调用外部接口时间
-                    $order = OrderModel::where('no', $order->no)->first();
-
                     event(new AutoRequestInterface($order, 'addOrder', true));
                 }
 
@@ -774,7 +783,6 @@ class IndexController extends Controller
                 }
 
                 // 其它信息只需改订单详情表
-
                 foreach ($requestData as $key => $value) {
 
                     if (isset($orderDetail[$key])) {

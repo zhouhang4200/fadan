@@ -12,7 +12,7 @@ use TradeFullinfoGetRequest;
  * Class OrderTestData
  * @package App\Console\Commands
  */
-class Test extends Command
+class Temp extends Command
 {
     /**
      * The name and signature of the console command.
@@ -35,17 +35,6 @@ class Test extends Command
      */
     public function handle()
     {
-        define("TOP_SDK_WORK_DIR", "/tmp/");
 
-        $c = new TopClient;
-        $c->appkey = '12141884';
-        $c->format = 'json';
-        $c->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-
-        $req = new TradeFullinfoGetRequest;
-        $req->setFields("tid, type, status, payment, orders, seller_memo");
-        $req->setTid("129119112592396707");
-        $resp = $c->execute($req, taobaoAccessToken('漆黑fin'));
-        dd($resp);
     }
 }
