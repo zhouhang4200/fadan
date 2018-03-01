@@ -74,9 +74,13 @@ class OrderAssign extends Command
                             // 如果正则取出来的是数字则写入队列
                             if (is_numeric($faceValue[0])) {
                                 $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
-                                $redis = RedisConnect::order();
-                                $redis->lpush(config('redis.order.roomCardRecharge') . $orderInfo->game_id, $orderNo . '-'. $orderDetail['account'] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
+                                preg_match('|\d+|', $orderDetail['account'], $chargeId);
+                                if (is_numeric($chargeId[0])) {
+                                    $redis = RedisConnect::order();
+                                    $redis->lpush(config('redis.order.roomCardRecharge') . $orderInfo->game_id, $orderNo . '-'. $chargeId[0] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
+                                }
                             }
+
                         } catch (\Exception $exception) {
 
                         }
