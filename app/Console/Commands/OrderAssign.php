@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Models\User;
+use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\RedisConnect;
 use Carbon\Carbon;
 use App\Models\Order as OrderModel;
@@ -72,8 +73,9 @@ class OrderAssign extends Command
                             $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
                             // 如果正则取出来的是数字则写入队列
                             if (is_numeric($faceValue[0])) {
+                                $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
                                 $redis = RedisConnect::order();
-                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-' . $orderInfo->quantity * $faceValue[0]);
+                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-'. $orderDetail['account'] .'-' . $orderInfo->quantity * $faceValue[0]);
                             }
                         } catch (\Exception $exception) {
 
