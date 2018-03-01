@@ -75,7 +75,7 @@ class OrderAssign extends Command
                             if (is_numeric($faceValue[0])) {
                                 $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
                                 $redis = RedisConnect::order();
-                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-'. $orderDetail['account'] .'-' . $orderInfo->quantity * $faceValue[0]);
+                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-'. $orderDetail['account'] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
                             }
                         } catch (\Exception $exception) {
 
