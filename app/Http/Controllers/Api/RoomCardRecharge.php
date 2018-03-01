@@ -26,8 +26,9 @@ class RoomCardRecharge extends Controller
      */
     public function index(Request $request)
     {
+        $gameId = $request->game_id;
         $redis = RedisConnect::order();
-        $result = $redis->lpop(config('redis.order.roomCardRecharge'));
+        $result = $redis->lpop(config('redis.order.roomCardRecharge') . $gameId);
         if ($result) {
             return response()->json(['status' => 1, 'message' => '获取成功', 'data' => $result]);
         }

@@ -34,8 +34,8 @@ return [
         'autoUnShelve' => 'order:autoUnShelve',
         // 订单角标
         'statusCount' => 'order:statusCount:',
-        // 房卡充值队列
-        'roomCardRecharge' => 'order:roomCardRecharge'
+        //  房卡充值队列
+        'roomCardRecharge' => 'order:roomCardRecharge',
     ],
     // 用户模型
     'user' => [
