@@ -118,7 +118,7 @@ class OrderAssign extends Command
                             Log::alert($exception->getMessage() . ' 分配订单失败');
                             continue;
                         }
-                    } else if (in_array($orderInfo->goods_id, [1906, 1907])) { // 如果是房卡直接分配到固定商家
+                    } else if (in_array($orderInfo->goods_id, [1906, 1907, 1912, 1913, 1914, 1908, 1909, 1910, 1911])) { // 如果是房卡直接分配到固定商家
                         $userId = 8017;
                         try {
                             // 将订单改为不可接单
