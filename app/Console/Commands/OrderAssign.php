@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Models\User;
+use App\Services\RedisConnect;
 use Carbon\Carbon;
 use App\Models\Order as OrderModel;
 use Illuminate\Console\Command;
@@ -51,6 +52,9 @@ class OrderAssign extends Command
                 $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
+                // 获取订单信息
+                $orderInfo = OrderModel::where('no', $orderNo)->first();
+
                 $sendUser = $data->creator_primary_user_id ?? 0;
                 if ($minutes >= 40 && !in_array($sendUser, [8311, 8111])) {
                     try {
@@ -61,6 +65,16 @@ class OrderAssign extends Command
                     }
                     continue;
                 } else {
+                    // 如果是房卡商品则写入充值队列
+                    if (in_array($orderInfo->goods_id, [1906, 1907])) {
+                        // 获取商品中的数字
+                        $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
+                        // 如果正则取出来的是数字则写入队列
+                        if (is_numeric($faceValue)) {
+                            $redis = RedisConnect::order();
+                            $redis->lpush($orderNo, $orderInfo->quantity * $faceValue);
+                        }
+                    }
 
                     $userId = 0;
                     // 如果该订单旺旺在三十分钟分内下过单则找出之前的订单分给哪个商户，直接将该单分给该商户
@@ -92,6 +106,29 @@ class OrderAssign extends Command
                         // 分配订单
                         try {
                             Order::handle(new Receiving($orderNo, $userId));
+                            continue;
+                        } catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . ' 分配订单失败');
+                            continue;
+                        }
+                    } else if (in_array($orderInfo->goods_id, [1906, 1907])) { // 如果是房卡直接分配到固定商家
+                        $userId = 8017;
+                        try {
+                            // 将订单改为不可接单
+                            Order::handle(new GrabClose($orderNo));
+                        }catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . '更改状态失败');
+                            continue;
+                        }
+                        // 分配订单
+                        try {
+                            Order::handle(new Receiving($orderNo, $userId));
+                            // 记录相同旺旺的订单分配到了哪个商户
+                            if ($data->wang_wang) {
+                                wangWangToUserId($data->wang_wang, $userId);
+                            }
                             continue;
                         } catch (CustomException $exception) {
                             waitReceivingDel($orderNo);

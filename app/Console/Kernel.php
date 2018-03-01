@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
         'App\Console\Commands\PlatformStatistic', // 平台订单统计
         'App\Console\Commands\AddNoticeOrderFromRedis',
+        'App\Console\Commands\Task\RoomCardRecharge',
     ];
 
     /**

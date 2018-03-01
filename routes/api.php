@@ -87,3 +87,11 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     // 充值结果回调
     Route::post('order-charge/notify', 'OrderChargeController@notify');
 });
+
+/**
+ * 房卡充值接口
+ */
+Route::prefix('room-card-recharge')->group(function (){
+    Route::get('/', 'RoomCardRecharge@index');
+    Route::post('update', 'RoomCardRecharge@update');
+});
