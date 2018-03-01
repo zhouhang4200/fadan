@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderTestData',
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
-        'App\Console\Commands\Test',
+        'App\Console\Commands\Temp',
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay',
