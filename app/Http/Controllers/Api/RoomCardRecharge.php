@@ -43,6 +43,7 @@ class RoomCardRecharge extends Controller
      */
     public function update(Request $request)
     {
+        myLog('room-card', ['返状态'=> $request->no, $request->status]);
         // 1 成功 2 失败
         if(in_array($request->status, [1, 2]) && strlen($request->no) == 22) {
             $orderInfo = OrderModel::where('no', $request->no)->first();
