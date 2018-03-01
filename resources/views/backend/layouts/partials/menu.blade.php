@@ -454,6 +454,20 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li @if($currentOneLevelMenu == 'statistic') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>平台统计</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
+                                    平台统计
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

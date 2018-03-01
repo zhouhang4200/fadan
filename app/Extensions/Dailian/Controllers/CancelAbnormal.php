@@ -50,6 +50,7 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {
     		DB::rollBack();

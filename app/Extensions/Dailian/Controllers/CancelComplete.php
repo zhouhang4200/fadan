@@ -46,6 +46,7 @@ class CancelComplete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+            $this->orderCount();
 
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {

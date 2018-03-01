@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use DB;
+use Redis;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -67,8 +68,11 @@ class LevelingController
      */
     public function success($message, $order)
     {
-        // 写入第三方操作
-        $this->addActionToOrderNotice($order);
+        if ($order) {
+            $action = \Route::currentRouteAction();
+            $this->checkAndAddOrderToRedis($order, '1-'.$action);
+            // $this->checkOrderNotice($order);
+        }
 
         return json_encode([
             'status' => 1,
@@ -85,9 +89,9 @@ class LevelingController
     public function fail($message, $order)
     {
         if ($order) {
-            // 异常写入order_notices 表
-            $this->addOrderNotice($order);
-            $this->addActionToOrderNotice($order);      
+            // $this->addOrderNotice($order);  
+            $action = \Route::currentRouteAction();
+            $this->checkAndAddOrderToRedis($order, '0-'.$action);
         }
 
         return json_encode([
@@ -96,22 +100,6 @@ class LevelingController
         ]);
         \Log::info($message);
         throw new DailianException($message);
-    }
-
-    /**
-     * 记录第三方做的操作，写入订单预警表
-     * @param [type] $order [description]
-     */
-    public function addActionToOrderNotice($order) 
-    {
-        $action = \Route::currentRouteAction();
-        $actionName = preg_replace('~.*@~', '', $action, -1);
-        $orderNotice = OrderNotice::where('order_no', $order->no)->latest('updated_at')->first();
-
-        if ($orderNotice) {
-            $orderNotice->operate = config('ordernotice.operate')[$actionName] ?? '空';
-            $orderNotice->save();
-        }
     }
 
 	/**
@@ -486,7 +474,7 @@ class LevelingController
      * 添加订单报警
      * @param [type] $order [description]
      */
-    public function addOrderNotice($order)
+    public function addOrderNotice($order, $bool = false)
     {
         DB::beginTransaction();
         try {
@@ -506,6 +494,18 @@ class LevelingController
             $data['security_deposit'] = $orderDetail['security_deposit'];
             $data['efficiency_deposit'] = $orderDetail['efficiency_deposit'];
             $twoStatus = $this->getThirdOrderStatus($data['third_order_no']);
+            // 操作
+            $action = \Route::currentRouteAction();
+            $actionName = preg_replace('~.*@~', '', $action, -1);
+            if ($actionName) {
+                if ($bool) {
+                    $data['operate'] = config('ordernotice.operate')[$actionName] ? config('ordernotice.operate')[$actionName].'@' : '';
+                } else {
+                    $data['operate'] = config('ordernotice.operate')[$actionName] ?: '';
+                }
+            } else {
+                $data['operate'] = '';
+            }
             if (count($twoStatus) == 2) {
                 $data['third_status'] = $twoStatus[0];
                 $data['child_third_status'] = $twoStatus[1];
@@ -537,21 +537,18 @@ class LevelingController
         $options = [
             'oid' => $orderNo,
         ]; 
-
+        sleep(3);
         $res = Show91::orderDetail($options);
         // 91平台订单状态
         $thirdStatus =  $res['data']['order_status'];
+
         // 如果状态为代练中，需要详细区分到底是哪个状态
         // 此处有可能同时存在，会有分不清情况出现
-        if ($res['data']['inAppeal'] && ! $res['data']['inSelfCancel']) {
+        if ($res['data']['inAppeal'] && empty($res['data']['inSelfCancel'])) {
             $childThirdStatus = 14; // 申诉中
-        }
-
-        if ($res['data']['inSelfCancel'] && ! $res['data']['inAppeal']) {
+        } elseif ($res['data']['inSelfCancel'] && empty($res['data']['inAppeal'])) {
             $childThirdStatus = 13; // 协商中
-        }
-
-        if ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
+        } elseif ($res['data']['inSelfCancel'] && $res['data']['inAppeal']) {
             $childThirdStatus = 15;
         }
 
@@ -559,5 +556,68 @@ class LevelingController
             return [$thirdStatus, $childThirdStatus];
         }
         return $thirdStatus;
+    }
+
+    /**
+     * 检查order_notices 表订单状态，一样的话不走处理，不一样再生成一条报警
+     */
+    public function checkOrderNotice($order)
+    {
+        $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+
+        if (! $orderDetail['third_order_no']) {
+            throw new OrderNoticeException('第三方订单号不存在');
+        }
+
+        $options = [
+            'oid' => $orderDetail['third_order_no'],
+        ]; 
+
+        $res = Show91::orderDetail($options);
+        // 91平台订单状态
+        $thirdStatus =  $res['data']['order_status'];
+
+        switch ($thirdStatus) {
+            case 1:
+                if ($order->status != 13) {
+                    $this->addOrderNotice($order, true);
+                }
+                return true;
+            break;
+            case 2:
+                if ($order->status != 14) {
+                    $this->addOrderNotice($order, true); 
+                }
+                return true;
+            break;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * 操作成功的时候，检查订单报警有没有此单，有的话再次写入redis
+     * @param  [type] $order [description]
+     * @return [type]        [description]
+     */
+    public function checkAndAddOrderToRedis($order, $statusAndAction)
+    {
+        if ($order) {
+                $status = explode('-', $statusAndAction)[0];
+            if ($status && $status == 1) {
+                $orderNotice = OrderNotice::where('order_no', $order->no)->first();
+
+                if ($orderNotice) {
+                    $result = Redis::hSet('notice_orders', $order->no, $statusAndAction);
+                    \Log::info('操作成功!记录正在写入redis，结果：'.$result, ['order_no' => $order->no, 'status' => $status]);
+                } else {
+                    \Log::info('操作成功!记录没有写入redis.', ['order_no' => $order->no, 'status' => $status]);
+                }      
+            } else {
+                $result = Redis::hSet('notice_orders', $order->no, $statusAndAction);
+                \Log::info('操作失败!记录正在写入redis，结果：'.$result, ['order_no' => $order->no, 'status' => $status]);
+            }
+        }
+        return true;
     }
 }

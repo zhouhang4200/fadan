@@ -14,6 +14,12 @@
 Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
+    // 代练留言
+    Route::prefix('message')->group(function (){
+        Route::get('/', 'LevelingMessageController@index')->name('frontend.message-list');
+        Route::post('del', 'LevelingMessageController@del')->name('frontend.message-del');
+        Route::post('del-all', 'LevelingMessageController@delAll')->name('frontend.message-del-all');
+    });
 	// 登录管理
 	Route::prefix('login')->group(function () {
 		// 账号登录记录
@@ -91,8 +97,14 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
         Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee')->middleware('permission:frontend.statistic.employee');
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('permission:frontend.statistic.order');
-        Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
-        Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
+        // Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
+        // Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
+
+        // 短信
+        Route::prefix('sms')->group(function (){
+            Route::get('/', 'SmsController@index')->name('frontend.statistic.sms');
+            Route::get('show/{date}', 'SmsController@show')->name('frontend.statistic.show');
+        });
     });
 
     // 商品
@@ -109,7 +121,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('update', 'GoodsController@update')->name('frontend.goods.update')->middleware('permission:frontend.goods.update');
         // 删除商品
         Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy')->middleware('permission:frontend.goods.destroy');
-
     });
 
     // 订单
@@ -149,8 +160,18 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 自动抓取订单配置
         Route::prefix('automatically-grab')->group(function (){
             Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.automatically-grab.goods');
+            Route::post('add', 'AutomaticallyGrabController@add')->name('frontend.automatically-grab.add');
+            Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.automatically-grab.delete');
         });
-
+        // 短信管理
+        Route::prefix('sms')->group(function () {
+            Route::get('/', 'SmsController@index')->name('frontend.setting.sms.index')->middleware('permission:frontend.setting.sms.index');
+            Route::post('show', 'SmsController@show')->name('frontend.setting.sms.show');
+            Route::post('add', 'SmsController@add')->name('frontend.setting.sms.add');
+            Route::post('edit', 'SmsController@edit')->name('frontend.setting.sms.edit');
+            Route::post('delete', 'SmsController@delete')->name('frontend.setting.sms.delete');
+            Route::post('status', 'SmsController@status')->name('frontend.setting.sms.status');
+        });
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('permission:frontend.setting.tb-auth.index');
@@ -183,6 +204,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
         // 首页
         Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
+        // 清空角标
+        Route::post('clear-count', 'IndexController@clearCount')->name('frontend.workbench.clear-count');
 
         // 代充
         Route::namespace('Recharge')->prefix('recharge')->group(function (){
@@ -297,7 +320,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 商品
         Route::prefix('goods')->group(function () {
             // 商品列表
-            Route::get('/', 'GoodsController@index')->name('frontend.steam.goods.index');
+            Route::get('/', 'GoodsController@index')->name('frontend.steam.goods.index')->middleware('permission:frontend.steam.goods.index');;
             // 添加视图
             Route::get('create', 'GoodsController@create')->name('frontend.steam.goods.create');
             // 审核商品
@@ -376,7 +399,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
 
     });
-
 
 });
 

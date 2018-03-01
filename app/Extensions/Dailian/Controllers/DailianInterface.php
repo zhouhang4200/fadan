@@ -23,4 +23,6 @@ interface DailianInterface
     public function saveLog();
     //
     public function after();
+
+    public function orderCount();
 }

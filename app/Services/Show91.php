@@ -162,7 +162,7 @@ class Show91
             'initPic2'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'initPic3'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'order.require_info'   => $orderDetails['game_leveling_requirements'] ?: 1, // 代练要求
-            'order.remark'         => $orderDetails['cstomer_service_remark'] ?: '无',//订单备注
+            'order.remark'         => $orderDetails['customer_service_remark'] ?: '无',//订单备注
             'order.linkman'        => $order->creator_primary_user_id, // 联系人
             'order.linkphone'      => $orderDetails['user_phone'],
             'order.linkqq'         => $orderDetails['user_qq'],
@@ -176,6 +176,9 @@ class Show91
         ];
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
+            if (! $orderDetails['third_order_no']) {
+                throw new DailianException('订单详情无第三方订单，修改失败!');
+            }
             $options['order.order_id'] = $orderDetails['third_order_no'];
         }
 

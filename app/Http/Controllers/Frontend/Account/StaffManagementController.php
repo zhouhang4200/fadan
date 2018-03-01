@@ -12,29 +12,49 @@ use App\Http\Controllers\Controller;
 
 class StaffManagementController extends Controller
 {
+    /**
+     * 岗位管理列表
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function index(Request $request)
     {
     	$name = $request->name;
     	$station = $request->station;
-    	$userName = $request->user_name;
+    	$userName = $request->username;
 
     	$groups = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
     	$children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
     	$filters = compact('name', 'userName', 'station');
 
-    	$users = User::staffManagementFilter($filters)->paginate(config('frontend.page'));
+        //状态是2时表示删除不显示
+    	$users = User::staffManagementFilter($filters)
+            ->withTrashed()
+            ->where('status', '!=', 2)
+            ->paginate(config('frontend.page'));
 
     	return view('frontend.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'groups', 'children'));
     }
 
+    /**
+     * 岗位编辑
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function edit($id)
     {
-    	$roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
+        $roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
     	$user = User::find($id);
 
     	return view('frontend.user.staff-management.edit', compact('roles', 'user'));
     }
 
+    /**
+     * 员工岗位修改
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
     public function update(Request $request, $id)
     {
     	DB::beginTransaction();
@@ -45,12 +65,17 @@ class StaffManagementController extends Controller
     	if ($request->password) {
     		$data['password'] = bcrypt($request->password);
     	}
-
+        // $request->role 是一个数组
     	if ($request->role) {
     		$data['role'] = $request->role;
     		$user->rbacgroups()->sync($request->role);
-    		$permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
-    		$user->permissions()->sync($permissions->toArray());
+    		$rbacGroups = RbacGroup::whereIn('id', $request->role)->get();
+
+            $permissions = [];
+            foreach ($rbacGroups as $k => $rbacGroup) {
+                $permissions[$k] = $rbacGroup->permissions()->pluck('id');
+            } 
+            $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
     	}
     	
     	try {
@@ -63,17 +88,21 @@ class StaffManagementController extends Controller
     	return redirect(route('staff-management.index'))->with('succ', '修改成功!');
     }
 
+    /**
+     * 禁止员工登录
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function forbidden(Request $request)
     {
     	DB::beginTransaction();
     	try {
-	    	$user = User::find($request->id);
-	    	if (! $user->status) {    		
-		    	$user->status = 1;
-		    	$user->save();
+	    	$user = User::withTrashed()->find($request->id);
+
+	    	if (! $user->deleted_at) {    		
+		    	$user->delete();
 	    	} else {
-	    		$user->status = 0;
-		    	$user->save();
+	    		$user->restore();
 	    	}
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -81,17 +110,23 @@ class StaffManagementController extends Controller
     		throw new Exception($e->getMessage());
     	}
     	DB::commit();
-    	if ($user->status) {
-    		return response()->ajax(1, '启用成功');
+    	if ($user->deleted_at) {
+    		return response()->ajax(1, '已开启');
     	} else {
-    		return response()->ajax(1, '禁用成功');
+    		return response()->ajax(1, '已关闭');
     	}
     }
 
+    /**
+     * 岗位删除
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function delete(Request $request)
     {
     	DB::beginTransaction();
     	try {
+            User::where('id', $request->id)->update(['status' => 2]);
     		User::destroy($request->id);
     	} catch (Exception $e) {
     		DB::rollBack();
@@ -102,6 +137,10 @@ class StaffManagementController extends Controller
     	return response()->ajax(1, '删除成功');
     }
 
+    /**
+     * 岗位添加
+     * @return [type] [description]
+     */
     public function create()
     {
     	$roles = RbacGroup::where('user_id', Auth::user()->getPrimaryUserId())->get();
@@ -109,31 +148,37 @@ class StaffManagementController extends Controller
     	return view('frontend.user.staff-management.create', compact('roles'));
     }
 
+    /**
+     * 岗位保存
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function store(Request $request)
     {
-    	DB::beginTransaction();
+        $this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
+        DB::beginTransaction();
+        try {
+            $data = $request->except('role');
+            $data['password'] = bcrypt($request->password);
+            $data['api_token'] = Str::random(25);
+            $data['parent_id'] = Auth::id();
+            $user = User::create($data);
 
-    	try {
-	    	$this->validate($request, User::staffManagementRules(), User::staffManagementMessages());
+            if ($request->role) {
+                $data['role'] = $request->role;
+                $user->rbacgroups()->sync($request->role);
+                $rbacGroups = RbacGroup::whereIn('id', $request->role)->get();
 
-	    	$data = $request->except('role');
-	    	$data['password'] = bcrypt($request->password);
-	    	$data['api_token'] = Str::random(25);
-	    	$data['parent_id'] = Auth::id();
-
-	    	$user = User::create($data);
-
-	    	if ($request->role) {
-	    		$data['role'] = $request->role;
-	    		$user->rbacgroups()->sync($request->role);
-	    		$permissions = RbacGroup::find($request->role)->permissions()->pluck('id');
-	    		$user->permissions()->sync($permissions->toArray());
-	    	}
-
+                $permissions = [];
+                foreach ($rbacGroups as $k => $rbacGroup) {
+                    $permissions[$k] = $rbacGroup->permissions()->pluck('id');
+                } 
+                $user->permissions()->sync(collect($permissions)->flatten()->unique()->toArray());
+            }
     	} catch (Exception $e) {
-    		dd($e->getMessage());
     		DB::rollBack();
     		return back()->withInput()->with('fail', '添加失败');
+            throw new Exception($e->getMessage());
     	}
     	DB::commit();
     	return redirect(route('staff-management.index'))->with('succ', '添加成功');

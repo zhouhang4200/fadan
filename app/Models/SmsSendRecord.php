@@ -15,6 +15,30 @@ class SmsSendRecord extends Model
       'user_id',
       'order_no',
       'client_phone',
-      'content',
+      'contents',
+      'date',
+      'foreign_order_no',
     ];
+
+    public function scopeFilter($query, $filter)
+    {
+        if (isset($filter['startDate']) && $filter['startDate']) {
+            $query->where('created_at', '>=', $filter['startDate']);
+        }
+        if (isset($filter['endDate']) && $filter['endDate']) {
+            $query->where('created_at', '<=', $filter['endDate'] . ' 23:59:59');
+        }
+
+        if (isset($filter['clientPhone']) && $filter['clientPhone']) {
+            $query->where('client_phone', $filter['clientPhone']);
+        }
+        if (isset($filter['orderNo']) && $filter['orderNo']) {
+            $query->where('order_no', $filter['orderNo']);
+        }
+        if (isset($filter['foreignOrderNo']) && $filter['foreignOrderNo']) {
+            $query->where('foreign_order_no', $filter['foreignOrderNo']);
+        }
+        return $query;
+    }
+
 }

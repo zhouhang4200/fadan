@@ -20,13 +20,9 @@ class UserGroupController extends Controller
         $user = Auth::user();
 
         if ($user->parent_id == 0) {
-
         	$childUsers = $user->children()->whereHas('rbacGroups')->get();
-
             $name = $request->name;
-
             $filters = compact('name', 'startDate', 'endDate');
-
             $users = User::userGroupFilter($filters)->where('parent_id', $user->id)->paginate(config('frontend.page'));
 
             return view('frontend.user.group.index', compact('name', 'childUsers', 'startDate', 'endDate', 'users'));
@@ -43,14 +39,10 @@ class UserGroupController extends Controller
     	$user = Auth::user();
 
     	if ($user->parent_id == 0) {
-
     		$childUser = User::find($request->id);
-
     		if ($childUser->parent_id != $user->id) {
-
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
-
 	    	$groups = RbacGroup::where('user_id', $user->id)->get();
 
 	        return view('frontend.user.group.create', compact('groups', 'childUser'));
@@ -66,29 +58,22 @@ class UserGroupController extends Controller
     public function store(Request $request)
     {
         if (Auth::user()->parent_id == 0) {
-
     		$user = User::find($request->id);
 
     		if ($user->parent_id != Auth::user()->id) {
-
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
     		
     		if (! $request->groups) {
-
     			return back()->with('missError', '请选择组名!');
     		}
 
     		$array = $user->rbacgroups()->sync($request->groups);
 
     		if ($array['attached'] || $array['detached'] || $array['updated']) {
-
                 $rbacGroups = $user->rbacGroups;
-
                 $permissions = $rbacGroups->map(function ($rbacGroup) {
-
                     return $rbacGroup->permissions;
-
                 })->flatten();
 
                 $user->permissions()->sync($permissions->pluck('id')->toArray());
@@ -119,9 +104,7 @@ class UserGroupController extends Controller
     public function edit($id)
     {
         if (Auth::user()->parent_id == 0) {
-
             $user = User::find($id);
-
             $groups = RbacGroup::where('user_id', Auth::id())->get();
 
             return view('frontend.user.group.edit', compact('user', 'groups'));
@@ -138,27 +121,20 @@ class UserGroupController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->parent_id == 0) {
-
             $user = User::find($id);
 
             if ($user->parent_id != Auth::user()->id) {
-
     			return back()->with('masterError', '子账号与当前登录账号不匹配!');
     		}
 
             if (! $request->groups) {
-
     			return back()->with('missError', '请选择组名!');
     		}
 
             $array = $user->rbacgroups()->sync($request->groups);
-
             $rbacGroups = $user->rbacGroups;
-
             $permissions = $rbacGroups->map(function ($rbacGroup) {
-
-                return $rbacGroup->permissions;
-                
+                return $rbacGroup->permissions;              
             })->flatten();
 
             $user->permissions()->sync($permissions->pluck('id')->toArray());
@@ -176,11 +152,8 @@ class UserGroupController extends Controller
     public function destroy($id)
     {
         if (Auth::user()->parent_id == 0) {
-
         	$user = User::find($id);
-
-            $user->rbacGroups()->detach();
-            
+            $user->rbacGroups()->detach();       
             $user->permissions()->detach();
 
             return response()->json(['code' => '1', 'message' => '删除成功']);

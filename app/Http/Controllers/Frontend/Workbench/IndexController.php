@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Workbench;
 use App\Events\NotificationEvent;
 use App\Models\User;
 use App\Repositories\Frontend\OrderRepository;
+use App\Services\RedisConnect;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -43,6 +44,18 @@ class IndexController extends Controller
         $games = $gameRepository->available();
 
         return view('frontend.workbench.recharge.index', compact('orders', 'services', 'games', 'type', 'no'));
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function clearCount(Request $request)
+    {
+        try {
+            orderStatusCount(auth()->user()->getPrimaryUserId(), $request->status, 2);
+        } catch (\ErrorException $exception) {
+
+        }
     }
 
     /**

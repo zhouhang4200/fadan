@@ -62,7 +62,7 @@ class Weight
         }
 
         // 记录计算后的值
-        \Log::alert(json_encode(['订单号' =>  $orderNo, '权重值' => $this->afterSum], JSON_UNESCAPED_UNICODE));
+//        \Log::alert(json_encode(['订单号' =>  $orderNo, '权重值' => $this->afterSum], JSON_UNESCAPED_UNICODE));
 
         $receivingUserId = $this->getUserId($orderNo);
         // 返回最终的商户ID
@@ -125,7 +125,7 @@ class Weight
             }
             // 删除所有用户接单列队
             receivingUserDel($orderNo);
-            \Log::alert($orderNo .' 接单ID ' . $userId);
+            myLog('weight', ['订单号' => $orderNo, ' 接单ID ' => $userId]);
 
             return $userId;
         } catch (CustomException $exception) {

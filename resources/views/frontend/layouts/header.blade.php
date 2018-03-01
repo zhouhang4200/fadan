@@ -27,13 +27,19 @@
                 @endcan
 
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route('frontend.statistic.employee') }}">统计</a><div class="arrow"></div></li>
-
+                @can('frontend.steam.goods.index')
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.steam' ? 'current' : '' }}"><a href="{{ route('frontend.steam.goods.index') }}">Steam</a><div class="arrow"></div></li>
-
+                @endcan
             </ul>
         </div>
         <div class="user">
             <ul class="layui-nav layui-bg-blue" lay-filter="demo">
+                <li class="layui-nav-item ">
+                    <a href="#" id="leveling-message">
+                        <i class="layui-icon" style="padding-right: 7px;">&#xe611;</i>代练留言<span class="layui-badge layui-bg-gray leveling-message-quantity @if(levelingMessageCount(auth()->user()->getPrimaryUserId(), 4) == 0) layui-hide  @endif" style="border-radius: 50%;margin-top:-15px">{{ levelingMessageCount(auth()->user()->getPrimaryUserId(), 4) }}</span>
+                    </a>
+                </li>
+
                 <li class="layui-nav-item">
                     <a href="#" class="current-status">{{ Auth::user()->online == 1 ? '在线' : '挂起' }}</a>
                     <dl class="layui-nav-child">

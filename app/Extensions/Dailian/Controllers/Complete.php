@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderFinish;
 use DB;
 use Asset;
 use App\Services\Show91;
@@ -9,6 +10,7 @@ use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
 use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
+use ErrorException;
 
 /**
  * 订单完成操作
@@ -56,6 +58,7 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
+            $this->orderCount();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
 
@@ -125,7 +128,7 @@ class Complete extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        if ($this->runAfter) {
+        if (!$this->runAfter) {
             try {
                 $orderDetails = OrderDetail::where('order_no', $this->order->no)
                     ->pluck('field_value', 'field_name')
@@ -142,6 +145,13 @@ class Complete extends DailianAbstract implements DailianInterface
                     ];
                     // 结果
                     Show91::accept($options);
+                }
+                try {
+                    event(new OrderFinish($this->order));
+                } catch (ErrorException $errorException) {
+                    myLog('finish', [$errorException->getMessage()]);
+                } catch (\Exception $exception) {
+                    myLog('finish', [$exception->getMessage()]);
                 }
                 return true;
             } catch (DailianException $e) {

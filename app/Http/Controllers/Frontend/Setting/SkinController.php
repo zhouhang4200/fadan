@@ -22,8 +22,10 @@ class SkinController extends Controller
         // 获取用户的接单权限设置
         $skinTradeQQ = isset(Auth::user()->getUserSetting()['skin_trade_qq']) ?
             Auth::user()->getUserSetting()['skin_trade_qq'] : '';
+        $skinTradeWX = isset(Auth::user()->getUserSetting()['skin_trade_wx']) ?
+            Auth::user()->getUserSetting()['skin_trade_wx'] : '';
 
-        return view('frontend.setting.skin.index', compact('skinTradeQQ'));
+        return view('frontend.setting.skin.index', compact('skinTradeQQ', 'skinTradeWX'));
     }
 
     /**
@@ -37,6 +39,11 @@ class SkinController extends Controller
             UserSetting::updateOrCreate(['user_id' => Auth::user()->getPrimaryUserId(), 'option' => 'skin_trade_qq'], [
                 'option' => 'skin_trade_qq',
                 'value' => $request->qq,
+                'user_id' => Auth::user()->id,
+            ]);
+            UserSetting::updateOrCreate(['user_id' => Auth::user()->getPrimaryUserId(), 'option' => 'skin_trade_wx'], [
+                'option' => 'skin_trade_wx',
+                'value' => $request->wx,
                 'user_id' => Auth::user()->id,
             ]);
             // 刷新用户设置缓存

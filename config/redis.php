@@ -14,6 +14,10 @@ return [
         'quantity' => 'order:quantity:',
         // 待接单哈希表
         'waitReceiving' => 'order:wait:receiving',
+        // 代练留言哈希表
+        'levelingMessage' => 'order:leveling:message',
+        // 代练留言数量统计
+        'levelingMessageCount' => 'order:leveling:message:count:',
         // 接单用户队列  生成的key示例 order:receiving:20170800383838383(队列中存的是点了接单的用户ID)
         'receiving' => 'order:receiving:',
         // 接单记录 生成的key示例：order:receiving:20170800383838383123(123是用户ID：主账号)
@@ -26,6 +30,10 @@ return [
         'waitConfirm' => 'order:wait:confirm',
         // 数据类型队列，用与检测 是否可以进行下一次订单分配
         'assignStatus' => 'order:assign:status',
+        // 自动下架订单
+        'autoUnShelve' => 'order:autoUnShelve',
+        // 订单角标
+        'statusCount' => 'order:statusCount:',
     ],
     // 用户模型
     'user' => [
@@ -39,5 +47,7 @@ return [
         'setting' => 'user:setting:id:'
     ],
     // 自有天猫订单token
-    'tmallStoreToken' => 'tmallStoreToken:'
+    'tmallStoreToken' => 'tmallStoreToken:',
+    // 淘宝授权token 缓存
+    'taobaoAccessToken' => 'taobaoAccessToken:'
 ];

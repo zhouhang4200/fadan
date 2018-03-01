@@ -52,6 +52,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
+            $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {

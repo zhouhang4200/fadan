@@ -69,10 +69,20 @@
                             {!! csrf_field() !!}
                                 <div>
                                     <div class="layui-form-item">
+                                        <label class="layui-form-label">请选择第三方代练平台</label>
+                                        <div class="layui-input-inline">
+                                            <select name="third" lay-verify="required" lay-filter="third" lay-search="">
+                                                <option value="">请选择</option>
+                                                <option value="1" selected>91代练</option>
+                                                <option value="2">代练妈妈</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
                                         <label class="layui-form-label">输入或选择游戏名</label>
                                         <div class="layui-input-inline">
                                             <select name="game_id" lay-verify="required" lay-filter="game_id" lay-search="">
-                                                <option value="">请选择</option>
+                                                <option value="">请选择游戏</option>
                                             @forelse($games as $game)
                                                 <option value="{{ $game->id }}">{{ $game->name }}</option>
                                             @empty

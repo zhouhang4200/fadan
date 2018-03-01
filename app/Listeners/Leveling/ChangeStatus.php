@@ -34,6 +34,13 @@ class ChangeStatus
         $this->requestApiInterface($event->order, $event->name, $event->bool);
     }
 
+    /**
+     * 根据传过来的订单号，查找对应平台，根据平台找对应的接口
+     * @param  [type] $order [description]
+     * @param  [type] $name  [description]
+     * @param  [type] $bool  [description]
+     * @return [type]        [description]
+     */
     public function requestApiInterface($order, $name, $bool) 
     {
         $orderDetails = OrderDetail::where('order_no', $order->no)
@@ -44,7 +51,7 @@ class ChangeStatus
             case 1: // 91平台
                 call_user_func_array([Show91::class, $name], [$order, $bool]);
             break;
-            case 2:
+            case 2: // 代练妈妈
                 return true;
             break;
             case 3:
@@ -55,6 +62,7 @@ class ChangeStatus
             break;
         }
 
+        // 测试环境，都不存在第三方的时候，调用默认91代练
         if (! $orderDetails['third']) {
             call_user_func_array([Show91::class, $name], [$order, $bool]);
         }

@@ -48,6 +48,7 @@ class UnLock extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+            $this->orderCount();
             // 如果申请验收改为别的状态，删除redis里面的订单
             delRedisCompleteOrders($this->orderNo);
             // 如果还原前一个状态为 申请验收 ，redis 加订单

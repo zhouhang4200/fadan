@@ -14,6 +14,15 @@ use App\Models\OrderDetail;
 class OrderDetailRepository
 {
     /**
+     * 更新接单人主账号ID
+     * @param $orderNo
+     */
+    public static function updateGainerPrimaryUserIdBy($orderNo, $userId)
+    {
+        return OrderDetail::where('order_no', $orderNo)->update(['gainer_primary_user_id' => $userId]);
+    }
+
+    /**
      * 根据订单号与字段名字更新相关的值
      * @param $orderNo
      * @param $fieldName

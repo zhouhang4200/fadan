@@ -16,4 +16,24 @@ class PlatformOrderStatistic extends Model
     	'total_complain_income', 'complain_income_avg', 'total_poundage', 'poundage_avg', 'user_total_profit', 'user_profit_avg', 
     	'platform_total_profit', 'platform_profit_avg','created_at', 'updated_at',
     ];
+
+    public static function scopeFilter($query, $filters = [])
+    {
+        if ($filters['username']) {
+            $query->where('user_id', $filters['username']);
+        }
+
+        if (isset($filters['startDate']) && empty($filters['endDate'])) {
+            $query->where('date', '>=', $filters['startDate']);
+        }
+
+        if (isset($filters['endDate']) && empty($filters['startDate'])) {
+            $query->where('date', '<=', $filters['endDate']);
+        }
+
+        if (isset($filters['endDate']) && $filters['startDate']) {
+            $query->whereBetween('date', [$filters['startDate'], $filters['endDate']]);
+        }
+        return $query;
+    }
 }

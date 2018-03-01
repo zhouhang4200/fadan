@@ -1,7 +1,13 @@
 <?php
 
+use App\Events\NotificationEvent;
+use App\Exceptions\CustomException;
+use App\Extensions\Asset\Consume;
+use App\Extensions\Asset\Facades\Asset;
 use App\Models\City;
+use App\Models\SmsSendRecord;
 use App\Models\UserReceivingGoodsControl;
+use App\Services\SmSApi;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Models\UserSetting;
@@ -9,6 +15,9 @@ use App\Services\RedisConnect;
 use Illuminate\Support\Facades\Redis;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
+use App\Models\UserRbacGroup;
+use App\Models\User;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 if (!function_exists('myLog')) {
     /**
@@ -656,5 +665,320 @@ if (!function_exists('generateUuid')) {
         $uuid .= substr($str, 16, 4) . '-';
         $uuid .= substr($str, 20, 12);
         return $prefix . $uuid;
+    }
+}
+
+if (!function_exists('subOperate')) {
+    /**
+     * 生成一个 UUID
+     * @param string $prefix
+     * @return string
+     */
+    function subOperate($operate)
+    {
+        if (substr($operate, -1) == '@') {
+            return substr($operate, 0, -1);
+        } 
+        return $operate;
+    }
+}
+
+if (!function_exists('employees')) {
+    /**
+     * 生成一个 UUID
+     * @param string $prefix
+     * @return string
+     */
+    function employees($groupId)
+    {
+        $groupUserIds = UserRbacGroup::where('rbac_group_id', $groupId)->pluck('user_id');
+
+        $userNames = User::whereIn('id', $groupUserIds)->pluck('username')->toArray();
+
+        if ($userNames) {
+            return implode($userNames, '、');
+        }
+        return '';
+    }
+}
+
+
+// 淘宝aes128cbc加密
+if (!function_exists('taobaoAesEncrypt')) {
+    function taobaoAesEncrypt($str)
+    {
+        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $iv = '0102030405060708';
+
+        return base64_encode(openssl_encrypt($str, 'aes-128-cbc', base64_decode($key), true, $iv));
+    }
+}
+
+// 淘宝aes128cbc解密
+if (!function_exists('taobaoAesDecrypt')) {
+    function taobaoAesDecrypt($str, $ifJsonDecode = true)
+    {
+        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $iv = '0102030405060708';
+
+        $result = openssl_decrypt(base64_decode($str), 'aes-128-cbc', base64_decode($key), true, $iv);
+
+        if ($ifJsonDecode) {
+            $result = json_decode($result, true);
+        }
+
+        return $result;
+    }
+}
+if (!function_exists('sendSms')){
+    /**
+     * @param $sendUserId integer 发送用户ID
+     * @param $orderNo string 关联单号
+     * @param $phone  integer 接收手机号
+     * @param $content string 发送内容
+     * @param $remark string 备注
+     * @param $foreignOrderNo string 外部订单号
+     * @return array
+     */
+    function sendSms($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
+    {
+        // 扣款
+        try {
+            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, $sendUserId));
+        } catch (CustomException $exception) {
+            return ['status' => 0, 'message' => $exception->getMessage()];
+        }
+
+        $sendResult = (new SmSApi())->send(2, $phone, $content, $sendUserId);
+
+        if ((bool)strpos($sendResult, "mterrcode=000")) {
+            // 发送成功写发送记录
+            SmsSendRecord::create([
+                'foreign_order_no' => $foreignOrderNo,
+                'user_id' => $sendUserId,
+                'order_no' => $orderNo,
+                'client_phone' => $phone,
+                'contents' => $content,
+                'date' => date('Y-m-d'),
+            ]);
+            return ['status' => 1, 'message' => '发送成功'];
+        }
+        return ['status' => 0, 'message' => '发送失败'];
+    }
+}
+
+if (!function_exists('levelingMessageGet')) {
+    /**
+     * 获取 所有要获取留言的订单
+     */
+    function levelingMessageGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.levelingMessage'));
+    }
+}
+
+if (!function_exists('levelingMessageDel')) {
+    /**
+     * 删除 要获取留言的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function levelingMessageDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.levelingMessage'), $orderNo);
+    }
+}
+
+if (!function_exists('levelingMessageAdd')) {
+
+    /**
+     * 添加 要获取留言的订单
+     * @param integer $userId 用户ID
+     * @param integer $orderNo 千手订单号
+     * @param string $foreignOrderNo 外部平台单号
+     * @param integer $platform  平台
+     * @param integer $count 上一次留言数
+     * @return mixed
+     */
+    function levelingMessageAdd($userId, $orderNo, $foreignOrderNo, $platform, $count = 0)
+    {
+        $redis = RedisConnect::order();
+
+        return $redis->hset(config('redis.order.levelingMessage'), $orderNo, json_encode([
+            'user_id' => $userId,
+            'order_no' => $orderNo,
+            'foreign_order_no' => $foreignOrderNo,
+            'platform' => $platform,
+            'count' => $count,
+        ]));
+    }
+}
+if (!function_exists('levelingMessageCount')) {
+
+    /**
+     *  留言数量
+     * @param integer $userId 用户ID
+     * @param int $count
+     * @param integer $mode 1 设置  2 获取
+     * @return mixed
+     * @internal param int $count
+     */
+    function levelingMessageCount($userId,  $mode = 1, $count = 0)
+    {
+        $redis = RedisConnect::order();
+
+        $currentCount = $redis->get(config('redis.order.levelingMessageCount') . $userId);
+
+        if ($mode == 1) { // 加 N
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount + $count);
+        } else if ($mode == 2 && $count != 0) { // 减少指定数量
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount - $count);
+        } else if ($mode == 2 && $count == 0) { // 减一
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, --$currentCount);
+        } else if ($mode == 3) { // 清空
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, 0);
+        }
+        $lastCount =  $redis->get(config('redis.order.levelingMessageCount') . $userId);
+        // 推送到前端
+        event(new NotificationEvent('LevelingMessageQuantity', ['user_id' => $userId, 'quantity' => $lastCount]));
+        return $lastCount;
+    }
+}
+
+if (!function_exists('export')) {
+    /**
+     * 导出数据
+     * @param $title
+     * @param $name
+     * @param $callback
+     */
+    function export($title, $name, $query, $callback)
+    {
+        $response = new StreamedResponse(function () use ($title, $name, $query, $callback){
+            $out = fopen('php://output', 'w');
+            fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
+            fputcsv($out, $title);
+
+            $callback($query, $out);
+
+            fclose($out);
+        },200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
+        ]);
+        $response->send();
+    }
+}
+
+if (!function_exists('autoUnShelveGet')) {
+
+    /**
+     * 获取自动下架的订单
+     */
+    function autoUnShelveGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.autoUnShelve'));
+    }
+}
+
+if (!function_exists('autoUnShelveAdd')) {
+
+    /**
+     * 添加自动下架的订单
+     * @param string $orderNo 订单号
+     * @param integer $userId 用户ID
+     * @param string $time 下单时间
+     * @param integer $days 自动下架天数
+     * @return mixed
+     */
+    function autoUnShelveAdd($orderNo, $userId, $time, $days)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hset(config('redis.order.autoUnShelve'), $orderNo, json_encode([
+            'user_id' => $userId,
+            'time' => $time,
+            'days' => $days,
+        ]));
+    }
+}
+
+if (!function_exists('autoUnShelveDel')) {
+    /**
+     * 删除自动下架的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function autoUnShelveDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.autoUnShelve'), $orderNo);
+    }
+}
+if (!function_exists('orderStatusCount')) {
+    /**
+     * 订单待处理数量角标
+     * @param integer $userId 用户
+     * @param integer $status 状态
+     * @param int $method 方法 1 增加 2 清空  3 获取
+     * @return bool
+     */
+    function orderStatusCount($userId, $status, $method = 1)
+    {
+        $redis = RedisConnect::order();
+        // 数量加1
+        if ($method == 1) {
+            $redis->incr(config('redis.order.statusCount') . $userId .'_'. $status);
+        }
+        // 获取数量
+        if ($method == 2) {
+            $redis->set(config('redis.order.statusCount') . $userId .'_' . $status, 0);
+        }
+        // 数量减1
+        if ($method == 4) {
+            $currentCount = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+            if ($currentCount > 0) {
+                $redis->decr(config('redis.order.statusCount') . $userId .'_'. $status);
+            }
+        }
+
+        // 数量清空
+        $count = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+        event((new NotificationEvent('OrderCount', ['user_id' => $userId, 'status' => $status, 'quantity' => $count])));
+
+        if ($method == 3) {
+            return $count;
+        }
+        return true;
+    }
+}
+if(!function_exists('taobaoAccessToken')){
+
+    /**
+     * 用授权旺旺获取淘宝token
+     * @param $nickName
+     * @return bool|\Illuminate\Contracts\Cache\Repository|string
+     */
+    function taobaoAccessToken($nickName)
+    {
+        $token = '';
+        // 取缓存
+        $token = cache()->get(config('redis.taobaoAccessToken') . $nickName);
+        if ($token) {
+            return $token;
+        }
+        // 获取token
+        $client = new Client();
+        $response = $client->request('POST', 'http://fulutop.kamennet.com/session/index', [
+            'query' => http_build_query([
+                'nickName' => $nickName,
+                'sign' => strtoupper(md5('nickName' . $nickName . 'fltop31bf3856ad364e35'))
+            ]),
+        ]);
+        $result = json_decode($response->getBody()->getContents());
+        $token = cache()->add(config('redis.taobaoAccessToken') . $nickName, $result->access_token, 259200);
+        return $token;
     }
 }

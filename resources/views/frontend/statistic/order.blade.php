@@ -59,7 +59,15 @@
                         <td>{{ $data->send_order_count }}</td>
                         <td>{{ $data->receive_order_count ?? '--' }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
-                        <td>{{ $data->complete_order_rate ? $data->complete_order_rate.'%' : '--' }}</td>
+                        <td>
+                        @if($data->complete_order_rate == 0)
+                        0%
+                        @elseif($data->complete_order_rate == 1)
+                        100%
+                        @else
+                        {{ $data->complete_order_rate ? round(bcmul($data->complete_order_rate, 100), 2).'%' : '--' }}
+                        @endif
+                        </td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
                         <td>{{ $data->arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->three_status_original_amount, 2) ?? '--' }}</td>
@@ -76,7 +84,15 @@
                         <td>{{ $totalData->total_send_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_receive_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_complete_order_count ?? '--' }}</td>
-                        <td>{{ $totalData->total_complete_order_rate ? $totalData->total_complete_order_rate.'%' : '--' }}</td>
+                        <td>
+                        @if($totalData->total_complete_order_rate == 0)
+                        0%
+                        @elseif($totalData->total_complete_order_rate == 1)
+                        100%
+                        @else
+                        {{ $totalData->total_complete_order_rate ? round(bcmul($totalData->total_complete_order_rate, 100), 2).'%' : '--' }}
+                        @endif
+                        </td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>
                         <td>{{ $totalData->total_arbitrate_order_count ?? '--' }}</td>
                         <td>{{ number_format($totalData->total_three_status_original_amount, 2) ?? '--' }}</td>

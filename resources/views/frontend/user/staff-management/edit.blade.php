@@ -13,7 +13,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">员工姓名</label>
             <div class="layui-input-block">
-                <input type="text" name="user_name" lay-verify="required|length" value="{{ old('user_name') ?: $user->user_name }}" autocomplete="off" placeholder="" class="layui-input">
+                <input type="text" name="username" lay-verify="required|length" value="{{ old('username') ?: $user->username }}" autocomplete="off" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -29,17 +29,24 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
+            <label class="layui-form-label">代充</label>
             <div class="layui-input-block">
-                <input type="radio" name="type" value="1" title="接单" checked="">
-                <input type="radio" name="type" value="2" title="发单">
+                <input type="radio" name="type" value="1" title="接单" {{ $user->type == 1 ? 'checked' : '' }}>
+                <input type="radio" name="type" value="2" title="发单" {{ $user->type == 2 ? 'checked' : '' }}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">代练</label>
+            <div class="layui-input-block">
+                <input type="radio" name="leveling_type" value="1" title="接单" {{ $user->leveling_type == 1 ? 'checked' : '' }}>
+                <input type="radio" name="leveling_type" value="2" title="发单" {{ $user->leveling_type == 2 ? 'checked' : '' }}>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">岗位</label>
             <div class="layui-input-block">
                 @forelse($roles as $role)
-                <input type="radio" name="role" value="{{ $role->id }}" {{ $user->rbacGroups && in_array($role->id, $user->rbacgroups->pluck('id')->flatten()->toArray()) ? 'checked' : '' }} title="{{ $role->name }}">
+                <input type="checkbox" name="role[]" value="{{ $role->id }}" lay-skin="primary" title="{{ $role->name }}" {{ $user->rbacGroups && in_array($role->id, $user->rbacgroups->pluck('id')->flatten()->toArray()) ? 'checked' : '' }} >
                 @empty
                 @endforelse
             </div>

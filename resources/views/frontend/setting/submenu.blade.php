@@ -18,10 +18,17 @@
 		</li>
 	@endcan
 
-		<li class="{{  Route::currentRouteName()  == 'frontend.automatically-grab.goods' ? 'current' : '' }}">
-			<a href="{{ route('frontend.automatically-grab.goods') }}">抓取商品配置</a>
+	<li class="{{  Route::currentRouteName()  == 'frontend.automatically-grab.goods' ? 'current' : '' }}">
+		<a href="{{ route('frontend.automatically-grab.goods') }}">抓取商品配置</a>
+		<div class="arrow"></div>
+	</li>
+
+	@can('frontend.setting.sms.index')
+		<li class="{{  Route::currentRouteName()  == 'frontend.setting.sms.index' ? 'current' : '' }}">
+			<a href="{{ route('frontend.setting.sms.index') }}">短信管理</a>
 			<div class="arrow"></div>
 		</li>
+	@endcan
 
 	@can('frontend.setting.tb-auth.store')
 		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.store' ? 'current' : '' }}">

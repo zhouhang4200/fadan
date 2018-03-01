@@ -21,7 +21,6 @@ class UserController extends Controller
         $user = Auth::user();
 
         if ($user->parent_id == 0) {
-
             $children = $user->children;
             $name = $request->name;
             $startDate = $request->startDate;
@@ -67,7 +66,6 @@ class UserController extends Controller
             $res = User::create($data);
 
             if (! $res) {
-
                 return back()->withInput()->with('addError', '添加失败!');
             }
             return redirect('/users')->with('succ', '添加成功!');
@@ -96,9 +94,7 @@ class UserController extends Controller
     public function edit($id)
     {
         if (Auth::user()->parent_id == 0) {
-
             $user = User::find($id);
-
             $groups = RbacGroup::where('user_id', $id)->get();
 
             return view('frontend.user.edit', compact('user', 'groups'));
@@ -115,11 +111,8 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->parent_id == 0) {
-
             $user = User::find($id);
-
             $this->validate($request, User::updateRules($user->id), User::messages());
-
             $newPassword = $request->password;
 
             if ($newPassword) {
@@ -144,14 +137,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         if (Auth::user()->parent_id == 0) {
-
             $user = User::find($id);
-
             $user->permissions()->detach();
             $bool = $user->delete();
 
             if (! $bool) {
-
                 return response()->json(['code' => '2', 'message' => '删除失败！']);
             }
             return response()->json(['code' => '1', 'message' => '删除成功!']);

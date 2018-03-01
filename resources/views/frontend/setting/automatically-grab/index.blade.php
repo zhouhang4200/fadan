@@ -18,79 +18,118 @@
         </ul>
     </div>
 
-    <form class="layui-form" id="goods-form">
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-                <select name="goods_id"   lay-search="">
-                    <option value="">所有类型</option>
+    <div id="data">
+        @include('frontend.setting.automatically-grab.list')
+    </div>
 
+    <div id="goods-add" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="required">
+                    <option value="">类型</option>
+                    @foreach ($services as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
                 </select>
             </div>
-            <div class="layui-input-inline" style="width: 200px;">
-                <input type="text" class="layui-input" name="other_user_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
+
+            <div class="layui-form-item">
+                <input type="text" name="foreign_goods_id" required lay-verify="required" placeholder="淘宝链接" autocomplete="off" class="layui-input">
             </div>
-            <div class="layui-input-inline" style="width: 200px;">
-                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
             </div>
-            <button class="layui-btn layui-btn-normal fr" lay-submit lay-filter="goods-add">添加商品</button>
-        </div>
-    </form>
-
-    <table class="layui-table" lay-size="sm">
-        <thead>
-        <tr>
-            <th>服务类型</th>
-            <th>淘宝商品ID</th>
-            <th>备注</th>
-            <th>状态</th>
-            <th>添加时间</th>
-            <th>更新时间</th>
-            <th width="7%">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        @forelse($AutomaticallyGrabGoods as $item)
-            <tr>
-                <td>{{ $item->service_id }}</td>
-                <td>{{ $item->foreign_goods_id }}</td>
-                <td>{{ $item->remark }}</td>
-                <td>{{ $item->status }}</td>
-                <td>{{ $item->created_at }}</td>
-                <td>{{ $item->updated_at }}</td>
-                <td>
-                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button>
-                </td>
-            </tr>
-        @empty
-
-        @endforelse
-        </tbody>
-    </table>
-
-    {{ $AutomaticallyGrabGoods->links() }}
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
+                <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('js')
     <script>
         layui.use(['form', 'layedit', 'laydate', 'element'], function(){
             var form = layui.form ,layer = layui.layer ,element = layui.element;
-            {{--// 按用户搜索--}}
-            {{--form.on('submit(user-search)', function (data) {--}}
-                {{--var par = '?type=' + type + '&other_user_id=' + data.field.other_user_id;--}}
-                {{--loadUserList('{{ route('frontend.setting.receiving-control.get-control-user') }}' + par);--}}
-                {{--return false;--}}
-            {{--});--}}
-          {{----}}
-            {{--// 点击页码翻页--}}
-            {{--$(document).on('click', '.pagination a', function (e) {--}}
-                {{--e.preventDefault();--}}
-                {{--if (type == 1 && white == 1) {--}}
-                    {{--loadUserList($(this).attr('href'))--}}
-                {{--} else {--}}
-                    {{--loadCategoryList($(this).attr('href'))--}}
-                {{--}--}}
-                {{--return false;--}}
-            {{--});--}}
+            // 按用户搜索
+            form.on('submit(user-search)', function (data) {
+                var par = '?id=' + data.field.other_user_id;
+                loadData('{{ route('frontend.automatically-grab.goods') }}' + par);
+                return false;
+            });
+
+            // 点击页码翻页
+            $(document).on('click', '.pagination a', function (e) {
+                e.preventDefault();
+                loadData($(this).attr('href'));
+                return false;
+            });
+
+            // 按用户ID添加
+            form.on('submit(goods-add)', function () {
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: '添加商品',
+                    area: ['500px'],
+                    content: $('#goods-add')
+                });
+                return false;
+            });
+
+            $('.content').on('blur', 'input[name=foreign_goods_id]', function () {
+                var url = $(this).val();
+                var goodsId = getQueryString(url, 'id');
+                if (isNaN($(this).val())) {
+                    $(this).val($.trim(goodsId));
+                }
+            });
+
+            $('#goods-form').on('blur', 'input[name=other_user_id]', function () {
+                var url = $(this).val();
+                var goodsId = getQueryString(url, 'id');
+                if (isNaN($(this).val())) {
+                    $(this).val($.trim(goodsId));
+                }
+            });
+
+            // 按用户加载数据
+            function loadData(url) {
+                $.get(url, function (result) {
+                    $('#data').html(result);
+                    layui.form.render();
+                }, 'json');
+            }
+
+            // 保存按商品添加
+            form.on('submit(goods-add-save)', function (data) {
+                $.post('{{ route('frontend.automatically-grab.add') }}', {
+                    service_id:data.field.service_id,
+                    foreign_goods_id:data.field.foreign_goods_id,
+                    remark:data.field.remark
+                }, function (result) {
+                    layer.closeAll();
+                    layer.msg(result.message);
+                    if (result.status == 1) {
+                        loadData('{{ route('frontend.automatically-grab.goods') }}');
+                    }
+                }, 'json');
+                return false;
+            });
+
+            // 删除用户名单中的用户ID
+            form.on('submit(delete-goods)', function (data) {
+                layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
+                    $.post('{{ route('frontend.automatically-grab.delete') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        if (result.status == 1) {
+                            loadData('{{ route('frontend.automatically-grab.goods') }}');
+                        }
+                    }, 'json');
+                });
+                return false;
+            });
         });
     </script>
 @endsection

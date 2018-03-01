@@ -51,6 +51,7 @@ class Lock extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             // 申请验收过期自动删除
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {

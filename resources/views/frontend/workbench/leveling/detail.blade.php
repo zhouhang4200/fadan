@@ -270,7 +270,7 @@
                         @endif
 
                         @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">删除</button>
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                         @endif
 
                         @if (!$detail['master'] && ($detail['status'] == 13))
@@ -450,7 +450,18 @@
                             <div class="layui-col-md4 text_right">利润：</div>
                             <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
-
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手呢称：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手电话：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手QQ：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
                             <div class="layui-col-md8">{{ $detail['left_time'] ?? ''  }}</div>
@@ -473,7 +484,7 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">{{ $detail['cstomer_service_name'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['customer_service_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
@@ -614,25 +625,27 @@
             </form>
         </div>
     </div>
-    <div class="send-message" style="display: none; padding: 10px 10px 0 10px">
-        <div class="layui-tab-content">
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin:0">
-                            <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <div class="send-message" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
+                    <option value="">选择模版</option>
+                    @forelse($smsTemplate as $item)
+                        <option value="{{ $item->contents }}" data-template="">{{ $item->name }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="margin:auto;height:150px !important;"></textarea>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
+                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+            </div>
+        </form>
     </div>
 @endsection
 
@@ -771,7 +784,7 @@
                     type: 1,
                     shade: 0.2,
                     title: '发送短信',
-                    area: ['500px', '280px'],
+                    area: ['500px'],
                     content: $('.send-message')
                 });
                 return false;
@@ -1061,11 +1074,17 @@
 
         var tab = getQueryString(window.location.href, 'tab');
         if (tab == '1') {
+            loadMessage();
             element.tabChange('myFilter', 'leave-message')
         } else if(tab == '2') {
             loadHistory();
             element.tabChange('myFilter', 'history')
         }
+
+        // 选择短信模板
+        form.on('select(chose-sms-template)', function(data){
+            $('textarea[name=contents]').val(data.value);
+        });
     });
 
     function loadHistory() {

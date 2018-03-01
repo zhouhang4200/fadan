@@ -20,7 +20,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">*员工姓名</label>
             <div class="layui-input-block">
-                <input type="text" name="user_name" lay-verify="required|length" value="{{ old('user_name') ?: '' }}" autocomplete="off" placeholder="" class="layui-input">
+                <input type="text" name="username" lay-verify="required|length" value="{{ old('username') ?: '' }}" autocomplete="off" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -36,17 +36,24 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
+            <label class="layui-form-label">代充</label>
             <div class="layui-input-block">
-                <input type="radio" name="type" value="1" title="接单" checked="">
+                <input type="radio" name="type" value="1" title="接单" checked>
                 <input type="radio" name="type" value="2" title="发单">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">代练</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="leveling_type" value="1" title="接单" >
+                <input type="radio" name="leveling_type" value="2" title="发单" checked >
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">岗位</label>
             <div class="layui-input-block">
                 @forelse($roles as $role)
-                <input type="radio" name="role" value="{{ $role->id }}" title="{{ $role->name }}">
+                <input type="checkbox" name="role[]" value="{{ $role->id }}" lay-skin="primary" title="{{ $role->name }}" >
                 @empty
                 @endforelse
             </div>
@@ -92,12 +99,10 @@
             var error = "{{ $errors->count() > 0 ? '账号或昵称已经存在!' : '' }}";
             var fail = "{{ session('fail') ?: '' }}";
 
-            if(fail) {
-                layer.msg(fail, {icon: 5, time:1500});
-            }
-
             if (error) {
                 layer.msg(error, {icon: 5, time:1500});
+            } else if (fail) {
+                layer.msg(fail, {icon: 5, time:1500});
             }
   
             form.verify({
@@ -116,8 +121,8 @@
           
           //但是，如果你的HTML是动态生成的，自动渲染就会失效
           //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
-          form.render();
-
+          
+          // form.render();
         });  
 
     </script>

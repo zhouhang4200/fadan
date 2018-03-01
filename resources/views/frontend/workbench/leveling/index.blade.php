@@ -83,7 +83,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">外部单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="foreign_order_no" autocomplete="off" class="layui-input">
+                    <input type="text" name="source_order_no" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -114,10 +114,10 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="game" lay-search="">
+                    <select name="customer_service_name" lay-search="">
                         <option value="">请选择或输入</option>
                         @forelse($employee as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            <option value="{{ $item->username }}">{{ $item->username }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -129,7 +129,7 @@
                     <select name="label">
                         <option value="">全部</option>
                         @foreach ($tags as $tag)
-                            <option>{{ $tag }}</option>
+                            <option value="{{ $tag }}">{{ $tag }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -151,21 +151,29 @@
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="need">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+            <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
             <li class="" lay-id="1">未接单</li>
             <li class="" lay-id="13">代练中</li>
-            <li class="" lay-id="14">待验收</li>
-            <li class="" lay-id="15">撤销中</li>
-            <li class="" lay-id="16">仲裁中</li>
-            <li class="" lay-id="17">异常</li>
-            <li class="" lay-id="18">锁定</li>
+            <li class="" lay-id="14">待验收
+                <span class="layui-badge layui-bg-blue quantity-14 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) }}</span>
+            </li>
+            <li class="" lay-id="15">撤销中
+                <span class="layui-badge layui-bg-blue quantity-15 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) }}</span>
+            </li>
+            <li class="" lay-id="16">仲裁中
+                <span class="layui-badge layui-bg-blue quantity-16 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) }}</span>
+            </li>
+            <li class="" lay-id="17">异常
+                <span class="layui-badge layui-bg-blue quantity-17 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) }}</span>
+            </li>
+            <li class="" lay-id="18">锁定
+                <span class="layui-badge layui-bg-blue quantity-18 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) }}</span>
+            </li>
             <li class="" lay-id="19">已撤销</li>
             <li class="" lay-id="20">已结算</li>
             <li class="" lay-id="21">已仲裁</li>
             <li class="" lay-id="22">已下架</li>
             <li class="" lay-id="23">强制撤销</li>
-
-            <span class="layui-badge layui-bg-blue layui-hide  market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span>
         </ul>
         <div class="layui-tab-content"></div>
     </div>
@@ -247,26 +255,30 @@
             </form>
         </div>
     </div>
-    <div class="send-message" style="display: none; padding: 10px 10px 0 10px">
-        <div class="layui-tab-content">
-            <form class="layui-form" method="POST" action="">
-                {!! csrf_field() !!}
-                <div >
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin:0">
-                            <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+
+    <div class="send-message" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
+                    <option value="">选择模版</option>
+                    @forelse($smsTemplate as $item)
+                        <option value="{{ $item->contents }}" data-template="">{{ $item->name }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="margin:auto;height:150px !important;"></textarea>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
+                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+            </div>
+        </form>
     </div>
+
 @endsection
 
 <!--START 底部-->
@@ -363,7 +375,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
-                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">删除</option>
+                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</option>
                 @{{# }  }}
 
                 @{{# if (!d.master && (d.status == 13)) {  }}
@@ -431,7 +443,7 @@
                 overflow: unset;
             }
             .layui-table-mend {
-                width：0px !important;
+                width：0 !important;
             }
         </style>
     </script>
@@ -460,10 +472,10 @@
                 method: 'post',
                 size: 'sm',
                 cols: [[
-                    {title: '订单号',width: '220',templet: '#noTemplate'},// ,fixed: 'left'
+                    {title: '订单号',width: '225',templet: '#noTemplate'},// ,fixed: 'left'
                     {field: 'order_source', title: '订单来源', width: '100'},
                     {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
-                    {field: 'cstomer_service_remark', title: '客服备注', width: '150'},
+                    {field: 'customer_service_remark', title: '客服备注', width: '150'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
                     {field: 'status_text', title: '订单状态', width: '120'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
@@ -495,6 +507,9 @@
 
             element.on('tab(order-list)', function () {
                  status = this.getAttribute('lay-id');
+                // 清空角标
+                $.post('{{ route("frontend.workbench.clear-count") }}', {status:status}, function () {
+                }, 'json');
                 //执行重载
                 table.reload('order', {
                     where: {
@@ -515,14 +530,15 @@
                     where: {
                         status: status,
                         no: data.field.no,
-                        foreign_order_no: data.field.foreign_order_no,
+                        source_order_no: data.field.source_order_no,
                         game_id: data.field.game_id,
                         need: data.field.status,
                         wang_wang: data.field.wang_wang,
                         urgent_order: urgentOrder,
                         start_date: data.field.start_date,
                         end_date: data.field.end_date,
-                        label: data.field.label
+                        label: data.field.label,
+                        customer_service_name: data.field.customer_service_name
                     },
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
@@ -593,7 +609,7 @@
                         type: 1,
                         shade: 0.2,
                         title: '发送短信',
-                        area: ['500px', '280px'],
+                        area: ['500px'],
                         content: $('.send-message')
                     });
                     return false
@@ -696,8 +712,8 @@
                                     layer.closeAll();
                                 });
                             }
+                            reload();
                         });
-                        reload();
                         layer.close(index);
                     });
                 }  else {
@@ -740,8 +756,12 @@
             // 导出
             form.on('submit(export)', function (data) {
                 var fields = data.field;
-                var datas = '?no=' + fields.no+'&foreignOrderNo='+fields.foreign_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
+                var datas = '?no=' + fields.no+'&source_order_no='+fields.source_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
                 window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
+            });
+            // 选择短信模板
+            form.on('select(chose-sms-template)', function(data){
+                $('textarea[name=contents]').val(data.value);
             });
 
             var hasData = "{{ session('message') }}";

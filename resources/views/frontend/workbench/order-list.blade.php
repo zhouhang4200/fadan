@@ -10,6 +10,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <option value="">请选择搜索类型</option>
             <option value="1" @if($searchType == 1) selected  @endif>千手订单号</option>
             <option value="2" @if($searchType == 2) selected  @endif>外部订单号</option>
+            <option value="3" @if($searchType == 3) selected  @endif>账号</option>
         </select>
     </div>
     <div class="layui-inline">
@@ -28,6 +29,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th>类型</th>
             <th>游戏</th>
             <th>商品</th>
+            <th>账号</th>
             <th>数量</th>
             <th>单价</th>
             <th>总价</th>
@@ -41,11 +43,13 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
         </thead>
         <tbody>
         @forelse($orders as $item)
+            <?php $detail = $item->detail->pluck('field_value', 'field_name')->toArray() ?>
             <tr data-no="{{ $item->no }}">
                 <td>千手：{{ $item->no }}<br>外部：{{ $item->foreign_order_no }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
                 <td>{{ $item->goods_name }}</td>
+                <td>{{ $detail['account'] ?? '' }}</td>
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\LevelingMessage;
 use App\Models\UserTransferAccountInfo;
 use Auth, Weight;
 use App\Models\Role;
@@ -39,4 +40,5 @@ class HomeController extends Controller
 
         return view('frontend.index', compact('user', 'loginHistoryTime', 'ident', 'parentUser', 'transferInfo'));
     }
+
 }

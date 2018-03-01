@@ -30,8 +30,10 @@ class PunishController extends Controller
         $status = $request->status;
         // 生成数组
     	$filters = compact('startDate', 'endDate', 'type', 'status');
-
-    	$punishes = PunishOrReward::homeFilter($filters)->where('user_id', Auth::id())->paginate(config('frontend.page'));
+        // 页面数据
+    	$punishes = PunishOrReward::homeFilter($filters)
+            ->where('user_id', Auth::id())
+            ->paginate(config('frontend.page'));
 
         $punishType = config('punish.type');
         $punishStatus = config('punish.status');
