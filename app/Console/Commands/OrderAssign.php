@@ -70,7 +70,7 @@ class OrderAssign extends Command
                     if (in_array($orderInfo->goods_id, [1906, 1907])) {
                         try {
                             // 获取商品中的数字
-                            $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
+                            preg_match('|\d+|', $orderInfo->goods_name, $faceValue);
                             // 如果正则取出来的是数字则写入队列
                             if (is_numeric($faceValue[0])) {
                                 $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
