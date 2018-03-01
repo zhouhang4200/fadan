@@ -71,9 +71,9 @@ class OrderAssign extends Command
                             // 获取商品中的数字
                             $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
                             // 如果正则取出来的是数字则写入队列
-                            if (is_numeric($faceValue)) {
+                            if (is_numeric($faceValue[0])) {
                                 $redis = RedisConnect::order();
-                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-' . $orderInfo->quantity * $faceValue);
+                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-' . $orderInfo->quantity * $faceValue[0]);
                             }
                         } catch (\Exception $exception) {
 
