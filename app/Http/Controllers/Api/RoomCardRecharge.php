@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Services\RedisConnect;
 use Illuminate\Http\Request;
 use Order;
+use App\Models\Order as OrderModel;
 
 /**
  * 房卡充值
@@ -42,10 +43,11 @@ class RoomCardRecharge extends Controller
     {
         // 1 成功 2 失败
         if(in_array($request->status, [1, 2]) && strlen($request->no) == 22) {
+            $orderInfo = OrderModel::where('no', $request->no)->first();
             if ($request->status == 1) {
                 try {
                     // 调用发货
-                    Order::handle(new Delivery($request->no, 8121));
+                    Order::handle(new Delivery($request->no, $orderInfo->creator_primary_user_id));
                     // 写入自动确认队列
                     waitConfirmAdd($request->no, time());
                     return response()->json(['status' => 1, 'message' => '操作成功', 'data' => '']);

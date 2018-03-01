@@ -67,7 +67,7 @@ class OrderAssign extends Command
                     continue;
                 } else {
                     // 如果是房卡商品则写入充值队列
-                    if (in_array($orderInfo->goods_id, [1906, 1907])) {
+                    if (in_array($orderInfo->goods_id, [1906, 1907, 1912, 1913, 1914, 1908, 1909, 1910, 1911])) {
                         try {
                             // 获取商品中的数字
                             preg_match('|\d+|', $orderInfo->goods_name, $faceValue);
