@@ -67,12 +67,16 @@ class OrderAssign extends Command
                 } else {
                     // 如果是房卡商品则写入充值队列
                     if (in_array($orderInfo->goods_id, [1906, 1907])) {
-                        // 获取商品中的数字
-                        $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
-                        // 如果正则取出来的是数字则写入队列
-                        if (is_numeric($faceValue)) {
-                            $redis = RedisConnect::order();
-                            $redis->lpush($orderNo, $orderInfo->quantity * $faceValue);
+                        try {
+                            // 获取商品中的数字
+                            $faceValue = preg_match('|\d+|', $orderInfo->goods_name, $matches);
+                            // 如果正则取出来的是数字则写入队列
+                            if (is_numeric($faceValue)) {
+                                $redis = RedisConnect::order();
+                                $redis->lpush(config('redis.order.roomCardRecharge'), $orderNo . '-' . $orderInfo->quantity * $faceValue);
+                            }
+                        } catch (\Exception $exception) {
+
                         }
                     }
 
