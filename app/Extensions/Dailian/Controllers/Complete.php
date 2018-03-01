@@ -128,7 +128,7 @@ class Complete extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        if (!$this->runAfter) {
+        if ($this->runAfter) {
             try {
                 $orderDetails = OrderDetail::where('order_no', $this->order->no)
                     ->pluck('field_value', 'field_name')
