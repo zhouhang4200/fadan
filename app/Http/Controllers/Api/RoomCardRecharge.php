@@ -30,6 +30,7 @@ class RoomCardRecharge extends Controller
         $redis = RedisConnect::order();
         $result = $redis->lpop(config('redis.order.roomCardRecharge') . $gameId);
         if ($result) {
+            myLog('room-card', ['取单'=> $result]);
             return response()->json(['status' => 1, 'message' => '获取成功', 'data' => $result]);
         }
         return response()->json(['status' => 0, 'message' => '暂时没有订单', 'data' => '']);

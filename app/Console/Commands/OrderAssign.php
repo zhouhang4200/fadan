@@ -78,11 +78,15 @@ class OrderAssign extends Command
                                 if (is_numeric($chargeId[0])) {
                                     $redis = RedisConnect::order();
                                     $redis->lpush(config('redis.order.roomCardRecharge') . $orderInfo->game_id, $orderNo . '-'. $chargeId[0] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
+                                } else {
+                                    myLog('room-card', ['order'=> $orderNo, $faceValue[0], $chargeId[0]]);
                                 }
+                            } else {
+                                myLog('room-card', ['order'=> $orderNo, $faceValue[0]]);
                             }
 
                         } catch (\Exception $exception) {
-
+                            myLog('exception', [$orderNo, $exception->getMessage()]);
                         }
                     }
 
