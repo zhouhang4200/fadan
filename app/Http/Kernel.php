@@ -72,5 +72,6 @@ class Kernel extends HttpKernel
         'api.decode' => \App\Http\Middleware\ApiDecode::class,
         'api.auth' => \App\Http\Middleware\ApiAuth::class,
         'taobao.api' => \App\Http\Middleware\TaobaoApi::class,
+        'internal.api' => \App\Http\Middleware\InternalApi::class,
     ];
 }
