@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Show91;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
@@ -19,7 +20,7 @@ class Temp extends Command
      *
      * @var string
      */
-    protected $signature = 'Test';
+    protected $signature = 'Temp';
 
     /**
      * The console command description.
@@ -35,6 +36,9 @@ class Temp extends Command
      */
     public function handle()
     {
-
+        Show91::accept([
+            'oid' => 'ORD180301134310738790',
+            'p' => config('show91.password'),
+        ]);
     }
 }
