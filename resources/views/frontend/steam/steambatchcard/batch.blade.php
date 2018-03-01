@@ -37,8 +37,11 @@
                             <tr data-id="{{ $item->Tb_id }}">
                                 <input type="hidden" name="id" id="idsString" value="">
                                 <input type="hidden" name="id" data-tbid="{{ $item->Tb_id }}" value="{{ $item->Tb_id }}">
-                                <td><input type="checkbox" class="checked_id" value="{{ $item->Tb_id }}" name="tb_id[]"
-                                           lay-filter="choose" lay-skin="primary"></td>
+                                <td>
+                                    @if($item->UsingState !='3')
+                                        <input type="checkbox" class="checked_id" value="{{ $item->Tb_id }}" name="tb_id[]" lay-filter="choose" lay-skin="primary">
+                                    @endif
+                                </td>
                                 <td>{{ $item->Tb_id }}</td>
                                 <td>{{ $item->Account }}</td>
                                 <td><input type="text" name="balance" value="{{ $item->Balance }}" autocomplete="off"
@@ -83,11 +86,12 @@
                                 <td>{{ $item->IsInlimit == 'False' ? "未限制" : "被限制"}}</td>
                                 <td>
                                     <div class="layui-input-block" style="margin-left: 0px;">
-                                        <select name="status" id="status" lay-verify="" lay-search="" lay-filter="status"
+                                        <select @if($item->UsingState =='3') disabled="disabled" @endif  name="status" id="status" lay-verify="" lay-search="" lay-filter="status"
                                                 data-id="{{ $item->Tb_id }}" data-priority="{{ $item->Priority }}">
                                             <option value="0" @if($item->UsingState == '0') selected @endif>未启用</option>
                                             <option value="1" @if($item->UsingState=='1') selected @endif>启用</option>
                                             <option value="2" @if($item->UsingState=='2') selected @endif>禁用</option>
+                                            <option value="3" @if($item->UsingState =='3') selected @endif>停用</option>
                                         </select>
                                     </div>
                                 </td>
@@ -189,10 +193,13 @@
                                         </option>
                                         <option value="2" @if(Request::input('UsingState') =='2') selected @endif>禁用
                                         </option>
+                                        <option value="3" @if(Request::input('UsingState') =='3') selected @endif>停用
+                                        </option>
                                     </select>
                                 </div>
 
                                 <button class="layui-btn" lay-submit="" lay-filter="account">查询</button>
+                                <a href="{{url('steam/card/recharge?export=1&'.http_build_query(Request::all()))}}" class="btn btn-save" style="height: 15px;line-height: 15px;">导出</a>
                             </form>
                         </div>
                     </div>
