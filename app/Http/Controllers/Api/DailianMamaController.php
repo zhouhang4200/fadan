@@ -191,7 +191,17 @@ class DailianMamaController extends Controller
 			    																//由于我们这里字段是接单获得的代练费，所以要减
 			            $apiDeposit = $request->price_get; // 发单商家获得的双金
 			            $content = $request->reason; // 理由
-			            $apiService = $request->price_pay_fee; // 发单商家支付的手续费
+			            $apiService = $request->price_pay_fee ?? 0; // 发单商家支付的手续费
+
+			            // 获取手续费
+			            switch ($order->game_id) { 
+			            	case 1: // 王者荣耀
+			            		$apiService = bcmul(ceil(bcmul($apiDeposit, 0.05, 3)*100), 0.01, 2);
+			            		break;
+			            	case 78: //英雄联盟
+			            		
+			            		break;
+			            }
 
 						if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
 			                throw new DailianException('代练费和双金或手续费必须是数字');
@@ -364,9 +374,9 @@ class DailianMamaController extends Controller
 			                    'user_id' => $this->userId,
 			                    'complain' => 2,
 			                    'complain_message' => $content,
+			                ];
 			               	// 申请仲裁 操作
 			                DailianFactory::choose('applyArbitration')->run($order->no, $this->userId, false);
-			                ];
 			                // 记录写入 协商仲裁 表
 			                $result  = LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 			                // 写入日志
