@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Extensions\Order\Operations\Cancel;
+use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Models\User;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -86,6 +87,14 @@ class OrderAssign extends Command
                             }
 
                         } catch (\Exception $exception) {
+                            try {
+                                // 调用失败订单
+                                Order::handle(new DeliveryFailure($orderNo, 8017, '充值失败'));
+                                // 商家失败后直接取消订单
+                                Order::handle(new Cancel($orderNo, 0, 0));
+                            } catch (\Exception  $exception) {
+                                myLog('exception', [$orderNo, $exception->getMessage()]);
+                            }
                             myLog('exception', [$orderNo, $exception->getMessage()]);
                         }
                     }
