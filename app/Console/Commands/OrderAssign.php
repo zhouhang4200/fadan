@@ -94,6 +94,18 @@ class OrderAssign extends Command
                                 waitReceivingDel($orderNo);
                                 Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
                             }
+                            // 分配订单
+                            try {
+                                Order::handle(new Receiving($orderNo, 8017));
+                                // 记录相同旺旺的订单分配到了哪个商户
+                                if ($data->wang_wang) {
+                                    wangWangToUserId($data->wang_wang, 8017);
+                                }
+                                continue;
+                            } catch (CustomException $exception) {
+                                waitReceivingDel($orderNo);
+                                Log::alert($exception->getMessage() . ' 分配订单失败');
+                            }
                             try {
                                 // 调用失败订单
                                 Order::handle(new DeliveryFailure($orderNo, 8017, '充值失败'));
