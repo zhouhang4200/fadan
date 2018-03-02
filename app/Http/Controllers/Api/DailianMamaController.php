@@ -44,11 +44,11 @@ class DailianMamaController extends Controller
      * @param  [type] $message [description]
      * @return [type]          [description]
      */
-    public function success($message, $order, $operate)
+    public function success($message, $order, $operate, $orderStatus)
     {
         if ($order) {
             // 查看redis是否有之前操作失败的记录
-            $this->checkAndAddOrderToRedis($order, '1-2-'.$operate);
+            $this->checkAndAddOrderToRedis($order, '1-2-'.$operate.'-'.$orderStatus);
         }
         // 返回成功信息给代练妈妈
         return 'success';
@@ -60,11 +60,11 @@ class DailianMamaController extends Controller
      * @param  [type] $order   [description]
      * @return [type]          [description]
      */
-    public function fail($message, $order, $operate)
+    public function fail($message, $order, $operate, $orderStatus)
     {
         if ($order) { 
             // 操作失败，写入redis，记录操作状态为0
-            $this->checkAndAddOrderToRedis($order, '0-2-'.$operate);
+            $this->checkAndAddOrderToRedis($order, '0-2-'.$operate.'-'.$orderStatus);
         }
 
         Log::info($message);
@@ -123,9 +123,9 @@ class DailianMamaController extends Controller
 			    		// 接单操作
 						DailianFactory::choose('offSale')->run($order->no, $this->userId, false);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('订单下架成功', $order, $datas['operationinfo']);
+						return $this->success('订单下架成功', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 	    		}
     			break;
@@ -138,9 +138,9 @@ class DailianMamaController extends Controller
 			    		// 接单操作
 						DailianFactory::choose('receive')->run($order->no, $this->userId, true);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('接单成功', $order, $datas['operationinfo']);
+						return $this->success('接单成功', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 			    }
     			break;
@@ -153,9 +153,9 @@ class DailianMamaController extends Controller
 			    		// 接单操作
 						DailianFactory::choose('abnormal')->run($order->no, $this->userId, false);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('提交异常成功', $order, $datas['operationinfo']);
+						return $this->success('提交异常成功', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 		    	}
     			break;
@@ -168,9 +168,9 @@ class DailianMamaController extends Controller
 			    		// 接单操作
 						DailianFactory::choose('cancelAbnormal')->run($order->no, $this->userId, false);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('取消异常成功', $order, $datas['operationinfo']);
+						return $this->success('取消异常成功', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 				}
     			break;
@@ -189,9 +189,9 @@ class DailianMamaController extends Controller
 			    		// $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
 			    		$apiAmount = $request->price_pay; // 发单商家获得代练费, 
 			    																//由于我们这里字段是接单获得的代练费，所以要减
-			            $apiDeposit = $request->price_get ?? 0; // 发单商家获得的双金
+			            $apiDeposit = $request->price_get; // 发单商家获得的双金
 			            $content = $request->reason; // 理由
-			            $apiService = $request->price_pay_fee ?? 0; // 发单商家支付的手续费
+			            $apiService = $request->price_pay_fee; // 发单商家支付的手续费
 
 						if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
 			                throw new DailianException('代练费和双金或手续费必须是数字');
@@ -237,13 +237,13 @@ class DailianMamaController extends Controller
 			            // 更新协商信息到协商表
 			            LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('申请撤销成功!', $order, $datas['operationinfo']);
+						return $this->success('申请撤销成功!', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
 			    		// DB::rollback();
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (\Exception $e) {
 			    		// DB::rollback();
-			    		return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			    		return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 			    	// DB::commit();
 				}
@@ -257,19 +257,19 @@ class DailianMamaController extends Controller
 			    		// 接单操作
 						DailianFactory::choose('cancelRevoke')->run($order->no, $this->userId, false);
 						// 操作成功，看之前有没有失败的操作记录，有的话存到redis
-						return $this->success('取消撤销成功!', $order, $datas['operationinfo']);
+						return $this->success('取消撤销成功!', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 				}
     			break;
     		case '同意撤销':
 	    		// 订单不是发单方操作才调我接口，如果是自己操作，不掉自己接口
 	    		if ($request->operationuserid != 100308582) {
-	    			DB::beginTransaction();
+	    			// DB::beginTransaction();
 			    	try {
-			            $apiDeposit = $request->price_get ?? 0; // 发单获得的双金
-			            $apiService = $request->price_pay_fee ?? 0; //发单支出的手续费
+			            $apiDeposit = $request->price_get; // 发单获得的双金
+			            $apiService = $request->price_pay_fee; //发单支出的手续费
 			            // 判断订单是否存在
 			            $order = $this->checkOrder($datas['orderid']);
 
@@ -284,7 +284,7 @@ class DailianMamaController extends Controller
 						$data = [
 							'api_deposit' => $apiDeposit,
 							'api_service' => $apiService,
-							'complete' => 1,
+							'complete'    => 1,
 						];
 						// 写入到 协商仲裁 表
 			            LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
@@ -294,13 +294,12 @@ class DailianMamaController extends Controller
 			            OrderDetail::where('field_name', 'poundage')
 			                ->where('order_no', $order->no)
 			                ->update(['field_value' => $apiService]);
-
 			    	} catch (DailianException $e) {
-			            DB::rollback();
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            // DB::rollback();
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
-			        DB::commit();
-	        		return $this->success('已同意撤销', $order, $datas['operationinfo']);
+			        // DB::commit();
+	        		return $this->success('已同意撤销', $order, $datas['operationinfo'], $datas['orderstatusname']);
 	        	}
     			break;
     		case '申请验收':
@@ -312,9 +311,9 @@ class DailianMamaController extends Controller
 			            // 申请验收 操作
 						DailianFactory::choose('applyComplete')->run($order->no, $this->userId);
 
-			            return $this->success('已申请验收', $order, $datas['operationinfo']);
+			            return $this->success('已申请验收', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			    		return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			    		return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 			    }
     			break;
@@ -327,9 +326,9 @@ class DailianMamaController extends Controller
 			            // 取消验收 操作
 			            DailianFactory::choose('cancelComplete')->run($order->no, $this->userId);
 
-			            return $this->success('已取消验收', $order, $datas['operationinfo']);
+			            return $this->success('已取消验收', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        }
 			    }
     			break;
@@ -342,9 +341,9 @@ class DailianMamaController extends Controller
 			            // 验收完成 操作
 			            DailianFactory::choose('complete')->run($order->no, $this->userId, false);
 
-			            return $this->success('验收完成', $order, $datas['operationinfo']);
+			            return $this->success('验收完成', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        }
 			    }
     			break;
@@ -352,7 +351,7 @@ class DailianMamaController extends Controller
     			// 订单不是发单方操作才调我接口，如果是自己操作，不掉自己接口
 	    		if ($request->operationuserid != 100308582) {
 	    			try {
-			            DB::beginTransaction();
+			            // DB::beginTransaction();
 			            try {
 			            	// 记录日志
 			                myLog('exception-appeal', ['进入']);
@@ -365,20 +364,20 @@ class DailianMamaController extends Controller
 			                    'user_id' => $this->userId,
 			                    'complain' => 2,
 			                    'complain_message' => $content,
+			               	// 申请仲裁 操作
+			                DailianFactory::choose('applyArbitration')->run($order->no, $this->userId, false);
 			                ];
 			                // 记录写入 协商仲裁 表
 			                $result  = LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 			                // 写入日志
 			                myLog('appeal', ['user' => $this->userId, 'message' => $content, 'no' => $order->no, 'result' => $result]);
-			               	// 申请仲裁 操作
-			                DailianFactory::choose('applyArbitration')->run($order->no, $this->userId, false);
 			            } catch (DailianException $e) {
-			                DB::rollback();
+			                // DB::rollback();
 			                myLog('exception-appeal', [$e->getMessage()]);
-			                return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			                return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			            }
-			            DB::commit();
-			            return $this->success('已申请申诉', $order, $datas['operationinfo']);
+			            // DB::commit();
+			            return $this->success('已申请申诉', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (\Exception $exception) {
 			            myLog('exception-appeal', [$exception->getMessage()]);
 			        }
@@ -393,16 +392,16 @@ class DailianMamaController extends Controller
 			            // 取消仲裁 操作
 			            DailianFactory::choose('cancelArbitration')->run($order->no, $this->userId, false);
 
-			            return $this->success('已取消申诉', $order);
+			            return $this->success('已取消申诉', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (DailianException $e) {
-			    		return $this->fail($e->getMessage(), $order);
+			    		return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	}
 			   	}
     			break;
     		case '仲裁完成':
     			// 订单不是发单方操作才调我接口，如果是自己操作，不掉自己接口
 	    		if ($request->operationuserid != 100308582) {
-	    			DB::beginTransaction();
+	    			// DB::beginTransaction();
 			    	try {
 			            // $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
 			            $apiAmount = $request->price_pay; // 发单商家获得代练费, 
@@ -436,15 +435,15 @@ class DailianMamaController extends Controller
 			                ->update(['field_value' => $apiService]);
 
 			    	} catch (DailianException $e) {
-			            DB::rollback();
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            // DB::rollback();
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (\Exception $exception) {
-			            DB::rollback();
+			            // DB::rollback();
 			            myLog('exception', $exception->getMessage());
-			            return $this->fail($exception->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($exception->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        }
-			        DB::commit();
-			        return $this->success('已同意申诉', $order);
+			        // DB::commit();
+			        return $this->success('已同意申诉', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    }
     			break;
     		case '锁定账号':
@@ -456,9 +455,9 @@ class DailianMamaController extends Controller
 			            // 锁定账号 操作
 			            DailianFactory::choose('lock')->run($order->no, $this->userId, false);
 
-			            return $this->success('已锁定账号', $order, $datas['operationinfo']);
+			            return $this->success('已锁定账号', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        }
 			    }
     			break;
@@ -471,9 +470,9 @@ class DailianMamaController extends Controller
 			            // 取消锁定 操作
 			            DailianFactory::choose('cancelLock')->run($order->no, $this->userId, false);
 
-			            return $this->success('已取消锁定账号', $order, $datas['operationinfo']);
+			            return $this->success('已取消锁定账号', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        }
 			    }
     			break;
@@ -486,9 +485,9 @@ class DailianMamaController extends Controller
 			            // 自动完成 操作 和 完成 操作一样，我们没有自动完成这个操作
 			            DailianFactory::choose('complete')->run($order->no, $this->userId, false);
 
-			            return $this->success('已自动验收', $order, $datas['operationinfo']);
+			            return $this->success('已自动验收', $order, $datas['operationinfo'], $datas['orderstatusname']);
 			        } catch (DailianException $e) {
-			            return $this->fail($e->getMessage(), $order, $datas['operationinfo']);
+			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $data['orderstatusname']);
 			        }
 			    }
     			break;

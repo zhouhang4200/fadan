@@ -54,34 +54,34 @@ class DailianMama
     }
 
     /**
-     * 返回接口自定义错误信息
+     * 返回接口自定义错误信息, 此方法目前在此控制器没有用到
      * @param  [type] $res [description]
      * @return [type]      [description]
      */
-    public static function returnErrorMessage($res = null)
-    {
-        $res = json_decode($res, true);
+    // public static function returnErrorMessage($res = null)
+    // {
+    //     $res = json_decode($res, true);
 
-        if (! $res) {
-            throw new DailianException('外部接口错误,请重试!');
-        }
-        // 由于代练妈妈接口没有统一的返错机制，
-        // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
-        // 根据每个接口返回的错误信息格式返回错误信息
-        if ($res && $res['result'] !== 1) {
-            if (null !== $res['data'])
-            {
-                // 发布订单
-                if (is_array($res['data'])) {
-                    $error = $res['data']['message'];
-                }
-            } else {
-                $error = '失败';
-            }
-            throw new DailianException($error);
-        }
-        return $res;
-    }
+    //     if (! $res) {
+    //         throw new DailianException('外部接口错误,请重试!');
+    //     }
+    //     // 由于代练妈妈接口没有统一的返错机制，
+    //     // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
+    //     // 根据每个接口返回的错误信息格式返回错误信息
+    //     if ($res && $res['result'] !== 1) {
+    //         if (null !== $res['data'])
+    //         {
+    //             // 发布订单
+    //             if (is_array($res['data'])) {
+    //                 $error = $res['data']['message'];
+    //             }
+    //         } else {
+    //             $error = '失败';
+    //         }
+    //         throw new DailianException($error);
+    //     }
+    //     return $res;
+    // }
 
     /**
      * 下订单和修改订单接口
@@ -128,7 +128,7 @@ class DailianMama
             bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)
             : $orderDetails['game_leveling_hour'];
         // 下单时候的签名
-        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc=无&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
+        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
 
         // 下面的数组没用可以删掉，仅仅用来看需要哪些参数
     	$options = [
@@ -147,12 +147,12 @@ class DailianMama
             'dlcontent'      => $orderDetails['game_leveling_requirements'], // 代练要求
             'dltype'         => $orderDetails['game_leveling_type'], // 排位，陪玩， 晋级， 定位, 其他...?
             // 'orginuserid' => '', // 发布私有订单使用?
-            'otherdesc'      => '无', // 当前游戏说明?
+            'otherdesc'      => $orderDetails['game_leveling_instructions'], // 当前游戏说明?
             // 'price'          => $order->original_amount, // 备注金额? => 来源价格
             'title'          => '无', // 备注标题?
             'content'        => $orderDetails['cstomer_service_remark'], // 备注内容?
-            // 'linktel'     => '', // 发单人联系电话?
-            // 'qq'          => '', // 发单人联系qq？
+            'linktel'        => $orderDetails['user_phone'], // 发单人联系电话?
+            'qq'             => $orderDetails['user_qq'], // 发单人联系qq？
             // 'saveuserbak' => '' // 值为save时只修改备注 ?
             'autologinphone' => $orderDetails['client_phone'], // 号主电话?
             // 'subid'          => '', // 子账号id?
@@ -161,7 +161,7 @@ class DailianMama
             'sign'           => $sign, // 签名
     	];
         // 这是下单时候需要传的参数
-        $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode('无')."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&qq=".urlencode($orderDetails['user_qq'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
         // 修改订单参数
         if ($bool) {
             if (! $orderDetails['dailianmama_order_no']) {
@@ -169,9 +169,9 @@ class DailianMama
             }
             // $options['orderid'] = $orderDetails['dailianmama_order_no'];
             // 修改订单时候的签名
-            $sign  = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&orderid={$orderDetails['dailianmama_order_no']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc=无&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
+            $sign  = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderid={$orderDetails['dailianmama_order_no']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
             // 这是修改订单需要传过去的数据
-            $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode('无')."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+            $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&qq=".urlencode($orderDetails['user_qq'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
         }
         $res = static::normalRequest(config('dailianmama.url.releaseOrder'), $options);
 
@@ -559,11 +559,10 @@ class DailianMama
 
     	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
 
-	    // return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
         
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
-
         if (! $res) {
             throw new DailianException('外部接口错误,请重试!');
         }

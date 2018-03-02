@@ -118,7 +118,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                         break;
                     case 2:
                         // 代练妈妈取消申诉接口
-                        DailianMama::operationOrder($order, 20008);
+                        DailianMama::operationOrder($this->order, 20008);
                         break;
                     default:
                         throw new DailianException('第三方接单平台不存在!');

@@ -5,8 +5,9 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use App\Services\Show91;
-use App\Extensions\Asset\Income;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
+use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
 
 /**
@@ -98,17 +99,38 @@ class Delete extends DailianAbstract implements DailianInterface
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-                    
-                    $options = [
-                        'oid' => $orderDetails['third_order_no'],
-                    ]; 
-                    // 结果
-                    Show91::chedan($options);
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91删除接口
+                        $options = ['oid' => $orderDetails['show91_order_no']]; 
+                        Show91::chedan($options);
+                        break;
+                    case 2:
+                        // 代练妈妈删除订单接口
+                        DailianMama::deleteOrder($this->order);
+                        break;
+                    default:
+                        // 没接单的情况下，下架两边的订单
+                        // 91下架接口
+                        $options = ['oid' => $orderDetails['show91_order_no']]; 
+                        Show91::chedan($options);
+                        // 代练妈妈下架接口
+                        DailianMama::deleteOrder($this->order);
+                        // throw new DailianException('第三方接单平台不存在!');
+                        break;
                 }
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+                    
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'],
+                //     ]; 
+                //     // 结果
+                //     Show91::chedan($options);
+                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

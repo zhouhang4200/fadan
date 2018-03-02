@@ -51,7 +51,8 @@ class AddNoticeOrderFromRedis extends Command
             $status = explode('-', $statusAndAction)[0];
             $third = explode('-', $statusAndAction)[1];
             $action = explode('-', $statusAndAction)[2];
-            $this->checkOrderNotice($orderNo, $status, $action, $third);
+            $thirdStatus = explode('-', $statusAndAction)[3];
+            $this->checkOrderNotice($orderNo, $status, $action, $third, $thirdStatus);
         }
     }
 
@@ -92,7 +93,7 @@ class AddNoticeOrderFromRedis extends Command
     /**
      * 检查order_notices 表订单状态，一样的话不走处理，不一样再生成一条报警
      */
-    public function checkOrderNotice($orderNo, $status, $action, $third)
+    public function checkOrderNotice($orderNo, $status, $action, $third, $thirdStatus)
     {
         DB::beginTransaction();
         try {
@@ -152,6 +153,34 @@ class AddNoticeOrderFromRedis extends Command
                         }
                         break;
                     case 2:
+                        if ($status == 1) { // 第三方做了成功的操作
+                            if (! $orderDetail['third_order_no']) {
+                                throw new Exception('第三方订单号不存在');
+                            }
+
+                            $beforeStatus = $this->getBeforeStatus($orderNo);
+
+                            switch ($thirdStatus) {
+                                case '代练中': // 如果代练妈妈状态在 撤销 中，看我们前一个状态
+                                    if ($order->status == 13) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } else {
+                                        $this->addOrderNotice($order, $status, $action);
+                                    }
+                                    break;
+                                case '待验收': 
+                                    if ($order->status == 14) {
+                                        $this->delRedisNoticeOrder($orderNo);
+                                    } else {
+                                        $this->addOrderNotice($order, $status, $action);
+                                    }
+                                    break;
+                                default:
+                                    return true;
+                            }
+                        } else {
+                            $this->addOrderNotice($order, $status, $action);
+                        }
                         break;
                     default:
                         # code...
