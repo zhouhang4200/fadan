@@ -88,6 +88,13 @@ class OrderAssign extends Command
 
                         } catch (\Exception $exception) {
                             try {
+                                // 将订单改为不可接单
+                                Order::handle(new GrabClose($orderNo));
+                            } catch (CustomException $exception) {
+                                waitReceivingDel($orderNo);
+                                Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
+                            }
+                            try {
                                 // 调用失败订单
                                 Order::handle(new DeliveryFailure($orderNo, 8017, '充值失败'));
                                 // 商家失败后直接取消订单
