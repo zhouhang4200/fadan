@@ -73,47 +73,26 @@ class OrderAssign extends Command
                             // 获取商品中的数字
                             preg_match('|\d+|', $orderInfo->goods_name, $faceValue);
                             // 如果正则取出来的是数字则写入队列
-                            if (is_numeric($faceValue[0])) {
+                            if (isset($faceValue[0]) && is_numeric($faceValue[0])) {
                                 $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
                                 preg_match('|\d+|', $orderDetail['account'], $chargeId);
-                                if (is_numeric($chargeId[0])) {
+                                if (isset($chargeId[0]) && is_numeric($chargeId[0])) {
                                     $redis = RedisConnect::order();
                                     $redis->lpush(config('redis.order.roomCardRecharge') . $orderInfo->game_id, $orderNo . '-'. $chargeId[0] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
                                 } else {
-                                    myLog('room-card', ['order'=> $orderNo, $faceValue[0], $chargeId[0]]);
+                                    $this->assign($orderNo, 8017);
+                                    $this->fail($orderNo, 8017);
+                                    myLog('exception', ['order'=> $orderNo, '面值' => $faceValue[0], '没有ID']);
                                 }
                             } else {
-                                myLog('room-card', ['order'=> $orderNo, $faceValue[0]]);
+                                $this->assign($orderNo, 8017);
+                                $this->fail($orderNo, 8017);
+                                myLog('exception', ['order'=> $orderNo, '没有商品']);
                             }
 
                         } catch (\Exception $exception) {
-                            try {
-                                // 将订单改为不可接单
-                                Order::handle(new GrabClose($orderNo));
-                            } catch (CustomException $exception) {
-                                waitReceivingDel($orderNo);
-                                Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
-                            }
-                            // 分配订单
-                            try {
-                                Order::handle(new Receiving($orderNo, 8017));
-                                // 记录相同旺旺的订单分配到了哪个商户
-                                if ($data->wang_wang) {
-                                    wangWangToUserId($data->wang_wang, 8017);
-                                }
-                                continue;
-                            } catch (CustomException $exception) {
-                                waitReceivingDel($orderNo);
-                                Log::alert($exception->getMessage() . ' 分配订单失败');
-                            }
-                            try {
-                                // 调用失败订单
-                                Order::handle(new DeliveryFailure($orderNo, 8017, '充值失败'));
-                                // 商家失败后直接取消订单
-                                Order::handle(new Cancel($orderNo, 0, 0));
-                            } catch (\Exception  $exception) {
-                                myLog('exception', [$orderNo, $exception->getMessage()]);
-                            }
+                            $this->assign($orderNo, 8017);
+                            $this->fail($orderNo, 8017);
                             myLog('exception', [$orderNo, $exception->getMessage()]);
                         }
                     }
@@ -233,5 +212,40 @@ class OrderAssign extends Command
     {
         $unit = array('b','kb','mb','gb','tb','pb');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+
+    /**
+     * 分配订单
+     * @param $orderNo
+     * @param $userId
+     */
+    public function assign($orderNo, $userId)
+    {
+        try {
+            // 将订单改为不可接单
+            Order::handle(new GrabClose($orderNo));
+            // 分配订单
+            Order::handle(new Receiving($orderNo, $userId));
+        } catch (CustomException $exception) {
+            waitReceivingDel($orderNo);
+            myLog('exception', [ '单号' => $orderNo, '异常' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * 直接失败订单
+     * @param $orderNo
+     * @param $userId
+     */
+    public function fail($orderNo, $userId)
+    {
+        try {
+            // 订单
+            Order::handle(new DeliveryFailure($orderNo, $userId, '充值失败'));
+            // 商家失败后直接取消订单
+            Order::handle(new Cancel($orderNo, 0, 0));
+        } catch (\Exception  $exception) {
+            myLog('exception', ['单号' => $orderNo, '异常' => $exception->getMessage()]);
+        }
     }
 }
