@@ -196,8 +196,9 @@ class DailianMamaController extends Controller
 			            // 获取手续费
 			            switch ($order->game_id) { 
 			            	case 1: // 王者荣耀
-			            		// 根据双金来算, 这里如果传的值很小或很大，会变成科学计数
-			            		$apiService = bcmul(ceil(bcmul($apiDeposit, 0.05)*10), 0.1);
+			            		// 根据双金来算, 这里如果传的值很小或很大，会变成科学计数, 手续费最高20
+			            		$apiService = bcmul(ceil(bcmul($apiDeposit, 0.05)*10), 0.1) < 20 ?
+			            			bcmul(ceil(bcmul($apiDeposit, 0.05)*10), 0.1) : 20;
 			            		break;
 			            	case 78: //英雄联盟
 			            		// 根据双金来算
