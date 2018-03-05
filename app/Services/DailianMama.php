@@ -128,7 +128,7 @@ class DailianMama
             bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)
             : $orderDetails['game_leveling_hour'];
         // 下单时候的签名
-        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
+        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&title=无&unitprice=".$order->amount.config('dailianmama.share_key'));
 
         // 下面的数组没用可以删掉，仅仅用来看需要哪些参数
     	$options = [
@@ -156,12 +156,12 @@ class DailianMama
             // 'saveuserbak' => '' // 值为save时只修改备注 ?
             'autologinphone' => $orderDetails['client_phone'], // 号主电话?
             // 'subid'          => '', // 子账号id?
-            'sourceid'       => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'       => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp'      => time(), // unix时间戳
             'sign'           => $sign, // 签名
     	];
         // 这是下单时候需要传的参数
-        $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&qq=".urlencode($orderDetails['user_qq'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&qq=".urlencode($orderDetails['user_qq'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
         // 修改订单参数
         if ($bool) {
             if (! $orderDetails['dailianmama_order_no']) {
@@ -169,9 +169,9 @@ class DailianMama
             }
             // $options['orderid'] = $orderDetails['dailianmama_order_no'];
             // 修改订单时候的签名
-            $sign  = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderid={$orderDetails['dailianmama_order_no']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
+            $sign  = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderid={$orderDetails['dailianmama_order_no']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&title=无&unitprice=".$order->amount.config('dailianmama.share_key'));
             // 这是修改订单需要传过去的数据
-            $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&qq=".urlencode($orderDetails['user_qq'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+            $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&qq=".urlencode($orderDetails['user_qq'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['cstomer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
         }
         $res = static::normalRequest(config('dailianmama.url.releaseOrder'), $options);
 
@@ -200,17 +200,17 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'], // 代练妈妈订单id
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
 
@@ -238,17 +238,17 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'],
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
 
@@ -276,17 +276,17 @@ class DailianMama
     {
     	$orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
         $options = [
             'orderid'   => $orderDetails['dailianmama_order_no'],
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
         ];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
 
@@ -315,17 +315,17 @@ class DailianMama
     {
     	$orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
         $options = [
             'orderid'   => $orderDetails['dailianmama_order_no'], 
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
         ]; 
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
 	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
 
@@ -352,16 +352,16 @@ class DailianMama
      */
     public static function refreshAllOrderTime($order = null, $bool = false)
     {
-        $sign = md5("sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
         ];
         // 传过去的参数形式
-        $options = "sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
 	    $res = static::normalRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
 
@@ -389,7 +389,7 @@ class DailianMama
      */
     public static function getReleaseOrderStatusList($order = null, $bool = false)
     {
-        $sign = md5("orderstatus=&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("orderstatus=&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderstatus' => '', // 订单状态
@@ -399,7 +399,7 @@ class DailianMama
             'sign'        => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderstatus=&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderstatus=&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
 
@@ -426,18 +426,18 @@ class DailianMama
      */
     public static function checkTradePassword($order = null, $bool = false)
     {
-        $sign = md5("sourceid=".env('SOURCE_ID')."&timestamp=".time()."&tradePassword=".md5(md5(env('PAY_PASSWORD')).'dlapp')."&type=md5".env('SHARE_KEY'));
+        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&tradePassword=".md5(md5(config('dailianmama.pay_password')).'dlapp')."&type=md5".config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-            'tradePassword' => md5(md5(env('PAY_PASSWORD')).'dlapp'), // 支付密码
+            'tradePassword' => md5(md5(config('dailianmama.pay_password')).'dlapp'), // 支付密码
             'type'          =>'md5', // 类型
             // 'subid'         => '', // 子账号id?
-            'sourceid'      => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'      => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp'     => time(), // unix时间戳
             'sign'          => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&tradePassword=".urlencode(md5(md5(env('PAY_PASSWORD')).'dlapp'))."&type=".urlencode('md5')."&sign=".urlencode($sign);
+        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&tradePassword=".urlencode(md5(md5(config('dailianmama.pay_password')).'dlapp'))."&type=".urlencode('md5')."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.checkTradePassword'), $options);
 
@@ -470,7 +470,7 @@ class DailianMama
         // 支付密码验证
         $passwordKey = static::checkTradePassword();
 
-        $sign = md5("control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+        $sign = md5("control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'             => $orderDetails['dailianmama_order_no'],
@@ -483,7 +483,7 @@ class DailianMama
             // 'unitpriceadd'     => '', // 增加的金额数, 22002 补款?
             // 'accountpwd'       => '', // 密码， 22003修改密码?
             // 'subid'               => '', // 子账号id?
-            'sourceid'            => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'            => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp'           => time(), // unix时间戳
             'sign'                => $sign, // 签名
     	];
@@ -495,65 +495,65 @@ class DailianMama
                 // $options['refundment'] = $consult->amount;
                 // $options['bail'] = $consult->deposit;
 
-                $sign = md5("bail=".$consult->deposit."&checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&refundment={$consult->amount}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("bail=".$consult->deposit."&checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&refundment={$consult->amount}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "bail=".urlencode($consult->deposit)."&checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&refundment=".urlencode($consult->amount)."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "bail=".urlencode($consult->deposit)."&checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&refundment=".urlencode($consult->amount)."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20007: // 申请仲裁
                 // $options['reason'] = $consult->complain_message;
-                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 22001: // 补时
                 // $options['requiretimehadd'] = bcadd(bcmul($order->addDays, 24), $order->addHours);
-                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&requiretimehadd=".bcadd(bcmul($order->addDays, 24), $order->addHours)."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&requiretimehadd=".bcadd(bcmul($order->addDays, 24), $order->addHours)."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&requiretimehadd=".urlencode(bcadd(bcmul($order->addDays, 24), $order->addHours))."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&requiretimehadd=".urlencode(bcadd(bcmul($order->addDays, 24), $order->addHours))."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 22002: // 补款, 补的是差价,比如订单开始是5元，填了6元，这里传1元
-                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&unitpriceadd=".$order->addAmount.env('SHARE_KEY'));
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&unitpriceadd=".$order->addAmount.config('dailianmama.share_key'));
 
-                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&unitpriceadd=".urlencode($order->addAmount)."&sign=".urlencode($sign);
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&unitpriceadd=".urlencode($order->addAmount)."&sign=".urlencode($sign);
                 break;
             case 22003: // 修改密码
-                $sign = md5("accountpwd=".$orderDetails['password']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("accountpwd=".$orderDetails['password']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "accountpwd=".urlencode($orderDetails['password'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "accountpwd=".urlencode($orderDetails['password'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20002: // 锁定账号
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20010: // 取消锁定
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20005: // 申请验收
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20017: // 取消验收
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20013: // 验收完成
-                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20012: // 取消撤销
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20009: // 同意撤销
-                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".env('SOURCE_ID')."&timestamp=".time().env('SHARE_KEY'));
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
 
-                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20008: // 取消仲裁
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20004: // 提交异常
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
             case 20011: // 取消异常
-                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
                 break;
         }
 
@@ -587,18 +587,18 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'],
             // 'beginid'   => '', // 开始id？
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.chatOldList'), $options);
 
@@ -627,17 +627,17 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'], 
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
 
@@ -665,18 +665,18 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("content=无&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("content=无&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'],
             'content'   => '', // 订单留言,最大100
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "content=".urlencode('无')."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "content=".urlencode('无')."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
 
@@ -708,7 +708,7 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
 
-        $sign = md5("description=截图说明&imgurl=".new \CURLFile(public_path('frontend/images/123.png'), 'image/png')."&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("description=截图说明&imgurl=".new \CURLFile(public_path('frontend/images/123.png'), 'image/png')."&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'     => $orderDetails['dailianmama_order_no'],
@@ -720,7 +720,7 @@ class DailianMama
             'sign'        => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "description=".urlencode('截图说明')."&imgurl=".urlencode(new \CURLFile(public_path('frontend/images/123.png'), 'image/png'))."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "description=".urlencode('截图说明')."&imgurl=".urlencode(new \CURLFile(public_path('frontend/images/123.png'), 'image/png'))."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
 
@@ -748,9 +748,9 @@ class DailianMama
      */
     public static function getTempUploadKey($order = null, $bool = false)
     {
-        $sign = md5("sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 传过去的参数形式
-        $options = "sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options);
 
@@ -777,7 +777,7 @@ class DailianMama
      */
     public static function releaseOrderManageList($order, $bool = false)
     {
-        $sign = md5("orderstatus=1&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("orderstatus=1&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
     		'orderstatus' => 1, // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
@@ -793,12 +793,12 @@ class DailianMama
             // 'currentNo' => '', // 要查询当前页数，默认查询第一页?
             // 'pageSize'  => '', // 每页条数， 为空默认10条?
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderstatus=".urlencode('1')."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderstatus=".urlencode('1')."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.releaseOrderManageList'), $options);
 
@@ -827,17 +827,17 @@ class DailianMama
     {
         $orderDetails = static::getOrderDetails($order->no);
         // 待签名串
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&sign=".env('SHARE_KEY'));
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
         // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
             'orderid'   => $orderDetails['dailianmama_order_no'],
             // 'subid'     => '', // 子账号id?
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
             'sign'      => $sign, // 签名
     	];
         // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(env('SOURCE_ID'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
     	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
 

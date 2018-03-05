@@ -6,6 +6,7 @@ use DB;
 use Asset;
 use Redis;
 use App\Models\User;
+use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
@@ -55,13 +56,14 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+		    // 后续操作
 		    $this->after();
+		    //仲裁完成之后，订单状态改为完成
 		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
 		    // 24H自动完成
 			delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {
     		DB::rollBack();
-
             throw new DailianException($e->getMessage());
     	}
     	DB::commit();
@@ -73,29 +75,50 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
      * 流水
      * @param  [type] $apiAmount   [回传代练费]
      * @param  [type] $apiDeposit [回传双金]
-     * @param  [type] $apiService    [回传手续费]
-     * @return [type]                       [流水记录]
+     * @param  [type] $apiService [回传手续费]
+     * @return [type]             [流水记录]
      */
 	public function updateAsset()
 	{
 		// 从leveling_consult 中取各种值
         $consult = LevelingConsult::where('order_no', $this->orderNo)->first();
 
+        // 订单详情，接单后third_order_no会有对应的相应接单平台的订单号
+        $orderDetails = OrderDetail::where('order_no', $this->orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
+
         if (! $consult) {
         	throw new DailianException('状态错误');
         }
 
-        if ($this->userId != config('show91.qs_userId')) {
-            throw new DailianException('当前操作人不是该订单操作者本人!');
+        // 第三方平台做此操作的时候，确认该平台身份，该平台在我们平台注册的账号与传递过来的账号是否一致
+        switch ($orderDetails['third']) {
+        	case 1: // 91
+		        if ($this->userId != config('show91.qs_userId')) {
+		            throw new DailianException('当前操作人不是该订单操作者本人!');
+		        }
+        		break;
+        	case 2: // 代练妈妈
+        		if ($this->userId != config('dailianmama.qs_userId')) {
+		            throw new DailianException('当前操作人不是该订单操作者本人!');
+		        }
+        		break;
+        	default:
+        		# code...
+        		break;
         }
 
+        // 接口传递的代练费
         $apiAmount = $consult->api_amount;
+        // 接口传的双金
         $apiDeposit = $consult->api_deposit;
+        // 接口传额手续费
         $apiService = $consult->api_service;
 		// 订单的安全保证金
-		$security = $this->order->detail()->where('field_name', 'security_deposit')->value('field_value');
-		// 订单的效率保证金 efficiency_deposit
-		$efficiency = $this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
+		$security = $orderDetails['security_deposit'];
+		// 订单的效率保证金 
+		$efficiency = $orderDetails['efficiency_deposit'];
 		// 剩余代练费 = 订单代练费 - 回传代练费
         $leftAmount = bcsub($this->order->amount, $apiAmount);
         // 订单双金 = 订单安全保证金 + 订单效率保证金

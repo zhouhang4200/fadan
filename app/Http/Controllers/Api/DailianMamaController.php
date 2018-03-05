@@ -196,10 +196,99 @@ class DailianMamaController extends Controller
 			            // 获取手续费
 			            switch ($order->game_id) { 
 			            	case 1: // 王者荣耀
-			            		$apiService = bcmul(ceil(bcmul($apiDeposit, 0.05, 3)*100), 0.01, 2);
+			            		// 根据双金来算, 这里如果传的值很小或很大，会变成科学计数
+			            		$apiService = bcmul(ceil(bcmul($apiDeposit, 0.05)*10), 0.1);
 			            		break;
 			            	case 78: //英雄联盟
-			            		
+			            		// 根据双金来算
+			            		switch ($apiDeposit) {
+			            			case $apiDeposit > 0 && $apiDeposit <= 1:
+			            				$apiService = 0;
+			            				break;
+			            			case $apiDeposit > 1 && $apiDeposit < 10:
+			            				$apiService = 1;
+			            				break;
+			            			case $apiDeposit >= 10 && $apiDeposit < 20:
+			            				$apiService = 2;
+			            				break;
+			            			case $apiDeposit >= 20 && $apiDeposit <= 50:
+			            				$apiService = 3;
+			            				break;
+			            			case $apiDeposit > 50 && $apiDeposit <= 100:
+			            				$apiService = 5;
+			            				break;
+			            			case $apiDeposit > 100 && $apiDeposit <= 150:
+			            				$apiService = 6;
+			            				break;
+			            			case $apiDeposit > 150 && $apiDeposit <= 200:
+			            				$apiService = 7;
+			            				break;
+			            			case $apiDeposit > 200 && $apiDeposit <= 250:
+			            				$apiService = 8;
+			            				break;
+			            			case $apiDeposit > 250 && $apiDeposit <= 300:
+			            				$apiService = 9;
+			            				break;
+			            			case $apiDeposit > 300 && $apiDeposit <= 350:
+			            				$apiService = 10;
+			            				break;
+			            			case $apiDeposit > 350 && $apiDeposit <= 400:
+			            				$apiService = 11;
+			            				break;
+			            			case $apiDeposit > 400 && $apiDeposit <= 450:
+			            				$apiService = 12;
+			            				break;
+			            			case $apiDeposit > 450 && $apiDeposit <= 500:
+			            				$apiService = 13;
+			            				break;
+			            			case $apiDeposit > 500 && $apiDeposit <= 550:
+			            				$apiService = 14;
+			            				break;
+			            			case $apiDeposit > 550 && $apiDeposit <= 600:
+			            				$apiService = 15;
+			            				break;
+			            			case $apiDeposit > 600 && $apiDeposit <= 650:
+			            				$apiService = 16;
+			            				break;
+			            			case $apiDeposit > 650 && $apiDeposit <= 700:
+			            				$apiService = 17;
+			            				break;
+			            			case $apiDeposit > 700 && $apiDeposit <= 750:
+			            				$apiService = 18;
+			            				break;
+			            			case $apiDeposit > 750 && $apiDeposit <= 800:
+			            				$apiService = 19;
+			            				break;
+			            			case $apiDeposit > 800 && $apiDeposit <= 850:
+			            				$apiService = 20;
+			            				break;
+			            			case $apiDeposit > 850:
+			            				$apiService = 20;
+			            				break;
+			            			default:
+			            				$apiService = 0;
+			            				break;
+			            		}
+			            	case 81: // QQ飞车手游
+			            		$apiService = 0;
+			            		break;
+			            	case 79: // 决战平安京
+			            		$apiService = 0;
+			            		break;
+			            	case 80: // cf枪战王者
+			            	 	$apiService = 0;
+			            	 	break;
+			            	case 86: // DNF
+			            		$apiService = 0;
+			            		break;
+			            	case 95: // 刺激战场
+			            		$apiService = 0;
+			            		break;
+			            	case 96: // 全军出击
+			            		$apiService = 0;
+			            		break;
+			            	default:
+			            		$apiService = 0;
 			            		break;
 			            }
 
@@ -438,7 +527,7 @@ class DailianMamaController extends Controller
 			            // 更新代练协商申诉表
 						LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 			            // 同意申诉
-			            DailianFactory::choose('arbitration')->run($order->no, $this->userId, 0);
+			            DailianFactory::choose('arbitration')->run($order->no, $this->userId, false);
 			            // 手续费写到order_detail中
 			            OrderDetail::where('field_name', 'poundage')
 			                ->where('order_no', $order->no)
