@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Steam;
 
 
+use App\Extensions\Excel\SteamAccountBalanceExport;
 use App\Extensions\Excel\SteamAccountExport;
 use App\Http\Controllers\Controller;
 
@@ -93,7 +94,7 @@ class BatchCardController extends Controller
     }
 
     //获取接口数据列表
-    public function getAccountList(Request $request)
+	public function getAccountList(Request $request,SteamAccountBalanceExport $excel)
     {
         $page = $request->input('page', 1);
         $pageSize = 50;
@@ -164,15 +165,19 @@ class BatchCardController extends Controller
         } else {
             $data['UsingState'] = '';
         }
-        if(Auth::guard('web')->check()){
-            $data['TraderId'] =Auth::user()->id;
-        };
-        $steamImportAccountAip = new SteamImportAccountAip();
-        $result = $steamImportAccountAip->getAccountList($page, $pageSize, $data);
-        $datArr = collect($result->data)->toArray();
+		$data['TraderId'] =Auth::user()->id;
+		$steamImportAccountAip = new SteamImportAccountAip();
+		if($request->has('export')){
+			$result = $steamImportAccountAip->getAccountList($page, 20000, $data);
+			$data = collect($result->data)->toArray();
+			$excel->export($data);
+		}else{
+			$result = $steamImportAccountAip->getAccountList($page, $pageSize, $data);
+			$datArr = collect($result->data)->toArray();
+			$totalPage = $datArr ? ceil((int)$result->count / $pageSize) : 0;
+			$pageDate = $datArr;
+		}
 
-        $totalPage = $datArr ? ceil((int)$result->count / $pageSize) : 0;
-        $pageDate = $datArr;
         return view('frontend.steam.steambatchcard.batch')->with([
             'totalPage' => $totalPage,
             'dataList' => $pageDate,

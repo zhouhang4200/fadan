@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderFinish;
+use App\Events\OrderReceiving;
 use DB;
 use Asset;
 use Carbon\Carbon;
@@ -12,6 +14,7 @@ use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
+use Psy\Exception\ErrorException;
 
 /**
  * 接单操作
@@ -23,6 +26,7 @@ class Playing extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 27; // 操作：接单
+
 	/**
      * 
      * @param  [type] $orderNo     [订单号]
@@ -57,8 +61,10 @@ class Playing extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
+
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -161,6 +167,14 @@ class Playing extends DailianAbstract implements DailianInterface
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
+
+            try {
+                event(new OrderReceiving($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('receiving', [$errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('receiving', [$exception->getMessage()]);
+            }
 
             // 根据userid, 判断是哪个平台接单
             switch ($this->userId) {

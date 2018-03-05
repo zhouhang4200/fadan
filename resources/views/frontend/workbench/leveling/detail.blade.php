@@ -270,7 +270,7 @@
                         @endif
 
                         @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">删除</button>
+                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                         @endif
 
                         @if (!$detail['master'] && ($detail['status'] == 13))
@@ -450,7 +450,18 @@
                             <div class="layui-col-md4 text_right">利润：</div>
                             <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
-
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手呢称：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手电话：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">打手QQ：</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                        </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
                             <div class="layui-col-md8">{{ $detail['left_time'] ?? ''  }}</div>
@@ -473,7 +484,7 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
-                            <div class="layui-col-md8">{{ $detail['cstomer_service_name'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['customer_service_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">撤销说明：</div>
@@ -1063,6 +1074,7 @@
 
         var tab = getQueryString(window.location.href, 'tab');
         if (tab == '1') {
+            loadMessage();
             element.tabChange('myFilter', 'leave-message')
         } else if(tab == '2') {
             loadHistory();
@@ -1074,8 +1086,6 @@
             $('textarea[name=contents]').val(data.value);
         });
     });
-
-
 
     function loadHistory() {
         // 加载订单操作记录

@@ -26,7 +26,7 @@ class UnLock extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId)
     {	
     	DB::beginTransaction();
     	try {
@@ -50,6 +50,7 @@ class UnLock extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
+            $this->orderCount();
             $this->after();
             // 如果申请验收改为别的状态，删除redis里面的订单
             delRedisCompleteOrders($this->orderNo);

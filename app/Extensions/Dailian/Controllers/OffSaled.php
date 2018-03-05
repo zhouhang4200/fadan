@@ -50,6 +50,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->after();
+            $this->orderCount();
             // 状态不在申请验收自动删除
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {

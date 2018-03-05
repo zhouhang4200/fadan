@@ -19,7 +19,7 @@
     </div>
     <form class="layui-form layui-form-pane" action="">
 
-        <?php $callBack = route('frontend.setting.tb-auth.index') . '?id=' .  Auth::user()->id . '&sign=' . md5(Auth::user()->id . Auth::user()->name)  ?>
+        <?php $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  Auth::user()->id . '&sign=' . md5(Auth::user()->id . Auth::user()->name)  ?>
         @if(Auth::user()->store_wang_wang)
             <div class="layui-inline">
                 <label class="layui-form-label">已绑定旺旺</label>

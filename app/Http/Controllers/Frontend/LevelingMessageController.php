@@ -23,7 +23,7 @@ class LevelingMessageController extends Controller
      */
     public function index()
     {
-        $message = LevelingMessage::where('user_id', Auth::user()->getPrimaryUserId())->get();
+        $message = LevelingMessage::where('user_id', Auth::user()->getPrimaryUserId())->orderBy('date', 'desc')->get();
         return view('frontend.leveling-message.index', compact('message'));
     }
 
@@ -34,8 +34,15 @@ class LevelingMessageController extends Controller
      */
     public function del(Request $request)
     {
-        LevelingMessage::where('id', $request->id)->where('user_id', Auth::user()->getPrimaryUserId())->delete();
-        levelingMessageCount(auth()->user()->getPrimaryUserId(), 2);
+        $orderNo =  $request->input('no', 0);
+
+        if ($orderNo) {
+            $delCount = LevelingMessage::where('order_no', $request->no)->where('user_id', Auth::user()->getPrimaryUserId())->delete();
+            levelingMessageCount(auth()->user()->getPrimaryUserId(), 2, $delCount);
+        } else {
+            LevelingMessage::where('id', $request->id)->where('user_id', Auth::user()->getPrimaryUserId())->delete();
+            levelingMessageCount(auth()->user()->getPrimaryUserId(), 2);
+        }
         return response()->ajax(1, '删除成功');
     }
 

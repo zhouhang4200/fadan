@@ -18,11 +18,11 @@
     <table class="layui-table" lay-skin="line" lay-size="sm" style="margin: 0 0 40px 0; ">
         <tbody>
         @forelse($message as $item)
-            <tr>
+            <tr data-no="{{ $item->order_no }}">
                 <td width="30%">千手订单：{{ $item->order_no }}</td>
-                <td>{{ $item->created_at }}  留言：{{ str_limit( $item->contents, 38) }}</td>
+                <td>{{ $item->created_at }}  留言：{{ str_limit( $item->contents, 58) }}</td>
                 <td width="15%">
-                    <span  class="opt">详情</span> <span class="opt" lay-submit=""  lay-filter="del" data-id="{{ $item->id }}">删除</span>
+                    <a href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item->order_no }}&tab=1" class="opt"  data-no="{{ $item->order_no }}" target="_blank" lay-submit=""  lay-filter="detail">详情</a> <span class="opt" lay-submit=""  lay-filter="del" data-id="{{ $item->id }}">删除</span>
                 </td>
             </tr>
         @empty
@@ -70,6 +70,18 @@
                 layer.close(index);
             });
         });
+
+        form.on('submit(detail)', function (data) {
+            var no =  data.elem.getAttribute('data-no');
+            $.post('{{ route("frontend.message-del") }}',{no:no}, function () {
+                $('tr[data-no='+ no +']').remove();
+                if ($('.layui-table').find("tr").length == 0) {
+                    $('#del-all').hide();
+                    $('.layui-table').html('<tr><td colspan="5" align="center">暂时没有留言</td></tr>');
+                }
+            }, 'json');
+        });
+
     });
 </script>
 </html>

@@ -134,7 +134,7 @@
                 <div class="layui-col-md8">
 
                     @{{# if(item.field_type == 1) {  }}
-                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}">
+                        <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}" value="@{{# if (item.field_default_value != "null") { item.field_default_value  } }}">
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
@@ -196,6 +196,17 @@
             zero: function(value){
                 if(value <= 0){
                     return '该数值需大于0';
+                }
+            },
+            money:function (value) {
+                if (value.indexOf(".") > -1) {
+                    var temp  = value.split(".");
+                    if (temp.length > 2) {
+                        return '请输入合法的金额';
+                    }
+                    if (temp[1].length > 2) {
+                        return '输入的小数请不要大于两位';
+                    }
                 }
             }
         });
@@ -274,12 +285,23 @@
         // 加载模板
         function loadTemplate(id) {
             var getTpl = goodsTemplate.innerHTML, view = $('#template');
-            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id}, function (result) {
-                var template = '游戏：\r\n';
-                $.each(result.content.template, function(index,element){
-                    template += element.field_display_name + '：\r\n'
-                });
-                $('#user-template').val(template);
+            $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, tid:'{{ $tid  }}'}, function (result) {
+                var template;
+                if (result.content.sellerMemo) {
+                    template = result.content.sellerMemo  + '\r\n';
+                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    $('#user-template').val(template);
+                    analysis();
+                } else {
+                    template = '游戏：\r\n';
+                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    $.each(result.content.template, function(index,element){
+                        template += element.field_display_name + '：\r\n'
+                    });
+                    $('#user-template').val(template);
+                }
 
                 layTpl(getTpl).render(result.content, function(html){
                     view.html(html);
@@ -290,7 +312,13 @@
 
         // 解析模板
         $('#parse').click(function () {
+            analysis();
+        });
+
+        function analysis() {
+
             var fieldArrs = $('[name="desc"]').val().split('\n');
+            console.log(2);
             for (var i = fieldArrs.length - 1; i >= 0; i--) {
                 var arr = fieldArrs[i].split('：');
 
@@ -328,8 +356,11 @@
                         break;
                 }
             }
-            form.render();
-        });
+            layui.form.render();
+        }
+
     });
+
+
 </script>
 @endsection

@@ -53,6 +53,7 @@ class NoReceive extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
+            $this->orderCount();
             // 申请验收状态不存在自动删除
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {
