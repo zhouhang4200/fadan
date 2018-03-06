@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use App\Services\DailianMama;
 use App\Models\OrderHistory;
 use App\Exceptions\DailianException; 
 /**
@@ -32,6 +33,7 @@ class UnLock extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
+            $this->runAfter = $runAfter;
             // 获取锁定前的状态
             $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
     		// 获取订单对象
@@ -49,6 +51,7 @@ class UnLock extends DailianAbstract implements DailianInterface
 		    // 保存操作日志
 		    $this->saveLog();
             $this->orderCount();
+            $this->after();
             // 如果申请验收改为别的状态，删除redis里面的订单
             delRedisCompleteOrders($this->orderNo);
             // 如果还原前一个状态为 申请验收 ，redis 加订单
@@ -60,5 +63,52 @@ class UnLock extends DailianAbstract implements DailianInterface
     	DB::commit();
 
         return true;
+    }
+
+    /**
+     * 调用外部锁定发接口
+     * @return [type] [description]
+     */
+    public function after()
+    {
+        if ($this->runAfter) {
+            try {
+                $orderDetails = $this->checkThirdClientOrder($this->order);
+
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91 取消锁定
+                        $options = ['oid' => $orderDetails['show91_order_no']];
+                        Show91::changeOrderBlock($options);
+                        break;
+                    case 2:
+                        // 代练妈妈解除锁定接口
+                        DailianMama::operationOrder($this->order, 20010);
+                        break;
+                    default:
+                        throw new DailianException('第三方接单平台不存在!');
+                        break;
+                }
+                
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'],
+                //     ];
+                //     // 结果
+                //     Show91::changeOrderBlock($options);
+                // }
+                return true;
+            } catch (DailianException $e) {
+                throw new DailianException($e->getMessage());
+            }
+        }
     }
 }

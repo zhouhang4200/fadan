@@ -6,6 +6,7 @@ use DB;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
 /**
@@ -38,7 +39,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-            // 获取锁定前的状态
+            // 获取撤销前的状态
             $this->beforeHandleStatus = $this->getOrder()->status;
             // 创建操作前的订单日志详情
             $this->createLogObject();
@@ -61,7 +62,6 @@ class Revoking extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	}
     	DB::commit();
-
         return true;
     }
 
@@ -73,30 +73,55 @@ class Revoking extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91 申请协商接口
+                        $options = [
+                            'oid' => $orderDetails['show91_order_no'],
+                            'selfCancel.pay_price' => $consult->amount,
+                            'selfCancel.pay_bond' => $consult->deposit,
+                            'selfCancel.content' => $consult->revoke_message,
+                        ];
 
-                if (! $consult) {
-                    throw new DailianException('不存在申诉和协商记录');
+                        Show91::addCancelOrder($options);
+                        break;
+                    case 2:
+                        // 代练妈妈协商接口
+                        DailianMama::operationOrder($this->order, 20006);
+                        break;
+                    default:
+                        throw new DailianException('不存在第三方接单平台!');
+                        break;
                 }
+                
+                
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                // if (! $consult) {
+                //     throw new DailianException('不存在申诉和协商记录');
+                // }
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
                     
-                    $options = [
-                        'oid' => $orderDetails['third_order_no'],
-                        'selfCancel.pay_price' => $consult->amount,
-                        'selfCancel.pay_bond' => $consult->deposit,
-                        'selfCancel.content' => $consult->revoke_message,
-                    ];
-                    // 结果
-                    Show91::addCancelOrder($options);
-                }
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'],
+                //         'selfCancel.pay_price' => $consult->amount,
+                //         'selfCancel.pay_bond' => $consult->deposit,
+                //         'selfCancel.content' => $consult->revoke_message,
+                //     ];
+                //     // 结果
+                //     Show91::addCancelOrder($options);
+                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

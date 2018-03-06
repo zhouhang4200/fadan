@@ -19,6 +19,7 @@ use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
+use App\Services\DailianMama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -324,15 +325,6 @@ class IndexController extends Controller
             // 利润
             $detail['profit'] = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
         }
-//        // 去掉所有金额后面的无效0
-//        $detail['payment_amount'] = empty($detail['payment_amount']) ?  ''  :  (float)$detail['payment_amount']  + 0;
-//        $detail['get_amount'] = empty($detail['get_amount']) ?  '' :  (float)$detail['get_amount']  + 0;
-//        $detail['poundage'] = empty($detail['poundage']) ?  ''  :  (float)$detail['poundage']  + 0;
-//        $detail['profit'] = empty($detail['profit']) ?  '' : (float)$detail['profit'] + 0;
-//        $detail['source_price'] = empty($detail['source_price']) ?  '' :  (float)$detail['source_price'] + 0;
-//        $detail['game_leveling_amount'] = empty($detail['game_leveling_amount']) ?  '' :  (float)$detail['game_leveling_amount'] + 0;
-//        $detail['amount'] = empty($detail['amount']) ?  '' : (float)$detail['amount'] + 0;
-//        $detail['original_amount'] = empty($detail['original_amount']) ?  '' :  (float)$detail['original_amount'] + 0;
 
         $days = $detail['game_leveling_day'] ?? 0;
         $hours = $detail['game_leveling_hour'] ?? 0;
@@ -440,49 +432,44 @@ class IndexController extends Controller
 
     /**
      * 从show91接口拿留言数据
-     * @param $order_no
+     * @param $orderNo
      * @return mixed
      */
-    public function leaveMessage($order_no)
+    public function leaveMessage($orderNo, Request $request)
     {
+        $bingId = $request->input('bing_id', 0);
         // 取订单信息
-        $order = (new OrderRepository)->detail($order_no);
+        $order = (new OrderRepository)->detail($orderNo);
         if (empty($order)) {
             return response()->ajax(0, '订单不存在');
         }
 
         // 取订单详情
         $orderDetail = $order->detail->pluck('field_value', 'field_name');
-        // 第三方单号
-        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
-
+        $messageArr = [];
+        $orderNo = 'ORD180228164549104956';
         try {
-            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
-//            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
-
-            // 转为数组
-            $messageListArr = json_decode(json_encode($dataList), true);
-
-            $ids = [];
-            $messageArr = [];
-            foreach ($messageListArr as $item) {
-                if (isset($item['id'])) {
-                    $ids[] = $item['created_on'];
-                } else {
-                    $ids[] = 0;
-                }
-                $messageArr[] = $item;
+            // 识别订单发送至那个平台 1 是91 2 是代练妈妈
+            if ($orderDetail['third'] == 1) {
+                // 91 获取留言传入91订单号
+                $messageArr = Show91::messageList(['oid' => $orderDetail['third_order_no']]);
+            } elseif ($orderDetail['third'] == 2) {
+                // 代练妈妈 获取留言传入千手订单号
+                $messageArr = DailianMama::chatOldList($orderNo, $bingId);
             }
-            // 用ID倒序
-            array_multisort($ids, SORT_ASC, $messageArr);
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
         $show91Uid = config('show91.uid');
+        $dailianUid = config('dailianmama.uid');
 
-        $html = view('frontend.workbench.leveling.leave-message', compact('messageArr', 'show91Uid'))->render();
-        return response()->ajax(1, 'success', $html);
+        return response()->ajax(1, 'success', [
+            'third' => $orderDetail['third'],
+            'show91Uid' => $show91Uid,
+            'dailianMamaUid' => $dailianUid,
+            'messageArr' => $messageArr,
+        ]);
     }
 
     /**
@@ -660,9 +647,21 @@ class IndexController extends Controller
                         }
                     }
 
+                    // 其它信息只需改订单详情表
+                    foreach ($requestData as $key => $value) {
+                        if (isset($orderDetail[$key])) {
+                            if ($orderDetail[$key] != $value) {
+                                // 更新值
+                                OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
+                                    'field_value' => $value
+                                ]);
+                            }
+                        }
+                    }
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 
+                    // 修改订单, 91和代练妈妈通用
                     event(new AutoRequestInterface($order, 'addOrder', true));
                 }
 
@@ -681,8 +680,9 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        // 接口加价
                         $order->addAmount = $addAmount;
+                        
+                        // 加价
                         event(new AutoRequestInterface($order, 'addPrice'));
                     } else if ($order->price > $requestData['game_leveling_amount']) {
                         return response()->ajax(0, '代练价格只可增加');
@@ -774,7 +774,6 @@ class IndexController extends Controller
                 }
 
                 // 其它信息只需改订单详情表
-
                 foreach ($requestData as $key => $value) {
 
                     if (isset($orderDetail[$key])) {
@@ -946,7 +945,7 @@ class IndexController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function sendSms(Request $request)
+    public function tb(Request $request)
     {
         $orderInfo = OrderModel::where('no', $request->no)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())

@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Extensions\Order\Operations\Cancel;
+use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Models\User;
+use App\Repositories\Frontend\OrderDetailRepository;
+use App\Services\RedisConnect;
 use Carbon\Carbon;
 use App\Models\Order as OrderModel;
 use Illuminate\Console\Command;
@@ -51,6 +54,9 @@ class OrderAssign extends Command
                 $time = Carbon::parse($data->created_date);
                 $minutes = $carbon->diffInMinutes($time);
 
+                // 获取订单信息
+                $orderInfo = OrderModel::where('no', $orderNo)->first();
+
                 $sendUser = $data->creator_primary_user_id ?? 0;
                 if ($minutes >= 40 && !in_array($sendUser, [8311, 8111])) {
                     try {
@@ -61,6 +67,35 @@ class OrderAssign extends Command
                     }
                     continue;
                 } else {
+                    // 如果是房卡商品则写入充值队列
+                    if (in_array($orderInfo->game_id, [97, 98, 99])) {
+                        try {
+                            // 获取商品中的数字
+                            preg_match('|\d+|', $orderInfo->goods_name, $faceValue);
+                            // 如果正则取出来的是数字则写入队列
+                            if (isset($faceValue[0]) && is_numeric($faceValue[0])) {
+                                $orderDetail  = OrderDetailRepository::getByOrderNo($orderNo);
+                                preg_match('|\d+|', $orderDetail['account'], $chargeId);
+                                if (isset($chargeId[0]) && is_numeric($chargeId[0])) {
+                                    $redis = RedisConnect::order();
+                                    $redis->lpush(config('redis.order.roomCardRecharge') . $orderInfo->game_id, $orderNo . '-'. $chargeId[0] .'-' . $orderInfo->quantity * $faceValue[0]. '-' . $orderInfo->goods_name);
+                                } else {
+                                    $this->assign($orderNo, 8017);
+                                    $this->fail($orderNo, 8017);
+                                    myLog('exception', ['order'=> $orderNo, '面值' => $faceValue[0], '没有ID']);
+                                }
+                            } else {
+                                $this->assign($orderNo, 8017);
+                                $this->fail($orderNo, 8017);
+                                myLog('exception', ['order'=> $orderNo, '没有商品']);
+                            }
+
+                        } catch (\Exception $exception) {
+                            $this->assign($orderNo, 8017);
+                            $this->fail($orderNo, 8017);
+                            myLog('exception', [$orderNo, $exception->getMessage()]);
+                        }
+                    }
 
                     $userId = 0;
                     // 如果该订单旺旺在三十分钟分内下过单则找出之前的订单分给哪个商户，直接将该单分给该商户
@@ -92,6 +127,29 @@ class OrderAssign extends Command
                         // 分配订单
                         try {
                             Order::handle(new Receiving($orderNo, $userId));
+                            continue;
+                        } catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . ' 分配订单失败');
+                            continue;
+                        }
+                    } else if (in_array($orderInfo->game_id, [97, 98, 99])) { // 如果是房卡直接分配到固定商家
+                        $userId = 8017;
+                        try {
+                            // 将订单改为不可接单
+                            Order::handle(new GrabClose($orderNo));
+                        }catch (CustomException $exception) {
+                            waitReceivingDel($orderNo);
+                            Log::alert($exception->getMessage() . '更改状态失败');
+                            continue;
+                        }
+                        // 分配订单
+                        try {
+                            Order::handle(new Receiving($orderNo, $userId));
+                            // 记录相同旺旺的订单分配到了哪个商户
+                            if ($data->wang_wang) {
+                                wangWangToUserId($data->wang_wang, $userId);
+                            }
                             continue;
                         } catch (CustomException $exception) {
                             waitReceivingDel($orderNo);
@@ -154,5 +212,40 @@ class OrderAssign extends Command
     {
         $unit = array('b','kb','mb','gb','tb','pb');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+
+    /**
+     * 分配订单
+     * @param $orderNo
+     * @param $userId
+     */
+    public function assign($orderNo, $userId)
+    {
+        try {
+            // 将订单改为不可接单
+            Order::handle(new GrabClose($orderNo));
+            // 分配订单
+            Order::handle(new Receiving($orderNo, $userId));
+        } catch (CustomException $exception) {
+            waitReceivingDel($orderNo);
+            myLog('exception', [ '单号' => $orderNo, '异常' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * 直接失败订单
+     * @param $orderNo
+     * @param $userId
+     */
+    public function fail($orderNo, $userId)
+    {
+        try {
+            // 订单
+            Order::handle(new DeliveryFailure($orderNo, $userId, '充值失败'));
+            // 商家失败后直接取消订单
+            Order::handle(new Cancel($orderNo, 0, 0));
+        } catch (\Exception  $exception) {
+            myLog('exception', ['单号' => $orderNo, '异常' => $exception->getMessage()]);
+        }
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Repositories\Frontend\OrderDetailRepository;
 use DB;
 use Redis;
 use Carbon\Carbon;
 use App\Exceptions\DailianException; 
+use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
  * 申请验收操作

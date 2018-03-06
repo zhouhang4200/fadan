@@ -19,6 +19,7 @@ use App\Models\GoodsTemplateWidgetValue;
 use App\Models\ThirdArea;
 use App\Models\ThirdServer;
 use App\Exceptions\DailianException;
+use App\Services\DailianMama;
 
 /**
  * 创建代练订单
@@ -199,15 +200,24 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         if ($this->runAfter) {
             DB::beginTransaction();
             try {
-                $result = Show91::addOrder($this->order);
+                // 给91下订单
+                $show91Result = Show91::addOrder($this->order);
+                // 给代练妈妈下订单
+                $dailianMamaResult = DailianMama::releaseOrder($this->order);
 
-                $thirdOrderNo = $result['data'];
                 //将第三方订单号更新到order_detail中
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
-                    'field_value' => $thirdOrderNo,
+//                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
+//                     'field_value' => $thirdOrderNo,
+//                 ]);
+//                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third')->update([
+//                     'field_value' => 1, //91代练
+//                 ]);
+                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
+                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
+                    'field_value' => $show91Result['data'],
                 ]);
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third')->update([
-                    'field_value' => 1, //91代练
+                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
+                    'field_value' => $dailianMamaResult['data']['orderid'],
                 ]);
 
             } catch (CustomException $e) {
@@ -219,7 +229,11 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             }
             DB::commit();
             // 写入留言获取
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $thirdOrderNo, 91, 0);
+            $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['show91_order_no'], 91, 0);
         }
     }
 }

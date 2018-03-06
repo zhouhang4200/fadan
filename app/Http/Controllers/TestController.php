@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 use Asset;
+// use GuzzleHttp\Client;
 use App\Extensions\Asset\Recharge;
 use App\Extensions\Asset\Withdraw;
 use App\Extensions\Asset\Freeze;
@@ -211,6 +212,8 @@ class TestController extends Controller
 
     public function index()
     {
+        return $this->getDailianmamaInfo();
+        return $this->testSwitch('hang', 10);
         $this->testClone();
         try {
             $order = Order::find(9);
@@ -444,4 +447,77 @@ Iuli3G2IJNYc9Cwu
         dd($order->no);
     }
 
+    public function testSwitch($name, $age)
+    {
+        switch ($name) {
+            case 'zhou':
+                echo 'my name is zhou';
+                break;
+            case 'hang':
+                switch ($age) {
+                    case 10:
+                        $age = 'ten';
+                        break;
+                    case 20:
+                        $age = 'twity';
+                        break;
+                }
+                echo 'my name is '. $name .' and my age is '. $age;
+                break;
+            default:
+                echo 'i have no name';
+                break;
+        }
+    }
+
+    // 下载代练妈妈接口游戏区服信息
+    public function getDailianmamaInfo()
+    {
+        $options = '';
+        $url = 'static.dailianmama.com/tool/dlmm/gameinfo.html';
+        $method = 'GET';
+        $client = new Client;
+        $response = $client->request($method, $url, [
+            'query' => $options,
+        ]);
+
+        $res =  $response->getBody()->getContents();
+
+        $arr = json_decode($res, true);
+
+        // 英雄联盟 1
+        // dd($arr[1]);
+        // dd($arr[1]['list']);
+
+        // 区
+        $thirdAreas = [];
+        foreach ($arr[1]['list'] as $k => $area) {
+            if ($k == 0) {
+                continue;
+            }
+            foreach ($area['list'] as $key => $server) {
+                if ($key == 0) {
+                    continue;
+                }
+                $thirdAreas[$area['name']][$server['id']] = $server['name']; 
+            }
+            // $thirdAreas[$area['name']] = $area['list'];
+        }
+dd($thirdAreas);
+        $thirdAreas = [];
+        $thirdServers = [];
+        $thirdGames = [];
+
+        foreach ($arr[1]['list'] as $key => $data) {
+            $thirdAreas['third_area_name'][$key] = $data['name'];
+            $thirdAreas['third_area_id'][$key] = $data['id'];
+            $thirdAreas['third_game_id'][$key] = $data['gameid'];
+
+            foreach ($arr[6]['list'][$key]['list'] as $key => $server) {
+                $thirdServers[$data['name']][$key] = $server['name'];
+            }
+
+        }
+        // dd($thirdServers);
+    }
 }

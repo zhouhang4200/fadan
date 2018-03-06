@@ -5,6 +5,7 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
 /**
@@ -71,21 +72,39 @@ class Lock extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'oid' => $orderDetails['third_order_no'],
-                    ];
-                    // 结果
-                    Show91::changeOrderBlock($options);
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91锁定接口
+                        $options = ['oid' => $orderDetails['show91_order_no']];
+                        Show91::changeOrderBlock($options);
+                        break;
+                    case 2:
+                        // 代练妈妈锁定接口
+                        DailianMama::operationOrder($this->order, 20002);
+                        break;
+                    default:
+                        throw new DailianException('第三方接单平台不存在!');
+                        break;
                 }
+                
+                
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'],
+                //     ];
+                //     // 结果
+                //     Show91::changeOrderBlock($options);
+                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

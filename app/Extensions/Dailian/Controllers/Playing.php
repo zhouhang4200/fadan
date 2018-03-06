@@ -8,8 +8,10 @@ use DB;
 use Asset;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Services\Show91;
 use App\Models\UserAsset;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
 use Psy\Exception\ErrorException;
@@ -150,11 +152,18 @@ class Playing extends DailianAbstract implements DailianInterface
         }
     }
 
+    /**
+     * 接单之后，计算接单时间
+     * @return [type] [description]
+     */
     public function after()
     {
         if ($this->runAfter) {
             $now = Carbon::now()->toDateTimeString();
+            // 订单详情
+            $orderDetails = $this->checkThirdClientOrder($this->order);
 
+            // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
@@ -165,6 +174,62 @@ class Playing extends DailianAbstract implements DailianInterface
                 myLog('receiving', [$errorException->getMessage()]);
             } catch (\Exception $exception) {
                 myLog('receiving', [$exception->getMessage()]);
+            }
+
+            // 根据userid, 判断是哪个平台接单
+            switch ($this->userId) {
+                case 8456: 
+                    // 更新第三方平台为 show91
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third')
+                        ->update(['field_value' => config('order.third_client')['show91']]);
+
+                    // 更新 third_order_no 为对应平台的订单号
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third_order_no')
+                        ->update(['field_value' => $orderDetails['show91_order_no']]);
+                    // 下架其他代练平台订单
+                    DailianMama::closeOrder($this->order);
+                    // 获取91平台的打手电话和QQ更新到订单详情表
+                    $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
+                    
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'hatchet_man_phone')
+                        ->update(['field_value' => $orderInfo['data']['linkphone']]);
+
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'hatchet_man_qq')
+                        ->update(['field_value' => $orderInfo['data']['taker_qq']]);
+                    break;
+                case config('dailianmama.qs_userId'):
+                    // 更新第三方平台为 dailianmam
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third')
+                        ->update(['field_value' => config('order.third_client')['dailianmama']]);
+
+                    // 更新 third_order_no 为对应平台的订单号
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'third_order_no')
+                        ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
+
+                    // 撤单91平台订单
+                    $options = ['oid' => $orderDetails['show91_order_no']]; 
+                    // 91代练下单
+                    Show91::chedan($options);
+                    // 获取代练妈妈平台接单打手QQ和电话
+                    // $orderInfo = DailianMama::orderinfo($this->order);
+
+                    // OrderDetail::where('order_no', $this->order->no)
+                    //     ->where('field_name', 'hatchet_man_phone')
+                    //     ->update(['field_value' => $orderInfo['data']['userinfo']['linktel']]);
+
+                    // OrderDetail::where('order_no', $this->order->no)
+                    //     ->where('field_name', 'hatchet_man_qq')
+                    //     ->update(['field_value' => $orderInfo['data']['userinfo']['qq']]);
+                    break;
+                default:
+                    throw new DailianException('未找到订单对应的第三方平台!');
+                    break;
             }
         }
     }

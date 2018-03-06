@@ -176,10 +176,10 @@ class Show91
         ];
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
-            if (! $orderDetails['third_order_no']) {
+            if (! $orderDetails['show91_order_no']) {
                 throw new DailianException('订单详情无第三方订单，修改失败!');
             }
-            $options['order.order_id'] = $orderDetails['third_order_no'];
+            $options['order.order_id'] = $orderDetails['show91_order_no'];
         }
 
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
@@ -199,7 +199,7 @@ class Show91
             ->toArray();
 
         $options = [
-            'oid' => $orderDetails['third_order_no'],
+            'oid' => $orderDetails['show91_order_no'],
             'newAcc' => $orderDetails['account'],
             'newAccPwd' => $orderDetails['password'],
         ];
@@ -396,19 +396,33 @@ class Show91
 
     /**
      * 获取订单留言
-     * @param  [type] $options [oid => 订单id]
-     * @return [type]          [description]
+     * @param array $options
+     * @return array $messageArr
+     * @throws CustomException
      */
     public static function messageList($options = [])
     {
     	$res = static::normalRequest(config('show91.url.messageList'), $options);
-        $res = json_decode($res);
+        $res = json_decode($res, true);
 
-        if ($res->result != 0) {
-            throw new CustomException($res->reason, $res->result);
+        if ($res['result'] != 0) {
+            throw new CustomException($res['reason'], $res['result']);
         }
 
-        return $res->data ?? [];
+        $sortField = [];
+        $messageArr = [];
+        foreach ($res['data'] as $item) {
+            if (isset($item['id'])) {
+                $sortField[] = $item['created_on'];
+            } else {
+                $sortField[] = 0;
+            }
+            $messageArr[] = $item;
+        }
+        // 用ID倒序
+        array_multisort($sortField, SORT_ASC, $messageArr);
+
+        return $messageArr;
     }
 
     /**
@@ -432,7 +446,7 @@ class Show91
             ->toArray();
 
     	$options = [
-            'oid' => $orderDetails['third_order_no'],
+            'oid' => $orderDetails['show91_order_no'],
             'appwd' => config('show91.password'),
             'cash' => $order->addAmount,
         ];
@@ -453,7 +467,7 @@ class Show91
             ->toArray();
 
         $options = [
-            'oid' => $orderDetails['third_order_no'],
+            'oid' => $orderDetails['show91_order_no'],
             'orderAddTime.days' => $order->addDays,
             'orderAddTime.hours' => $order->addHours,
             'orderAddTime.msg' => '',
@@ -497,7 +511,7 @@ class Show91
             ->toArray();
 
         $options = [
-            'oid' => $orderDetails['third_order_no'], 
+            'oid' => $orderDetails['show91_order_no'], 
             'day' => $orderDetails['game_leveling_day'],
             'hour' => $orderDetails['game_leveling_hour'],
         ];

@@ -43,6 +43,8 @@ Route::post('refuse/consult', 'LevelingController@refuseConsult'); //拒绝验�
 
 Route::any('getOrder', 'SteamOrderController@getOrder');
 Route::any('returnOrderData', 'SteamOrderController@returnOrderData');
+// 代练妈妈回调
+Route::post('order/change', 'DailianMamaController@orderChange');
 
 //Route::post('kamen', 'OrderController@KamenOrder');
 //Route::any('test', 'TestController@test');
@@ -86,4 +88,13 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
 
     // 充值结果回调
     Route::post('order-charge/notify', 'OrderChargeController@notify');
+    
+});
+
+/**
+ * 房卡充值接口
+ */
+Route::middleware('internal.api')->prefix('room-card-recharge')->group(function (){
+    Route::get('/', 'RoomCardRecharge@index');
+    Route::post('update', 'RoomCardRecharge@update');
 });

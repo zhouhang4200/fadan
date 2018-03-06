@@ -6,6 +6,7 @@ use DB;
 use App\Services\Show91;
 use App\Models\OrderHistory;
 use App\Models\LevelingConsult;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 use App\Models\OrderDetail;
 
@@ -104,27 +105,48 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                $orderDetails = $this->checkThirdClientOrder($this->order);
+                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                    if (! $consult) {
-                        throw new DailianException('订单申诉和协商记录不存在');
-                    }
-
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'aid' => $orderDetails['third_order_no'], // 撤销id 可以用单号
-                    ];
-                    // 结果
-                    Show91::cancelAppeal($options);
+                if (! $consult) {
+                    throw new DailianException('订单申诉或协商记录不存在!');
                 }
+                    
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91 取消申诉接口
+                        $options = ['aid' => $orderDetails['show91_order_no']];
+                        Show91::cancelAppeal($options);
+                        break;
+                    case 2:
+                        // 代练妈妈取消申诉接口
+                        DailianMama::operationOrder($this->order, 20008);
+                        break;
+                    default:
+                        throw new DailianException('第三方接单平台不存在!');
+                        break;
+                }
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                //     if (! $consult) {
+                //         throw new DailianException('订单申诉和协商记录不存在');
+                //     }
+
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'aid' => $orderDetails['third_order_no'], // 撤销id 可以用单号
+                //     ];
+                //     // 结果
+                //     Show91::cancelAppeal($options);
+                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

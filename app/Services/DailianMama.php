@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\DayData;
 use GuzzleHttp\Client;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
 use App\Models\ThirdServer;
 use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
+use App\Models\LevelingConsult;
 use App\Exceptions\CustomException;
 use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
@@ -22,15 +24,8 @@ class DailianMama
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function formDataRequest($url, $options = [], $method = 'POST')
+    public static function formDataRequest($url, $options = '', $method = 'POST')
     {
-        $params = [
-            'account' => config('show91.account'),
-            'sign' => config('show91.sign'),
-        ];
-
-        $options = array_merge($params, $options);
-
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -49,21 +44,45 @@ class DailianMama
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function normalRequest($url, $options = [], $method = 'POST')
+    public static function normalRequest($url, $options = '', $method = 'POST')
     {
-        $params = [
-            'account' => config('show91.account'),
-            'sign' => config('show91.sign'),
-        ];
-
-        $options = array_merge($params, $options);
-
         $client = new Client;
         $response = $client->request($method, $url, [
             'query' => $options,
         ]);
+
         return $response->getBody()->getContents();
     }
+
+    /**
+     * 返回接口自定义错误信息, 此方法目前在此控制器没有用到
+     * @param  [type] $res [description]
+     * @return [type]      [description]
+     */
+    // public static function returnErrorMessage($res = null)
+    // {
+    //     $res = json_decode($res, true);
+
+    //     if (! $res) {
+    //         throw new DailianException('外部接口错误,请重试!');
+    //     }
+    //     // 由于代练妈妈接口没有统一的返错机制，
+    //     // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
+    //     // 根据每个接口返回的错误信息格式返回错误信息
+    //     if ($res && $res['result'] !== 1) {
+    //         if (null !== $res['data'])
+    //         {
+    //             // 发布订单
+    //             if (is_array($res['data'])) {
+    //                 $error = $res['data']['message'];
+    //             }
+    //         } else {
+    //             $error = '失败';
+    //         }
+    //         throw new DailianException($error);
+    //     }
+    //     return $res;
+    // }
 
     /**
      * 下订单和修改订单接口
@@ -71,9 +90,9 @@ class DailianMama
      * @param  boolean $bool  [默认为false， 为true时修改订单]
      * @return [type]         [description]
      */
-    public function releaseOrder($order, $bool = false)
+    public static function releaseOrder($order, $bool = false)
     {
-    	$orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+    	$orderDetails = static::getOrderDetails($order->no);
         // 我们的服
         $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
         $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
@@ -91,55 +110,85 @@ class DailianMama
                 ->where('field_name', 'region')
                 ->where('field_value', $orderDetails['region'])
                 ->value('id');
-        // 第三方区
-        $thirdAreaId = ThirdArea::where('game_id', $order->game_id)
+        // 第三方区名
+        $thirdAreaName = ThirdArea::where('game_id', $order->game_id)
                 ->where('third_id', 2)
                 ->where('area_id', $areaId)
-                ->value('third_area_id') ?: '';
-        // 第三方服
-        $thirdServerId = ThirdServer::where('game_id', $order->game_id)
+                ->value('third_area_name') ?: '';
+        // 第三方服名
+        $thirdServerName = ThirdServer::where('game_id', $order->game_id)
                 ->where('third_id', 2)
                 ->where('server_id', $serverId)
-                ->value('third_server_id') ?: '';
-        // 第三方游戏
-        $thirdGameId = ThirdGame::where('game_id', $order->game_id)
+                ->value('third_server_name') ?: '';
+        // 第三方游戏名
+        $thirdGameName = ThirdGame::where('game_id', $order->game_id)
                 ->where('third_id', 2)
-                ->value('third_game_id') ?: '';
+                ->value('third_game_name') ?: '';
 
+        $dailianTime = $orderDetails['game_leveling_day'] ? 
+            bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)
+            : $orderDetails['game_leveling_hour'];
+        // 下单时候的签名
+        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['customer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
+
+        // 下面的数组没用可以删掉，仅仅用来看需要哪些参数
     	$options = [
-    		'orderid' => $order->no,
-    		'game_name' => $order->game_name,
-    		'areaname' => $order->area_name,
-    		'servername' => $order->server_name,
-    		'ordertitle' => $order->title,
-    		'orderorgin' => 0, // 0普通， 1私有， 2优质
-    		'unitprice' => $order->amount, // 订单金额
-    		'safedeposit' => $orderDetails['security_deposit'], // 安全保证金
-    		'efficiency' => $orderDetails['efficiency_deposit'], // 效率保证金
-    		'requiretime' => $orderDetails['efficiency_deposit'] ? bcadd(bcmul($orderDetails['efficiency_deposit'], 24), $orderDetails['game_leveling_hour']) : $orderDetails['game_leveling_hour'], // 要求代练时间
-    		'accountvalue' => $orderDetails['account'],
-    		'accountpwd' => $orderDetails['password'],
-    		'rolename' => $orderDetails['role'],
-    		'dlcontent' => $orderDetails['game_leveling_requirements'], // 代练要求
-    		'dltype' => '排位', // 排位，陪玩， 晋级， 定位, 其他...?
-    		// 'orginuserid' => '', // 发布私有订单使用?
-    		'otherdesc' => '无', // 当前游戏说明?
-    		'price' => '0', // 备注金额?
-    		'title' => '无', // 备注标题?
-    		'content' => '无', // 备注内容?
-    		// 'linktel' => '', // 发单人联系电话?
-    		// 'qq' => '', // 发单人联系qq？
-    		// 'saveuserbak' => '' // 值为save时只修改备注 ?
-    		'autologinphone' => $orderDetails['client_phone'], // 号主电话?
-    		// 'subid' => '', // 子账号id?
-    		'sourceid' => 1, // 与代练妈妈约定的标识
-    		'timestamp' => time(), // unix时间戳
-    		'sign' => 1, // 签名 
+            'gamename'       => $thirdGameName, // 与代练妈妈保持一致
+            'areaname'       => $thirdAreaName, // 与代练妈妈保持一致
+            'servername'     => $thirdServerName, // 与代练妈妈保持一致
+            'ordertitle'     => $orderDetails['game_leveling_title'], // 代练标题
+            'orderorgin'     => 0, // 0普通， 1私有， 2优质
+            'unitprice'      => $order->amount, // 订单金额
+            'safedeposit'    => $orderDetails['security_deposit'], // 安全保证金
+            'efficiency'     => $orderDetails['efficiency_deposit'], // 效率保证金
+            'requiretime'    => $dailianTime, // 要求代练时间
+            'accountvalue'   => $orderDetails['account'], //账号名
+            'accountpwd'     => $orderDetails['password'], // 密码
+            'rolename'       => $orderDetails['role'], // 角色
+            'dlcontent'      => $orderDetails['game_leveling_requirements'], // 代练要求
+            'dltype'         => $orderDetails['game_leveling_type'], // 排位，陪玩， 晋级， 定位, 其他...?
+            // 'orginuserid' => '', // 发布私有订单使用?
+            'otherdesc'      => $orderDetails['game_leveling_instructions'], // 当前游戏说明?
+            // 'price'          => $order->original_amount, // 备注金额? => 来源价格
+            'title'          => '无', // 备注标题?
+            'content'        => $orderDetails['customer_service_remark'], // 备注内容?
+            'linktel'        => $orderDetails['user_phone'], // 发单人联系电话?
+            'qq'             => $orderDetails['user_qq'], // 发单人联系qq？
+            // 'saveuserbak' => '' // 值为save时只修改备注 ?
+            'autologinphone' => $orderDetails['client_phone'], // 号主电话?
+            // 'subid'          => '', // 子账号id?
+            'sourceid'       => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp'      => time(), // unix时间戳
+            'sign'           => $sign, // 签名
     	];
+        // 这是下单时候需要传的参数
+        $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['customer_service_remark'])."&qq=".urlencode($orderDetails['user_qq'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        // 修改订单参数
+        if ($bool) {
+            if (! $orderDetails['dailianmama_order_no']) {
+                throw new DailianException('无第三方订单，修改失败!');
+            }
+            // $options['orderid'] = $orderDetails['dailianmama_order_no'];
+            // 修改订单时候的签名
+            $sign  = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['customer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderid={$orderDetails['dailianmama_order_no']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&title=无&unitprice=".$order->amount.config('dailianmama.share_key'));
+            // 这是修改订单需要传过去的数据
+            $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&qq=".urlencode($orderDetails['user_qq'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['customer_service_remark'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        }
+        $res = static::normalRequest(config('dailianmama.url.releaseOrder'), $options);
 
-    	$res = static::formDataRequest(config('dailianmama.url.releaseOrder'), $options);
+        // return static::returnErrorMessage($res);
+        // 
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
 
-        return static::returnErrorMessage($res);
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['message']);
+        }
+        return $res;
     }
 
     /**
@@ -148,19 +197,36 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function upOrder($order, $bool = false)
+    public static function upOrder($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'orderid' => $order->no, // 订单id
-    		'subid' => '', // 子账号id？
-    		'sourceid' => 1, // 与代练妈妈约定的商户标识
-    		'timestamp' => time(), 
-    		'sign' => '', // 签名
+            'orderid'   => $orderDetails['dailianmama_order_no'], // 代练妈妈订单id
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
     	];
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-    	$res = static::formDataRequest(config('dailianmama.url.upOrder'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.upOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['message']);
+        }
+        return $res;
     }
 
     /**
@@ -169,19 +235,36 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function closeOrder($order, $bool)
+    public static function closeOrder($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'orderid' => $order->id,
-    		'subid' => '', // 子账号id?
-    		'sourceid' => '', 
-    		'timestamp' => time(),
-    		'sign' => '',
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
     	];
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-    	$res = static::formDataRequest(config('dailianmama.url.closeOrder'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.closeOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        // return static::returnErrorMessage($res);
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res;
     }
 
     /**
@@ -190,19 +273,37 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function deleteOrder($order, $bool= false)
+    public static function deleteOrder($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->id,
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
+    	$orderDetails = static::getOrderDetails($order->no);
 
-    	$res = static::formDataRequest(config('dailianmama.url.deleteOrder'), $options);
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+        $options = [
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
+        ];
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-        return static::returnErrorMessage($res);
+    	$res = static::normalRequest(config('dailianmama.url.deleteOrder'), $options);
+
+        // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res;
     }
 
     /**
@@ -211,18 +312,37 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function orderinfo($order, $bool)
+    public static function orderinfo($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->id,
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-	    $res = static::formDataRequest(config('dailianmama.url.orderinfo'), $options);
+    	$orderDetails = static::getOrderDetails($order->no);
 
-	    return static::returnErrorMessage($res);
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+        $options = [
+            'orderid'   => $orderDetails['dailianmama_order_no'], 
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
+        ]; 
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+
+	    $res = static::normalRequest(config('dailianmama.url.orderinfo'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败！');
+        }
+        return $res; 
     }
 
     /**
@@ -231,17 +351,34 @@ class DailianMama
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function refreshAllOrderTime($order = null, $bool = false)
+    public static function refreshAllOrderTime($order = null, $bool = false)
     {
+        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-	    $res = static::formDataRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
+        ];
+        // 传过去的参数形式
+        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-	    return static::returnErrorMessage($res);
+	    $res = static::normalRequest(config('dailianmama.url.refreshAllOrderTime'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']);
+        }
+        return $res; 
     }
 
     /**
@@ -251,18 +388,35 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getReleaseOrderStatusList($order = null, $bool = false)
+    public static function getReleaseOrderStatusList($order = null, $bool = false)
     {
+        $sign = md5("orderstatus=&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'orderstatus' => '', // 订单状态
-    		'subid' => '', // 子账号id
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
+            'orderstatus' => '', // 订单状态
+            // 'subid'       => '', // 子账号id?
+            'sourceid'    => 1, // 与代练妈妈约定的标识
+            'timestamp'   => time(), // unix时间戳
+            'sign'        => $sign, // 签名
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
+        // 传过去的参数形式
+        $options = "orderstatus=&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-	    return static::returnErrorMessage($res);
+    	$res = static::normalRequest(config('dailianmama.url.getReleaseOrderStatusList'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -271,69 +425,194 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function checkTradePassword($order = null, $bool = false)
+    public static function checkTradePassword($order = null, $bool = false)
     {
+        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&tradePassword=".md5(md5(config('dailianmama.pay_password')).'dlapp')."&type=md5".config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'tradePassword' => '', // 支付密码
-    		'type' => md5(''), // 类型
-    		'subid' => '', 
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
+            'tradePassword' => md5(md5(config('dailianmama.pay_password')).'dlapp'), // 支付密码
+            'type'          =>'md5', // 类型
+            // 'subid'         => '', // 子账号id?
+            'sourceid'      => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp'     => time(), // unix时间戳
+            'sign'          => $sign, // 签名
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.checkTradePassword'), $options);
+        // 传过去的参数形式
+        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&tradePassword=".urlencode(md5(md5(config('dailianmama.pay_password')).'dlapp'))."&type=".urlencode('md5')."&sign=".urlencode($sign);
 
-	    return static::returnErrorMessage($res);
+    	$res = static::normalRequest(config('dailianmama.url.checkTradePassword'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['msg']);
+        }
+        return $res; 
     }
 
     /**
      * 订单操作
      * @param  [type] $order [description]
+     * @param  [type] $operate [操作编号，要看代练妈妈文档]
      * @param  [type] $bool  [description]
      * @return [type]        [description]
      */
-    public function operationOrder($order, $bool = false)
+    public static function operationOrder($order, $operate, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->no,
-    		'control' => '', // 2002, 20010...
-    		'checkTradePwdRDM' => '', // 支付密码验证?
-    		'reason' => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
-    		'refundment' => '', // 上家支付的代练费: 20006 申请撤销?
-    		'bail' => '', // 赔偿打手的双金：20006 申请撤销 ?
-    		'requiretimehadd' => '', // 增加的小时数 22001补时?
-    		'unitpriceadd' => '', // 增加的金额数, 22002 补款?
-    		'accountpwd' => '', // 密码， 22003修改密码?
-    		'subid' => '', 
-    		'sourceid' => '',
-    		'timestamp' => time(), 
-    		'sign' => '', 
-    	];
-    	$res = static::formDataRequest(config('dailianmama.url.operationOrder'), $options);
+        $orderDetails = static::getOrderDetails($order->no);
 
-	    return static::returnErrorMessage($res);
+        // 支付密码验证
+        $passwordKey = static::checkTradePassword();
+
+        $sign = md5("control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+    	$options = [
+            'orderid'             => $orderDetails['dailianmama_order_no'],
+            'control'             => $operate, // 2002, 20010...
+            'checkTradePwdRDM' => '123456', // 支付密码验证?
+            // 'reason'           => '', // 原因：20006 申请撤销， 20004提交异常， 20007申请仲裁?
+            // 'refundment'       => '', // 上家支付的代练费: 20006 申请撤销?
+            // 'bail'             => '', // 赔偿打手的双金：20006 申请撤销 ?
+            // 'requiretimehadd'  => '', // 增加的小时数 22001补时?
+            // 'unitpriceadd'     => '', // 增加的金额数, 22002 补款?
+            // 'accountpwd'       => '', // 密码， 22003修改密码?
+            // 'subid'               => '', // 子账号id?
+            'sourceid'            => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp'           => time(), // unix时间戳
+            'sign'                => $sign, // 签名
+    	];
+
+        $consult = LevelingConsult::where('order_no', $order->no)->first();
+        switch ($operate) {
+            case 20006: // 申请撤销
+                // $options['reason'] = $consult->revoke_message;
+                // $options['refundment'] = $consult->amount;
+                // $options['bail'] = $consult->deposit;
+
+                $sign = md5("bail=".$consult->deposit."&checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&refundment={$consult->amount}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "bail=".urlencode($consult->deposit)."&checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&refundment=".urlencode($consult->amount)."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20007: // 申请仲裁
+                // $options['reason'] = $consult->complain_message;
+                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&reason={$consult->revoke_message}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&reason=".urlencode($consult->revoke_message)."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 22001: // 补时
+                // $options['requiretimehadd'] = bcadd(bcmul($order->addDays, 24), $order->addHours);
+                $sign = md5("control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&requiretimehadd=".bcadd(bcmul($order->addDays, 24), $order->addHours)."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&requiretimehadd=".urlencode(bcadd(bcmul($order->addDays, 24), $order->addHours))."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 22002: // 补款, 补的是差价,比如订单开始是5元，填了6元，这里传1元
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&unitpriceadd=".$order->addAmount.config('dailianmama.share_key'));
+
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&unitpriceadd=".urlencode($order->addAmount)."&sign=".urlencode($sign);
+                break;
+            case 22003: // 修改密码
+                $sign = md5("accountpwd=".$orderDetails['password']."&control={$operate}&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "accountpwd=".urlencode($orderDetails['password'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20002: // 锁定账号
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20010: // 取消锁定
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20005: // 申请验收
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20017: // 取消验收
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20013: // 验收完成
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20012: // 取消撤销
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20009: // 同意撤销
+                $sign = md5("checkTradePwdRDM=".$passwordKey['data']."&control=".$operate."&orderid=".$orderDetails['dailianmama_order_no']."&sourceid=".config('dailianmama.source_id')."&timestamp=".time().config('dailianmama.share_key'));
+
+                $options = "checkTradePwdRDM=".urlencode($passwordKey['data'])."&control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20008: // 取消仲裁
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20004: // 提交异常
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+            case 20011: // 取消异常
+                $options = "control=".urlencode($operate)."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+                break;
+        }
+
+    	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
+
+        // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            if ($res['data'] == '对不起，订单状态可能已经改变！') {
+                $res['data'] = '该订单被代练妈妈平台接单，该状态没有【申请仲裁】操作！';
+            }
+            throw new DailianException($res['data']);
+        }
+
+        return $res; 
     }
 
     /**
      * 用于获取订单中的留言，调用此接口系统将默认此订单已读
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @param  string $orderId 代练妈妈订单号
+     * @param int $beginId 从那个ID开始取
+     * @param  boolean $bool [description]
+     * @return array  $data 获取的留言
+     * @throws DailianException
      */
-    public function chatOldList($order, $bool = false)
+    public static function chatOldList($orderId, $beginId = 0, $bool = false)
     {
+        // 请示参数，更多请求参数参考对接文档
     	$options = [
-	    	'orderid' => $order->no,
-	    	'beginid' => '', // 开始id？
-	    	'subid' => '',
-	    	'sourceid' => '',
-	    	'timestamp' => time(),
-	    	'sign' =>'',
+            'orderid'   => $orderId, // 代练妈妈的订单号
+            'sourceid'  => config('dailianmama.url.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
     	];
+        // 如果有传入起始ID就加入此参数
+        if ($beginId != 0) {
+            $options['beginid'] = $beginId;
+        }
+        $options['sign'] = self::generateSign($options); // 签名;
 
-    	$res = static::formDataRequest(config('dailianmama.url.chatOldList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.chatOldList'), http_build_query($options));
 
-	    return static::returnErrorMessage($res);
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -342,18 +621,37 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getOrderPictureList($order, $bool = false)
+    public static function getOrderPictureList($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->no, 
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-    	$res = static::formDataRequest(config('dailianmama.url.getOrderPictureList'), $options);
+        $orderDetails = static::getOrderDetails($order->no);
 
-	    return static::returnErrorMessage($res);
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+    	$options = [
+            'orderid'   => $orderDetails['dailianmama_order_no'], 
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
+    	];
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+
+    	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res; 
     }
 
     /**
@@ -361,19 +659,38 @@ class DailianMama
      * @param [type]  $order [description]
      * @param boolean $bool  [description]
      */
-    public function addChat($order, $bool = false)
+    public static function addChat($order, $bool = false)
     {
-    	$options = [
-    		'orderid' => $order->no,
-    		'content' => '', // 订单留言,最大100
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-    	$res = static::formDataRequest(config('dailianmama.url.addChat'), $options);
+        $orderDetails = static::getOrderDetails($order->no);
 
-	    return static::returnErrorMessage($res);
+        $sign = md5("content=无&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+    	$options = [
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            'content'   => '', // 订单留言,最大100
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
+    	];
+        // 传过去的参数形式
+        $options = "content=".urlencode('无')."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+
+    	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;  
     }
 
     /**
@@ -385,40 +702,76 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function savePicture($order, $bool = false)
+    public static function savePicture($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+
+        $sign = md5("description=截图说明&imgurl=".new \CURLFile(public_path('frontend/images/123.png'), 'image/png')."&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'orderid' => $order->no,
-    		'imgurl' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
-    		'description' => '截图说明', // 截图说明
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
+            'orderid'     => $orderDetails['dailianmama_order_no'],
+            'imgurl'      => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
+            'description' => '截图说明', // 截图说明
+            // 'subid'       => '', // 子账号id?
+            'sourceid'    => 1, // 与代练妈妈约定的标识
+            'timestamp'   => time(), // unix时间戳
+            'sign'        => $sign, // 签名
     	];
+        // 传过去的参数形式
+        $options = "description=".urlencode('截图说明')."&imgurl=".urlencode(new \CURLFile(public_path('frontend/images/123.png'), 'image/png'))."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+
     	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
 
-	    return static::returnErrorMessage($res);  	
+	    // return static::returnErrorMessage($res);  	
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;   
     }
 
     /**
-     * 获取阿里云临时凭证,获取后一小时内可用
+     * 获取阿里云oss临时凭证,获取后一小时内可用
      * https://help.aliyun.com/document_detail/oss/user_guide/upload_object/thirdparty_upload.html
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @return array 阿里云临时凭证数组
+     * @throws DailianException
      */
-    public function getTempUploadKey($order = null, $bool = false)
+    public static function getTempUploadKey()
     {
-    	$options = [
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
-    	];
-    	$res = static::formDataRequest(config('dailianmama.url.getTempUploadKey'), $options);
+        $redis = RedisConnect::order();
+        $keyCache = $redis->get(config('redis.thirdParty.dailianMamaOssKey'));
+        if ($keyCache) {
+            return unserialize($keyCache);
+        }
+        $options = [
+            'sourceid' => config('dailianmama.source_id'),
+            'timestamp' => time(),
+        ];
+        $options['sign'] = self::generateSign($options);
 
-	    return static::returnErrorMessage($res);	
+    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), http_build_query($options));
+
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        // 缓存一小时
+        $redis->setex(config('redis.thirdParty.dailianMamaOssKey'), 60, serialize($res['data']));
+
+        return $res['data'];
     }
 
     /**
@@ -427,29 +780,46 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function releaseOrderManageList($order, $bool = false)
+    public static function releaseOrderManageList($order, $bool = false)
     {
+        $sign = md5("orderstatus=1&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-    		'orderstatus' => '', // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
+    		'orderstatus' => 1, // 1未接单, 2已下架， 3代练中，4异常,6待验收，9撤销中，
     							//7,8已结算，5,10已撤销，iszhc已仲裁,qzcx客服强制撤销
-    		'keyword' => '', // 关键词查询, 订单号，标题，接单人?
-    		'sort' => '', // 排序条件， 1降序，2升序， 3总时间降序， 4总时间升序, 5区服降序，6区服升序
+    		// 'keyword'   => '', // 关键词查询, 订单号，标题，接单人?
+    		// 'sort'      => '', 
+                            // 排序条件， 1降序，2升序， 3总时间降序， 4总时间升序, 5区服降序，6区服升序
     						// 9，发布时间降序， 10发布时间升序, 13解散时间降序， 14， 结算时间升序
     						// 15, 发单账号降序, 16, 发单账号升序， 17接单人降序， 18接单人升序
     						// 19,接单时间降序， 20接单时间升序， 21颜色降序， 22颜色升序
     						// 23,结算时间升序， 24结算时间降序, 25,来源降序， 26来源升序
     						// 27状态降序， 28状态升序， 29申请验收时间升序， 30申请验收时间降序?
-    		'currentNo' => '', // 要查询当前页数，默认查询第一页?
-    		'pageSize' => '', // 每页条数， 为空默认10条?
-    		'subid' => '',
-    		'sourceid' => '',
-    		'timestamp' => time(),
-    		'sign' => '',
+            // 'currentNo' => '', // 要查询当前页数，默认查询第一页?
+            // 'pageSize'  => '', // 每页条数， 为空默认10条?
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
     	];
+        // 传过去的参数形式
+        $options = "orderstatus=".urlencode('1')."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-    	$res = static::formDataRequest(config('dailianmama.url.releaseOrderManageList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.releaseOrderManageList'), $options);
 
-	    return static::returnErrorMessage($res);
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException('操作失败!');
+        }
+        return $res;   
     }
 
     /**
@@ -458,17 +828,61 @@ class DailianMama
      * @param  boolean $bool  [description]
      * @return [type]         [description]
      */
-    public function getOrderPrice($order, $bool = false)
+    public static function getOrderPrice($order, $bool = false)
     {
+        $orderDetails = static::getOrderDetails($order->no);
+        // 待签名串
+        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
+        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-	    	'orderid' => $order->no,
-	    	'subid' => '',
-	    	'sourceid' => '',
-	    	'timestamp' => time(),
-	    	'sign' => '',
+            'orderid'   => $orderDetails['dailianmama_order_no'],
+            // 'subid'     => '', // 子账号id?
+            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'timestamp' => time(), // unix时间戳
+            'sign'      => $sign, // 签名
     	];
-    	$res = static::formDataRequest(config('dailianmama.url.getOrderPrice'), $options);
+        // 传过去的参数形式
+        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-	    return static::returnErrorMessage($res);
+    	$res = static::normalRequest(config('dailianmama.url.getOrderPrice'), $options);
+
+	    // return static::returnErrorMessage($res);
+        
+        // 返回错误特殊，特殊处理
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            throw new DailianException('外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result'] !== 1) {
+            throw new DailianException($res['data']['msg']);
+        }
+        return $res;   
+    }
+
+    /**
+     * 获取订单详情
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
+    public static function getOrderDetails($orderNo)
+    {
+        return OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name')->toArray();
+    }
+
+    /**
+     * 生成接口签名
+     * @param array $params 待签名参数
+     * @return string md5字符
+     */
+    public static function generateSign($params)
+    {
+        ksort($params);
+        $signString = '';
+        foreach ($params as $key => $value) {
+            $signString .= $key . '=' . $value . '&';
+        }
+        return md5(rtrim($signString, '&') . config('dailianmama.share_key'));
     }
 }

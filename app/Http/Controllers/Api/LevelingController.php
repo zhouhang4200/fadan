@@ -70,7 +70,7 @@ class LevelingController
     {
         if ($order) {
             $action = \Route::currentRouteAction();
-            $this->checkAndAddOrderToRedis($order, '1-'.$action);
+            $this->checkAndAddOrderToRedis($order, '1-1-'.$action);
             // $this->checkOrderNotice($order);
         }
 
@@ -91,7 +91,7 @@ class LevelingController
         if ($order) {
             // $this->addOrderNotice($order);  
             $action = \Route::currentRouteAction();
-            $this->checkAndAddOrderToRedis($order, '0-'.$action);
+            $this->checkAndAddOrderToRedis($order, '0-1-'.$action);
         }
 
         return json_encode([
@@ -103,7 +103,7 @@ class LevelingController
     }
 
 	/**
-	 *     接单
+	 *     接单操作
 	 * @param  [type] $orderNo [description]
 	 * @param  [type] $status  [description]
 	 * @return [type]          [description]
@@ -276,8 +276,9 @@ class LevelingController
                 'consult' => 2,
                 'revoke_message' => $content,
             ];
-
+            // 更新协商信息到协商表
             LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+            // 调用工厂模式协商操作
 			DailianFactory::choose('revoke')->run($order->no, $this->userId, 0);
 
     	} catch (DailianException $e) {

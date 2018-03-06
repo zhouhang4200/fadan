@@ -7,6 +7,7 @@ use App\Models\OrderHistory;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
+use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
 /**
@@ -61,7 +62,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             addRedisCompleteOrders($this->orderNo, $this->handledStatus);
             
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
-                (new Lock)->run($orderNo, $userId);
+                (new Lock)->run($orderNo, $userId, $runAfter = false);
             }
     	} catch (DailianException $e) {
     		DB::rollBack();
@@ -107,21 +108,37 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                if ($orderDetails['third'] == 1) { //91代练
-                    if (! $orderDetails['third_order_no']) {
-                        throw new DailianException('第三方订单号不存在');
-                    }
-
-                    $options = [
-                        'oid' => $orderDetails['third_order_no'],
-                    ]; 
-
-                    Show91::cancelSc($options);
+                switch ($orderDetails['third']) {
+                    case 1:
+                        // 91 取消撤销
+                        $options = ['oid' => $orderDetails['show91_order_no']]; 
+                        Show91::cancelSc($options);
+                        break;
+                    case 2:
+                        // 代练妈妈取消协商接口
+                        DailianMama::operationOrder($this->order, 20012);
+                        break;
+                    default:
+                        throw new DailianException('不存在第三方接单平台!');
+                        break;
                 }
+                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                //     ->pluck('field_value', 'field_name')
+                //     ->toArray();
+
+                // if ($orderDetails['third'] == 1) { //91代练
+                //     if (! $orderDetails['third_order_no']) {
+                //         throw new DailianException('第三方订单号不存在');
+                //     }
+
+                //     $options = [
+                //         'oid' => $orderDetails['third_order_no'],
+                //     ]; 
+
+                //     Show91::cancelSc($options);
+                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

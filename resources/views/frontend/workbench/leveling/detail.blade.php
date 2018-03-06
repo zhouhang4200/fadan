@@ -719,6 +719,42 @@
         </div>
 
     </script>
+<script id="message91show"  type="text/html">
+    @{{#  layui.each(d.messageArr, function(index, item){ }}
+    <div class="@{{ item.uid ==  "undefined" || item.uid == d.show91Uid ? 'kf_message' : 'customer_message' }}">
+        <div class="message">
+            <div class="message_time">
+                @{{ item.created_on }}
+            </div>
+            <div class="portrait">
+                <img src="/frontend/images/@{{ item.uid == d.show91Uid ? 'service_avatar.jpg' : 'customer_avatar.jpg' }}" alt="">
+            </div>
+            <div class="content">@{{ item.mess }}</div>
+        </div>
+    </div>
+    @{{#  }) }}
+</script>
+<script id="messageDailianMama" type="text/html">
+    @{{# var count = 0; }}
+    @{{#  layui.each(d.messageArr.list, function(index, item){ }}
+    <div class="@{{ item.userid == d.dailianMamaUid ? 'kf_message' : 'customer_message' }}">
+            <div class="message">
+                <div class="message_time">
+                    @{{ item.createtime }}
+                </div>
+                <div class="portrait">
+                    <img src="@{{ item.touaddr }}" alt="">
+                </div>
+                <div class="content">@{{ item.content}}</div>
+            </div>
+    </div>
+    @{{# count++; }}
+    @{{# }); }}
+
+    @{{# if (count == 10) { }}
+        <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
+    @{{# } }}
+</script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
@@ -1085,6 +1121,47 @@
         form.on('select(chose-sms-template)', function(data){
             $('textarea[name=contents]').val(data.value);
         });
+
+
+        // 加载留言
+        function loadMessage(bingId) {
+            var messageBingId = bingId ? bingId : 0;
+
+
+            $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
+                if (result.status === 1) {
+                    if (result.content.third == 1) {
+                        var getTpl = message91show.innerHTML, view = $('.chat_window');
+                        layTpl(getTpl).render(result.content, function(html){
+                            view.html(html);
+                            layui.form.render();
+                        });
+                    } else {
+                        var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
+                        layTpl(getTpl).render(result.content, function(html){
+                            if (messageBingId == 0) {
+                                view.html(html);
+                            } else {
+                                view.append(html);
+                            }
+                            layui.form.render();
+                        });
+                    }
+                    $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+                }
+            });
+        }
+        // 加载更多留言
+        $('#leave-message').dblclick('#loadMoreMessage', function () {
+            var clickCount = 0;
+            clickCount++;
+            if (clickCount == 1) {
+                var id = $('#loadMoreMessage').attr('data-id');
+//                $('#loadMoreMessage').html('');
+                loadMessage(id);
+                clickCount = 0
+            }
+        });
     });
 
     function loadHistory() {
@@ -1098,16 +1175,7 @@
         });
     }
 
-    // 加载留言
-    function loadMessage()
-    {
-        $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}", function (data) {
-            if (data.status === 1) {
-                $('.chat_window').html(data.content);
-                $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
-            }
-        });
-    }
+
 
     // 加载截图
     function loadImage()

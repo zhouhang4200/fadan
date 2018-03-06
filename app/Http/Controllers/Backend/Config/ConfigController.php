@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Config;
 
+use DB;
+use Log;
 use Excel;
-use DB, Log, Exception;
+use Exception;
 use App\Models\Game;
+use GuzzleHttp\Client;
 use App\Services\Show91;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
@@ -290,19 +293,49 @@ class ConfigController extends Controller
 	        $ourAreas = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
 	                ->pluck('field_value', 'id')
 	                ->toArray();
-
-	        $servers = DB::select("
-	        	SELECT m.id, CONCAT(m.field_value, '(', n.field_value, ')') AS server_name FROM goods_template_widget_values m
+	        // 带区名的服
+	   //      $servers = DB::select("
+	   //      	SELECT m.id, CONCAT(m.field_value, '(', n.field_value, ')') AS server_name FROM goods_template_widget_values m
+				// LEFT JOIN 
+				// 	(SELECT id, field_value FROM goods_template_widget_values
+				// 	WHERE goods_template_widget_id = '$goodsTemplateWidgetRegionId') n
+				// ON m.parent_id = n.id
+				// WHERE m.goods_template_widget_id = '$goodsTemplateWidgetServerId'
+	   //      	");
+	        // 一个包含我们的游戏id，我们的区id，区名，服id，服名的集合, 样子如下
+	        /**  5 => array:5 [
+			    "game_id" => 78
+			    "area_id" => 2153
+			    "area_name" => "电信"
+			    "server_id" => 2162
+			    "server_name" => "皮尔特沃夫"
+			 ]*/
+	       	$servers = DB::select("
+	        	select y.game_id, x.area_id, x.area_name, x.server_id, x.server_name from (select j.*, k.goods_template_id from (SELECT m.goods_template_widget_id, m.id as server_id, m.field_value AS server_name, n.id as area_id, n.field_value as area_name 
+	        	FROM goods_template_widget_values m
 				LEFT JOIN 
-					(SELECT id, field_value FROM goods_template_widget_values
+					(SELECT id, field_value 
+					FROM goods_template_widget_values
 					WHERE goods_template_widget_id = '$goodsTemplateWidgetRegionId') n
 				ON m.parent_id = n.id
 				WHERE m.goods_template_widget_id = '$goodsTemplateWidgetServerId'
-	        	");
-	        
+				) j 
+				left join goods_template_widgets k
+				on j.goods_template_widget_id = k.id
+				) x
+				left join goods_templates y
+				on x.goods_template_id = y.id
+	        ");
+
+	        // 判断我们的数据库是否存在值
 	        if (! $servers) {
 	        	throw new DailianException('我们的服不存在!');
 	        }
+
+	        // 将数据库查到的值转为纯数组
+	        $ourServers = array_map(function ($server) {
+	        	return (array) $server;
+	        }, $servers);
 
 	        // 我们的区
 	        $ourAreaArr = [];
@@ -316,14 +349,14 @@ class ConfigController extends Controller
 	        	throw new DailianException('我们的区不存在!');
 	        }
 
-	        $ourServers = collect($servers)->pluck('server_name', 'id');
+	        // $ourServers = collect($servers)->pluck('server_name', 'id');
 
-	        $ourServerArr = [];
-	        foreach ($ourServers as $ourServerId => $ourServer) {
-	        	$ourServerArr[$ourServerId]['server_id'] = $ourServerId;
-	        	$ourServerArr[$ourServerId]['server'] = $ourServer;
-	        }
-	        $ourServerArr = array_values($ourServerArr); // 我们的服
+	        // $ourServerArr = [];
+	        // foreach ($ourServers as $ourServerId => $ourServer) {
+	        // 	$ourServerArr[$ourServerId]['server_id'] = $ourServerId;
+	        // 	$ourServerArr[$ourServerId]['server'] = $ourServer;
+	        // }
+	        // $ourServerArr = array_values($ourServerArr); // 我们的服
 	        // 第三方服
 	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
 	        $options = ['gid' => $thirdGameId];
@@ -333,10 +366,16 @@ class ConfigController extends Controller
 	        		$res = Show91::getAreas($options);
 	        	break;
 	        	case 2:
-	        		//
+	        		// $client = new Client;
+			        // $response = $client->request('GET', config('dailianmama.url.gameInfo'));
+			        // $res = $response->getBody()->getContents();
+
+			        // if (! $res) {
+			        // 	throw new DailianException('请求接口错误!');
+			        // }
+			        // $res = json_decode($res, true);
 	        	break;
 	        }
-
 
 	        $thirdAreas = [];
 	        $thirdAreaArr = [];
@@ -346,37 +385,43 @@ class ConfigController extends Controller
 	            $thirdAreaArr[$area['id']]['third_area'] = $area['area_name'];
 	        }
 	        $thirdAreaArr = array_values($thirdAreaArr); // 第三方区
+
 	        // 遍历区找所有的服
 	        $thirdServers = [];
-	        foreach ($thirdAreas as $thirdAreaId => $thirdArea) {
+	        foreach ($thirdAreas as $thirdAreaId => &$thirdArea) {
 	        	$options = ['aid' => $thirdAreaId];
 	        	$res = Show91::getServer($options);
 
 	        	foreach($res['servers'] as $thirdServerId => $thirdServer) {
+	        		$thirdServers[$thirdServer['id']]['third_area_id'] = $thirdAreaId;
+	        		$thirdServers[$thirdServer['id']]['third_area_name'] = $thirdArea;
 	        		$thirdServers[$thirdServer['id']]['third_server_id'] = $thirdServer['id'];
-	        		$thirdServers[$thirdServer['id']]['third_server'] = $thirdServer['server_name']."(".$thirdArea.")";
+	        		$thirdServers[$thirdServer['id']]['third_server'] = $thirdServer['server_name'];
 	        	}
 	        }
 	        $thirdServers = array_values($thirdServers);
+	        // dd($gameId, $ourAreaArr, $thirdAreaArr, $ourServers, $thirdServers);
 	        // 导出
-	        return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers);
+	        // return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers);
+	        return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServers, $thirdServers);
     	} else {
     		return view('backend.config.export', compact('games'));
     	}
     }
 
     /**
-     * 奖惩列表导出.多分页导出
      * @param  [type] $filters [description]
      * @return [type]          [description]
      */
     public static function exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers)
     {
     	$game = Game::find($gameId);
-        $ourAreaTitle = ['序号', '代练平台区名'];
-        $thirdAreaTitle = ['序号', '第三方区名'];
-        $ourServerTitle = ['序号', '代练平台服名'];
-        $thirdServerTitle = ['序号', '第三方服名'];
+        $ourAreaTitle = ['区ID', '区名'];
+        $thirdAreaTitle = ['第三方区ID', '第三方区名'];
+        // $ourServerTitle = ['序号', '代练平台服名'];
+        $ourServerTitle = ['游戏ID', '区ID', '区名', '服ID', '服名'];
+        $thirdServerTitle = ['第三方区ID', '第三方区名', '第三方服ID', '第三方服名'];
+        // $thirdServerTitle = ['序号', '第三方服名'];
 
         $importArea = [['游戏ID', '第三方ID', '代练平台区ID', '第三方区ID'], ['0', '0', '0', '0']];
         $importServer = [['游戏ID', '第三方ID', '代练平台服ID', '第三方服ID'], ['0', '0', '0', '0']];
@@ -475,7 +520,7 @@ class ConfigController extends Controller
 		    					continue;
 		    				}
 
-		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1]) || ! is_numeric($thirdArea[2]) || ! is_numeric($thirdArea[4])) {
+		    				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1])) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
 
@@ -504,7 +549,7 @@ class ConfigController extends Controller
 		    			} else {
 		    				return response()->ajax(0, '导入失败');
 		    			}
-		    		break;
+		    			break;
 		    		case '服':
 		    			$thirdServers = [];
 		    			foreach ($res as $k => $thirdServer) {
@@ -513,7 +558,7 @@ class ConfigController extends Controller
 		    					continue;
 		    				}
 		    				// 检查必填项是否为空
-		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1]) || ! is_numeric($thirdServer[2]) || ! is_numeric($thirdServer[4])) {
+		    				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1])) {
 		    					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
 		    				}
 		    				// 检查是否重复添加
@@ -556,7 +601,7 @@ class ConfigController extends Controller
 		    			} else {
 		    				return response()->ajax(0, '导入失败');
 		    			}
-		    		break;
+		    			break;
 		    		default:
 		    			return response()->ajax(0, '文件标题不正确!');
 		    	}
