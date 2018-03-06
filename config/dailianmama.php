@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'uid' => '100308582', // 千手在代练妈妈平台的发单账号ID
 	'url' => [
 		'releaseOrder'              => 'http://inf.dailianmama.com/releaseOrder.intf', // 发布订单和修改订单接口
 		'upOrder'                   => 'http://inf.dailianmama.com/upOrder.intf', // 上架
