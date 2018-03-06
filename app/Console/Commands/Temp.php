@@ -45,7 +45,7 @@ class Temp extends Command
 
         try {
             // 实例化oss
-            $ossClient = new OssClient($certificate['AccessKeyId'], $certificate['AccessKeySecret'], 'oss-cn-hangzhou.aliyuncs.com', false, $certificate['SecurityToken']);
+            $ossClient = new OssClient($certificate['AccessKeyId'], $certificate['AccessKeySecret'], substr($certificate['prefix_url'], strlen($certificate['bucket_name']) + 8), false, $certificate['SecurityToken']);
             $result = $ossClient->putObject($certificate['bucket_name'], $certificate['bucket_path'] . 's-2018-02-22.log', 'ddd');
 dd($result);
 //            $bucketListInfo = $ossClient->listBuckets();
