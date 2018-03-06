@@ -7,6 +7,8 @@ use App\Services\Show91;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
+use OSS\Core\OssException;
+use OSS\OssClient;
 use TopClient;
 use TradeFullinfoGetRequest;
 
@@ -37,7 +39,24 @@ class Temp extends Command
      */
     public function handle()
     {
-        $messageArr = Show91::messageList(['oid' => 'ORD180228164549104956']);
-        dd($messageArr);
+        $certificate= DailianMama::getTempUploadKey();
+
+        $object = storage_path('s-2018-02-22.log');
+
+        try {
+            // 实例化oss
+            $ossClient = new OssClient($certificate['AccessKeyId'], $certificate['AccessKeySecret'], 'oss-cn-hangzhou.aliyuncs.com', false, $certificate['SecurityToken']);
+            $result = $ossClient->putObject($certificate['bucket_name'], $certificate['bucket_path'] . 's-2018-02-22.log', 'ddd');
+dd($result);
+//            $bucketListInfo = $ossClient->listBuckets();
+//            $bucketList = $bucketListInfo->getBucketList();
+//            foreach($bucketList as $bucket) {
+//                print($bucket->getLocation() . "\t" . $bucket->getName() . "\t" . $bucket->getCreatedate() . "\n");
+//            }
+
+        } catch (OssException $e) {
+            print $e->getMessage() . '1';
+        }
     }
+
 }

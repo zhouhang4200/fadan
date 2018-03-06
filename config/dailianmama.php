@@ -24,7 +24,7 @@ return [
 		'gameInfo' 					=> 'http://static.dailianmama.com/tool/dlmm/gameinfo.html', // 游戏区服详情
 	],
 
-	'qs_userId' => 8556, // 代练妈妈在千手的用户ID
+	'qs_userId' => 8558, // 代练妈妈在千手的用户ID
 	'source_id' => 'DLMM_100308582', // sourceid
 	'share_key' => 'NN8zyXOcJ3FNvCdCIG8Kvwq4gnkok9a7', // 共享秘钥
 	'pay_password' => '123456', // 支付密码

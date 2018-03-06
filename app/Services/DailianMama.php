@@ -738,22 +738,26 @@ class DailianMama
     }
 
     /**
-     * 获取阿里云临时凭证,获取后一小时内可用
+     * 获取阿里云oss临时凭证,获取后一小时内可用
      * https://help.aliyun.com/document_detail/oss/user_guide/upload_object/thirdparty_upload.html
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @return array 阿里云临时凭证数组
+     * @throws DailianException
      */
-    public static function getTempUploadKey($order = null, $bool = false)
+    public static function getTempUploadKey()
     {
-        $sign = md5("sourceid=".config('dailianmama.source_id')."&timestamp=".time());
-        // 传过去的参数形式
-        $options = "sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        $redis = RedisConnect::order();
+        $keyCache = $redis->get(config('redis.thirdParty.dailianMamaOssKey'));
+        if ($keyCache) {
+            return unserialize($keyCache);
+        }
+        $options = [
+            'sourceid' => config('dailianmama.source_id'),
+            'timestamp' => time(),
+        ];
+        $options['sign'] = self::generateSign($options);
 
-    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), http_build_query($options));
 
-	    // return static::returnErrorMessage($res);	
-        
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -764,7 +768,10 @@ class DailianMama
         if ($res && $res['result'] !== 1) {
             throw new DailianException('操作失败!');
         }
-        return $res;   
+        // 缓存一小时
+        $redis->setex(config('redis.thirdParty.dailianMamaOssKey'), 60, serialize($res['data']));
+
+        return $res['data'];
     }
 
     /**

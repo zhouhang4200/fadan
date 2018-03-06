@@ -48,6 +48,11 @@ return [
         // 获取用户设置 生成key示例 user:setting:id:1
         'setting' => 'user:setting:id:'
     ],
+    // 第三方服务缓存key名
+    'thirdParty' => [
+        // 代练妈妈oss上传临时凭证缓存, 缓存一小时
+        'dailianMamaOssKey' => 'thirdParty:dailianMamaOssKey',
+    ],
     // 自有天猫订单token
     'tmallStoreToken' => 'tmallStoreToken:',
     // 淘宝授权token 缓存
