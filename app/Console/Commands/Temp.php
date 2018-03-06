@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Services\DailianMama;
 use App\Services\Show91;
 use GuzzleHttp\Client;
@@ -39,21 +40,16 @@ class Temp extends Command
      */
     public function handle()
     {
-        $certificate= DailianMama::getTempUploadKey();
-
-        $object = storage_path('s-2018-02-22.log');
 
         try {
-            // 实例化oss
+            $filePath = public_path('resources/uploads/order/i4JsH9jj6xXy3seNlP06vJRUXsA5wJF5rq5EMNFs.png');
+            // 获取oss 临时上传凭证
+            $certificate = DailianMama::getTempUploadKey();
+            // 实例化oss 上传文件
             $ossClient = new OssClient($certificate['AccessKeyId'], $certificate['AccessKeySecret'], substr($certificate['prefix_url'], strlen($certificate['bucket_name']) + 8), false, $certificate['SecurityToken']);
-            $result = $ossClient->putObject($certificate['bucket_name'], $certificate['bucket_path'] . 's-2018-02-22.log', 'ddd');
-dd($result);
-//            $bucketListInfo = $ossClient->listBuckets();
-//            $bucketList = $bucketListInfo->getBucketList();
-//            foreach($bucketList as $bucket) {
-//                print($bucket->getLocation() . "\t" . $bucket->getName() . "\t" . $bucket->getCreatedate() . "\n");
-//            }
+            $result = $ossClient->putObject($certificate['bucket_name'], $certificate['bucket_path'] . basename($filePath), file_get_contents($filePath));
 
+            dd($result);
         } catch (OssException $e) {
             print $e->getMessage() . '1';
         }

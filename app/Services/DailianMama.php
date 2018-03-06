@@ -614,17 +614,13 @@ class DailianMama
         // 请示参数，更多请求参数参考对接文档
     	$options = [
             'orderid'   => $orderId, // 代练妈妈的订单号
-            'sourceid'  => config('dailianmama.url.source_id'), // 与代练妈妈约定的标识
-            'timestamp' => time(), // unix时间戳
     	];
         // 如果有传入起始ID就加入此参数
         if ($beginId != 0) {
             $options['beginid'] = $beginId;
         }
-        $options['sign'] = self::generateSign($options); // 签名;
-
-    	$res = static::normalRequest(config('dailianmama.url.chatOldList'), http_build_query($options));
-
+        // 请求接口
+    	$res = static::request(config('dailianmama.url.chatOldList'), $options);
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -635,35 +631,23 @@ class DailianMama
         if ($res && $res['result'] !== 1) {
             throw new DailianException('操作失败!');
         }
-        return $res; 
+        return $res['data'];
     }
 
     /**
      * 获取订单截图记录
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @param $orderNo
+     * @return mixed|string
+     * @throws DailianException
      */
-    public static function getOrderPictureList($order, $bool = false)
+    public static function getOrderPictureList($orderNo)
     {
-        $orderDetails = static::getOrderDetails($order->no);
-
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
-        // 下面这个数组是多余的,仅供参考参数有没有缺失用
     	$options = [
-            'orderid'   => $orderDetails['dailianmama_order_no'], 
-            // 'subid'     => '', // 子账号id?
-            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
-            'timestamp' => time(), // unix时间戳
-            'sign'      => $sign, // 签名
+            'orderid'   => $orderNo,
     	];
-        // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
 
-    	$res = static::normalRequest(config('dailianmama.url.getOrderPictureList'), $options);
+    	$res = static::request(config('dailianmama.url.getOrderPictureList'), $options);
 
-	    // return static::returnErrorMessage($res);
-        
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -674,35 +658,26 @@ class DailianMama
         if ($res && $res['result'] !== 1) {
             throw new DailianException('操作失败!');
         }
-        return $res; 
+        return $res['data']['info2'];
     }
 
     /**
      * 发送订单留言
-     * @param [type]  $order [description]
-     * @param boolean $bool  [description]
+     * @param string $orderNo 订单号
+     * @param string $message  留言内容
+     * @return mixed|string
+     * @throws DailianException
      */
-    public static function addChat($order, $bool = false)
+    public static function addChat($orderNo, $message)
     {
-        $orderDetails = static::getOrderDetails($order->no);
-
-        $sign = md5("content=无&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
-        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+        // 请求参数
     	$options = [
-            'orderid'   => $orderDetails['dailianmama_order_no'],
-            'content'   => '', // 订单留言,最大100
-            // 'subid'     => '', // 子账号id?
-            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
-            'timestamp' => time(), // unix时间戳
-            'sign'      => $sign, // 签名
+            'orderid'   => $orderNo,
+            'content'   => $message,
     	];
-        // 传过去的参数形式
-        $options = "content=".urlencode('无')."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        // 请求接口
+    	$res = static::request(config('dailianmama.url.addChat'), $options);
 
-    	$res = static::normalRequest(config('dailianmama.url.addChat'), $options);
-
-	    // return static::returnErrorMessage($res);
-        
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -721,7 +696,7 @@ class DailianMama
      * 接口只用于保存订单截图，上传请通过接口获取阿里云临时凭证后使用阿里云SDK进行上传，
      * 上传后将上传成功的地址和订单号截图说明等参数通过此接口保存至代练妈妈系统。
      * (PS:也可以将截图上传到别的平台或网站，再使用保存截图功能保存到代练妈妈。但必须保证截图能查看和时效性。)
-     * @param $order
+     * @param $orderNo
      * @param $imagePath
      * @return bool
      * @throws DailianException
