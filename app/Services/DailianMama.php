@@ -207,9 +207,13 @@ class DailianMama
         if (! $res) {
             throw new DailianException('外部接口错误,请重试!');
         }
-        myLog('exception', $res);
+
         if ($res && $res['result'] !== 1) {
-            throw new DailianException($res['data']['message']);
+            if (is_array($res['data'])) {
+                throw new DailianException($res['data']['message']);
+            } else {
+                throw new DailianException($res['data']);
+            }
         }
         return $res;
     }
