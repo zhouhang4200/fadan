@@ -19,7 +19,6 @@ use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
-use App\Services\DailianMama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -432,27 +431,26 @@ class IndexController extends Controller
 
     /**
      * 从show91接口拿留言数据
-     * @param $orderNo
+     * @param $order_no
      * @return mixed
      */
-    public function leaveMessage($orderNo, Request $request)
+    public function leaveMessage($order_no)
     {
         $bingId = $request->input('bing_id', 0);
         // 取订单信息
-        $order = (new OrderRepository)->detail($orderNo);
+        $order = (new OrderRepository)->detail($order_no);
         if (empty($order)) {
             return response()->ajax(0, '订单不存在');
         }
 
         // 取订单详情
         $orderDetail = $order->detail->pluck('field_value', 'field_name');
-        $messageArr = [];
-        $orderNo = 'ORD180228164549104956';
+        // 第三方单号
+        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
+
         try {
-            // 识别订单发送至那个平台 1 是91 2 是代练妈妈
-            if ($orderDetail['third'] == 1) {
-                // 91 获取留言传入91订单号
-                $messageArr = Show91::messageList(['oid' => $orderDetail['third_order_no']]);
+            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
+//            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
             } elseif ($orderDetail['third'] == 2) {
                 // 代练妈妈 获取留言传入千手订单号
                 $messageArr = DailianMama::chatOldList($orderNo, $bingId);

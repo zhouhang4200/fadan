@@ -55,6 +55,27 @@ class DailianMama
     }
 
     /**
+     * 发送请求
+     * @param $url
+     * @param $options
+     * @return string
+     */
+    public static function request($url, $options)
+    {
+        // 添加公共参数
+        $options['sourceid']  = config('dailianmama.source_id');
+        $options['timestamp'] = time();
+        // 生成签名
+        $options['sign'] = self::generateSign($options);
+        // 发送请求
+        $client = new Client;
+        $response = $client->request('POST', $url, [
+            'query' => http_build_query($options),
+        ]);
+        return $response->getBody()->getContents();
+    }
+
+    /**
      * 返回接口自定义错误信息, 此方法目前在此控制器没有用到
      * @param  [type] $res [description]
      * @return [type]      [description]
@@ -698,32 +719,19 @@ class DailianMama
      * 接口只用于保存订单截图，上传请通过接口获取阿里云临时凭证后使用阿里云SDK进行上传，
      * 上传后将上传成功的地址和订单号截图说明等参数通过此接口保存至代练妈妈系统。
      * (PS:也可以将截图上传到别的平台或网站，再使用保存截图功能保存到代练妈妈。但必须保证截图能查看和时效性。)
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @param $order
+     * @param $imagePath
+     * @return bool
+     * @throws DailianException
      */
-    public static function savePicture($order, $bool = false)
+    public static function savePicture($orderNo, $imagePath, $description)
     {
-        $orderDetails = static::getOrderDetails($order->no);
+    	$res = static::request(config('dailianmama.url.savePicture'), [
+            'orderid'     => $orderNo,
+            'imgurl'      => $imagePath,
+            'description' => $description, // 截图说明
+        ]);
 
-        $sign = md5("description=截图说明&imgurl=".new \CURLFile(public_path('frontend/images/123.png'), 'image/png')."&orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
-        // 下面这个数组是多余的,仅供参考参数有没有缺失用
-    	$options = [
-            'orderid'     => $orderDetails['dailianmama_order_no'],
-            'imgurl'      => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'), // 截图地址
-            'description' => '截图说明', // 截图说明
-            // 'subid'       => '', // 子账号id?
-            'sourceid'    => 1, // 与代练妈妈约定的标识
-            'timestamp'   => time(), // unix时间戳
-            'sign'        => $sign, // 签名
-    	];
-        // 传过去的参数形式
-        $options = "description=".urlencode('截图说明')."&imgurl=".urlencode(new \CURLFile(public_path('frontend/images/123.png'), 'image/png'))."&orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
-
-    	$res = static::formDataRequest(config('dailianmama.url.savePicture'), $options);
-
-	    // return static::returnErrorMessage($res);  	
-        
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -750,13 +758,8 @@ class DailianMama
         if ($keyCache) {
             return unserialize($keyCache);
         }
-        $options = [
-            'sourceid' => config('dailianmama.source_id'),
-            'timestamp' => time(),
-        ];
-        $options['sign'] = self::generateSign($options);
 
-    	$res = static::normalRequest(config('dailianmama.url.getTempUploadKey'), http_build_query($options));
+    	$res = static::request(config('dailianmama.url.getTempUploadKey'), []);
 
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
