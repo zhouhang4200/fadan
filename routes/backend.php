@@ -403,7 +403,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 		Route::prefix('store-price')->group(function () {
 			// 获取商户密价列表
 			Route::get('/', 'SteamStorePriceController@index')->name('backend.steam.store-price.index');
-			Route::get('insertStorePrice', 'SteamStorePriceController@insertStorePrice')->name('backend.steam.store-price.insertStorePrice');
+			Route::post('insertStorePrice', 'SteamStorePriceController@insertStorePrice')->name('backend.steam.store-price.insertStorePrice');
+			Route::post('edit-something', 'SteamStorePriceController@editSomething')->name('backend.steam.store-price.edit-something');
 		});
     });
 

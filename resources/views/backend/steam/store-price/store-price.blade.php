@@ -60,7 +60,7 @@
                             </thead>
                             <tbody>
                                 @forelse($steamStorePrices as $item)
-                                    <tr>
+                                    <tr data-id="{{ $item->id }}">
                                         <td>{{ $item->id }}</td>
                                         <td>{{ $item->user_id }}</td>
                                         <td>
@@ -118,16 +118,64 @@
                 layer.open({
                     type: 1,
                     shade: 0.2,
-                    title: '添加游戏',
+                    title: '添加密价',
                     area: ['400px', '500px'],
                     content: $('#recharge')
                 });
                 return false;
             });
 
+            $('.edit_something').change(function () {
+                var id = $(this).parents('tr').attr('data-id');
+                var data = {
+                    id: id,
+                    attr: $(this).attr('name'),
+                    value: $(this).val(),
+                }
+
+                if ($(this).val() == '') {
+                    layer.msg('密价不能为空', {time: 2000});
+                    return false;
+                };
+
+                if (isNaN($(this).val())) {
+                    layer.msg('密价必须是数字', {time: 2000});
+                    return false;
+                }
+                if (parseFloat($(this).val()) >= 1 || parseFloat($(this).val()) <= 0) {
+                    layer.msg('密价需0到1之间的数', {time: 2000});
+                    return false;
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('backend.steam.store-price.edit-something') }}",
+                    data: data,
+                    success: function (data) {
+                        if (data.status == 1) {
+                            layer.msg(data.message, {time: 1000});
+                            return false;
+                        }
+                        layer.msg(data.message, {time: 1000});
+                        reloadHref();
+                    }
+                });
+
+            })
+
             form.on('submit(recharge)', function(data){
                 layer.confirm('您确认要添加吗？', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('backend.steam.store-price.insertStorePrice') }}', {clone_price:data.field.game_name,user_id:data.field.user_id}, function(result){
+                    if (data.field.clone_price != '') {
+                        if (isNaN(data.field.clone_price)) {
+                            layer.msg('密价必须是数字', {time: 2000});
+                            return false;
+                        }
+                        if (parseFloat(data.field.clone_price) >= 1 || parseFloat(data.field.clone_price) <= 0) {
+                            layer.msg('密价需0到1之间的数', {time: 2000});
+                            return false;
+                        }
+                    }
+                    $.post('{{ route('backend.steam.store-price.insertStorePrice') }}', {clone_price:data.field.clone_price,user_id:data.field.user_id}, function(result){
                         layer.msg(result.message)
                         reloadHref()
 

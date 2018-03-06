@@ -42,12 +42,30 @@ class SteamStorePriceController extends Controller
 	 */
 	public function insertStorePrice(Request $request)
 	{
-		SteamStorePrice::create([
+		if(SteamStorePrice::checkUserId($request->user_id)){
+			return response()->ajax('0', '该商户密价已存在，请勿重复添加');
+		}
+		$steamStorePrices = SteamStorePrice::create([
 			'user_id'=> $request->user_id,
 			'clone_price'=> $request->clone_price,
 			'username'=> Auth::user()->name,
 		]);
+		if(!$steamStorePrices){
+			return response()->ajax('0', '添加失败');
+		}
 		return response()->ajax('1', '添加成功');
+	}
+
+	public function editSomething(Request $request)
+	{
+		$attr = $request->attr;
+		$goods = SteamStorePrice::find($request->id);
+		$goods->$attr = $request->value;
+		if ($goods->save()) {
+			return response()->ajax('1', '修改成功');
+		} else {
+			return response()->ajax('0', '修改失败');
+		};
 	}
 
 }
