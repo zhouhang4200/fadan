@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DayData;
 use GuzzleHttp\Client;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
@@ -128,7 +129,7 @@ class DailianMama
             bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)
             : $orderDetails['game_leveling_hour'];
         // 下单时候的签名
-        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".config('dailianmama.source_id')."&timestamp=".time()."&title=无&unitprice=".$order->amount.config('dailianmama.share_key'));
+        $sign = md5("accountpwd={$orderDetails['password']}&accountvalue={$orderDetails['account']}&areaname={$thirdAreaName}&autologinphone={$orderDetails['client_phone']}&content={$orderDetails['cstomer_service_remark']}&dlcontent={$orderDetails['game_leveling_requirements']}&dltype={$orderDetails['game_leveling_type']}&efficiency={$orderDetails['efficiency_deposit']}&gamename={$thirdGameName}&linktel={$orderDetails['user_phone']}&orderorgin=0&ordertitle={$orderDetails['game_leveling_title']}&otherdesc={$orderDetails['game_leveling_instructions']}&qq={$orderDetails['user_qq']}&requiretime=".$dailianTime."&rolename={$orderDetails['role']}&safedeposit={$orderDetails['security_deposit']}&servername={$thirdServerName}&sourceid=".env('SOURCE_ID')."&timestamp=".time()."&title=无&unitprice=".$order->amount.env('SHARE_KEY'));
 
         // 下面的数组没用可以删掉，仅仅用来看需要哪些参数
     	$options = [
@@ -579,31 +580,28 @@ class DailianMama
 
     /**
      * 用于获取订单中的留言，调用此接口系统将默认此订单已读
-     * @param  [type]  $order [description]
-     * @param  boolean $bool  [description]
-     * @return [type]         [description]
+     * @param  string $orderId 代练妈妈订单号
+     * @param int $beginId 从那个ID开始取
+     * @param  boolean $bool [description]
+     * @return array  $data 获取的留言
+     * @throws DailianException
      */
-    public static function chatOldList($order, $bool = false)
+    public static function chatOldList($orderId, $beginId = 0, $bool = false)
     {
-        $orderDetails = static::getOrderDetails($order->no);
-
-        $sign = md5("orderid={$orderDetails['dailianmama_order_no']}&sourceid=".config('dailianmama.source_id')."&timestamp=".time());
-        // 下面这个数组是多余的,仅供参考参数有没有缺失用
+        // 请示参数，更多请求参数参考对接文档
     	$options = [
-            'orderid'   => $orderDetails['dailianmama_order_no'],
-            // 'beginid'   => '', // 开始id？
-            // 'subid'     => '', // 子账号id?
-            'sourceid'  => config('dailianmama.source_id'), // 与代练妈妈约定的标识
+            'orderid'   => $orderId, // 代练妈妈的订单号
+            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
-            'sign'      => $sign, // 签名
     	];
-        // 传过去的参数形式
-        $options = "orderid=".urlencode($orderDetails['dailianmama_order_no'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
+        // 如果有传入起始ID就加入此参数
+        if ($beginId != 0) {
+            $options['beginid'] = $beginId;
+        }
+        $options['sign'] = self::generateSign($options); // 签名;
 
-    	$res = static::normalRequest(config('dailianmama.url.chatOldList'), $options);
+    	$res = static::normalRequest(config('dailianmama.url.chatOldList'), http_build_query($options));
 
-	    // return static::returnErrorMessage($res);
-        
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
 
@@ -864,5 +862,20 @@ class DailianMama
     public static function getOrderDetails($orderNo)
     {
         return OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name')->toArray();
+    }
+
+    /**
+     * 生成接口签名
+     * @param array $params 待签名参数
+     * @return string md5字符
+     */
+    public static function generateSign($params)
+    {
+        ksort($params);
+        $signString = '';
+        foreach ($params as $key => $value) {
+            $signString .= $key . '=' . $value . '&';
+        }
+        return md5(rtrim($signString, '&') . env('SHARE_KEY'));
     }
 }

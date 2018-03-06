@@ -206,12 +206,12 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $dailianMamaResult = DailianMama::releaseOrder($this->order);
 
                 //将第三方订单号更新到order_detail中
-                // OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
-                //     'field_value' => $thirdOrderNo,
-                // ]);
-                // OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third')->update([
-                //     'field_value' => 1, //91代练
-                // ]);
+//                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
+//                     'field_value' => $thirdOrderNo,
+//                 ]);
+//                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third')->update([
+//                     'field_value' => 1, //91代练
+//                 ]);
                 // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
                     'field_value' => $show91Result['data'],

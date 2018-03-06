@@ -396,19 +396,33 @@ class Show91
 
     /**
      * 获取订单留言
-     * @param  [type] $options [oid => 订单id]
-     * @return [type]          [description]
+     * @param array $options
+     * @return array $messageArr
+     * @throws CustomException
      */
     public static function messageList($options = [])
     {
     	$res = static::normalRequest(config('show91.url.messageList'), $options);
-        $res = json_decode($res);
+        $res = json_decode($res, true);
 
-        if ($res->result != 0) {
-            throw new CustomException($res->reason, $res->result);
+        if ($res['result'] != 0) {
+            throw new CustomException($res['reason'], $res['result']);
         }
 
-        return $res->data ?? [];
+        $sortField = [];
+        $messageArr = [];
+        foreach ($res['data'] as $item) {
+            if (isset($item['id'])) {
+                $sortField[] = $item['created_on'];
+            } else {
+                $sortField[] = 0;
+            }
+            $messageArr[] = $item;
+        }
+        // 用ID倒序
+        array_multisort($sortField, SORT_ASC, $messageArr);
+
+        return $messageArr;
     }
 
     /**

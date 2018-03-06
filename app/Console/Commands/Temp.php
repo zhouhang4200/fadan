@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\DailianMama;
 use App\Services\Show91;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -36,9 +37,7 @@ class Temp extends Command
      */
     public function handle()
     {
-        Show91::accept([
-            'oid' => 'ORD180301134310738790',
-            'p' => config('show91.password'),
-        ]);
+        $messageArr = Show91::messageList(['oid' => 'ORD180228164549104956']);
+        dd($messageArr);
     }
 }
