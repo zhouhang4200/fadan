@@ -61,11 +61,11 @@
                         </td>
                     </tr>
                 @empty
-                    <tr style="color:red">
+                    <tr>
                         <td colspan="10">暂时没有数据</td>
                     </tr>
                 @endforelse
-                <tr>
+                <tr  style="color:red">
                     <td  width="10%">总计</td>
                     <td>{{ $count  }}</td>
                     <td  width="10%"></td>

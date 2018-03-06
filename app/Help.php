@@ -17,6 +17,7 @@ use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
 use App\Models\UserRbacGroup;
 use App\Models\User;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 if (!function_exists('myLog')) {
     /**
@@ -729,7 +730,7 @@ if (!function_exists('taobaoAesDecrypt')) {
         return $result;
     }
 }
-if (!function_exists('tb')){
+if (!function_exists('sendSms')){
     /**
      * @param $sendUserId integer 发送用户ID
      * @param $orderNo string 关联单号
@@ -739,7 +740,7 @@ if (!function_exists('tb')){
      * @param $foreignOrderNo string 外部订单号
      * @return array
      */
-    function tb($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
+    function sendSms($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
     {
         // 扣款
         try {
@@ -807,6 +808,7 @@ if (!function_exists('levelingMessageAdd')) {
 
         return $redis->hset(config('redis.order.levelingMessage'), $orderNo, json_encode([
             'user_id' => $userId,
+            'order_no' => $orderNo,
             'foreign_order_no' => $foreignOrderNo,
             'platform' => $platform,
             'count' => $count,
@@ -831,7 +833,9 @@ if (!function_exists('levelingMessageCount')) {
 
         if ($mode == 1) { // 加 N
             $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount + $count);
-        } else if ($mode == 2) { // 减一
+        } else if ($mode == 2 && $count != 0) { // 减少指定数量
+            $redis->set(config('redis.order.levelingMessageCount') . $userId, $currentCount - $count);
+        } else if ($mode == 2 && $count == 0) { // 减一
             $redis->set(config('redis.order.levelingMessageCount') . $userId, --$currentCount);
         } else if ($mode == 3) { // 清空
             $redis->set(config('redis.order.levelingMessageCount') . $userId, 0);
@@ -840,5 +844,141 @@ if (!function_exists('levelingMessageCount')) {
         // 推送到前端
         event(new NotificationEvent('LevelingMessageQuantity', ['user_id' => $userId, 'quantity' => $lastCount]));
         return $lastCount;
+    }
+}
+
+if (!function_exists('export')) {
+    /**
+     * 导出数据
+     * @param $title
+     * @param $name
+     * @param $callback
+     */
+    function export($title, $name, $query, $callback)
+    {
+        $response = new StreamedResponse(function () use ($title, $name, $query, $callback){
+            $out = fopen('php://output', 'w');
+            fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
+            fputcsv($out, $title);
+
+            $callback($query, $out);
+
+            fclose($out);
+        },200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
+        ]);
+        $response->send();
+    }
+}
+
+if (!function_exists('autoUnShelveGet')) {
+
+    /**
+     * 获取自动下架的订单
+     */
+    function autoUnShelveGet()
+    {
+        $redis = RedisConnect::order();
+        return $redis->hgetall(config('redis.order.autoUnShelve'));
+    }
+}
+
+if (!function_exists('autoUnShelveAdd')) {
+
+    /**
+     * 添加自动下架的订单
+     * @param string $orderNo 订单号
+     * @param integer $userId 用户ID
+     * @param string $time 下单时间
+     * @param integer $days 自动下架天数
+     * @return mixed
+     */
+    function autoUnShelveAdd($orderNo, $userId, $time, $days)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hset(config('redis.order.autoUnShelve'), $orderNo, json_encode([
+            'user_id' => $userId,
+            'time' => $time,
+            'days' => $days,
+        ]));
+    }
+}
+
+if (!function_exists('autoUnShelveDel')) {
+    /**
+     * 删除自动下架的订单
+     * @param $orderNo
+     * @return mixed
+     */
+    function autoUnShelveDel($orderNo)
+    {
+        $redis = RedisConnect::order();
+        return $redis->hdel(config('redis.order.autoUnShelve'), $orderNo);
+    }
+}
+if (!function_exists('orderStatusCount')) {
+    /**
+     * 订单待处理数量角标
+     * @param integer $userId 用户
+     * @param integer $status 状态
+     * @param int $method 方法 1 增加 2 清空  3 获取
+     * @return bool
+     */
+    function orderStatusCount($userId, $status, $method = 1)
+    {
+        $redis = RedisConnect::order();
+        // 数量加1
+        if ($method == 1) {
+            $redis->incr(config('redis.order.statusCount') . $userId .'_'. $status);
+        }
+        // 获取数量
+        if ($method == 2) {
+            $redis->set(config('redis.order.statusCount') . $userId .'_' . $status, 0);
+        }
+        // 数量减1
+        if ($method == 4) {
+            $currentCount = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+            if ($currentCount > 0) {
+                $redis->decr(config('redis.order.statusCount') . $userId .'_'. $status);
+            }
+        }
+
+        // 数量清空
+        $count = $redis->get(config('redis.order.statusCount') . $userId .'_' . $status);
+        event((new NotificationEvent('OrderCount', ['user_id' => $userId, 'status' => $status, 'quantity' => $count])));
+
+        if ($method == 3) {
+            return $count;
+        }
+        return true;
+    }
+}
+if(!function_exists('taobaoAccessToken')){
+
+    /**
+     * 用授权旺旺获取淘宝token
+     * @param $nickName
+     * @return bool|\Illuminate\Contracts\Cache\Repository|string
+     */
+    function taobaoAccessToken($nickName)
+    {
+        $token = '';
+        // 取缓存
+        $token = cache()->get(config('redis.taobaoAccessToken') . $nickName);
+        if ($token) {
+            return $token;
+        }
+        // 获取token
+        $client = new Client();
+        $response = $client->request('POST', 'http://fulutop.kamennet.com/session/index', [
+            'query' => http_build_query([
+                'nickName' => $nickName,
+                'sign' => strtoupper(md5('nickName' . $nickName . 'fltop31bf3856ad364e35'))
+            ]),
+        ]);
+        $result = json_decode($response->getBody()->getContents());
+        $token = cache()->add(config('redis.taobaoAccessToken') . $nickName, $result->access_token, 259200);
+        return $token;
     }
 }

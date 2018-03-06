@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderTestData',
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
-        'App\Console\Commands\Test',
+        'App\Console\Commands\Temp',
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay',
@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
         'App\Console\Commands\PlatformStatistic', // 平台订单统计
         'App\Console\Commands\AddNoticeOrderFromRedis',
+        'App\Console\Commands\Task\RoomCardRecharge',
     ];
 
     /**

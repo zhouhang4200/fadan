@@ -91,3 +91,10 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
     
 });
 
+/**
+ * 房卡充值接口
+ */
+Route::middleware('internal.api')->prefix('room-card-recharge')->group(function (){
+    Route::get('/', 'RoomCardRecharge@index');
+    Route::post('update', 'RoomCardRecharge@update');
+});

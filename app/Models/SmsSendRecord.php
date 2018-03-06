@@ -17,6 +17,7 @@ class SmsSendRecord extends Model
       'client_phone',
       'contents',
       'date',
+      'foreign_order_no',
     ];
 
     public function scopeFilter($query, $filter)

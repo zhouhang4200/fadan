@@ -125,7 +125,7 @@ class Weight
             }
             // 删除所有用户接单列队
             receivingUserDel($orderNo);
-            \Log::alert($orderNo .' 接单ID ' . $userId);
+            myLog('weight', ['订单号' => $orderNo, ' 接单ID ' => $userId]);
 
             return $userId;
         } catch (CustomException $exception) {

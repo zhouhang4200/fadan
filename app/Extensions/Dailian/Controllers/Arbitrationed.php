@@ -59,6 +59,9 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    // 后续操作
 		    $this->after();
 		    //仲裁完成之后，订单状态改为完成
+		    $this->after();
+
+            $this->orderCount();
 		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
 		    // 24H自动完成
 			delRedisCompleteOrders($this->orderNo);

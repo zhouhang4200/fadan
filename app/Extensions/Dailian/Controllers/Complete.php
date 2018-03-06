@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderFinish;
 use DB;
 use Asset;
 use App\Services\Show91;
@@ -9,7 +10,9 @@ use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
+use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
+use ErrorException;
 
 /**
  * 订单完成操作
@@ -41,7 +44,7 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-            // 之前的状态
+
             $this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
@@ -55,8 +58,9 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-            // 后续操作
+
             $this->after();
+            $this->orderCount();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
     	} catch (DailianException $e) {
@@ -161,6 +165,13 @@ class Complete extends DailianAbstract implements DailianInterface
                 //     // 结果
                 //     Show91::accept($options);
                 // }
+                try {
+                    event(new OrderFinish($this->order));
+                } catch (ErrorException $errorException) {
+                    myLog('finish', [$errorException->getMessage()]);
+                } catch (\Exception $exception) {
+                    myLog('finish', [$exception->getMessage()]);
+                }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

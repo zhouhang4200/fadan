@@ -113,6 +113,7 @@ class TaobaoTradeRepository
             'receiver_address'       => $data['ReceiverAddress'],
             'seller_can_rate'        => $data['SellerCanRate'],
             'seller_flag'            => $data['SellerFlag'],
+            'seller_memo'            => $data['SellerMemo'] ?? '',
             'seller_nick'            => $data['SellerNick'],
             'seller_rate'            => $data['SellerRate'],
             'share_group_hold'       => $data['ShareGroupHold'],
@@ -125,7 +126,7 @@ class TaobaoTradeRepository
             'trade_from'             => $data['TradeFrom'],
             'type'                   => $data['Type'],
             'zero_purchase'          => $data['ZeroPurchase'],
-            'send_status'            => 0,
+            'handle_status'            => 0,
         ];
 
         $dataOrder = $data['Orders'][0];

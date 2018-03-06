@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  * Class tb
  * @package App\Listeners\OrderReceiving
  */
-class tb
+class SendSms
 {
 
     /**
@@ -31,9 +31,9 @@ class tb
                 ->first();
             if ($template) {
                 $detail = $event->order->detail->pluck('field_value', 'field_name');
-                if (isset($detail['client_phone'])) {
+                if (isset($detail['client_phone']) && $detail['client_phone']) {
                     // 发送短信
-                    tb($event->order->creator_primary_user_id, $event->order->no, $event->order->detail, $template->contents, '代练订单被接短信', $detail['source_order_no']);
+                    sendSms($event->order->creator_primary_user_id, $event->order->no, $detail['client_phone'], $template->contents, '代练订单被接短信', $detail['source_order_no']);
                 }
             }
         }

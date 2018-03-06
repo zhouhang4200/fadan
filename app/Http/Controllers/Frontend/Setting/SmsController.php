@@ -21,8 +21,8 @@ class SmsController extends Controller
     public function index(Request $request)
     {
         $type = $request->input('type', 1);
-        $autoSmsTemplate = SmsTemplate::where('type', 1)->paginate(10);
-        $userSmsTemplate = SmsTemplate::where('type', 2)->paginate(10);
+        $autoSmsTemplate = SmsTemplate::where('user_id', auth()->user()->getPrimaryUserId())->where('type', 1)->paginate(10);
+        $userSmsTemplate = SmsTemplate::where('user_id', auth()->user()->getPrimaryUserId())->where('type', 2)->paginate(10);
 
         if ($request->ajax()) {
             if ($type == 1) {
@@ -110,17 +110,20 @@ class SmsController extends Controller
      */
     public function status(Request $request)
     {
+        $status  = $request->status;
         try {
+            if (in_array($status, [1 ,2])) {
+                $template = SmsTemplate::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> $request->id])->first();
 
-            $template = SmsTemplate::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> $request->id])->first();
-
-            if (is_null($template->id)) {
-                return response()->ajax(0, '模板不存在');
-            } else {
-                $template->status = $request->status;
-                $template->save();
+                if (is_null($template->id)) {
+                    return response()->ajax(0, '模板不存在');
+                } else {
+                    $template->status = $status;
+                    $template->save();
+                }
+                return response()->ajax(1, '设置成功');
             }
-            return response()->ajax(1, '设置成功');
+            throw new CustomException();
         } catch (CustomException $exception){
             return response()->ajax(0, '设置失败');
         }

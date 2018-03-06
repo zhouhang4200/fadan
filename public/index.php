@@ -23,6 +23,11 @@ define('LARAVEL_START', microtime(true));
 
 require __DIR__.'/../vendor/autoload.php';
 
+$blacklistFile = file_get_contents('blacklist');
+$blacklistIp = explode('\r\n', $blacklistFile);
+if (in_array(getClientIp(), $blacklistIp)) {
+    die;
+}
 /*
 |--------------------------------------------------------------------------
 | Turn On The Lights

@@ -55,8 +55,10 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
             // redis 存提交验收时间，到期自动完成
             $this->after();
+            $this->orderCount();
             // 写入提验时间
             OrderDetailRepository::updateByOrderNo($this->orderNo, 'check_time', date('Y-m-d H:i:s'));
+
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());

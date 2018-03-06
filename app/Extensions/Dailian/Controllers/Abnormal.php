@@ -52,8 +52,10 @@ class Abnormal extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
+            $this->orderCount();
             // 24H自动完成订单
             delRedisCompleteOrders($this->orderNo);
+
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());

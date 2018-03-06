@@ -165,11 +165,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
         // 短信管理
         Route::prefix('sms')->group(function () {
-            Route::get('/', 'SmsController@index')->name('frontend.sms.index');
-            Route::post('show', 'SmsController@show')->name('frontend.sms.show');
-            Route::post('add', 'SmsController@add')->name('frontend.sms.add');
-            Route::post('edit', 'SmsController@edit')->name('frontend.sms.edit');
-            Route::post('delete', 'SmsController@delete')->name('frontend.sms.delete');
+            Route::get('/', 'SmsController@index')->name('frontend.setting.sms.index')->middleware('permission:frontend.setting.sms.index');
+            Route::post('show', 'SmsController@show')->name('frontend.setting.sms.show');
+            Route::post('add', 'SmsController@add')->name('frontend.setting.sms.add');
+            Route::post('edit', 'SmsController@edit')->name('frontend.setting.sms.edit');
+            Route::post('delete', 'SmsController@delete')->name('frontend.setting.sms.delete');
+            Route::post('status', 'SmsController@status')->name('frontend.setting.sms.status');
         });
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
@@ -203,6 +204,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
         // 首页
         Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('permission:frontend.workbench.index');
+        // 清空角标
+        Route::post('clear-count', 'IndexController@clearCount')->name('frontend.workbench.clear-count');
 
         // 代充
         Route::namespace('Recharge')->prefix('recharge')->group(function (){

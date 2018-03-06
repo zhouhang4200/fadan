@@ -30,6 +30,12 @@ return [
         'waitConfirm' => 'order:wait:confirm',
         // 数据类型队列，用与检测 是否可以进行下一次订单分配
         'assignStatus' => 'order:assign:status',
+        // 自动下架订单
+        'autoUnShelve' => 'order:autoUnShelve',
+        // 订单角标
+        'statusCount' => 'order:statusCount:',
+        //  房卡充值队列
+        'roomCardRecharge' => 'order:roomCardRecharge',
     ],
     // 用户模型
     'user' => [
@@ -43,5 +49,7 @@ return [
         'setting' => 'user:setting:id:'
     ],
     // 自有天猫订单token
-    'tmallStoreToken' => 'tmallStoreToken:'
+    'tmallStoreToken' => 'tmallStoreToken:',
+    // 淘宝授权token 缓存
+    'taobaoAccessToken' => 'taobaoAccessToken:'
 ];
