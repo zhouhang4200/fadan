@@ -388,7 +388,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'cstomer_service_remark')
+                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'customer_service_remark')
                                                     <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @elseif($item->field_type == 4)
                                                     <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
