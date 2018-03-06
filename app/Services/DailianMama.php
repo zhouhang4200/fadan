@@ -182,9 +182,11 @@ class DailianMama
             'timestamp'      => time(), // unix时间戳
             'sign'           => $sign, // 签名
     	];
+ 
         // 这是下单时候需要传的参数
         $options = "gamename=".urlencode($thirdGameName)."&areaname=".urlencode($thirdAreaName)."&servername=".urlencode($thirdServerName)."&ordertitle=".urlencode($orderDetails['game_leveling_title'])."&linktel=".urlencode($orderDetails['user_phone'])."&orderorgin=".urlencode('0')."&unitprice=".urlencode($order->amount)."&safedeposit=".urlencode($orderDetails['security_deposit'])."&efficiency=".urlencode($orderDetails['efficiency_deposit'])."&requiretime=".urlencode($dailianTime)."&accountvalue=".urlencode($orderDetails['account'])."&accountpwd=".urlencode($orderDetails['password'])."&rolename=".urlencode($orderDetails['role'])."&dlcontent=".urlencode($orderDetails['game_leveling_requirements'])."&dltype=".urlencode($orderDetails['game_leveling_type'])."&otherdesc=".urlencode($orderDetails['game_leveling_instructions'])."&title=".urlencode('无')."&content=".urlencode($orderDetails['customer_service_remark'])."&qq=".urlencode($orderDetails['user_qq'])."&autologinphone=".urlencode($orderDetails['client_phone'])."&sourceid=".urlencode(config('dailianmama.source_id'))."&timestamp=".urlencode(time())."&sign=".urlencode($sign);
         // 修改订单参数
+
         if ($bool) {
             if (! $orderDetails['dailianmama_order_no']) {
                 throw new DailianException('无第三方订单，修改失败!');

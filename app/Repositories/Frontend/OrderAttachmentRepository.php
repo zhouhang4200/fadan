@@ -66,7 +66,8 @@ class OrderAttachmentRepository
         }
 
         $filePath = $filesystemAdapter->path($fileName); // 服务器绝对路径
-        $url      = $filesystemAdapter->url($fileName); // 访问url
+        // $url      = $filesystemAdapter->url($fileName); // 访问url
+        $url      = '/resources/uploads/order/' . $fileName; // 访问url
         $mimeType = $filesystemAdapter->mimeType($fileName); // 类型
         $size     = $filesystemAdapter->size($fileName); // 类型
         $md5      = hash_file('md5', $filePath); // 类型

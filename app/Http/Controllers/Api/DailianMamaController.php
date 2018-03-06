@@ -15,7 +15,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 
 class DailianMamaController extends Controller
 {
-	protected $userId = config('dailianmama.qs_userId');
+	protected $userId = config('dailianmama.qs_user_id');
 
 	/**
      * 订单号
