@@ -201,7 +201,7 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'hatchet_man_qq')
                         ->update(['field_value' => $orderInfo['data']['taker_qq']]);
                     break;
-                case config('dailianmama.qs_userId'):
+                case config('dailianmama.qs_user_id'):
                     // 更新第三方平台为 dailianmam
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
