@@ -19,6 +19,7 @@ use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
+use App\Services\DailianMama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -449,11 +450,11 @@ class IndexController extends Controller
         $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
 
         try {
-            $dataList = Show91::messageList(['oid' => $thirdOrderNo]);
-//            $dataList = Show91::messageList(['oid' => 'ORD180228164549104956']);
+            if ($orderDetail['third'] == 1) {
+                $messageArr = Show91::messageList(['oid' => 'ORD180228164549104956']);
             } elseif ($orderDetail['third'] == 2) {
                 // 代练妈妈 获取留言传入千手订单号
-                $messageArr = DailianMama::chatOldList($orderNo, $bingId);
+                $messageArr = DailianMama::chatOldList($thirdOrderNo, $bingId);
             }
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
