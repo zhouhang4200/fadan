@@ -591,7 +591,7 @@ class DailianMama
         // 请示参数，更多请求参数参考对接文档
     	$options = [
             'orderid'   => $orderId, // 代练妈妈的订单号
-            'sourceid'  => env('SOURCE_ID'), // 与代练妈妈约定的标识
+            'sourceid'  => config('dailianmama.url.source_id'), // 与代练妈妈约定的标识
             'timestamp' => time(), // unix时间戳
     	];
         // 如果有传入起始ID就加入此参数
@@ -876,6 +876,6 @@ class DailianMama
         foreach ($params as $key => $value) {
             $signString .= $key . '=' . $value . '&';
         }
-        return md5(rtrim($signString, '&') . env('SHARE_KEY'));
+        return md5(rtrim($signString, '&') . config('dailianmama.share_key'));
     }
 }
