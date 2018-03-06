@@ -107,7 +107,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+                $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {
                     case 1:

@@ -74,7 +74,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+                $orderDetails = $this->checkThirdClientOrder($this->order);
                 $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
                 if (! $consult) {

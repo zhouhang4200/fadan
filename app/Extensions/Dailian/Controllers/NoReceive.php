@@ -72,7 +72,7 @@ class NoReceive extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+                $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {
                     case 1:
@@ -85,11 +85,15 @@ class NoReceive extends DailianAbstract implements DailianInterface
                         DailianMama::upOrder($this->order);
                         break;
                     default:
-                        throw new DailianException('第三方接单平台不存在!');
+                        // 未接单情况下，所有的平台上架
+                        // 91配置，只有91需要配置，其他不要配置
+                        $options = ['oid' => $orderDetails['show91_order_no']];
+                        Show91::grounding($options);
+                        // 代练妈妈上架
+                        DailianMama::upOrder($this->order);
                         break;
                 }
-                
-                
+                               
                 // if ($orderDetails['third'] == 1) { //91代练
                 //     if (! $orderDetails['third_order_no']) {
                 //         throw new DailianException('第三方订单号不存在');

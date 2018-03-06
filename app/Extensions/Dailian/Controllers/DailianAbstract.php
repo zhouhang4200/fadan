@@ -113,7 +113,7 @@ abstract class DailianAbstract
         
     }
 
-    public function checkShow91AndDailianMamaOrder($order)
+    public function checkThirdClientOrder($order)
     {
         $orderDetails = OrderDetail::where('order_no', $order->no)
             ->pluck('field_value', 'field_name')

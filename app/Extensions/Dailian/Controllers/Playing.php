@@ -155,7 +155,7 @@ class Playing extends DailianAbstract implements DailianInterface
         if ($this->runAfter) {
             $now = Carbon::now()->toDateTimeString();
             // 订单详情
-            $orderDetails = $this->checkShow91AndDailianMamaOrder($this->order);
+            $orderDetails = $this->checkThirdClientOrder($this->order);
 
             // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
@@ -187,10 +187,7 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'hatchet_man_qq')
                         ->update(['field_value' => $orderInfo['data']['taker_qq']]);
                     break;
-                // case config('order.dailianmama.user_id'): 
-                    case 8505:
-
-                    
+                case config('dailianmama.qs_userId'):
                     // 更新第三方平台为 dailianmam
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
