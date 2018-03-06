@@ -133,7 +133,7 @@ class ExchangeController extends Controller
         }
 
         $user = UserAsset::where('user_id', $cdkeyLibrary->cdkey->user_id)->first();
-
+		return $cdkeyLibrary;
         if ($user->balance <= 0) { //判断商户金额是否小于0
             return $this->response(10, '商户余额不足');
         }
