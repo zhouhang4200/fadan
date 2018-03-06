@@ -360,7 +360,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('platform', 'StatisticController@index')->name('statistic.platform');
     });
 
-    // 与第三方游戏区服对应
     // Steam
     Route::namespace('Steam')->prefix('steam')->group(function () {
 
@@ -399,6 +398,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 订单列表
             Route::get('/', 'OrderController@index')->name('backend.steam.order.index');
         });
+
+		// 商户密价
+		Route::prefix('store-price')->group(function () {
+			// 获取商户密价列表
+			Route::get('/', 'SteamStorePriceController@index')->name('backend.steam.store-price.index');
+			Route::post('insertStorePrice', 'SteamStorePriceController@insertStorePrice')->name('backend.steam.store-price.insertStorePrice');
+			Route::post('edit-something', 'SteamStorePriceController@editSomething')->name('backend.steam.store-price.edit-something');
+		});
     });
 
     Route::namespace('Config')->prefix('config')->group(function () {

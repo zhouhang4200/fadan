@@ -6,6 +6,7 @@ use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Facades\Asset;
 use App\Models\SteamCdkeyLibrary;
 use App\Models\SteamOrder;
+use App\Models\SteamStorePrice;
 use App\Services\Helper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -88,7 +89,12 @@ class SteamOrderController extends Controller
 
             if ($order) {
                 if ($request['status'] == '1') {
-					$debit_money = bcmul(0.01, $request['consume_money'], 4);
+					$SteamStorePrice = SteamStorePrice::where('user_id', $userId)->first();
+					if ($SteamStorePrice) {
+						$debit_money = bcmul($SteamStorePrice->clone_price, $request['consume_money'], 4);
+					} else {
+						$debit_money = bcmul(0.005, $request['consume_money'], 4);
+					}
 					Asset::handle(new Consume($debit_money, Consume::TRADE_SUBTYPE_BROKERAGE, $request['order_no'], 'Steam手续费', $userId));
                 }
             }

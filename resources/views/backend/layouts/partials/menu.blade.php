@@ -377,6 +377,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
 
                             <li>
+                                <a href="{{ route('backend.steam.store-price.index') }}" @if($currentRouteName == 'backend.steam.store-price.index') class="active" @endif>
+                                    商户密价
+                                </a>
+                            </li>
+
+                            <li>
                                 <a href="{{ route('backend.steam.order.index') }}" @if($currentRouteName == 'backend.steam.order.index') class="active" @endif>
                                     订单列表
                                 </a>
