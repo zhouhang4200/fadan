@@ -27,7 +27,7 @@ class KamenForeignOrder extends ForeignOrder
         	}
 
         } catch (Exception $e) {
-            Log::info('参数格式传入错误!', [ $e->getMessage(), $e->getLine(), 'data' => $data]);
+            Log::info('参数格式传入错误!', [ $e->getMessage(), $e->getLine(), $e->getFile(), 'data' => $data]);
         }
     }
 
