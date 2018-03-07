@@ -36,6 +36,7 @@ class TmallOrderApi
         ]);
         $result = json_decode($response->getBody()->getContents());
 
+        myLog('tm', [$result]);
         if (!isset($result->error_response)) {
             // 等待发货订单
             if (env('APP_ENV') == 'local') {
