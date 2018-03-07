@@ -39,8 +39,8 @@ class Playing extends DailianAbstract implements DailianInterface
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
-    	DB::beginTransaction();
-    	try {
+    	// DB::beginTransaction();
+    	// try {
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
@@ -65,11 +65,11 @@ class Playing extends DailianAbstract implements DailianInterface
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
 
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
-    	}
-    	DB::commit();
+    	// } catch (DailianException $e) {
+    	// 	DB::rollBack();
+     //        throw new DailianException($e->getMessage());
+    	// }
+    	// DB::commit();
 
         return true;
     }
@@ -179,7 +179,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 根据userid, 判断是哪个平台接单
             switch ($this->userId) {
                 case 8456: 
-                \Log::info($orderDetails);
+                    \Log::info($orderDetails);
                     // 更新第三方平台为 show91
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')

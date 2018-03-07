@@ -90,6 +90,7 @@ class LevelingController
     {
         if ($order) {
             // $this->addOrderNotice($order);  
+            \Log::info($message);
             $action = \Route::currentRouteAction();
             $this->checkAndAddOrderToRedis($order, '0-1-'.$action.'-无');
         }
@@ -98,7 +99,6 @@ class LevelingController
             'status' => 0,
             'message' => $message,
         ]);
-        \Log::info($message);
         throw new DailianException($message);
     }
 
@@ -111,15 +111,15 @@ class LevelingController
     public function receiveOrder(Request $request)
     {
         $order = null;
-    	try {
+    	// try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('receive')->run($order->no, $this->userId, true);
 
 			return $this->success('接单成功', $order);
-    	} catch (DailianException $e) {
-            return $this->fail($e->getMessage(), $order);
-    	}
+    	// } catch (DailianException $e) {
+     //        return $this->fail($e->getMessage(), $order);
+    	// }
     }
 
     /**
