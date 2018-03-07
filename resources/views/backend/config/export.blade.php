@@ -62,14 +62,14 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">建立第三方区对应关系</li>
+                            <li class="layui-this" lay-id="add">区服配置</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="get" action="{{ route('config.export') }}">
                             {!! csrf_field() !!}
                                 <div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">请选择第三方代练平台</label>
+                                        <label class="layui-form-label">请选择代练平台</label>
                                         <div class="layui-input-inline">
                                             <select name="third" lay-verify="required" lay-filter="third" lay-search="">
                                                 <option value="">请选择</option>

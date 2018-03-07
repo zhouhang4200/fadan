@@ -362,10 +362,10 @@ class ConfigController extends Controller
 	        $options = ['gid' => $thirdGameId];
 
 	        switch ($request->third) {
-	        	case 1:
+	        	case 1: // 91平台
 	        		$res = Show91::getAreas($options);
 	        	break;
-	        	case 2:
+	        	case 2: // 代练妈妈
 	        		// $client = new Client;
 			        // $response = $client->request('GET', config('dailianmama.url.gameInfo'));
 			        // $res = $response->getBody()->getContents();

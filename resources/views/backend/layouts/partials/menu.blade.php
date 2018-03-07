@@ -417,7 +417,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     <li @if($currentOneLevelMenu == 'datas') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>数据</span>
+                            <span>数据统计</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
@@ -434,28 +434,28 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     <li @if($currentOneLevelMenu == 'config') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>建立区服关系</span>
+                            <span>区服配置信息</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
                             <li>
                                 <a href="{{ route('config.game') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    游戏
+                                    游戏配置
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('config.area') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    区
+                                    区配置
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('config.server') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    服
+                                    服配置
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    导入导出
+                                    区服配置
                                 </a>
                             </li>
                         </ul>

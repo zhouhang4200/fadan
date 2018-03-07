@@ -62,7 +62,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">建立第三方游戏对应关系</li>
+                            <li class="layui-this" lay-id="add">游戏配置</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="">
@@ -74,6 +74,7 @@
                                             <select name="third_id" lay-verify="required" lay-filter="third" lay-search="">
                                                 <option value="">请选择</option>
                                                 <option value="1" selected>91代练</option>
+                                                <option value="2" selected>代练妈妈</option>
                                             </select>
                                             </div>
                                     </div>

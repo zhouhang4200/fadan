@@ -198,13 +198,20 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     public function after()
     {
         if ($this->runAfter) {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             try {
                 // 给91下订单
                 $show91Result = Show91::addOrder($this->order);
+                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
+                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
+                    'field_value' => $show91Result['data'],
+                ]);
                 // 给代练妈妈下订单
                 $dailianMamaResult = DailianMama::releaseOrder($this->order);
 
+                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
+                    'field_value' => $dailianMamaResult['data']['orderid'],
+                ]);
                 //将第三方订单号更新到order_detail中
 //                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third_order_no')->update([
 //                     'field_value' => $thirdOrderNo,
@@ -212,25 +219,20 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 //                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'third')->update([
 //                     'field_value' => 1, //91代练
 //                 ]);
-                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
-                    'field_value' => $show91Result['data'],
-                ]);
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
-                    'field_value' => $dailianMamaResult['data']['orderid'],
-                ]);
-            } catch (CustomException $e) {
-                throw new CustomException($e->getMessage());
-                DB::rollBack();
-            } catch (DailianException $dailian) {
-                DB::rollBack();
-                throw new DailianException($dailian->getMessage());
-            }
-            DB::commit();
-            // 写入留言获取
             $orderDetails = OrderDetail::where('order_no', $this->order->no)
                 ->pluck('field_value', 'field_name')
                 ->toArray();
+
+            dd($orderDetails);
+            } catch (CustomException $e) {
+                throw new CustomException($e->getMessage());
+                // DB::rollBack();
+            } catch (DailianException $dailian) {
+                // DB::rollBack();
+                throw new DailianException($dailian->getMessage());
+            }
+            // DB::commit();
+            // 写入留言获取
 
             levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['show91_order_no'], 91, 0);
         }
