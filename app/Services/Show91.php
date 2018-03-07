@@ -9,7 +9,7 @@ use App\Models\ThirdServer;
 use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
 use App\Exceptions\CustomException;
-use App\Exceptions\DailianException;
+use App\Exceptions\Show91Exception;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 
@@ -177,7 +177,7 @@ class Show91
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             if (! $orderDetails['show91_order_no']) {
-                throw new DailianException('订单详情无第三方订单，修改失败!');
+                throw new Show91Exception('show91平台:订单详情无第三方订单，修改失败!');
             }
             $options['order.order_id'] = $orderDetails['show91_order_no'];
         }
@@ -530,11 +530,11 @@ class Show91
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianException('外部接口错误,请重试!');
+            throw new Show91Exception('show91平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result']) {
-            throw new DailianException($res['reason']);
+            throw new Show91Exception($res['reason']);
         }
         return $res;
     }
