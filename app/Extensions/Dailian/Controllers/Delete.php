@@ -40,19 +40,19 @@ class Delete extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-        	$this->beforeHandleStatus = $this->getOrder()->status;
-		    // 创建操作前的订单日志详情
-		    $this->createLogObject();
-		    // 设置订单属性
-		    $this->setAttributes();
-		    // 保存更改状态后的订单
-		    $this->save();
-		    // 更新平台资产
-		    $this->updateAsset();
-		    // 订单日志描述
-		    $this->setDescription();
-		    // 保存操作日志
-		    $this->saveLog();
+            $this->beforeHandleStatus = $this->getOrder()->status;
+            // 创建操作前的订单日志详情
+            $this->createLogObject();
+            // 设置订单属性
+            $this->setAttributes();
+            // 保存更改状态后的订单
+            $this->save();
+            // 更新平台资产
+            $this->updateAsset();
+            // 订单日志描述
+            $this->setDescription();
+            // 保存操作日志
+            $this->saveLog();
             $this->after();
             $this->orderCount();
             delRedisCompleteOrders($this->orderNo);

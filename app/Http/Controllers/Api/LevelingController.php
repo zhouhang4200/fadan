@@ -114,7 +114,7 @@ class LevelingController
     	try {
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
-			DailianFactory::choose('receive')->run($order->no, $this->userId);
+			DailianFactory::choose('receive')->run($order->no, $this->userId, true);
 
 			return $this->success('接单成功', $order);
     	} catch (DailianException $e) {
