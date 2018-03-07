@@ -485,8 +485,8 @@ Iuli3G2IJNYc9Cwu
 
         $arr = json_decode($res, true);
 
-        // 英雄联盟 1
-        // dd($arr[1]);
+        // 英雄联盟 1 绝地8, 7枪战, 6球球, 5决战, 4刺激, 3全军, 2QQ手游9, 守望, 0王者
+        dd($arr[0]);
         // dd($arr[1]['list']);
 
         // 区

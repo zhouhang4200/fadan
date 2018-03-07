@@ -98,12 +98,12 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         // 第三方平台做此操作的时候，确认该平台身份，该平台在我们平台注册的账号与传递过来的账号是否一致
         switch ($orderDetails['third']) {
         	case 1: // 91
-		        if ($this->userId != config('show91.qs_userId')) {
+		        if ($this->userId != config('show91.qs_user_id')) {
 		            throw new DailianException('当前操作人不是该订单操作者本人!');
 		        }
         		break;
         	case 2: // 代练妈妈
-        		if ($this->userId != config('dailianmama.qs_userId')) {
+        		if ($this->userId != config('dailianmama.qs_user_id')) {
 		            throw new DailianException('当前操作人不是该订单操作者本人!');
 		        }
         		break;

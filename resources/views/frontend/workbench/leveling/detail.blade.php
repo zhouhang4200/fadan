@@ -388,7 +388,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'cstomer_service_remark')
+                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'customer_service_remark')
                                                     <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @elseif($item->field_type == 4)
                                                     <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
@@ -735,7 +735,6 @@
     @{{#  }) }}
 </script>
 <script id="messageDailianMama" type="text/html">
-    @{{# var count = 0; }}
     @{{#  layui.each(d.messageArr.list, function(index, item){ }}
     <div class="@{{ item.userid == d.dailianMamaUid ? 'kf_message' : 'customer_message' }}">
             <div class="message">
@@ -748,12 +747,10 @@
                 <div class="content">@{{ item.content}}</div>
             </div>
     </div>
-    @{{# count++; }}
     @{{# }); }}
-
-    @{{# if (count == 10) { }}
-        <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
-    @{{# } }}
+    @{{# if (d.messageArr.list.length > 0) { }}
+    <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
+    @{{# }  }}
 </script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
@@ -1059,8 +1056,8 @@
             $button.attr('disabled', true).text('发送中...');
 
             $.post("{{ route('frontend.workbench.leveling.send-message') }}", {
-                'oid': "{{ $detail['third_order_no'] }}",
-                'mess': $('[name="show91-message"]').val()
+                'order_no': "{{ $detail['no'] }}",
+                'message': $('[name="show91-message"]').val()
             }, function (data) {
                 $button.attr('disabled', false).text('发送');
                 $('[name="show91-message"]').val('');
@@ -1127,7 +1124,6 @@
         function loadMessage(bingId) {
             var messageBingId = bingId ? bingId : 0;
 
-
             $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                 if (result.status === 1) {
                     if (result.content.third == 1) {
@@ -1142,6 +1138,7 @@
                             if (messageBingId == 0) {
                                 view.html(html);
                             } else {
+                                $('#loadMoreMessage').remove();
                                 view.append(html);
                             }
                             layui.form.render();
@@ -1153,14 +1150,8 @@
         }
         // 加载更多留言
         $('#leave-message').dblclick('#loadMoreMessage', function () {
-            var clickCount = 0;
-            clickCount++;
-            if (clickCount == 1) {
-                var id = $('#loadMoreMessage').attr('data-id');
-//                $('#loadMoreMessage').html('');
-                loadMessage(id);
-                clickCount = 0
-            }
+            var id = $('#loadMoreMessage').attr('data-id');
+            loadMessage(id);
         });
     });
 

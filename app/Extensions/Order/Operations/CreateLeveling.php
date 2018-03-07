@@ -219,7 +219,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
                     'field_value' => $dailianMamaResult['data']['orderid'],
                 ]);
-
             } catch (CustomException $e) {
                 throw new CustomException($e->getMessage());
                 DB::rollBack();
