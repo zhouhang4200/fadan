@@ -52,7 +52,7 @@ class AddNoticeOrderFromRedis extends Command
             $status = explode('-', $statusAndAction)[0]; // 操作成功 1 与失败 0
             $third = explode('-', $statusAndAction)[1]; // 第三方平台 1 ， 2
             $action = explode('-', $statusAndAction)[2]; // 第三方操作方法,91根据方法判断操作，代练妈妈直接传的操作
-            $thirdStatus = explode('-', $statusAndAction)[3]; // 第三方操作后的状态，91需要再调接口，代练妈妈直接获得
+            $thirdStatus = explode('-', $statusAndAction)[3] ?? ''; // 第三方操作后的状态，91需要再调接口，代练妈妈直接获得
             // 写入记录到报警表
             $this->checkOrderNotice($orderNo, $status, $action, $third, $thirdStatus);
             // 删除redis里面的记录
