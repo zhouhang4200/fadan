@@ -735,6 +735,9 @@
     @{{#  }) }}
 </script>
 <script id="messageDailianMama" type="text/html">
+    @{{# if (d.messageArr.list.length > 0) { }}
+    <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
+    @{{# }  }}
     @{{#  layui.each(d.messageArr.list, function(index, item){ }}
     <div class="@{{ item.userid == d.dailianMamaUid ? 'kf_message' : 'customer_message' }}">
             <div class="message">
@@ -748,9 +751,7 @@
             </div>
     </div>
     @{{# }); }}
-    @{{# if (d.messageArr.list.length > 0) { }}
-    <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
-    @{{# }  }}
+
 </script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
@@ -1132,6 +1133,7 @@
                             view.html(html);
                             layui.form.render();
                         });
+                        $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
                     } else {
                         var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
                         layTpl(getTpl).render(result.content, function(html){
@@ -1139,12 +1141,12 @@
                                 view.html(html);
                             } else {
                                 $('#loadMoreMessage').remove();
-                                view.append(html);
+                                view.prepend(html);
                             }
                             layui.form.render();
                         });
                     }
-                    $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+
                 }
             });
         }
