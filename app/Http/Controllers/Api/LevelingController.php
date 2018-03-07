@@ -47,7 +47,7 @@ class LevelingController
         if ($sign != $this->sign) {
             throw new DailianException('验证失败');
         }
-        $orderDetail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $orderNo)->first();
+        $orderDetail = OrderDetail::where('field_name', 'show91_order_no')->where('field_value', $orderNo)->first();
 
         if (! $orderDetail) {
             throw new DailianException('订单号缺失或错误');
@@ -115,7 +115,7 @@ class LevelingController
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
 
 			DailianFactory::choose('receive')->run($order->no, $this->userId, true);
-
+\Log::info($order);
 			return $this->success('接单成功', $order);
     	} catch (DailianException $e) {
             return $this->fail($e->getMessage(), $order);
@@ -486,7 +486,7 @@ class LevelingController
             $data['gainer_user_id'] = $order->gainer_user_id;
             $data['creator_user_name'] = $order->creatorUser->name;
             $data['order_no'] = $order->no;
-            $data['third_order_no'] = $orderDetail['third_order_no'];
+            $data['third_order_no'] = $orderDetail['show91_order_no'];
             $data['third'] = $orderDetail['third'];
             $data['status'] = $order->status;
             $data['create_order_time'] = $order->created_at;
@@ -566,12 +566,12 @@ class LevelingController
     {
         $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
-        if (! $orderDetail['third_order_no']) {
+        if (! $orderDetail['show91_order_no']) {
             throw new OrderNoticeException('第三方订单号不存在');
         }
 
         $options = [
-            'oid' => $orderDetail['third_order_no'],
+            'oid' => $orderDetail['show91_order_no'],
         ]; 
 
         $res = Show91::orderDetail($options);
