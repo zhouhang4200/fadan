@@ -190,6 +190,8 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->update(['field_value' => $orderDetails['show91_order_no']]);
                     // 下架其他代练平台订单
                     DailianMama::closeOrder($this->order);
+                    // 代练妈妈删除订单
+                    DailianMama::deleteOrder($this->order);
                     // 获取91平台的打手电话和QQ更新到订单详情表
                     $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
                     
