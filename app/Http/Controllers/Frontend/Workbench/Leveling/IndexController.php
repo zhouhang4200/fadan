@@ -442,29 +442,29 @@ class IndexController extends Controller
 
     /**
      * 从show91接口拿留言数据
-     * @param $order_no
+     * @param $orderNo
+     * @param Request $request
      * @return mixed
      */
-    public function leaveMessage($order_no)
+    public function leaveMessage($orderNo, Request $request)
     {
         $bingId = $request->input('bing_id', 0);
         // 取订单信息
-        $order = (new OrderRepository)->detail($order_no);
+        $order = (new OrderRepository)->detail($orderNo);
         if (empty($order)) {
             return response()->ajax(0, '订单不存在');
         }
 
         // 取订单详情
         $orderDetail = $order->detail->pluck('field_value', 'field_name');
-        // 第三方单号
-        $thirdOrderNo = $orderDetail['third_order_no'] ?? '';
 
+        $messageArr = [];
         try {
             if ($orderDetail['third'] == 1) {
-                $messageArr = Show91::messageList(['oid' => 'ORD180228164549104956']);
+                $messageArr = Show91::messageList(['oid' => $orderDetail['show91_order_no']]);
             } elseif ($orderDetail['third'] == 2) {
                 // 代练妈妈 获取留言传入千手订单号
-                $messageArr = DailianMama::chatOldList($thirdOrderNo, $bingId);
+                $messageArr = DailianMama::chatOldList($orderDetail['dailianmama_order_no'], $bingId);
             }
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
@@ -508,6 +508,7 @@ class IndexController extends Controller
     {
         $orderNo = $request->order_no;
         $description = $request->description ?: '无';
+
         if (empty($orderNo)) {
             return response()->ajax(0, '单号缺失');
         }
@@ -520,7 +521,7 @@ class IndexController extends Controller
         $fileName = $request->file('image')->store('', $diskName);
 
         try {
-            OrderAttachmentRepository::saveImageAndUploadToShow91($orderNo, $diskName, $fileName, $description);
+            OrderAttachmentRepository::saveImageAndUploadToThirdParty($orderNo, $diskName, $fileName, $description);
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
@@ -536,14 +537,29 @@ class IndexController extends Controller
      */
     public function sendMessage(Request $request)
     {
-        $oid = $request->oid ?: 'ORD180115104933226951';
-        $mess = $request->mess ?: '12341234';
-        if (empty($oid)) {
+        $orderNo = $request->input('order_no');
+        $message = $request->input('message');
+
+        if (empty($orderNo)) {
             return response()->ajax(0, '单号不正确');
         }
 
+        // 取订单信息
+        $order = (new OrderRepository)->detail($orderNo);
+        if (empty($order)) {
+            return response()->ajax(0, '订单不存在');
+        }
+        // 取订单详情
+        $orderDetail = $order->detail->pluck('field_value', 'field_name');
+        // 第三方单号
+        $thirdOrderNo = $orderDetail['third'] == 1 ? $orderDetail['show91_order_no'] : $orderDetail['dailianmama_order_no'];
+
         try {
-            $res = Show91::addMess(['oid' => $oid, 'mess' => $mess]);
+            if ($orderDetail['third'] == 1) {
+                $res = Show91::addMess(['oid' => $thirdOrderNo, 'mess' => $message]);
+            } else if ($orderDetail['third'] == 2) {
+                $res = DailianMama::addChat($thirdOrderNo, $message);
+            }
         } catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
         }

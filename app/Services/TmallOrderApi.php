@@ -36,6 +36,7 @@ class TmallOrderApi
         ]);
         $result = json_decode($response->getBody()->getContents());
 
+        myLog('tm', [$result]);
         if (!isset($result->error_response)) {
             // 等待发货订单
             if (env('APP_ENV') == 'local') {
@@ -50,7 +51,7 @@ class TmallOrderApi
                 ];
             } else if ($result->Status == 'WAIT_SELLER_SEND_GOODS') {
                 return [
-                    'store_name' => $result->name,
+                    'store_name' => $result->SellerNick,
                     'wang_wang' => $result->BuyerNick,
                     'price' => $result->Price,
                     'payment' => $result->Payment,

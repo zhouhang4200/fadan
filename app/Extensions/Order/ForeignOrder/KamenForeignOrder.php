@@ -27,7 +27,7 @@ class KamenForeignOrder extends ForeignOrder
         	}
 
         } catch (Exception $e) {
-            Log::info('参数格式传入错误!', [ $e->getMessage(), 'data' => $data]);
+            Log::info('参数格式传入错误!', [ $e->getMessage(), $e->getLine(), $e->getFile(), 'data' => $data]);
         }
     }
 
@@ -53,6 +53,8 @@ class KamenForeignOrder extends ForeignOrder
         // 如果进货站点为天猫店，则去取订单的天猫订单信息
         $siteInfo  = SiteInfo::where('kamen_site_id', $jSitd)->first();
         $price = 0; $totalPrice = 0; $wangWang = ''; $remark = '';
+
+        myLog('km', [$jSitd, $siteInfo, $decodeArray, $siteInfo->name]);
 
         if ($siteInfo && $siteInfo->channel == 3 && isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
             $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);

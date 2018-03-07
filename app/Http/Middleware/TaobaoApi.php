@@ -17,7 +17,7 @@ class TaobaoApi
     public function handle($request, Closure $next)
     {
         $requestAll = $request->all();
-        myLog('api-request', ['淘宝请求来了', $request->url(), $_SERVER['QUERY_STRING'],  $requestAll]);
+//        myLog('api-request', ['淘宝请求来了', $request->url(), $_SERVER['QUERY_STRING'],  $requestAll]);
 
         if (isset($requestAll['data']) && !empty($requestAll['data'])) {
             $request->data = taobaoAesDecrypt($requestAll['data']);
