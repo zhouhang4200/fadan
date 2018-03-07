@@ -6,7 +6,7 @@
 
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
 
-var socket = io('{{ env('SOCKET_SERVER') }}');
+var socket = io('http://js.qsios.com:90');
 
 layui.use(['form', 'layedit', 'laydate', 'element'], function(){
     var form = layui.form, layer = layui.layer, element = layui.element;
