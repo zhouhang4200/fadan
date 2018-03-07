@@ -33,7 +33,7 @@ class UserController extends Controller
         $nickname = $request->nickname;
 
     	$users = User::where('parent_id', 0)->filter(['id' => $id, 'name' => $name, 'nickname' => $nickname])
-            ->with('asset')
+            ->with('asset','realNameIdent')
             ->orderBy('id', 'desc')
             ->paginate(config('frontend.page'));
 
