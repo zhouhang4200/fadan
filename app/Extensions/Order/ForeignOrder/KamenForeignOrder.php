@@ -54,7 +54,7 @@ class KamenForeignOrder extends ForeignOrder
         $siteInfo  = SiteInfo::where('kamen_site_id', $jSitd)->first();
         $price = 0; $totalPrice = 0; $wangWang = ''; $remark = '';
 
-        myLog('km', [$jSitd, $siteInfo, $decodeArray]);
+        myLog('km', [$jSitd, $siteInfo, $decodeArray, $siteInfo->name]);
 
         if ($siteInfo && $siteInfo->channel == 3 && isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
             $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);
