@@ -70,7 +70,7 @@ class LevelingController
     {
         if ($order) {
             $action = \Route::currentRouteAction();
-            $this->checkAndAddOrderToRedis($order, '1-1-'.$action);
+            $this->checkAndAddOrderToRedis($order, '1-1-'.$action.'-无');
             // $this->checkOrderNotice($order);
         }
 
@@ -91,7 +91,7 @@ class LevelingController
         if ($order) {
             // $this->addOrderNotice($order);  
             $action = \Route::currentRouteAction();
-            $this->checkAndAddOrderToRedis($order, '0-1-'.$action);
+            $this->checkAndAddOrderToRedis($order, '0-1-'.$action.'-无');
         }
 
         return json_encode([

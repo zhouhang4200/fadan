@@ -179,6 +179,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 根据userid, 判断是哪个平台接单
             switch ($this->userId) {
                 case 8456: 
+                \Log::info($orderDetails);
                     // 更新第三方平台为 show91
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
@@ -188,7 +189,8 @@ class Playing extends DailianAbstract implements DailianInterface
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third_order_no')
                         ->update(['field_value' => $orderDetails['show91_order_no']]);
-
+                \Log::info($this->userId);
+                \Log::info($orderDetails['dailianmama_order_no']);
                     if ($orderDetails['dailianmama_order_no']) {                     
                         // 下架其他代练平台订单
                         DailianMama::closeOrder($this->order);
