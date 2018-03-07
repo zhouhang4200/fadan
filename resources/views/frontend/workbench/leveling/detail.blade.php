@@ -1133,6 +1133,7 @@
                             view.html(html);
                             layui.form.render();
                         });
+                        $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
                     } else {
                         var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
                         layTpl(getTpl).render(result.content, function(html){
@@ -1145,7 +1146,7 @@
                             layui.form.render();
                         });
                     }
-                    $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+
                 }
             });
         }
