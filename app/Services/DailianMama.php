@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\DayData;
 use GuzzleHttp\Client;
 use App\Models\ThirdGame;
 use App\Models\ThirdArea;
@@ -10,10 +9,10 @@ use App\Models\ThirdServer;
 use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
 use App\Models\LevelingConsult;
-use App\Exceptions\CustomException;
 use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
+
 
 class DailianMama
 {
@@ -74,36 +73,6 @@ class DailianMama
         ]);
         return $response->getBody()->getContents();
     }
-
-    /**
-     * 返回接口自定义错误信息, 此方法目前在此控制器没有用到
-     * @param  [type] $res [description]
-     * @return [type]      [description]
-     */
-    // public static function returnErrorMessage($res = null)
-    // {
-    //     $res = json_decode($res, true);
-
-    //     if (! $res) {
-    //         throw new DailianException('外部接口错误,请重试!');
-    //     }
-    //     // 由于代练妈妈接口没有统一的返错机制，
-    //     // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
-    //     // 根据每个接口返回的错误信息格式返回错误信息
-    //     if ($res && $res['result'] !== 1) {
-    //         if (null !== $res['data'])
-    //         {
-    //             // 发布订单
-    //             if (is_array($res['data'])) {
-    //                 $error = $res['data']['message'];
-    //             }
-    //         } else {
-    //             $error = '失败';
-    //         }
-    //         throw new DailianException($error);
-    //     }
-    //     return $res;
-    // }
 
     /**
      * 下订单和修改订单接口
