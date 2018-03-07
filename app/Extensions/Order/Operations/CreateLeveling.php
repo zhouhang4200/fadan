@@ -199,68 +199,39 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
      */
     public function after()
     {
-        // if ($this->runAfter) {
-        //     // DB::beginTransaction();
-        //     try {
-        //         // 给91下订单
-        //         $show91Result = Show91::addOrder($this->order);
-        //         // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-        //         OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
-        //             'field_value' => $show91Result['data'],
-        //         ]);
-        //         // 给代练妈妈下订单
-        //         $dailianMamaResult = DailianMama::releaseOrder($this->order);
-
-        //         OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
-        //             'field_value' => $dailianMamaResult['data']['orderid'],
-        //         ]);
-
-        //     $orderDetails = OrderDetail::where('order_no', $this->order->no)
-        //         ->pluck('field_value', 'field_name')
-        //         ->toArray();
-
-        //     dd($orderDetails);
-        //     } catch (CustomException $e) {
-        //         throw new CustomException($e->getMessage());
-        //         // DB::rollBack();
-        //     } catch (DailianException $dailian) {
-        //         // DB::rollBack();
-        //         throw new DailianException($dailian->getMessage());
-        //     }
-        //     // DB::commit();
-        //     // 写入留言获取
-
-        //     levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['show91_order_no'], 91, 0);
-        // }
-
         if ($this->runAfter) {
-            try {
-                // 给91下订单
-                $show91Result = Show91::addOrder($this->order);
+            // 给91下订单
+            $show91Result = Show91::addOrder($this->order);
+             // 给代练妈妈下订单
+            $dailianMamaResult = DailianMama::releaseOrder($this->order);
+            // 判断各个平台下单成功情况
+            if ($show91Result['status'] && $dailianMamaResult['status']) {
                 // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'show91_order_no')->update([
-                    'field_value' => $show91Result['data'],
-                ]);
-            catch (Show91Exception $e) {
-                throw new Show91Exception($e->getMessage());
-            }
-
-            try {
-                 // 给代练妈妈下订单
-                $dailianMamaResult = DailianMama::releaseOrder($this->order);
+                OrderDetail::where('order_no', $this->order->no)
+                    ->where('field_name', 'show91_order_no')
+                    ->update(['field_value' => $show91Result['order_no'],]);
+                // 写入留言获取
+                levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $show91Result['order_no'], 91, 0);
                 // 如果成功，将订单写入订单详情表
-                OrderDetail::where('order_no', $this->order->no)->where('field_name', 'dailianmama_order_no')->update([
-                    'field_value' => $dailianMamaResult['data']['orderid'],
-                ]);
-            } catch (DailianMamaException $e) {
-                throw new DailianMamaException($e->getMessage());
-            }
-            // 写入留言获取
-            $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                ->pluck('field_value', 'field_name')
-                ->toArray();
-
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['show91_order_no'], 91, 0);
+                OrderDetail::where('order_no', $this->order->no)
+                    ->where('field_name', 'dailianmama_order_no')
+                    ->update(['field_value' => $dailianMamaResult['order_no'],]);
+            } elseif ($show91Result['status'] && ! $dailianMamaResult['status']) {
+                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
+                OrderDetail::where('order_no', $this->order->no)
+                    ->where('field_name', 'show91_order_no')
+                    ->update(['field_value' => $show91Result['order_no'],]);
+                // 写入留言获取
+                levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $show91Result['order_no'], 91, 0);
+            } elseif (! $show91Result['status'] && $dailianMamaResult['status']) {
+                // 如果成功，将订单写入订单详情表
+                OrderDetail::where('order_no', $this->order->no)
+                    ->where('field_name', 'dailianmama_order_no')
+                    ->update(['field_value' => $dailianMamaResult['order_no'],]); 
+            } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
+                throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
+            } 
+            return $this->order->no;      
         }
     }
 }

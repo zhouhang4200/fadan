@@ -9,7 +9,7 @@ use App\Models\ThirdServer;
 use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
 use App\Exceptions\CustomException;
-use App\Exceptions\Show91Exception;
+use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 
@@ -177,14 +177,25 @@ class Show91
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             if (! $orderDetails['show91_order_no']) {
-                throw new Show91Exception('show91平台:订单详情无第三方订单，修改失败!');
+                throw new DailianException('91代练平台:91平台订单号不存在，修改失败!');
             }
             $options['order.order_id'] = $orderDetails['show91_order_no'];
         }
 
     	$res = static::formDataRequest(config('show91.url.addOrder'), $options);
 
-        return static::returnErrorMessage($res);
+        $res = json_decode($res, true);
+
+        if (! $res) {
+            return ['status' => 0, 'message' => '91代练平台:接口错误，请重试！'];
+            // throw new DailianException('91代练平台:外部接口错误,请重试!');
+        }
+
+        if ($res && $res['result']) {
+            return ['status' => 0, 'message' => '91代练平台:'.$res['reason']];
+            // throw new DailianException($res['reason']);
+        }
+        return ['status' => 1, 'order_no' => $res['data']];
     }
 
     /**
@@ -530,11 +541,11 @@ class Show91
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new Show91Exception('show91平台:外部接口错误,请重试!');
+            throw new DailianException('91代练平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result']) {
-            throw new Show91Exception($res['reason']);
+            throw new DailianException('91代练平台:'.$res['reason']);
         }
         return $res;
     }

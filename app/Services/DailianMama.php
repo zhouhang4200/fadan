@@ -11,9 +11,9 @@ use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
 use App\Models\LevelingConsult;
 use App\Exceptions\CustomException;
+use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
-use App\Exceptions\DailianMamaException;
 
 class DailianMama
 {
@@ -85,7 +85,7 @@ class DailianMama
     //     $res = json_decode($res, true);
 
     //     if (! $res) {
-    //         throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+    //         throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
     //     }
     //     // 由于代练妈妈接口没有统一的返错机制，
     //     // 如果要抓取到详细的错误，可以把这里写到每一个接口里面
@@ -100,7 +100,7 @@ class DailianMama
     //         } else {
     //             $error = '失败';
     //         }
-    //         throw new DailianMamaException($error);
+    //         throw new DailianException($error);
     //     }
     //     return $res;
     // }
@@ -189,7 +189,7 @@ class DailianMama
 
         if ($bool) {
             if (! $orderDetails['dailianmama_order_no']) {
-                throw new DailianMamaException('代练妈妈平台:无第三方订单，修改失败!');
+                throw new DailianException('代练妈妈平台:代练妈妈订单号不存在，修改失败!');
             }
             // $options['orderid'] = $orderDetails['dailianmama_order_no'];
             // 修改订单时候的签名
@@ -205,17 +205,20 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            return ['status' => 0, 'message' => '代练妈妈平台:外部接口错误,请重试!'];
+            // throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
             if (is_array($res['data'])) {
-                throw new DailianMamaException($res['data']['message']);
+                return ['status' => 0, 'message' => '代练妈妈平台:'.$res['data']['message']];
+                // throw new DailianException($res['data']['message']);
             } else {
-                throw new DailianMamaException($res['data']);
+                return ['status' => 0, 'message' => '代练妈妈平台:'.$res['data']];
+                // throw new DailianException($res['data']);
             }
         }
-        return $res;
+        return ['status' => 1, 'order_no' => $res['data']['orderid']];
     }
 
     /**
@@ -247,11 +250,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']['message']);
+            throw new DailianException('代练妈妈平台:'.$res['data']['message']);
         }
         return $res;
     }
@@ -285,11 +288,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']);
+            throw new DailianException('代练妈妈平台:'.$res['data']);
         }
         return $res;
     }
@@ -324,11 +327,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']);
+            throw new DailianException('代练妈妈平台:'.$res['data']);
         }
         return $res;
     }
@@ -363,11 +366,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败！');
+            throw new DailianException('代练妈妈平台:操作失败！');
         }
         return $res; 
     }
@@ -399,11 +402,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']);
+            throw new DailianException('代练妈妈平台:'.$res['data']);
         }
         return $res; 
     }
@@ -437,11 +440,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res; 
     }
@@ -475,11 +478,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']['msg']);
+            throw new DailianException('代练妈妈平台:'.$res['data']['msg']);
         }
         return $res; 
     }
@@ -592,14 +595,14 @@ class DailianMama
         // 返回错误特殊，特殊处理
         $res = json_decode($res, true);
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
             if ($res['data'] == '对不起，订单状态可能已经改变！') {
                 $res['data'] = '该订单被代练妈妈平台接单，该状态没有【申请仲裁】操作！';
             }
-            throw new DailianMamaException($res['data']);
+            throw new DailianException('代练妈妈平台:'.$res['data']);
         }
 
         return $res; 
@@ -611,7 +614,7 @@ class DailianMama
      * @param int $beginId 从那个ID开始取
      * @param  boolean $bool [description]
      * @return array  $data 获取的留言
-     * @throws DailianMamaException
+     * @throws DailianException
      */
     public static function chatOldList($orderId, $beginId = 0, $bool = false)
     {
@@ -633,11 +636,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res; 
     }
@@ -672,11 +675,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res; 
     }
@@ -711,11 +714,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res;  
     }
@@ -728,7 +731,7 @@ class DailianMama
      * @param $order
      * @param $imagePath
      * @return bool
-     * @throws DailianMamaException
+     * @throws DailianException
      */
     public static function savePicture($orderNo, $imagePath, $description)
     {
@@ -742,11 +745,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res;   
     }
@@ -755,7 +758,7 @@ class DailianMama
      * 获取阿里云oss临时凭证,获取后一小时内可用
      * https://help.aliyun.com/document_detail/oss/user_guide/upload_object/thirdparty_upload.html
      * @return array 阿里云临时凭证数组
-     * @throws DailianMamaException
+     * @throws DailianException
      */
     public static function getTempUploadKey()
     {
@@ -771,11 +774,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         // 缓存一小时
         $redis->setex(config('redis.thirdParty.dailianMamaOssKey'), 60, serialize($res['data']));
@@ -822,11 +825,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException('代练妈妈平台:操作失败!');
+            throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res;   
     }
@@ -861,11 +864,11 @@ class DailianMama
         $res = json_decode($res, true);
 
         if (! $res) {
-            throw new DailianMamaException('代练妈妈平台:外部接口错误,请重试!');
+            throw new DailianException('代练妈妈平台:外部接口错误,请重试!');
         }
 
         if ($res && $res['result'] !== 1) {
-            throw new DailianMamaException($res['data']['msg']);
+            throw new DailianException('代练妈妈平台:'.$res['data']['msg']);
         }
         return $res;   
     }

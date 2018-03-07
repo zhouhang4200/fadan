@@ -224,10 +224,20 @@ class IndexController extends Controller
             $orderData['customer_service_name'] = Auth::user()->username;
 
             try {
-                Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
+                $orderNo = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
-                return response()->ajax(1, '下单成功');
+                // 提示哪些平台下单成功，哪些平台下单失败
+                $orderDetails = OrderDetail::where('order_no', $orderNo)
+                    ->pluck('field_value', 'field_name')
+                    ->toArray();
 
+                if ($orderDetails['dailianmama_order_no'] && $orderDetails['show91_order_no']) {
+                    return response()->ajax(1, '下单成功！');
+                } elseif (! $orderDetails['dailianmama_order_no'] && $orderDetails['show91_order_no']) {
+                    return response()->ajax(1, '部分平台下单成功！请联系客服查询未发布成功的平台及原因！');
+                } elseif ($orderDetails['dailianmama_order_no'] && ! $orderDetails['show91_order_no']) {
+                    return response()->ajax(1, '部分平台下单成功！请联系客服查询未发布成功的平台及原因！');
+                }
             } catch (CustomException $exception) {
                 return response()->ajax(0, $exception->getMessage());
             } catch (DailianException $dailianException) {

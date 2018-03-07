@@ -238,10 +238,9 @@
             }
 
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
-
                 if (result.status == 1) {
                     layer.open({
-                        content: '发布成功!',
+                        content: result.message,
                         btn: ['继续发布', '订单列表', '待发订单'],
                         btn1: function(index, layero){
                             location.reload();
@@ -254,9 +253,21 @@
                         }
                     });
                 } else {
-                    layer.msg(result.message);
+                    layer.open({
+                        content: result.message,
+                        btn: ['继续发布', '订单列表', '待发订单'],
+                        btn1: function(index, layero){
+                            location.reload();
+                        },
+                        btn2: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        },
+                        btn3: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        }
+                    });
+                    // layer.msg(result.message);
                 }
-
             }, 'json');
             return false;
         });
