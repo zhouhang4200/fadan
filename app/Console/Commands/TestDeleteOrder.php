@@ -12,7 +12,7 @@ class TestDeleteOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'delete:order';
+    protected $signature = 'delete:order {no}';
 
     /**
      * The console command description.
@@ -38,6 +38,6 @@ class TestDeleteOrder extends Command
      */
     public function handle()
     {
-        DailianFactory::choose('delete')->run('2018030716514100000363', '8317', false);
+        DailianFactory::choose('delete')->run($this->argument('no'), '8317', false);
     }
 }

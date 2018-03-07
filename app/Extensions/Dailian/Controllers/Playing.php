@@ -188,10 +188,13 @@ class Playing extends DailianAbstract implements DailianInterface
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third_order_no')
                         ->update(['field_value' => $orderDetails['show91_order_no']]);
-                    // 下架其他代练平台订单
-                    DailianMama::closeOrder($this->order);
-                    // 代练妈妈删除订单
-                    DailianMama::deleteOrder($this->order);
+
+                    if ($orderDetails['dailianmama_order_no']) {                     
+                        // 下架其他代练平台订单
+                        DailianMama::closeOrder($this->order);
+                        // 代练妈妈删除订单
+                        DailianMama::deleteOrder($this->order);
+                    }
                     // 获取91平台的打手电话和QQ更新到订单详情表
                     $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
                     
@@ -214,10 +217,12 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'third_order_no')
                         ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
 
-                    // 撤单91平台订单
-                    $options = ['oid' => $orderDetails['show91_order_no']]; 
-                    // 91代练下单
-                    Show91::chedan($options);
+                    if ($orderDetails['show91_order_no']) {
+                        // 撤单91平台订单
+                        $options = ['oid' => $orderDetails['show91_order_no']]; 
+                        // 91代练下单
+                        Show91::chedan($options);
+                    }
                     // 获取代练妈妈平台接单打手QQ和电话
                     // $orderInfo = DailianMama::orderinfo($this->order);
 

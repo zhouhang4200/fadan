@@ -112,12 +112,17 @@ class Delete extends DailianAbstract implements DailianInterface
                         DailianMama::deleteOrder($this->order);
                         break;
                     default:
-                        // 没接单的情况下，下架两边的订单
-                        // 91下架接口
-                        $options = ['oid' => $orderDetails['show91_order_no']]; 
-                        Show91::chedan($options);
-                        // 代练妈妈下架接口
-                        DailianMama::deleteOrder($this->order);
+                        if ($orderDetails['show91_order_no']) {
+                            // 没接单的情况下，下架两边的订单
+                            // 91下架接口
+                            $options = ['oid' => $orderDetails['show91_order_no']]; 
+                            Show91::chedan($options);
+                        }
+
+                        if ($orderDetails['dailianmama_order_no']) {
+                            // 代练妈妈下架接口
+                            DailianMama::deleteOrder($this->order);
+                        }
                         // throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
