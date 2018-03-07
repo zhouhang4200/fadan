@@ -51,7 +51,7 @@ class TmallOrderApi
                 ];
             } else if ($result->Status == 'WAIT_SELLER_SEND_GOODS') {
                 return [
-                    'store_name' => $result->name,
+                    'store_name' => $result->SellerNick,
                     'wang_wang' => $result->BuyerNick,
                     'price' => $result->Price,
                     'payment' => $result->Payment,
