@@ -1133,13 +1133,13 @@
                             view.html(html);
                             layui.form.render();
                         });
-                        $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+                        $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
                     } else {
                         var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
                         layTpl(getTpl).render(result.content, function(html){
                             if (messageBingId == 0) {
                                 view.html(html);
-                                $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+                                $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
                             } else {
                                 $('#loadMoreMessage').remove();
                                 view.prepend(html);
