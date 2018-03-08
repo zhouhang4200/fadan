@@ -3,12 +3,14 @@ body, button, img, input, ol, select, textarea, ul {
     font-family: "Helvetica Neue",Helvetica,"Nimbus Sans L",Arial,"Liberation Sans","Hiragino Sans GB","Source Han Sans CN Normal","Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Zen Hei","ST Heiti",SimHei,"WenQuanYi Zen Hei Sharp",sans-serif;
     color: #333;
     line-height: 1.5;
+    background-color: rgb(249, 249, 249);
 }
 body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: right bottom;
-    background-image: url(../images/auth-bg.png);
+    /*background-image: url(../images/auth-bg.png);*/
+    background: rgb(236, 239, 241);
     margin: 0;
     padding: 0;
     background-attachment: fixed;
@@ -18,13 +20,12 @@ body {
     text-align: center;
 }
 .header .content .logo {
-    width: 260px;
-    height: 60px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-image: url(../images/logo.png);
+    font-size: 26px;
+    color: #ff7a00;
+    margin: 7px 0 0 0;
+    height: 14px;
+    line-height: 14px;
+    padding-bottom: 2px;
 }
 .main .container {
     width: 392px;

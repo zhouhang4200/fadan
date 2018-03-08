@@ -8,7 +8,7 @@
         <div class="header">
             <div class="content">
                 <a href="">
-                    <span class="logo"></span>
+                    <h1 class="logo">淘宝发单平台</h1>
                 </a>
             </div>
         </div>
