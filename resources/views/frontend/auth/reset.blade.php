@@ -16,7 +16,7 @@
         <div class="header">
             <div class="content">
                 <a href="">
-                    <span class="logo"></span>
+                    <span class="logo">淘宝发单平台</span>
                 </a>
             </div>
         </div>

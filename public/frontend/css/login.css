@@ -1,14 +1,15 @@
 body, button, img, input, ol, select, textarea, ul {
-    font-size: 12px;
-    font-family: "Helvetica Neue",Helvetica,"Nimbus Sans L",Arial,"Liberation Sans","Hiragino Sans GB","Source Han Sans CN Normal","Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Zen Hei","ST Heiti",SimHei,"WenQuanYi Zen Hei Sharp",sans-serif;
+    font: 12px/20px "微软雅黑","Microsoft Yahei","sans-serif", "Arial", "Verdana";
     color: #333;
     line-height: 1.5;
+    background-color: rgb(249, 249, 249);
 }
 body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: right bottom;
-    background-image: url(../images/auth-bg.png);
+    /*background-image: url(../images/auth-bg.png);*/
+    background: rgb(236, 239, 241);
     margin: 0;
     padding: 0;
     background-attachment: fixed;
@@ -18,13 +19,11 @@ body {
     text-align: center;
 }
 .header .content .logo {
-    width: 260px;
-    height: 60px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-image: url(../images/logo.png);
+    font-size: 30px;
+    color: #ff7a00;
+    line-height: 14px;
+    padding-bottom: 2px;
+    font-weight:500;
 }
 .main .container {
     width: 392px;

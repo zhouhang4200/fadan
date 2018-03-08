@@ -16,30 +16,30 @@
 }
 
 .layui-tab-brief > .layui-tab-title .layui-this {
-    color: #1E9FFF !important;
+    color: #ff7a00 !important;
 }
 
 .layui-tab-brief > .layui-tab-title .layui-this:after, .layui-tab-brief > .layui-tab-more li.layui-this:after {
     border: none !important;
     border-radius: 0 !important;
-    border-bottom: 2px solid #1E9FFF !important;
+    border-bottom: 2px solid #ff7a00 !important;
 }
 
 .layui-nav-bar, .layui-nav .layui-this:after, .layui-nav-tree .layui-nav-itemed:after {
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
 }
 
 .layui-nav-tree .layui-nav-itemed:after {
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
 }
 
 .layui-form-select dl dd.layui-this {
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
     color: #fff !important;
 }
 
 .layui-form-checked, .layui-form-checked:hover {
-    border-color: #1E9FFF !important;
+    border-color: #ff7a00 !important;
 }
 
 .layui-form-checked i, .layui-form-checked:hover i {
@@ -47,38 +47,39 @@
 }
 
 .layui-form-checkbox[lay-skin="primary"]:hover i {
-    border-color: #1E9FFF !important;
+    border-color: #ff7a00 !important;
     color: #fff !important;
 }
 
 .layui-form-checked[lay-skin="primary"] i {
-    border-color: #1E9FFF !important;
-    background-color: #1E9FFF !important;
+    border-color: #ff7a00 !important;
+    background-color: #ff7a00 !important;
     color: #fff !important;
 }
 
 .layui-form-onswitch {
     border-color: #5FB878 !important;
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
 }
 
 .layui-form-radioed i, .layui-form-radio i:hover {
-    color: #1E9FFF !important;
+    color: #ff7a00 !important;
 }
 
 .layui-nav-child dd.layui-this {
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
     color: #fff !important;
 }
 
 .layui-nav .layui-nav-child dd.layui-this a {
-    background-color: #1E9FFF !important;
+    background-color: #ff7a00 !important;
     color: #fff !important;
 }
 
 .layui-btn {
     height: 32px  !important;
     line-height: 32px  !important;
+    background-color: #ff7a00 !important;
 }
 .layui-input, .layui-textarea, .layui-select {
     height: 32px  !important;
@@ -129,3 +130,9 @@
 /*.layui-form-mid {*/
     /*line-height: 8px  !important;*/
 /*}*/
+
+.layui-bg-blue {
+    background-color: #ff7a00 !important;
+}
+body  .layui-layer-btn .layui-layer-btn0{background:#ff7a00;border-color:#ff7a00}
+body .layui-laydate .layui-this { background-color: #ff7a00 !important;; color: #fff !important;  }
