@@ -5,14 +5,13 @@ namespace App\Extensions\Dailian\Controllers;
 use App\Events\OrderFinish;
 use DB;
 use Asset;
+use ErrorException;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
-use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderDetailRepository;
-use ErrorException;
 
 /**
  * 订单完成操作

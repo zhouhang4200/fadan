@@ -588,7 +588,7 @@ class DailianMama
         }
 
     	$res = static::normalRequest(config('dailianmama.url.operationOrder'), $options);
-\Log::info($res);
+
         // return static::returnErrorMessage($res);
         
         // 返回错误特殊，特殊处理
