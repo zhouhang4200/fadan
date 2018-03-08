@@ -134,8 +134,5 @@
 .layui-bg-blue {
     background-color: #ff7a00 !important;
 }
-body  .layui-layer-title{background:#ff7a00; color:#fff; border: none;}
-body .layui-layer-btn a{background:#ff7a00;color:#fff;}
 body  .layui-layer-btn .layui-layer-btn0{background:#ff7a00;border-color:#ff7a00}
-body  .layui-layer-btn .layui-layer-btn1{background:#ff7a00;border-color:#ff7a00}
 body .layui-laydate .layui-this { background-color: #ff7a00 !important;; color: #fff !important;  }
