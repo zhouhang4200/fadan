@@ -25,7 +25,9 @@ class DailianMamaController extends Controller
      */
     public function checkOrder($orderNo)
     {
-        $orderDetail = OrderDetail::where('field_name', 'dailianmama_order_no')->where('field_value', $orderNo)->first();
+        $orderDetail = OrderDetail::where('field_name', 'dailianmama_order_no')
+	        ->where('field_value', $orderNo)
+	        ->first();
 
         if (! $orderDetail) {
             throw new DailianException('订单号缺失或错误');
@@ -326,7 +328,7 @@ class DailianMamaController extends Controller
 			            ];
 						
 						// 如果操作人是 发单人，那么 操作人是发单主ID，发起撤销人为 发单人（1）
-			            if ($request->operationuserid == 8466) {
+			            if ($request->operationuserid == $order->creator_user_id) {
 			            	$data['user_id'] = $order->creator_user_id;
 			            	$data['consult'] = 1;
 			            }

@@ -443,7 +443,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     游戏配置
                                 </a>
                             </li>
-                            <li>
+                           <!--  <li>
                                 <a href="{{ route('config.area') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     区配置
                                 </a>
@@ -452,7 +452,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <a href="{{ route('config.server') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     服配置
                                 </a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     区服配置

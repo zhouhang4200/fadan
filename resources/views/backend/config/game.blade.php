@@ -27,7 +27,7 @@
             border-color: #1E9FFF;
         }
         .layui-form-label {
-            width: 150px;
+            width: 200px;
         }
 
         .layui-select-title {
@@ -73,8 +73,8 @@
                                             <div class="layui-input-inline">
                                             <select name="third_id" lay-verify="required" lay-filter="third" lay-search="">
                                                 <option value="">请选择</option>
-                                                <option value="1" selected>91代练</option>
-                                                <option value="2" selected>代练妈妈</option>
+                                                <option value="1">91代练</option>
+                                                <option value="2">代练妈妈</option>
                                             </select>
                                             </div>
                                     </div>
@@ -85,7 +85,7 @@
                                             <select name="game_id" lay-verify="required" lay-search="">
                                                 <option value="">请选择</option>
                                                 @forelse($games as $k => $game)
-                                                <option value="{{ $game->id }}">{{ $game->name }}</option>
+                                                <option value="{{ $game->id }}-{{ $game->name }}">{{ $game->name }}</option>
                                                 @empty
                                                 @endforelse
                                             </select>
@@ -95,12 +95,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">第三方游戏名称</label>
                                         <div class="layui-input-inline">
-                                            <select name="third_game_id" lay-verify="required" lay-search="">
-                                                <option value="">请选择</option>
-                                                @forelse($gameArr as $thirdGameKey => $thirdGame)
-                                                <option value="{{ $thirdGameKey }}">{{ $thirdGame }}</option>
-                                                @empty
-                                                @endforelse
+                                            <select name="third_game_id" id="third_game_name" lay-verify="required" lay-search="">
                                             </select>
                                         </div>
                                     </div>
@@ -130,7 +125,6 @@
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
             form.on('submit(config-game)', function (data) {
-                console.log(data.field);
                  $.post('{{ route('config.third-games') }}', {data:data.field}, function(result){
                         if (result.status == 1) {
                             layer.alert(result.message);
@@ -139,6 +133,23 @@
                         }
                     }, 'json');
                 return false;
+            });
+
+            form.on('select(third)', function (data) {
+                $.post('{{ route('config.get-third-games') }}', {third_id:data.value}, function(result){
+                    if (result.status == 1) {
+                        var thirdgames = '';
+                        $.each(result.third_games, function (i, item) {
+                            itemvalue = item.replace(/[a-zA-Z0-9]+\-/i, '');
+                            thirdgames += "<option value='"+item+"'>"+itemvalue+"</option>";
+                        })
+                        console.log(thirdgames);
+                        $('#third_game_name').html('<option value="请选择"></option>' + thirdgames);
+                        form.render('select');
+                    } else {
+                        layer.alert(result.message);
+                    }
+                }, 'json');
             });
           form.render();
     });  

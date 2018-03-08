@@ -29,34 +29,70 @@ class ConfigController extends Controller
 	 */
     public function game(Request $request)
     {
+    	// 我们没有添加过的游戏
     	$existGames = ThirdGame::pluck('game_id');
-    	$games = Game::whereNotIn('id', $existGames)->get(); // 我们的游戏
-    	$thirdGames = Show91::getGames(); // 91 所有的游戏
-
-    	$gameArr = []; // 第三方游戏
-    	foreach ($thirdGames['games'] as $k => $game) {
-    		$gameArr[$game['id']] = $game['game_name'];
-    	}
- 
-    	return view('backend.config.game', compact('gameArr', 'games'));
+    	$games = Game::whereNotIn('id', $existGames)->get();
+    	return view('backend.config.game', compact('games'));
     }
 
+    public function getThirdGames(Request $request)
+    {
+    	// dd($request->third_id);
+    	// 根据平台自动匹配对应的游戏
+    	switch ($request->third_id) {
+    		case 1:
+		    	$thirdGames = Show91::getGames(); // 91 所有的游戏
+
+		    	$gameArr = []; // 第三方游戏
+		    	foreach ($thirdGames['games'] as $k => $game) {
+		    		$gameArr[$game['id']] = $game['id'].'-'.$game['game_name'];
+		    	}
+	    		return json_encode(['status' => 1, 'third_games' => $gameArr]);
+    			break;
+    		case 2:
+    			// 这是代练妈妈所有的游戏集合
+        		$client = new Client;
+		        $response = $client->request('GET', config('dailianmama.url.gameInfo'));
+		        $res = $response->getBody()->getContents();
+
+		        if (! $res) {
+		        	return response()->ajax(0, '请求接口错误!');
+		        }
+		        $allGameInfos = json_decode($res, true);
+
+		        $thirdGames = [];
+		        foreach ($allGameInfos as $k => $allGameInfo) {
+		        	$thirdGames[$allGameInfo['id']] = $allGameInfo['id'].'-'.$allGameInfo['name'];
+		        }
+		        return ['status' => 1, 'third_games' => $thirdGames];
+    			break;
+    		default:
+    			break;
+    	}
+    }
     /**
      * 根据第三方平台号搜索对应平台下面的游戏
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function getThirdGames(Request $request)
+    public function thirdGames(Request $request)
     {
     	try {
 	    	$data = $request->data;
+	    	$data['third_id'] = $request->data['third_id'];
 	    	$data['created_at'] = date('Y-m-d H:i:s', time());
 	    	$data['updated_at'] = date('Y-m-d H:i:s', time());
+		    $data['game_id'] = explode('-', $request->data['game_id'])[0];
+		    $data['game_name'] = explode('-', $request->data['game_id'])[1];
+		    $data['third_game_id'] = explode('-', $request->data['third_game_id'])[0];
+		    $data['third_game_name'] = explode('-', $request->data['third_game_id'])[1];
 
-	    	$has = ThirdGame::where('game_id', $data['game_id'])->first();
+	    	$has = ThirdGame::where('game_id', $data['game_id'])
+		    	->where('third_id', $data['third_id'])
+		    	->first();
 
 	    	if ($has) {
-	    		throw new DailianException('数据已存在，请勿重复添加!');
+	    		return response()->ajax(0, '数据已存在，请勿重复添加!');
 	    	}
 	    	ThirdGame::create($data);
     		return response()->ajax(1, '添加成功!');
@@ -72,228 +108,124 @@ class ConfigController extends Controller
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function area(Request $request)
-    {
-    	$gameIds = ThirdGame::pluck('game_id'); // 我们的游戏
-    	$games = Game::whereIn('id', $gameIds)->get();
+    // public function area(Request $request)
+    // {
+    // 	$gameIds = ThirdGame::pluck('game_id'); // 我们的游戏
+    // 	$games = Game::whereIn('id', $gameIds)->get();
 
-    	return view('backend.config.area', compact('games'));
-    }
+    // 	return view('backend.config.area', compact('games'));
+    // }
 
     /**
      * 根据我们的游戏id，获取第三方和我们的区
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function getAreas(Request $request)
-    {
-    	try {
-    		$gameId = $request->game_id;
-	    	// 获取我们的游戏区
-	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
+    // public function getAreas(Request $request)
+    // {
+    // 	try {
+    // 		$gameId = $request->game_id;
+	   //  	// 获取我们的游戏区
+	   //  	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
 
-	        $goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-	                            ->where('field_name', 'region')
-	                            ->value('id');
+	   //      $goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+	   //                          ->where('field_name', 'region')
+	   //                          ->value('id');
 
-	        $regions = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
-	                ->pluck('field_value', 'id')->toArray();
+	   //      $regions = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
+	   //              ->pluck('field_value', 'id')->toArray();
 
-	        if (! $regions) {
-	        	throw new DailianException('我们的区不存在!');
-	        }
-	        // 第三方游戏
-	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
+	   //      if (! $regions) {
+	   //      	throw new DailianException('我们的区不存在!');
+	   //      }
+	   //      // 第三方游戏
+	   //      $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
 
-	        $options = ['gid' => $thirdGameId];
+	   //      $options = ['gid' => $thirdGameId];
 	            
-	        $res = Show91::getAreas($options);
+	   //      $res = Show91::getAreas($options);
 
-	        $thirdAreas = [];
-	        foreach ($res['areas'] as $key => $area) {
-	            $thirdAreas[$area['id']] = $area['area_name'];
-	        }
+	   //      $thirdAreas = [];
+	   //      foreach ($res['areas'] as $key => $area) {
+	   //          $thirdAreas[$area['id']] = $area['area_name'];
+	   //      }
 
-	        return json_encode(['status' => 1, 'our' => $regions, 'third' => $thirdAreas]);
-    	} catch (DailianException $dailian) {
-    		return response()->ajax(0, $dailian->getMessage());
-    	} catch (Exception $e) {
-    		return response()->ajax(0, '添加失败!');
-    	} 	
-    }
+	   //      return json_encode(['status' => 1, 'our' => $regions, 'third' => $thirdAreas]);
+    // 	} catch (DailianException $dailian) {
+    // 		return response()->ajax(0, $dailian->getMessage());
+    // 	} catch (Exception $e) {
+    // 		return response()->ajax(0, '添加失败!');
+    // 	} 	
+    // }
 
     /**
      * 写入third_areas表
      * @param Request $request [description]
      */
-    public function addAreas(Request $request)
-    {
-    	DB::beginTransaction();
-    	try {
-	    	$datas = $request->data;
-	    	$data['created_at'] = date('Y-m-d H:i:s', time());
-	    	$data['updated_at'] = date('Y-m-d H:i:s', time());
-	    	// 判断数据库是否已经存在相应的区
-	    	$has = ThirdArea::where('game_id', $datas['game_id'])
-		    	->where('area_id', $datas['area_id'])
-		    	->where('third_area_id', $datas['third_area_id'])
-		    	->first();
+    // public function addAreas(Request $request)
+    // {
+    // 	DB::beginTransaction();
+    // 	try {
+	   //  	$datas = $request->data;
+	   //  	$data['created_at'] = date('Y-m-d H:i:s', time());
+	   //  	$data['updated_at'] = date('Y-m-d H:i:s', time());
+	   //  	// 判断数据库是否已经存在相应的区
+	   //  	$has = ThirdArea::where('game_id', $datas['game_id'])
+		  //   	->where('area_id', $datas['area_id'])
+		  //   	->where('third_area_id', $datas['third_area_id'])
+		  //   	->first();
 
-	    	if ($has) {
-	    		throw new DailianException('数据库已存在该区，请勿重复添加');
-	    	}
-	    	ThirdArea::create($datas);
-    	} catch (DailianException $dailian) {
-    		DB::rollback();
-    		return response()->ajax(0, $dailian->getMessage());
-    	} catch (Exception $e) {
-    		DB::rollback();
-    		return response()->ajax(0, '添加失败!');
-    		Log::info($e->getMessage());
-    	} 
-    	DB::commit();
-    	return response()->ajax(1, '添加成功!');
-    }
+	   //  	if ($has) {
+	   //  		throw new DailianException('数据库已存在该区，请勿重复添加');
+	   //  	}
+	   //  	ThirdArea::create($datas);
+    // 	} catch (DailianException $dailian) {
+    // 		DB::rollback();
+    // 		return response()->ajax(0, $dailian->getMessage());
+    // 	} catch (Exception $e) {
+    // 		DB::rollback();
+    // 		return response()->ajax(0, '添加失败!');
+    // 		Log::info($e->getMessage());
+    // 	} 
+    // 	DB::commit();
+    // 	return response()->ajax(1, '添加成功!');
+    // }
 
     /**
      * 服对应列表
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function server(Request $request)
-    {
-    	$existGames = ThirdGame::pluck('game_id');
-    	$games = Game::whereIn('id', $existGames)->get(); // 我们的游戏
+    // public function server(Request $request)
+    // {
+    // 	$existGames = ThirdGame::pluck('game_id');
+    // 	$games = Game::whereIn('id', $existGames)->get(); // 我们的游戏
 
-    	return view('backend.config.server', compact('games'));
-    }
+    // 	return view('backend.config.server', compact('games'));
+    // }
 
     /**
+     *                                                              
      * 获取我们的服和第三方的服
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function getServers(Request $request)
-    {
-    	try {
-    		$gameId = $request->game_id;
-	    	// 获取我们的游戏区
-	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
-	    	$goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-	                            ->where('field_name', 'region')
-	                            ->value('id');
-	        $goodsTemplateWidgetServerId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-	                            ->where('field_name', 'serve')
-	                            ->value('id');
+    // public function getServers(Request $request)
+    // {
+    // 	try {
+    // 		$gameId = $request->game_id;
+	   //  	// 获取我们的游戏区
+	   //  	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
+	   //  	$goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+	   //                          ->where('field_name', 'region')
+	   //                          ->value('id');
+	   //      $goodsTemplateWidgetServerId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+	   //                          ->where('field_name', 'serve')
+	   //                          ->value('id');
 
-	        // $servers = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetServerId)
-	        //         ->pluck('field_value', 'id')->toArray();
+	   //      // $servers = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetServerId)
+	   //      //         ->pluck('field_value', 'id')->toArray();
 	        
-	        $servers = DB::select("
-	        	SELECT m.id, CONCAT(m.field_value, '(', n.field_value, ')') AS server_name FROM goods_template_widget_values m
-				LEFT JOIN 
-					(SELECT id, field_value FROM goods_template_widget_values
-					WHERE goods_template_widget_id = '$goodsTemplateWidgetRegionId') n
-				ON m.parent_id = n.id
-				WHERE m.goods_template_widget_id = '$goodsTemplateWidgetServerId'
-	        	");
-	        
-	        if (! $servers) {
-	        	throw new DailianException('我们的服不存在!');
-	        }
-
-	        $ourServerArr = [];
-	        foreach ($servers as $server) {
-	        	$ourServerArr[$server->id] = $server->server_name;
-	        }
-
-
-	        // 第三方游戏
-	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
-
-	        $options = ['gid' => $thirdGameId];
-	            
-	        $res = Show91::getAreas($options);
-
-	        $thirdAreas = [];
-	        foreach ($res['areas'] as $key => $area) {
-	            $thirdAreas[$area['id']] = $area['area_name'];
-	        }
-
-	        // 遍历区找所有的服
-	        $thirdServers = [];
-	        foreach ($thirdAreas as $thirdAreaId => $thirdArea) {
-	        	$options = ['aid' => $thirdAreaId];
-	        	$res = Show91::getServer($options);
-
-	        	foreach($res['servers'] as $thirdServerId => $thirdServer) {
-	        		$thirdServers[$thirdServer['id']] = $thirdServer['server_name']."(".$thirdArea.")";
-	        	}
-	        }
-
-	        return json_encode(['status' => 1, 'our' => $ourServerArr, 'third' => $thirdServers]);
-    	} catch (DailianException $dailian) {
-    		return response()->ajax(0, $dailian->getMessage());
-    	} catch (Exception $e) {
-    		return response()->ajax(0, '添加失败!');
-    	} 
-    }
-
-    /**
-     * 写入表
-     * @param Request $request [description]
-     */
-    public function addServers(Request $request)
-    {
-    	DB::beginTransaction();
-    	try {
-	    	$datas = $request->data;
-	    	$data['created_at'] = date('Y-m-d H:i:s', time());
-	    	$data['updated_at'] = date('Y-m-d H:i:s', time());
-	    	// 判断数据库是否已经存在相应的区
-	    	$has = ThirdServer::where('game_id', $datas['game_id'])
-		    	->where('server_id', $datas['server_id'])
-		    	->where('third_server_id', $datas['third_server_id'])
-		    	->first();
-
-	    	if ($has) {
-	    		throw new DailianException('数据库已存在该区，请勿重复添加');
-	    	}
-	    	ThirdServer::create($datas);
-    	} catch (DailianException $dailian) {
-    		DB::rollback();
-    		return response()->ajax(0, $dailian->getMessage());
-    	} catch (Exception $e) {
-    		DB::rollback();
-    		return response()->ajax(0, '添加失败!');
-    	} 
-    	DB::commit();
-    	return response()->ajax(1, '添加成功!');
-    }
-
-    public function export(Request $request)
-    {
-    	$existGames = ThirdGame::pluck('game_id');
-    	$games = Game::whereIn('id', $existGames)->get(); // 我们的游戏
-    	$gameId = $request->game_id;
-    	$third = $request->third;
-
-    	if ($gameId && $third) {
-	    	// 获取我们的游戏区
-	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
-
-	    	$goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-                ->where('field_name', 'region')
-                ->value('id');
-
-	        $goodsTemplateWidgetServerId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
-                ->where('field_name', 'serve')
-                ->value('id');
-
-	        $ourAreas = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
-	                ->pluck('field_value', 'id')
-	                ->toArray();
-	        // 带区名的服
 	   //      $servers = DB::select("
 	   //      	SELECT m.id, CONCAT(m.field_value, '(', n.field_value, ')') AS server_name FROM goods_template_widget_values m
 				// LEFT JOIN 
@@ -302,14 +234,115 @@ class ConfigController extends Controller
 				// ON m.parent_id = n.id
 				// WHERE m.goods_template_widget_id = '$goodsTemplateWidgetServerId'
 	   //      	");
-	        // 一个包含我们的游戏id，我们的区id，区名，服id，服名的集合, 样子如下
-	        /**  5 => array:5 [
-			    "game_id" => 78
-			    "area_id" => 2153
-			    "area_name" => "电信"
-			    "server_id" => 2162
-			    "server_name" => "皮尔特沃夫"
-			 ]*/
+	        
+	   //      if (! $servers) {
+	   //      	throw new DailianException('我们的服不存在!');
+	   //      }
+
+	   //      $ourServerArr = [];
+	   //      foreach ($servers as $server) {
+	   //      	$ourServerArr[$server->id] = $server->server_name;
+	   //      }
+
+
+	   //      // 第三方游戏
+	   //      $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
+
+	   //      $options = ['gid' => $thirdGameId];
+	            
+	   //      $res = Show91::getAreas($options);
+
+	   //      $thirdAreas = [];
+	   //      foreach ($res['areas'] as $key => $area) {
+	   //          $thirdAreas[$area['id']] = $area['area_name'];
+	   //      }
+
+	   //      // 遍历区找所有的服
+	   //      $thirdServers = [];
+	   //      foreach ($thirdAreas as $thirdAreaId => $thirdArea) {
+	   //      	$options = ['aid' => $thirdAreaId];
+	   //      	$res = Show91::getServer($options);
+
+	   //      	foreach($res['servers'] as $thirdServerId => $thirdServer) {
+	   //      		$thirdServers[$thirdServer['id']] = $thirdServer['server_name']."(".$thirdArea.")";
+	   //      	}
+	   //      }
+
+	   //      return json_encode(['status' => 1, 'our' => $ourServerArr, 'third' => $thirdServers]);
+    // 	} catch (DailianException $dailian) {
+    // 		return response()->ajax(0, $dailian->getMessage());
+    // 	} catch (Exception $e) {
+    // 		return response()->ajax(0, '添加失败!');
+    // 	} 
+    // }
+
+    /**
+     * 写入表
+     * @param Request $request [description]
+     */
+    // public function addServers(Request $request)
+    // {
+    // 	DB::beginTransaction();
+    // 	try {
+	   //  	$datas = $request->data;
+	   //  	$data['created_at'] = date('Y-m-d H:i:s', time());
+	   //  	$data['updated_at'] = date('Y-m-d H:i:s', time());
+	   //  	// 判断数据库是否已经存在相应的区
+	   //  	$has = ThirdServer::where('game_id', $datas['game_id'])
+		  //   	->where('server_id', $datas['server_id'])
+		  //   	->where('third_server_id', $datas['third_server_id'])
+		  //   	->first();
+
+	   //  	if ($has) {
+	   //  		throw new DailianException('数据库已存在该区，请勿重复添加');
+	   //  	}
+	   //  	ThirdServer::create($datas);
+    // 	} catch (DailianException $dailian) {
+    // 		DB::rollback();
+    // 		return response()->ajax(0, $dailian->getMessage());
+    // 	} catch (Exception $e) {
+    // 		DB::rollback();
+    // 		return response()->ajax(0, '添加失败!');
+    // 	} 
+    // 	DB::commit();
+    // 	return response()->ajax(1, '添加成功!');
+    // }
+
+    public function export(Request $request)
+    {
+    	// 第三方配置了的我们的游戏
+    	$existGames = ThirdGame::pluck('game_id'); 
+    	$games = Game::whereIn('id', $existGames)->get(); // 我们的游戏
+    	$gameId = $request->game_id; // 我们的游戏id
+    	$third = $request->third; // 第三方平台
+
+    	if ($gameId && $third) {
+	    	// 获取商品模板
+	    	$goodsTemplateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id');
+	    	// 商品模板区id
+	    	$goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+                ->where('field_name', 'region')
+                ->value('id');
+            // 商品模板服id
+	        $goodsTemplateWidgetServerId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+                ->where('field_name', 'serve')
+                ->value('id');
+            // 获取我们的区
+	        $ourAreas = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
+	                ->pluck('field_value', 'id')
+	                ->toArray();
+	                
+	        if (! $ourAreas) {
+	        	return response()->ajax(0, '我们的区不存在!');
+	        }
+
+	        $ourAreaArr = [];
+	        foreach ($ourAreas as $id => $area) {
+	        	$ourAreaArr[$id]['area_id'] = $id;
+	        	$ourAreaArr[$id]['area'] = $area;
+	        }
+			$ourAreas = array_values($ourAreaArr);
+	        // 获取我们的游戏服，包含游戏id，游戏名字的集合
 	       	$servers = DB::select("
 	        	select y.game_id, x.area_id, x.area_name, x.server_id, x.server_name from (select j.*, k.goods_template_id from (SELECT m.goods_template_widget_id, m.id as server_id, m.field_value AS server_name, n.id as area_id, n.field_value as area_name 
 	        	FROM goods_template_widget_values m
@@ -326,84 +359,136 @@ class ConfigController extends Controller
 				left join goods_templates y
 				on x.goods_template_id = y.id
 	        ");
-
-	        // 判断我们的数据库是否存在值
+	        // 判断我们的数据库是否存在服
 	        if (! $servers) {
-	        	throw new DailianException('我们的服不存在!');
+	        	return response()->ajax(0, '我们的服不存在!');
 	        }
-
 	        // 将数据库查到的值转为纯数组
 	        $ourServers = array_map(function ($server) {
 	        	return (array) $server;
 	        }, $servers);
 
-	        // 我们的区
-	        $ourAreaArr = [];
-	        foreach ($ourAreas as $id => $area) {
-	        	$ourAreaArr[$id]['area_id'] = $id;
-	        	$ourAreaArr[$id]['area'] = $area;
-	        }
-			$ourAreaArr = array_values($ourAreaArr); // 我们的区
-
-	        if (! $ourAreas) {
-	        	throw new DailianException('我们的区不存在!');
-	        }
-
-	        // $ourServers = collect($servers)->pluck('server_name', 'id');
-
-	        // $ourServerArr = [];
-	        // foreach ($ourServers as $ourServerId => $ourServer) {
-	        // 	$ourServerArr[$ourServerId]['server_id'] = $ourServerId;
-	        // 	$ourServerArr[$ourServerId]['server'] = $ourServer;
-	        // }
-	        // $ourServerArr = array_values($ourServerArr); // 我们的服
-	        // 第三方服
-	        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
-	        $options = ['gid' => $thirdGameId];
-
 	        switch ($request->third) {
 	        	case 1: // 91平台
-	        		$res = Show91::getAreas($options);
-	        	break;
+	        		// 第三方区
+			        $thirdGameId = ThirdGame::where('game_id', $gameId)->value('third_game_id');
+	        		$res = Show91::getAreas(['gid' => $thirdGameId]);
+			        $thirdAreas = [];
+			        $thirdAreaArr = [];
+			        foreach ($res['areas'] as $key => $area) {
+			            $thirdAreas[$area['id']] = $area['area_name'];
+			            $thirdAreaArr[$area['id']]['third_area_id'] = $area['id'];
+			            $thirdAreaArr[$area['id']]['third_area'] = $area['area_name'];
+			        }
+			        $thirdAreas = array_values($thirdAreaArr); 
+
+			        // 遍历区找所有的服
+			        $thirdServers = [];
+			        foreach ($thirdAreas as $thirdAreaId => &$thirdArea) {
+			        	$options = ['aid' => $thirdArea['third_area_id']];
+			        	$res = Show91::getServer($options);
+
+			        	foreach($res['servers'] as $thirdServerId => $thirdServer) {
+			        		$thirdServers[$thirdServer['id']]['third_area_id'] = $thirdArea['third_area_id'];
+			        		$thirdServers[$thirdServer['id']]['third_area_name'] = $thirdArea['third_area'];
+			        		$thirdServers[$thirdServer['id']]['third_server_id'] = $thirdServer['id'];
+			        		$thirdServers[$thirdServer['id']]['third_server'] = $thirdServer['server_name'];
+			        	}
+			        }
+			        $thirdServers = array_values($thirdServers);
+	        		break;
 	        	case 2: // 代练妈妈
-	        		// $client = new Client;
-			        // $response = $client->request('GET', config('dailianmama.url.gameInfo'));
-			        // $res = $response->getBody()->getContents();
+	        		// 这是代练妈妈所有的游戏集合
+	        		$client = new Client;
+			        $response = $client->request('GET', config('dailianmama.url.gameInfo'));
+			        $res = $response->getBody()->getContents();
 
-			        // if (! $res) {
-			        // 	throw new DailianException('请求接口错误!');
-			        // }
-			        // $res = json_decode($res, true);
-	        	break;
+			        if (! $res) {
+			        	return response()->ajax(0, '请求接口错误!');
+			        }
+			        $allGameInfos = json_decode($res, true);
+	        		// 第一步获取代练妈妈的游戏id
+	        		$dailianMamaGameId = ThirdGame::where('third_id', 2)
+	        			->where('game_id', $request->game_id)
+	        			->value('third_game_id');
+	        		// 根据代练妈妈游戏id找对应的区服信息
+	        		switch ($dailianMamaGameId) {
+	        			case 'G604'; // 王者荣耀
+	        				$index = 0;
+	        				break;
+	        			case 'G603': // 英雄联盟
+	        				$index = 1; // 这是游戏总信息里面游戏的下标
+	        				break;
+	        			case 'G614'; // QQ飞车手游
+	        				$index = 2;
+	        				break;
+	        			case 'G617'; // 全军出击
+	        				$index = 3;
+	        				break;
+	        			case 'G618'; // 刺激战场
+	        				$index = 4;
+	        				break;
+	        			case 'G615'; // 决战平安京
+	        				$index = 5;
+	        				break;
+	        			case 'G606'; // 球球大作战
+	        				$index = 6;
+	        				break;
+	        			case 'G616'; // CF:枪战王者
+	        				$index = 7;
+	        				break;
+	        			case 'G613'; // 绝地求生
+	        				$index = 8;
+	        				break;
+	        			case 'G605'; // 守望先锋
+	        				$index = 9;
+	        				break;
+	        			default:
+	        				return response()->ajax(0, '请联系运营配置相关代练妈妈游戏信息!');
+	        				break;
+	        		}
+	        		// 获取代练妈妈的区和服
+	        			// 代练类型,以下所有信息均为代练妈妈的游戏信息
+        				$dlTypes = $allGameInfos[$index]['dltype']; // 代练类型,一维数组
+        				$gameName = $allGameInfos[$index]['name']; // 游戏名字
+        				$areaAndServers = $allGameInfos[$index]['list']; // 区和游戏的三维数组
+        				// dd($areaAndServers);
+        				// 获取代练妈妈的游戏区
+        				$thirdAreas = []; // 二维数组
+        				$dailianMamaServers = []; // 二维数组
+        				foreach ($areaAndServers as $k => &$areas) {
+        					// 去掉第一个全区全服
+        					if (0 == $k) {
+        						continue;
+        					}
+        					$thirdAreas[$k]['third_area_id'] = $areas['id'];
+        					$thirdAreas[$k]['third_area_name'] = $areas['name'];
+        					// 获取对应区下面的服
+        					foreach ($areas['list'] as $key => $server) {
+        						// 去除第一个全服
+        						if (0 == $key) {
+        							continue;
+        						}
+        						$dailianMamaServers[$k][$key]['third_game_id'] = $areas['gameid'];
+        						$dailianMamaServers[$k][$key]['third_game_name'] = $gameName;
+        						$dailianMamaServers[$k][$key]['third_area_id'] = $areas['id'];
+        						$dailianMamaServers[$k][$key]['third_area_name'] = $areas['name'];
+        						$dailianMamaServers[$k][$key]['third_servre_id'] = $server['id'];
+        						$dailianMamaServers[$k][$key]['third_server_name'] = $server['name'];
+        					}
+
+        				}
+        				// 将服缩小为二维数组
+        				$thirdServers = [];
+        				foreach ($dailianMamaServers as &$thirdServer) {
+        					foreach ($thirdServer as $server) {
+        						$thirdServers[] = $server;
+        					}
+        				}
+	        		break;
 	        }
 
-	        $thirdAreas = [];
-	        $thirdAreaArr = [];
-	        foreach ($res['areas'] as $key => $area) {
-	            $thirdAreas[$area['id']] = $area['area_name'];
-	            $thirdAreaArr[$area['id']]['third_area_id'] = $area['id'];
-	            $thirdAreaArr[$area['id']]['third_area'] = $area['area_name'];
-	        }
-	        $thirdAreaArr = array_values($thirdAreaArr); // 第三方区
-
-	        // 遍历区找所有的服
-	        $thirdServers = [];
-	        foreach ($thirdAreas as $thirdAreaId => &$thirdArea) {
-	        	$options = ['aid' => $thirdAreaId];
-	        	$res = Show91::getServer($options);
-
-	        	foreach($res['servers'] as $thirdServerId => $thirdServer) {
-	        		$thirdServers[$thirdServer['id']]['third_area_id'] = $thirdAreaId;
-	        		$thirdServers[$thirdServer['id']]['third_area_name'] = $thirdArea;
-	        		$thirdServers[$thirdServer['id']]['third_server_id'] = $thirdServer['id'];
-	        		$thirdServers[$thirdServer['id']]['third_server'] = $thirdServer['server_name'];
-	        	}
-	        }
-	        $thirdServers = array_values($thirdServers);
-	        // dd($gameId, $ourAreaArr, $thirdAreaArr, $ourServers, $thirdServers);
-	        // 导出
-	        // return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServerArr, $thirdServers);
-	        return static::exports($gameId, $ourAreaArr, $thirdAreaArr, $ourServers, $thirdServers);
+	        return static::exports($gameId, $ourAreas, $thirdAreas, $ourServers, $thirdServers);
     	} else {
     		return view('backend.config.export', compact('games'));
     	}

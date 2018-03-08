@@ -410,7 +410,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     Route::namespace('Config')->prefix('config')->group(function () {
         Route::get('game', 'ConfigController@game')->name('config.game');
-        Route::post('third/games', 'ConfigController@getThirdGames')->name('config.third-games');
+        Route::post('third/games', 'ConfigController@thirdGames')->name('config.third-games');
+        Route::post('get/third/games', 'ConfigController@getThirdGames')->name('config.get-third-games');
 
         Route::get('area', 'ConfigController@area')->name('config.area');
         Route::post('add/areas', 'ConfigController@addAreas')->name('config.add-areas');
