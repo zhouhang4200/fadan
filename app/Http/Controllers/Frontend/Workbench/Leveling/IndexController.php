@@ -318,8 +318,14 @@ class IndexController extends Controller
             OrderDetail::where('order_no', $detail['no'])
                 ->where('field_name', 'hatchet_man_qq')
                 ->update(['field_value' => $orderInfo['data']['taker_qq']]);
+
+            OrderDetail::where('order_no', $detail['no'])
+                ->where('field_name', 'hatchet_man_name')
+                ->update(['field_value' => $orderInfo['data']['takerNickname']]);
+                
             $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
             $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
+            $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
         }
         // 获取订单对应模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);

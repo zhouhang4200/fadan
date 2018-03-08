@@ -452,7 +452,7 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">打手呢称：</div>
-                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['hatchet_man_name'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">打手电话：</div>
