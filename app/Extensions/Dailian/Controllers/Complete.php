@@ -149,22 +149,6 @@ class Complete extends DailianAbstract implements DailianInterface
                         throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
-                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                //     ->pluck('field_value', 'field_name')
-                //     ->toArray();
-
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-
-                //     $options = [
-                //         'oid' => $orderDetails['third_order_no'], 
-                //         'p' => config('show91.password'),
-                //     ];
-                //     // 结果
-                //     Show91::accept($options);
-                // }
                 try {
                     event(new OrderFinish($this->order));
                 } catch (ErrorException $errorException) {

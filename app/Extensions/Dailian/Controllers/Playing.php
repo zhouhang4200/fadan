@@ -183,7 +183,7 @@ class Playing extends DailianAbstract implements DailianInterface
                     // 更新第三方平台为 show91
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
-                        ->update(['field_value' => config('order.third_client')['show91']]);
+                        ->update(['field_value' => 1]);
 
                     // 更新 third_order_no 为对应平台的订单号
                     OrderDetail::where('order_no', $this->order->no)
@@ -211,7 +211,7 @@ class Playing extends DailianAbstract implements DailianInterface
                     // 更新第三方平台为 dailianmam
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
-                        ->update(['field_value' => config('order.third_client')['dailianmama']]);
+                        ->update(['field_value' => 2]);
 
                     // 更新 third_order_no 为对应平台的订单号
                     OrderDetail::where('order_no', $this->order->no)
