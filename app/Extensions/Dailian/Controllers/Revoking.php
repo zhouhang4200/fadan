@@ -75,6 +75,12 @@ class Revoking extends DailianAbstract implements DailianInterface
             try {
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
+                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
+
+                if (! $consult) {
+                    throw new DailianException('不存在申诉和协商记录');
+                }
+
                 switch ($orderDetails['third']) {
                     case 1:
                         // 91 申请协商接口
