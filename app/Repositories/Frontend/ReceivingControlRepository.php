@@ -166,7 +166,7 @@ class ReceivingControlRepository
     public function deleteUser($id)
     {
         try {
-            UserReceivingUserControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+            UserReceivingUserControl::where(['user_id' => Auth::user()->getPrimaryUserId(), 'id' => $id])->delete();
         } catch (CustomException $customException) {
             return $customException->getMessage();
         }
@@ -178,7 +178,7 @@ class ReceivingControlRepository
     public function deleteCategory($id)
     {
         try {
-            UserReceivingCategoryControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+            UserReceivingCategoryControl::where(['user_id' => Auth::user()->getPrimaryUserId(), 'id' => $id])->delete();
         } catch (CustomException $customException) {
             return $customException->getMessage();
         }
@@ -190,7 +190,7 @@ class ReceivingControlRepository
     public function deleteGoods($id)
     {
         try {
-            UserReceivingGoodsControl::where(['user_id' => Auth::user()->id, 'id' => $id])->delete();
+            UserReceivingGoodsControl::where(['user_id' => Auth::user()->getPrimaryUserId(), 'id' => $id])->delete();
         } catch (CustomException $customException) {
             return $customException->getMessage();
         }

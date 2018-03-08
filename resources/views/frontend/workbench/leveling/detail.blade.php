@@ -987,12 +987,12 @@
             return false;
         });
         // 监听Tab切换
-        element.on('tab(myFilter)', function(){
-            switch (this.getAttribute('lay-id')) {
-                case 'history':
+        element.on('tab(myFilter)', function(data){
+            switch (data.index) {
+                case 0:
                     loadHistory();
                     break;
-                case 'leave-message':
+                case 1:
                     // 加载订单留言
                     loadMessage();
                     // 加载订单截图
@@ -1133,12 +1133,13 @@
                             view.html(html);
                             layui.form.render();
                         });
-                        $(".chat_window").animate({ scrollTop:$(".chat_window").prop('scrollHeight')}, 1000);
+                        $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
                     } else {
                         var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
                         layTpl(getTpl).render(result.content, function(html){
                             if (messageBingId == 0) {
                                 view.html(html);
+                                $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
                             } else {
                                 $('#loadMoreMessage').remove();
                                 view.prepend(html);
@@ -1146,7 +1147,6 @@
                             layui.form.render();
                         });
                     }
-
                 }
             });
         }
@@ -1167,8 +1167,6 @@
             }
         });
     }
-
-
 
     // 加载截图
     function loadImage()
