@@ -196,16 +196,6 @@ class Playing extends DailianAbstract implements DailianInterface
                         // 代练妈妈删除订单
                         DailianMama::deleteOrder($this->order);
                     }
-                    // 获取91平台的打手电话和QQ更新到订单详情表
-                    $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
-                    \Log::info($orderInfo);
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'hatchet_man_phone')
-                        ->update(['field_value' => $orderInfo['data']['taker_phone']]);
-
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'hatchet_man_qq')
-                        ->update(['field_value' => $orderInfo['data']['taker_qq']]);
                     break;
                 case config('dailianmama.qs_user_id'):
                     // 更新第三方平台为 dailianmam

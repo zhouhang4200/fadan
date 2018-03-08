@@ -303,6 +303,24 @@ class IndexController extends Controller
         $game = $this->game;
         // 获取订单数据
         $detail = $orderRepository->levelingDetail($request->no);
+        // 查看是否有打手QQ和手机
+        $orderDetails = OrderDetail::where('order_no', $detail['order_no'])
+            ->pluck('field_value', 'field_name')
+            ->toArray();
+            
+        if (! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone']) {
+            // 获取91平台的打手电话和QQ更新到订单详情表
+            $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
+            OrderDetail::where('order_no', $orderDetails['order_no'])
+                ->where('field_name', 'hatchet_man_phone')
+                ->update(['field_value' => $orderInfo['data']['taker_phone']]);
+
+            OrderDetail::where('order_no', $detail['order_no'])
+                ->where('field_name', 'hatchet_man_qq')
+                ->update(['field_value' => $orderInfo['data']['taker_qq']]);
+            $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
+            $detail['hatchet_man_phone'] = $orderInfo['data']['hatchet_man_phone'];
+        }
         // 获取订单对应模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
