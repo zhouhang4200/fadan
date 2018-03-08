@@ -456,11 +456,11 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">打手电话：</div>
-                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['hatchet_man_phone'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">打手QQ：</div>
-                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ $detail['hatchet_man_qq'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">剩余代练时间：</div>
