@@ -153,13 +153,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
                         
-                        {{--
+
                             <li>
                                 <a href="{{ url('admin/goods/template/widget/type') }}" @if($currentRouteName == 'goods.template.widget.type') class="active" @endif>
                                     组件类型
                                 </a>
                             </li>
-                        {{----}}
+
                         </ul>
                     </li>
 
