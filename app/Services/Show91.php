@@ -12,6 +12,7 @@ use App\Exceptions\CustomException;
 use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
+use App\Models\OrderRegionCorrespondence;
 
 /**
  * 91接口类
@@ -127,20 +128,31 @@ class Show91
                 ->where('field_name', 'region')
                 ->where('field_value', $orderDetails['region'])
                 ->value('id');
-        // 第三方区
-        $thirdAreaId = ThirdArea::where('game_id', $order->game_id)
-                ->where('third_id', 1)
-                ->where('area_id', $areaId)
-                ->value('third_area_id') ?: '';
-        // 第三方服
-        $thirdServerId = ThirdServer::where('game_id', $order->game_id)
-                ->where('third_id', 1)
-                ->where('server_id', $serverId)
-                ->value('third_server_id') ?: '';
-        // 第三方游戏
-        $thirdGameId = ThirdGame::where('game_id', $order->game_id)
-                ->where('third_id', 1)
-                ->value('third_game_id') ?: '';
+
+        // 找第三方的区服信息
+        $orderRegionCorrespondence = OrderRegionCorrespondence::where('third', 1)
+            ->where('game_id', $order->game_id)
+            ->where('area_id', $areaId)
+            ->where('server_id', $serverId)
+            ->first();
+
+        $thirdAreaId = $orderRegionCorrespondence->third_area_id;
+        $thirdServerId = $orderRegionCorrespondence->third_server_id;
+        $thirdGameId = $orderRegionCorrespondence->third_game_id; 
+        // // 第三方区
+        // $thirdAreaId = ThirdArea::where('game_id', $order->game_id)
+        //         ->where('third_id', 1)
+        //         ->where('area_id', $areaId)
+        //         ->value('third_area_id') ?: '';
+        // // 第三方服
+        // $thirdServerId = ThirdServer::where('game_id', $order->game_id)
+        //         ->where('third_id', 1)
+        //         ->where('server_id', $serverId)
+        //         ->value('third_server_id') ?: '';
+        // // 第三方游戏
+        // $thirdGameId = ThirdGame::where('game_id', $order->game_id)
+        //         ->where('third_id', 1)
+        //         ->value('third_game_id') ?: '';
 
         $options = [
             'orderType'            => 0,

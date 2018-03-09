@@ -143,7 +143,6 @@
                             itemvalue = item.replace(/[a-zA-Z0-9]+\-/i, '');
                             thirdgames += "<option value='"+item+"'>"+itemvalue+"</option>";
                         })
-                        console.log(thirdgames);
                         $('#third_game_name').html('<option value="请选择"></option>' + thirdgames);
                         form.render('select');
                     } else {

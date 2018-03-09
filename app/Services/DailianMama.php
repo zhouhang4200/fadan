@@ -12,7 +12,7 @@ use App\Models\LevelingConsult;
 use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
-
+use App\Models\OrderRegionCorrespondence;
 
 class DailianMama
 {
@@ -130,20 +130,30 @@ class DailianMama
                 ->where('field_name', 'region')
                 ->where('field_value', $orderDetails['region'])
                 ->value('id');
+        // 找第三方的区服信息
+        $orderRegionCorrespondence = OrderRegionCorrespondence::where('third', 2)
+            ->where('game_id', $order->game_id)
+            ->where('area_id', $areaId)
+            ->where('server_id', $serverId)
+            ->first();
+
+        $thirdAreaName = $orderRegionCorrespondence->third_area_name;
+        $thirdServerName = $orderRegionCorrespondence->third_server_name;
+        $thirdGameName = $orderRegionCorrespondence->third_game_name; 
         // 第三方区名
-        $thirdAreaName = ThirdArea::where('game_id', $order->game_id)
-                ->where('third_id', 2)
-                ->where('area_id', $areaId)
-                ->value('third_area_name') ?: '';
-        // 第三方服名
-        $thirdServerName = ThirdServer::where('game_id', $order->game_id)
-                ->where('third_id', 2)
-                ->where('server_id', $serverId)
-                ->value('third_server_name') ?: '';
-        // 第三方游戏名
-        $thirdGameName = ThirdGame::where('game_id', $order->game_id)
-                ->where('third_id', 2)
-                ->value('third_game_name') ?: '';
+        // $thirdAreaName = ThirdArea::where('game_id', $order->game_id)
+        //         ->where('third_id', 2)
+        //         ->where('area_id', $areaId)
+        //         ->value('third_area_name') ?: '';
+        // // 第三方服名
+        // $thirdServerName = ThirdServer::where('game_id', $order->game_id)
+        //         ->where('third_id', 2)
+        //         ->where('server_id', $serverId)
+        //         ->value('third_server_name') ?: '';
+        // // 第三方游戏名
+        // $thirdGameName = ThirdGame::where('game_id', $order->game_id)
+        //         ->where('third_id', 2)
+        //         ->value('third_game_name') ?: '';
 
         $dailianTime = $orderDetails['game_leveling_day'] ? 
             bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)
