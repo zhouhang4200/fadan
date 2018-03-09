@@ -503,21 +503,12 @@ class DailianMamaController extends Controller
 	    		if ($request->operationuserid != 100308582) {
 	    			// DB::beginTransaction();
 			    	try {
-			            // $apiAmount = bcsub($order->amount, $request->price_pay); // 发单商家获得代练费, 
-			            $apiAmount = $request->price_pay; // 发单商家获得代练费, 
+			            $apiAmount = $request->price_pay ?? 0; // 发单商家获得代练费, 
 			   			//由于我们这里字段是接单获得的代练费，所以要减
-			            $apiDeposit = $request->price_get; // 发单商家获得的双金
-			            $apiService = $request->price_pay_fee; // 发单商家支付的手续费
+			            $apiDeposit = $request->price_get ?? 0; // 发单商家获得的双金
+			            $apiService = $request->price_pay_fee ?? 0; // 发单商家支付的手续费
 			            // 检查订单号是否存在
 			            $order = $this->checkOrder($datas['orderid']);
-
-						if (! is_numeric($apiDeposit) || ! is_numeric($apiService) || ! is_numeric($apiAmount)) {
-			                throw new DailianException('回传双金、手续费和代练费必须是数字');
-						}
-
-			            if ($apiDeposit < 0 || $apiService < 0 || $apiAmount < 0) {
-			                throw new DailianException('回传双金、手续费和代练费必须大于等于0');
-			            }
 
 						$data = [
 							'api_amount' => $apiAmount,
@@ -526,15 +517,15 @@ class DailianMamaController extends Controller
 							'complete' => 2,
 						];
 			            // 更新代练协商申诉表
-						LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
+						$res = LevelingConsult::updateOrCreate(['order_no' => $order->no], $data);
 			            // 同意申诉
 			            DailianFactory::choose('arbitration')->run($order->no, $this->userId, false);
 			            // 手续费写到order_detail中
 			            OrderDetail::where('field_name', 'poundage')
 			                ->where('order_no', $order->no)
 			                ->update(['field_value' => $apiService]);
-
 			    	} catch (DailianException $e) {
+			    		myLog('exception', $e->getMessage());
 			            // DB::rollback();
 			            return $this->fail($e->getMessage(), $order, $datas['operationinfo'], $datas['orderstatusname']);
 			    	} catch (\Exception $exception) {
