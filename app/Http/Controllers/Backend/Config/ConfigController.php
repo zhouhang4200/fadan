@@ -29,9 +29,12 @@ class ConfigController extends Controller
 	 */
     public function game(Request $request)
     {
-    	// 我们没有添加过的游戏
-    	$existGames = ThirdGame::pluck('game_id');
-    	$games = Game::whereNotIn('id', $existGames)->get();
+    	// 代练平台的游戏
+    	$games = DB::select("SELECT a.game_id as id, b.name FROM goods_templates a
+			LEFT JOIN games b
+			ON a.game_id = b.id 
+			WHERE a.service_id = 4");
+
     	return view('backend.config.game', compact('games'));
     }
 

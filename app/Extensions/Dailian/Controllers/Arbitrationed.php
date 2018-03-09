@@ -132,9 +132,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         $bool = bcsub($apiDeposit, $apiService);
         // 回传双金 + 回传手续费
         // $apiAll = bcadd($apiDeposit, $apiService);
-
         if ($leftAmount >= 0 && $leftDeposit >= 0 && $bool >= 0) {    
-
             DB::beginTransaction();
         	try {
         		if ($leftAmount > 0) {
