@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Extensions\Dailian\Controllers\DailianFactory;
 
 class TestAppealOrder extends Command
 {
@@ -11,7 +12,7 @@ class TestAppealOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'appeal:order {no}';
+    protected $signature = 'appeal:order {no} {user_id}';
 
     /**
      * The console command description.
@@ -37,6 +38,6 @@ class TestAppealOrder extends Command
      */
     public function handle()
     {
-        DailianFactory::choose('delete')->run($this->argument('no'), '8317', false);
+        DailianFactory::choose('arbitration')->run($this->argument('no'), $this->argument('user_id'), false);
     }
 }

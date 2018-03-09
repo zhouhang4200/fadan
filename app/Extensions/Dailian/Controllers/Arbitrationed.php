@@ -164,7 +164,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
                 // 如果订单安全保证金 > (回传双金 + 手续费)
                 // 安全保证金 》 回传双金
                 if (bcsub($security, $apiDeposit) > 0) {  
-                	if ($apiDeposit) {
+                	if ($apiDeposit > 0) {
 		                // 发单 安全保证金收入
 		                Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
 
