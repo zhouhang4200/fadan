@@ -81,7 +81,6 @@ class ConfigController extends Controller
     public function thirdGames(Request $request)
     {
     	try {
-	    	$data = $request->data;
 	    	$data['third_id'] = $request->data['third_id'];
 	    	$data['created_at'] = date('Y-m-d H:i:s', time());
 	    	$data['updated_at'] = date('Y-m-d H:i:s', time());
@@ -90,11 +89,16 @@ class ConfigController extends Controller
 		    $data['third_game_id'] = explode('-', $request->data['third_game_id'])[0];
 		    $data['third_game_name'] = explode('-', $request->data['third_game_id'])[1];
 
-	    	$has = ThirdGame::where('game_id', $data['game_id'])
+		    // 最开的是91没有写游戏名
+	    	$thirdGame = ThirdGame::where('game_id', $data['game_id'])
 		    	->where('third_id', $data['third_id'])
 		    	->first();
-
-	    	if ($has) {
+		    // 如果没有写游戏名，name写进去
+	    	if (! $thirdGame->game_name || ! $thirdGame->third_game_name) {
+	    		$thirdGame->game_name = $data['game_name'];
+	    		$thirdGame->third_game_name = $data['third_game_name'];
+	    		$thirdGame->save();
+	    	} else {
 	    		return response()->ajax(0, '数据已存在，请勿重复添加!');
 	    	}
 	    	ThirdGame::create($data);
@@ -392,6 +396,7 @@ class ConfigController extends Controller
 			        	$res = Show91::getServer($options);
 
 			        	foreach($res['servers'] as $thirdServerId => $thirdServer) {
+			        		$thirdServers[$thirdServer['id']]['third_game_id'] = $thirdGameId;
 			        		$thirdServers[$thirdServer['id']]['third_area_id'] = $thirdArea['third_area_id'];
 			        		$thirdServers[$thirdServer['id']]['third_area_name'] = $thirdArea['third_area'];
 			        		$thirdServers[$thirdServer['id']]['third_server_id'] = $thirdServer['id'];
@@ -407,7 +412,7 @@ class ConfigController extends Controller
 			        $res = $response->getBody()->getContents();
 
 			        if (! $res) {
-			        	return response()->ajax(0, '请求接口错误!');
+			        	return '请求接口错误!';
 			        }
 			        $allGameInfos = json_decode($res, true);
 	        		// 第一步获取代练妈妈的游戏id
@@ -508,7 +513,7 @@ class ConfigController extends Controller
         $thirdAreaTitle = ['第三方区ID', '第三方区名'];
         // $ourServerTitle = ['序号', '代练平台服名'];
         $ourServerTitle = ['游戏ID', '区ID', '区名', '服ID', '服名'];
-        $thirdServerTitle = ['第三方区ID', '第三方区名', '第三方服ID', '第三方服名'];
+        $thirdServerTitle = ['游戏ID', '游戏名', '第三方区ID', '第三方区名', '第三方服ID', '第三方服名'];
         // $thirdServerTitle = ['序号', '第三方服名'];
 
         $importArea = [['游戏ID', '第三方ID', '代练平台区ID', '第三方区ID'], ['0', '0', '0', '0']];
