@@ -95,13 +95,15 @@ class ConfigController extends Controller
 		    	->where('third_id', $data['third_id'])
 		    	->first();
 		    // 如果没有写游戏名，name写进去
-	    	if (! $thirdGame->game_name || ! $thirdGame->third_game_name) {
-	    		$thirdGame->game_name = $data['game_name'];
-	    		$thirdGame->third_game_name = $data['third_game_name'];
-	    		$thirdGame->save();
-	    	} else {
-	    		return response()->ajax(0, '数据已存在，请勿重复添加!');
-	    	}
+		     if ($thirdGame) {
+		    	if (! $thirdGame->game_name || ! $thirdGame->third_game_name) {
+		    		$thirdGame->game_name = $data['game_name'];
+		    		$thirdGame->third_game_name = $data['third_game_name'];
+		    		$thirdGame->save();
+		    	} else {
+		    		return response()->ajax(0, '数据已存在，请勿重复添加!');
+		    	}
+		     }
 	    	ThirdGame::create($data);
     		return response()->ajax(1, '添加成功!');
     	} catch (DailianException $dailian) {
@@ -136,7 +138,7 @@ class ConfigController extends Controller
 	                ->toArray();
 	                
 	        if (! $ourAreas) {
-	        	return response()->ajax(0, '我们的区不存在!');
+	        	return '我们的区不存在!';
 	        }
 
 	        $ourAreaArr = [];
@@ -170,7 +172,7 @@ class ConfigController extends Controller
 
 	        // 判断我们的数据库是否存在服
 	        if (! $servers) {
-	        	return response()->ajax(0, '我们的服不存在!');
+	        	return '我们的服不存在!';
 	        }
 	        // 将数据库查到的值转为纯数组
 	        $ourServers = array_map(function ($server) {
@@ -256,7 +258,7 @@ class ConfigController extends Controller
 	        				$index = 9;
 	        				break;
 	        			default:
-	        				return response()->ajax(0, '请联系运营配置相关代练妈妈游戏信息!');
+	        				return '请联系运营配置代练妈妈游戏!';
 	        				break;
 	        		}
 	        		// 获取代练妈妈的区和服
