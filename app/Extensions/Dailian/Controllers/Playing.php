@@ -64,7 +64,6 @@ class Playing extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
-
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -162,7 +161,6 @@ class Playing extends DailianAbstract implements DailianInterface
             $now = Carbon::now()->toDateTimeString();
             // 订单详情
             $orderDetails = $this->checkThirdClientOrder($this->order);
-
             // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')
@@ -179,7 +177,6 @@ class Playing extends DailianAbstract implements DailianInterface
             // 根据userid, 判断是哪个平台接单
             switch ($this->userId) {
                 case 8456: 
-                    // \Log::info($orderDetails);
                     // 更新第三方平台为 show91
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'third')
@@ -214,16 +211,12 @@ class Playing extends DailianAbstract implements DailianInterface
                         // 91代练下单
                         Show91::chedan($options);
                     }
-                    // 获取代练妈妈平台接单打手QQ和电话
-                    // $orderInfo = DailianMama::orderinfo($this->order);
+                    // 获取代练妈妈平台接单打手名称
+                    $orderInfo = DailianMama::orderinfo($this->order);
 
-                    // OrderDetail::where('order_no', $this->order->no)
-                    //     ->where('field_name', 'hatchet_man_phone')
-                    //     ->update(['field_value' => $orderInfo['data']['userinfo']['linktel']]);
-
-                    // OrderDetail::where('order_no', $this->order->no)
-                    //     ->where('field_name', 'hatchet_man_qq')
-                    //     ->update(['field_value' => $orderInfo['data']['userinfo']['qq']]);
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'hatchet_man_name')
+                        ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
                     break;
                 default:
                     throw new DailianException('未找到订单对应的第三方平台!');
