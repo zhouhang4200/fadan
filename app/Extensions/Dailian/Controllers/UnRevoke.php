@@ -124,21 +124,6 @@ class UnRevoke extends DailianAbstract implements DailianInterface
                         throw new DailianException('不存在第三方接单平台!');
                         break;
                 }
-                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                //     ->pluck('field_value', 'field_name')
-                //     ->toArray();
-
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-
-                //     $options = [
-                //         'oid' => $orderDetails['third_order_no'],
-                //     ]; 
-
-                //     Show91::cancelSc($options);
-                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

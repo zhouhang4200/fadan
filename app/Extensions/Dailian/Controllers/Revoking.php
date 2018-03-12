@@ -101,33 +101,6 @@ class Revoking extends DailianAbstract implements DailianInterface
                         throw new DailianException('不存在第三方接单平台!');
                         break;
                 }
-                
-                
-
-                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                //     ->pluck('field_value', 'field_name')
-                //     ->toArray();
-
-                // $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                // if (! $consult) {
-                //     throw new DailianException('不存在申诉和协商记录');
-                // }
-
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-                    
-                //     $options = [
-                //         'oid' => $orderDetails['third_order_no'],
-                //         'selfCancel.pay_price' => $consult->amount,
-                //         'selfCancel.pay_bond' => $consult->deposit,
-                //         'selfCancel.content' => $consult->revoke_message,
-                //     ];
-                //     // 结果
-                //     Show91::addCancelOrder($options);
-                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

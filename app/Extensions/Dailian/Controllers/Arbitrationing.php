@@ -103,30 +103,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         throw new DailianException('不存在第三方接单平台!');
                         break;
                 }
-                // if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 1) { //91代练
-                //     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                //     if (! $consult) {
-                //         throw new DailianException('订单申诉和协商记录不存在');
-                //     }
-
-                //     $thirdOrderNo = $this->order->detail()->where('field_name', 'third_order_no')->value('field_value');
-
-                //     if (! $thirdOrderNo) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-
-                //     $options = [
-                //         'oid' => $this->order->detail()->where('field_name', 'third_order_no')->value('field_value'),
-                //         'appeal.title' => '申请仲裁',
-                //         'appeal.content' => $consult->complain_message,
-                //         'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                //         'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                //         'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                //     ];
-                //     // 结果
-                //     Show91::addappeal($options);
-                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

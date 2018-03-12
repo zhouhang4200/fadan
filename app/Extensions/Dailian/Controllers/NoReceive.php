@@ -94,20 +94,6 @@ class NoReceive extends DailianAbstract implements DailianInterface
                         DailianMama::upOrder($this->order);
                         break;
                 }
-                               
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-
-                //     $options = [
-                //         'oid' => $orderDetails['third_order_no'],
-                //     ]; 
-                //     // 91代练上架
-                //     Show91::grounding($options);
-                //     // 代练妈妈上架
-                //     DailianMama::upOrder($this->order);
-                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

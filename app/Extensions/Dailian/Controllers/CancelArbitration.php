@@ -126,27 +126,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                         throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
-                // $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                //     ->pluck('field_value', 'field_name')
-                //     ->toArray();
-
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                //     if (! $consult) {
-                //         throw new DailianException('订单申诉和协商记录不存在');
-                //     }
-
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-
-                //     $options = [
-                //         'aid' => $orderDetails['third_order_no'], // 撤销id 可以用单号
-                //     ];
-                //     // 结果
-                //     Show91::cancelAppeal($options);
-                // }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

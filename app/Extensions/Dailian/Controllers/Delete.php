@@ -126,18 +126,6 @@ class Delete extends DailianAbstract implements DailianInterface
                         // throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
-
-                // if ($orderDetails['third'] == 1) { //91代练
-                //     if (! $orderDetails['third_order_no']) {
-                //         throw new DailianException('第三方订单号不存在');
-                //     }
-                    
-                //     $options = [
-                //         'oid' => $orderDetails['third_order_no'],
-                //     ]; 
-                //     // 结果
-                //     Show91::chedan($options);
-                // }
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
