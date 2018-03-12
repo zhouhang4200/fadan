@@ -41,7 +41,6 @@ class ConfigController extends Controller
 
     public function getThirdGames(Request $request)
     {
-    	// dd($request->third_id);
     	// 根据平台自动匹配对应的游戏
     	switch ($request->third_id) {
     		case 1:
@@ -418,123 +417,6 @@ class ConfigController extends Controller
     	} catch (Exception $e) {
     		return response()->ajax(0, '未知错误!');
     	}
-    	// try {
-    	// 	if ($request->hasFile('file')) {
-	    // 		$file = $request->file('file');
-	    // 		$path = $file->path();
-		   //  	$res = [];
-		   //  	$title = '';
-		   //  	Excel::load($path, function ($reader) use (&$res, &$title) {
-		   //          $reader = $reader->getSheet(0);
-		   //          $title = $reader->getTitle();
-		   //          $res = $reader->toArray();
-		   //      });
-		   //  	if (! $res) {
-		   //  		return response()->ajax(0, '导入数据为空!');
-		   //  	}
-
-		   //  	if (! $title) {
-		   //  		return response()->ajax(0, '请写明文件标题!');
-		   //  	}
-		   //  	switch ($title) {
-		   //  		case '区':
-		   //  			$thirdAreas = [];
-		   //  			foreach ($res as $k => $thirdArea) {
-		   //  				if (count($thirdArea) == 0 || array_sum($thirdArea) == 0) {
-		   //  					continue;
-		   //  				}
-
-		   //  				if (! is_numeric($thirdArea[0]) || ! is_numeric($thirdArea[1])) {
-		   //  					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
-		   //  				}
-
-		   //  				$has = ThirdArea::where('game_id', $thirdArea[0])
-			  //   				->where('third_id', $thirdArea[1])
-			  //   				->where('area_id', $thirdArea[2])
-			  //   				->where('third_area_id', $thirdArea[4])
-			  //   				->first();
-
-			  //   			if ($has) {
-			  //   				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
-			  //   			}
-			  //   			$thirdAreas[$k]['game_id'] = $thirdArea[0];
-			  //   			$thirdAreas[$k]['third_id'] = $thirdArea[1];
-			  //   			$thirdAreas[$k]['area_id'] = $thirdArea[2];
-			  //   			$thirdAreas[$k]['area_name'] = $thirdArea[3];
-			  //   			$thirdAreas[$k]['third_area_id'] = $thirdArea[4];
-			  //   			$thirdAreas[$k]['third_area_name'] = $thirdArea[5];
-			  //   			$thirdAreas[$k]['created_at'] = date('Y-m-d H:i:s', time());
-			  //   			$thirdAreas[$k]['updated_at'] = date('Y-m-d H:i:s', time());
-		   //  			}
-		   //  			$bool = ThirdArea::insert($thirdAreas);
-
-		   //  			if ($bool) {
-		   //  				return response()->ajax(1, '导入成功');
-		   //  			} else {
-		   //  				return response()->ajax(0, '导入失败');
-		   //  			}
-		   //  			break;
-		   //  		case '服':
-		   //  			$thirdServers = [];
-		   //  			foreach ($res as $k => $thirdServer) {
-		   //  				// 去除第一行标题和最后一行空数据
-		   //  				if (count($thirdServer) == 0 || array_sum($thirdServer) == 0) {
-		   //  					continue;
-		   //  				}
-		   //  				// 检查必填项是否为空
-		   //  				if (! is_numeric($thirdServer[0]) || ! is_numeric($thirdServer[1])) {
-		   //  					return response()->ajax(0, '第'.($k+1).'行数据必须全部为数字且不能为空!');
-		   //  				}
-		   //  				// 检查是否重复添加
-		   //  				$has = ThirdServer::where('game_id', $thirdServer[0])
-			  //   				->where('third_id', $thirdServer[1])
-			  //   				->where('server_id', $thirdServer[2])
-			  //   				->where('third_server_id', $thirdServer[4])
-			  //   				->first();
-
-			  //   			if ($has) {
-			  //   				return response()->ajax(0, '第'.($k+1).'行数据已经存在!');
-			  //   			}
-
-			  //   			// 写入数据
-			  //   			$thirdServers[$k]['game_id'] = $thirdServer[0];
-			  //   			$thirdServers[$k]['third_id'] = $thirdServer[1];
-			  //   			$thirdServers[$k]['server_id'] = $thirdServer[2];
-			  //   			$thirdServers[$k]['server_name'] = $thirdServer[3];
-			  //   			$thirdServers[$k]['third_server_id'] = $thirdServer[4];
-				 //    		$thirdServers[$k]['third_server_name'] = $thirdServer[5];
-			  //   			$thirdServers[$k]['created_at'] = date('Y-m-d H:i:s', time());
-			  //   			$thirdServers[$k]['updated_at'] = date('Y-m-d H:i:s', time());
-			  //   			// 去除括号
-			  //   			preg_match('~(.*?)(\(.*\))~', $thirdServer[3], $matchServerNames);
-			  //   			preg_match('~(.*?)(\(.*\))~', $thirdServer[5], $matchThirdServerNames);
-
-			  //   			if ($matchServerNames) {
-				 //    			$thirdServers[$k]['server_name'] = $matchServerNames[1];
-			  //   			}
-
-			  //   			if ($matchThirdServerNames) {
-				 //    			$thirdServers[$k]['third_server_name'] = $matchThirdServerNames[1];
-			  //   			}
-		   //  			}
-		   //  			// 插入数据
-		   //  			$bool = ThirdServer::insert($thirdServers);
-
-		   //  			if ($bool) {
-		   //  				return response()->ajax(1, '导入成功');
-		   //  			} else {
-		   //  				return response()->ajax(0, '导入失败');
-		   //  			}
-		   //  			break;
-		   //  		default:
-		   //  			return response()->ajax(0, '文件标题不正确!');
-		   //  	}
-	    // 	} else {
-	    // 		return response()->ajax(0, '未找到上传文件！');
-	    // 	}
-    	// } catch (Exception $e) {
-    	// 	throw new Exception($e->getMessage());
-    	// }
     }
 
         /**

@@ -108,10 +108,7 @@ abstract class DailianAbstract
         return $this->order;
     }
 
-    public function after() 
-    {
-        
-    }
+    public function after() {}
 
     public function checkThirdClientOrder($order)
     {

@@ -50,12 +50,10 @@ class Abnormal extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
             $this->after();
             $this->orderCount();
             // 24H自动完成订单
             delRedisCompleteOrders($this->orderNo);
-
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -68,8 +66,9 @@ class Abnormal extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                // 订单详情
                 $orderDetails = $this->checkThirdClientOrder($this->order);
-
+                // 接单后才 third 才会有值, 没接单 third 值为''
                 switch ($orderDetails['third']) {
                     case 1:
                         throw new Exception('91平台没有此操作!');

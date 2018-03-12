@@ -123,7 +123,6 @@ class Delete extends DailianAbstract implements DailianInterface
                             // 代练妈妈下架接口
                             DailianMama::deleteOrder($this->order);
                         }
-                        // throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
                 return true;
