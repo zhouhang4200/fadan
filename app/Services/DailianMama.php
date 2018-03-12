@@ -138,23 +138,13 @@ class DailianMama
             ->where('server_id', $serverId)
             ->first();
 
+        if (! $orderRegionCorrespondence) {
+            return ['status' => 0, 'message' => '代练妈妈代练平台:代练妈妈平台下没有此游戏！'];
+        }
+
         $thirdAreaName = $orderRegionCorrespondence->third_area_name;
         $thirdServerName = $orderRegionCorrespondence->third_server_name;
         $thirdGameName = $orderRegionCorrespondence->third_game_name; 
-        // 第三方区名
-        // $thirdAreaName = ThirdArea::where('game_id', $order->game_id)
-        //         ->where('third_id', 2)
-        //         ->where('area_id', $areaId)
-        //         ->value('third_area_name') ?: '';
-        // // 第三方服名
-        // $thirdServerName = ThirdServer::where('game_id', $order->game_id)
-        //         ->where('third_id', 2)
-        //         ->where('server_id', $serverId)
-        //         ->value('third_server_name') ?: '';
-        // // 第三方游戏名
-        // $thirdGameName = ThirdGame::where('game_id', $order->game_id)
-        //         ->where('third_id', 2)
-        //         ->value('third_game_name') ?: '';
 
         $dailianTime = $orderDetails['game_leveling_day'] ? 
             bcadd(bcmul($orderDetails['game_leveling_day'], 24), $orderDetails['game_leveling_hour'], 0)

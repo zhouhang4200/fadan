@@ -137,29 +137,15 @@ class Show91
             ->where('server_id', $serverId)
             ->first();
 
-        $thirdAreaId = $orderRegionCorrespondence->third_area_id;
-        $thirdServerId = $orderRegionCorrespondence->third_server_id;
-        $thirdGameId = $orderRegionCorrespondence->third_game_id; 
-        // // 第三方区
-        // $thirdAreaId = ThirdArea::where('game_id', $order->game_id)
-        //         ->where('third_id', 1)
-        //         ->where('area_id', $areaId)
-        //         ->value('third_area_id') ?: '';
-        // // 第三方服
-        // $thirdServerId = ThirdServer::where('game_id', $order->game_id)
-        //         ->where('third_id', 1)
-        //         ->where('server_id', $serverId)
-        //         ->value('third_server_id') ?: '';
-        // // 第三方游戏
-        // $thirdGameId = ThirdGame::where('game_id', $order->game_id)
-        //         ->where('third_id', 1)
-        //         ->value('third_game_id') ?: '';
+        if (! $orderRegionCorrespondence) {
+            return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！'];
+        }
 
         $options = [
-            'orderType'            => 0,
-            'order.game_id'        => $thirdGameId, 
-            'order.game_area_id'   => $thirdAreaId,
-            'order.game_server_id' => $thirdServerId,
+            'orderType'            => 0, // 0代练订单, 1 求购订单
+            'order.game_id'        => $orderRegionCorrespondence->third_game_id, 
+            'order.game_area_id'   => $orderRegionCorrespondence->third_area_id,
+            'order.game_server_id' => $orderRegionCorrespondence->third_server_id,
             'order.title'          => $orderDetails['game_leveling_title'] ?: '无',
             'order.price'          => $order->amount,
             'order.bond4safe'      => $orderDetails['security_deposit'] ?: 0,
