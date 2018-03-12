@@ -111,15 +111,7 @@ class Show91
     public static function addOrder($order, $bool = false)
     {
         $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
-        // 我们的服
         $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
-        $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
-                ->where('field_name', 'serve')
-                ->value('id');
-        $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
-                ->where('field_name', 'serve')
-                ->where('field_value', $orderDetails['serve'])
-                ->value('id');
         // 我们的区
         $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
                 ->where('field_name', 'region')
@@ -127,6 +119,15 @@ class Show91
         $areaId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $areaTemplateWidgetId)
                 ->where('field_name', 'region')
                 ->where('field_value', $orderDetails['region'])
+                ->value('id');
+        // 我们的服
+        $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
+                ->where('field_name', 'serve')
+                ->value('id');
+        $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
+                ->where('field_name', 'serve')
+                ->where('parent_id', $areaId)
+                ->where('field_value', $orderDetails['serve'])
                 ->value('id');
 
         // 找第三方的区服信息

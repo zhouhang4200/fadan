@@ -113,15 +113,7 @@ class DailianMama
     public static function releaseOrder($order, $bool = false)
     {
     	$orderDetails = static::getOrderDetails($order->no);
-        // 我们的服
         $templateId =  GoodsTemplate::where('game_id', $order->game_id)->where('service_id', 4)->value('id'); //模板id
-        $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
-                ->where('field_name', 'serve')
-                ->value('id');
-        $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
-                ->where('field_name', 'serve')
-                ->where('field_value', $orderDetails['serve'])
-                ->value('id');
         // 我们的区
         $areaTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
                 ->where('field_name', 'region')
@@ -129,6 +121,15 @@ class DailianMama
         $areaId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $areaTemplateWidgetId)
                 ->where('field_name', 'region')
                 ->where('field_value', $orderDetails['region'])
+                ->value('id');
+        // 我们的服
+        $serverTemplateWidgetId = GoodsTemplateWidget::where('goods_template_id', $templateId)
+                ->where('field_name', 'serve')
+                ->value('id');
+        $serverId = GoodsTemplateWidgetValue::where('goods_template_widget_id', $serverTemplateWidgetId)
+                ->where('parent_id', $areaId)
+                ->where('field_name', 'serve')
+                ->where('field_value', $orderDetails['serve'])
                 ->value('id');
         // 找第三方的区服信息
         $orderRegionCorrespondence = OrderRegionCorrespondence::where('third', 2)
