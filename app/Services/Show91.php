@@ -105,6 +105,29 @@ class Show91
     }
 
     /**
+     * 获取该游戏的所有代练类型
+     * @param  [type] $order [description]
+     * @return [type]        [description]
+     */
+    public static function getPlays($order)
+    {
+        $thirdGameDatas = OrderRegionCorrespondence::where('game_id', $order->game_id)
+            ->where('third', 1)
+            ->first();
+
+        $options = ['gid' => $thirdGameDatas->third_game_id];
+
+        $res = static::normalRequest(config('show91.url.getPlays'), $options);
+
+        $res = json_decode($res, true);
+
+        if (! $res || ($res && $res['result'])) {
+            return '';
+        }
+        return $res['plays'];
+    }
+
+    /**
      * 发布订单
      * @param [type] $options [参数数组]
      */
@@ -141,6 +164,18 @@ class Show91
             return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！'];
         }
 
+        // 找游戏类型
+        $types = static::getPlays($order);
+        $gameType = '';
+        // 匹配当前的类型
+        if ($types) {
+            foreach ($types as $type) {
+                if (trim($type['play_name']) == $orderDetails['game_leveling_type']) {
+                    $gameType = $type['id'];
+                }
+            }
+        }
+
         $options = [
             'orderType'            => 0, // 0代练订单, 1 求购订单
             'order.game_id'        => $orderRegionCorrespondence->third_game_id, 
@@ -172,6 +207,7 @@ class Show91
             'istop'                => 0,
             'forAuth'              => 0,
             'order.game_play_id'   => 1,
+            'order.game_play_id'   => $gameType,
         ];
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {

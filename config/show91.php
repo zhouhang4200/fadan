@@ -34,5 +34,6 @@ return [
 		'confirmAt'        => 'http://www.show91.com/oauth/confirmAt', // 确认增加代练时间
 		'grounding'        => 'http://www.show91.com/oauth/grounding', // 订单上下架
 		'addLimitTime2'    => 'http://www.show91.com/oauth/addLimitTime2', // 增加代练时间，商家用
+		'getPlays'    	   => 'http://www.show91.com/oauth/getPlays', // 增加代练时间，商家用
 	],
 ];

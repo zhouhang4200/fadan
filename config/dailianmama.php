@@ -25,7 +25,11 @@ return [
 	],
 
 	'qs_user_id' => 8556, // 代练妈妈在千手的用户ID
-	'source_id' => 'DLMM_100334718', // sourceid
-	'share_key' => 'DIC0Sck5KcRzdH9fmoypkVG6AVmwU3qA', // 共享秘钥
-	'pay_password' => '880203vic', // 支付密码
+	// 'source_id' => 'DLMM_100334718', // sourceid
+	// 'share_key' => 'DIC0Sck5KcRzdH9fmoypkVG6AVmwU3qA', // 共享秘钥
+	// 'pay_password' => '880203vic', // 支付密码
+
+	'source_id' => env('SOURCE_ID'), // sourceid
+	'share_key' => env('SHARE_KEY'), // 共享秘钥
+	'pay_password' => env('PAY_PASSWORD'), // 支付密码
 ];
