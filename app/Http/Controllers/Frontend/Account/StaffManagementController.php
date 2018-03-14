@@ -94,23 +94,10 @@ class StaffManagementController extends Controller
     public function forbidden(Request $request)
     {
     	DB::beginTransaction();
-    	// try {
-	    // 	$user = User::withTrashed()->find($request->id);
-
-	    // 	if (! $user->deleted_at) {    		
-		   //  	$user->delete();
-	    // 	} else {
-	    // 		$user->restore();
-	    // 	}
-    	// } catch (Exception $e) {
-    	// 	DB::rollBack();
-    	// 	return response()->ajax(0, '启用失败');
-    	// 	throw new Exception($e->getMessage());
-    	// }
         
         try {
             $user = User::find($request->id);
-
+            // status=1是禁用
             if ($user->status == 1) {
                 $user->status = 0;
                 $user->save();

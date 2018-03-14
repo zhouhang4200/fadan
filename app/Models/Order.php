@@ -164,21 +164,21 @@ class Order extends Model
     }
 
     /**
-     * 手动改状态
+     * 订单报警手动改状态,状态修改成功之后，在报警页面不显示这条记录
      * @param  [type] $status [description]
      * @param  [type] $user   [description]
      * @return [type]         [description]
      */
     public function handChangeStatus($status, $user, $datas = null)
     {
+        // 获取订单之前和现在的状态，供操作日志记录用
         $beforeStatus = config('order.status_leveling')[$this->status];
         $handledStatus = config('order.status_leveling')[$status];
-
         $beforOrder = static::where('no', $this->no)->first();
-
+        // 改订单状态
         $this->status = $status;
         $this->save();
-
+        // 写订单操作日志
         $data['order_no'] = $this->no;
         $data['creator_primary_user_id'] = $this->creator_primary_user_id;
         $data['user_id'] = $this->creator_user_id;
@@ -189,12 +189,12 @@ class Order extends Model
         $data['before'] = serialize($beforOrder->toArray());
         $data['after'] = serialize($this->toArray());
         $data['created_at'] = Carbon::now()->toDateTimeString();
-
+        // 后台管理员手动修改订单状态，单独写的操作记录
         OrderHistory::create($data);
-
+        // 撤销，仲裁，需要将填的信息，写到协商仲裁表里面
         if (in_array($status, [15, 16, 19, 20, 21, 23, 24])) {
             switch ($status) {
-                case 15:
+                case 15: // 撤销中
                     if ($datas) {
                         $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
@@ -202,23 +202,35 @@ class Order extends Model
                         $arr['deposit'] = $datas['deposit'] ?? 0;
                         $arr['consult'] = $datas['who'] ?? 0;
                         $arr['revoke_message'] = $datas['revoke_message'];
+                        // 看是发单发起撤销还是接单发起撤销
+                        if ($arr['consult'] == 2) {
+                            $arr['user_id'] = $this->gainer_primary_user_id;
+                        } elseif ($arr['consult'] == 1) {
+                            $arr['user_id'] = $this->creator_primary_user_id;
+                        }
                         LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
                     } else {
                         throw new OrderNoticeException('没有填写申请撤销表单！');
                     }
-                break;
-                case 16:
+                    break;
+                case 16: // 仲裁中
                     if ($datas) {
                         $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
                         $arr['complain'] = $datas['who'] ?? 0;
                         $arr['complain_message'] = $datas['complain_message'];
+                        // 看是发单发起撤销还是接单发起撤销
+                        if ($arr['complain'] == 2) {
+                            $arr['user_id'] = $this->gainer_primary_user_id;
+                        } elseif ($arr['complain'] == 1) {
+                            $arr['user_id'] = $this->creator_primary_user_id;
+                        }
                         LevelingConsult::where('order_no', $this->no)->updateOrCreate(['order_no' => $this->no], $arr);
                     } else {
                         throw new OrderNoticeException('没有填写申请仲裁表单！');
                     }
                 break;
-                case 19:
+                case 19: // 已撤销
                     if ($datas) {
                         $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
@@ -231,11 +243,11 @@ class Order extends Model
                         throw new OrderNoticeException('没有填写申请撤销表单！');
                     }
                     PublicController::revokeFlows($this->no);
-                break;
-                case 20:
+                    break;
+                case 20: // 已结算
                     PublicController::completeFlows($this->no);
-                break;
-                case 21:
+                    break;
+                case 21: // 已仲裁
                     if ($datas) {
                         $arr['user_id'] = 0;
                         $arr['order_no'] = $this->no;
@@ -246,13 +258,13 @@ class Order extends Model
                         throw new OrderNoticeException('没有填写申请仲裁表单！');
                     }
                     PublicController::arbitrationFlows($this->no);
-                break;
-                case 23:
+                    break;
+                case 23: // 强制撤销
                     PublicController::forceRevokeFlows($this->no);
-                break;
-                case 24:
+                    break;
+                case 24: // 已删除
                     PublicController::deleteFlows($this->no);
-                break; 
+                    break; 
             }
         }
         OrderNotice::where('order_no', $this->no)->update(['status' => $status, 'complete' => 1]);
