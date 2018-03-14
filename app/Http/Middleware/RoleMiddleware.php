@@ -19,9 +19,7 @@ class RoleMiddleware
             : explode('|', $role);
 
         if (! Auth::user()->hasAnyRole($role)) {
-
             if (Request::ajax()) {
-
                 return response()->ajax(0, '您未开通相应权限！');
             }
             abort(403);

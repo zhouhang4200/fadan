@@ -23,7 +23,6 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-
         if ($guard == 'web' && $request->isMethod('post') && $this->checkLoginError($request)) {
             return redirect('/login')->withInput()->with('loginError', '异地登录!');
         }

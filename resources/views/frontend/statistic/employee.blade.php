@@ -17,7 +17,7 @@
     <form class="layui-form" method="" action="">
         <div class="layui-input-inline">
             <div class="layui-form-item">
-                <label class="layui-form-label" style="padding-left: 0px;width: 53px;">员工姓名</label> 
+                <label class="layui-form-label" style="padding-left: 0px;width: 100px;">员工姓名</label> 
                     <div class="layui-input-inline">               
                         <select name="user_name" lay-verify="" lay-search="">
                             <option value="">请输入员工姓名</option>
