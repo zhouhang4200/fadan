@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Services\DailianMama;
 use App\Services\Show91;
+use App\Services\SmSApi;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
