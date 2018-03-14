@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 代练平台订单统计')
+@section('title', ' | 代练平台统计')
 
 @section('css')
     <style>
@@ -20,7 +20,7 @@
         <div class="col-lg-12">
             <ol class="breadcrumb">
                 <li class=""><span>首页</span></li>
-                <li class="active"><span>代练平台订单统计</span></li>
+                <li class="active"><span>代练平台统计</span></li>
             </ol>
         </div>
     </div>

@@ -313,25 +313,26 @@ class ConfigController extends Controller
      */
     public static function exports($gameId, $ourAreas, $thirdAreas, $ourServers, $thirdServers)
     {
+    	// 标题
     	$game = Game::find($gameId);
         $ourAreaTitle = ['我们的区ID', '我们的区名'];
         $thirdAreaTitle = ['第三方区ID', '第三方区名'];
         $ourServerTitle = ['我们的游戏ID', '我们的游戏名', '我们的区ID', '我们的区名', '我们的服ID', '我们的服名'];
         $thirdServerTitle = ['第三方游戏ID', '第三方游戏名', '第三方区ID', '第三方区名', '第三方服ID', '第三方服名'];
-
+        // 将标题加入到数据中
         array_unshift($ourAreas, $ourAreaTitle);
         array_unshift($thirdAreas, $thirdAreaTitle);
         array_unshift($ourServers, $ourServerTitle);
         array_unshift($thirdServers, $thirdServerTitle);
-
+        // 分页为4页的数据excel
         Excel::create("$game->name($game->id)", function ($excel) use ($ourAreas, $thirdAreas, $ourServers, $thirdServers) {
-            $excel->sheet("代练平台区", function ($sheet) use ($ourAreas) {
+            $excel->sheet("我们的区", function ($sheet) use ($ourAreas) {
                 $sheet->rows($ourAreas);
             });
             $excel->sheet("第三方区", function ($sheet) use ($thirdAreas) {
                 $sheet->rows($thirdAreas);
             });
-            $excel->sheet("代练平台服", function ($sheet) use ($ourServers) {
+            $excel->sheet("我们的服", function ($sheet) use ($ourServers) {
                 $sheet->rows($ourServers);
             });
             $excel->sheet("第三方服", function ($sheet) use ($thirdServers) {
@@ -341,7 +342,7 @@ class ConfigController extends Controller
     }
 
     /**
-     * 导入excel数据
+     * 导入excel数据, 不用选第三方平台和游戏，直接导入
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -349,21 +350,20 @@ class ConfigController extends Controller
     {
     	try {
     		if ($request->hasFile('file')) {
-	    		$file = $request->file('file');
-	    		$path = $file->path();
-		    	$excelDatas = [];
-		    	$title = '';
-		    	Excel::load($path, function ($reader) use (&$excelDatas, &$title) {
+		    	$sheetName = ''; // 页脚,要求页脚名字必须为 区服配置 才能正常导入
+		    	$excelDatas = []; // excel内容
+
+		    	Excel::load($request->file('file')->path(), function ($reader) use (&$excelDatas, &$sheetName) {
 		            $reader = $reader->getSheet(0);
-		            $title = $reader->getTitle();
+		            $sheetName = $reader->getTitle();
 		            $excelDatas = $reader->toArray();
 		        });
 
-		    	if (! $excelDatas || ! $title) {
+		    	if (! $excelDatas || ! $sheetName) {
 		    		return response()->ajax(0, '导入数据为空或文件标题缺失!');
 		    	}
-
-		    	switch ($title) {
+		    	// 页脚名字
+		    	switch ($sheetName) {
 		    		case '区服配置':
 		    			$datas = [];
 		    			foreach ($excelDatas as $k => $excelData) {

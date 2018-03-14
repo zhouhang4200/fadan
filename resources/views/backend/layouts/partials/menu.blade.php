@@ -41,7 +41,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </li>
                                 <li>
                                     <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
-                                        代练订单报警
+                                        报警订单
                                     </a>
                                 </li>
                             </ul>
@@ -88,7 +88,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             
                                 <li>
                                     <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
-                                        商户权限列表
+                                        管理员列表
                                     </a>
                                 </li>
                             
@@ -254,7 +254,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         
                             <li>
                                 <a href="{{ route('admin-accounts.index') }}" @if($currentRouteName == 'admin-accounts.index') class="active" @endif>
-                                    账号
+                                    后台账号
                                 </a>
                             </li>
                         
@@ -282,7 +282,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         
                             <li>
                                 <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
-                                    账号权限组列表
+                                    管理员列表
                                 </a>
                             </li>
                         
@@ -413,27 +413,30 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    <li @if($currentOneLevelMenu == 'datas') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'datas' || $currentOneLevelMenu == 'statistic') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>数据统计</span>
+                            <span>统计管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                        
                             <li>
                                 <a href="{{ route('datas.index') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    每日数据
+                                    代充平台数据
                                 </a>
                             </li>
-                        
+                            <li>
+                                <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
+                                    代练平台统计
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
                     <li @if($currentOneLevelMenu == 'config') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>区服配置信息</span>
+                            <span>配置管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
@@ -442,33 +445,9 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     游戏配置
                                 </a>
                             </li>
-                           <!--  <li>
-                                <a href="{{ route('config.area') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    区配置
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('config.server') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
-                                    服配置
-                                </a>
-                            </li> -->
                             <li>
                                 <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     区服配置
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li @if($currentOneLevelMenu == 'statistic') class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>平台统计</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
-                                    平台统计
                                 </a>
                             </li>
                         </ul>

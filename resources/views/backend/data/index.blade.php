@@ -3,16 +3,13 @@
 @section('title', ' | 昨日数据')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        .user-td td div{
-            text-align: center;width: 320px;
-        }
         .layui-table tr th, td{
             text-align: center;
         }
-        .layui-input-inline {
-            margin-top:20px;
+        .layui-form-item .layui-input-inline {
+            margin-right: 10px;
+            width:350px;
         }
     </style>
 @endsection
@@ -24,21 +21,20 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">昨日数据</li>
+                            <li class="layui-this" lay-id="add">代充平台数据</li>
                         </ul>
                         <div class="layui-tab-content">                      
-                        <form class="layui-form" method="" action="">
-                            <div class="layui-input-inline" style="float:left;">
+                            <form class="layui-form" method="" action="">
                                 <div class="layui-form-item">
-                                    <div class="layui-input-inline" >
+                                    <div class="layui-input-inline">
                                         <input type="text" class="layui-input" value="{{ old('date') ?: $date }}" name="date" id="test1" placeholder="日期">
                                     </div>
+                            
                                     <div class="layui-input-inline">
-                                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                                        <button  class="layui-btn layui-btn-normal layui-btn-small"><a href="{{ route('datas.index') }}" style="color:#fff">返回</a></button>
+                                        <a class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" >查找</a>
+                                        <a href="{{ route('datas.index') }}" class="layui-btn layui-btn-normal layui-btn-small" style="color:#fff">返回</a>
                                         <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
                                     </div>
-                                </div>
                                 </div>
                             </form>
                             <div class="layui-tab-item layui-show">
