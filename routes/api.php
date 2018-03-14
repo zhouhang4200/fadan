@@ -98,3 +98,7 @@ Route::middleware('internal.api')->prefix('room-card-recharge')->group(function 
     Route::get('/', 'RoomCardRecharge@index');
     Route::post('update', 'RoomCardRecharge@update');
 });
+
+Route::middleware('internal.api')->prefix('user-info')->namespace('Fulu')->group(function (){
+    Route::get('/', 'UserInformationQuery@index');
+});
