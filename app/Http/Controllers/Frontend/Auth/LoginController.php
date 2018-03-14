@@ -75,7 +75,17 @@ class LoginController extends Controller
             'geetest' => config('geetest.server_fail_alert')
         ]);
 
+        // 检查账号是否被禁用
+        $user = User::where('name', $request->name)->first();
+
+        if ($user && \Hash::check($request->password, $user->password)) {
+            if ($user->status == 1) {
+                 return redirect('/login')->withInput()->with('forbidden', '您的账号已被禁用!');
+            }
+        }
+
         $this->validateLogin($request);
+
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and

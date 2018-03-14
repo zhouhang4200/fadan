@@ -95,7 +95,8 @@ class LevelingController extends Controller
     }
 
     /**
-     * 手动改订单状态
+     * 后台订单报警，手动改订单状态,修改成功后，页面将不再显示修改成功的订单
+     * 不能讲订单修改为，已撤销，已仲裁状态，因为接口回传代练费，回传双金，回传手续费需要找平台获取
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -122,8 +123,8 @@ class LevelingController extends Controller
     		$order->handChangeStatus($request->status, Auth::user(), $data);
     	} catch (OrderNoticeException $e) {
     		DB::rollback();
-    		return response()->ajax(0, $e->getMessage());
     		Log::info($e->getMessage());
+            return response()->ajax(0, $e->getMessage());
     	}
     	DB::commit();
     	return response()->ajax(1, '修改状态为【'.config('order.status_leveling')[$request->status].'】成功!');

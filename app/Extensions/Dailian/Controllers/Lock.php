@@ -76,9 +76,10 @@ class Lock extends DailianAbstract implements DailianInterface
 
                 switch ($orderDetails['third']) {
                     case 1:
+                        throw new DailianException('该订单被91平台接单，91平台无此操作!');
                         // 91锁定接口
-                        $options = ['oid' => $orderDetails['show91_order_no']];
-                        Show91::changeOrderBlock($options);
+                        // $options = ['oid' => $orderDetails['show91_order_no']];
+                        // Show91::changeOrderBlock($options);
                         break;
                     case 2:
                         // 代练妈妈锁定接口

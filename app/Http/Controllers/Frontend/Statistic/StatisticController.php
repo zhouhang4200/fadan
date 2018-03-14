@@ -38,19 +38,34 @@ class StatisticController extends Controller
             $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
         }
 
-    	$query = EmployeeStatistic::whereIn('user_id', $userIds)
-			->filter($filters)
-			->select(DB::raw('
-                user_id, 
-                username, 
-                name, 
-                sum(complete_order_count) as complete_order_count, 
-                sum(revoke_order_count) as revoke_order_count, 
-                sum(arbitrate_order_count) as arbitrate_order_count, 
-                sum(profit) as profit, 
-                sum(complete_order_amount) as complete_order_amount
+   //  	$query = EmployeeStatistic::whereIn('user_id', $userIds)
+			// ->filter($filters)
+			// ->select(DB::raw('
+   //              user_id, 
+   //              username, 
+   //              name, 
+   //              sum(complete_order_count) as complete_order_count, 
+   //              sum(revoke_order_count) as revoke_order_count, 
+   //              sum(arbitrate_order_count) as arbitrate_order_count, 
+   //              sum(profit) as profit, 
+   //              sum(complete_order_amount) as complete_order_amount
+   //          '))
+			// ->groupBy('user_id');
+
+        $query = EmployeeStatistic::whereIn('employee_statistics.user_id', $userIds)
+            ->filter($filters)
+            ->select(DB::raw('
+                employee_statistics.user_id, 
+                users.name as name,
+                users.username as username,
+                sum(employee_statistics.complete_order_count) as complete_order_count, 
+                sum(employee_statistics.revoke_order_count) as revoke_order_count, 
+                sum(employee_statistics.arbitrate_order_count) as arbitrate_order_count, 
+                sum(employee_statistics.profit) as profit, 
+                sum(employee_statistics.complete_order_amount) as complete_order_amount
             '))
-			->groupBy('user_id');
+            ->leftJoin('users', 'users.id', '=', 'employee_statistics.user_id')
+            ->groupBy('employee_statistics.user_id');
 
     	$datas = $query->paginate(config('frontend.page'));
         $excelDatas = $query->get();

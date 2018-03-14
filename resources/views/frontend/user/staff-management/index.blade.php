@@ -19,7 +19,7 @@
     <form class="layui-form" method="" action="">
         <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
+                <label class="layui-form-label" style="width: 100px; padding-left: 0px;">员工姓名</label>
                 <div class="layui-input-inline">               
                     <select name="username" lay-verify="" lay-search="">
                         <option value="">请输入员工姓名</option>
@@ -86,7 +86,7 @@
                         <td>{{ $user->phone ?? '--' }}</td>
                         <td>{{ $user->updated_at ?? '--' }}</td>
                         <td>{{ $user->remark ?? '--' }}</td>
-                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ !$user->deleted_at ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
+                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 1 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
                         <td>
                         @if(!$user->deleted_at)
                             <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
@@ -118,7 +118,6 @@
             // 账号启用禁用
             form.on('switch(open)', function(data){
                 var id = data.elem.getAttribute('lay-data');
-                console.log(id);
                 $.ajax({
                     type: 'POST',
                     url: "{{ route('staff-management.forbidden') }}",
@@ -130,7 +129,6 @@
                         } else {
                             layer.msg('启用失败', {icon: 5, time:1500}); 
                         }
-                    window.location.href="{{ route('staff-management.index') }}";
                     }
                 });
             });
