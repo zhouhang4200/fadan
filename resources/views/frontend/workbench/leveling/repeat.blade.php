@@ -55,6 +55,7 @@
                             <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
                         </div>
                         <form class="layui-form" action="" id="form-order">
+                            <input type="hidden" name="creator_user_id" value="{{ $detail['creator_user_id'] ?? '' }}">
                             <div class="layui-row form-group">
                                 <div class="layui-col-md6">
                                     <div class="layui-col-md3 layui-form-mid">*游戏</div>

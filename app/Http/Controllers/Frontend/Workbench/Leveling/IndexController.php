@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Models\UserSetting;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
@@ -222,6 +223,15 @@ class IndexController extends Controller
 
             // 获取当前下单人名字
             $orderData['customer_service_name'] = Auth::user()->username;
+            // 用户是否启用发单设置
+            $userSetting = UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('option', 'sending_control')
+                ->first();
+
+            // 默认是发当前子账号， 1 = 当前发单客服， 0是发原始的
+            if ($userSetting && $userSetting->value == 0) {
+                $userId = $orderData['creator_user_id'];
+            }
 
             try {
                 $orderNo = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));

@@ -147,6 +147,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('delete-control-goods', 'ReceivingControlController@deleteControlGoods')->name('frontend.setting.receiving-control.delete-control-goods')->middleware('permission:frontend.setting.receiving-control.delete-control-goods');
             Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode')->middleware('permission:frontend.setting.receiving-control.control-mode');
         });
+        // 设置 - 发单设置
+        Route::prefix('sending-control')->group(function () {
+            Route::get('/', 'SendingController@index')->name('frontend.setting.sending-control.index')->middleware('permission:frontend.setting.sending-control.index');
+            Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change')->middleware('permission:frontend.setting.sending-control.change');
+        });
+
         // api 风控设置
         Route::prefix('api-risk-management')->group(function () {
             Route::get('/', 'ApiRiskManagementController@index')->name('frontend.setting.api-risk-management.index')->middleware('permission:frontend.setting.api-risk-management.index');
