@@ -93,7 +93,7 @@ class SteamOrderController extends Controller
 					if ($SteamStorePrice) {
 						$debit_money = bcmul($SteamStorePrice->clone_price, $request['consume_money'], 4);
 					} else {
-						$debit_money = bcmul(0.005, $request['consume_money'], 4);
+						$debit_money = bcmul(0.01, $request['consume_money'], 4);
 					}
 					Asset::handle(new Consume($debit_money, Consume::TRADE_SUBTYPE_BROKERAGE, $request['order_no'], 'Steam手续费', $userId));
                 }

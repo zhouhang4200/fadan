@@ -137,7 +137,7 @@ class ExchangeController extends Controller
 		if ($SteamStorePrice) {
 			$clone_price = bcmul($SteamStorePrice->clone_price, $cdkeyLibrary->cdkey->goodses->price, 4);
 		} else {
-			$clone_price = bcmul(0.005, $cdkeyLibrary->cdkey->goodses->price, 4);
+			$clone_price = bcmul(0.01, $cdkeyLibrary->cdkey->goodses->price, 4);
 		}
 		if ($user->balance < $clone_price) { // 判断商户金额是否小于商品密价价格
 			return $this->response(10, '商户余额不足');
