@@ -152,7 +152,19 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'SendingController@index')->name('frontend.setting.sending-control.index')->middleware('permission:frontend.setting.sending-control.index');
             Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change')->middleware('permission:frontend.setting.sending-control.change');
         });
-
+        // 设置-发单辅助设置
+        Route::prefix('sending-assist')->group(function () {
+            // 代练要求模板
+            Route::prefix('require')->group(function () {
+                Route::get('/', 'SendingAssistController@require')->name('frontend.setting.sending-assist.require')->middleware('permission:frontend.setting.sending-assist.require');
+                Route::get('create', 'SendingAssistController@requireCreate')->name('frontend.setting.sending-assist.require.create')->middleware('permission:frontend.setting.sending-assist.require.create');
+                Route::post('store', 'SendingAssistController@requireStore')->name('frontend.setting.sending-assist.require.store')->middleware('permission:frontend.setting.sending-assist.require.store');
+                Route::get('edit/{id}', 'SendingAssistController@requireEdit')->name('frontend.setting.sending-assist.require.edit')->middleware('permission:frontend.setting.sending-assist.require.edit');
+                Route::post('update', 'SendingAssistController@requireUpdate')->name('frontend.setting.sending-assist.require.update')->middleware('permission:frontend.setting.sending-assist.require.update');
+                Route::post('destroy', 'SendingAssistController@requireDestroy')->name('frontend.setting.sending-assist.require.destroy')->middleware('permission:frontend.setting.sending-assist.require.destroy');
+                Route::post('set', 'SendingAssistController@requireSet')->name('frontend.setting.sending-assist.require.set')->middleware('permission:frontend.setting.sending-assist.require.set');
+            });
+        });
         // api 风控设置
         Route::prefix('api-risk-management')->group(function () {
             Route::get('/', 'ApiRiskManagementController@index')->name('frontend.setting.api-risk-management.index')->middleware('permission:frontend.setting.api-risk-management.index');
