@@ -102,3 +102,8 @@ Route::middleware('internal.api')->prefix('room-card-recharge')->group(function 
 Route::middleware('internal.api')->prefix('user-info')->namespace('Fulu')->group(function (){
     Route::get('/', 'UserInformationQuery@index');
 });
+
+Route::prefix('uplay')->group(function (){
+    Route::any('account-verification', 'UplayController@accountVerification');
+});
+

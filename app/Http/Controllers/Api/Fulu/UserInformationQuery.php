@@ -75,6 +75,6 @@ class UserInformationQuery
         if ($info) {
             return response()->ajax(1, '查询成功', $info);
         }
-        return response()->ajax(1, '没有查到相关数据');
+        return response()->ajax(0, '没有查到相关数据');
     }
 }
