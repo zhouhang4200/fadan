@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 class UplayController extends Controller
 {
     /**
+     * upaly 账号验证
      * @param Request $request
      * @return mixed
      */

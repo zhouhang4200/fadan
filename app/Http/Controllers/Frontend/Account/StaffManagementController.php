@@ -112,9 +112,9 @@ class StaffManagementController extends Controller
         } 
     	DB::commit();
     	if ($user->status == 1) {
-    		return response()->ajax(1, '已开启');
+    		return response()->ajax(1, '已禁用');
     	} else {
-    		return response()->ajax(1, '已关闭');
+    		return response()->ajax(1, '已启用');
     	}
     }
 
