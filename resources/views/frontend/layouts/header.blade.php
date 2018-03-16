@@ -21,7 +21,7 @@
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route('frontend.finance.asset') }}">财务</a><div class="arrow"></div></li>
                 @endcan
 
-                @can('frontend.workbench.recharge.index')
+                @can('frontend.workbench.index')
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.recharge.index') }}">工作台</a><div class="arrow"></div></li>
                 @endcan
                 @can('frontend.workbench.leveling.index')
