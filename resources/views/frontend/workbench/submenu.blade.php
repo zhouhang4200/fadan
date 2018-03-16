@@ -1,5 +1,5 @@
 <ul class="seller_center_left_menu">
-	@can('frontend.workbench.recharge.index')
+	@can('frontend.workbench.index')
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.index' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.index') }}">代充订单</a>
 		<div class="arrow"></div>
