@@ -99,6 +99,7 @@ Route::middleware('internal.api')->prefix('room-card-recharge')->group(function 
     Route::post('update', 'RoomCardRecharge@update');
 });
 
+// 公司 商户信息查询接口
 Route::middleware('internal.api')->prefix('user-info')->namespace('Fulu')->group(function (){
     Route::get('/', 'UserInformationQuery@index');
 });

@@ -68,7 +68,7 @@
                 <th>电话</th>
                 <th>最后操作时间</th>
                 <th>备注</th>
-                <th>启用</th>
+                <th>状态</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -86,7 +86,7 @@
                         <td>{{ $user->phone ?? '--' }}</td>
                         <td>{{ $user->updated_at ?? '--' }}</td>
                         <td>{{ $user->remark ?? '--' }}</td>
-                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 1 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="ON|OFF"></td>
+                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 0 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="启用|禁用"></td>
                         <td>
                         @if(!$user->deleted_at)
                             <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>

@@ -158,6 +158,15 @@ class User extends Authenticatable
         return $this->belongsTo(static::class, 'parent_id');
     }
 
+    public function parentInfo()
+    {
+        if ($this->parent_id == 0) {
+            return $this;
+        } else {
+            return self::find($this->parent_id);
+        }
+    }
+
     // 获取主账号ID
     public function getPrimaryUserId()
     {

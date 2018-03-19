@@ -260,7 +260,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 获取下单项的子菜单
             Route::post('get-select-child', 'IndexController@getSelectChild')->name('frontend.workbench.get-select-child');
             // 首页
-            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index');
+            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index')->middleware('permission:frontend.workbench.leveling.index');;
             // 根据订单状态获取订单数据
             Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
             // 创建订单
