@@ -28,7 +28,7 @@
             <li>定价器设置</li>
         </ul>
         <div class="layui-tab-content" style="height: 100px;">
-            <div class="layui-tab-item layui-show">
+            <div class="layui-tab-item layui-show" id="require-show">
                 <div style="padding-bottom:40px;">
                 <form class="layui-form" method="" action="">
                     <div style="float: left">
@@ -38,40 +38,9 @@
                     </div>                     
                 </form>
                 </div>
-                <form class="layui-form" method="" action="">
-                <table class="layui-table">
-                    <thead>
-                    <tr>
-                        <th style="width:10%">模板名称</th>
-                        <th>模板内容</th>
-                        <th style="width:7%;">设为默认</th>
-                        <th style="width:15%;">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($orderTemplates as $orderTemplate)
-                        <tr>
-                            <td>{{ $orderTemplate->name }}</td>
-                            <td>{{ $orderTemplate->content }}</td>
-                            <td style="padding-bottom: 0px;padding-top: 0px;">
-                                <div class="layui-form-item" pane="" style="width:50px;margin-bottom: 0px;">
-                                    <div class="layui-input-block" style="margin-left:12px;height:45px;">
-                                         <input type="checkbox" name="status" lay-filter="default" lay-skin="primary" lay-data="{{ $orderTemplate->id }}" value="1" title="" {{ $orderTemplate->status == 1 ? 'checked' : '' }}>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="text-align: center">
-                                <a href="{{ route('frontend.setting.sending-assist.require.edit', ['id' => $orderTemplate->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
-                                <a class="layui-btn layui-btn-normal layui-btn-mini" onclick="destroy({{ $orderTemplate->id }})">删除</a>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                    @endforelse
-                    </tbody>
-                </table>
-                </form>
+                <div id="require-index">
+                @include('frontend.setting.sending-assist.require-form')
+                </div>
             </div>
             <div class="layui-tab-item">内容2</div>
             <div class="layui-tab-item">内容3</div>
@@ -134,24 +103,37 @@
                     window.location.href="{{ route('frontend.setting.sending-assist.require') }}";    
                 });     
             });
-        });
+            // 删除
+            form.on("submit(delete)", function (result) {
+                var id=this.getAttribute('lay-del-id');
+                var s = window.location.search; //先截取当前url中“?”及后面的字符串
+                var page=s.getAddrVal('page'); 
 
-        function destroy (id) {
-            layui.use(['form', 'layedit', 'laydate',], function(){
-                var form = layui.form,layer = layui.layer;
                 layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('frontend.setting.sending-assist.require.destroy') }}",
-                        data:{id:id},
-                        success: function (data) {
-                            layer.msg(data.message, {icon: 6, time:1000});                                
-                            window.location.href = "{{ route('frontend.setting.sending-assist.require') }}";
+                    $.post("{{ route('frontend.setting.sending-assist.require.destroy') }}", {id:id}, function (result) {
+                        layer.msg(result.message); 
+                        if (page) {
+                            $.get("{{ route('frontend.setting.sending-assist.require') }}?page="+page, function (result) {
+                                $('#require-index').html(result);
+                                layui.form.render();
+                            }, 'json');
+                        } else {
+                            $.get("{{ route('frontend.setting.sending-assist.require') }}", function (result) {
+                                $('#require-index').html(result);
+                                layui.form.render();
+                            }, 'json');
                         }
                     });
                     layer.close(index);
                 });
-            });
-        }
+                return false;
+            })
+
+            String.prototype.getAddrVal = String.prototype.getAddrVal||function(name){
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var data = this.substr(1).match(reg);
+                return data!=null?decodeURIComponent(data[2]):null;
+            }
+        });
     </script>
 @endsection

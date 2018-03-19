@@ -13,9 +13,15 @@ class SendingAssistController extends Controller
 	 * 要求代练模板
 	 * @return [type] [description]
 	 */
-    public function require()
+    public function require(Request $request)
     {
-    	$orderTemplates = OrderTemplate::where('user_id', Auth::user()->getPrimaryUserId())->paginate(20);
+    	$orderTemplates = OrderTemplate::where('user_id', Auth::user()->getPrimaryUserId())->paginate(2);
+
+    	if ($request->ajax()) {
+            return response()->json(view()->make('frontend.setting.sending-assist.require-form', [
+                'orderTemplates' => $orderTemplates,
+            ])->render());
+        }
 
     	return view('frontend.setting.sending-assist.require', compact('orderTemplates'));
     }
@@ -102,6 +108,11 @@ class SendingAssistController extends Controller
     	return response()->ajax(1, '修改成功!');
     }
 
+    /**
+     * 发单要去模板-删除
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function requireDestroy(Request $request)
     {
     	OrderTemplate::destroy($request->id);
