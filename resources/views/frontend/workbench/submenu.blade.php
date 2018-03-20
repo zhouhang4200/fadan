@@ -15,13 +15,16 @@
 		<a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
 		<div class="arrow"></div>
 	</li>
+	@if(auth()->user()->leveling_type == 2)
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.create' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
 		<div class="arrow"></div>
 	</li>
+
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.wait' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
 		<div class="arrow"></div>
 	</li>
+	@endif
 	@endcan
 </ul>

@@ -347,7 +347,7 @@
                                                 @if($item->field_type == 2 && in_array($detail['status'], [1, 23]) || $item->field_name == 'label')
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
-                                                        @if(count($item->user_values) > 0)
+                                                        @if(is_array($item->user_values) && count($item->user_values) > 0)
 
                                                             @foreach($item->user_values as $v)
                                                                 <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
@@ -366,7 +366,7 @@
                                                 @elseif($item->field_type == 2)
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" class="layui-disabled" disabled>
                                                         <option value=""></option>
-                                                        @if(count($item->user_values) > 0)
+                                                        @if(is_array($item->user_values) && count($item->user_values) > 0)
 
                                                             @foreach($item->user_values as $v)
                                                                 <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>

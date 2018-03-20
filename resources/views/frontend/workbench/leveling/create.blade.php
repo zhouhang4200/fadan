@@ -226,6 +226,9 @@
         });
         // 下单
         form.on('submit(order)', function (data) {
+            var load = layer.load(0, {
+                shade: [0.2, '#000000']
+            });
 
             if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
                 layer.msg('代练时间不能都为0');
@@ -238,6 +241,7 @@
             }
 
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+
                 if (result.status == 1) {
                     layer.open({
                         content: result.message,
@@ -268,6 +272,8 @@
                     });
                     // layer.msg(result.message);
                 }
+                layer.close(load);
+
             }, 'json');
             return false;
         });
@@ -275,7 +281,6 @@
         form.on('select(game)', function (data) {
             loadTemplate(data.value)
         });
-
         // 模版预览 下拉框值
         form.on('select(change-select)', function(data){
             var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
@@ -320,12 +325,10 @@
                 });
             }, 'json');
         }
-
         // 解析模板
         $('#parse').click(function () {
             analysis();
         });
-
         function analysis() {
 
             var fieldArrs = $('[name="desc"]').val().split('\n');
@@ -369,9 +372,6 @@
             }
             layui.form.render();
         }
-
     });
-
-
 </script>
 @endsection
