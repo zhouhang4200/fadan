@@ -99,7 +99,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                 }
             }
 
-            if ($this->order->game_id == 21 && $this->order->creator_primary_user_id == 8311) {
+            if ($this->order->game_id == 21 && in_array($this->order->creator_primary_user_id, [8311, 8111])) {
                 // 发送短信
                 try {
                     $userSet = User::where(['id' => $this->order->gainer_primary_user_id])->first();
