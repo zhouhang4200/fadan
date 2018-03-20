@@ -68,7 +68,7 @@ class OrderAssign extends Command
                     continue;
                 } else {
                     // 如果是王者直接分配给1131
-                    if (in_array($orderInfo->game_id, [1])) {
+                    if (in_array($orderInfo->game_id, [190000])) {
                         try {
                             $this->assign($orderNo, 8329);
                         } catch (\Exception $exception) {
@@ -111,7 +111,7 @@ class OrderAssign extends Command
                                 Log::alert($exception->getMessage() . ' 分配订单失败');
                                 continue;
                             }
-                        } else if (in_array($orderInfo->game_id, [1])) {
+                        } else if (in_array($orderInfo->game_id, [190000])) {
                             $this->assign($orderNo, 8329);
                         } else {
                             $currentTim = strtotime(date('Y-m-d H:i:s'));
