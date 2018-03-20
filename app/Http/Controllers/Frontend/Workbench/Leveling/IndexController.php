@@ -1003,7 +1003,7 @@ class IndexController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function tb(Request $request)
+    public function sendSms(Request $request)
     {
         $orderInfo = OrderModel::where('no', $request->no)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
