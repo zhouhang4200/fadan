@@ -326,7 +326,7 @@ class AddNoticeOrderFromRedis extends Command
             foreach ($orderHistories as $key => $orderHistory) {
                 $status = unserialize($orderHistory->before);
 
-                if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
+                if (isset($status['status']) && ! in_array($status['status'], [15, 16, 18])) {
                     $arr[$key] = $status['status'];
                 }
             }

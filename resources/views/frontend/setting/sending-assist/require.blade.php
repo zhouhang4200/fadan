@@ -56,7 +56,7 @@
         layui.use(['element', 'form'], function(){
             var $ = layui.jquery
             ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-            var form = layui.form ,layer = layui.layer, table = layui.table;
+            var form = layui.form, layer = layui.layer, table = layui.table;
             //触发事件
             var active = {
                 tabAdd: function(){

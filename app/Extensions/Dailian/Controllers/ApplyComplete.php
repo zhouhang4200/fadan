@@ -58,8 +58,11 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 写入提验时间
             OrderDetailRepository::updateByOrderNo($this->orderNo, 'check_time', date('Y-m-d H:i:s'));
-
+            // 操作成功，删除redis里面以前存在的订单报警
+            $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
+            // 我们平台操作失败，写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, 28);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	}

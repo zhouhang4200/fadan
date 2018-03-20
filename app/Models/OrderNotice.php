@@ -13,7 +13,7 @@ class OrderNotice extends Model
     	'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'creator_user_name', 
         'order_no', 'third_order_no', 'third', 'status', 'operate', 'third_status',
         'child_third_status', 'create_order_time', 'complete', 'created_at', 'updated_at',
-        'amount', 'security_deposit', 'efficiency_deposit',
+        'amount', 'security_deposit', 'efficiency_deposit', 'our_operate'
     ];
 
     protected $dates = ['deleted_at'];

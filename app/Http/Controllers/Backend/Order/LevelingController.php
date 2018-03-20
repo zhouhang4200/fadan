@@ -29,7 +29,7 @@ class LevelingController extends Controller
 	    	
 	    	$query = OrderNotice::where('complete', 0)->filter($filters)->latest('updated_at');
             // 订单报警数据列表
-	    	$paginateOrderNotices = $query->paginate(config('backend.page'));
+	    	$paginateOrderNotices = $query->paginate(10);
 
 	    	if ($request->export) {
 	    		if ($paginateOrderNotices->count() < 1) {
@@ -44,8 +44,19 @@ class LevelingController extends Controller
                 }
             }
     	} catch (OrderNoticeException $e) {
-    		Log::info($e->getMessage());
+    		myLog('admin-order-notice', ['message' => $e->getMessage()]);
     	}
+        // 如果是ajax请求页面
+        if ($request->ajax()) {
+            return response()->json(view()->make('backend.order.leveling.list', [
+                'paginateOrderNotices' => $paginateOrderNotices,
+                'third' => $third,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'fullUrl' => $fullUrl,
+                'ourStatus' => $ourStatus,
+            ])->render());
+        }
     	return view('backend.order.leveling.index', compact('startDate', 'endDate', 'fullUrl', 'third', 'ourStatus', 'paginateOrderNotices'));
     }
 
@@ -61,7 +72,8 @@ class LevelingController extends Controller
     		'千手状态',
     		'外部状态',
     		'接单平台',
-            '接单平台操作',
+            '接单方操作',
+            '发单方操作',
     		'发布时间',
             '操作时间',
     	];
@@ -74,12 +86,18 @@ class LevelingController extends Controller
                 // 内容
                 $datas = [];
                 foreach ($chunkData as $key => $data) {
+                    if ($data['third'] == 1) {
+                        $thirdStatus = $data['child_third_status'] != 100 ? config("order.show91")[$data['third_status']].'('.config("order.show91")[$data['child_third_status']].')' : config("order.show91")[$data['third_status']];
+                    } else {
+                        $thirdStatus = $data['third_status'];
+                    }
                     $datas[] = [
                         $data['order_no'] ?? '--',
                         $data['status'] ? config("order.status_leveling")[$data['status']] : '--',
-                        $data['child_third_status'] != 100 ? config("order.show91")[$data['third_status']].'('.config("order.show91")[$data['child_third_status']].')' : config("order.show91")[$data['third_status']],
+                        $thirdStatus,
                         $data['third'] ? config("order.third")[$data['third']] : '--',
                         $data['operate'] ?: '--',
+                        $data['our_operate'] ?: '--',
                         $data['create_order_time'] ?? '--',
                         $data['created_at'] ?? '--',
                     ];

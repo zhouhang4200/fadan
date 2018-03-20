@@ -62,7 +62,11 @@ class Revoked extends DailianAbstract implements DailianInterface
             $this->orderCount();
             LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
             delRedisCompleteOrders($this->orderNo);
+            // 操作成功，删除redis里面以前存在的订单报警
+            $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
         } catch (DailianException $e) {
+             // 我们平台操作失败，写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, 24);
             DB::rollBack();
             throw new DailianException($e->getMessage());
     	}

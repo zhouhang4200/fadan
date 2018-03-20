@@ -22,7 +22,8 @@
                                 <div class="form-group col-xs-2">
                                     <select name="third" lay-filter="">                
                                         <option value="">请选择</option>
-                                            <option value="{{ 1 }}" {{ 1 == $third ? 'selected' : '' }} >91代练平台</option>
+                                            <option value="{{ 1 }}" {{ 1 == $third ? 'selected' : '' }} >91代练</option>
+                                            <option value="{{ 2 }}" {{ 2 == $third ? 'selected' : '' }} >代练妈妈</option>
                                     </select>
                                 </div>
                                 <label class="layui-form-label">发布时间</label>
@@ -40,115 +41,15 @@
                         </div>
                     </form>
                 </header>
-                <div class="main-box-body clearfix">
-                    <form class="layui-form" action="">
-                    <table class="layui-table" lay-size="sm">
-                            <thead>
-                            <tr>
-                                <th>订单号</th>
-                                <th>千手状态</th>
-                                <th>外部状态</th>
-                                <th>接单平台</th>
-                                <th>接单平台操作</th>
-                                <th>发布时间</th>
-                                <th>操作时间</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @forelse($paginateOrderNotices as $paginateOrderNotice)
-                                @if ($paginateOrderNotice->third == 1) 
-                                    <tr>
-                                        <td>{{ $paginateOrderNotice->order_no }}</td>
-                                        <td>{{ config('order.status_leveling')[$paginateOrderNotice->status] }}</td>
-                                        <td>
-                                        @if($paginateOrderNotice->child_third_status == 100)
-                                        {{ config('order.show91')[$paginateOrderNotice->third_status] }}
-                                        @else
-                                        {{ config('order.show91')[$paginateOrderNotice->third_status].' ('.config('order.show91')[$paginateOrderNotice->child_third_status].')' }}
-                                        @endif
-                                        </td>
-                                        <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
-                                        @if(substr($paginateOrderNotice->operate, -1) == '@')
-                                        <td style="color:green;">
-                                            {{ subOperate($paginateOrderNotice->operate) ?: '--' }}
-                                        </td>
-                                        @else
-                                        <td style="color:red;">
-                                            {{ $paginateOrderNotice->operate ?: '--' }}
-                                        </td>
-                                        @endif
-                                        <td>{{ $paginateOrderNotice->create_order_time }}</td>
-                                        <td>{{ $paginateOrderNotice->created_at }}</td>
-                                        <td>
-                                            <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
-                                                <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->amount }}" data-safe="{{ $paginateOrderNotice->security_deposit }}"
-                                                data-effect="{{ $paginateOrderNotice->efficiency_deposit }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
-                                                    <option value="">修改状态</option>
-                                                    @forelse($ourStatus as $key => $status)
-                                                        <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
-                                                    @empty
-                                                    @endforelse
-                                                </select>
-                                            </div>
-                                            <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginateOrderNotice->id }}">删除</button>
-                                        </td>
-                                    </tr>
-                                @elseif ($paginateOrderNotice->third == 2)
-                                    <tr>
-                                        <td>{{ $paginateOrderNotice->order_no }}</td>
-                                        <td>{{ config('order.status_leveling')[$paginateOrderNotice->status] }}</td>
-                                        <td>
-                                        @if($paginateOrderNotice->child_third_status == 100)
-                                            {{ $paginateOrderNotice->third_status }}
-                                        @else
-                                            {{ $paginateOrderNotice->third_status }}
-                                        @endif
-                                        </td>
-                                        <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
-                                        @if(substr($paginateOrderNotice->operate, -1) == '@')
-                                        <td style="color:green;">
-                                            {{ subOperate($paginateOrderNotice->operate) ?: '--' }}
-                                        </td>
-                                        @else
-                                        <td style="color:red;">
-                                            {{ $paginateOrderNotice->operate ?: '--' }}
-                                        </td>
-                                        @endif
-                                        <td>{{ $paginateOrderNotice->create_order_time }}</td>
-                                        <td>{{ $paginateOrderNotice->created_at }}</td>
-                                        <td>
-                                            <div class="form-group col-xs-4" style="margin: 10px 0 10px 0">
-                                                <select  style="background-color: #1E9FFF" name="status" lay-filter="change_status" data-amount="{{ $paginateOrderNotice->amount }}" data-safe="{{ $paginateOrderNotice->security_deposit }}"
-                                                data-effect="{{ $paginateOrderNotice->efficiency_deposit }}" lay-data="{{ $paginateOrderNotice->order_no }}">                
-                                                    <option value="">修改状态</option>
-                                                    @forelse($ourStatus as $key => $status)
-                                                        <option value="{{ $key }}" id="status{{ $key }}" data-status="{{ $status }}" >{{ $status }}</option>
-                                                    @empty
-                                                    @endforelse
-                                                </select>
-                                            </div>
-                                            <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $paginateOrderNotice->id }}">删除</button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @empty
-                            @endforelse
-                            </tbody>
-                        </table>
-                        </form>
-                    <div class="row">
-                        <div class="col-xs-3">
-                            总数：{{ $paginateOrderNotices->total() }}　本页显示：{{ $paginateOrderNotices->count() }}
-                        </div>
-                            <div class="col-xs-9">
-                                {{ $paginateOrderNotices->appends([
-                                    'third' => $third,
-                                    'startDate' => $startDate,
-                                    'endDate' => $endDate,
-                                ])->render()}}
-                            </div>
-                        </div>
+                    <div class="main-box-body clearfix" id="leveling-list">
+                        @include('backend.order.leveling.list', 
+                        [
+                            'paginateOrderNotices' => $paginateOrderNotices, 
+                            'third' => $third,
+                            'startDate' => $startDate,
+                            'endDate' => $endDate,
+                            'ourStatus' => $ourStatus,
+                        ])
                     </div>
                 </div>
             </div>
@@ -236,14 +137,13 @@
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
                             <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
-                            <span class="layui-btn  layui-btn-normal" onclick="closeAll()" >取消</span>
+                            <span class="layui-btn layui-btn-normal" onclick="closeAll()">取消</span>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
 @endsection
 
 @section('js')
@@ -253,9 +153,8 @@
         layer.closeAll();
     }
     //Demo
-    layui.use(['form', 'laytpl', 'element', 'laydate'], function(){
-        var form = layui.form, layer = layui.layer, laydate = layui.laydate;
-
+    layui.use(['form', 'laytpl', 'element', 'laydate'], function() {
+        var form=layui.form, layer=layui.layer,laydate=layui.laydate,table=layui.table;
         //日期
         laydate.render({
             elem: '#startDate'
@@ -355,28 +254,41 @@
             }
         });
 
-        
-
         form.on('submit(delete)', function (data) {
             var orderId = data.elem.getAttribute("data-id");
+            var s = window.location.search; //先截取当前url中“?”及后面的字符串
+            var page=s.getAddrVal('page'); 
             layer.confirm('确认删除订单吗？', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
                     type: 'DELETE',
                     url: "{{ route('order.leveling.destroy') }}",
                     data:{orderId:orderId},
                     success: function (data) {
-                        if (data.status) {
-                            layer.msg(data.message, {icon: 6, time:1000});
+                        layer.msg(data.message); 
+                        if (page) {
+                            $.get("{{ route('order.leveling.index') }}?page="+page, function (result) {
+                                $('#leveling-list').html(result);
+                                form.render();
+                            }, 'json');
                         } else {
-                            layer.msg(data.message, {icon: 5, time:1500}); 
+                            $.get("{{ route('order.leveling.index') }}", function (result) {
+                                $('#leveling-list').html(result);
+                                form.render();
+                            }, 'json');
                         }
                     }
                 });
                 layer.close(index);
-                window.location.href="{{ route('order.leveling.index') }}";
             });
             return false;
         });
+
+        // 获取当前网页?后面的参数和值
+        String.prototype.getAddrVal = String.prototype.getAddrVal||function(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var data = this.substr(1).match(reg);
+            return data!=null?decodeURIComponent(data[2]):null;
+        }
     });
 </script>
 @endsection

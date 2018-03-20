@@ -58,7 +58,11 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
+            // 操作成功，删除redis里面以前存在的订单报警
+            $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
+            // 我们平台操作失败，写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, 20);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	}

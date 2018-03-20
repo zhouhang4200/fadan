@@ -64,7 +64,11 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
                 (new Lock)->run($orderNo, $userId, $runAfter = false);
             }
+            // 操作成功，删除redis里面以前存在的订单报警
+            $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
+            // 我们平台操作失败，写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, 19);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	}

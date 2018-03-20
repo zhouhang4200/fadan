@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\Task\RoomCardRecharge',
         'App\Console\Commands\TestDeleteOrder', // 删除订单
         'App\Console\Commands\TestAppealOrder', // 仲裁订单
+        'App\Console\Commands\AddOurNoticeOrderFromRedis', // 从redis获取我们平台操作失败的报警订单
     ];
 
     /**
@@ -55,6 +56,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('change:status')->everyMinute();
         $schedule->command('platform:statistic')->daily();
         $schedule->command('order:notice')->everyFiveMinutes();
+        $schedule->command('add:notice')->everyFiveMinutes();
     }
 
     /**

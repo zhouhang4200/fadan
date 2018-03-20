@@ -599,7 +599,7 @@ class DailianMama
         }
 
         if ($res && $res['result'] !== 1) {
-            if ($res['data'] == '对不起，订单状态可能已经改变！') {
+            if ($res['data'] == '对不起，订单状态可能已经改变！' && $operate == 20007) {
                 $res['data'] = '该订单被代练妈妈平台接单，该状态没有【申请仲裁】操作！';
             }
             throw new DailianException('代练妈妈平台:'.$res['data']);

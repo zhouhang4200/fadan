@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
+use Redis;
 use App\Models\User;
 use App\Models\Order; 
 use App\Models\OrderDetail;
@@ -134,5 +135,48 @@ abstract class DailianAbstract
         // 发单人
         orderStatusCount($this->order->creator_primary_user_id, $this->handledStatus);
         orderStatusCount($this->order->creator_primary_user_id, $this->beforeHandleStatus, 4);
+    }
+
+    /**
+     * 我们平台触发的订单报警
+     * $operate: 我们对订单的操作
+     */
+    public function addOperateFailOrderToRedis($order, $operate)
+    {
+        // 获得订单详情
+        $orderDetails = $this->checkThirdClientOrder($order);
+        // 订单属于哪个平台
+        switch ($orderDetails['third']) {
+            case 1: // show91
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '1-'.$operate.'-'.$order->status;
+                break;
+            case 2: // 代练妈妈
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '2-'.$operate.'-'.$order->status;
+                break;
+            default: // 此订单还被人接单，不用写入报警
+                return $order;
+                break;
+        }
+
+        // 写入redis哈希 = (表名， 键， 值)
+        $result = Redis::hSet('our_notice_orders', $order->no, $redisValue);
+        // 错误日志提示主题
+        $message = $result == 1 ? '写入成功，新纪录' : ($result == 0 ? '写入成功，新值被覆盖' : '写入失败');
+                    
+        myLog('our-order-notice', ['order_no' => $order->no, 'third_order_no' => $orderDetails['third_order_no'], 'message' => '我们的平台操作失败了，报警订单正在写入redis，写入结果：' . $message]);
+
+        return $order;
+    }
+
+    /**
+     * 每次成功操作，看看redis里面是否还留有报警订单，有就删除
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
+    public function deleteOperateSuccessOrderFromRedis($orderNo, $hashName = 'our_notice_orders')
+    {
+        Redis::hDel($hashName, $orderNo);
     }
 }
