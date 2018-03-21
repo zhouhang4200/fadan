@@ -20,22 +20,30 @@
 @section('main') 
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
-            <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
+            <li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
+            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
         </ul>
+        <div class="explanation" style="margin-top:15px;margin-bottom:-5px;">
+            <div class="ex_tit" style="line-height: 35px;"><i class="sc_icon"></i><h4>操作提示</h4>
+                <span id="explanationZoom" title="收起提示" class=""></span>
+            </div>
+            <ul>
+                <li style="line-height: 30px;">用途：“自动加价”功能可以自动给“未接单”状态的订单增加代练费。</li>
+            </ul>
+        </div>
         <div class="layui-tab-content" style="height: 100px;">
-            <div class="layui-tab-item layui-show" id="require-show">
+            <div class="layui-tab-item layui-show" id="auto-markup-show">
                 <div style="padding-bottom:40px;">
                 <form class="layui-form" method="" action="">
                     <div style="float: left">
-                        <div class="layui-inline" >
-                            <a href="{{ route('frontend.setting.sending-assist.require.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
+                        <div class="layui-inline">
+                            <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
                         </div>
                     </div>                     
                 </form>
                 </div>
-                <div id="require-index">
-                @include('frontend.setting.sending-assist.require-form')
+                <div id="auto-markup-index">
+                @include('frontend.setting.sending-assist.auto-markup-list', ['orderAutoMarkups' => $orderAutoMarkups])
                 </div>
             </div>
         </div>
@@ -45,8 +53,7 @@
 @section('js')
     <script>
         layui.use(['element', 'form'], function(){
-            var $ = layui.jquery
-            ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+            var $ = layui.jquery,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
             var form = layui.form, layer = layui.layer, table = layui.table;
             //触发事件
             var active = {
@@ -84,16 +91,6 @@
                 location.hash = 'test='+ $(this).attr('lay-id');
             });
 
-            // 监听单选框
-            form.on('checkbox(default)', function(data){
-                var id = this.getAttribute('lay-data'); 
-                var status = data.value;
-
-                $.post("{{ route('frontend.setting.sending-assist.require.set') }}", {id:id, status:status}, function (result) {
-                    layer.msg(result.message);
-                    window.location.href="{{ route('frontend.setting.sending-assist.require') }}";    
-                });     
-            });
             // 删除
             form.on("submit(delete)", function (result) {
                 var id=this.getAttribute('lay-del-id');
@@ -101,17 +98,17 @@
                 var page=s.getAddrVal('page'); 
 
                 layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
-                    $.post("{{ route('frontend.setting.sending-assist.require.destroy') }}", {id:id}, function (result) {
+                    $.post("{{ route('frontend.setting.sending-assist.auto-markup.destroy') }}", {id:id}, function (result) {
                         layer.msg(result.message); 
                         if (page) {
-                            $.get("{{ route('frontend.setting.sending-assist.require') }}?page="+page, function (result) {
-                                $('#require-index').html(result);
-                                layui.form.render();
+                            $.get("{{ route('frontend.setting.sending-assist.auto-markup') }}?page="+page, function (result) {
+                                $('#auto-markup-index').html(result);
+                                form.render();
                             }, 'json');
                         } else {
-                            $.get("{{ route('frontend.setting.sending-assist.require') }}", function (result) {
-                                $('#require-index').html(result);
-                                layui.form.render();
+                            $.get("{{ route('frontend.setting.sending-assist.auto-markup') }}", function (result) {
+                                $('#auto-markup-index').html(result);
+                                form.render();
                             }, 'json');
                         }
                     });

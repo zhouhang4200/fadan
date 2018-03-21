@@ -49,14 +49,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('write:orders')->daily();
         $schedule->command('write:data')->daily();
         $schedule->command('write:user-order-moneys')->daily();
-        // 自动确认收货 每五分钟运行一次
         $schedule->command('Order:Confirm')->everyFiveMinutes();
         $schedule->command('employee:statistic')->daily();
         $schedule->command('order:statistic')->daily();
         $schedule->command('change:status')->everyMinute();
         $schedule->command('platform:statistic')->daily();
-        $schedule->command('order:notice')->everyFiveMinutes();
-        $schedule->command('add:notice')->everyFiveMinutes();
+        $schedule->command('order:notice')->everyMinute();
+        $schedule->command('add:notice')->everyMinute();
     }
 
     /**

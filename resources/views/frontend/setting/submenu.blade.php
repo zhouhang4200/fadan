@@ -44,7 +44,7 @@
 	@endcan
 
 	@can('frontend.setting.sending-assist.require')
-		<li class="{{  Route::currentRouteName()  == 'frontend.setting.sending-assist.require' ? 'current' : '' }}">
+		<li class="{{  substr(Route::currentRouteName(), 0, 31)  == 'frontend.setting.sending-assist' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.sending-assist.require') }}">代练发单辅助</a>
 			<div class="arrow"></div>
 		</li>

@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\OrderNotice;
 use App\Services\DailianMama;
 use Illuminate\Console\Command;
+use App\Exceptions\DailianException;
 
 class AddOurNoticeOrderFromRedis extends Command
 {
@@ -53,29 +54,35 @@ class AddOurNoticeOrderFromRedis extends Command
      */
     public function handle()
     {
-        // 获取所有的 我们平台操作失败的报警订单号
-        $hashOrderNos = Redis::hGetAll('our_notice_orders');
-        // 遍历订单
-        foreach ($hashOrderNos as $orderNo => $operateAndOrderStatus) {
-            // 第三方平台 1 ， 2
-            $third = explode('-', $operateAndOrderStatus)[0]; 
-            // 我们平台失败操作编号
-            $orderOperate = explode('-', $operateAndOrderStatus)[1]; 
-            // 我们平台订单目前状态编号
-            $orderStatus = explode('-', $operateAndOrderStatus)[2]; 
-            // 获取我们的订单
-            $order = Order::where('no', $orderNo)->first();
-            // 获取我们的订单详情
-            $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
-            // 获取第三方订单状态
-            $this->setThirdStatusAndThirdChildStatus($third, $order, $orderDetails['third_order_no']);
-            // 写入订单报警表
-            if ($this->thirdStatus) {
-                $this->addDatasToOrderNotice($order, $orderDetails, $orderOperate);
-            }
-            // 写完记录，删除redis记录
-            $this->deleteOperateFailOrderFromRedis($orderNo);
-        }
+             // 获取所有的 我们平台操作失败的报警订单号
+            $hashOrderNos = Redis::hGetAll('our_notice_orders');
+            // 遍历订单
+            foreach ($hashOrderNos as $orderNo => $operateAndOrderStatus) {
+                // 第三方平台 1 ， 2
+                $third = explode('-', $operateAndOrderStatus)[0]; 
+                // 我们平台失败操作编号
+                $orderOperate = explode('-', $operateAndOrderStatus)[1]; 
+                // 我们平台订单目前状态编号
+                $orderStatus = explode('-', $operateAndOrderStatus)[2]; 
+                // 获取我们的订单
+                $order = Order::where('no', $orderNo)->first();
+                // 获取我们的订单详情
+                $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+                try {
+                    // 获取第三方订单状态
+                    $this->setThirdStatusAndThirdChildStatus($third, $order, $orderDetails['third_order_no']);
+                    // 写入订单报警表
+                    if ($this->thirdStatus) {
+                        $this->addDatasToOrderNotice($order, $orderDetails, $orderOperate);
+                    }
+                    // 写完记录，删除redis记录
+                    $this->deleteOperateFailOrderFromRedis($orderNo);
+                } catch (\Exception $e) {
+                    myLog('order-notice', ['message' => $e->getMessage(), 'no' => $order->no]);
+                } catch (DailianException $e) {
+                    myLog('order-notice', ['message' => $e->getMessage(), 'no' => $order->no]);
+                }
+            } 
     }
 
     /**
