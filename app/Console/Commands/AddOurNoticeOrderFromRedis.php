@@ -121,10 +121,10 @@ class AddOurNoticeOrderFromRedis extends Command
                         if (! $thirdComplain && ! $thirdConsult && $order->status == 13) { 
                             $this->deleteOperateFailOrderFromRedis($order->no);
                         // 91在申诉中，我们也在申诉中,则删除redis报警订单
-                        } elseif ($thirdComplain && ! $thirdConsult && $beforeStatus == 13 && $order->status == 16) {
+                        } elseif ($thirdComplain && ! $thirdConsult && $order->status == 16) {
                             $this->deleteOperateFailOrderFromRedis($order->no);
                         // 91在撤销中，我们也在撤销， 则删除redis报警订单
-                        } elseif (! $thirdComplain && $thirdConsult && $beforeStatus == 13 && $order->status == 15) {
+                        } elseif (! $thirdComplain && $thirdConsult && $order->status == 15) {
                             $this->deleteOperateFailOrderFromRedis($order->no);
                         } else {
                             // 91订单的大状态
@@ -135,9 +135,9 @@ class AddOurNoticeOrderFromRedis extends Command
                     case 2: 
                         if (! $thirdComplain && ! $thirdConsult && $order->status == 14) {
                             $this->deleteOperateFailOrderFromRedis($order->no);
-                        } elseif ($thirdComplain && ! $thirdConsult && $beforeStatus == 14 && $order->status == 16) {
+                        } elseif ($thirdComplain && ! $thirdConsult && $order->status == 16) {
                             $this->deleteOperateFailOrderFromRedis($order->no);
-                        } elseif (! $thirdComplain && $thirdConsult && $beforeStatus == 14 && $order->status == 15) {
+                        } elseif (! $thirdComplain && $thirdConsult && $order->status == 15) {
                             $this->deleteOperateFailOrderFromRedis($order->no);
                         } else {
                             // 91订单的大状态
