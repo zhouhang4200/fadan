@@ -32,9 +32,11 @@ class GroupController extends Controller
     public function create(Request $request)
     {
         $user = User::find($request->id);
+        $userRoles = $user->roles->pluck('id')->toArray();
         $roles = Role::where('guard_name', 'web')->get();
+        // 该管理员拥有的角色
 
-        return view('backend.rbac.group.create', compact('roles', 'user'));
+        return view('backend.rbac.group.create', compact('roles', 'user', 'userRoles'));
     }
 
     /**
@@ -80,9 +82,11 @@ class GroupController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        // 该管理员拥有的角色
+        $userRoles = $user->roles->pluck('id')->toArray();
         $roles = Role::where('guard_name', 'web')->get();
 
-        return view('backend.rbac.group.edit', compact('user', 'roles'));
+        return view('backend.rbac.group.edit', compact('user', 'roles', 'userRoles'));
     }
 
     /**
@@ -110,7 +114,7 @@ class GroupController extends Controller
                 }
                 $permissionIds = collect($permissionIds)->flatten();
                 $children = User::where('parent_id', $user->id)->get();
-
+                // 主账号角色减少，子账号删除减少的角色里面的权限
                 foreach ($children as $child) {
                     foreach ($child->permissions()->pluck('id') as $permission) {
                         if (! in_array($permission, $permissionIds->toArray())) {

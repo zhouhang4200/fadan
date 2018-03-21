@@ -19,10 +19,14 @@
             <li style="line-height: 30px;">该功能可以控制订单“重发”功能所发出的订单的客服人员。如果选择“首次发单客服”，则重发的订单的发单客服为该订单第一次创建时的客服；如果选择“当前发单客服”，则重发的订单的发单客服为该订单重发时的客服。</li>
         </ul>
     </div>
-    <form class="layui-form" action="">
-        <lable style="margin-top:6px; align-content:center;position:relative;top:5px;left:0px;margin-right:10px;">重发订单客服</lable>
-        <input type="radio" name="sending-control" value="0" title="首次发单客服"  lay-filter="sending-control" @if($sendingControl == 0) checked @endif>
-        <input type="radio" name="sending-control" value="1" title="当前发单客服" lay-filter="sending-control" @if($sendingControl == 1) checked @endif>
+    <form class="layui-form  layui-form-pane" action="">
+        <div class="layui-form-item" pane style="height: 33px;padding-left:10px">
+            <lable  class="layui-form-label" >重发订单客服</lable>
+            <div class="layui-input-block">
+                <input type="radio" name="sending-control" value="0" title="首次发单客服"  lay-filter="sending-control" @if($sendingControl == 0) checked @endif>
+                <input type="radio" name="sending-control" value="1" title="当前发单客服" lay-filter="sending-control" @if($sendingControl == 1) checked @endif>
+            </div>
+        </div>
     </form>
 @endsection
 
