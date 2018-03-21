@@ -17,12 +17,8 @@
 @section('main') 
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-            <li class="layui-this">代练要求模板</li>
-            <li>保证金配置</li>
-            <li>自动加价配置</li>
-            <li>发单价预警设置</li>
-            <li>发单平台设置</li>
-            <li>定价器设置</li>
+            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
+            <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
         </ul>
         <div class="layui-tab-content" style="height: 100px;">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -54,12 +50,6 @@
                     </div>
                 </form>
             </div>
-
-            <div class="layui-tab-item">内容2</div>
-            <div class="layui-tab-item">内容3</div>
-            <div class="layui-tab-item">内容4</div>
-            <div class="layui-tab-item">内容5</div>
-            <div class="layui-tab-item">内容6</div>
         </div>
     </div> 
 @endsection

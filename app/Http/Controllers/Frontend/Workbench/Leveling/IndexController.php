@@ -229,8 +229,10 @@ class IndexController extends Controller
                 ->first();
 
             // 默认是发当前子账号， 1 = 当前发单客服， 0是发原始的
-            if ($userSetting && $userSetting->value == 0) {
+            if (isset($orderData['creator_user_id']) && $userSetting && $userSetting->value == 0) {
                 $userId = $orderData['creator_user_id'];
+                // 获取原始的发单人昵称,将此昵称写到orderdetails里面
+                $orderData['customer_service_name'] = User::where('id', $userId)->value('username');
             }
 
             try {

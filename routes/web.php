@@ -164,6 +164,15 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('destroy', 'SendingAssistController@requireDestroy')->name('frontend.setting.sending-assist.require.destroy')->middleware('permission:frontend.setting.sending-assist.require.destroy');
                 Route::post('set', 'SendingAssistController@requireSet')->name('frontend.setting.sending-assist.require.set')->middleware('permission:frontend.setting.sending-assist.require.set');
             });
+            // 自动加价配置
+            Route::prefix('auto-markup')->group(function () {
+                Route::get('', 'SendingAssistController@autoMarkup')->name('frontend.setting.sending-assist.auto-markup')->middleware('permission:frontend.setting.sending-assist.auto-markup');
+                Route::get('create', 'SendingAssistController@autoMarkupCreate')->name('frontend.setting.sending-assist.auto-markup.create')->middleware('permission:frontend.setting.sending-assist.auto-markup.create');
+                Route::post('store', 'SendingAssistController@autoMarkupStore')->name('frontend.setting.sending-assist.auto-markup.store')->middleware('permission:frontend.setting.sending-assist.auto-markup.store');
+                Route::get('edit/{id}', 'SendingAssistController@autoMarkupEdit')->name('frontend.setting.sending-assist.auto-markup.edit')->middleware('permission:frontend.setting.sending-assist.auto-markup.edit');
+                Route::post('update', 'SendingAssistController@autoMarkupUpdate')->name('frontend.setting.sending-assist.auto-markup.update')->middleware('permission:frontend.setting.sending-assist.auto-markup.update');
+                Route::post('destroy', 'SendingAssistController@autoMarkupDestroy')->name('frontend.setting.sending-assist.auto-markup.destroy')->middleware('permission:frontend.setting.sending-assist.auto-markup.destroy');
+            });
         });
         // api 风控设置
         Route::prefix('api-risk-management')->group(function () {
