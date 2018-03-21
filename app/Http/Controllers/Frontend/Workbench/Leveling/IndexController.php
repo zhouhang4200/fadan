@@ -185,15 +185,15 @@ class IndexController extends Controller
 
         if ($taobaoTrade && empty($taobaoTrade->seller_memo)) {
             // 获取备注并更新
-            $c = new TopClient;
-            $c->format = 'json';
-            $c->appkey = '12141884';
-            $c->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+            $client = new TopClient;
+            $client->format = 'json';
+            $client->appkey = '12141884';
+            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
 
             $req = new TradeFullinfoGetRequest;
             $req->setFields("tid, type, status, payment, orders, seller_memo");
             $req->setTid($tid);
-            $resp = $c->execute($req, taobaoAccessToken($businessmanInfo->store_wang_wang));
+            $resp = $client->execute($req, taobaoAccessToken($businessmanInfo->store_wang_wang));
 
             if (!empty($resp->trade->seller_memo)) {
                 $taobaoTrade->seller_memo = $resp->trade->seller_memo;
@@ -201,7 +201,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid'));
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade'));
     }
 
     /**
@@ -363,7 +363,6 @@ class IndexController extends Controller
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $detail['amount'] + 0;
 
-//            $detail['payment_amount'] = (float)$detail['payment_amount'];
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润

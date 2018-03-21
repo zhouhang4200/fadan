@@ -105,12 +105,28 @@
             </div>
 
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">账号：</div>
-                <div class="layui-col-md8">淘宝</div>
+                <div class="layui-col-md3 text_right">订单号：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->tid or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">来源价格：</div>
-                <div class="layui-col-md8">淘宝</div>
+                <div class="layui-col-md3 text_right">买家旺旺：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->buyer_nick or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md3 text_right">购买单价：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->price or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md3 text_right">购买数量：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->num or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md3 text_right">实付金额：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->payment or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
+                <div class="layui-col-md3 text_right">下单时间：</div>
+                <div class="layui-col-md8">{{ $taobaoTrade->created or '' }}</div>
             </div>
 
         </div>
@@ -307,14 +323,21 @@
                     template = result.content.sellerMemo  + '\r\n';
                     template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
                     template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    @if(isset($taobaoTrade->tid))
+                        template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
+                        template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                        template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                    @endif
                     $('#user-template').val(template);
-                    analysis();
                 } else {
                     template = '游戏：\r\n';
-                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
-                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+//                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+//                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                     $.each(result.content.template, function(index,element){
-                        template += element.field_display_name + '：\r\n'
+                        console.log(element.field_display_name);
+                        if (element.field_display_name != '商户电话' || element.field_display_name != '商户QQ') {
+                            template += element.field_display_name + '：\r\n'
+                        }
                     });
                     $('#user-template').val(template);
                 }
@@ -332,7 +355,7 @@
         function analysis() {
 
             var fieldArrs = $('[name="desc"]').val().split('\n');
-            console.log(2);
+
             for (var i = fieldArrs.length - 1; i >= 0; i--) {
                 var arr = fieldArrs[i].split('：');
 
@@ -372,6 +395,10 @@
             }
             layui.form.render();
         }
+        // 自动解析模版
+        setTimeout(function () {
+            analysis();
+        }, 100)
     });
 </script>
 @endsection
