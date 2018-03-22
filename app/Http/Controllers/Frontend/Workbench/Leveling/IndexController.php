@@ -201,7 +201,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade'));
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade', 'businessmanInfo'));
     }
 
     /**
@@ -475,7 +475,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 从show91接口拿留言数据
+     * 从接单平台接口拿留言数据
      * @param $orderNo
      * @param Request $request
      * @return mixed

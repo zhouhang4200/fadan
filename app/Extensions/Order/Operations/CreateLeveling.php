@@ -151,6 +151,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                             autoUnShelveAdd($this->order->no, $this->userId, date('Y-m-d H:i:s'), $result[0]);
                         }
                     }
+                } else { // 没设置时间则系统默认7天自动下架
+                    autoUnShelveAdd($this->order->no, $this->userId, date('Y-m-d H:i:s'), 7);
                 }
 
                 if (!$orderDetail->save()) {
@@ -208,8 +210,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 OrderDetail::where('order_no', $this->order->no)
                     ->where('field_name', 'show91_order_no')
                     ->update(['field_value' => $show91Result['order_no'],]);
-                // 写入留言获取
-                levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $show91Result['order_no'], 91, 0);
+
                 // 如果成功，将订单写入订单详情表
                 OrderDetail::where('order_no', $this->order->no)
                     ->where('field_name', 'dailianmama_order_no')
@@ -219,8 +220,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 OrderDetail::where('order_no', $this->order->no)
                     ->where('field_name', 'show91_order_no')
                     ->update(['field_value' => $show91Result['order_no'],]);
-                // 写入留言获取
-                levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $show91Result['order_no'], 91, 0);
             } elseif (! $show91Result['status'] && $dailianMamaResult['status']) {
                 // 如果成功，将订单写入订单详情表
                 OrderDetail::where('order_no', $this->order->no)
@@ -228,7 +227,9 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                     ->update(['field_value' => $dailianMamaResult['order_no'],]); 
             } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
                 throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
-            } 
+            }
+            // 写入（七天没接单）自动下架列表中
+
             return $this->order->no;      
         }
     }

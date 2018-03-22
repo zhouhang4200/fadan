@@ -64,6 +64,10 @@ class Playing extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 删除状态不在 申请验收 的redis 订单
             delRedisCompleteOrders($this->orderNo);
+            // 从自动下架任务中删除
+            autoUnShelveDel($this->orderNo);
+            // 写入留言获取
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $this->orderDetail['third_order_no'], $this->orderDetail['third'], 0);
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());

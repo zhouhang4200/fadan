@@ -46,8 +46,6 @@ class OrderAutoUnShelve extends Command
                     // 调用下架操作
                     try {
                         DailianFactory::choose('offSale')->run($orderNo, $data->user_id, 1);
-                        // 下架后删除监听
-                        autoUnShelveDel($orderNo);
                     } catch (DailianException $exception) {
                         myLog('exception', ['自动下架异常', $exception->getMessage()]);
                     }

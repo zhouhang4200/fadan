@@ -12,5 +12,6 @@ class LevelingMessage extends Model
       'contents',
       'date',
       'send_time',
+      'third',
     ];
 }
