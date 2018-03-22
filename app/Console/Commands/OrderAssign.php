@@ -63,7 +63,7 @@ class OrderAssign extends Command
                         Order::handle(new Cancel($orderNo, 0));
                     } catch (CustomException $exception) {
                         waitReceivingDel($orderNo);
-                        Log::alert($exception->getMessage() . '- 重复取消 -' . $orderNo);
+                        myLog('exception', [$orderNo, '- 重复取消 -' . $exception->getMessage()]);
                     }
                     continue;
                 } else {
@@ -108,7 +108,7 @@ class OrderAssign extends Command
                                 continue;
                             } catch (CustomException $exception) {
                                 waitReceivingDel($orderNo);
-                                Log::alert($exception->getMessage() . ' 分配订单失败');
+                                myLog('exception', [$orderNo, '- 分配订单失败 -' . $exception->getMessage()]);
                                 continue;
                             }
                         } else if (in_array($orderInfo->game_id, [190000])) {
@@ -127,7 +127,7 @@ class OrderAssign extends Command
                                         Order::handle(new GrabClose($orderNo));
                                     } catch (CustomException $exception) {
                                         waitReceivingDel($orderNo);
-                                        Log::alert($exception->getMessage() . '- 关闭订单失败 -' . $orderNo);
+                                        myLog('exception', [$orderNo, '- 分配订单失败 -' . $exception->getMessage()]);
                                         continue;
                                     }
 
@@ -143,7 +143,7 @@ class OrderAssign extends Command
                                         continue;
                                     } catch (CustomException $exception) {
                                         waitReceivingDel($orderNo);
-                                        Log::alert($exception->getMessage() . '- 分配订单失败 -' . $orderNo);
+                                        myLog('exception', [$orderNo, '- 分配订单失败 -' . $exception->getMessage()]);
                                         continue;
                                     }
                                 }
