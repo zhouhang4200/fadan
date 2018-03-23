@@ -266,6 +266,8 @@
                     <option value="10">10 元</option>
                     <option value="20">20 元</option>
                     <option value="50">50 元</option>
+                    <option value="1000">1000 元</option>
+                    <option value="2000">2000 元</option>
                     <option id="original_amount" value="original_amount">原订单价格的 1% </option>
                 </select>
             </div>
