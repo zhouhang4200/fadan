@@ -79,7 +79,6 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="">导出</button>
             </div>
         </div>
 
