@@ -25,7 +25,7 @@
     <tbody>
     @forelse($automaticallyGrabGoods as $item)
         <tr>
-            <td>{{ $item->service_id }}</td>
+            <td>{{ $services[$item->service_id ]}}</td>
             <td>{{ $item->foreign_goods_id }}</td>
             <td>{{ $item->remark }}</td>
             {{--<td>{{ $item->status }}</td>--}}
