@@ -369,4 +369,37 @@ class User extends Authenticatable
     public function newPermissions() {
         return $this->belongsToMany(NewPermission::class);
     }
+
+    /**
+     * 后去账号下的所有权限
+     * @return [type] [description]
+     */
+    public function getUserPermissions()
+    {
+        return $this->newPermissions
+            ->merge($this->load('newRoles', 'newRoles.newPermissions')
+            ->newRoles->flatMap(function ($role) {
+                return $role->newPermissions;
+            })->sort()->values())
+            ->sort()
+            ->values();
+    }
+
+    /**
+     * 当前等路人是否有权限查看当前路由，视图是否显示
+     * @return [type] [description]
+     */
+    public function could($permission)
+    {
+        $userHasPermissions = $this->getUserPermissions() ? $this->getUserPermissions()->pluck('name')->toArray() : '';
+        // 如果当前等路人没有任何权限
+        if (! $userHasPermissions) {
+            return false;
+        }
+        // 如果有权限,判断当前页面权限是否在等路人权限中
+        if (in_array($permission, $userHasPermissions)) {
+            return true;
+        }
+        return false;
+    }
 }

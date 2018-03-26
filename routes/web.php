@@ -93,13 +93,19 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('store', 'StaffManagementController@store')->name('staff-management.store');
     });
 
+    // 岗位管理
+    Route::prefix('station')->namespace('Account')->group(function () {
+        Route::get('/', 'StationController@index')->name('station.index')->middleware('new.permission:station.index');
+        Route::get('create', 'StationController@create')->name('station.create');
+        Route::post('/', 'StationController@store')->name('station.store');
+        Route::get('edit/{id}', 'StationController@edit')->name('station.edit');
+        Route::post('update', 'StationController@update')->name('station.update');
+        Route::post('destroy', 'StationController@destroy')->name('station.destroy');
+    });
     // 员工数据统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
         Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee')->middleware('permission:frontend.statistic.employee');
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('permission:frontend.statistic.order');
-        // Route::get('price', 'StatisticController@price')->name('frontend.statistic.price')->middleware('permission:frontend.statistic.price');
-        // Route::get('message', 'StatisticController@message')->name('frontend.statistic.message')->middleware('permission:frontend.statistic.message');
-
         // 短信
         Route::prefix('sms')->group(function (){
             Route::get('/', 'SmsController@index')->name('frontend.statistic.sms');

@@ -981,4 +981,21 @@ if(!function_exists('taobaoAccessToken')){
         $token = cache()->add(config('redis.taobaoAccessToken') . $nickName, $result->access_token, 259200);
         return $token;
     }
+
+    if (!function_exists('hasEmployees')) {
+    /**
+     * 获取某个岗位有哪些员工
+     * @param string $prefix
+     * @return string
+     */
+    function hasEmployees($userRole)
+    {
+        $userNames = $userRole->newUsers ? $userRole->newUsers->pluck('username')->toArray() : '';
+
+        if ($userNames) {
+            return implode($userNames, '、');
+        }
+        return '';
+    }
+}
 }

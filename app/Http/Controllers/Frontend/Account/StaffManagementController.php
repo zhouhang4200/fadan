@@ -60,29 +60,20 @@ class StaffManagementController extends Controller
     public function update(Request $request, $id)
     {
     	DB::beginTransaction();
-
+        // 子账号
     	$user = User::find($id);
     	$data = $request->except(['password', 'role']);
-
-    	if ($request->password) {
-    		$data['password'] = bcrypt($request->password);
-    	}
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
+        }
         // $request->role 是一个数组
-    	if ($request->role) {
+        if ($request->role) {
             // 主账号设置的岗位数组
-    		$data['role'] = $request->role;
+            $data['role'] = $request->role;
             // 关联到管理员-角色表
-    		$user->newRoles()->sync($request->role);
+            $user->newRoles()->sync($request->role);
             // 获取角色下面的所有权限，将权限关联子账号
-    		$userRoles = NewRole::whereIn('id', $request->role)->get();
-            // 写入管理员-权限表
-            $permissions = [];
-
-            foreach ($userRoles as $k => $userRole) {
-                $permissions[$k] = $userRole->newPermissions()->pluck('id');
-            } 
-            // 写入 管理员-权限 表
-            $user->newPermissions()->sync(collect($permissions)->flatten()->unique()->toArray());
+            $userRoles = NewRole::whereIn('id', $request->role)->get();
     	}
     	
     	try {
@@ -172,15 +163,6 @@ class StaffManagementController extends Controller
                 $data['role'] = $request->role;
                 // 更新 管理员-角色
                 $user->newRoles()->sync($request->role);
-                // 更新管理员-权限
-                // $rbacGroups = RbacGroup::whereIn('id', $request->role)->get();
-                $userRoles = NewRole::where('id', $request->role)->get();
-
-                $permissions = [];
-                foreach ($userRoles as $k => $userRole) {
-                    $permissions[$k] = $userRole->newPermissions()->pluck('id');
-                } 
-                $user->newPermissions()->sync(collect($permissions)->flatten()->unique()->toArray());
             }
     	} catch (Exception $e) {
     		DB::rollBack();

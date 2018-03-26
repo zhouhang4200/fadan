@@ -52,8 +52,10 @@ class RoleController extends Controller
     	$data['alias'] = $request->data['alias'];
     	// 先保存到角色表
     	$role = NewRole::create($data);
+        // 保存角色权限
+        $permissionIds = isset($request->ids) ? $request->ids : [];
     	// 关联角色-权限数据
-    	$role->newPermissions()->sync($request->ids);
+    	$role->newPermissions()->sync($permissionIds);
     	
     	return response()->ajax(1, '添加成功!');
     }
@@ -87,7 +89,7 @@ class RoleController extends Controller
     	$role->alias = $request->data['alias'];
     	$role->save();
     	// 保存角色权限
-    	$permissionIds = isset($request->ids) ?: [];
+    	$permissionIds = isset($request->ids) ? $request->ids : [];
     	// 同步更新角色-权限
     	$role->newPermissions()->sync($permissionIds);
 
