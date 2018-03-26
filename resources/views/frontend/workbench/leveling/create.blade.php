@@ -248,9 +248,7 @@
         });
         // 下单
         form.on('submit(order)', function (data) {
-            var load = layer.load(0, {
-                shade: [0.2, '#000000']
-            });
+
 
             if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
                 layer.msg('代练时间不能都为0');
@@ -261,6 +259,10 @@
                 layer.msg('代练小时不能大于24小时');
                 return false;
             }
+
+            var load = layer.load(0, {
+                shade: [0.2, '#000000']
+            });
 
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
 
