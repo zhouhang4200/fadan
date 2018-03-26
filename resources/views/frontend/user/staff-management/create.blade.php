@@ -52,8 +52,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">岗位</label>
             <div class="layui-input-block">
-                @forelse($roles as $role)
-                <input type="checkbox" name="role[]" value="{{ $role->id }}" lay-skin="primary" title="{{ $role->name }}" >
+                @forelse($userRoles as $userRole)
+                <input type="checkbox" name="role[]" value="{{ $userRole->id }}" lay-skin="primary" title="{{ $userRole->alias }}" >
                 @empty
                 @endforelse
             </div>

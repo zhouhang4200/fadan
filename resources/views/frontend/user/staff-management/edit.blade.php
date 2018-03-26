@@ -45,8 +45,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">岗位</label>
             <div class="layui-input-block">
-                @forelse($roles as $role)
-                <input type="checkbox" name="role[]" value="{{ $role->id }}" lay-skin="primary" title="{{ $role->name }}" {{ $user->rbacGroups && in_array($role->id, $user->rbacgroups->pluck('id')->flatten()->toArray()) ? 'checked' : '' }} >
+                @forelse($userRoles as $userRole)
+                <input type="checkbox" name="role[]" value="{{ $userRole->id }}" lay-skin="primary" title="{{ $userRole->alias }}" {{ $user->newRoles && in_array($userRole->id, $user->newRoles->pluck('id')->flatten()->toArray()) ? 'checked' : '' }} >
                 @empty
                 @endforelse
             </div>

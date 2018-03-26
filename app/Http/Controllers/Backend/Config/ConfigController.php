@@ -220,6 +220,7 @@ class ConfigController extends Controller
 			        	return '请求接口错误!';
 			        }
 			        $allGameInfos = json_decode($res, true);
+			        dd($allGameInfos);
 	        		// 第一步获取代练妈妈的游戏id
 	        		$dailianMamaGameId = ThirdGame::where('third_id', 2)
 	        			->where('game_id', $request->game_id)
@@ -230,31 +231,34 @@ class ConfigController extends Controller
 	        				$index = 0;
 	        				break;
 	        			case 'G603': // 英雄联盟
-	        				$index = 1; // 这是游戏总信息里面游戏的下标
+	        				$index = 1; 
 	        				break;
 	        			case 'G614'; // QQ飞车手游
 	        				$index = 2;
 	        				break;
-	        			case 'G617'; // 全军出击
+	        			case 'G619'; // QQ炫舞
 	        				$index = 3;
 	        				break;
-	        			case 'G618'; // 刺激战场
+	        			case 'G617'; // 全军出击
 	        				$index = 4;
 	        				break;
-	        			case 'G615'; // 决战平安京
+	        			case 'G618'; // 刺激战场
 	        				$index = 5;
 	        				break;
-	        			case 'G606'; // 球球大作战
+	        			case 'G615'; // 决战平安京
 	        				$index = 6;
 	        				break;
-	        			case 'G616'; // CF:枪战王者
+	        			case 'G606'; // 球球大作战
 	        				$index = 7;
 	        				break;
-	        			case 'G613'; // 绝地求生
+	        			case 'G616'; // CF:枪战王者
 	        				$index = 8;
 	        				break;
-	        			case 'G605'; // 守望先锋
+	        			case 'G613'; // 绝地求生
 	        				$index = 9;
+	        				break;
+	        			case 'G605'; // 守望先锋
+	        				$index = 10;
 	        				break;
 	        			default:
 	        				return '请联系运营配置代练妈妈游戏!';

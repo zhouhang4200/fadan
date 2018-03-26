@@ -37,8 +37,8 @@
                 <div class="layui-input-inline">
                     <select name="station" lay-filter="">                
                         <option value="">请输入岗位名称</option>
-                        @forelse($groups as $group)
-                            <option value="{{ $group->id }}" {{ $group->id == $station ? 'selected' : '' }} >{{ $group->name }}</option>
+                        @forelse($userRoles as $userRole)
+                            <option value="{{ $userRole->id }}" {{ $userRole->id == $station ? 'selected' : '' }} >{{ $userRole->name }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -79,8 +79,8 @@
                         <td>{{ $user->username }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ config('user.type')[$user->type] }}</td>
-                        <td>{{ $user->rbacGroups->pluck('name')->count() > 0 ? implode(' |
-                        ', $user->rbacGroups->pluck('name')->toArray()) : '--' }}</td>
+                        <td>{{ $user->newRoles->pluck('alias')->count() > 0 ? implode(' |
+                        ', $user->newRoles->pluck('alias')->toArray()) : '--' }}</td>
                         <td>{{ $user->qq ?? '--' }}</td>
                         <td>{{ $user->wechat ?? '--' }}</td>
                         <td>{{ $user->phone ?? '--' }}</td>

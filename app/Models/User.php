@@ -361,4 +361,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'gainer_primary_user_id', 'id');
     }
+
+    public function newRoles() {
+        return $this->belongsToMany(NewRole::class);
+    }
+
+    public function newPermissions() {
+        return $this->belongsToMany(NewPermission::class);
+    }
 }

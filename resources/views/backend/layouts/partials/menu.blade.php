@@ -452,6 +452,35 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    <li @if($currentOneLevelMenu == 'home') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>商户权限系统</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('home.module.index') }}" @if($currentRouteName == 'home.module.index') class="active" @endif>
+                                    模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('home.permission.index') }}" @if($currentRouteName == 'home.permission.index') class="active" @endif>
+                                    权限列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('home.role.index') }}" @if($currentRouteName == 'home.role.index') class="active" @endif>
+                                    角色列表
+                                </a>
+                            </li> 
+                            <li>
+                                <a href="{{ route('home.user.index') }}" @if($currentRouteName == 'home.user.index') class="active" @endif>
+                                    用户角色列表
+                                </a>
+                            </li>                        
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
