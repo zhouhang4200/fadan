@@ -64,7 +64,7 @@
         .layui-form-select dl {
             max-height: 500px;
         }
-        .layui-table-cell {
+        .layui-table-header  .layui-table-cell {
             height: 40px !important;
             line-height: 40px !important;
         }
