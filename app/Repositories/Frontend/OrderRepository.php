@@ -260,6 +260,7 @@ class OrderRepository
             'created_at',
         ])
             ->filter($filters)
+            ->where('status', '!=', 24)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
             ->with(['gainerUser', 'detail', 'history', 'foreignOrder', 'levelingConsult']);
 
