@@ -224,83 +224,58 @@ class ConfigController extends Controller
 	        		$dailianMamaGameId = ThirdGame::where('third_id', 2)
 	        			->where('game_id', $request->game_id)
 	        			->value('third_game_id');
-	        		// 根据代练妈妈游戏id找对应的区服信息
-	        		switch ($dailianMamaGameId) {
-	        			case 'G604'; // 王者荣耀
-	        				$index = 0;
-	        				break;
-	        			case 'G603': // 英雄联盟
-	        				$index = 1; // 这是游戏总信息里面游戏的下标
-	        				break;
-	        			case 'G614'; // QQ飞车手游
-	        				$index = 2;
-	        				break;
-	        			case 'G619'; // QQ炫舞手游
-	        				$index = 3;
-	        				break;
-	        			case 'G617'; // 全军出击
-	        				$index = 4;
-	        				break;
-	        			case 'G618'; // 刺激战场
-	        				$index = 5;
-	        				break;
-	        			case 'G615'; // 决战平安京
-	        				$index = 6;
-	        				break;
-	        			case 'G606'; // 球球大作战
-	        				$index = 7;
-	        				break;
-	        			case 'G616'; // CF:枪战王者
-	        				$index = 8;
-	        				break;
-	        			case 'G613'; // 绝地求生
-	        				$index = 9;
-	        				break;
-	        			case 'G605'; // 守望先锋
-	        				$index = 10;
-	        				break;
-	        			default:
-	        				return '请联系运营配置代练妈妈游戏!';
-	        				break;
-	        		}
-	        		// 获取代练妈妈的区和服
-	        			// 代练类型,以下所有信息均为代练妈妈的游戏信息
-        				$dlTypes = $allGameInfos[$index]['dltype']; // 代练类型,一维数组
-        				$gameName = $allGameInfos[$index]['name']; // 游戏名字
-        				$areaAndServers = $allGameInfos[$index]['list']; // 区和游戏的三维数组
-        				// dd($areaAndServers);
-        				// 获取代练妈妈的游戏区
-        				$thirdAreas = []; // 二维数组
-        				$dailianMamaServers = []; // 二维数组
-        				foreach ($areaAndServers as $k => $areas) {
-        					// 去掉第一个全区全服
-        					if (0 == $k) {
-        						continue;
-        					}
-        					$thirdAreas[$k]['third_area_id'] = $areas['id'];
-        					$thirdAreas[$k]['third_area_name'] = $areas['name'];
-        					// 获取对应区下面的服
-        					foreach ($areas['list'] as $key => $server) {
-        						// 去除第一个全服
-        						if (0 == $key) {
-        							continue;
-        						}
-        						$dailianMamaServers[$k][$key]['third_game_id'] = $areas['gameid'];
-        						$dailianMamaServers[$k][$key]['third_game_name'] = $gameName;
-        						$dailianMamaServers[$k][$key]['third_area_id'] = $areas['id'];
-        						$dailianMamaServers[$k][$key]['third_area_name'] = $areas['name'];
-        						$dailianMamaServers[$k][$key]['third_servre_id'] = $server['id'];
-        						$dailianMamaServers[$k][$key]['third_server_name'] = $server['name'];
-        					}
 
-        				}
-        				// 将服缩小为二维数组
-        				$thirdServers = [];
-        				foreach ($dailianMamaServers as $thirdServer) {
-        					foreach ($thirdServer as $server) {
-        						$thirdServers[] = $server;
-        					}
-        				}
+	        		// 下标
+	        		$index = '';
+	        		// 根据代练妈妈游戏id找对应的区服信息
+	        		foreach ($allGameInfos as $k => $gameInfo) {
+	        			if ($gameInfo['id'] == $dailianMamaGameId) {
+	        				$index = $k;
+	        			}
+	        		}
+	        		// 如果存在下标，表示存在第三方游戏，根据下标找对应的区服信息
+	        		if ($index) {
+		        		// 获取代练妈妈的区和服
+	        			// 代练类型,以下所有信息均为代练妈妈的游戏信息
+	    				$dlTypes = $allGameInfos[$index]['dltype']; // 代练类型,一维数组
+	    				$gameName = $allGameInfos[$index]['name']; // 游戏名字
+	    				$areaAndServers = $allGameInfos[$index]['list']; // 区和游戏的三维数组
+	    				// dd($areaAndServers);
+	    				// 获取代练妈妈的游戏区
+	    				$thirdAreas = []; // 二维数组
+	    				$dailianMamaServers = []; // 二维数组
+	    				foreach ($areaAndServers as $k => $areas) {
+	    					// 去掉第一个全区全服
+	    					if (0 == $k) {
+	    						continue;
+	    					}
+	    					$thirdAreas[$k]['third_area_id'] = $areas['id'];
+	    					$thirdAreas[$k]['third_area_name'] = $areas['name'];
+	    					// 获取对应区下面的服
+	    					foreach ($areas['list'] as $key => $server) {
+	    						// 去除第一个全服
+	    						if (0 == $key) {
+	    							continue;
+	    						}
+	    						$dailianMamaServers[$k][$key]['third_game_id'] = $areas['gameid'];
+	    						$dailianMamaServers[$k][$key]['third_game_name'] = $gameName;
+	    						$dailianMamaServers[$k][$key]['third_area_id'] = $areas['id'];
+	    						$dailianMamaServers[$k][$key]['third_area_name'] = $areas['name'];
+	    						$dailianMamaServers[$k][$key]['third_servre_id'] = $server['id'];
+	    						$dailianMamaServers[$k][$key]['third_server_name'] = $server['name'];
+	    					}
+
+	    				}
+	    				// 将服缩小为二维数组
+	    				$thirdServers = [];
+	    				foreach ($dailianMamaServers as $thirdServer) {
+	    					foreach ($thirdServer as $server) {
+	    						$thirdServers[] = $server;
+	    					}
+	    				}
+	        		} else {
+	        			return '请联系运营配置游戏';
+	        		}
 	        		break;
 	        }
 
