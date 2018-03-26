@@ -798,7 +798,7 @@ if (!function_exists('levelingMessageAdd')) {
      * @param integer $userId 用户ID
      * @param integer $orderNo 千手订单号
      * @param string $foreignOrderNo 外部平台单号
-     * @param integer $platform  平台
+     * @param integer $platform  平台 1 91 2 代练妈妈
      * @param integer $count 上一次留言数
      * @return mixed
      */

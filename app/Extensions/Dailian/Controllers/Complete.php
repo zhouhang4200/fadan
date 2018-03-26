@@ -62,6 +62,8 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
+            // 从留言获取任务中删除
+            levelingMessageDel($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
