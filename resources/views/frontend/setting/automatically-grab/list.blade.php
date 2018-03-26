@@ -1,7 +1,7 @@
 <form class="layui-form" id="goods-form">
     <div class="layui-form-item">
         <div class="layui-input-inline" style="width: 200px;">
-            <input type="text" class="layui-input" name="other_user_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
+            <input type="text" class="layui-input" name="foreign_goods_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
         </div>
         <div class="layui-input-inline" style="width: 200px;">
             <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>

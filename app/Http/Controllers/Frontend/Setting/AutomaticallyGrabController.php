@@ -29,6 +29,7 @@ class AutomaticallyGrabController extends Controller
         $services = $serviceRepository->available();
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('foreignGoodsId'))
             ->orderBy('id', 'desc')
             ->paginate(20);
 

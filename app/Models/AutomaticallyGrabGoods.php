@@ -18,4 +18,17 @@ class AutomaticallyGrabGoods extends Model
       'remark',
     ];
 
+    /**
+     * @param $query
+     * @param array $filters
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if (isset($filters['foreignGoodsId']) && $filters['foreignGoodsId']) {
+
+            $query->where('foreign_goods_id', $filters['foreignGoodsId']);
+        }
+        return $query;
+    }
+
 }
