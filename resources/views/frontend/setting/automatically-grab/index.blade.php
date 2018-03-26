@@ -130,6 +130,10 @@
                 });
                 return false;
             });
+
+            $('.cancel').click(function () {
+               layer.closeAll();
+            });
         });
     </script>
 @endsection

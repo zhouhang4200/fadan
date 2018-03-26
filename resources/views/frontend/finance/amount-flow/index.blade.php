@@ -24,10 +24,10 @@
         <div class="layui-inline">
             <label class="layui-form-mid">说明：</label>
             <div class="layui-input-inline">
-                <select name="game_id" lay-search="">
+                <select name="trade_sub_type" lay-search="">
                     <option value="">请选择</option>
                     @foreach (config('tradetype.user_sub') as $key => $value)
-                        <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}> {{ $value }}</option>
+                        <option value="{{ $key }}" {{ $key == $tradeSubType ? 'selected' : '' }}> {{ $value }}</option>
                     @endforeach
                 </select>
             </div>
@@ -81,7 +81,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($dataList as $data)
+        @forelse($dataList as $data)
             <tr>
                 <td>{{ $data->id }}</td>
                 <td>{{ $data->remark }}</td>
@@ -91,7 +91,11 @@
                 <td>{{ $data->trade_no }}</td>
                 <td>{{ $data->created_at }}</td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="999">暂时没有数据</td>
+            </tr>
+        @endforelse
     </tbody>
 </table>
 

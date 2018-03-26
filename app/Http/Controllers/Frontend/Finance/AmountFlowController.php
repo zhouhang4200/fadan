@@ -22,11 +22,12 @@ class AmountFlowController extends Controller
     {
         $tradeNo   = trim($request->trade_no);
         $tradeType = $request->trade_type;
+        $tradeSubType = $request->trade_sub_type;
         $timeStart = $request->time_start;
         $timeEnd   = $request->time_end;
 
-        $dataList = $userAmountFlowRepository->getList($tradeNo, $tradeType, $timeStart, $timeEnd);
-        return view('frontend.finance.amount-flow.index', compact('dataList', 'tradeNo', 'tradeType', 'timeStart', 'timeEnd'));
+        $dataList = $userAmountFlowRepository->getList($tradeNo, $tradeType, $tradeSubType,$timeStart, $timeEnd);
+        return view('frontend.finance.amount-flow.index', compact('dataList', 'tradeNo', 'tradeType', 'tradeSubType', 'timeStart', 'timeEnd'));
     }
 
     public function export(Request $request, UserAmountFlowRepository $userAmountFlowRepository, ExportFrontendUserAmountFlow $excel)

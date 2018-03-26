@@ -29,6 +29,7 @@ class AutomaticallyGrabController extends Controller
         $services = $serviceRepository->available();
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('foreignGoodsId'))
             ->orderBy('id', 'desc')
             ->paginate(20);
 
@@ -59,6 +60,14 @@ class AutomaticallyGrabController extends Controller
             return response()->ajax(0, '类型不合法');
         }
 
+        $exist = AutomaticallyGrabGoods::where('service_id', $serviceId)
+            ->where('foreign_goods_id', $goodsId)
+            ->where('user_id', Auth::user()->getPrimaryUserId())
+            ->first();
+
+        if ($exist) {
+            return response()->ajax(0, '该服务类型的商品ID已存在');
+        }
         try {
             AutomaticallyGrabGoods::create([
                 'user_id' => Auth::user()->getPrimaryUserId(),
