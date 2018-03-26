@@ -73,10 +73,10 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">下单时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" >
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="">
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
             </div>

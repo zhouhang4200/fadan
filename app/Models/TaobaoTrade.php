@@ -23,7 +23,7 @@ class TaobaoTrade extends Model
                 $query->where('buyer_nick', $filters['buyerNick']);
             }
 
-            if (isset($filters['created']) &&  !empty($filters['startDate'])) {
+            if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
                 $query->where('created', '>=', $filters['startDate']);
             }
 
