@@ -220,6 +220,7 @@ class IndexController extends Controller
             $price = $orderData['game_leveling_amount']; // 代练价格
             $source = $orderData['order_source']; // 代练价格
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
+            $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
 
             // 获取当前下单人名字
             $orderData['customer_service_name'] = Auth::user()->username;
