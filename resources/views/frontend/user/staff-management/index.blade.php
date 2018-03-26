@@ -69,7 +69,7 @@
                 <th>最后操作时间</th>
                 <th>备注</th>
                 <th>状态</th>
-                <th>操作</th>
+                <th width="15%">操作</th>
             </tr>
             </thead>
             <tbody>
