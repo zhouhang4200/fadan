@@ -16,7 +16,7 @@
         <th>服务类型</th>
         <th>淘宝商品ID</th>
         <th>备注</th>
-        <th>状态</th>
+        {{--<th>状态</th>--}}
         <th>添加时间</th>
         <th>更新时间</th>
         <th width="7%">操作</th>
@@ -28,7 +28,7 @@
             <td>{{ $item->service_id }}</td>
             <td>{{ $item->foreign_goods_id }}</td>
             <td>{{ $item->remark }}</td>
-            <td>{{ $item->status }}</td>
+            {{--<td>{{ $item->status }}</td>--}}
             <td>{{ $item->created_at }}</td>
             <td>{{ $item->updated_at }}</td>
             <td>
