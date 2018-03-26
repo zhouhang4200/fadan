@@ -79,11 +79,15 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 
     public function getBeforeStatus($orderNo)
     {
-        $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+        $history = OrderHistory::where('order_no', $orderNo)->latest('id')->value('before');
+
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
-        if (! $beforeStatus) {
+        if (! $history) {
             throw new DailianException('订单操作记录不存在');
         }
+
+        $beforeStatus = unserialize($history)['status'];
+
         if ($beforeStatus == 16 || $beforeStatus == 18) {
             $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
             $arr = [];
