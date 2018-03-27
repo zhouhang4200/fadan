@@ -29,7 +29,7 @@ class UserAmountFlowRepository
                 return $query->where('created_at', '>=', $timeStart);
             })
             ->when(!empty($timeEnd), function ($query) use ($timeEnd) {
-                return $query->where('created_at', '<=', $timeEnd);
+                return $query->where('created_at', '<=', $timeEnd . ' 23:59:59');
             })
             ->orderBy('id', 'desc')
             ->when($pageSize === 0, function ($query) {
