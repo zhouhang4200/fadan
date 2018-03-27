@@ -9,7 +9,7 @@ use App\Models\UserAmountFlow;
 
 class UserAmountFlowRepository
 {
-    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 1)
+    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 20)
     {
         $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
