@@ -17,6 +17,7 @@ class CreateGoodsContractorConfigsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->comment('集市商户ID');
             $table->integer('km_goods_id')->comment('卡门商品ID');
+            $table->integer('created_admin_user_id')->comment('添加数据，管理员ID');
             $table->timestamps();
         });
     }

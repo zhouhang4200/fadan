@@ -147,6 +147,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('refund', 'CautionMoneyController@refund')->name('businessman.caution-money.refund')->middleware('permission:businessman.caution-money.refund');
             Route::post('deduction', 'CautionMoneyController@deduction')->name('businessman.caution-money.deduction')->middleware('permission:businessman.caution-money.deduction');
         });
+        // 商户承包商品配置
+        Route::prefix('goods-contractor')->group(function(){
+            Route::get('/', 'GoodsContractor@index')->name('businessman.goods-contractor.index');
+            Route::post('store', 'GoodsContractor@store')->name('businessman.goods-contractor.store');
+            Route::post('destroy', 'GoodsContractor@destroy')->name('businessman.goods-contractor.destroy');
+        });
     });
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
