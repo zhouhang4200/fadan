@@ -224,9 +224,15 @@
                         return '输入的小数请不要大于两位';
                     }
                 }
+            },
+            gt5:function (value) { // 大于5
+                if (value < 5) {
+                    return '输入金额需大于或等于5元';
+                }
             }
-        });
 
+        });
+        // 模板使用说明
         form.on('submit(instructions)', function () {
             layer.open({
                 type: 1
@@ -242,9 +248,7 @@
         });
         // 下单
         form.on('submit(order)', function (data) {
-            var load = layer.load(0, {
-                shade: [0.2, '#000000']
-            });
+
 
             if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
                 layer.msg('代练时间不能都为0');
@@ -255,6 +259,10 @@
                 layer.msg('代练小时不能大于24小时');
                 return false;
             }
+
+            var load = layer.load(0, {
+                shade: [0.2, '#000000']
+            });
 
             $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
 
@@ -334,7 +342,6 @@
 //                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
 //                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                     $.each(result.content.template, function(index,element){
-                        console.log(element.field_display_name);
                         if (element.field_display_name != '商户电话' || element.field_display_name != '商户QQ') {
                             template += element.field_display_name + '：\r\n'
                         }
@@ -395,9 +402,18 @@
             }
             layui.form.render();
         }
+        // 设置默认选中填充的值
+        function setDefaultValueOption() {
+            $("select[name=game_leveling_type]").val('排位');
+            $('input[name=user_phone]').val('{{ $businessmanInfo->phone }}');
+            $('input[name=user_qq]').val('{{ $businessmanInfo->qq }}');
+            layui.form.render();
+        }
+
         // 自动解析模版
         setTimeout(function () {
             analysis();
+            setDefaultValueOption();
         }, 100)
     });
 </script>

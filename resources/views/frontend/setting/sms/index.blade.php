@@ -47,7 +47,7 @@
                        autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-item layui-form-text">
-                <textarea name="contents" placeholder="短信内容" class="layui-textarea"></textarea>
+                <textarea name="contents" placeholder="短信内容" class="layui-textarea" lay-verify="required"></textarea>
             </div>
             <div class="layui-form-item">
                 <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="template-add-save">确定添加

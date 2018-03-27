@@ -1,5 +1,5 @@
 <ul class="seller_center_left_menu">
-	@can('frontend.workbench.index')
+	@if(Auth::user()->could('frontend.workbench.index'))
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.index' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.index') }}">代充订单</a>
 		<div class="arrow"></div>
@@ -8,14 +8,14 @@
 		{{--<a href="{{ route('frontend.workbench.index') }}">代充发布</a>--}}
 		{{--<div class="arrow"></div>--}}
 	{{--</li>--}}
-	@endcan
+	@endif
 
-	@can('frontend.workbench.leveling.index')
+	@if(Auth::user()->could('frontend.workbench.leveling.index'))
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.index' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
 		<div class="arrow"></div>
 	</li>
-	@if(auth()->user()->leveling_type == 2)
+		@if(auth()->user()->leveling_type == 2)
 	<li class="{{ Route::currentRouteName() == 'frontend.workbench.leveling.create' ? 'current' : '' }}">
 		<a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
 		<div class="arrow"></div>
@@ -25,6 +25,6 @@
 		<a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
 		<div class="arrow"></div>
 	</li>
+		@endif
 	@endif
-	@endcan
 </ul>

@@ -6,7 +6,8 @@ use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+
 /**
  * 下架操作
  */
@@ -17,15 +18,14 @@ class OffSaled extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 22; // 状态：22已下架
     protected $type             = 15; // 操作：15下架
 
-	/**
+    /**
      * [run 下架 -> 已下架]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费]
+     * @internal param $ [type] $apiDeposit  [回传双金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -53,6 +53,10 @@ class OffSaled extends DailianAbstract implements DailianInterface
             $this->orderCount();
             // 状态不在申请验收自动删除
             delRedisCompleteOrders($this->orderNo);
+            // 下架后 从自动下架任务中删除
+            autoUnShelveDel($this->orderNo);
+            // 从留言获取任务中删除
+            levelingMessageDel($this->orderNo);
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -62,9 +66,9 @@ class OffSaled extends DailianAbstract implements DailianInterface
         return true;
     }
 
-     /**
-     * 调用外部上架接口
-     * @return [type] [description]
+    /**
+     * 调用外部下架接口
+     * @throws DailianException
      */
     public function after()
     {
@@ -96,6 +100,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
                         // throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
+
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }

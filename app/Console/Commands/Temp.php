@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Services\DailianMama;
 use App\Services\Show91;
@@ -34,6 +35,9 @@ class Temp extends Command
      */
     protected $description = '测试';
 
+    protected $message = [];
+
+    protected $messageBeginId = 0;
     /**
      * Execute the console command.
      *
@@ -41,7 +45,20 @@ class Temp extends Command
      */
     public function handle()
     {
-        echo bcrypt('a739452059');
+
+        $this->get('551521454417029015277001');
+
+
+    }
+
+    public function get($orderNO, $beginId = 0)
+    {
+        $message = DailianMama::chatOldList($orderNO, $beginId);
+
+        if (count($message['list'])) {
+            $this->message = array_merge($this->message, $message['list']);
+            $this->get($orderNO, $message['beginid']);
+        }
     }
 
 }

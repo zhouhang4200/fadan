@@ -201,7 +201,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade'));
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade', 'businessmanInfo'));
     }
 
     /**
@@ -220,6 +220,7 @@ class IndexController extends Controller
             $price = $orderData['game_leveling_amount']; // 代练价格
             $source = $orderData['order_source']; // 代练价格
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
+            $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
 
             // 获取当前下单人名字
             $orderData['customer_service_name'] = Auth::user()->username;
@@ -475,7 +476,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 从show91接口拿留言数据
+     * 从接单平台接口拿留言数据
      * @param $orderNo
      * @param Request $request
      * @return mixed

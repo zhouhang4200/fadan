@@ -27,7 +27,7 @@
                                 <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="add">新增</button>
                             </form>
                             <div class="layui-tab-item layui-show" id="permission-list">
-                                @include('backend.home.permission.list', ['modules' => $modules])
+                                @include('backend.home.permission.list', ['permissions' => $permissions])
                             </div>
                         </div>
                 </div>
@@ -117,6 +117,9 @@
 
             // 监听新增
             form.on('submit(add)', function () {
+                var s = window.location.search; //先截取当前url中“?”及后面的字符串
+                var page=s.getAddrVal('page');
+                
                 layer.open({
                     type: 1,
                     shade: 0.6,
@@ -131,10 +134,17 @@
                         data:{data:data.field},
                         success: function (data) {
                             layer.msg(data.message);
-                            $.get("{{ route('home.permission.index') }}", function (result) {
-                                $('#permission-list').html(result);
-                                form.render();
-                            }, 'json');
+                            if (page) {
+                                $.get("{{ route('home.permission.index') }}?page="+page, function (result) {
+                                    $('#permission-list').html(result);
+                                    form.render();
+                                }, 'json');
+                            } else {
+                                $.get("{{ route('home.permission.index') }}", function (result) {
+                                    $('#permission-list').html(result);
+                                    form.render();
+                                }, 'json');
+                            }
                         }
                     });
                     layer.closeAll();
@@ -152,6 +162,8 @@
                 var name=this.getAttribute('lay-name');
                 var alias=this.getAttribute('lay-alias');
                 var new_module_id=this.getAttribute('lay-module_id');
+                var s = window.location.search; //先截取当前url中“?”及后面的字符串
+                var page=s.getAddrVal('page');
 
                 $('#permission_edit input[name="name"]').val(name);
                 $('#permission_edit input[name="alias"]').val(alias);
@@ -172,11 +184,17 @@
                         data:{id:id, data:data.field},
                         success: function (data) {
                             layer.msg(data.message);
-
-                            $.get("{{ route('home.permission.index') }}", function (result) {
-                                $('#permission-list').html(result);
-                                form.render();
-                            }, 'json');
+                            if (page) {
+                                $.get("{{ route('home.permission.index') }}?page="+page, function (result) {
+                                    $('#permission-list').html(result);
+                                    form.render();
+                                }, 'json');
+                            } else {
+                                $.get("{{ route('home.permission.index') }}", function (result) {
+                                    $('#permission-list').html(result);
+                                    form.render();
+                                }, 'json');
+                            }
                         }
                     });
                     layer.closeAll();
@@ -197,7 +215,13 @@
                     }, 'json');
                 })
                 return false;
-            })
+            });
+
+            String.prototype.getAddrVal = String.prototype.getAddrVal||function(name){
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var data = this.substr(1).match(reg);
+                return data!=null?decodeURIComponent(data[2]):null;
+            }
         });
     </script>
 @endsection

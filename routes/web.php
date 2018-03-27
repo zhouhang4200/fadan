@@ -96,11 +96,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 岗位管理
     Route::prefix('station')->namespace('Account')->group(function () {
         Route::get('/', 'StationController@index')->name('station.index')->middleware('new.permission:station.index');
-        Route::get('create', 'StationController@create')->name('station.create');
-        Route::post('/', 'StationController@store')->name('station.store');
-        Route::get('edit/{id}', 'StationController@edit')->name('station.edit');
-        Route::post('update', 'StationController@update')->name('station.update');
-        Route::post('destroy', 'StationController@destroy')->name('station.destroy');
+        Route::get('create', 'StationController@create')->name('station.create')->middleware('new.permission:station.create');
+        Route::post('/', 'StationController@store')->name('station.store')->middleware('new.permission:station.store');
+        Route::get('edit/{id}', 'StationController@edit')->name('station.edit')->middleware('new.permission:station.edit');
+        Route::post('update', 'StationController@update')->name('station.update')->middleware('new.permission:station.update');
+        Route::post('destroy', 'StationController@destroy')->name('station.destroy')->middleware('new.permission:station.destroy');
     });
     // 员工数据统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {

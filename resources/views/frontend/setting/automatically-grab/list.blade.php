@@ -1,7 +1,7 @@
 <form class="layui-form" id="goods-form">
     <div class="layui-form-item">
         <div class="layui-input-inline" style="width: 200px;">
-            <input type="text" class="layui-input" name="other_user_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
+            <input type="text" class="layui-input" name="foreign_goods_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
         </div>
         <div class="layui-input-inline" style="width: 200px;">
             <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>
@@ -16,7 +16,7 @@
         <th>服务类型</th>
         <th>淘宝商品ID</th>
         <th>备注</th>
-        <th>状态</th>
+        {{--<th>状态</th>--}}
         <th>添加时间</th>
         <th>更新时间</th>
         <th width="7%">操作</th>
@@ -25,10 +25,10 @@
     <tbody>
     @forelse($automaticallyGrabGoods as $item)
         <tr>
-            <td>{{ $item->service_id }}</td>
+            <td>{{ $services[$item->service_id ]}}</td>
             <td>{{ $item->foreign_goods_id }}</td>
             <td>{{ $item->remark }}</td>
-            <td>{{ $item->status }}</td>
+            {{--<td>{{ $item->status }}</td>--}}
             <td>{{ $item->created_at }}</td>
             <td>{{ $item->updated_at }}</td>
             <td>

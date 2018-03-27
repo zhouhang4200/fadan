@@ -23,6 +23,7 @@ abstract class DailianAbstract
     protected $userId = null;       // 操作用户id
     protected $adminUserId = null;  // 操作管理员id
     protected $order;               // 订单对象
+    protected $orderDetail;         // 订单详情数组
     protected $orderHistory;        // 订单操作记录对象
     protected $type;                // 操作类型 1 => '未结单',2 => '代练中',3 => '待验收',4 => '撤销中',5 => '仲裁中',6 => '异常',
     								// 7 => '锁定',8 => '已撤销',9 => '已结算',10 => '已仲裁',11 => '已下架',12 => '强制撤销',
@@ -39,6 +40,8 @@ abstract class DailianAbstract
     public function getObject()
     {
     	$this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
+
+        $this->orderDetail = $this->order->detail->pluck('field_value', 'field_name');
 
         if (empty($this->order)) {
             throw new DailianException('订单不存在');

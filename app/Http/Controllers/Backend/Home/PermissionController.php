@@ -16,14 +16,17 @@ class PermissionController extends Controller
 	 */
     public function index(Request $request)
     {
-    	$modules = NewModule::with('newPermissions')->get();
+    	$permissions = NewPermission::with('newModule')->paginate(10);
+
+        $modules = NewModule::get();
 
     	if ($request->ajax()) {
     		return response()->json(view()->make('backend.home.permission.list', [
+                'permissions' => $permissions,
                 'modules' => $modules,
             ])->render());
     	}
-    	return view('backend.home.permission.index', compact('modules'));
+    	return view('backend.home.permission.index', compact('permissions', 'modules'));
     }
 
     /**

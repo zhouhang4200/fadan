@@ -10,33 +10,33 @@
             <ul>
                 <li class="{{ in_array(Route::currentRouteName(), ['frontend.index', 'users.persional']) ? 'current' : '' }}"><a href="{{ route('frontend.index') }}">首页</a><div class="arrow"></div></li>
 
-                @can('frontend.goods.index')
+                @if(Auth::user()->could('frontend.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.goods' ? 'current' : '' }}"><a href="{{ route('frontend.goods.index') }}">商品</a><div class="arrow"></div></li>
-                @endcan
-                @can('frontend.order.receive')
+                @endif
+                @if(Auth::user()->could('frontend.order.receive'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.order' ? 'current' : '' }}"><a href="{{ route('frontend.order.receive') }}">订单</a><div class="arrow"></div></li>
-                @endcan
+                @endif
 
-                @can('frontend.finance.asset')
+                @if(Auth::user()->could('frontend.finance.asset'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route('frontend.finance.asset') }}">财务</a><div class="arrow"></div></li>
-                @endcan
+                @endif
 
-                @can('frontend.workbench.index')
+                @if(Auth::user()->could('frontend.workbench.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.index') }}">工作台</a><div class="arrow"></div></li>
-                @endcan
-                @can('frontend.workbench.leveling.index')
+                @endif
+                @if(Auth::user()->could('frontend.workbench.leveling.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.leveling.index') }}">工作台</a><div class="arrow"></div></li>
-                @endcan
+                @endif
 
                     <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'home-accounts.index' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'user-groups.index' ? 'current' : '' || Route::currentRouteName() == 'rbacgroups.index' ? 'current' : '' || Route::currentRouteName() == 'idents.index' ? 'current' : '' || Route::currentRouteName() == 'home-system-logs.index' ? 'current' : '' || in_array(Route::currentRouteName(), ['users.create', 'users.edit', 'home-accounts.edit', 'user-groups.create', 'user-groups.edit', 'rbacgroups.create', 'rbacgroups.edit', 'idents.create']) ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
-                @can('frontend.setting.sending-control.index')
+                @if(Auth::user()->could('frontend.setting.sending-control.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route('frontend.setting.sending-control.index') }}">设置</a><div class="arrow"></div></li>
-                @endcan
+                @endif
 
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route('frontend.statistic.employee') }}">统计</a><div class="arrow"></div></li>
-                @can('frontend.steam.goods.index')
+                @if(Auth::user()->could('frontend.steam.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.steam' ? 'current' : '' }}"><a href="{{ route('frontend.steam.goods.index') }}">Steam</a><div class="arrow"></div></li>
-                @endcan
+                @endif
             </ul>
         </div>
         <div class="user">
@@ -47,7 +47,7 @@
                     </a>
                 </li>
                 <!--如果是代练商户则显示挂起-->
-                @can('frontend.workbench.recharge.index')
+                @if(Auth::user()->could('frontend.workbench.recharge.index'))
                 <li class="layui-nav-item">
                     <a href="#" class="current-status">{{ Auth::user()->online == 1 ? '在线' : '挂起' }}</a>
                     <dl class="layui-nav-child">
@@ -55,7 +55,7 @@
                         <dd><a href="#">挂起</a></dd>
                     </dl>
                 </li>
-                @endcan
+                @endif
                 <li class="layui-nav-item"><a href="#"><i class="iconfont icon-tuichu" style="padding-right: 7px;"></i>注销登录</a></li>
             </ul>
         </div>
