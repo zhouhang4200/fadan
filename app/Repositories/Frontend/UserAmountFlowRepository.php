@@ -9,7 +9,7 @@ use App\Models\UserAmountFlow;
 
 class UserAmountFlowRepository
 {
-    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 20)
+    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 1)
     {
         $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
@@ -20,6 +20,8 @@ class UserAmountFlowRepository
                     return $query->whereIn('trade_type', [5, 7]);
                 } else if ($tradeType == 8) {
                     return $query->whereIn('trade_type', [6, 8]);
+                } else {
+                    return $query->where('trade_type', $tradeType);
                 }
             })
             ->when(!empty($tradeSubType), function ($query) use ($tradeSubType) {

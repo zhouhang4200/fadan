@@ -34,10 +34,11 @@ class AmountFlowController extends Controller
     {
         $tradeNo   = trim($request->trade_no);
         $tradeType = $request->trade_type;
+        $tradeSubType = $request->trade_sub_type;
         $timeStart = $request->time_start;
         $timeEnd   = $request->time_end;
 
-        $dataList = $userAmountFlowRepository->getList($tradeNo, $tradeType, $timeStart, $timeEnd, 0);
+        $dataList = $userAmountFlowRepository->getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, 0);
 
         $excel->export($dataList);
     }
