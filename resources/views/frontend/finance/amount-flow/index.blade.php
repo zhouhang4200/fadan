@@ -84,8 +84,8 @@
         @forelse($dataList as $data)
             <tr>
                 <td>{{ $data->id }}</td>
-                <td>{{ $data->remark }}</td>
-                <td>{{  config('tradetype.user')[$data->trade_type] }}</td>
+                <td>{{ config('tradetype.user_sub')[$data->trade_subtype] }}</td>
+                <td>{{ config('tradetype.user')[$data->trade_type] }}</td>
                 <td>{{ $data->fee + 0 }}</td>
                 <td>{{ $data->balance + 0 }}</td>
                 <td>{{ $data->trade_no }}</td>
@@ -102,6 +102,7 @@
 {{ $dataList->appends([
     'trade_no' => $tradeNo,
     'trade_type' => $tradeType,
+    'trade_sub_type' => $tradeSubType,
     'time_start' => $timeStart,
     'time_end' => $timeEnd,
     ])->links() }}
