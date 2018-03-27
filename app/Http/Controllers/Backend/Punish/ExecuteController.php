@@ -39,7 +39,7 @@ class ExecuteController extends Controller
 	        $data['no'] = static::createOrderId();
 	    	$data['order_no'] = $request->data['order_no'];
 	    	$order = Order::where('no', $data['order_no'])->first();
-	    	$data['user_id'] = $order->creator_primary_user_id;
+	    	$data['user_id'] = $order->gainer_primary_user_id;
 	        $data['deadline'] = Carbon::now()->addDays(1)->startOfDay()->addHours(18)->toDateTimeString();
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
 
@@ -91,7 +91,7 @@ class ExecuteController extends Controller
 	        $data['no'] = static::createOrderId();
 	    	$data['order_no'] = $request->data['order_no'];
 	    	$order = Order::where('no', $data['order_no'])->first();
-	    	$data['user_id'] = $order->creator_primary_user_id;
+	    	$data['user_id'] = $order->gainer_primary_user_id;
 	    	$data['voucher'] = $request->data['voucher'] ?? '';
             // 判断订单存不存在
 	    	if (! $order) {
@@ -141,7 +141,7 @@ class ExecuteController extends Controller
 	        $data['no'] = static::createOrderId();
 	    	$data['order_no'] = $request->data['order_no'];
 	    	$order = Order::where('no', $data['order_no'])->first();
-	    	$data['user_id'] = $order->creator_primary_user_id;
+	    	$data['user_id'] = $order->gainer_primary_user_id;
 	    	$data['before_weight_value']= UserWeight::where('user_id', $data['user_id'])->value('weight') ?? 0;
 	    	$data['after_weight_value'] = round($data['before_weight_value'] + bcmul($data['before_weight_value'], bcdiv($request->data['ratio'], 100)));
 	    	$data['start_time'] = $request->data['start_time'] ?? '';
@@ -179,7 +179,7 @@ class ExecuteController extends Controller
 	        $data['no'] = static::createOrderId();
 	    	$data['order_no'] = $request->data['order_no'];
 	    	$order = Order::where('no', $data['order_no'])->first();
-	    	$data['user_id'] = $order->creator_primary_user_id;
+	    	$data['user_id'] = $order->gainer_primary_user_id;
 	    	$data['before_weight_value'] = UserWeight::where('user_id', $data['user_id'])->value('weight') ?? 0;
 	    	$data['after_weight_value'] = round($data['before_weight_value'] + bcmul($data['before_weight_value'], bcdiv($request->data['ratio'], 100)));
 	    	$data['start_time'] = $request->data['start_time'] ?? '';
@@ -216,7 +216,7 @@ class ExecuteController extends Controller
     		$data['no'] = static::createOrderId();
 	    	$data['order_no'] = $request->data['order_no'];
 	    	$order = Order::where('no', $data['order_no'])->first();
-	    	$data['user_id'] = $order->creator_primary_user_id;
+	    	$data['user_id'] = $order->gainer_primary_user_id;
 	    	$data['deadline'] = Carbon::now()->addDays(1)->endOfDay()->toDateTimeString();
 	    	$data['remark'] = $request->data['remark'];
 	    	$data['voucher'] = $request->data['voucher'] ?? '';

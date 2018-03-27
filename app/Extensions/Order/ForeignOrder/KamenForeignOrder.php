@@ -21,9 +21,6 @@ class KamenForeignOrder extends ForeignOrder
     // 卡门进货站点
     protected $jSiteId = 0;
 
-    // 集市站点信息
-    protected $siteInfo = null;
-
     // 渠道Id
     protected $channelId;
 
@@ -128,10 +125,6 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function output(ForeignOrderModel $model)
     {
-        // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
-//        $siteId = !empty($model->details->JSitid) ? $model->details->JSitid : 0;
-//        $userId = SiteInfo::where('kamen_site_id', $siteId)->value('user_id');
-
         $goods = Goods::where([
             'user_id' => $this->userId,
             'foreign_goods_id' => $model->foreign_goods_id,
@@ -257,19 +250,30 @@ class KamenForeignOrder extends ForeignOrder
     /**
      * 获取自动下单对应的集市站点信息
      * @param $decodeArray
+     * @throws Exception
      */
     protected function getSiteInfo($decodeArray)
     {
-        // 优先获取外包的卡门商品配置表
-        $goodsContractorConfig = GoodsContractorConfig::where('km_goods_id', $decodeArray['ProductId'])->first();
-
-        // 如果商品存在承包商获取站点信息
-        if ($goodsContractorConfig) {
-            $this->jSiteId = $goodsContractorConfig->user_id;
-            $this->siteInfo = SiteInfo::where('user_id', $goodsContractorConfig->user_id)->first();
-        } else {
+        try {
             $this->jSiteId = isset($decodeArray['JSitid']) ? $decodeArray['JSitid'] : 0;
-        }
 
+            // 优先获取外包的卡门商品配置表
+            $goodsContractorConfig = GoodsContractorConfig::where('km_goods_id', $decodeArray['ProductId'])->first();
+
+            // 根据卡门进货站点获取信息
+            $siteInfo = SiteInfo::where('kamen_site_id', $this->jSiteId)->first();
+
+            // 如果商品存在承包商则将订单下入承包商集市站点中
+            if ($goodsContractorConfig) {
+                $this->userId = $goodsContractorConfig->user_id;
+            } else {
+                $this->userId = $siteInfo->user_id;
+            }
+            $this->channelName = $siteInfo->name;
+            $this->channelId = $siteInfo->channel;
+
+        } catch (\Exception $exception) {
+            throw new \Exception('获取站点信息出错');
+        }
     }
 }
