@@ -90,7 +90,7 @@ class EmployeeStatistic extends Command
                                 SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage
                                 FROM orders a 
                                 LEFT JOIN user_amount_flows b 
-                                ON a.no = b.trade_no AND b.user_id = a.creator_user_id 
+                                ON a.no = b.trade_no AND b.user_id = a.creator_primary_user_id 
                                 WHERE a.created_at >= '$yestodayDate' AND a.created_at < '$todayDate' AND a.service_id = 4
                                 GROUP BY trade_no
                             ) c 
