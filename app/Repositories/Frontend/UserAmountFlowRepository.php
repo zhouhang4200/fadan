@@ -20,6 +20,8 @@ class UserAmountFlowRepository
                     return $query->whereIn('trade_type', [5, 7]);
                 } else if ($tradeType == 8) {
                     return $query->whereIn('trade_type', [6, 8]);
+                } else {
+                    return $query->where('trade_type', $tradeType);
                 }
             })
             ->when(!empty($tradeSubType), function ($query) use ($tradeSubType) {
@@ -29,7 +31,7 @@ class UserAmountFlowRepository
                 return $query->where('created_at', '>=', $timeStart);
             })
             ->when(!empty($timeEnd), function ($query) use ($timeEnd) {
-                return $query->where('created_at', '<=', $timeEnd);
+                return $query->where('created_at', '<=', $timeEnd . ' 23:59:59');
             })
             ->orderBy('id', 'desc')
             ->when($pageSize === 0, function ($query) {

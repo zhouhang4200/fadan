@@ -92,20 +92,23 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     </a>
                                 </li>
                             
-                            
                                 <li>
                                     <a href="{{ route('frontend.user.weight.index') }}" @if($currentRouteName == 'frontend.user.weight.index') class="active" @endif>
                                         商户权重列表
                                     </a>
                                 </li>
-                            
 
-                            
                                 <li>
                                     <a href="{{ route('businessman.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
                                         商户保证金列表
                                     </a>
                                 </li>
+
+                            <li>
+                                <a href="{{ route('businessman.goods-contractor.index') }}" @if($currentRouteName == 'businessman.goods-contractor.index') class="active" @endif>
+                                    商户承包商品配置
+                                </a>
+                            </li>
                             
                         </ul>
                     </li>

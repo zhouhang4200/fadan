@@ -517,11 +517,11 @@
             });
         }
         // 取消订单
-        function cancel(no) {
+        layer.confirm('您确定要"取消订单"吗?', {icon: 3, title:'提示'}, function(index) {
             $.post('{{ route('frontend.workbench.order-operation.cancel') }}', {no:no}, function (result) {
                 notification(result.status, result.message)
             }, 'json')
-        }
+        });
         // 确认收货
         function confirm(no) {
             layer.confirm('您确定要"确认收货"吗?', {icon: 3, title:'提示'}, function(index) {

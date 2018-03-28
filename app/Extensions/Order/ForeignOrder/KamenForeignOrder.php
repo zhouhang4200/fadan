@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Order\ForeignOrder;
 
+use App\Models\GoodsContractorConfig;
 use App\Models\WangWangBlacklist;
 use App\Services\KamenOrderApi;
 use App\Services\TmallOrderApi;
@@ -14,10 +15,26 @@ use App\Models\ForeignOrder as ForeignOrderModel;
 
 class KamenForeignOrder extends ForeignOrder
 {
+    // 商户ID
+    protected $userId;
+
+    // 卡门进货站点
+    protected $jSiteId = 0;
+
+    // 渠道Id
+    protected $channelId;
+
+    // 渠道名
+    protected $channelName;
+
+
     public function outputOrder($data)
     {
         try {
         	$decodeArray =  $this->urldecodeData($data);
+
+            $this->getSiteInfo($decodeArray);
+
         	$model = $this->createForeignOrder($decodeArray);
 
         	if ($model) {
@@ -48,16 +65,10 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function createForeignOrder($decodeArray)
     {
-        $jSitd = isset($decodeArray['JSitid']) ? $decodeArray['JSitid'] : 0;
-
-        // 如果进货站点为天猫店，则去取订单的天猫订单信息
-        $siteInfo  = SiteInfo::where('kamen_site_id', $jSitd)->first();
         $price = 0; $totalPrice = 0; $wangWang = ''; $remark = '';
 
-        myLog('km', [$jSitd, $siteInfo, $decodeArray, $siteInfo->name]);
-
-        if ($siteInfo && $siteInfo->channel == 3 && isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
-            $tmallOrderInfo = TmallOrderApi::getOrder($siteInfo->kamen_site_id,  $decodeArray['CustomerOrderNo']);
+        if ($this->channelId == 3 && isset($decodeArray['CustomerOrderNo']) && $decodeArray['CustomerOrderNo']) {
+            $tmallOrderInfo = TmallOrderApi::getOrder($this->jSiteId,  $decodeArray['CustomerOrderNo']);
             $price = $tmallOrderInfo['price'];
             $remark = $tmallOrderInfo['remark'];
             $totalPrice = $tmallOrderInfo['payment'];
@@ -74,7 +85,7 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['ProductPrice'] = $price;
             $decodeArray['total_price'] = $totalPrice;
             $decodeArray['remark'] = $remark;
-            $decodeArray['province'] = $jSitd == 0 ? $decodeArray['ChargeServer'] : loginDetail($decodeArray['BuyerIp'])['province'];
+            $decodeArray['province'] = $this->jSiteId == 0 ? $decodeArray['ChargeServer'] : loginDetail($decodeArray['BuyerIp'])['province'];
         }
 
         // 旺旺黑名单检测,如果在黑名单中则直接失败订单
@@ -83,13 +94,11 @@ class KamenForeignOrder extends ForeignOrder
             (KamenOrderApi::share()->ing($decodeArray['OrderNo']));
             // 将订单改为失败
             (KamenOrderApi::share()->fail($decodeArray['OrderNo']));
-
-            myLog('blacklist', [$decodeArray['OrderNo'], $wangWang]);
             return false;
         }
 
-		$data['channel']          =  $siteInfo->channel;
-		$data['channel_name']     =  $siteInfo->name;
+		$data['channel']          =  $this->channelId;
+		$data['channel_name']     =  $this->channelName;
 		$data['kamen_order_no']   =  $decodeArray['OrderNo'] ?? '';
 		$data['foreign_order_no'] = isset($decodeArray['CustomerOrderNo']) ? $decodeArray['CustomerOrderNo'] : $decodeArray['OrderNo'];
 		$data['order_time']       = $decodeArray['BuyTime'] ?? '';
@@ -116,19 +125,15 @@ class KamenForeignOrder extends ForeignOrder
 
     protected function output(ForeignOrderModel $model)
     {
-        // 优先用数量与卡门商品ID切匹配，如果没有则直接用卡门商品ID查询
-        $siteId = !empty($model->details->JSitid) ? $model->details->JSitid : 0;
-        $userId = SiteInfo::where('kamen_site_id', $siteId)->value('user_id');
-
         $goods = Goods::where([
-            'user_id' => $userId,
+            'user_id' => $this->userId,
             'foreign_goods_id' => $model->foreign_goods_id,
             'quantity' =>$model->details->quantity,
         ])->first();
 
         if (!$goods) {
             $goods = Goods::where([
-                'user_id' => $userId,
+                'user_id' => $this->userId,
                 'foreign_goods_id' =>  $model->foreign_goods_id,
             ])->first();
         }
@@ -162,7 +167,7 @@ class KamenForeignOrder extends ForeignOrder
                     $data['price'] = $model->details->ProductPrice;
                 }
                 $data['total'] = $model->details->total_price;
-                $data['kamen_site_id'] = $siteId;
+                $data['kamen_site_id'] = $this->jSiteId;
                 $data['province'] = $model->details->province;
                 $data['remark'] = $model->details->remark;
                 $data['wang_wang'] = $model->wang_wang;
@@ -240,5 +245,35 @@ class KamenForeignOrder extends ForeignOrder
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取自动下单对应的集市站点信息
+     * @param $decodeArray
+     * @throws Exception
+     */
+    protected function getSiteInfo($decodeArray)
+    {
+        try {
+            $this->jSiteId = isset($decodeArray['JSitid']) ? $decodeArray['JSitid'] : 0;
+
+            // 优先获取外包的卡门商品配置表
+            $goodsContractorConfig = GoodsContractorConfig::where('km_goods_id', $decodeArray['ProductId'])->first();
+
+            // 根据卡门进货站点获取信息
+            $siteInfo = SiteInfo::where('kamen_site_id', $this->jSiteId)->first();
+
+            // 如果商品存在承包商则将订单下入承包商集市站点中
+            if ($goodsContractorConfig) {
+                $this->userId = $goodsContractorConfig->user_id;
+            } else {
+                $this->userId = $siteInfo->user_id;
+            }
+            $this->channelName = $siteInfo->name;
+            $this->channelId = $siteInfo->channel;
+
+        } catch (\Exception $exception) {
+            throw new \Exception('获取站点信息出错');
+        }
     }
 }
