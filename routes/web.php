@@ -256,7 +256,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 // 申请售后
                 Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('permission:frontend.workbench.order-operation.after-sales');
                 // 接单
-                Route::group(['middleware'=>'throttle:30'],function(){
+                Route::group(['middleware'=>'throttle:20, 60'],function(){
                     Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('permission:frontend.workbench.order-operation.receiving');
                 });
                 // 支付
@@ -321,7 +321,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 下单
         Route::post('order', 'IndexController@order')->name('frontend.workbench.order')->middleware('permission:frontend.workbench.order');
         // 订单列表
-        Route::group(['middleware'=>'throttle:30'],function(){
+        Route::group(['middleware'=>'throttle:20,60'],function(){
             Route::post('order-list', 'IndexController@orderList')->name('frontend.workbench.order-list')->middleware('permission:frontend.workbench.order-list');
         });
         // 清空急需处理数量角标
