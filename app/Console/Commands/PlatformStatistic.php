@@ -42,8 +42,8 @@ class PlatformStatistic extends Command
     public function handle()
     {
         try {
-            $yestodayDate = Carbon::now()->subDays(2)->toDateString();
-            $todayDate = Carbon::now()->subDays(1)->toDateString();
+            $yestodayDate = Carbon::now()->subDays(1)->toDateString();
+            $todayDate = Carbon::now()->toDateString();
 
             $platformStatistics = DB::select("
                 SELECT 
