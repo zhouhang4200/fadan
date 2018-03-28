@@ -85,12 +85,13 @@ class EmployeeStatistic extends Command
                                 a.creator_user_id, 
                                 a.status, 
                                 a.created_at,
+                                a.creator_primary_user_id, 
                                 SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment,
                                 SUM(CASE WHEN b.trade_subtype IN (810, 811) THEN b.fee ELSE 0 END) AS two_status_income,
                                 SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage
                                 FROM orders a 
                                 LEFT JOIN user_amount_flows b 
-                                ON a.no = b.trade_no AND b.user_id = a.creator_user_id 
+                                ON a.no = b.trade_no AND b.user_id = a.creator_primary_user_id 
                                 WHERE a.created_at >= '$yestodayDate' AND a.created_at < '$todayDate' AND a.service_id = 4
                                 GROUP BY trade_no
                             ) c 
