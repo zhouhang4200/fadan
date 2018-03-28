@@ -47,8 +47,8 @@ class EmployeeStatistic extends Command
     {   
         DB::beginTransaction();
         try {
-            $yestodayDate = Carbon::now()->subDays(1)->toDateString();
-            $todayDate = Carbon::now()->toDateString();
+            $yestodayDate = Carbon::now()->subDays(2)->toDateString();
+            $todayDate = Carbon::now()->subDays(1)->toDateString();
             //订单表根据接单者（creator_user_id）分组，获取每天接单者相关数据，存入员工统计表
             $userDatas = DB::select("
                 SELECT 

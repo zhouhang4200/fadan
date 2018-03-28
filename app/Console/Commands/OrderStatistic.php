@@ -48,8 +48,8 @@ class OrderStatistic extends Command
     {
         DB::beginTransaction();
         try{
-            $yestodayDate = Carbon::now()->subDays(1)->toDateString();
-            $todayDate = Carbon::now()->toDateString();
+            $yestodayDate = Carbon::now()->subDays(2)->toDateString();
+            $todayDate = Carbon::now()->subDays(1)->toDateString();
 
             $orderDatas = DB::select("
                 SELECT 
