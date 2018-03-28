@@ -32,6 +32,7 @@ abstract class DailianAbstract
     protected $handledStatus;       // 操作后状态
     protected $description;         // 操作说明
     protected $runAfter = false;
+    protected $user = null; // 用户，对象
 
     /**
      * [getObject description]
@@ -56,6 +57,7 @@ abstract class DailianAbstract
     public function createLogObject()
     {
         $user = User::where('id', $this->userId)->first();
+        $this->user = $user;
         $this->orderHistory = new OrderHistory;
         $this->orderHistory->user_id       = $this->userId;
         // $this->orderHistory->creator_primary_user_id  = $user->getPrimaryUserId();
@@ -91,7 +93,7 @@ abstract class DailianAbstract
     	// 操作前的状态
     	$beforeStatusName = config('order.status_leveling')[$this->beforeHandleStatus];
     	// 详情
-        $this->description = "用户[{$this->userId}]将订单从[$beforeStatusName]设置为[$statusName]状态！";
+        $this->description = "用户[{$this->user->username}]将订单从[$beforeStatusName]设置为[$statusName]状态！";
     }
 
     // 保存操作日志
