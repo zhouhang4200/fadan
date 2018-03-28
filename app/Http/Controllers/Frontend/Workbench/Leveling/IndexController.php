@@ -157,16 +157,19 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
-
-                $orderArr[] = $orderCurrent;
+                $temp = [];
+                foreach ($orderCurrent as $key => $value) {
+                    $temp[$key] = htmlspecialchars($value);
+                }
+                $orderArr[] = $temp;
             }
 
-            return response()->json([
+            return [
                 'code' => 0,
                 'msg' => '',
                 'count' => $orders->total(),
-                'data' => $orderArr,
-            ]);
+                'data' =>  $orderArr,
+            ];
         }
     }
 
