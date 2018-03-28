@@ -157,6 +157,7 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
+
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
                     $temp[$key] = htmlspecialchars($value);

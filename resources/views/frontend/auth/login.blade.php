@@ -28,7 +28,7 @@
                         {!! Geetest::render() !!}
                     </div>
                     <div class="layui-form-item">
-                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" style="width: 100%">登 录</button>
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="doLogin" style="width: 100%">登 录</button>
                     </div>
                     <div class="register-and-forget-password">
                         <a class="register" target="_blank" href="{{ route('register') }}">新用户注册</a>
@@ -44,26 +44,30 @@
 
 @section('js')
     <script>
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
+
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
             ,layer = layui.layer;
-          
-            var GeetestError = "{{ $errors->count() > 0  && array_key_exists('geetest_challenge', $errors->toArray()) ? '请正确完成验证码操作!' : '' }}";
-            var error = "{{ $errors->count() > 0 ? '账号或密码错误！' : '' }}";
-            var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
-            var forbidden = "{{ session('forbidden') ?: '' }}";
 
-            if(GeetestError) {
-                layer.msg(GeetestError, {icon: 5, time:1500});
-            } else if(forbidden) {
-                layer.msg(forbidden, {icon: 5, time:1500});
-            } else if (error) {
-                layer.msg(error, {icon: 5, time:1500});
-            } else if(loginError) {
-                layer.msg(loginError, {icon: 5, time:1500});
-            }
+            form.on('submit(doLogin)', function (data) {
+                $.post('{{ route('login') }}', {
+                    name:data.field.name,
+                    password:encrypt(data.field.password),
+                    geetest_challenge:data.field.geetest_challenge,
+                    geetest_seccode:data.field.geetest_seccode,
+                    geetest_validate:data.field.geetest_validate
+                }, function (result) {
+                    if (result.status == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                    return false;
+                });
+                return false;
+            });
         });
-
     </script>
 @endsection
 
