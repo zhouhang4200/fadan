@@ -165,8 +165,6 @@ class IndexController extends Controller
                     } else {
                         $temp[$key] = $value;
                     }
-
-
                 }
                 $orderArr[] = $temp;
             }
