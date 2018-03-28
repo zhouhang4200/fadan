@@ -8,6 +8,10 @@
         .layui-layer-btn{
             text-align:center !important;
         }
+        td {
+            word-wrap : break-word;
+            word-break:break-all;
+        }
     </style>
 @endsection
 
@@ -58,18 +62,18 @@
         <table class="layui-table" lay-size="sm" style="text-align:center;">
             <thead>
             <tr>
-                <th>编号</th>
-                <th>员工姓名</th>
-                <th>账号</th>
-                <th>类型</th>
-                <th>岗位</th>
-                <th>QQ</th>
-                <th>微信</th>
-                <th>电话</th>
-                <th>最后操作时间</th>
-                <th>备注</th>
+                <th width="4%">编号</th>
+                <th width="6%">员工姓名</th>
+                <th width="8%">账号</th>
+                <th width="6%">类型</th>
+                <th width="10%">岗位</th>
+                <th width="7%">QQ</th>
+                <th width="10%">微信</th>
+                <th width="10%">电话</th>
+                <th width="10%">最后操作时间</th>
+                <th width="10%">备注</th>
                 <th>状态</th>
-                <th width="15%">操作</th>
+                <th width="20%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -85,7 +89,7 @@
                         <td>{{ $user->wechat ?? '--' }}</td>
                         <td>{{ $user->phone ?? '--' }}</td>
                         <td>{{ $user->updated_at ?? '--' }}</td>
-                        <td>{{ $user->remark ?? '--' }}</td>
+                        <td >{{ $user->remark ?? '--' }}</td>
                         <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 0 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="启用|禁用"></td>
                         <td>
                         @if(!$user->deleted_at)
