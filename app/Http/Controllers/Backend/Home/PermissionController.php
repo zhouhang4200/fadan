@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Home;
 
+use Cache;
 use Illuminate\Http\Request;
 use App\Models\NewPermission;
 use App\Models\NewModule;

@@ -24,6 +24,6 @@
         <li class="{{ in_array(Route::currentRouteName(), ['station.index', 'station.create', 'station.edit']) ? 'current' : '' }}"><a href="{{ route('station.index') }}"> 岗位管理 </a><div class="arrow"></div></li>
     @endif
     @if(Auth::user()->could('staff-management.index'))
-        <li class="{{ in_array(Route::currentRouteName(), ['staff-management.index', 'staff-management.edit']) ? 'current' : '' }}"><a href="{{ route('staff-management.index') }}"> 员工管理 </a><div class="arrow"></div></li>
+        <li class="{{ in_array(Route::currentRouteName(), ['staff-management.index', 'staff-management.edit', 'staff-management.create']) ? 'current' : '' }}"><a href="{{ route('staff-management.index') }}"> 员工管理 </a><div class="arrow"></div></li>
     @endif
 </ul>

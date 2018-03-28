@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Home;
 
+use Cache;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\NewRole;
 use App\Models\NewPermission;
@@ -56,6 +58,12 @@ class RoleController extends Controller
         $permissionIds = isset($request->ids) ? $request->ids : [];
     	// 关联角色-权限数据
     	$role->newPermissions()->sync($permissionIds);
+        // 清空缓存
+        if ($role->newUsers) {
+            foreach ($role->newUsers as $user) {
+                Cache::forget('newPermissions:user:'.$user->id);
+            }
+        }
     	
     	return response()->ajax(1, '添加成功!');
     }
@@ -83,16 +91,63 @@ class RoleController extends Controller
      */
     public function update(Request $request)
     {
-    	// 保存角色修改
-    	$role = NewRole::find($request->data['id']);
-    	$role->name = $request->data['name'];
-    	$role->alias = $request->data['alias'];
-    	$role->save();
-    	// 保存角色权限
-    	$permissionIds = isset($request->ids) ? $request->ids : [];
-    	// 同步更新角色-权限
-    	$role->newPermissions()->sync($permissionIds);
+        // 保存角色修改
+        $role = NewRole::find($request->data['id']);
+        $role->name = $request->data['name'];
+        $role->alias = $request->data['alias'];
+        $role->save();
+        // 保存角色权限
+        $permissionIds = isset($request->ids) ? $request->ids : [];
+        // 同步更新角色-权限
+        $role->newPermissions()->sync($permissionIds);
+        // 清空缓存
+        if ($role->newUsers->count() > 0) {
+            foreach ($role->newUsers as $user) {
+                // 清空主账号下的缓存
+                Cache::forget('newPermissions:user:'.$user->id);
+                // 当前除了本角色的所有权限
+                $exceptCurrentRolePermissionIds = $user->newPermissions
+                    ->merge($user->load('newRoles', 'newRoles.newPermissions')
+                    ->newRoles->where('id', '!=', $role->id)->flatMap(function ($role) {
+                        return $role->newPermissions;
+                    })->sort()->values())
+                    ->sort()
+                    ->values()
+                    ->pluck('id')
+                    ->toArray();
+                // 当前角色所有的权限 + 除了当前的权限 = 最新所有权限
+                $permissionIds = array_map(function ($v) {
+                    return (int) $v;
+                }, $permissionIds);
 
+                $allUserPermissionIds = array_unique(array_merge($exceptCurrentRolePermissionIds, array_values($permissionIds)));
+                // 从小到达排序,z主账号所有的权限
+                sort($allUserPermissionIds);
+                // 清空子账号下面的缓存
+                foreach ($user->children as $child) {
+                    // 清空子账号的缓存
+                    Cache::forget('newPermissions:user:'.$child->id);
+                }
+                // 遍历主账号创建的岗位
+                $primaryUserRoles = NewRole::where('user_id', $user->id)->get();
+                // 遍历岗位
+                foreach ($primaryUserRoles as $k => $primaryUserRole) {
+                    // 获取当前岗位下面的权限
+                    $stationPermissions = $primaryUserRole->newPermissions->pluck('id')->toArray();
+                    // 过滤岗位下面的权限，记录在主账号角色中的权限
+                    $existPermissionIds = [];
+                    foreach ($stationPermissions as $stationPermission) {
+                        if (in_array($stationPermission, $allUserPermissionIds)) {
+                            $existPermissionIds[] = $stationPermission;
+                        }
+                    }
+                    // 更新 岗位-权限
+                    $primaryUserRole->newPermissions()->sync($existPermissionIds);
+                    // 清空数组
+                    unset($existPermissionIds);
+                }
+            }
+        }
     	return response()->ajax(1, '修改成功!');
     }
 
@@ -104,10 +159,52 @@ class RoleController extends Controller
     public function destroy(Request $request)
     {
     	$role = NewRole::find($request->id);
-    	// 删除角色-权限
-    	$role->newPermissions()->detach();
-    	// 删除 角色-用户
-    	$role->newUsers()->detach();
+    	
+        // 清空缓存
+        if ($role->newUsers->count() > 0) {
+            foreach ($role->newUsers as $user) {
+                // 清空主账号下的缓存
+                Cache::forget('newPermissions:user:'.$user->id);
+                // 当前除了本角色的所有权限
+                $exceptCurrentRolePermissionIds = $user->newPermissions
+                    ->merge($user->load('newRoles', 'newRoles.newPermissions')
+                    ->newRoles->where('id', '!=', $role->id)->flatMap(function ($role) {
+                        return $role->newPermissions;
+                    })->sort()->values())
+                    ->sort()
+                    ->values()
+                    ->pluck('id')
+                    ->toArray();
+
+                // 清空子账号下面的缓存
+                foreach ($user->children as $child) {
+                    // 清空子账号的缓存
+                    Cache::forget('newPermissions:user:'.$child->id);
+                }
+                // 遍历主账号创建的岗位
+                $primaryUserRoles = NewRole::where('user_id', $user->id)->get();
+                // 遍历岗位
+                foreach ($primaryUserRoles as $k => $primaryUserRole) {
+                    // 获取当前岗位下面的权限
+                    $stationPermissions = $primaryUserRole->newPermissions->pluck('id')->toArray();
+                    // 过滤岗位下面的权限，记录在主账号角色中的权限
+                    $existPermissionIds = [];
+                    foreach ($stationPermissions as $stationPermission) {
+                        if (in_array($stationPermission, $exceptCurrentRolePermissionIds)) {
+                            $existPermissionIds[] = $stationPermission;
+                        }
+                    }
+                    // 更新 岗位-权限
+                    $primaryUserRole->newPermissions()->sync($existPermissionIds);
+                    // 清空数组
+                    unset($existPermissionIds);
+                }
+            }
+        }
+        // 删除角色-权限
+        $role->newPermissions()->detach();
+        // 删除 角色-用户
+        $role->newUsers()->detach();
     	// 删除角色
     	$role->delete();
 

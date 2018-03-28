@@ -32,8 +32,9 @@
                 @if(Auth::user()->could('frontend.setting.sending-control.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route('frontend.setting.sending-control.index') }}">设置</a><div class="arrow"></div></li>
                 @endif
-
+                @if(Auth::user()->could('frontend.statistic.employee'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route('frontend.statistic.employee') }}">统计</a><div class="arrow"></div></li>
+                @endif
                 @if(Auth::user()->could('frontend.steam.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.steam' ? 'current' : '' }}"><a href="{{ route('frontend.steam.goods.index') }}">Steam</a><div class="arrow"></div></li>
                 @endif

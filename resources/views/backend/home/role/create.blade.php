@@ -112,6 +112,9 @@
                 });
                 $.post("{{ Route('home.role.add') }}", {ids:ids,data:data.field}, function (result) {
                     layer.msg(result.message);
+                    if (result.status > 0) {
+                        window.location.href="{{ route('home.role.index') }}";
+                    }
                 })
                 return false;
             })
