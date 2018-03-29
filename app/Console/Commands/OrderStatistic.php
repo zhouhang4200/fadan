@@ -56,7 +56,7 @@ class OrderStatistic extends Command
                     m.*, 
                     n.parent_id,
                     DATE_FORMAT(m.created_at, '%Y-%m-%d') AS date, 
-                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income-m.poundage AS profit,
+                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income+m.poundage AS profit,
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, 
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at
                 FROM 

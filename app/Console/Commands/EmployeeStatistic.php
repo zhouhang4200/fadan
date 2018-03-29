@@ -63,7 +63,7 @@ class EmployeeStatistic extends Command
                     DATE_FORMAT(m.created_at, '%Y-%m-%d') AS date, 
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, 
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
-                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income-m.poundage AS profit
+                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income+m.poundage AS profit
                 FROM 
                     (
                         SELECT 
