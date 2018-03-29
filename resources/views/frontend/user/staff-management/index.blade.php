@@ -8,6 +8,10 @@
         .layui-layer-btn{
             text-align:center !important;
         }
+        td {
+            word-wrap : break-word;
+            word-break:break-all;
+        }
     </style>
 @endsection
 
