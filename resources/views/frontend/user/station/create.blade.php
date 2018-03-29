@@ -56,11 +56,12 @@
                             <tr>
                                 <td><input type="checkbox" name="new_module_id" lay-skin="primary" title="{{ $modulePermission->name }}" lay-filter="module" value="{{ $modulePermission->id }}"></td>
                                 <td>
-                                    @foreach($modulePermission->newPermissions as $permission)
+                                    @forelse($modulePermission->newPermissions as $permission)
                                     <div class="layui-input-inline" style="width:240px">
-                                      <input type="checkbox" name="permissions" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
+                                        <input type="checkbox" name="permissions" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
                                     </div>
-                                    @endforeach
+                                    @empty
+                                    @endforelse
                                 </td>
                             </tr>
                         @empty
