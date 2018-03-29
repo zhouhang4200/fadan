@@ -53,20 +53,21 @@
                             <th>累计用户成交次数</th>
                             <th>当日用户成交</th>
                             <th>累计用户成交</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
                             @foreach ($dataList as $data)
                                 <tr>
-                                    <td>{{ $data->date }}</td>
-                                    <td>{{ $data->amount + 0 }}</td>
-                                    <td>{{ $data->managed + 0 }}</td>
-                                    <td>{{ $data->balance + 0 }}</td>
-                                    <td>{{ $data->frozen + 0 }}</td>
+                                    <td class="date">{{ $data->date }}</td>
+                                    <td class="amount">{{ $data->amount + 0 }}</td>
+                                    <td class="managed">{{ $data->managed + 0 }}</td>
+                                    <td class="balance">{{ $data->balance + 0 }}</td>
+                                    <td class="frozen">{{ $data->frozen + 0 }}</td>
                                     <td>{{ $data->recharge + 0 }}</td>
-                                    <td>{{ $data->total_recharge + 0 }}</td>
+                                    <td class="total-recharge">{{ $data->total_recharge + 0 }}</td>
                                     <td>{{ $data->withdraw + 0 }}</td>
-                                    <td>{{ $data->total_withdraw + 0 }}</td>
+                                    <td class="total-withdraw">{{ $data->total_withdraw + 0 }}</td>
                                     <td>{{ $data->consume + 0 }}</td>
                                     <td>{{ $data->total_consume + 0 }}</td>
                                     <td>{{ $data->refund + 0 }}</td>
@@ -75,6 +76,7 @@
                                     <td>{{ $data->total_trade_quantity }}</td>
                                     <td>{{ $data->trade_amount + 0 }}</td>
                                     <td>{{ $data->total_trade_amount + 0 }}</td>
+                                    <td><button class="layui-btn layui-btn-mini layui-btn-normal account-checking" type="button">对账</button></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -96,6 +98,39 @@ $('#date-end').datepicker();
 $('#export-flow').click(function () {
     var url = "{{ route('finance.platform-asset-daily.export') }}?" + $('#search-flow').serialize();
     window.location.href = url;
+});
+
+layui.use(['layer'], function(){
+    var layer = layui.layer;
+
+    $('.account-checking').click(function () {
+        var $td           = $(this).parent();
+        var date          = $td.siblings('.date').text();
+        var amount        = parseFloat($td.siblings('.amount').text());
+        var managed       = parseFloat($td.siblings('.managed').text());
+        var balance       = parseFloat($td.siblings('.balance').text());
+        var frozen        = parseFloat($td.siblings('.frozen').text());
+        var totalRecharge = parseFloat($td.siblings('.total-recharge').text());
+        var totalWithdraw = parseFloat($td.siblings('.total-withdraw').text());
+
+        var content = '<p>左右相等就是对的</p><p>';
+        content += '计算（左）：' + totalRecharge + ' - ' + totalWithdraw + ' = ' + (totalRecharge * 10000 - totalWithdraw * 10000) / 10000 + '</p>';
+        content += '<p>计算（右）：'
+                + amount
+                + ' + '
+                + managed
+                + ' + '
+                + balance
+                + ' + '
+                + frozen
+                + ' = '
+                + (amount * 10000 + managed * 10000 + balance * 10000 + frozen * 10000) / 10000;
+                + '</p>';
+        content += '<p style="color:#aaa">公式: 累计用户加款 - 累计用户提现 = 平台资金 + 平台托管 + 用户余额 + 用户冻结</p>';
+
+        var accountCheckingAlert = layer.alert(content, {title:'日期: ' + date});
+        layer.style(accountCheckingAlert, {width:'730px'});
+    });
 });
 </script>
 @endsection

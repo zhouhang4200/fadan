@@ -21,7 +21,7 @@
     <form class="layui-form" id="search-form">
         <div class="layui-form-item">
             <div class="layui-input-inline" style="width: 100px;">
-                <select name="service_id">
+                <select name="service_id" lay-search>
                     <option value="">所有类型</option>
                     @foreach ($services as $key => $value)
                         <option value="{{ $key }}" {{ $key == $serviceId ? 'selected' : '' }}>{{ $value }}</option>
@@ -29,7 +29,7 @@
                 </select>
             </div>
             <div class="layui-input-inline" style="width: 100px;">
-                <select name="game_id">
+                <select name="game_id" lay-search>
                     <option value="">所有游戏</option>
                     @foreach ($games as $key => $value)
                         <option value="{{ $key }}" {{ $key == $gameId ? 'selected' : '' }}>{{ $value }}</option>
@@ -38,6 +38,9 @@
             </div>
             <div class="layui-input-inline" style="width: 200px;">
                 <input type="text" class="layui-input" name="foreign_goods_id" placeholder="外部商品ID" value="{{ $foreignGoodsId  }}">
+            </div>
+            <div class="layui-input-inline" style="width: 200px;">
+                <input type="text" class="layui-input" name="name" placeholder="商品名" value="{{ $name  }}">
             </div>
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="layui-btn layui-btn-normal" type="submit">查询</button>
@@ -85,6 +88,7 @@
     {{ $goods->appends([
     'service_id' => $serviceId,
     'game_id' => $gameId,
+    'name' => $name,
     'foreign_goods_id' => $foreignGoodsId,
     ])->links() }}
 @endsection

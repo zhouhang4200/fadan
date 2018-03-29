@@ -150,6 +150,10 @@
     <!--END 样式表-->
 </head>
 <body>
+
+
+
+
 <!--START 顶部菜单-->
 @include('frontend.layouts.header')
 <!--END 顶部菜单-->
@@ -157,7 +161,7 @@
 <!--START 主体-->
 <div class="main">
     <div class="workbench-wrapper">
-        @can('frontend.workbench.order')
+        @if(Auth::user()->could('frontend.workbench.order'))
             <div class="left-menu" id="left-menu">
             <form class="layui-form " action="">
                 <div class="layui-form-item">
@@ -203,14 +207,15 @@
             <div class="open-btn"> 打开下单面板</div>
             <div class="close-btn layui-hide">关闭下单面板</div>
         </div>
-        @endcan
+        @endif
         <div class="right-content">
             <div class="content">
                 <div class="path"><span>工作台</span>
                 </div>
+
                 <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
                     <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="need">急需处理</li>
+                        <li class="layui-this" lay-id="need">急需处理 <span class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
                         <li class="" lay-id="ing">处理中</li>
                         <li class="" lay-id="finish">已完成</li>
                         <li class="" lay-id="after-sales">售后中</li>
@@ -227,10 +232,13 @@
                         <div class="layui-tab-item market"></div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+
 <div class="prom-wrap fixed" id='prom'>
     <ul class="prom-inner">
     </ul>
@@ -316,8 +324,11 @@
         var form = layui.form,
                 layer = layui.layer,
                 layTpl = layui.laytpl,
+                util = layui.util,
                 element = layui.element;
         var serviceId = 0, gameId = 0, currentUrl, currentType;
+        // 倒计时
+
         // 打开工作台时加载订单列表
         getOrder('{{ route('frontend.workbench.order-list') }}', 'need');
         // 切换订单状态
@@ -325,11 +336,18 @@
             try {
                 var type = this.getAttribute('lay-id');
                 if (type) {
-//                    $('.' + type).empty();
-//                        $('.search').empty();
-//                        element.tabDelete('order-list', 'search');
+                    $('.search').empty();
                     if (type == 'search') {
                         return false;
+                    } else {
+                        element.tabDelete('order-list', 'search');
+                    }
+                    // 如果是急需处理
+                    if (type == 'need') {
+                        $(this).children('span').addClass('layui-hide');
+                        $.post('{{ route('frontend.workbench.clear-wait-handle-quantity') }}', {id:1}, function (result) {
+
+                        }, 'json')
                     }
                     getOrder('{{ route('frontend.workbench.order-list') }}', type);
                     return false;
@@ -472,7 +490,7 @@
                 maxmin: true, //开启最大化最小化按钮
                 area: ['600px', '630px'],
                 scrollbar: false,
-                content: "{{ url('/workbench/order-operation/detail') }}?no=" + no
+                content: "{{ route('frontend.workbench.order-operation.detail') }}?no=" + no
             });
         }
         // 订单发货
@@ -499,11 +517,11 @@
             });
         }
         // 取消订单
-        function cancel(no) {
+        layer.confirm('您确定要"取消订单"吗?', {icon: 3, title:'提示'}, function(index) {
             $.post('{{ route('frontend.workbench.order-operation.cancel') }}', {no:no}, function (result) {
                 notification(result.status, result.message)
             }, 'json')
-        }
+        });
         // 确认收货
         function confirm(no) {
             layer.confirm('您确定要"确认收货"吗?', {icon: 3, title:'提示'}, function(index) {
@@ -526,9 +544,20 @@
             });
         }
         function afterSales(no) {
-            $.post('{{ route('frontend.workbench.order-operation.after-sales') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
+            layer.prompt({
+                formType: 2,
+                title: '请输入发起售后的原因',
+                area: ['200', '100']
+            }, function(value, index, elem){
+                $.post("{{ route('frontend.workbench.order-operation.after-sales') }}", {
+                    no:no,
+                    remark:value
+                }, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+                layer.close(index);
+            });
+
         }
         // 操作提示
         function notification(type, message) {
@@ -590,6 +619,51 @@
             $('.market-order-quantity').removeClass('layui-hide').html(data.quantity);
         }
     });
+    // 待处理订单数
+    socket.on('notification:waitHandleQuantity', function (data) {
+        if (data.quantity == 0) {
+            $('.wait-handle-quantity').addClass('layui-hide');
+        } else {
+            $('.wait-handle-quantity').removeClass('layui-hide').html(data.quantity);
+        }
+    });
+
+    $(function(){
+        updateEndTime();
+    });
+
+    //倒计时函数
+    function updateEndTime(){
+
+        var date = new Date();
+        var time = date.getTime();  //当前时间距1970年1月1日之间的毫秒数
+
+        $(".end-time").each(function(i){
+
+            var endDate = this.getAttribute("data-time"); //结束时间字符串
+
+            if (endDate == 0) {
+                return $(this).html("-");
+            }
+
+            //转换为时间日期类型
+            var endDate1 = eval('new Date(' + endDate.replace(/\d+(?=-[^-]+$)/, function (a) { return parseInt(a, 10) - 1 }).match(/\d+/g) + ')');
+
+            var endTime = endDate1.getTime() + {{ config('order.max_use_time') }}*1000; //结束时间毫秒数
+            var lag = (endTime - time) / 1000; //当前时间和结束时间之间的秒数
+
+            if(lag > 0) {
+                var second = Math.floor(lag % 60);
+                var minite = Math.floor((lag / 60) % 60);
+                // var hour = Math.floor((lag / 3600) % 24);
+                // var day = Math.floor((lag / 3600) / 24);
+                $(this).html(minite+"分"+second+"秒");
+            } else {
+                $(this).html("超时");
+            }
+        });
+        setTimeout("updateEndTime()", 1000);
+    }
 </script>
 <!--END 脚本-->
 </body>

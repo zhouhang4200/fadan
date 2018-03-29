@@ -14,10 +14,11 @@ class UserGoodsRepository
      * @param $serviceId
      * @param $gameId
      * @param $foreignGoodsId
+     * @param $name
      * @param int $pageSize
      * @return mixed
      */
-    public function getList($serviceId, $gameId, $foreignGoodsId,$pageSize = 20)
+    public function getList($serviceId, $gameId, $foreignGoodsId, $name, $pageSize = 20)
     {
         $dataList = Goods::where('user_id', Auth::user()->getPrimaryUserId())
             ->with(['game', 'service'])
@@ -28,7 +29,10 @@ class UserGoodsRepository
                 return $query->where('game_id', $gameId);
             })
             ->when(!empty($foreignGoodsId), function ($query) use ($foreignGoodsId) {
-                return $query->where('foreign_goods_id', '>=', $foreignGoodsId);
+                return $query->where('foreign_goods_id',  $foreignGoodsId);
+            })
+            ->when(!empty($name), function ($query) use ($name){
+                return $query->where('name',  'like', '%' . $name . '%');
             })
             ->orderBy('service_id')
             ->orderBy('game_id')

@@ -9,20 +9,29 @@ use App\Models\UserAmountFlow;
 
 class UserAmountFlowRepository
 {
-    public function getList($tradeNo, $tradeType, $timeStart, $timeEnd, $pageSize = 20)
+    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 20)
     {
         $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
                 return $query->where('trade_no', $tradeNo);
             })
             ->when(!empty($tradeType), function ($query) use ($tradeType) {
-                return $query->where('trade_type', $tradeType);
+                if ($tradeType == 7) {
+                    return $query->whereIn('trade_type', [5, 7]);
+                } else if ($tradeType == 8) {
+                    return $query->whereIn('trade_type', [6, 8]);
+                } else {
+                    return $query->where('trade_type', $tradeType);
+                }
+            })
+            ->when(!empty($tradeSubType), function ($query) use ($tradeSubType) {
+                return $query->where('trade_subtype', $tradeSubType);
             })
             ->when(!empty($timeStart), function ($query) use ($timeStart) {
                 return $query->where('created_at', '>=', $timeStart);
             })
             ->when(!empty($timeEnd), function ($query) use ($timeEnd) {
-                return $query->where('created_at', '<=', $timeEnd);
+                return $query->where('created_at', '<=', $timeEnd . ' 23:59:59');
             })
             ->orderBy('id', 'desc')
             ->when($pageSize === 0, function ($query) {

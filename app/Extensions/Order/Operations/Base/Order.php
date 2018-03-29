@@ -23,7 +23,7 @@ class Order
             $operation->setDescription();
             $operation->saveLog();
             $operation->saveWeight();
-            $operation->after();
+            $orderNo = $operation->after();
         }
         catch (OrderException $e) {
             DB::rollBack();
@@ -31,7 +31,7 @@ class Order
         }
 
         DB::commit();
-        return true;
+        return $orderNo;
     }
 
     public function get()

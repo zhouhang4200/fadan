@@ -1,0 +1,223 @@
+.fr {
+  float: right;
+}
+.fl {
+  float: left;
+}
+.none {
+  display: none;
+}
+body {
+  background-image: url("../images/bg.jpg");
+  max-width: 644px;
+  margin: auto;
+}
+.colr {
+  color: #f6f3ed;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.main {
+  padding: 70px 10%;
+}
+.main .title img {
+  width: 100%;
+  height: 100%;
+}
+.main .key {
+  margin-top: 50px;
+}
+.main .key .layui-form .layui-form-item .layui-input-block {
+  margin: 0;
+}
+.main .key .layui-form .layui-form-item .layui-input-block input {
+  height: 50px;
+  margin-bottom: 25px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: #bfbfbf;
+  color: #fff;
+  padding: 10px 20px;
+}
+.main .key .layui-form .layui-form-item .layui-input-block input::-ms-input-placeholder {
+  text-align: center;
+}
+.main .key .layui-form .layui-form-item .layui-input-block input::-webkit-input-placeholder {
+  text-align: center;
+}
+.main .key .layui-form .layui-form-item .layui-input-block button {
+  display: block;
+  width: 100%;
+  height: 40px;
+  background-color: #6d6043;
+  background: -webkit-linear-gradient(bottom, #746749, #3f3829);
+  /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom, #746749, #3f3829);
+  /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom, #746749, #3f3829);
+  /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom, #746749, #3f3829);
+  /* 标准的语法 */
+  background-size: 200px 50px;
+  border-radius: 8px;
+  color: #fffad5;
+  font-size: 17px;
+  cursor: pointer;
+  border: none;
+}
+.main .key .layui-form .layui-form-item .layui-input-block .exchange {
+  margin-bottom: 30px;
+}
+.title {
+  margin-top: 50px;
+  padding: 0 3%;
+}
+.title img {
+  width: 100%;
+  height: 100%;
+}
+.cdkey-info {
+  padding: 20px 10%;
+}
+.cdkey-info .game-img {
+  height: 200px;
+  margin-bottom: 30px;
+}
+.cdkey-info .game-img img {
+  width: 100%;
+  height: 100%;
+}
+.cdkey-info .game-info > span {
+  display: block;
+  height: 70px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+  padding: 10px 0 0 20px;
+  box-sizing: border-box;
+}
+.cdkey-info .game-info > span > h3 {
+  font-size: 20px;
+  color: #b98a26;
+}
+.cdkey-info .game-info > span > p {
+  font-size: 15px;
+  color: #f6f3ed;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  text-indent: 20px;
+  line-height: 30px;
+}
+.cdkey-info .sub {
+  display: block;
+  height: 45px;
+  width: 100%;
+  line-height: 45px;
+  background-color: #6d6043;
+  background: -webkit-linear-gradient(bottom, #746749, #3f3829);
+  /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom, #746749, #3f3829);
+  /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom, #746749, #3f3829);
+  /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom, #746749, #3f3829);
+  /* 标准的语法 */
+  border-radius: 8px;
+  color: #fffad5;
+  font-size: 17px;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+}
+.login {
+  padding: 0 10%;
+}
+.login .layui-form {
+  margin-top: 30px;
+}
+.login .layui-form .layui-form-item .layui-input-block {
+  margin: 0;
+}
+.login .layui-form .layui-form-item .layui-input-block input {
+  height: 50px;
+  margin-bottom: 25px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+}
+.login .layui-form .layui-form-item .layui-input-block input::-ms-input-placeholder {
+  text-align: center;
+}
+.login .layui-form .layui-form-item .layui-input-block input::-webkit-input-placeholder {
+  text-align: center;
+}
+.login .layui-form .layui-form-item .layui-input-block input::-moz-placeholder {
+  text-align: center;
+  opacity: .8;
+}
+.login .layui-form .layui-form-item .layui-input-block .sub {
+  display: block;
+  height: 45px;
+  width: 100%;
+  line-height: 45px;
+  background-color: #6d6043;
+  background: -webkit-linear-gradient(bottom, #746749, #3f3829);
+  /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom, #746749, #3f3829);
+  /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom, #746749, #3f3829);
+  /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom, #746749, #3f3829);
+  /* 标准的语法 */
+  border-radius: 8px;
+  color: #fffad5;
+  font-size: 17px;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+}
+.login .layui-form .layui-form-item .layui-input-block .title {
+  padding: 0;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  color: #b98a26;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.login .layui-form .layui-form-item .layui-input-block .title img {
+  width: 100px;
+  height: 14px;
+}
+.login .layui-form .layui-form-item .layui-input-block .prompt p {
+  font-size: 14px;
+  color: #f6f3ed;
+  cursor: pointer;
+  line-height: 30px;
+}
+.login .layui-form .layui-form-item .layui-input-block .verification {
+  width: 100%;
+  height: 50px;
+  float: left;
+  overflow: hidden;
+}
+.login .layui-form .layui-form-item .imgcod {
+  overflow: hidden;
+}
+.login .layui-form .layui-form-item .imgcod input {
+  display: inline-block;
+  width: 50%;
+  margin-right: 3%;
+  float: left;
+}
+.login .layui-form .layui-form-item .imgcod a {
+  display: inline-block;
+  width: 45%;
+  height: 50px;
+  float: right;
+}
+.login .layui-form .layui-form-item .imgcod a img {
+  width: 100%;
+  height: 100%;
+}

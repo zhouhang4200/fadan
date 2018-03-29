@@ -16,9 +16,25 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Registered' => [
             'App\Listeners\Registered\CreateUserAsset',
             'App\Listeners\Registered\AddDefaultPermission',
+            'App\Listeners\Registered\UserWeightInit',
+            'App\Listeners\Registered\CreateLevelingAutoSmsTemplate',
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',
+        ],
+        'App\Events\Punish' => [
+            'App\Listeners\Punish\SendMessage',
+        ],
+        'App\Events\AutoRequestInterface' => [
+            'App\Listeners\Leveling\ChangeStatus',
+        ],
+        // 订单完成事件
+        'App\Events\OrderFinish' => [
+            'App\Listeners\OrderFinish\SendSms',
+        ],
+        // 订单被接单事件
+        'App\Events\OrderReceiving' => [
+            'App\Listeners\OrderReceiving\SendSms',
         ],
     ];
 

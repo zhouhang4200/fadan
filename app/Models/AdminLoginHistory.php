@@ -57,17 +57,14 @@ class AdminLoginHistory extends Model
     public static function scopeFilter($query, $filters = [])
     {
         if ($filters['startDate'] && empty($filters['endDate'])) {
-
             $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
-
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
-
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 

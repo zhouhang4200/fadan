@@ -68,7 +68,7 @@ class OrderSuccess implements AlgorithmInterface
                     && $data['businessOrderSuccessAvg'][$user] > $data['ordersSuccessAvg'])
                 || !isset($data['businessOrderSuccessAvg'][$user])
             ) {
-                $succ += 2;
+                $succ += 10;
             }
             $arr[$user] = $succ;
         }

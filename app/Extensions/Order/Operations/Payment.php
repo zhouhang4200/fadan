@@ -2,13 +2,14 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Events\NotificationEvent;
-use App\Exceptions\AssetException as Exception;
+use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Repositories\Api\GoodsRepository;
 use Asset;
 use App\Extensions\Asset\Expend;
+use Carbon\Carbon;
 
 // 下单付款（用于下单时余额不足的情况）
 class Payment extends \App\Extensions\Order\Operations\Base\Operation
@@ -60,6 +61,13 @@ class Payment extends \App\Extensions\Order\Operations\Base\Operation
             waitReceivingQuantityAdd();
             // 更新前台待接单数量
             event(new NotificationEvent('MarketOrderQuantity', ['quantity' => marketOrderQuantity()]));
+            // 写入待分配订单hash
+            waitReceivingAdd($this->order->no,
+                Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
+                $this->order->created_at->toDateTimeString(),
+                '',
+                $this->order->creator_primary_user_id
+            );
         }
     }
 }

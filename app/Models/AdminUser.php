@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Auth;
+use Illuminate\Validation\Rule;
 use App\Models\AdminLoginHistory;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -42,7 +43,7 @@ class AdminUser extends Authenticatable
     {
         return [
             'name' => 'required|string|max:191|unique:admin_users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6|max:16',
         ];
     }
 
@@ -50,7 +51,6 @@ class AdminUser extends Authenticatable
     {
         return [
             'name' => ['required', Rule::unique('admin_users')->ignore($id), 'string', 'max:190', ],
-            'password' => 'required|string|min:6|confirmed',
         ];
     }
 
@@ -58,7 +58,6 @@ class AdminUser extends Authenticatable
     {
         return [
             'name.required' => '请填写账号！',
-            'password.required' => '请填写密码',
         ];
     }
 
@@ -76,5 +75,10 @@ class AdminUser extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new AdminResetPasswordNotification($token));
+    }
+
+    public function revisions()
+    {
+        return $this->hasMany(Revision::class, 'user_id', 'id');
     }
 }

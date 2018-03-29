@@ -17,6 +17,8 @@ class Income extends \App\Extensions\Asset\Base\Trade
     const TRADE_SUBTYPE_AFTER_SERVICE    = 3; // 售后退款
     const TRADE_SUBTYPE_CANCLE           = 4; // 取消订单退款
 
+    const TRADE_SUBTYPE_GAME_LEVELING_CANCEL     = 5; // 代练撤消退款
+
     protected $userAsset;
     protected $platformAsset;
 
@@ -66,6 +68,7 @@ class Income extends \App\Extensions\Asset\Base\Trade
 
         $this->platformAsset->managed              = $afterManaged;
         $this->platformAsset->balance              = bcadd($this->platformAsset->balance, abs($this->fee));
+
         $this->platformAsset->total_trade_quantity = bcadd($this->platformAsset->total_trade_quantity, 1);
         $this->platformAsset->total_trade_amount   = bcadd($this->platformAsset->total_trade_amount, abs($this->fee));
 

@@ -84,7 +84,7 @@ class GoodsTemplate extends Model
     }
 
     /**
-     * 通知服务ID 与 游戏ID 获取模版ID
+     * 通过服务ID 与 游戏ID 获取模版ID
      * @param $serviceId
      * @param $gameId
      * @return mixed

@@ -8,6 +8,9 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 权限 角色管理
+ */
 class AdminRoleController extends Controller
 {
      /**
@@ -18,7 +21,6 @@ class AdminRoleController extends Controller
     public function index()
     {
         $roles = Role::where('guard_name', 'admin')->paginate(config('backend.page'));
-
         return view('backend.rbac.role.admin.index', compact('roles'));
     }
 
@@ -30,7 +32,6 @@ class AdminRoleController extends Controller
     public function create()
     {
         $modulePermissions = Module::where('guard_name', 'admin')->with('permissions')->get();
-
         $permissions = Permission::where('guard_name', 'admin')->get()->toArray();
 
         return view('backend.rbac.role.admin.create', compact('modulePermissions', 'permissions'));
@@ -45,36 +46,19 @@ class AdminRoleController extends Controller
     public function store(Request $request)
     {
         if (! $request->permissions) {
-
             return back()->withInput()->with('missError', '请选择权限!');
         }
-
         $this->validate($request, Role::rules(), Role::messages());
 
         $data['guard_name'] = 'admin';
-
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $res = Role::create($data)->permissions()->sync($request->permissions);
         
         if (! $res) {
-
             return back()->withInput()->with('createFail', '添加失败！');
         }
         return redirect(route('admin-roles.index'))->with('succ', '添加成功!');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -86,7 +70,6 @@ class AdminRoleController extends Controller
     public function edit($id)
     {
         $role = Role::find($id);
-
         $modulePermissions = Module::where('guard_name', 'admin')->with('permissions')->get();
 
         return view('backend.rbac.role.admin.edit', compact('role', 'modulePermissions'));
@@ -102,24 +85,17 @@ class AdminRoleController extends Controller
     public function update(Request $request, $id)
     {
         if (! $request->permissions) {
-
             return back()->withInput()->with('missError', '请选择权限!');
         }
 
         $this->validate($request, Role::updateRules($id), Role::messages());
-
         $data['name'] = $request->name;
-
         $data['alias'] = $request->alias;
-
         $role = Role::find($id);
-
         $int = $role->update($data);
 
         if ($int > 0) {
-
             $role->permissions()->sync($request->permissions);
-
             return redirect(route('admin-roles.index'))->with('succ', '更新成功!');
         }
 
@@ -137,7 +113,6 @@ class AdminRoleController extends Controller
         $bool = Role::find($id)->delete();
 
         if ($bool) {
-
             return response()->json(['code' => '1', 'message' => '删除成功!']);
         }
         return response()->json(['code' => '2', 'message' => '删除失败!']);

@@ -2,6 +2,14 @@
 
 @section('title', ' | 游戏')
 
+@section('css')
+    <style>
+        .layui-form .layui-form-item .layui-form-label {
+            width: 105px;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -16,11 +24,20 @@
             <div class="main-box">
                 <header class="main-box-header clearfix">
                     <div class="filter-block pull-left">
-                        <form class="form-inline" role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name"  placeholder="输入游戏名称" value="{{ $name }}">
+                        <form class="layui-form">
+                            <div class="row">
+                                <div class="form-group col-xs-8">
+                                    <select name="name" lay-verify="" lay-search="">
+                                        <option value="">输入名字或直接选择</option>
+                                        @foreach($allGames as $game)
+                                            <option value="{{ $game->name }}" {{ $name && $name == $game->name ? 'selected' : '' }}>{{ $game->name ?: '' }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-1">
+                                    <button type="submit" class="layui-btn layui-btn-normal layui-btn-small pull-left">搜索</button>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-success">搜索</button>
                         </form>
                     </div>
                     <div class="filter-block pull-right">
@@ -54,11 +71,20 @@
                                     <td>{{ $item->status == 0 ? '没启用' : '已启用' }}</td>
                                     <td>
                                         @if($item->status == 0)
-                                            <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit="" lay-filter="change-status" data-id="{{ $item->id }}" data-status="1">启用</button>
+                                            <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit=""
+                                                    lay-filter="change-status" data-id="{{ $item->id }}"
+                                                    data-status="1">启用
+                                            </button>
                                         @else
-                                            <button class="layui-btn layui-btn-mini layui-btn-danger" lay-submit="" lay-filter="change-status" data-id="{{ $item->id }}"  data-status="0">禁用</button>
+                                            <button class="layui-btn layui-btn-mini layui-btn-danger" lay-submit=""
+                                                    lay-filter="change-status" data-id="{{ $item->id }}"
+                                                    data-status="0">禁用
+                                            </button>
                                         @endif
-                                        <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit="" lay-filter="show" data-route="{{ route('goods.game.show', ['id' => $item->id]) }}">修改</button>
+                                        <button class="layui-btn layui-btn-mini layui-btn-normal" lay-submit=""
+                                                lay-filter="show"
+                                                data-route="{{ route('goods.game.show', ['id' => $item->id]) }}">修改
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -77,13 +103,15 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">游戏名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" lay-verify="required" placeholder="请输入游戏名称" autocomplete="off" class="layui-input">
+                    <input type="text" name="name" lay-verify="required" placeholder="请输入游戏名称" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">显示排序</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sortord" lay-verify="required" placeholder="请输入显示排序" autocomplete="off" class="layui-input" value="999">
+                    <input type="text" name="sortord" lay-verify="required" placeholder="请输入显示排序" autocomplete="off"
+                           class="layui-input" value="999">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -98,13 +126,15 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">游戏名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" lay-verify="required" placeholder="请输入游戏名称" autocomplete="off" class="layui-input">
+                    <input type="text" name="name" lay-verify="required" placeholder="请输入游戏名称" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">显示排序</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sortord" lay-verify="required" placeholder="请输入显示排序" autocomplete="off" class="layui-input" value="999">
+                    <input type="text" name="sortord" lay-verify="required" placeholder="请输入显示排序" autocomplete="off"
+                           class="layui-input" value="999">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -115,28 +145,31 @@
 @endsection
 
 @section('js')
-<script>
-        layui.use('form', function(){
+    <script>
+        layui.use('form', function () {
             var form = layui.form;
             //添加游戏
-            form.on('submit(save-game)', function(data){
-                $.post('{{ route('goods.game.store') }}', {data:data.field}, function (result) {
+            form.on('submit(save-game)', function (data) {
+                $.post('{{ route('goods.game.store') }}', {data: data.field}, function (result) {
                     layer.msg(result.message);
                 }, 'json');
                 reload();
                 return false;
             });
             //修改状态
-            form.on('submit(change-status)', function(data){
-                $.post('{{ route('goods.game.status') }}', {id:data.elem.getAttribute('data-id'), status:data.elem.getAttribute('data-status')}, function (result) {
+            form.on('submit(change-status)', function (data) {
+                $.post('{{ route('goods.game.status') }}', {
+                    id: data.elem.getAttribute('data-id'),
+                    status: data.elem.getAttribute('data-status')
+                }, function (result) {
                     layer.msg(result.message);
                 }, 'json');
                 reload();
                 return false;
             });
             // 查看游戏
-            form.on('submit(show)', function(data){
-                $.get(data.elem.getAttribute('data-route'), {id:data.elem.getAttribute('data-id')}, function (result) {
+            form.on('submit(show)', function (data) {
+                $.get(data.elem.getAttribute('data-route'), {id: data.elem.getAttribute('data-id')}, function (result) {
                     $('.edit-game-box input[name="id"]').val(result.id);
                     $('.edit-game-box input[name="name"]').val(result.name);
                     $('.edit-game-box input[name="sortord"]').val(result.sortord);
@@ -150,8 +183,8 @@
                 return false;
             });
             // 修改游戏
-            form.on('submit(edit)', function(data){
-                $.post('{{ route('goods.game.edit') }}', {data:data.field,id:data.field.id}, function (result) {
+            form.on('submit(edit)', function (data) {
+                $.post('{{ route('goods.game.edit') }}', {data: data.field, id: data.field.id}, function (result) {
                     layer.msg(result.message);
                 }, 'json');
                 reload();

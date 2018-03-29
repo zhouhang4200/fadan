@@ -10,8 +10,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <option value="">请选择搜索类型</option>
             <option value="1" @if($searchType == 1) selected  @endif>千手订单号</option>
             <option value="2" @if($searchType == 2) selected  @endif>外部订单号</option>
-            <option value="3" @if($searchType == 3) selected  @endif>充值账号</option>
-            <option value="4" @if($searchType == 4) selected  @endif>订单备注</option>
+            <option value="3" @if($searchType == 3) selected  @endif>账号</option>
         </select>
     </div>
     <div class="layui-inline">
@@ -31,28 +30,37 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
             <th>类型</th>
             <th>游戏</th>
             <th>商品</th>
+            <th>账号</th>
             <th>数量</th>
             <th>单价</th>
             <th>总价</th>
             <th>状态</th>
+            @if ($type == 'market' || $type == 'need')
+            <th>倒计时</th>
+            @endif
             <th>下单时间</th>
             <th width="13%">操作</th>
         </tr>
         </thead>
         <tbody>
         @forelse($orders as $item)
+            <?php $detail = $item->detail->pluck('field_value', 'field_name')->toArray() ?>
             <tr data-no="{{ $item->no }}">
                 <td>千手：{{ $item->no }}<br>外部：{{ $item->foreign_order_no }}</td>
                 <td>{{ $item->wang_wang ?: '' }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>{{ $item->game_name }}</td>
                 <td>{{ $item->goods_name }}</td>
+                <td>{{ $detail['account'] ?? '' }}</td>
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->amount }}</td>
                 <?php $status = receivingRecordExist( $primaryUserId, $item->no) && $item->status == 1 ? 9  : $item->status;  ?>
                 <td>{{ ($item->gainer_primary_user_id == $primaryUserId && $type == 'need') ? '您已接单' : config('order.status')[$status]  }}</td>
-                <td>{{ $item->created_at }}</td>
+                @if ($type == 'market' || $type == 'need')
+                <td class="end-time" data-time="{{ $item->created_at }}"></td>
+                @endif
+                <td >{{ $item->created_at }}</td>
                 <td>
                     <div class="layui-input-inline">
                         <select  lay-filter="operation" data-no="{{ $item->no }}">
@@ -93,7 +101,7 @@ $primaryUserId = Auth::user()->getPrimaryUserId();
                 </td>
             </tr>
         @empty
-            <tr><td colspan="10">没有数据</td></tr>
+            <tr><td colspan="11">没有数据</td></tr>
         @endforelse
         </tbody>
     </table>

@@ -40,7 +40,7 @@ class UserWithdrawOrder extends Model
 
 
     // 提现完成
-    public function complete()
+    public function complete($remark)
     {
         DB::beginTransaction();
 
@@ -53,6 +53,7 @@ class UserWithdrawOrder extends Model
         }
 
         $this->status = 2;
+        $this->admin_remark = $remark;
 
         if (!$this->save()) {
             DB::rollback();
@@ -115,5 +116,14 @@ class UserWithdrawOrder extends Model
     public function platformAmountFlows()
     {
         return $this->morphMany(PlatformAmountFlow::class, 'flowable');
+    }
+
+    /**
+     * 关联user 模型
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'creator_primary_user_id');
     }
 }

@@ -55,4 +55,18 @@ class Game extends Model
     {
         return $this->hasMany(Goods::Class);
     }
+
+    // 搜索
+    public static function scopeFilter($query, $filters = [])
+    {
+        if ($filters['name']) {
+            $query->where('name', $filters['name']);
+        }
+        return $query;
+    }
+
+    public function UserReceivingCategoryControls()
+    {
+        return $this->hasMany(UserReceivingCategoryControl::class);
+    }
 }

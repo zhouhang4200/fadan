@@ -24,7 +24,7 @@ class RbacGroup extends Model
         return $this->attributes['name'] = trim($value);
     }
 
-    public static function rules ()
+    public static function rules()
     {
     	return [
             'name' => 'required|string|max:191',

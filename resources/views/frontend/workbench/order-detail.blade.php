@@ -109,6 +109,10 @@
                 <div class="item-banner left cm-padding">总价</div>
                 <div class="item-content left cm-padding">{{ $order->amount }}</div>
             </li>
+            <li class="overflow">
+                <div class="item-banner left cm-padding">备注</div>
+                <div class="item-content left cm-padding">{{ $order->remark }}</div>
+            </li>
         </ul>
 
         <ul class="bg-white cm-border cm-item overflow cm-margin">
@@ -116,7 +120,13 @@
                 @if($item->field_name != 'quantity')
                 <li class="overflow">
                     <div class="item-banner left cm-padding">{{ $item->field_display_name }}</div>
-                    <div class="item-content left cm-padding">{{ $item->field_value }}</div>
+                    <div class="item-content left cm-padding">
+                    @if ($order->creator_primary_user_id == 8311 && $item->field_name == 'password')
+                        {{  base64_decode($item->field_value) }}
+                    @else
+                        {{  $item->field_value }}
+                    @endif
+                    </div>
                 </li>
                 @endif
             @empty

@@ -32,6 +32,7 @@ class ForeignOrderRepository
                              $kamenOrderNo = '',
                              $foreignGoodsId = '',
                              $foreignOrderNo = '',
+                             $wangWang  = '',
                              $pageSize = 20)
     {
         $query = ForeignOrder::when(!empty($startDate), function ($query) use ($startDate) {
@@ -48,7 +49,10 @@ class ForeignOrderRepository
             return $query->where('foreign_goods_id', $foreignGoodsId);
         })->when(!empty($foreignOrderNo), function ($query) use ($foreignOrderNo) {
             return $query->where('foreign_order_no', $foreignOrderNo);
-        });
+        })->when(!empty($wangWang), function ($query) use ($wangWang) {
+            return $query->where('wang_wang', trim($wangWang));
+        })->with('order');
+        $query->orderBy('id', 'desc');
         return $query->paginate($pageSize);
     }
 }

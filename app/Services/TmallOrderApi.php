@@ -5,7 +5,6 @@ use App\Models\SiteInfo;
 use Cache, Config, DB;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\TmallStore;
 
 /**
  *
@@ -37,6 +36,7 @@ class TmallOrderApi
         ]);
         $result = json_decode($response->getBody()->getContents());
 
+        myLog('tm', [$result]);
         if (!isset($result->error_response)) {
             // 等待发货订单
             if (env('APP_ENV') == 'local') {
@@ -46,14 +46,18 @@ class TmallOrderApi
                     'price' => $result->Price,
                     'payment' => $result->Payment,
                     'pay_time' => $result->PayTime,
+                    'remark' => $result->ReceiverAddress,
+                    'ip' => base64_decode($result->BuyerIp),
                 ];
             } else if ($result->Status == 'WAIT_SELLER_SEND_GOODS') {
                 return [
-                    'store_name' => $result->name,
+                    'store_name' => $result->SellerNick,
                     'wang_wang' => $result->BuyerNick,
                     'price' => $result->Price,
                     'payment' => $result->Payment,
                     'pay_time' => $result->PayTime,
+                    'remark' => $result->ReceiverAddress,
+                    'ip' => base64_decode($result->BuyerIp),
                 ];
             }
         }

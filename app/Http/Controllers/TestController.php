@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Services\KamenOrderApi;
+use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 use Auth;
 use Asset;
+// use GuzzleHttp\Client;
 use App\Extensions\Asset\Recharge;
 use App\Extensions\Asset\Withdraw;
 use App\Extensions\Asset\Freeze;
@@ -19,7 +23,7 @@ use App\Extensions\Asset\Income;
 use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
-use Order;
+use Order as OrderFacede;
 use App\Extensions\Order\Operations\Create;
 use App\Extensions\Order\Operations\GrabClose;
 use App\Extensions\Order\Operations\Receiving;
@@ -44,55 +48,211 @@ use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
 use App\Models\Order as OrderModel;
 use App\Models\UserReceivingUserControl;
+use App\Models\Order;
+use Log;
+use Exception;
+use App\Services\Show91;
+
+use App\Events\NotificationEvent;
+use App\Models\GoodsTemplate;
+use App\Models\GoodsTemplateWidget;
+use App\Models\GoodsTemplateWidgetValue;
+use App\Models\ThirdServer;
+use App\Models\ThirdArea;
+use App\Models\ThirdGame;
 
 class TestController extends Controller
 {
-    public function index(UserRechargeOrderRepository $repository)
+    public function insertLOL()
     {
-         // dd(KamenOrderApi::share()->fail('1148054917'));
+        $options = [
+            'aid' => 1,
+        ];
+        
+        $res = Show91::getServer($options);
 
-        // dd(TmallOrderApi::getOrder(2,87413047090907895));
-        // $time = '2017-11-09 16:32:50';
-        // $carbon = Carbon::parse($time);
-        // $bool = (new Carbon)->gte($carbon);
-        // $bool2 = (new Carbon)->lte($carbon);
-        // dd($bool2);
-        // 
-        $bool = whoCanReceiveOrder(23, 1223, 1, 12);
+        $goodsTemplateId = GoodsTemplate::where('game_id', 78)->value('id');
+        $goodsTemplateWidgetRegionId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+                            ->where('field_name', 'region')
+                            ->value('id');
 
-        if ($bool) {
-            dd('yes');
-        } else {
-            dd('no');
+        $goodsTemplateWidgetServeId = GoodsTemplateWidget::where('goods_template_id', $goodsTemplateId)
+                            ->where('field_name', 'serve')
+                            ->value('id');
+
+        $serves = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetServeId)
+                ->pluck('field_value', 'id')->toArray();
+
+        $regions = GoodsTemplateWidgetValue::where('goods_template_widget_id', $goodsTemplateWidgetRegionId)
+                ->pluck('field_value', 'id')->toArray();
+
+        // dd($serves, $regions);
+        // dd($res['servers']);
+        // $count = count($servers);
+        // dd($count);
+        $arr = [];
+        foreach ($res['servers'] as $key => $server) {
+            $arr[' '.$server['id']] = $server['server_name'];
         }
-        // $order = OrderModel::find(2);
 
-        // dd($order->foreignOrder);
+        // dd($arr);
+
+        $options1 = [
+            'aid' => 2,
+        ];
+        
+        $res1 = Show91::getServer($options1);
+
+        $arr1 = [];
+        foreach ($res1['servers'] as $key => $server) {
+            $arr1[' '.$server['id']] = $server['server_name'];
+        }
         //
-        // $foreignOrder = ForeignOrder::find(20);
+        $options2 = [
+            'aid' => 30,
+        ];
 
-        // dd($foreignOrder->order);
+        $res2 = Show91::getServer($options2);
 
-        // $order = OrderModel::find(19524);
-
-
-        // dd($order->created_at);
-        // $carbon = new Carbon;
-
-        // $a = $carbon->diffInMinutes($order->created_at);
-        // dd($a);
-        // $this->testAsset();
-        // $this->testDaily();
-        $this->testOrder();
-        // $this->command();
+        $arr2 = [];
+        foreach ($res2['servers'] as $key => $server) {
+            $arr2[' '.$server['id']] = $server['server_name'];
+        }
         //
-        // $app = new AppController;
+        $options3 = [
+            'aid' => 437,
+        ];
 
-        // $data = $app->run('version', ['game_id' => 151]);
+        $res3 = Show91::getServer($options3);
 
-        // dd($data);
+        $arr3 = [];
+        foreach ($res3['servers'] as $key => $server) {
+            $arr3[' '.$server['id']] = $server['server_name'];
+        }
 
-        // $repository->store(1000, 28, '加款1000快', 'taobao-123', 'wangwang-123');
+        $twoArr = array_merge($arr, $arr1);
+        $threeArr = array_merge($twoArr, $arr2);
+        $thirdArrs = array_merge($threeArr, $arr3);
+
+        // dd($thirdArrs);
+        // 
+        $keyArr = [];
+        foreach ($thirdArrs as $key => $thirdArr) {
+            foreach ($serves as $key1 => $serve) {
+                if ($thirdArr == $serve) {
+                    $keyArr[trim($key)] = $key1;
+                }
+            }
+        }
+        //
+        $serverDatas = [];
+        foreach ($keyArr as $thirdServeId => $serveId) {
+            $serverDatas[$thirdServeId]['game_id'] = 78;
+            $serverDatas[$thirdServeId]['third_id'] = 1;
+            $serverDatas[$thirdServeId]['server_id'] = $serveId;
+            $serverDatas[$thirdServeId]['third_server_id'] = $thirdServeId;
+            $serverDatas[$thirdServeId]['created_at'] = date('Y-m-d H:i:s', time());
+            $serverDatas[$thirdServeId]['updated_at'] = date('Y-m-d H:i:s', time());
+        }
+        // dd($serverDatas);
+        $serverDatas = array_values($serverDatas);
+        // dd($serverDatas);
+        ThirdServer::insert($serverDatas);
+
+        // 区
+        $regionDatas = [];
+
+        $options = [
+            'gid' => 1,
+        ];
+        
+        $res = Show91::getAreas($options);
+        $thirdRegions = [];
+        foreach ($res['areas'] as $key => $value) {
+            $thirdRegions[$value['id']] = $value['area_name'];
+        }
+
+        // 我们的区
+        $regionDatas = [];
+        foreach ($thirdRegions as $thirdId => $thirdRegion) {
+            foreach ($regions as $id => $region) {
+                if ($thirdRegion == $region) {
+                    $regionDatas[$thirdId] = $id;
+                }
+            }
+        }
+
+        $insertDatas = [];
+        foreach ($regionDatas as $third => $id) {
+            $insertDatas[$third]['game_id'] = 78;
+            $insertDatas[$third]['third_id'] = 1;
+            $insertDatas[$third]['area_id'] = $id;
+            $insertDatas[$third]['third_area_id'] = $third;
+            $insertDatas[$third]['created_at'] = date('Y-m-d H:i:s', time());
+            $insertDatas[$third]['updated_at'] = date('Y-m-d H:i:s', time());
+        }
+
+        $insertDatas = array_values($insertDatas);
+
+        ThirdArea::insert($insertDatas);
+
+        // 游戏
+        $gameDatas = [
+            'third_id' => 1,
+            'game_id' => 78,
+            'third_game_id' => 1,
+            'created_at' => date('Y-m-d H:i:s', time()),
+            'updated_at' => date('Y-m-d H:i:s', time()),
+        ];
+        ThirdGame::create($gameDatas);
+
+        dd('写入成功');
+    }
+
+
+    public function index()
+    {
+        return $this->getDailianmamaInfo();
+        return $this->testSwitch('hang', 10);
+        $this->testClone();
+        try {
+            $order = Order::find(9);
+            throw new Exception('我是错误信息');
+        } catch (Exception $e) {
+            dd($e->getMessage(), $order);
+
+        }
+        dd(4);
+//        return (new SmSApi())->send(2, 18500132452, '您的订单已经被打接单，请不要登号', 1);
+//        $client = new Client();
+//        $result = $client->post('www.show91.com/oauth/addOrder', [
+//            'headers' => [
+//                'Content-type' => 'multipart/form-data',
+//            ],
+//            'form_params' => [
+//                'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
+//                'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
+//            ]
+//        ]);
+
+        $res = $client->post('www.show91.com/oauth/addOrder',[
+            'headers' => ['Content-Type' => 'multipart/form-data'],
+            'body' => [
+                    'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
+                    'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
+            ]
+        ]);
+        dd($res->getStatusCode());
+
+dd(1);
+        $order = Order::where('no', '2017122715401700000011')->first();
+
+        dd($order->levelingConsult->first()->toArray());
+        $this->encrypt();
+        return $this->decrypt();
+
+        event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
+        exit("1234");
     }
 
     public function testAsset()
@@ -142,5 +302,222 @@ class TestController extends Controller
     public function command()
     {
         $exitCode = Artisan::call('migrate');
+    }
+
+    public function encrypt()
+    {
+        $private_key = '-----BEGIN PRIVATE KEY-----
+MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAL5CB0BHCL81Ov31
+0aZzFv9e6vmzFsvOhdywog57gnJ+QC1lj8ILQ+iBaeseQYD5C9XG1jfVb2k5gpqy
+UoIV00ySLri3+V8xY8isGgKISXdyq9+P1aRNq2RS3t49wf4xyQewbgKr0HoH09eV
+FgTf6rQeH2MFB326QYFcUnEvKCfBAgMBAAECgYEAuiinKaiXkWfHMgjduwzvmq3I
+Isyt6HtKFZcq6hrFl7ualhDC6e3V42EFP04ab9S/VMw6fOU1HvNrrGwBOVGbraeS
+K45csy30KEMl6ZOm7rBdqHm3M1xjStWHrfQcvrd8ZM6lJr+8bGveWRwUoTC2kOJY
+wg0pYa6hR2VAuHIteLUCQQDeKuH6hBgoE9Z8UvaQVYdn0cpgEZn1eqgAH5YkhhBZ
+7x/CIlmASizMiWjgvuA5PShCgdcpbPx64meWIdvhVRQnAkEA2zspikwJLrzjbiOX
+UndPzFUlpBV6H7K2f9M5iS05+kBmjzKMXNwMsUb4pjmakUG491OkHWGe36aNkunY
+uYfN1wJAWuQ4Z4E7UMos6dgXP51+NB9EKGGLFz8DFGnXx0GB1wlZeNcMvsuZ4GQn
+ICt3GHPI0MzF9hC8ipmtv2JCzsE76QJBAJDKnkDsvxPTRRI1B3g7vMRjaBza4nGV
+Atuhkdp7uFMDvbjN1c5utyNOkGKYoPFWyubuovGUy+1CfzaMo8rFWrkCQQC9ZNaT
+ziowtzttdpQ12IhLcdcfeS1gLtvQ3QIokwb3wHgdhB5knDSTYz/upgr9GRddCv8W
+Iuli3G2IJNYc9Cwu
+-----END PRIVATE KEY-----';
+        $str = json_encode(['order_id' => 2017121917434400000002]); // 长度12,要加密的串
+        // 十六进制
+        $hexIv = '00000000000000000000000000000000';
+
+        $key = 'PhtVnNtqe4a5R1W5vhwnzBfZ'; // PhtVnNtqe4a5R1W5vhwnzBfZ
+
+        // ******
+        $a = openssl_private_encrypt($key, $encrypted, $private_key) ? bin2hex($encrypted) : null;
+
+// 42efbe94121f7583365f5bfc2cad4466f40163a6a9ff89880ef4f0d2f2217a950459c3b9972d5a1c3654fdb684b6b5b1608935c07420fbe5caf1c743c134308c379742c6c50e0c330dace4a4ef42ea84c04c392d3582248d6d9f19db396630e0da8d750f618db63d2e8c30c832ab92a3ff2bdf8df67a57925c9a9ffea040f8e0
+// $encrypted = b"B´¥ö\x12\x1Fuâ6_[³,¡Df¶\x01cª® ëê\x0E¶­Ê‗!zò\x04Y├╣ù-Z\x1C6T²ÂäÂÁ▒`ë5└t ¹Õ╩±ÃC┴40î7ùBã┼\x0E\f3\r¼õñ´BÛä└L9-5é$ìmƒ\x19█9f0Ó┌ìu\x0FaìÂ=.î0╚2½Æú +▀ì÷zWÆ\Üƒ■á@°Ó"
+
+        $hash = hash('sha256', $key, true); // b"7¿T\x1F þd\x04éàt;Yã█xùØ\x04IUHåój²¦ë╩¿¯Z" 十六进制
+
+        //打开算法和模式对应的模块
+        $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, ''); //mcrypt resource @472
+        // 初始化加密所需的缓冲区
+        // $this->hexToStr($hexIv) = \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+        $int = mcrypt_generic_init($td, $hash, $this->hexToStr($hexIv)); // 0
+        //获得加密算法的分组大小
+        $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC); // 16
+        // 16 - 12 = 4
+        $pad = $block - (strlen($str) % $block); // 4
+        // 重复一个字符串（字符， 次数）
+        $str .= str_repeat(chr($pad), $pad); // name:zhouhang\x03\x03\x03
+        //加密数据
+        $encrypted = mcrypt_generic($td, $str); //b"àþ<$1\x18\x19W\x06cH¼ä‘w\x05"
+        //对加密模块进行清理工作
+        mcrypt_generic_deinit($td);
+        //关闭加密模块
+        mcrypt_module_close($td);
+        // 函数把包含数据的二进制字符串转换为十六进制值
+        return bin2hex($encrypted); // f38377f61cdad196d12f4a236f24210ba035e742057459d99aeb08686483aec1db2e11636fb469b0bd282629a7559600
+    }
+
+    private function hexToStr($hex)
+    {
+        $string = '';
+        // hexdec() 十六进制转为 十进制
+        for ($i = 0; $i < strlen($hex) - 1; $i += 2) {
+            // ask码对应的字符
+            $string .= chr(hexdec($hex[$i] . $hex[$i + 1]));
+        }
+        return $string;
+    }
+
+    public function decrypt()
+    {
+        $private_key = '-----BEGIN PRIVATE KEY-----
+MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAL5CB0BHCL81Ov31
+0aZzFv9e6vmzFsvOhdywog57gnJ+QC1lj8ILQ+iBaeseQYD5C9XG1jfVb2k5gpqy
+UoIV00ySLri3+V8xY8isGgKISXdyq9+P1aRNq2RS3t49wf4xyQewbgKr0HoH09eV
+FgTf6rQeH2MFB326QYFcUnEvKCfBAgMBAAECgYEAuiinKaiXkWfHMgjduwzvmq3I
+Isyt6HtKFZcq6hrFl7ualhDC6e3V42EFP04ab9S/VMw6fOU1HvNrrGwBOVGbraeS
+K45csy30KEMl6ZOm7rBdqHm3M1xjStWHrfQcvrd8ZM6lJr+8bGveWRwUoTC2kOJY
+wg0pYa6hR2VAuHIteLUCQQDeKuH6hBgoE9Z8UvaQVYdn0cpgEZn1eqgAH5YkhhBZ
+7x/CIlmASizMiWjgvuA5PShCgdcpbPx64meWIdvhVRQnAkEA2zspikwJLrzjbiOX
+UndPzFUlpBV6H7K2f9M5iS05+kBmjzKMXNwMsUb4pjmakUG491OkHWGe36aNkunY
+uYfN1wJAWuQ4Z4E7UMos6dgXP51+NB9EKGGLFz8DFGnXx0GB1wlZeNcMvsuZ4GQn
+ICt3GHPI0MzF9hC8ipmtv2JCzsE76QJBAJDKnkDsvxPTRRI1B3g7vMRjaBza4nGV
+Atuhkdp7uFMDvbjN1c5utyNOkGKYoPFWyubuovGUy+1CfzaMo8rFWrkCQQC9ZNaT
+ziowtzttdpQ12IhLcdcfeS1gLtvQ3QIokwb3wHgdhB5knDSTYz/upgr9GRddCv8W
+Iuli3G2IJNYc9Cwu
+-----END PRIVATE KEY-----';
+        $code = "5c992c11a96d8da0d51564cc9f26d74951f99066f4c0a60abd43df093860f751db5a3c189056f62906ab2ffd8c4a4e27";
+        $hash = '42efbe94121f7583365f5bfc2cad4466f40163a6a9ff89880ef4f0d2f2217a950459c3b9972d5a1c3654fdb684b6b5b1608935c07420fbe5caf1c743c134308c379742c6c50e0c330dace4a4ef42ea84c04c392d3582248d6d9f19db396630e0da8d750f618db63d2e8c30c832ab92a3ff2bdf8df67a57925c9a9ffea040f8e0'; // 加密得到的值
+        // dd($hash);
+        // $decryptKey = (openssl_private_decrypt(pack("H*", $hash), $decrypted, $private_key)) ? $decrypted : null;//
+        // dd($decryptKey);
+
+        // 十六进制
+        $hexIv = '00000000000000000000000000000000';
+        // 打开算法和模式对应的模块
+        $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, ''); // mcrypt resource @473
+        // 初始化加密所需的缓冲区
+        $int = mcrypt_generic_init($td, 'PhtVnNtqe4a5R1W5vhwnzBfZ', $this->hexToStr($hexIv)); // 0
+        //解密数据 pack 打包成二级制
+        $str = mdecrypt_generic($td, pack("H*", $code)); // b"ô¤ÝtQw5WYŽh´C\x00Ò`"
+        //获得加密算法的分组大小
+        $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        //对加密模块进行清理工作
+        mcrypt_generic_deinit($td);
+        //关闭加密模块
+        mcrypt_module_close($td);
+        // FfMzOFYV4RNItDbkLiqHDnQ4
+        return $this->strIppAdding($str);
+    }
+
+    /**
+     * @param $string
+     * @return bool|string
+     */
+    private function strIppAdding($string)
+    {
+        dd(str_random(24));
+        // 返回字符的哥字符的ascii 码
+        $sLast = ord(substr($string, -1)); // 96
+
+        $slastc = chr($sLast); // "`"
+        $pCheck = substr($string, -$sLast); // b"ô¤ÝtQw5WYŽh´C\x00Ò`"
+        if (preg_match("/$slastc{" . $sLast . "}/", $string)) {
+            $string = substr($string, 0, strlen($string) - $sLast);
+            return $string;
+        } else {
+            return false;
+        }
+    }
+
+    public function testClone()
+    {
+        $order = Order::find(12);
+
+        $cloneOrder = clone $order;
+        // $order->no = 1231;
+        $this->copyClone($cloneOrder);
+        dd($cloneOrder);
+
+    }
+
+    public function copyClone($order)
+    {
+        // $order->no = 000;
+        dd($order->no);
+    }
+
+    public function testSwitch($name, $age)
+    {
+        switch ($name) {
+            case 'zhou':
+                echo 'my name is zhou';
+                break;
+            case 'hang':
+                switch ($age) {
+                    case 10:
+                        $age = 'ten';
+                        break;
+                    case 20:
+                        $age = 'twity';
+                        break;
+                }
+                echo 'my name is '. $name .' and my age is '. $age;
+                break;
+            default:
+                echo 'i have no name';
+                break;
+        }
+    }
+
+    // 下载代练妈妈接口游戏区服信息
+    public function getDailianmamaInfo()
+    {
+        $options = '';
+        $url = 'static.dailianmama.com/tool/dlmm/gameinfo.html';
+        $method = 'GET';
+        $client = new Client;
+        $response = $client->request($method, $url, [
+            'query' => $options,
+        ]);
+
+        $res =  $response->getBody()->getContents();
+
+        $arr = json_decode($res, true);
+
+        // 英雄联盟 1 绝地8, 7枪战, 6球球, 5决战, 4刺激, 3全军, 2QQ手游9, 守望, 0王者
+        dd($arr[0]);
+        // dd($arr[1]['list']);
+
+        // 区
+        $thirdAreas = [];
+        foreach ($arr[1]['list'] as $k => $area) {
+            if ($k == 0) {
+                continue;
+            }
+            foreach ($area['list'] as $key => $server) {
+                if ($key == 0) {
+                    continue;
+                }
+                $thirdAreas[$area['name']][$server['id']] = $server['name']; 
+            }
+            // $thirdAreas[$area['name']] = $area['list'];
+        }
+dd($thirdAreas);
+        $thirdAreas = [];
+        $thirdServers = [];
+        $thirdGames = [];
+
+        foreach ($arr[1]['list'] as $key => $data) {
+            $thirdAreas['third_area_name'][$key] = $data['name'];
+            $thirdAreas['third_area_id'][$key] = $data['id'];
+            $thirdAreas['third_game_id'][$key] = $data['gameid'];
+
+            foreach ($arr[6]['list'][$key]['list'] as $key => $server) {
+                $thirdServers[$data['name']][$key] = $server['name'];
+            }
+
+        }
+        // dd($thirdServers);
     }
 }

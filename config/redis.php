@@ -14,12 +14,28 @@ return [
         'quantity' => 'order:quantity:',
         // 待接单哈希表
         'waitReceiving' => 'order:wait:receiving',
+        // 代练留言哈希表
+        'levelingMessage' => 'order:leveling:message',
+        // 代练留言数量统计
+        'levelingMessageCount' => 'order:leveling:message:count:',
         // 接单用户队列  生成的key示例 order:receiving:20170800383838383(队列中存的是点了接单的用户ID)
         'receiving' => 'order:receiving:',
         // 接单记录 生成的key示例：order:receiving:20170800383838383123(123是用户ID：主账号)
         'receivingRecord' => 'order:receiving:record:',
         // 待接单数量
         'waitReceivingQuantity' => 'order:wait:receiving:quantity',
+        // 待处理订单数量
+        'waitHandleQuantity' => 'order:wait:handle:quantity:',
+        // 待确认收货的订单
+        'waitConfirm' => 'order:wait:confirm',
+        // 数据类型队列，用与检测 是否可以进行下一次订单分配
+        'assignStatus' => 'order:assign:status',
+        // 自动下架订单
+        'autoUnShelve' => 'order:autoUnShelve',
+        // 订单角标
+        'statusCount' => 'order:statusCount:',
+        //  房卡充值队列
+        'roomCardRecharge' => 'order:roomCardRecharge',
     ],
     // 用户模型
     'user' => [
@@ -32,6 +48,13 @@ return [
         // 获取用户设置 生成key示例 user:setting:id:1
         'setting' => 'user:setting:id:'
     ],
+    // 第三方服务缓存key名
+    'thirdParty' => [
+        // 代练妈妈oss上传临时凭证缓存, 缓存一小时
+        'dailianMamaOssKey' => 'thirdParty:dailianMamaOssKey',
+    ],
     // 自有天猫订单token
-    'tmallStoreToken' => 'tmallStoreToken:'
+    'tmallStoreToken' => 'tmallStoreToken:',
+    // 淘宝授权token 缓存
+    'taobaoAccessToken' => 'taobaoAccessToken:'
 ];

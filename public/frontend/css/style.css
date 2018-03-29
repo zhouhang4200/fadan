@@ -69,7 +69,7 @@ body {
 .icon-ui:before { content: "\e625"; }
 .wrapper {
 	position: relative;
-    width: 1200px;
+	width: 1600px;
     margin: auto;
     zoom: 1;
 }
@@ -92,7 +92,7 @@ body {
 .path span {
 	padding-left: 16px;
 	display: block;
-	border-left: 5px solid #139ff0;
+	border-left: 5px solid #ff7a00;
 	color: #000;
 }
 
@@ -103,7 +103,7 @@ body {
     top: 0;
     width: 100%;
     height: 60px;
-	background-color: #1E9FFF !important;
+	background-color: #ff7a00 !important;
 }
 .header .logo {
 	width: 170px;
@@ -115,10 +115,10 @@ body {
 	margin-top: 9px;
 }
 .header .logo .t h1 {
-	font-size: 23px;
+	font-size: 26px;
 	color: #fff;
 	float: left;
-	margin: 7px 0 0 0;
+	margin: 7px 0 0 5px;
 	height: 14px;
 	line-height: 14px;
 	padding-bottom: 2px;
@@ -126,6 +126,7 @@ body {
 .header .logo .en {
 	float: left;
 	margin-top: 6px;
+	margin-left: 5px;
 }
 .header .nav{
 	float: left;
@@ -135,11 +136,11 @@ body {
 .header .nav { float:left; width:793px; height:60px;}
 .header .nav ul{ float:left;}
 .header .nav li{ float:left; height:60px; line-height:60px; position:relative;}
-.header .nav li a{ color:#c8e3f2; font-size:14px;padding:0 16px 0 15px; display:block;}
+.header .nav li a{ color:#fff; font-size:14px;padding:0 16px 0 15px; display:block;}
 .header .nav li a:hover{ text-decoration:none;}
-.header .nav li.current{ background:#118fd8;}
+.header .nav li.current{ background:#faa557;}
 .header .nav li.current a{ font-weight:bold; color:#fff;}
-.header .nav li:hover{ background:#118fd8;}
+.header .nav li:hover{ background:#faa557;}
 .header .nav li:hover a{ color:#fff;}
 .header .nav li .arrow{ border-bottom-color:#fff; position:absolute; top:47px; left:50%; margin-left:-7px; display:none;}
 .header .nav li.current .arrow{ display:block;}
@@ -161,7 +162,7 @@ body {
 }
 .header .user .operation{
 	position: relative;
-	top: 14px;
+	top: 19px;
 	left: auto;
 	right: 0;
 	display: inline-block;
@@ -274,8 +275,8 @@ body {
 	color: #fff;
 	padding: 0 0 0 35px;
 	margin: 0;
-	background-color:#139ff0;
-	border-left:2px solid #0c82c6;
+	background-color:#ff7a00;
+	border-left:2px solid #ff7a00;
 }
 .main .left .column-menu li.current .arrow{
 	display:block;
@@ -323,7 +324,7 @@ body {
 
 .main .right{
 	background-color: #FFF;
-    width: 1030px;
+    width: 1430px;
     min-height: 849px;
     float: right;
     box-shadow: 0 2px 10px rgba(0,0,0,.2);
@@ -376,8 +377,7 @@ body {
 	margin-bottom: 15px;
 	color: #707070;
 	border-radius: 5px;
-	background-color: #f5faff;
-	border: 1px dashed #62b3ff;
+	border: 1px dashed #ff7a00;
 	width: calc(100% - 28px);
 	height: 100%;
 }
@@ -410,4 +410,23 @@ input,button{outline: none}
 .overflow-y{overflow-y:scroll ;-webkit-overflow-scrolling : touch;}
 input[type="button"],input[type="submit"],input[type="reset"],select{
 	-webkit-appearance: none;
+}
+/* tops */
+a.tooltip {outline:none; position: absolute; right: -21px; top: 6px;}
+a.tooltip strong {line-height:30px;}
+a.tooltip:hover {text-decoration:none;}
+a.tooltip span {
+	z-index:10;display:none; padding:14px 20px;
+	margin-top:-35px; margin-left:20px;
+	width:300px; line-height:16px;
+}
+a.tooltip:hover span{
+	display:inline; position:absolute; color:#111;
+	border:1px solid #DCA; background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
+
+/*CSS3 extras*/
+a.tooltip span {
+	border-radius:4px;
+	box-shadow: 5px 5px 8px #CCC;
 }

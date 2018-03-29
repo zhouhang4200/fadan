@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Services;
+
 use GuzzleHttp\Client;
 
-
 /**
+ * 卡门订单状态变更API
  * Class KamenOrderApi
  * @package App\Services
  */
@@ -57,16 +57,31 @@ class KamenOrderApi
      */
     public function success($kmOrderId)
     {
-        $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-            . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+        try {
+            $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
-        $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
 
-        $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . $sign;
+            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . $sign;
 
-        $client = new Client();
-        $response = $client->request('GET', str_replace(' ', '+', $url));
-        return $response->getBody()->getContents();
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+//        return $response->getBody()->getContents();
+
+            $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+
+            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . $sign;
+
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+//        return $response->getBody()->getContents();
+        } catch (\Exception $exception) {
+
+        }
     }
 
     /**
@@ -87,19 +102,60 @@ class KamenOrderApi
             // 发送请求
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-            $result =  $response->getBody()->getContents();
-            return $result;
+            $result1 =  $response->getBody()->getContents();
+
+            $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+
+            $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
+
+            // 发送请求
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+            $result2 =  $response->getBody()->getContents();
+
+//            return $result2;
         } catch(\Exception $e){
             return false;
         }
     }
 
     /**
-     * 通知千手订单号找到对应卡门订单
-     * @param $qsOrderId
+     * 更新订单状态
+     * @param $kmOrderId integer 卡门订单号
+     * @return bool|string
      */
-    private function findKmOrderId($qsOrderId)
+    public  function ing($kmOrderId)
     {
+        try {
+            $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('处理中'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode(generateUuid())) . '&ChargeUse=';
 
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+
+            $url = $this->apiUrl[rand(0, 11)] .  'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
+
+            // 发送请求
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+            $result =  $response->getBody()->getContents();
+
+            $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('处理中'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode(generateUuid())) . '&ChargeUse=';
+
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+
+            $url = $this->apiUrl[rand(0, 11)] .  'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
+
+            // 发送请求
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+            $result =  $response->getBody()->getContents();
+//            return $result;
+        } catch (\Exception $exception) {
+
+        }
     }
 }

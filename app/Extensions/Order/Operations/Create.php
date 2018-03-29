@@ -2,7 +2,7 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Exceptions\CustomException;
-use App\Exceptions\AssetException as Exception;
+use App\Exceptions\OrderException as Exception;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -67,6 +67,12 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
     protected $goods;
 
     /**
+     * 备注
+     * @var string
+     */
+    protected $remark;
+
+    /**
      * @param int $userId 用户id
      * @param string $foreignOrderNO 外部单号
      * @param int $source 来源
@@ -74,8 +80,9 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      * @param float $originalPrice 原价
      * @param int $quantity 数量
      * @param array $details 订单详细参数 例：['version' => '版本','account' => '账号','region'  => '区服']
+     * @param string $remark  订单备注
      */
-    public function __construct($userId, $foreignOrderNO, $source, $goodsId, $originalPrice, $quantity, $details)
+    public function __construct($userId, $foreignOrderNO, $source, $goodsId, $originalPrice, $quantity, $details, $remark = '')
     {
         $this->userId = $userId;
         $this->foreignOrderNO = $foreignOrderNO;
@@ -84,6 +91,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         $this->originalPrice = $originalPrice;
         $this->quantity = $quantity;
         $this->details = $details;
+        $this->remark = $remark;
     }
 
     // 获取订单
@@ -119,7 +127,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->amount = bcmul($price, $this->quantity);
         $this->order->creator_user_id = $this->userId;
         $this->order->creator_primary_user_id = $user->getPrimaryUserId();
-        $this->order->remark = '';
+        $this->order->remark = $this->remark;
 
         // 记录订单详情
         if (!empty($this->details)) {
@@ -139,7 +147,7 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
                     throw new Exception('详情记录失败');
                 }
 
-                $this->order->remark .= "{$widget[$fieldName]}: {$fieldValue}; ";
+//                $this->order->remark .= "{$widget[$fieldName]}: {$fieldValue}; ";
             }
         }
     }
@@ -183,6 +191,12 @@ class Create extends \App\Extensions\Order\Operations\Base\Operation
      */
     protected function setPrice($userSetting)
     {
+        // 如果商品没有设置价格则直接用风控价格x订单单价
+        if ($this->goods->price == 0) {
+            $riskRate = isset($userSetting['api_risk_rate']) ?
+                $userSetting['api_risk_rate'] : config('order.apiRiskRate');
+            return bcmul($riskRate, $this->originalPrice);
+        }
         if ($this->originalPrice <= 0) {
             $this->originalPrice = $this->goods->price;
         }

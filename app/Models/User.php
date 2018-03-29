@@ -46,7 +46,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'qq', 'phone', 'password', 'type', 'parent_id', 'group_id'
+        'name', 'email', 'qq', 'phone', 'password', 'type', 'leveling_type','parent_id', 'group_id',
+        'username', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
+        'online', 'nickname', 'voucher', 'api_token', 'api_token_expire',
     ];
 
     protected $dates = ['deleted_at'];
@@ -140,11 +142,29 @@ class User extends Authenticatable
     }
 
     /**
+     * 转账信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transferAccountInfo()
+    {
+        return $this->hasOne(UserTransferAccountInfo::class, 'user_id', 'id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent()
     {
         return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    public function parentInfo()
+    {
+        if ($this->parent_id == 0) {
+            return $this;
+        } else {
+            return self::find($this->parent_id);
+        }
     }
 
     // 获取主账号ID
@@ -154,6 +174,18 @@ class User extends Authenticatable
             return $this->id;
         } else {
             return $this->parent_id;
+        }
+    }
+
+    /**
+     * 获取主账号信息
+     */
+    public function getPrimaryInfo()
+    {
+        if ($this->parent_id == 0) {
+            return $this;
+        } else {
+            return self::find($this->parent_id);
         }
     }
 
@@ -208,23 +240,27 @@ class User extends Authenticatable
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['name']) {
-
-            $query->where('id', $filters['name']);
+        if (isset($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
         }
 
-        if ($filters['startDate'] && empty($filters['endDate'])) {
+        if (isset($filters['nickname'])) {
+            $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
+        }
 
+        if (isset($filters['id'])) {
+            $query->where('id',  $filters['id']);
+        }
+
+        if (isset($filters['startDate']) && empty($filters['endDate'])) {
             $query->where('created_at', '>=', $filters['startDate']);
         }
 
-        if ($filters['endDate'] && empty($filters['startDate'])) {
-
+        if (isset($filters['endDate']) && empty($filters['startDate'])) {
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
-        if ($filters['endDate'] && $filters['startDate']) {
-
+        if (isset($filters['endDate']) && $filters['startDate']) {
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
@@ -247,8 +283,103 @@ class User extends Authenticatable
         return $query->whereHas('rbacGroups');
     }
 
-    public function punishes()
+    public function revisions()
     {
-        return $this->hasMany(Punish::class);
+        return $this->hasMany(Revision::class, 'user_id', 'id');
+    }
+
+    /**
+     * 代练员工管理查询
+     * @param  [type] $query   [description]
+     * @param  [type] $filters [description]
+     * @return [type]          [description]
+     */
+    public static function scopeStaffManagementFilter($query, $filters = [])
+    {
+        if ($filters['userName']) {
+            $query->where('id', $filters['userName']);
+        }
+
+        if ($filters['name']) {
+            $query->where('name', $filters['name']);
+        }
+
+        if ($filters['station']) {
+            $userIds = NewRole::find($filters['station'])->newUsers->pluck('id');
+            $query->whereIn('id', $userIds);
+        }
+        return $query->where('parent_id', Auth::user()->getPrimaryUserId());
+    }
+
+    public function employeeStatistics()
+    {
+        return $this->hasMany(EmployeeStatistic::class);
+    }
+
+    public function orderStatistics()
+    {
+        return $this->hasMany(OrderStatistic::class);
+    }
+
+    public function creatorOrders()
+    {
+        return $this->hasMany(Order::class, 'creator_user_id', 'id');
+    }
+
+    public function gainerOrders()
+    {
+        return $this->hasMany(Order::class, 'gainer_user_id', 'id');
+    }
+
+    public function creatorPrimaryOrders()
+    {
+        return $this->hasMany(Order::class, 'creator_primary_user_id', 'id');
+    }
+
+    public function gainerPrimaryOrders()
+    {
+        return $this->hasMany(Order::class, 'gainer_primary_user_id', 'id');
+    }
+
+    public function newRoles() {
+        return $this->belongsToMany(NewRole::class);
+    }
+
+    public function newPermissions() {
+        return $this->belongsToMany(NewPermission::class);
+    }
+
+    /**
+     * 后去账号下的所有权限
+     * @return [type] [description]
+     */
+    public function getUserPermissions()
+    {
+        $key = 'newPermissions:user:'.$this->id;
+
+        return Cache::rememberForever($key, function () {
+            return $this->newPermissions
+                ->merge($this->load('newRoles', 'newRoles.newPermissions')
+                ->newRoles->flatMap(function ($role) {
+                    return $role->newPermissions;
+                })->sort()->values())
+                ->sort()
+                ->values();
+        });
+    }
+
+     /**
+     * 当前等路人是否有权限查看当前路由，视图是否显示
+     * @return [type] [description]
+     */
+    public function could($permission)
+    {
+        $userHasPermissions = $this->getUserPermissions() ? $this->getUserPermissions()->pluck('name')->toArray() : [];
+        
+        // 如果有权限,判断当前页面权限是否在等路人权限中
+        if (in_array($permission, $userHasPermissions)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ namespace App\Extensions\Order\Operations;
 
 use Asset;
 use App\Extensions\Asset\Income;
+use App\Exceptions\OrderException as Exception;
 
 // 完成售后
 class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operation
@@ -21,35 +22,43 @@ class AfterServiceComplete extends \App\Extensions\Order\Operations\Base\Operati
     {
         $this->orderNo     = $orderNo;
         $this->adminUserId = $adminUserId;
-        $this->refundFee   = $refundFee;
+        $this->refundFee   = abs($refundFee);
         $this->description = $description;
     }
 
     public function updateAsset()
     {
         // 退款给买家
-        Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
+        if ($this->refundFee > 0) {
+            if ($this->refundFee > $this->order->amount) {
+                throw new Exception('退款金额不能超过订单总额');
+            }
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new Exception('操作失败');
-        }
+            Asset::handle(new Income($this->refundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '下单售后退款', $this->order->creator_primary_user_id, $this->adminUserId));
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new Exception('操作失败');
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('操作失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('操作失败');
+            }
         }
 
         // 退款给卖家
         $sellerRefundFee = bcsub($this->order->amount, $this->refundFee);
-        Asset::handle(new Income($sellerRefundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '接单售后退款', $this->order->gainer_primary_user_id, $this->adminUserId));
+        if ($sellerRefundFee > 0) {
+            Asset::handle(new Income($sellerRefundFee, Income::TRADE_SUBTYPE_AFTER_SERVICE, $this->order->no, '接单售后退款', $this->order->gainer_primary_user_id, $this->adminUserId));
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new Exception('操作失败');
-        }
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('操作失败');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new Exception('操作失败');
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('操作失败');
+            }
         }
     }
 

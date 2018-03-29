@@ -14,4 +14,9 @@ class UserReceivingCategoryControl extends Model
         'remark',
         'type',
     ];
+
+    public function game()
+    {
+    	return $this->belongsTo(Game::class);
+    }
 }

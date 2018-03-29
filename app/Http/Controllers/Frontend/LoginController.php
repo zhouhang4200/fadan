@@ -54,5 +54,4 @@ class LoginController extends Controller
 
         return view('frontend.user.login.history', compact('user', 'histories', 'startDate', 'endDate'));
     }
-
 }

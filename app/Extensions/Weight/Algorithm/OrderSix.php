@@ -31,7 +31,7 @@ class OrderSix implements AlgorithmInterface
             if ((isset($sixOrders[$user])
                 && $sixOrders[$user] > 50)
             ) {
-                $six += 2;
+                $six += 10;
             }
             $data[$user] = $six;
         }

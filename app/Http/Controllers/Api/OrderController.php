@@ -24,11 +24,13 @@ class OrderController extends Controller
 
     public function KamenOrder(Request $request)
     {
-        if (in_array(getClientIp(), ['120.26.205.22', '116.205.13.50', '127.0.0.1'])) {
+        if (in_array(getClientIp(), ['118.31.48.231','120.26.205.22', '116.205.13.50', '127.0.0.1'])) {
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
 
             if (isset($orderData['price'])) {
+                // 单价用支付金额计算
+                $price = bcdiv($orderData['total'], $orderData['quantity']);
                 $userId = 0;
                 //  用站点ID找到主账号与子账号随机分配一个用户
                 $masterUserId = SiteInfo::where('kamen_site_id', $orderData['kamen_site_id'])->first();
@@ -43,12 +45,12 @@ class OrderController extends Controller
 
                 // 原始订单数据
                 $goodsId = $orderData['goods_id']; // 商品Id
-                $originalPrice = $orderData['price']; // 原单价
+                $originalPrice = $price; // 原单价
                 $quantity = $orderData['quantity']; // 数量
                 $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 外部ID
                 $wangWang = !empty($orderData['wang_wang']) ? $orderData['wang_wang'] : ''; // 天猫订单旺旺号
 
-                Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData));
+                Order::handle(new Create($userId, $foreignOrderNO, $masterUserId->channel, $goodsId, $originalPrice, $quantity, $orderData, $orderData['remark']));
 
                 if (Order::get()->status != 11) {
                     // 给所有用户推送新订单消息
@@ -61,7 +63,8 @@ class OrderController extends Controller
                     waitReceivingAdd(Order::get()->no,
                         Carbon::now('Asia/Shanghai')->addMinute(1)->toDateTimeString(),
                         Order::get()->created_at->toDateTimeString(),
-                        $wangWang
+                        $wangWang,
+                        Order::get()->creator_primary_user_id
                     );
                     // 更新订单状态
                     return 'success';
@@ -69,7 +72,7 @@ class OrderController extends Controller
                     return 'success';
                 }
             } else {
-                return 'fail1';
+                return 'fail';
             }
         }
         dd(getClientIp());

@@ -52,7 +52,7 @@ class OrderUseTime implements AlgorithmInterface
                     && $orderSuccess['businessOrderSuccessAvg'][$user] > $orderSuccess['ordersSuccessAvg'])
                 || !isset($orderSuccess['businessOrderSuccessAvg'][$user])
             ) {
-                $succ += 2;
+                $succ += 10;
             }
 
             // 如果用户订单平均耗时，小于总平均耗时， 或 新用户没有订单数据，则加权重 2
@@ -60,7 +60,7 @@ class OrderUseTime implements AlgorithmInterface
                     && $data['businessOrdersUseTimeAvg'][$user] < $data['orderUseTimeAvg'])
                 || !isset($orderSuccess['businessOrderSuccessAvg'][$user])
             ) {
-                $time += 2;
+                $time += 10;
             }
             $datas[$user] = $time;
         }

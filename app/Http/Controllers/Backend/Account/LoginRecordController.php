@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\AdminLoginHistory;
 use App\Http\Controllers\Controller;
 
+/**
+ * 后台账号登录详情
+ */
 class LoginRecordController extends Controller
 {
     /**

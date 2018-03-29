@@ -14,8 +14,15 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <span>后台首页</span>
                         </a>
                     </li>
-                    @can('orders.index')
-                        <li @if($currentRouteName == 'orders.index') class="open active" @endif>
+                    
+                        <li @if(in_array($currentRouteName, [
+                        'order.platform.index',
+                        'order.platform.content',
+                        'order.platform.record',
+                        'order.foreign.index',
+                        'order.after-service.index',
+                        'order.leveling.index',
+                        ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>订单管理</span>
@@ -23,62 +30,104 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </a>
                             <ul class="submenu">
                                 <li>
-                                    <a href="{{ route('orders.index') }}" @if($currentRouteName == 'orders.index') class="active" @endif>
-                                        集市订单
+                                    <a href="{{ route('order.platform.index') }}" @if($currentRouteName == 'order.platform.index') class="active" @endif>
+                                        平台订单
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('orders.foreign') }}" @if($currentRouteName == 'orders.foreign') class="active" @endif>
+                                    <a href="{{ route('order.foreign.index') }}" @if($currentRouteName == 'order.foreign.index') class="active" @endif>
                                         外部订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
+                                        报警订单
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                    @endcan
+                    
+
+
                     <li @if($currentOneLevelMenu == 'frontend' || $currentOneLevelMenu == 'groups' || $currentOneLevelMenu == 'roles' || $currentOneLevelMenu == 'permissions' || $currentOneLevelMenu == 'modules' ) class="open active" @endif>
+                    <li @if(in_array($currentOneLevelMenu, [ 'frontend', 'groups','roles', 'permissions', 'modules', 'businessman'])) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-users"></i>
                             <span>商户</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                            @can('frontend.user.index')
+                            
                                 <li>
                                     <a href="{{ route('frontend.user.index')}}" @if($currentRouteName == 'frontend.user.index') class="active" @endif>
                                         商户列表
                                     </a>
                                 </li>
-                            @endcan
-                            @can('modules.index')
+                            
+                            
                                 <li>
                                     <a href="{{ route('modules.index') }}" @if($currentRouteName == 'modules.index') class="active" @endif>
                                         模块列表
                                     </a>
                                 </li>
-                            @endcan
-                            @can('permissions.index')
+                            
+                            
                                 <li>
                                     <a href="{{ route('permissions.index') }}" @if($currentRouteName == 'permissions.index') class="active" @endif>
                                         权限列表
                                     </a>
                                 </li>
-                            @endcan
-                            @can('roles.index')
+                            
+                            
                                 <li>
                                     <a href="{{ route('roles.index') }}" @if($currentRouteName == 'roles.index') class="active" @endif>
                                         角色列表
                                     </a>
                                 </li>
-                            @endcan
-                            @can('groups.index')
+                            
+                            
                                 <li>
                                     <a href="{{ route('groups.index') }}" @if($currentRouteName == 'groups.index') class="active" @endif>
-                                        商户权限列表
+                                        管理员列表
                                     </a>
                                 </li>
-                            @endcan
+                            
+                                <li>
+                                    <a href="{{ route('frontend.user.weight.index') }}" @if($currentRouteName == 'frontend.user.weight.index') class="active" @endif>
+                                        商户权重列表
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('businessman.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
+                                        商户保证金列表
+                                    </a>
+                                </li>
+
+                            <li>
+                                <a href="{{ route('businessman.goods-contractor.index') }}" @if($currentRouteName == 'businessman.goods-contractor.index') class="active" @endif>
+                                    商户承包商品配置
+                                </a>
+                            </li>
+                            
                         </ul>
                     </li>
+
+                    <li @if($currentOneLevelMenu == 'customer') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>用户</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('customer.wang-wang-blacklist.index') }}" @if($currentRouteName == 'customer.wang-wang-blacklist.index') class="active" @endif>
+                                    旺旺黑名单
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li @if($currentOneLevelMenu == 'goods') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-copy"></i>
@@ -86,27 +135,33 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                        @can('goods.service.index')
+                        
                             <li>
                                 <a href="{{ url('admin/goods/service') }}" @if($currentRouteName == 'goods.service.index') class="active" @endif>
                                     服务
                                 </a>
                             </li>
-                        @endcan
-                        @can('goods.game.index')
+                        
+                        
                             <li>
                                 <a href="{{ url('admin/goods/game') }}" @if($currentRouteName == 'goods.game.index') class="active" @endif>
                                     游戏
                                 </a>
                             </li>
-                        @endcan
-                        @can('goods.template.index')
+                        
+                        
                             <li>
                                 <a href="{{ url('admin/goods/template') }}" @if($currentRouteName == 'goods.template.index') class="active" @endif>
                                     模版
                                 </a>
                             </li>
-                        @endcan
+                        
+                            <li>
+                                <a href="{{ url('admin/goods/template/widget/type') }}" @if($currentRouteName == 'goods.template.widget.type') class="active" @endif>
+                                    组件类型
+                                </a>
+                            </li>
+
                         </ul>
                     </li>
 
@@ -117,59 +172,59 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                        @can('finance.platform-asset')
+                        
                             <li>
                                 <a href="{{ route('finance.platform-asset') }}" @if($currentRouteName == 'finance.platform-asset') class="active" @endif>
                                     平台当前资产
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.platform-asset-daily')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.platform-asset-daily') }}" @if($currentRouteName == 'finance.platform-asset-daily') class="active" @endif>
                                     平台资产日报
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.platform-amount-flow')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.platform-amount-flow') }}" @if($currentRouteName == 'finance.platform-amount-flow') class="active" @endif>
                                     平台资金流水
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.user-asset')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.user-asset') }}" @if($currentRouteName == 'finance.user-asset') class="active" @endif>
                                     用户资产列表
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.user-asset-daily')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.user-asset-daily') }}" @if($currentRouteName == 'finance.user-asset-daily') class="active" @endif>
                                     用户资产日报
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.user-amount-flow')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.user-amount-flow') }}" @if($currentRouteName == 'finance.user-amount-flow') class="active" @endif>
                                     用户资金流水
                                 </a>
                             </li>
-                        @endcan
-                        @can('finance.user-widthdraw-order')
+                        
+                        
                             <li>
                                 <a href="{{ route('finance.user-widthdraw-order') }}" @if($currentRouteName == 'finance.user-widthdraw-order') class="active" @endif>
                                     用户提现管理
                                 </a>
                             </li>
-                        @endcan
+                        
                         </ul>
                     </li>
 
-          
+
                     <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -182,13 +237,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     登录记录
                                 </a>
                             </li>
-                        @can('admin-idents.index')
+                        
                             <li>
                                 <a href="{{ route('admin-idents.index') }}" @if($currentRouteName == 'admin-idents.index') class="active" @endif>
                                     实名认证
                                 </a>
                             </li>
-                        @endcan
+                        
                         </ul>
                     </li>
                     @if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))
@@ -199,80 +254,144 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                        @can('admin-accounts.index')
+                        
                             <li>
                                 <a href="{{ route('admin-accounts.index') }}" @if($currentRouteName == 'admin-accounts.index') class="active" @endif>
-                                    账号
+                                    后台账号
                                 </a>
                             </li>
-                        @endcan
-                        @can('admin-modules.index')
+                        
+                        
                             <li>
                                 <a href="{{ route('admin-modules.index') }}" @if($currentRouteName == 'admin-modules.index') class="active" @endif>
                                     模块列表
                                 </a>
                             </li>
-                        @endcan
-                        @can('admin-permissions.index')
+                        
+                        
                             <li>
                                 <a href="{{ route('admin-permissions.index') }}" @if($currentRouteName == 'admin-permissions.index') class="active" @endif>
                                     权限列表
                                 </a>
                             </li>
-                        @endcan
-                        @can('admin-roles.index')
+                        
+                        
                             <li>
                                 <a href="{{ route('admin-roles.index') }}" @if($currentRouteName == 'admin-roles.index') class="active" @endif>
                                     角色列表
                                 </a>
                             </li>
-                        @endcan
-                        @can('admin-groups.index')
+                        
+                        
                             <li>
                                 <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
-                                    账号权限组列表
+                                    管理员列表
                                 </a>
                             </li>
-                        @endcan
+                        
                         </ul>
                     </li>
                     @endif
-                    @can('system-logs.index')
+                    
                     <li @if($currentOneLevelMenu == 'system-logs') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>系统日志</span>
+                            <span>系统管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                            @can('system-logs.index')
+                            
                             <li>
                                 <a href="{{ route('system-logs.index') }}" @if($currentRouteName == 'system-logs.index') class="active" @endif>
                                     系统日志
                                 </a>
                             </li>
-                            @endcan
+                            
                         </ul>
                     </li>
-                    @endcan
-                    @can('punishes.index')
-                    <li @if($currentOneLevelMenu == 'punishes') class="open active" @endif>
+                    
+                    
+                    <li @if($currentOneLevelMenu == 'punishes' || $currentOneLevelMenu == 'punish-types') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
-                            <span>违规管理</span>
+                            <span>奖惩管理</span>
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                        @can('punishes.index')
+                        
                             <li>
                                 <a href="{{ route('punishes.index') }}" @if($currentRouteName == 'punishes.index') class="active" @endif>
-                                    违规列表
+                                    奖惩列表
                                 </a>
                             </li>
-                        @endcan
+                        
+                        
+                            <li>
+                                <a href="{{ route('punishes.record') }}" @if($currentRouteName == 'punishes.record') class="active" @endif>
+                                    奖惩日志
+                                </a>
+                            </li>
+                        
                         </ul>
                     </li>
-                    @endcan
+                    
+                    <li @if($currentOneLevelMenu == 'app') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>App管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                        
+                            <li>
+                                <a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>
+                                    版本管理
+                                </a>
+                            </li>
+                        
+                        
+                            <li>
+                                <a href="{{ route('app.order-charge.index') }}" @if(substr($currentRouteName, 0, 16) == 'app.order-charge') class="active" @endif>
+                                    充值记录
+                                </a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+
+                    <li @if($currentOneLevelMenu == 'backend') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Steam管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('backend.steam.goods.index') }}" @if($currentRouteName == 'backend.steam.goods.index') class="active" @endif>
+                                    商品列表
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.steam.goods.getGameNameList') }}" @if($currentRouteName == 'backend.steam.goods.getGameNameList') class="active" @endif>
+                                    Steam直充游戏名
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.steam.store-price.index') }}" @if($currentRouteName == 'backend.steam.store-price.index') class="active" @endif>
+                                    商户密价
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.steam.order.index') }}" @if($currentRouteName == 'backend.steam.order.index') class="active" @endif>
+                                    订单列表
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -297,7 +416,74 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    
+                    <li @if($currentOneLevelMenu == 'datas' || $currentOneLevelMenu == 'statistic') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>统计管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('datas.index') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    代充平台数据
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
+                                    代练平台统计
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li @if($currentOneLevelMenu == 'config') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>配置管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('config.game') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    游戏配置
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                    区服配置
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li @if($currentOneLevelMenu == 'home') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>商户权限系统</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('home.module.index') }}" @if($currentRouteName == 'home.module.index') class="active" @endif>
+                                    模块列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('home.permission.index') }}" @if($currentRouteName == 'home.permission.index') class="active" @endif>
+                                    权限列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('home.role.index') }}" @if($currentRouteName == 'home.role.index') class="active" @endif>
+                                    角色列表
+                                </a>
+                            </li> 
+                            <li>
+                                <a href="{{ route('home.user.index') }}" @if($currentRouteName == 'home.user.index') class="active" @endif>
+                                    用户角色列表
+                                </a>
+                            </li>                        
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

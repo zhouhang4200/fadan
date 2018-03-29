@@ -20,7 +20,19 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderTestData',
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
-        'App\Console\Commands\Test',
+        'App\Console\Commands\Temp',
+        'App\Console\Commands\UserWeightUpdate',
+        'App\Console\Commands\OrderConfirm',
+        'App\Console\Commands\WriteDataEveryDay',
+        'App\Console\Commands\EmployeeStatistic', // 代练平台员工统计
+        'App\Console\Commands\OrderStatistic', // 代练平台订单统计
+        'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
+        'App\Console\Commands\PlatformStatistic', // 平台订单统计
+        'App\Console\Commands\AddNoticeOrderFromRedis',
+        'App\Console\Commands\Task\RoomCardRecharge',
+        'App\Console\Commands\TestDeleteOrder', // 删除订单
+        'App\Console\Commands\TestAppealOrder', // 仲裁订单
+        'App\Console\Commands\AddOurNoticeOrderFromRedis', // 从redis获取我们平台操作失败的报警订单
     ];
 
     /**
@@ -31,11 +43,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('Order:Assign')->everyMinute();
-        $schedule->command('daily-settlement:user-asset')->dailyAt('13:00');
-        $schedule->command('daily-settlement:platform-asset')->dailyAt('13:00');
+        $schedule->command('daily-settlement:user-asset')->daily();
+        $schedule->command('daily-settlement:platform-asset')->daily();;
+        $schedule->command('UserWeightUpdate')->daily();
         $schedule->command('write:orders')->daily();
+        $schedule->command('write:data')->daily();
         $schedule->command('write:user-order-moneys')->daily();
+        $schedule->command('Order:Confirm')->everyFiveMinutes();
+        $schedule->command('employee:statistic')->daily();
+        $schedule->command('order:statistic')->daily();
+        $schedule->command('change:status')->everyMinute();
+        $schedule->command('platform:statistic')->daily();
+        $schedule->command('order:notice')->everyMinute();
+        $schedule->command('add:notice')->everyMinute();
     }
 
     /**

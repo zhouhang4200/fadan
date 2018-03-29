@@ -4,6 +4,7 @@ namespace App\Extensions\Order\Operations\Base;
 use App\Exceptions\OrderException as Exception;
 use App\Models\Order;
 use App\Models\OrderHistory;
+use App\Models\User;
 
 // 操作
 abstract class Operation
@@ -37,8 +38,14 @@ abstract class Operation
     // 获取操作前订单
     public function createLogObject()
     {
+        $user = User::where('id', $this->userId)->first();
+        $userId = 0;
+        if ($user) {
+            $userId = $user->getPrimaryUserId();
+        }
         $this->orderHistory = new OrderHistory;
         $this->orderHistory->user_id       = $this->userId;
+        $this->orderHistory->creator_primary_user_id  = $userId;
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;
         $this->orderHistory->name          = config('order.operation_type')[$this->type];

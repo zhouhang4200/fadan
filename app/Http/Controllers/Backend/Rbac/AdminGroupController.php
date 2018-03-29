@@ -7,6 +7,9 @@ use App\Models\AdminUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+/**
+ * 后台管理组
+ */
 class AdminGroupController extends Controller
 {
     /**

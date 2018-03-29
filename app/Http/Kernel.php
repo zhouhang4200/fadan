@@ -37,6 +37,16 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
+        // 'admin' => [
+        //     \App\Http\Middleware\EncryptCookies::class,
+        //     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        //     \Illuminate\Session\Middleware\StartSession::class,
+        //     \Illuminate\Session\Middleware\AuthenticateSession::class,
+        //     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        //     \App\Http\Middleware\VerifyCsrfToken::class,
+        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        // ],
+
         'api' => [
             'throttle:60,1',
             'bindings',
@@ -59,5 +69,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
+        'api.decode' => \App\Http\Middleware\ApiDecode::class,
+        'api.auth' => \App\Http\Middleware\ApiAuth::class,
+        'taobao.api' => \App\Http\Middleware\TaobaoApi::class,
+        'internal.api' => \App\Http\Middleware\InternalApi::class,
+        'new.permission' => \App\Http\Middleware\NewPermissionMiddleware::class,
     ];
 }

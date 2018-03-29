@@ -69,7 +69,7 @@
                                                             <div class="layui-form-item" pane="">
                                                             @foreach($roles as $role)
                                                             <div class="layui-input-inline">
-                                                              <input type="checkbox" name="roles[]" lay-skin="primary" title="{{ $role->alias }}" value="{{ $role->id }}" {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                              <input type="checkbox" name="roles[]" lay-skin="primary" title="{{ $role->alias }}" value="{{ $role->id }}" {{ in_array($role->id, $userRoles) ? 'checked' : '' }}>
                                                             </div>
                                                             @endforeach
                                                             </div>

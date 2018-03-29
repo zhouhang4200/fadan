@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 use App\Exceptions\CustomException as Exception;
+use App\Events\Punish;
 
 class WithdrawOrderController extends Controller
 {
@@ -23,6 +24,12 @@ class WithdrawOrderController extends Controller
 
     public function store(Request $request, UserWithdrawOrderRepository $repository)
     {
+        $bool = event(new Punish(Auth::user()->getPrimaryUserId()));
+
+        if ($bool) {
+            return response()->json(['status' => 0, 'message' => '您还有罚单没有交清，请先交清罚单哦!']);
+        }
+
         $this->validate($request, [
             'fee'    => 'bail|required|numeric|min:1',
             'remark' => 'string|nullable|max:100',

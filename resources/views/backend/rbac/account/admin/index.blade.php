@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 后台账号')
+@section('title', ' | 管理员列表')
 
 @section('content')
     <div class="row">
@@ -9,9 +9,12 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">后台账号</li>
+                            <li class="layui-this" lay-id="add">管理员列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                            <div style="padding-top:10px; padding-bottom:10px; float:right">
+                                <a href="{{ route('admin-accounts.create') }}" style="color:#fff"><button class="layui-btn layui-btn-normal layui-btn-small">添加管理员</button></a>
+                            </div>
                             <div class="layui-tab-item layui-show">
                                 <table class="layui-table" lay-size="sm">
                                 <thead>
@@ -31,10 +34,11 @@
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->created_at }}</td>
                                             <td style="text-align: center;">
+                                                <a href="{{ route('admin-accounts.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">修改密码</a>
                                             @if (! $user->roles->count() > 0)
-                                                <a href="{{ route('admin-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-small">添加角色</a>
+                                                <a href="{{ route('admin-groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
                                             @else
-                                                <a href="{{ route('admin-groups.show', ['id' => $user->id])  }}"><button class="layui-btn layui-btn layui-btn-normal layui-btn-small" >查看角色</button></a>
+                                                <a href="{{ route('admin-groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn-normal layui-btn-mini" >查看角色</a>
                                             @endif
                                             </td>
                                         </tr>
@@ -56,6 +60,11 @@
         //Demo
         layui.use('form', function(){
             var form = layui.form;
+            var succ = "{{ session('succ') ?: '' }}";
+
+            if(succ) {
+                layer.msg(succ, {icon: 6, time:1500});
+            }
 
             //监听提交
             form.on('submit(formDemo)', function(data){

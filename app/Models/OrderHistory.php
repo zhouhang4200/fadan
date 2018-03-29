@@ -12,4 +12,17 @@ class OrderHistory extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    protected $fillable = [
+        'order_no', 'creator_primary_user_id', 'user_id', 'admin_user_id',
+        'type', 'name', 'description', 'before', 'after', 'created_at',
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

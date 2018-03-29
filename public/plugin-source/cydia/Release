@@ -1,0 +1,8 @@
+Origin: fulu
+Label: fulu
+Suite: stable
+Version: 1.0
+Codename: fulu 
+Architectures: iphoneos-arm
+Components: main
+Description:AppCake Official Repo. iPhoneCake.com public repo.

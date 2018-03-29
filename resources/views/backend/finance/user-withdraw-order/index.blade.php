@@ -40,7 +40,11 @@
                                 <input type="text" class="form-control" placeholder="用户ID" name="user_id" value="{{ $userId }}">
                             </div>
                             <div class="col-md-2">
+                                <input type="text" class="form-control" placeholder="管理备注" name="admin_remark" value="{{ $adminRemark }}">
+                            </div>
+                            <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
+                                <button class="btn btn-primary" type="button"  id="export">导出</button>
                             </div>
                         </div>
                     </form>
@@ -49,11 +53,16 @@
                         <thead>
                         <tr>
                             <th>提现单号</th>
+                            <th>主账号ID</th>
+                            <th>原千手ID</th>
+                            <th>当前余额</th>
+                            <th>当前冻结</th>
+                            <th>姓名</th>
+                            <th>开户行</th>
+                            <th>卡号</th>
                             <th>提现金额</th>
                             <th>状态</th>
-                            <th>创建者ID</th>
-                            <th>主账号ID</th>
-                            <th>备注</th>
+                            <th>管理员备注</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
@@ -63,11 +72,16 @@
                             @foreach ($dataList as $data)
                                 <tr>
                                     <td>{{ $data->no }}</td>
+                                    <td>{{ $data->creator_primary_user_id }}</td>
+                                    <td>{{ $data->user->nickname ?? '' }}</td>
+                                    <td>{{ $data->user->asset->balance ?? '' }}</td>
+                                    <td>{{ $data->user->asset->frozen ?? '' }}</td>
+                                    <td>{{ $data->user->realNameIdent->name ?? '' }}</td>
+                                    <td>{{ $data->user->realNameIdent->bank_name ?? '' }}</td>
+                                    <td>{{ $data->user->realNameIdent->bank_number ?? '' }}</td>
                                     <td>{{ $data->fee + 0 }}</td>
                                     <td>{{ config('withdraw.status')[$data->status] }}</td>
-                                    <td>{{ $data->creator_user_id }}</td>
-                                    <td>{{ $data->creator_primary_user_id }}</td>
-                                    <td>{{ $data->remark }}</td>
+                                    <td>{{ $data->admin_remark }}</td>
                                     <td>{{ $data->created_at}}</td>
                                     <td>{{ $data->updated_at}}</td>
                                     <td>
@@ -88,6 +102,7 @@
                         'no'            => $no,
                         'time_start'    => $timeStart,
                         'time_end'      => $timeEnd,
+                        'admin_remark'  => $adminRemark,
                         ])->links() }}
                 </div>
             </div>
@@ -102,22 +117,35 @@
 $('#time-start').datepicker();
 $('#time-end').datepicker();
 
+$('#export').click(function () {
+    var url = "{{ route('finance.user-widthdraw-order') }}?export=1&" + $('#search-flow').serialize();
+    window.location.href = url;
+});
+
 layui.use(['layer'], function () {
 
     // 完成
     $('.complete').click(function () {
         var id = $(this).data('id');
         layer.confirm('提现已完成？' , function (layerConfirm) {
-            $.post("{{ route('finance.user-widthdraw-order.complete', '') }}/" + id, function (data) {
-                layer.close(layerConfirm);
-                if (data.status === 1) {
-                    layer.alert('操作成功', function () {
-                        location.reload();
-                    });
-                } else {
-                    layer.alert(data.message);
-                }
-            }, 'json');
+
+            layer.close(layerConfirm);
+
+            layer.prompt({title: '请输入备注',formType: 2},function(value, promptIndex, elem){
+                $.post("{{ route('finance.user-widthdraw-order.complete', '') }}/" + id, {remark:value},function (data) {
+
+                    if (data.status === 1) {
+                        layer.alert('操作成功', function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.alert(data.message, function (index) {
+                            layer.close(index);
+                        });
+                    }
+                    layer.close(promptIndex);
+                }, 'json');
+            });
         });
     });
 

@@ -13,6 +13,44 @@
         .layui-tab-content{
             padding: 25px 0;
         }
+        .layui-form-switch i {
+            top: 1px;
+        }
+
+        #goods-template .layui-input-block{
+            margin-left: 50px;
+        }
+        #goods-template .form-group {
+            margin-bottom: 7px;
+            position: relative;
+        }
+
+        #goods-template .layui-form-mid {
+            text-align: right;
+        }
+        #goods-template .site-title {
+            margin: 10px 0 20px;
+        }
+        #goods-template .site-title fieldset {
+            border: none;
+            padding: 0;
+            border-top: 1px solid #eee;
+        }
+        #goods-template .site-title fieldset legend {
+            font-size: 17px;
+            font-weight: 300;
+        }
+        #goods-template .layui-form-checkbox[lay-skin=primary] {
+            height: 6px !important;
+        }
+        #goods-template .layui-layer-btn .layui-layer-btn0,.layui-layer-btn .layui-layer-btn1,.layui-layer-btn .layui-layer-btn2   {
+            border-color: #1E9FFF;
+            background-color: #1E9FFF;
+            color:#ffffff;
+        }
+        #goods-template .layui-layer-dialog .layui-layer-content {
+            text-align: center;
+        }
     </style>
 @endsection
 
@@ -30,11 +68,17 @@
             <div class="main-box">
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
+
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">模版预览</li>
+                            <li class="layui-this" lay-id="add">模版预览 </li>
+
                         </ul>
                         <div class="layui-tab-content">
+                            <div style="margin-bottom: 15px;text-align: right">
+                                <button class="layui-btn layui-btn-normal" id="button-control" data-status="show">隐藏所有操作按钮</button>
+                            </div>
                             <div class="layui-tab-item layui-show">
+
                                 <form class="layui-form layui-form-pane" id="goods-template">
                                 </form>
                             </div>
@@ -50,33 +94,46 @@
                         <ul class="layui-tab-title">
                             <li class="layui-this" lay-id="add">组件添加</li>
                             <li lay-id="edit">组件编缉</li>
+                            <li lay-id="edit-option">组件选项编缉</li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
-                                <form class="layui-form layui-form-pane" action="" id="add-widget-form">
+                                <form class="layui-form  layui-form-pane"   name="create-form">
                                     <input type="hidden" name="goods_template_id" value="{{ Route::input('templateId')}}">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件类型</label>
                                         <div class="layui-input-block">
-                                            <select name="field_name" lay-verify="required">
+                                            <select name="field_type_and_name" lay-verify="required" lay-filter="widget-type" lay-search="">
                                                 <option value=""></option>
-                                                @foreach($filedName as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @foreach($filedName as  $value)
+                                                    <option value="{{ $value->name }}-{{ $value->type }}" data-type="{{ $value->type }}">{{ $value->display_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div id="show-select-widget">
+                                    <div class="show-select-widget">
 
                                     </div>
 
                                     <div class="layui-form-item" pane="">
-                                        <label class="layui-form-label">展示方式</label>
+                                        <label class="layui-form-label">显示名称</label>
                                         <div class="layui-input-block">
-                                            @foreach($filedType as $key => $value)
-                                                <input type="radio" name="field_type" value="{{ $key }}" title="{{ $value }}" lay-filter="field-type">
-                                            @endforeach
+                                            <input type="text" name="field_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">显示方式</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="display_form" autocomplete="off" placeholder="显示方式(如果写1则达表该组件独占一行，2 则表示两个组件一行)" class="layui-input"  lay-verify="required">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">提示信息</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="" value="无">
                                         </div>
                                     </div>
 
@@ -87,24 +144,17 @@
                                         </div>
                                     </div>
 
-                                    <div class="layui-form-item" pane="">
-                                        <label class="layui-form-label">显示名称</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="field_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required">
-                                        </div>
-                                    </div>
-
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">组件默认值</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input">
+                                            <input type="text" name="field_default_value" autocomplete="off" placeholder="当类型为【下拉选】时，此项无效" class="layui-input" value="无">
                                         </div>
                                     </div>
 
-                                    <div class="layui-form-item layui-form-text">
-                                        <label class="layui-form-label">组件可选值（多个值之前用 | 分隔，多组之前用 ，分隔）</label>
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">验证规则</label>
                                         <div class="layui-input-block">
-                                            <textarea placeholder="请输入内容" class="layui-textarea" name="field_value" lay-verify="field_value"></textarea>
+                                            <input type="text"  name="verify_rule" class="layui-input"  title="" value="">
                                         </div>
                                     </div>
 
@@ -114,11 +164,36 @@
                                             <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
                                         </div>
                                     </div>
+
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">是否显示</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
+                                        </div>
+                                    </div>
+
+                                    <div class="widget-value">
+                                        <div class="layui-form-item layui-form-text">
+                                            <label class="layui-form-label">组件可选值（多个值之间用 | 分隔 ）</label>
+                                            <div class="layui-input-block">
+                                                <textarea placeholder="请输入内容" class="layui-textarea" name="field_value" lay-verify="field_value"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add-widget">确认添加</button>
                                 </form>
                             </div>
-                            <div class="layui-tab-item" >
-                                <form class="layui-form layui-form-pane" action="" id="show-widget">
+                            <div class="layui-tab-item">
+                                <form class="layui-form layui-form-pane" action=""   name="edit-form">
+                                </form>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div id="nestable-menu" class="layui-hide">
+                                    <button type="button" class="btn btn-primary expand-all">展开所有</button>
+                                    <button type="button" class="btn btn-danger collapse-all">折叠所有</button>
+                                </div>
+                                <form class="layui-form layui-form-pane" action=""   name="edit-option-form"  id="nestable">
 
                                 </form>
                             </div>
@@ -128,9 +203,109 @@
             </div>
         </div>
     </div>
+
+    <div id="add-option" style="display: none;padding: 20px">
+        <form class="layui-form layui-form-pane" action="">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">组件值 （多个值之前用 | 分隔 ）</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="value"  lay-verify="field_value"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="add-option">确定添加</button>
+            </div>
+        </form>
+    </div>
+
 @endsection
 
 @section('js')
+<script src="/backend/js/jquery.nestable.js"></script>
+<!--预览组件新 模版-->
+<script id="goodsTemplateNew" type="text/html">
+
+    <div class="layui-row form-group">
+        @{{# var row = 0;}}
+        @{{#  layui.each(d.template, function(index, item){ }}
+
+        @{{#  if(row == 0) { row = item.display_form;  }  }}
+
+        <div class="layui-col-md6">
+            <div class="layui-col-md3 layui-form-mid">
+                @{{# if (item.field_required == 1) {  }}<span style="color: orangered;">*</span>@{{# }  }} @{{ item.field_display_name  }}
+            </div>
+            <div class="layui-col-md8">
+
+                @{{# if(item.field_type == 1) {  }}
+                <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input"  display-name="@{{item.field_display_name}}">
+
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+
+                @{{# } }}
+
+                @{{# if(item.field_type == 2) {  }}
+                <select name="@{{ item.field_name }}"  lay-search=""  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
+                    <option value=""></option>
+                        @{{#  if(item.values.length > 0){ }}
+                            @{{#  layui.each(item.values, function(i, v){ }}
+                            <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
+                            @{{#  }); }}
+                        @{{#  }  }}
+                </select>
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="edit-widget-option"><i class="layui-icon">&#xe654;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.field_type == 3) {  }}
+                @{{# } }}
+
+                @{{# if(item.field_type == 4) {  }}
+                <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"   display-name="@{{item.field_display_name}}"></textarea>
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.field_type == 5) {  }}
+                <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  display-name="@{{item.field_display_name}}">
+                <br>
+                <div class="layui-btn-group" style="margin-top: 10px">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm"  data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+                </div>
+                @{{# } }}
+
+                @{{# if(item.help_text != '无') {  }}
+                <a href="#" class="tooltip">
+                    <i class="iconfont icon-wenhao" id="recharge"></i>
+                    <span>@{{ item.help_text }}</span>
+                </a>
+                @{{# }  }}
+
+            </div>
+
+        </div>
+
+        @{{#  row--; }}
+
+        @{{# if(row == 0) { }}
+    </div>
+    <div class="layui-row form-group">
+        @{{# }  }}
+
+        @{{# })  }}
+    </div>
+
+</script>
+<!--预览组件 模版-->
 <script id="goodsTemplate" type="text/html">
     @{{#  layui.each(d, function(index, item){ }}
 
@@ -145,8 +320,8 @@
                         <input type="text" name="@{{ item.field_name }}"  placeholder="请输入@{{ item.field_display_name }}" autocomplete="off" class="layui-input" value="">
                     @{{#  } }}
                 </div>
-                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> </button>
+                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> </button>
             </div>
         @{{#  } }}
 
@@ -156,18 +331,18 @@
                 <label class="layui-form-label">@{{ item.field_display_name }}</label>
                 <div class="layui-input-inline">
                     <select name="@{{ item.field_name }}" lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
-                        @{{#  if(item.field_parent_id  == 0){ }}
-                                @{{# var option = (item.field_value).split("|") }}
-                                @{{#  layui.each(option, function(i, v){ }}
-                                    <option value="@{{ i }}">@{{ v }}</option>
-                                @{{#  }); }}
-                        @{{#  } else { }}
-                                <option value="请选上级">请选上级</option>
-                        @{{#  } }}
+                        {{--@{{#  if(item.field_parent_id  == 0){ }}--}}
+                                {{--@{{#  layui.each(item.values, function(i, v){ }}--}}
+                                    {{--<option value="@{{ v.id }}">@{{ v.field_value }}</option>--}}
+                                {{--@{{#  }); }}--}}
+                        {{--@{{#  } else { }}--}}
+                                {{--<option value="请选上级">请选上级</option>--}}
+                        {{--@{{#  } }}--}}
                     </select>
                 </div>
-                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="edit-widget-option"><i class="fa fa-plus-square-o"></i></button>
+                <button class="layui-btn layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
             </div>
         @{{#  } }}
 
@@ -184,11 +359,37 @@
                             <input type="radio" name="field_type" value="@{{ v }}" title="@{{ v }}">
                          @{{#  } }}
                     @{{#  }); }}
-                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i> 编辑</button>
-                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i> 删除</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                    <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
                 </div>
             </div>
         @{{#  } }}
+
+        @{{# if(item.field_type == 5) {  }}
+
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">@{{ item.field_display_name }}</label>
+            <div class="layui-input-block" >
+                <input type="checkbox" name="@{{ item.field_name }}" lay-skin="primary"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# }  }}">
+                <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+                <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+            </div>
+        </div>
+
+        @{{# } }}
+
+        @{{# if(item.field_type == 4) {  }}
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">@{{ item.field_display_name }}</label>
+            <div class="layui-input-block" >
+                    <textarea name="@{{ item.field_name }}" placeholder="请输入内容" class="layui-textarea"  lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}"></textarea>
+
+            </div>
+            <button class="layui-btn layui-btn-normal layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="show-widget"><i class="layui-icon">&#xe642;</i></button>
+            <button class="layui-btn layui-btn-normal layui-btn-danger layui-btn-small" data-id="@{{ item.id }}" lay-submit="" lay-filter="destroy-widget"><i class="layui-icon">&#xe640;</i></button>
+
+        </div>
+        @{{# } }}
 
     @{{#  }); }}
 
@@ -196,39 +397,72 @@
         没有组件
     @{{#  } }}
 </script>
-<script id="showWidgetTemplate" type="text/html">
+<!--编缉组件 模版-->
+<script id="editWidgetTemplate" type="text/html">
     <input type="hidden" name="id" value="@{{ d.id }}">
-    <div class="layui-form-item" pane="">
-        <label class="layui-form-label">排序</label>
-        <div class="layui-input-block">
-            <input type="text" name="field_sortord" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.field_sortord }}">
-        </div>
-    </div>
+    {{--<div class="layui-form-item">--}}
+        {{--<label class="layui-form-label">组件类型</label>--}}
+        {{--<div class="layui-input-block">--}}
+            {{--<select name="field_type_and_name" lay-verify="required" lay-filter="widget-type" readonly="readonly">--}}
+                {{--<option value=""></option>--}}
+                {{--@{{#  layui.each(d.type, function(i, v){ }}--}}
+                    {{--@{{# if(d.field_name == v.name){ }}--}}
+                        {{--<option value="@{{ v.name }}-@{{ v.type }}" data-type="@{{ v.type }}" selected>@{{ v.display_name }}</option>--}}
+                    {{--@{{#  } else { }}--}}
+                        {{--<option value="@{{ v.name }}-@{{ v.type }}" data-type="@{{ v.type }}">@{{ v.display_name }}</option>--}}
+                    {{--@{{#  } }}--}}
+                {{--@{{#  }); }}--}}
+            {{--</select>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 
-    @{{#  if(d.field_type === 2){ }}
-    <div class="layui-form-item">
-        <label class="layui-form-label">父级组件</label>
-        <div class="layui-input-block">
-            <select name="field_parent_id" lay-filter="change-select">
-                <option value="0">无</option>
-                @{{# if(d.select.length >  0){ }}
-                    @{{#  layui.each(d.select, function(i, v){ }}
-                        @{{# if(d.field_parent_id == v.id){ }}
-                            <option value="@{{ v.id }}" selected>@{{ v.field_display_name }}</option>
-                        @{{#  } else if (v.id != d.id) { }}
-                            <option value="@{{ v.id }}">@{{ v.field_display_name }}</option>
-                        @{{#  } }}
-                    @{{#  }); }}
-                @{{#  }  }}
-            </select>
-        </div>
-    </div>
-    @{{#  } }}
+    {{--<div class="show-select-widget">--}}
+        {{--@{{#  if(d.field_type === 2 && d.field_parent_id != 0){ }}--}}
+        {{--<div class="layui-form-item">--}}
+            {{--<label class="layui-form-label">父级组件</label>--}}
+            {{--<div class="layui-input-block">--}}
+                {{--<select name="field_parent_id"  lay-filter="parent-widget" disabled>--}}
+                    {{--<option value="0">无</option>--}}
+                    {{--@{{# if(d.select.length >  0){ }}--}}
+                    {{--@{{#  layui.each(d.select, function(i, v){ }}--}}
+                    {{--@{{# if(d.field_parent_id == v.id){ }}--}}
+                    {{--<option value="@{{ v.id }}" selected>@{{ v.field_display_name }}</option>--}}
+                    {{--@{{#  } else if (v.id != d.id) { }}--}}
+                    {{--<option value="@{{ v.id }}">@{{ v.field_display_name }}</option>--}}
+                    {{--@{{#  } }}--}}
+                    {{--@{{#  }); }}--}}
+                    {{--@{{#  }  }}--}}
+                {{--</select>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+        {{--@{{#  } }}--}}
+    {{--</div>--}}
 
     <div class="layui-form-item" pane="">
         <label class="layui-form-label">显示名称</label>
         <div class="layui-input-block">
             <input type="text" name="field_display_name" autocomplete="off" placeholder="请输入名称" class="layui-input"  lay-verify="required" value="@{{ d.field_display_name }}">
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">显示方式</label>
+        <div class="layui-input-block">
+            <input type="text" name="display_form" autocomplete="off" placeholder="显示方式(如果写1则达表该组件独占一行，2 则表示两个组件一行)" class="layui-input"  lay-verify="required" value="@{{ d.display_form }}">
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">提示信息</label>
+        <div class="layui-input-block">
+            <input type="text" name="help_text" autocomplete="off" placeholder="请输入提示信息(可不填写)" class="layui-input"  lay-verify="" value="@{{ d.help_text }}">
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input type="text" name="field_sortord" autocomplete="off" placeholder="请输序号" class="layui-input"  lay-verify="required" value="@{{ d.field_sortord }}">
         </div>
     </div>
 
@@ -239,10 +473,10 @@
         </div>
     </div>
 
-    <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">组件可选值（多个值之前用 | 分隔，多组之前用 ，分隔）</label>
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">验证规则</label>
         <div class="layui-input-block">
-            <textarea placeholder="请输入内容" class="layui-textarea" name="field_value">@{{ d.field_value }}</textarea>
+            <input type="text"  name="verify_rule" class="layui-input"  title="" value="@{{ d.verify_rule }}">
         </div>
     </div>
 
@@ -250,19 +484,113 @@
         <label class="layui-form-label">是否必填</label>
         <div class="layui-input-block">
             @{{#  if(d.field_required ==  1 ){  }}
-                <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1" checked="">
+            <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1" checked="">
             @{{#  } else { }}
-                <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
+            <input type="checkbox"  name="field_required" lay-skin="switch"  title="开关" value="1">
             @{{#  } }}
         </div>
     </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">是否显示</label>
+        <div class="layui-input-block">
+            @{{#  if(d.display ==  1 ){  }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1" checked="">
+            @{{#  } else { }}
+            <input type="checkbox"  name="display" lay-skin="switch"  title="开关" value="1">
+            @{{#  } }}
+        </div>
+    </div>
+
+    {{--<div class="widget-value">--}}
+        {{--@{{# if(d.value_group.length >  1){ }}--}}
+            {{--@{{#  layui.each(d.value_group, function(i, v){ }}--}}
+            {{--<div class="layui-form-item layui-form-text">--}}
+                {{--<label class="layui-form-label"> @{{ v.parent_name }} （多个值之前用 | 分隔 ）</label>--}}
+                {{--<div class="layui-input-block">--}}
+                    {{--<textarea placeholder="请输入内容" class="layui-textarea" name="field_value_@{{ v.parent_id  }}">@{{ v.value  }}</textarea>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--@{{#  }); }}--}}
+        {{--@{{#  } else if (d.value_group.length == 1) {  }}--}}
+        {{--<div class="layui-form-item layui-form-text">--}}
+            {{--<label class="layui-form-label">@{{ d.value_group[0].parent_name }} （多个值之前用 | 分隔 ）</label>--}}
+            {{--<div class="layui-input-block">--}}
+                {{--<textarea placeholder="请输入内容" class="layui-textarea" name="field_value"  lay-verify="field_value">@{{ d.value_group[0].value }}</textarea>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+        {{--@{{#  } else {  }}--}}
+        {{--<div class="layui-form-item layui-form-text">--}}
+            {{--<label class="layui-form-label">组件值 （多个值之前用 | 分隔 ）</label>--}}
+            {{--<div class="layui-input-block">--}}
+                {{--<textarea placeholder="请输入内容" class="layui-textarea" name="field_value"  lay-verify="field_value"></textarea>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+        {{--@{{#  }  }}--}}
+    {{--</div>--}}
+
     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="edit-save">保存修改</button>
 </script>
-<script id="showSelectWidgetTemplate" type="text/html">
+<!--编辑组件选项 模版-->
+<script id="editWidgetOptionTemplate" type="text/html">
+    @{{# if(d.top == 1){  }}
+        <button class="layui-btn layui-btn-normal layui-btn-small add-option" data-id="@{{ d.widget_id }}" data-parent="0">添加选项</button>
+    @{{# }  }}
+    <input type="hidden" name="widget_id" value="@{{ d.widget_id }}">
+    <ol class="dd-list">
+
+        @{{#  layui.each(d.options, function(i, v){ }}
+
+            <li class="dd-item" data-id="@{{ i }}">
+                <div class="dd-handle">
+                    @{{ v.field_value }}
+                    <div class="nested-links">
+                        @{{# if(v.child.length > 0 || d.top == 0) { }}
+                            <a href="#" class="add-option"  data-id="@{{  d.widget_id }}" data-parent="@{{ v.parent_id  }}">
+                                <i class="fa fa-plus-square"></i>
+                            </a>
+                        @{{# } else {  }}
+                            <a href="#" class="nested-link edit-option" data-id="@{{  d.id }}">
+                                <i  class="fa fa-pencil"></i>
+                            </a>
+                            <a href="" class="del-option" data-id="@{{  v.parent_id }}">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        @{{# }   }}
+                    </div>
+                </div>
+
+                @{{# if(v.child.length > 0) { }}
+                    <ol class="dd-list">
+                        @{{#  layui.each(v.child, function(a, j){ }}
+                            <li class="dd-item" data-id="@{{ j.id}}">
+                                <div class="dd-handle">
+                                    @{{ j.field_value  }}
+                                    <div class="nested-links">
+                                        <a href="#" class="nested-link">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a href="#" class="del-option" data-id="@{{  j.id }}">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        @{{# })  }}
+                    </ol>
+                @{{# } }}
+
+            </li>
+        @{{# })  }}
+    </ol>
+</script>
+<!--父级组件 模版-->
+<script id="parentWidgetTemplate" type="text/html">
     <div class="layui-form-item">
         <label class="layui-form-label">父级组件</label>
         <div class="layui-input-block">
-            <select name="field_parent_id" lay-verify="required">
+            {{--<select name="field_parent_id" lay-verify="required" lay-filter="field-parent-id">--}}
+            <select name="field_parent_id" lay-verify="required" lay-filter="parent-widget">
                 <option value="0">无</option>
                 @{{#  if(d.length > 0){ }}
                     @{{#  layui.each(d, function(i, v){ }}
@@ -273,31 +601,65 @@
         </div>
     </div>
 </script>
+<!--父级组件值改动时 模版-->
+<script id="parentTemplate" type="text/html">
+    @{{#  if(d.length > 0){ }}
+        @{{#  layui.each(d, function(i, v){ }}
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">@{{ v.parent_name }} （多个值之前用 | 分隔 ）</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="field_value_@{{ v.parent_id  }}"  lay-verify="field_value"></textarea>
+                </div>
+            </div>
+        @{{#  }); }}
+    @{{#  } else { }}
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">组件值 （多个值之前用 | 分隔 ）</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="field_value"  lay-verify="field_value"></textarea>
+                </div>
+            </div>
+    @{{#  } }}
+</script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         reloadTemplate();
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
-        // 当前选择的组件展示方式
         var currentWidgetType = 1;
+
         //自定义验证规则
         form.verify({
             field_value: function(value){
-                if(currentWidgetType > 1 && value.length == 0){
+                if(currentWidgetType == 2 && value.length == 0){
                     return '这种展示方式必须填入可选值呢！';
                 }
             }
         });
-        // 监听组件展示方式选择
-        form.on('radio(field-type)', function(data){
-            currentWidgetType = data.value;
+        // 监听 选择组件类型
+        form.on('select(widget-type)', function(data){
+           currentWidgetType = $(data.elem).find("option:selected").attr("data-type");
+
+            // 获取当前form
+            var currentForm = data.elem.closest('form').name;
+            // 为名字赋值
+            $('form[name='+ currentForm +']').find('input[name=field_display_name]').val($(data.elem).find("option:selected").text());
+
+            // 当选的添加组件类型是下拉项时展示可选的父级选项
             if (currentWidgetType == 2) {
-                showSelectWidget();
+                var getTpl = parentWidgetTemplate.innerHTML, view = $('form[name='+ currentForm +']').find('.show-select-widget');
+                $.post('{{ route('goods.template.widget.show-select-all') }}', {id:'{{ Route::input('templateId')}}'}, function (result) {
+                    layTpl(getTpl).render(result, function(html){
+                        view.html(html);
+                        layui.form.render()
+                    });
+                }, 'json');
             } else {
-                $('#show-select-widget').html('');
+                $('.show-select-widget').html('');
             }
         });
         // 添加表单组件
         form.on('submit(add-widget)', function(data){
+
             $.post('{{ route('goods.template.widget.store') }}', {data:data.field},function (result) {
                 // 添加成功后重新加载模版
                 if (result.code == 1) {
@@ -311,17 +673,52 @@
             }, 'json');
             return false;
         });
-        // 删除表单组件
-        form.on('submit(destroy-widget)', function(data){
-            destroyWidget(data.elem.getAttribute("data-id"));
-            return false;
-        });
-        // 编缉表单组件
+        // 编缉组件按钮
         form.on('submit(show-widget)', function(data){
-            showWidget(data.elem.getAttribute("data-id"));
+            element.tabChange('widgetTab', 'edit');
+            var getTpl = editWidgetTemplate.innerHTML, view = $('form[name="edit-form"]');
+            $.post('{{ route('goods.template.widget.show') }}', {id:data.elem.getAttribute("data-id"),template_id:"{{ Route::input('templateId') }}"}, function (result) {
+                layTpl(getTpl).render(result, function(html){
+                    view.html(html) ;
+                    layui.form.render()
+                });
+            }, 'json');
+            reloadTemplate();
             return false;
         });
-        // 保存组件修改
+        // 编辑组件选项
+        form.on('submit(edit-widget-option)', function (data) {
+            element.tabChange('widgetTab', 'edit-option');
+
+            var getTpl = editWidgetOptionTemplate.innerHTML, view = $('form[name="edit-option-form"]');
+
+            $.post('{{ route('goods.template.widget.edit-option') }}', {id:data.elem.getAttribute("data-id")}, function (result) {
+                layTpl(getTpl).render(result.content, function(html){
+                    view.html(html) ;
+                    $('#nestable').nestable();
+                    $('.dd').nestable('collapseAll');
+                    layui.form.render()
+                });
+            }, 'json');
+            reloadTemplate();
+            return false;
+        });
+        // 删除组件按钮
+        form.on('submit(destroy-widget)', function(data){
+            layer.confirm('您确认要删除该组件吗？', function (index) {
+                $.post('{{ route('goods.template.widget.destroy') }}', {id:data.elem.getAttribute("data-id")}, function (result) {
+                    if (result.status == 1) {
+                        reloadTemplate();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                }, 'json');
+                layer.close(index);
+            });
+            reloadTemplate();
+            return false;
+        });
+        // 保存组件编缉
         form.on('submit(edit-save)', function(data){
             $.post('{{ route('goods.template.widget.edit') }}', {id:data.field.id, data:data.field}, function (result) {
                 layer.msg(result.message);
@@ -330,66 +727,130 @@
             }, 'json');
             return false;
         });
-        // 改变下拉框值
+        // 当切换到添加时清空编辑表单
+        element.on('tab(widgetTab)', function(data){
+            if (data.index == 0) {
+                $('form[name=edit-form]').empty();
+            }
+        });
+        // 如选择父级组件时则加载出他应对应有项的值输入框
+        form.on('select(parent-widget)', function(data) {
+            // 获取当前form id
+            var currentForm = data.elem.closest('form').name;
+            // 找到ID所有的值，生成对应的输入框
+            var getTpl = parentTemplate.innerHTML, view = $('form[name='+ currentForm +']').find('.widget-value');
+            $.post('{{ route('goods.template.widget.show-select-value') }}', {id:data.value,edit:1},function (result) {
+                layTpl(getTpl).render(result.content, function(html){
+                    view.html(html);
+                    layui.form.render()
+                });
+            }, 'json');
+        });
+        // 模版预览 下拉框值
         form.on('select(change-select)', function(data){
             var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
+            var choseId = $(data.elem).find("option:selected").attr("data-id");
             if($(subordinate).length > 0){
-                $.post('{{ route('goods.template.widget.show-select-value') }}', {id:data.value, parent_id:data.elem.getAttribute('data-id')}, function (result) {
+                $.post('{{ route('goods.template.widget.show-select-child') }}', {parent_id:choseId}, function (result) {
                     $(subordinate).html(result);
-                    $(result).each(function (index, name) {
-                        $(subordinate).append('<option value="' + index + '">' + name + '</option>');
+                    $(result).each(function (index, value) {
+                        $(subordinate).append('<option value="' + value.id + '">' + value.field_value + '</option>');
                     });
                     layui.form.render();
                 }, 'json');
             }
             return false;
         });
-        // 当切换到添加时清空编辑表单
-        element.on('tab(widgetTab)', function(data){
-            if (data.index == 0) {
-                $('#show-widget').html('');
-            }
-        });
-        //重新加载模版
-        function reloadTemplate() {
-            var getTpl = goodsTemplate.innerHTML, view = document.getElementById('goods-template');
-            $.get('{{ route('goods.template.widget.show.all', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {
-                layTpl(getTpl).render(result, function(html){
-                    view.innerHTML = html;
-                    layui.form.render()
-                });
+        // 保存添加选项
+        form.on('submit(add-option)', function (data) {
+            $.post('{{ route('goods.template.widget.add-option') }}', {id:data.field.id, parent_id:data.field.parent_id, value:data.field.value}, function (result) {
+                layer.msg(result.message);
+                layer.closeAll();
             }, 'json');
-        }
-        // 删除组件
-        function destroyWidget(widgetId) {
-            layer.confirm('您确认要删除该组件吗？', function (index) {
-                $.post('{{ route('goods.template.widget.destroy') }}', {id:widgetId}, function (result) {
+            reloadTemplate();
+            return false;
+        });
+        // 编缉选项
+        form.on('submit(edit-option)', function (data) {
+
+        });
+        // 添加选项弹窗
+        $('#nestable').on('click', '.add-option', function () {
+            $('#add-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
+            $('#add-option form').append('<input type="hidden"   name="parent_id" value="'  + $(this).attr('data-parent')  +  '">');
+            layer.open({
+                type: 1,
+                shade: 0.2,
+                title: '添加选项',
+                area: ['500px', '300px'],
+                content: $('#add-option')
+            });
+            reloadTemplate()
+            return false;
+        });
+        // 编辑选项
+        $('#nestable').on('click', '.edit-option', function () {
+            $('#edit-option form').append('<input type="hidden"  name="id" value="'  + $(this).attr('data-id')  +  '">');
+            layer.open({
+                type: 1,
+                shade: 0.2,
+                title: '编辑',
+                area: ['500px', '300px'],
+                content: $('#add-option')
+            });
+            return false;
+        });
+        // 删除选项
+        $('#nestable').on('click', '.del-option', function () {
+            var id = $(this).attr("data-id");
+            layer.confirm('您确认要删除该选项吗？', function (index) {
+                $.post('{{ route('goods.template.widget.del-option') }}', {id:id}, function (result) {
                     reloadTemplate();
                 }, 'json');
                 layer.close(index);
             });
-        }
-        // 编辑组件
-        function showWidget(widgetId) {
-            element.tabChange('widgetTab', 'edit');
-            var getTpl = showWidgetTemplate.innerHTML, view = document.getElementById('show-widget');
-            $.post('{{ route('goods.template.widget.show') }}', {id:widgetId,template_id:"{{ Route::input('templateId') }}"}, function (result) {
-                layTpl(getTpl).render(result, function(html){
-                    view.innerHTML = html;
-                    layui.form.render()
-                });
-            }, 'json');
-        }
-        // 显示当前模版的所有下拉框组件
-        function showSelectWidget() {
-            var getTpl = showSelectWidgetTemplate.innerHTML, view = document.getElementById('show-select-widget');
-            $.post('{{ route('goods.template.widget.show-select-all') }}', {id:'{{ Route::input('templateId')}}'}, function (result) {
-                layTpl(getTpl).render(result, function(html){
+            return false;
+        });
+        //重新加载模版
+        function reloadTemplate() {
+            {{--var getTpl = goodsTemplate.innerHTML, view = document.getElementById('goods-template');--}}
+            {{--$.get('{{ route('goods.template.widget.show.all', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {--}}
+                {{--layTpl(getTpl).render(result, function(html){--}}
+                    {{--view.innerHTML = html;--}}
+                    {{--layui.form.render()--}}
+                {{--});--}}
+            {{--}, 'json');--}}
+            var getTpl = goodsTemplateNew.innerHTML, view = document.getElementById('goods-template');
+            $.get('{{ route('goods.template.widget.preview-template', ['goodsTemplateId' => Route::input('templateId')]) }}',function (result) {
+                console.log(result.content.template.lenght);
+                layTpl(getTpl).render(result.content, function(html){
                     view.innerHTML = html;
                     layui.form.render()
                 });
             }, 'json');
         }
     });
+
+    $('#button-control').on('click', function (e) {
+        if ($(this).attr('data-status') == 'show') {
+            $('.layui-btn-group').addClass('layui-hide');
+            $(this).html('显示所有操作按钮');
+            $(this).attr('data-status', 'hide')
+        } else {
+            $('.layui-btn-group').removeClass('layui-hide');
+            $(this).html('隐藏所有操作按钮');
+            $(this).attr('data-status', 'show');
+        }
+        return  false;
+    });
+
+    $('#nestable-menu').on('click', '.expand-all', function(e){
+        $('.dd').nestable('expandAll');
+    });
+
+    $('#nestable-menu').on('click', '.collapse-all', function(e){
+        $('.dd').nestable('collapseAll');
+    });
+
 </script>
 @endsection

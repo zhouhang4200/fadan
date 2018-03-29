@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>千手 · 订单集市  @yield('title')</title>
+    <title>订单集市@yield('title')</title>
     <link type="image/x-icon" href="/favicon.ico" rel="shortcut icon"/>
     <link rel="stylesheet" type="text/css" href="/backend/css/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/backend/css/libs/font-awesome.css"/>
@@ -48,15 +48,9 @@
                 </div>
                 <div class="nav-no-collapse pull-right" id="header-nav">
                     <ul class="nav navbar-nav pull-right">
-
-                        <li class="hidden-xs">
-                            <a class="btn">
-                                <i class="fa fa-cog"></i>
-                            </a>
-                        </li>
                         <li class="dropdown profile-dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/img/samples/scarlet-159.png" alt=""/>
+                                {{--<img src="/img/samples/scarlet-159.png" alt=""/>--}}
                                 <span class="hidden-xs">管理员</span> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
@@ -67,11 +61,6 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="hidden-xxs">
-                            <a class="btn">
-                                <i class="fa fa-power-off"></i>
-                            </a>
                         </li>
                     </ul>
                 </div>
@@ -98,6 +87,9 @@
 <script src="/backend/js/pace.min.js"></script>
 <script src="/backend/js/helper.js"></script>
 <script src="/vendor/layui/layui.js"></script>
+<script src="/backend/js/classie.js"></script>
+<script src="/backend/js/modalEffects.js"></script>
+<script src="/backend/js/jquery.modalEffects.js"></script>
 <script>
     $.ajaxSetup({
         headers: {
@@ -110,8 +102,20 @@
             location.reload();
         }, 900);
     }
+
+    function reloadHref() {
+        setTimeout(function () {
+            location.href = location.href;
+        }, 900);
+    }
+
+    function redirect(str) {
+        setTimeout(function () {
+            window.location.href=str;
+        }, 900);
+    }
     function logout() {
-        layui.use(['form', 'layedit', 'laydate',], function(){
+        layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
                     ,layer = layui.layer;
             layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
