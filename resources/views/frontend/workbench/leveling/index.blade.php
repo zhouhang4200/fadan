@@ -633,12 +633,12 @@
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
+                                layer.closeAll();
                             } else {
                                 layer.alert(result.message);
                             }
                             reload();
                         });
-                            layer.closeAll();
                         return false;
                     });
 
