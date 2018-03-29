@@ -25,7 +25,7 @@
             line-height: 40px !important;
         }
         .layui-laypage-em {
-            background-color: #1E9FFF !important;
+            background-color: #ff7a00 !important;
         }
         .layui-form-select .layui-input {
             padding-right:0 !important;
