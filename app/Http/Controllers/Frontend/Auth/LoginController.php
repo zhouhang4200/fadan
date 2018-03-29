@@ -69,11 +69,16 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'geetest_challenge' => 'required',
-        ], [
-            'geetest' => config('geetest.server_fail_alert')
+        $validator = \Validator::make($request->all(), [
+            'geetest_challenge' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return response()->ajax(0, $validator->errors()->all()[0]);
+        }
+
+        // 对前端转输数据进行解密
+        $request['password'] = clientRSADecrypt($request->password);
 
         // 检查账号是否被禁用
         $user = User::where('name', $request->name)->first();
@@ -83,9 +88,6 @@ class LoginController extends Controller
                  return redirect('/login')->withInput()->with('forbidden', '您的账号已被禁用!');
             }
         }
-
-        $this->validateLogin($request);
-
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -97,16 +99,16 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-
-            return $this->sendLoginResponse($request);
+            if ($this->sendLoginResponse($request)) {
+                return response()->ajax(1, 'success');
+            }
         }
-
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request);
+        return response()->ajax(0, '账号或密码错误');
     }
 
     /**
@@ -147,5 +149,19 @@ class LoginController extends Controller
         $request->session()->invalidate();
 
         return redirect('/login');
+    }
+
+    /**
+     * $this->authenticated($request, $this->guard()->user()) ? :
+     * @param Request $request
+     * @return bool
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user()) ? : true;
     }
 }

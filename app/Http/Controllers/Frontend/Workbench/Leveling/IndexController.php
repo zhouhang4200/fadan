@@ -157,9 +157,14 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
+
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
-                    $temp[$key] = htmlspecialchars($value);
+                    if (is_string($value)) {
+                        $temp[$key] = htmlspecialchars($value);
+                    } else {
+                        $temp[$key] = $value;
+                    }
                 }
                 $orderArr[] = $temp;
             }
@@ -391,7 +396,7 @@ class IndexController extends Controller
         }
 
         // 撤销说明
-        if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
+        if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['consult'] != 2 && $detail['leveling_consult']['user_id'] != 0) {
 
             //发起人的主ID 与 当前主ID一样则撤销发起人
             $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
@@ -412,7 +417,7 @@ class IndexController extends Controller
             $detail['consult_desc'] = $text;
         }
         // 仲裁说明
-        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complain'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
+        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complain'] != 0 && $detail['leveling_consult']['consult'] != 1 && $detail['leveling_consult']['user_id'] != 0) {
             //发起人的主ID 与 当前主ID一样则仲裁发起人
             $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
             if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
@@ -424,7 +429,7 @@ class IndexController extends Controller
         }
 
         // 仲裁结果
-        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2) {
+        if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2 && $detail['leveling_consult']['user_id'] == 0) {
 
             $text = '客服进行了仲裁。';
             if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {

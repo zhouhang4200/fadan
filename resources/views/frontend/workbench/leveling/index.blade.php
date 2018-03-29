@@ -622,7 +622,7 @@
                     layer.open({
                         type: 1,
                         shade: 0.2,
-                        title: '撤销',
+                        title: '申请撤销',
                         area: ['650px', '550px'],
                         content: $('.consult')
                     });

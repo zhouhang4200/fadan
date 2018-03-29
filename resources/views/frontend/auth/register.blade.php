@@ -30,6 +30,10 @@
                         <i class="layui-icon icon">&#xe612;</i>
                     </div>
                     <div class="layui-form-item">
+                        <input type="text" name="username" required="" lay-verify="required" placeholder="请输入昵称" value="{{ old('username') }}" autocomplete="off" class="layui-input layui-form-danger">
+                        <i class="layui-icon icon">&#xe612;</i>
+                    </div>
+                    <div class="layui-form-item">
                         <input type="email" name="email" required="" lay-verify="required|email" placeholder="请输入邮箱 (用于找回密码)" value="{{ old('email') }}" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon">&#xe64c;</i>
                     </div>
