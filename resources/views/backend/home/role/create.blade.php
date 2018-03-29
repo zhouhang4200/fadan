@@ -4,11 +4,19 @@
 
 @section('css')
     <style>
-        .layui-table th, td{
-            text-align:center;
+        .layui-form input {
+            width:800px;
+        }
+        .table {
+            width:800px;
         }
         .layui-form-label {
-            width:90px;
+            width:100px;
+        }
+         .layui-form-item .layui-input-inline {
+            float: left;
+            width: 150px;
+            margin-right: 10px;
         }
     </style>
 @endsection
@@ -44,8 +52,8 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr>
-                                                    <th class="col-md-1 text-center">模块名</th>
-                                                    <th class="col-md-10 text-center">权限名</th>
+                                                    <th class="col-md-1 text-center" style="width: 1%">模块名</th>
+                                                    <th class="col-md-1 text-center">权限名</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -55,14 +63,12 @@
                                                             <input type="checkbox" name="new_module_id" lay-skin="primary" title="{{ $module->name }}" lay-filter="module" value="{{ $module->id }}">
                                                         </td>
                                                         <td>
-                                                            <div class="layui-form-item" pane="">
                                                             @forelse($module->newPermissions as $permission)
-                                                            <div class="layui-input-inline">
-                                                                <input type="checkbox" name="new_permission_ids" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
-                                                            </div>
+                                                                <div class="layui-input-inline" style="width:300px">
+                                                                    <input  type="checkbox" name="new_permission_ids" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
+                                                                </div>
                                                             @empty
                                                             @endforelse
-                                                          </div>
                                                         </td>
                                                     </tr>
                                                 @empty
