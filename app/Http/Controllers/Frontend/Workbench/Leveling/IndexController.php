@@ -160,7 +160,11 @@ class IndexController extends Controller
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
-                    $temp[$key] = htmlspecialchars($value);
+                    if (is_string($value)) {
+                        $temp[$key] = htmlspecialchars($value);
+                    } else {
+                        $temp[$key] = $value;
+                    }
                 }
                 $orderArr[] = $temp;
             }
