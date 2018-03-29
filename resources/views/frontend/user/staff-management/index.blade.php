@@ -8,10 +8,6 @@
         .layui-layer-btn{
             text-align:center !important;
         }
-        td {
-            word-wrap : break-word;
-            word-break:break-all;
-        }
     </style>
 @endsection
 
@@ -54,19 +50,18 @@
                 <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
                 <a href="{{ route('staff-management.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
             </div>
-        </div>
-                           
+        </div>                     
     </form>
 
     <div class="layui-tab-item layui-show" lay-size="sm" id="staff">
-    @include('frontend.user.staff-management.list')  
+    @include('frontend.user.staff-management.list')
         {!! $users->appends([
             'name' => $name,
             'userName' => $userName,
             'station' => $station,
         ])->render() !!}
     </div>
-    
+
 
 @endsection
 <!--START 底部-->
@@ -107,7 +102,7 @@
             form.on('submit(delete)', function (data) {
                 var id = data.elem.getAttribute('lay-data');
                 var s=window.location.search; //先截取当前url中“?”及后面的字符串
-                var page=s.getAddrVal('page'); 
+                var page=s.getAddrVal('page');
 
                 layer.confirm('确认删除吗？', {
                       btn: ['确认', '取消'] 
