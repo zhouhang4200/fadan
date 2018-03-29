@@ -92,7 +92,7 @@ class PlatformStatistic extends Command
                     ON m.creator_user_id = j.id
                     ) mm
                 LEFT JOIN 
-                    (SELECT a.no, a.creator_user_id, a.status, a.created_at,
+                    (SELECT a.no, a.creator_user_id, a.status, a.created_at,a.creator_primary_user_id,
                         SUM(CASE WHEN b.trade_subtype = 76 THEN b.fee ELSE 0 END) AS complete_payment,
                          /* 发单总支出代练费*/
                         SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment, 

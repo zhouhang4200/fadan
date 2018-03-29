@@ -75,7 +75,7 @@ class OrderStatistic extends Command
                             SUM(c.two_status_income) AS two_status_income,
                             SUM(c.poundage) AS poundage
                         FROM    
-                            (SELECT a.no, a.creator_user_id, a.status, a.creator_primary_user_id
+                            (SELECT a.no, a.creator_user_id, a.status, a.creator_primary_user_id,
                                     SUM(case when b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment,
                                     SUM(CASE WHEN b.trade_subtype IN (810, 811) THEN b.fee ELSE 0 END) AS two_status_income,
                                     SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage
