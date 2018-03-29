@@ -4,19 +4,11 @@
 
 @section('css')
     <style>
-        .layui-form input {
-            width:800px;
-        }
-        .table {
-            width:800px;
-        }
-        .layui-form-label {
-            width:100px;
-        }
-         .layui-form-item .layui-input-inline {
+       .layui-form-item .layui-input-inline {
             float: left;
-            width: 150px;
+            width: 210px;
             margin-right: 10px;
+            text-align: left;
         }
     </style>
 @endsection
@@ -53,8 +45,8 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr>
-                                                    <th class="col-md-1 text-center" style="width: 1%">模块名</th>
-                                                    <th class="col-md-1 text-center">权限名</th>
+                                                    <th class="col-md-1 text-center">模块名</th>
+                                                    <th class="col-md-10 text-center">权限名</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -66,7 +58,7 @@
                                                         <td>
                                                             <div class="layui-form-item" pane="">
                                                             @forelse($module->newPermissions as $permission)
-                                                            <div class="layui-input-inline" style="width:300px">
+                                                            <div class="layui-input-inline">
                                                                 <input type="checkbox" {{ in_array($permission->id, $role->newPermissions->pluck('id')->toArray()) ? 'checked' : '' }} name="new_permission_ids" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
                                                             </div>
                                                             @empty
