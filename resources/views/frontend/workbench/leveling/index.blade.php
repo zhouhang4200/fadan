@@ -469,6 +469,7 @@
             $('.cancel').click(function(){
                 layer.closeAll();
             });
+
             //方法级渲染
             table.render({
                 elem: '#orer-list',
