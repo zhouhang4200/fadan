@@ -220,6 +220,7 @@ class ConfigController extends Controller
 			        	return '请求接口错误!';
 			        }
 			        $allGameInfos = json_decode($res, true);
+
 	        		// 第一步获取代练妈妈的游戏id
 	        		$dailianMamaGameId = ThirdGame::where('third_id', 2)
 	        			->where('game_id', $request->game_id)

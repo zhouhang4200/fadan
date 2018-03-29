@@ -92,7 +92,7 @@ class PlatformStatistic extends Command
                     ON m.creator_user_id = j.id
                     ) mm
                 LEFT JOIN 
-                    (SELECT a.no, a.creator_user_id, a.status, a.created_at,a.creator_primary_user_id ,
+                    (SELECT a.no, a.creator_user_id, a.status, a.created_at,
                         SUM(CASE WHEN b.trade_subtype = 76 THEN b.fee ELSE 0 END) AS complete_payment,
                          /* 发单总支出代练费*/
                         SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment, 
@@ -104,7 +104,7 @@ class PlatformStatistic extends Command
                         SUM(CASE WHEN b.trade_subtype IN (810, 811) AND a.status = 19 THEN b.fee ELSE 0 END) AS revoke_income, /* 撤销总赔偿*/
                         SUM(CASE WHEN b.trade_subtype IN (810, 811) AND a.status = 21 THEN b.fee ELSE 0 END) AS arbitrate_income, /* 总裁总赔偿*/
                         SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage /* 发单总支出手续费*/
-                    FROM orders a LEFT JOIN user_amount_flows b ON a.no = b.trade_no AND b.user_id = a.creator_primary_user_id 
+                    FROM orders a LEFT JOIN user_amount_flows b ON a.no = b.trade_no AND b.user_id = a.creator_primary_user_id
                 GROUP BY trade_no) nn
                 ON mm.no = nn.no
                 WHERE mm.date >= '$yestodayDate' AND mm.date < '$todayDate' AND mm.service_id = 4
