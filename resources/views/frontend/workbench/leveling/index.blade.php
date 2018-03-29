@@ -25,7 +25,7 @@
             line-height: 40px !important;
         }
         .layui-laypage-em {
-            background-color: #1E9FFF !important;
+            background-color: #ff7a00 !important;
         }
         .layui-form-select .layui-input {
             padding-right:0 !important;
@@ -469,6 +469,7 @@
             $('.cancel').click(function(){
                 layer.closeAll();
             });
+
             //方法级渲染
             table.render({
                 elem: '#orer-list',
@@ -501,11 +502,11 @@
                     {title: '操作', fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
-                page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
-                    groups: 1,
-                    first: false,
-                    last: false
+                    groups: 10,
+                    prev: '上一页',
+                    next: '下一页'
                 }
             });
 

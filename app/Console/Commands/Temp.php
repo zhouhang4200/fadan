@@ -46,9 +46,6 @@ class Temp extends Command
     public function handle()
     {
 
-        $this->get('551521454417029015277001');
-
-
     }
 
     public function get($orderNO, $beginId = 0)
