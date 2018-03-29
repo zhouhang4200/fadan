@@ -83,9 +83,9 @@ class LoginController extends Controller
         // 检查账号是否被禁用
         $user = User::where('name', $request->name)->first();
 
-        if ($user && \Hash::check($request->password, $user->password)) {
+        if ($user && \Hash::check($request['password'], $user->password)) {
             if ($user->status == 1) {
-                 return redirect('/login')->withInput()->with('forbidden', '您的账号已被禁用!');
+                 return response()->ajax(0, '您的账号已被禁用!');
             }
         }
 

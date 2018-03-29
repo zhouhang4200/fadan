@@ -7,7 +7,7 @@
 @endsection
 
 @section('main')
-    <form class="layui-form" method="POST" action="{{ route('home-accounts.update', ['id' => $user->id]) }}">
+    <form class="layui-form" method="" action="">
         {!! csrf_field() !!}
         <input type="hidden" name="_method" value="PUT">
             <div class="layui-form-item">
@@ -40,7 +40,7 @@
             </div>
             <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">提交</button>
+                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update">提交</button>
             </div>
         </div>
     </form>
@@ -51,11 +51,7 @@
         layui.use('form', function(){
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
-            var updateFail = "{{ session('updateFail') ?: '' }}";
 
-            if(updateFail) {
-                layer.msg(updateFail, {icon: 5, time:1500});
-            }
             form.verify({
                 length: [
                     /^\S{1,30}$/
@@ -66,8 +62,16 @@
                     ,'密码必须6到12位，且不能出现空格'
                ] 
             });  
-            form.render();
+            
+            form.on('submit(update)', function (data) {
+                $.post("{{ route('home-accounts.update') }}", {password:encrypt(data.field.password), data:data.field}, function (result) {
+                    layer.msg(result.message);
+                    if (result.status > 0) {
+                        window.location.href="{{ route('home-accounts.index') }}";
+                    }
+                });
+                return false;
+            })
         });  
-
     </script>
 @endsection

@@ -72,8 +72,8 @@ class StaffManagementController extends Controller
     	$user = User::find($request->id);
     	$data = $request->except($request->data['password']);
         // 如果存在密码则修改密码
-        if ($request->data['password']) {
-            $data['password'] = bcrypt($request->data['password']);
+        if ($request->password) {
+            $data['password'] = bcrypt(clientRSADecrypt($request->password));
         }
 
     	try {
@@ -159,7 +159,7 @@ class StaffManagementController extends Controller
         // 数据
         $data = $request->data;
         $data['api_token'] = Str::random(25);
-        $data['password'] = bcrypt($request->data['password']);
+        $data['password'] = bcrypt(clientRSADecrypt($request->password));
         $data['parent_id'] = Auth::user()->getPrimaryUserId();
         $roleIds = $request->roles ?: [];
         // 添加子账号同时添加角色

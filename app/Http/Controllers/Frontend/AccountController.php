@@ -41,24 +41,18 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $user = Auth::user();
-        
-        $this->validate($request, User::updateRules($user->id), User::messages());
 
-        $newPassword = $request->password;
-
-        if ($newPassword) {
-
-            $res = $user->update(['type' => $request->type, 'leveling_type' => $request->leveling_type, 'password' => bcrypt($newPassword)]);
-
-            if (! $res) {
-
-                return back()->withInput()->with('updateError', '修改密码失败！');
-            }
+        if ($request->password) {
+            $data['password'] = bcrypt(clientRSADecrypt($request->password));
         }
-        $user->update(['type' => $request->type, 'leveling_type' => $request->leveling_type,]);
-        return redirect(route('home-accounts.index'))->with('succ', '更新成功!');
+
+        $data['type'] = $request->data['type'];
+        $data['leveling_type'] = $request->data['leveling_type'];
+        $res = $user->update($data);
+
+        return response()->ajax(1, '更新成功!');
     }
 }
