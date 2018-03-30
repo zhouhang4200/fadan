@@ -60,8 +60,9 @@
                                         <td>{{ $item->created_at }}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 1)
-                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="refund" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">退返保证金</button>
                                             <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="deduction" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">扣除保证金</button>
+                                            @elseif($item->status == 3)
+                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="refund" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">退返保证金</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -105,6 +106,7 @@
                         reload();
                     }, 'json');
                     layer.closeAll();
+                    reload();
                 });
                 return false;
             });
@@ -116,9 +118,11 @@
 
                 layer.confirm('您确认要扣除商户: ' + userId +' 的商户保证金 ' + amount + ' 元吗？', {icon: 3, title:'提示'}, function(index){
                     $.post('{{ route('finance.caution-money.deduction') }}', {id:id}, function(result){
-                        layer.msg(result.message)
+                        layer.msg(result.message);
+                        reload();
                     }, 'json');
                     layer.closeAll();
+                    reload();
                 });
                 return false;
             });

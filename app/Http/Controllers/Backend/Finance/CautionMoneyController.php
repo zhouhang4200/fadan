@@ -39,7 +39,7 @@ class CautionMoneyController extends Controller
     {
         DB::beginTransaction();
         try {
-            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
+            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 3)->first();
 
             if ($cautionMoney) {
                 Asset::handle(new Refund($cautionMoney->amount, 3, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));

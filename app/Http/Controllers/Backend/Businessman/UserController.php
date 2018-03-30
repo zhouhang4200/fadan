@@ -161,15 +161,15 @@ class UserController extends Controller
     {
         $exist = CautionMoney::where('user_id', $request->user_id)
             ->where('type', $request->type)
-            ->where('status', 1)
             ->first();
-        if ($exist) {
-            return response()->ajax(0, '该商户已经扣过保证金');
+        if ($exist->status == 1) {
+            return response()->ajax(0, '该商户已生成保证金单据，需财务进行扣款');
+        } elseif($exist->status == 3) {
+            return response()->ajax(0, '该商户已经扣除保证金');
         }
         DB::beginTransaction();
         try {
             $no = generateOrderNo();
-            Asset::handle(new Consume($request->amount, 5, $no, config('cautionmoney.type')[$request->type], $request->user_id, Auth::user()->id));
 
             CautionMoney::create([
                'no' => $no,
@@ -177,14 +177,11 @@ class UserController extends Controller
                'amount' => $request->amount,
                'type' => $request->type,
             ]);
-        } catch (CustomException $customException) {
-            DB::rollback();
-            return response()->ajax(0, '扣款失败');
         } catch (AssetException $assetException) {
             DB::rollback();
             return response()->ajax(0, $assetException->getMessage());
         }
         DB::commit();
-        return response()->ajax(1, '扣款成功');
+        return response()->ajax(1, '扣款单据已生成，等待财务完成扣款');
     }
 }
