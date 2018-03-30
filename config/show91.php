@@ -26,7 +26,7 @@ return [
 		'topic'            => 'http://tm.38sd.com:81/api/oauth/topic', // 查看订单截图
 		'addpic'           => 'http://tm.38sd.com:81/api/oauth/addpic', // 上传截图
 		'chedan'           => 'http://tm.38sd.com:81/api/oauth/chedan', // 对已发布的订单发起主动撤单，返回资金
-		'accept'           => 'http://tm.38sd.com:81/api/oauth/accept', // 订单确认验收结算
+		'accept'           => 'http://tm.38sd.com:81/api/oauth/accept',  // 订单确认验收结算
 		'messageList'      => 'http://tm.38sd.com:81/api/oauth/messageList', // 获取订单留言
 		'addevidence'      => 'http://tm.38sd.com:81/api/oauth/addevidence', // 添加申诉证据
 		'addPrice'         => 'http://tm.38sd.com:81/api/oauth/addPrice', // 订单补款
