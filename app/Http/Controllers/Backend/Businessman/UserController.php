@@ -162,9 +162,9 @@ class UserController extends Controller
         $exist = CautionMoney::where('user_id', $request->user_id)
             ->where('type', $request->type)
             ->first();
-        if ($exist && $exist->status == 1) {
+        if (isset($exist->status) && $exist->status == 1) {
             return response()->ajax(0, '该商户已生成保证金单据，需财务进行扣款');
-        } elseif($exist && $exist->status == 3) {
+        } elseif(isset($exist->status) && $exist->status == 3) {
             return response()->ajax(0, '该商户已经扣除保证金');
         }
         DB::beginTransaction();
