@@ -141,6 +141,13 @@
             </div>
 
             <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input type="text" name="remark" autocomplete="off" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
                 <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="recharge">确定</button>
             </div>
         </form>
@@ -202,7 +209,14 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">金额</label>
                 <div class="layui-input-block">
-                    <input type="text" name="amount" autocomplete="off" placeholder="请输入金额" class="layui-input" lay-verify="required|number">
+                    <input type="text" name="amount" autocomplete="off" placeholder="请输入减款金额" class="layui-input" lay-verify="required|number">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input type="text" name="remark" autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
 
@@ -232,7 +246,11 @@
             });
             form.on('submit(recharge)', function(data){
                 layer.confirm('您确认给用户ID为: ' + data.field.id  +' 的商户加款' + data.field.amount + ' 元吗？', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('frontend.user.recharge') }}', {id:data.field.id, amount:data.field.amount}, function(result){
+                    $.post('{{ route('frontend.user.recharge') }}', {
+                        user_id:data.field.id,
+                        amount:data.field.amount,
+                        remark:data.field.remark
+                    }, function (result) {
                         layer.msg(result.message)
                     }, 'json');
                     layer.closeAll();
@@ -276,7 +294,11 @@
             });
             form.on('submit(subtract-money-popup)', function(data){
                 layer.confirm('您确认要扣用户ID为: ' + data.field.id  +' 商户 <br/><span style="color:red;">' + $(data.form).find("option:selected").text()  + data.field.amount + ' </span>元吗？', {icon: 3, title:'提示'}, function(index){
-                    $.post("{{ route('frontend.user.subtract-money') }}", {user_id:data.field.id, amount:data.field.amount, type:data.field.type}, function(result){
+                    $.post("{{ route('frontend.user.subtract-money') }}", {
+                        user_id:data.field.id,
+                        amount:data.field.amount,
+                        remark:data.field.remark
+                    }, function(result){
                         layer.msg(result.message)
                     }, 'json');
                     layer.closeAll();

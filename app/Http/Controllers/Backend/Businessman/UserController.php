@@ -86,12 +86,21 @@ class UserController extends Controller
      */
     public function recharge(Request $request, UserRechargeOrderRepository $userRechargeOrderRepository)
     {
+        if (empty($request->user_id) || $request->user_id <= 0) {
+            return response()->ajax(0, '用户ID不正确');
+        }
+
+        if (empty($request->amount) || $request->amount <= 0) {
+            return response()->ajax(0, '金额只能是大于0的整数');
+        }
+
         try {
-            $userRechargeOrderRepository->store($request->amount, $request->id, '手动加款', generateOrderNo(), '', false);
-            return response()->ajax(1, '加款成功');
+            $userRechargeOrderRepository->store($request->amount, $request->user_id, $request->remark, generateOrderNo(), '', false);
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
+
+        return response()->ajax(1, '加款成功');
     }
 
     // 手动减款
@@ -106,7 +115,7 @@ class UserController extends Controller
         }
 
         try {
-            UserWithdrawOrderRepository::subtractMoney($request->user_id, $request->amount, '手动减款');
+            UserWithdrawOrderRepository::subtractMoney($request->user_id, $request->amount, $request->remark);
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
