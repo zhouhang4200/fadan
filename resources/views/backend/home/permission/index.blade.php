@@ -206,13 +206,23 @@
             // 删除
             form.on('submit(destroy)', function (data) {
                 var id=this.getAttribute('lay-id');
+                var s = window.location.search; //先截取当前url中“?”及后面的字符串
+                var page=s.getAddrVal('page');
+                
                 $.post("{{ route('home.permission.destroy') }}", {id:id}, function (result) {
                     layer.msg(result.message);
 
-                    $.get("{{ route('home.permission.index') }}", function (result) {
-                        $('#permission-list').html(result);
-                        form.render();
-                    }, 'json');
+                   if (page) {
+                        $.get("{{ route('home.permission.index') }}?page="+page, function (result) {
+                            $('#permission-list').html(result);
+                            form.render();
+                        }, 'json');
+                    } else {
+                        $.get("{{ route('home.permission.index') }}", function (result) {
+                            $('#permission-list').html(result);
+                            form.render();
+                        }, 'json');
+                    }
                 })
                 return false;
             });
