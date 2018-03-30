@@ -301,7 +301,7 @@
                                 <div class="layui-col-md6">
                                     <div class="layui-col-md3 layui-form-mid">*游戏</div>
                                     <div class="layui-col-md8">
-                                        <select name="game_id" lay-verify="required" lay-search="" @if(!in_array($detail['status'], [1, 23]))  disabled="disabled"  @endif lay-filter="game">
+                                        <select name="game_id" lay-verify="required" lay-search="" @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif lay-filter="game">
                                             @foreach($game as $key => $value)
                                                 <option value="{{ $key }}" @if($value == $detail['game_name']) selected @endif>{{ $value }}</option>
                                             @endforeach
@@ -326,7 +326,7 @@
                                             <div class="layui-col-md8">
 
                                                 <!--订单状态为 没有接单 已下架时可以编辑该属性-->
-                                                @if($item->field_type == 1 && in_array($detail['status'], [1, 23]))
+                                                @if($item->field_type == 1 && in_array($detail['status'], [1, 22]))
                                                     <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
                                                 @elseif($item->field_type == 1)
 
@@ -344,7 +344,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 23]) || $item->field_name == 'label')
+                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 22]) || $item->field_name == 'label')
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
                                                         @if(is_array($item->user_values) && count($item->user_values) > 0)
@@ -388,7 +388,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 23]) || $item->field_name == 'customer_service_remark')
+                                                @if($item->field_type == 4 && in_array($detail['status'], [1, 22]) || $item->field_name == 'customer_service_remark')
                                                     <textarea name="{{ $item->field_name }}"  class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif">{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @elseif($item->field_type == 4)
                                                     <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
