@@ -384,7 +384,7 @@
                                                     </select>
                                                 @endif
 
-                                                @if($item->field_type == 3 && in_array($detail['status'], [1, 23]))
+                                                @if($item->field_type == 3 && in_array($detail['status'], [1, 22]))
 
                                                 @endif
 
@@ -394,7 +394,7 @@
                                                     <textarea name="{{ $item->field_name }}" class="layui-textarea"  lay-verify="@if($item->field_required == 1) required @endif"  class="layui-disabled" disabled>{{ $detail[$item->field_name] ?? '' }}</textarea>
                                                 @endif
 
-                                                @if($item->field_type == 5 && in_array($detail['status'], [1, 23]) || $item->field_name == 'urgent_order')
+                                                @if($item->field_type == 5 && in_array($detail['status'], [1, 22]) || $item->field_name == 'urgent_order')
                                                     <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
                                                 @elseif($item->field_type == 5)
                                                     <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" class="layui-disabled" disabled @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
@@ -452,7 +452,7 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">接单平台：</div>
-                            <div class="layui-col-md8">{{ $detail['hatchet_man_name'] ?? ''  }}</div>
+                            <div class="layui-col-md8">{{ config('order.third')[$detail['third']] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">打手呢称：</div>
@@ -739,6 +739,8 @@
     @{{#  }) }}
 </script>
 <script id="messageDailianMama" type="text/html">
+    @{{# if (d.messageArr.hasOwnProperty("list")) {  }}
+
     @{{# if (d.messageArr.list.length > 0) { }}
     <div style="text-align: center" id="loadMoreMessage" data-id="@{{ d.messageArr.beginid}}">双击查看更多留言</div>
     @{{# }  }}
@@ -756,6 +758,7 @@
     </div>
     @{{# }); }}
 
+    @{{# }  }}
 </script>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
