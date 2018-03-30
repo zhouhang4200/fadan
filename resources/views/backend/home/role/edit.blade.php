@@ -45,7 +45,7 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr>
-                                                    <th class="col-md-1 text-center">模块名</th>
+                                                    <th class="col-md-2 text-center">模块名</th>
                                                     <th class="col-md-10 text-center">权限名</th>
                                                 </tr>
                                                 </thead>
