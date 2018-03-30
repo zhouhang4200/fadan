@@ -100,7 +100,7 @@
                 var amount  = data.elem.getAttribute('data-amount');
 
                 layer.confirm('您确认要将保证金:' +  + amount + '退给商户' + userId   + ' 吗?', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('businessman.caution-money.refund') }}', {id:id}, function(result){
+                    $.post('{{ route('finance.caution-money.refund') }}', {id:id}, function(result){
                         layer.msg(result.message);
                         reload();
                     }, 'json');
@@ -115,7 +115,7 @@
                 var amount  = data.elem.getAttribute('data-amount');
 
                 layer.confirm('您确认要扣除商户: ' + userId +' 的商户保证金 ' + amount + ' 元吗？', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('businessman.caution-money.deduction') }}', {id:id}, function(result){
+                    $.post('{{ route('finance.caution-money.deduction') }}', {id:id}, function(result){
                         layer.msg(result.message)
                     }, 'json');
                     layer.closeAll();

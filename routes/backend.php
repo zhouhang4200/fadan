@@ -143,12 +143,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 修改商户权重
             Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
         });
-        // 商户保证金
-        Route::prefix('caution-money')->group(function(){
-            Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-money.index')->middleware('permission:businessman.caution-money.index');
-            Route::post('refund', 'CautionMoneyController@refund')->name('businessman.caution-money.refund')->middleware('permission:businessman.caution-money.refund');
-            Route::post('deduction', 'CautionMoneyController@deduction')->name('businessman.caution-money.deduction')->middleware('permission:businessman.caution-money.deduction');
-        });
         // 商户承包商品配置
         Route::prefix('goods-contractor')->group(function(){
             Route::get('/', 'GoodsContractor@index')->name('businessman.goods-contractor.index');
@@ -314,6 +308,13 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse')->middleware('permission:finance.user-widthdraw-order.refuse');
         // 用户加款列表
         Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');
+
+        // 商户保证金
+        Route::prefix('caution-money')->group(function(){
+            Route::get('/', 'CautionMoneyController@index')->name('finance.caution-money.index')->middleware('permission:finance.caution-money.index');
+            Route::post('refund', 'CautionMoneyController@refund')->name('finance.caution-money.refund')->middleware('permission:finance.caution-money.refund');
+            Route::post('deduction', 'CautionMoneyController@deduction')->name('finance.caution-money.deduction')->middleware('permission:finance.caution-money.deduction');
+        });
     });
 
     Route::prefix('template')->group(function () {
