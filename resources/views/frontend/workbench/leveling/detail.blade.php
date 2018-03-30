@@ -1005,6 +1005,9 @@
                     // 加载订单截图
                     loadImage();
                     break;
+                case 2:
+                    loadHistory();
+                    break;
                 default:
                     break;
             }
