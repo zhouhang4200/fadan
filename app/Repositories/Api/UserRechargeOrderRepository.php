@@ -46,12 +46,13 @@ class UserRechargeOrderRepository
             throw new Exception($e->getMessage());
         }
 
-        // 创建提现单
+        // 创建加款单
         $recharge = new UserRechargeOrder;
         $recharge->no                      = $no;
         $recharge->foreign_order_no        = $foreignOrderNo;
         $recharge->wangwang                = $wangwang;
         $recharge->fee                     = $fee;
+        $recharge->type                    = $subtype;
         $recharge->creator_user_id         = $userId;
         $recharge->creator_primary_user_id = $primaryUserId;
         $recharge->remark                  = $remark;

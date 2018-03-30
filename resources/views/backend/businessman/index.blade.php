@@ -87,12 +87,11 @@
                                             <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
                                             <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
                                             <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
-                                            @can('frontend.user.recharge')
-                                                <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="recharge-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动加款</button>
-                                            @endcan
-                                            @can('frontend.user.recharge')
-                                                <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="caution-money-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">扣保证金</button>
-                                            @endcan
+
+                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="recharge-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动加款</button>
+                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="subtract-money-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动减款</button>
+                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="caution-money-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">扣保证金</button>
+
                                         </td>
                                     </tr>
                                 @empty
@@ -181,6 +180,37 @@
             </div>
         </form>
     </div>
+
+    <!-- 减款弹窗 -->
+    <div id="subtract-money-popup" style="display: none;padding: 20px">
+        <form class="layui-form layui-form-pane" action="">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="id" autocomplete="off" class="layui-input layui-disabled" readonly value="">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">商户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" autocomplete="off" class="layui-input layui-disabled" readonly value="">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">金额</label>
+                <div class="layui-input-block">
+                    <input type="text" name="amount" autocomplete="off" placeholder="请输入金额" class="layui-input" lay-verify="required|number">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="subtract-money-popup">确定</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('js')
@@ -225,6 +255,28 @@
             form.on('submit(caution-money-save)', function(data){
                 layer.confirm('您确认要扣用户ID为: ' + data.field.id  +' 商户 <br/><span style="color:red;">' + $(data.form).find("option:selected").text()  + data.field.amount + ' </span>元吗？', {icon: 3, title:'提示'}, function(index){
                     $.post('{{ route('businessman.caution-money') }}', {user_id:data.field.id, amount:data.field.amount, type:data.field.type}, function(result){
+                        layer.msg(result.message)
+                    }, 'json');
+                    layer.closeAll();
+                });
+                return false;
+            });
+
+            // 手动减款
+            form.on('submit(subtract-money-button)', function(data) {
+                $('input[name=id]').val(data.elem.getAttribute('data-id'));
+                $('input[name=name]').val(data.elem.getAttribute('data-name'));
+                layer.open({
+                    type: 1,
+                    shade: 0.2,
+                    title: '手动减款',
+                    content: $('#subtract-money-popup')
+                });
+                return false;
+            });
+            form.on('submit(subtract-money-popup)', function(data){
+                layer.confirm('您确认要扣用户ID为: ' + data.field.id  +' 商户 <br/><span style="color:red;">' + $(data.form).find("option:selected").text()  + data.field.amount + ' </span>元吗？', {icon: 3, title:'提示'}, function(index){
+                    $.post("{{ route('frontend.user.subtract-money') }}", {user_id:data.field.id, amount:data.field.amount, type:data.field.type}, function(result){
                         layer.msg(result.message)
                     }, 'json');
                     layer.closeAll();

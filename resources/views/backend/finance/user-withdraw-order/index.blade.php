@@ -13,17 +13,25 @@
                 <div class="layui-tab-item layui-show">
                     <form id="search-flow" action="">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" class="form-control" id="time-start" name="time_start" value="{{ $timeStart }}">
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" class="form-control" id="time-end" name="time_end" value="{{ $timeEnd }}">
                                 </div>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <select class="form-control" name="type">
+                                    <option value="">所有类型</option>
+                                    @foreach (config('withdraw.type') as $key => $value)
+                                        <option value="{{ $key }}" {{ $key == $type ? 'selected' : '' }}>{{ $key }}. {{ $value }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-1">
                                 <select class="form-control" name="status">
@@ -61,6 +69,7 @@
                             <th>开户行</th>
                             <th>卡号</th>
                             <th>提现金额</th>
+                            <th>类型</th>
                             <th>状态</th>
                             <th>管理员备注</th>
                             <th>创建时间</th>
@@ -80,6 +89,7 @@
                                     <td>{{ $data->user->realNameIdent->bank_name ?? '' }}</td>
                                     <td>{{ $data->user->realNameIdent->bank_number ?? '' }}</td>
                                     <td>{{ $data->fee + 0 }}</td>
+                                    <td>{{ config('withdraw.type')[$data->type] }}</td>
                                     <td>{{ config('withdraw.status')[$data->status] }}</td>
                                     <td>{{ $data->admin_remark }}</td>
                                     <td>{{ $data->created_at}}</td>
@@ -98,6 +108,7 @@
                     </table>
                     {{ $dataList->appends([
                         'user_id'       => $userId,
+                        'type'        => $type,
                         'status'        => $status,
                         'no'            => $no,
                         'time_start'    => $timeStart,

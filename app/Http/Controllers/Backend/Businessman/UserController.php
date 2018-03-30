@@ -9,6 +9,7 @@ use App\Models\CautionMoney;
 use App\Models\RealNameIdent;
 use App\Models\UserTransferAccountInfo;
 use App\Repositories\Api\UserRechargeOrderRepository;
+use App\Repositories\Backend\UserWithdrawOrderRepository;
 use Illuminate\Http\Request;
 
 use Asset, Auth, View, DB;
@@ -91,6 +92,26 @@ class UserController extends Controller
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
+    }
+
+    // 手动减款
+    public function subtractMoney(Request $request)
+    {
+        if (empty($request->user_id) || $request->user_id <= 0) {
+            return response()->ajax(0, '用户ID不正确');
+        }
+
+        if (empty($request->amount) || $request->amount <= 0) {
+            return response()->ajax(0, '金额只能是大于0的整数');
+        }
+
+        try {
+            UserWithdrawOrderRepository::subtractMoney($request->user_id, $request->amount, '手动减款');
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+
+        return response()->ajax(1, '减款成功');
     }
 
     /**

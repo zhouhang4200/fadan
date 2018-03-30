@@ -122,6 +122,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('edit', 'UserController@edit')->name('frontend.user.edit')->middleware('permission:frontend.user.edit');
         // 手动加款
         Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
+        // 手动减款
+        Route::post('subtract-money', 'UserController@subtractMoney')->name('frontend.user.subtract-money')->middleware('permission:frontend.user.subtract-money');
         // 扣保证金
         Route::post('caution-money', 'UserController@cautionMoney')->name('businessman.caution-money')->middleware('permission:businessman.caution-money');
         // 商户资料

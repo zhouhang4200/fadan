@@ -8,7 +8,7 @@ class UserRechargeOrderRepository
 {
     public static function getList($timeStart, $timeEnd, $userId, $no, $type, $pageSize = 20)
     {
-        $dataList = UserRechargeOrder::orderBy('creator_primary_user_id')->orderBy('id')
+        $dataList = UserRechargeOrder::orderBy('id', 'desc')
             ->when(!empty($userId), function ($query) use ($userId) {
                 return $query->where('creator_primary_user_id', $userId);
             })
