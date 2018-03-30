@@ -32,7 +32,7 @@
             </div>
             <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">保存</button>
+                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update">保存</button>
             </div>
         </div>
     </form>
@@ -66,7 +66,15 @@
           
           //但是，如果你的HTML是动态生成的，自动渲染就会失效
           //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
-          form.render();
+            form.on('submit(update)', function (data) {
+                $.post("{{ route('home-accounts.update') }}", {password:encrypt(data.field.password), data:data.field}, function (result) {
+                    layer.msg(result.message);
+                    if (result.status > 0) {
+                        window.location.href="{{ route('home-accounts.index') }}";
+                    }
+                });
+                return false;
+            })
 
         });  
 
