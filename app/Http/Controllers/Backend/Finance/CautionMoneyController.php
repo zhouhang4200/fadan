@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Backend\Businessman;
+namespace App\Http\Controllers\Backend\Finance;
 
 use App\Exceptions\CustomException;
 use App\Extensions\Asset\Refund;
@@ -28,7 +28,7 @@ class CautionMoneyController extends Controller
 
         $cautionMoneys = CautionMoney::filter(compact('userId'))->paginate(30);
 
-        return view('backend.businessman.caution-money.index', compact('cautionMoneys', 'userId'));
+        return view('backend.finance.caution-money.index', compact('cautionMoneys', 'userId'));
     }
 
     /**
@@ -39,14 +39,14 @@ class CautionMoneyController extends Controller
     {
         DB::beginTransaction();
         try {
-            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
+            $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 3)->first();
 
             if ($cautionMoney) {
                 Asset::handle(new Refund($cautionMoney->amount, 3, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
                 $cautionMoney->status = 2;
                 $cautionMoney->save();
             } else {
-                return response()->ajax(0, '单据已退款');
+                return response()->ajax(0, '单据不可操作');
             }
         } catch (AssetException $assetException) {
             DB::rollback();
@@ -74,7 +74,7 @@ class CautionMoneyController extends Controller
                 $cautionMoney->status = 3;
                 $cautionMoney->save();
             } else {
-                return response()->ajax(0, '单据已退款');
+                return response()->ajax(0, '单据不可操作');
             }
         } catch (AssetException $assetException) {
             DB::rollback();

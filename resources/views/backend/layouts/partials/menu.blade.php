@@ -98,11 +98,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     </a>
                                 </li>
 
-                                <li>
-                                    <a href="{{ route('businessman.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
-                                        商户保证金列表
-                                    </a>
-                                </li>
+
 
                             <li>
                                 <a href="{{ route('businessman.goods-contractor.index') }}" @if($currentRouteName == 'businessman.goods-contractor.index') class="active" @endif>
@@ -196,21 +192,21 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
                             <li>
                                 <a href="{{ route('finance.user-asset') }}" @if($currentRouteName == 'finance.user-asset') class="active" @endif>
-                                    用户资产列表
+                                    商户资产列表
                                 </a>
                             </li>
 
 
                             <li>
                                 <a href="{{ route('finance.user-asset-daily') }}" @if($currentRouteName == 'finance.user-asset-daily') class="active" @endif>
-                                    用户资产日报
+                                    商户资产日报
                                 </a>
                             </li>
 
 
                             <li>
                                 <a href="{{ route('finance.user-amount-flow') }}" @if($currentRouteName == 'finance.user-amount-flow') class="active" @endif>
-                                    用户资金流水
+                                    商户资金流水
                                 </a>
                             </li>
 
@@ -227,6 +223,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
 
+                            <li>
+                                <a href="{{ route('finance.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
+                                    商户保证金列表
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
