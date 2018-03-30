@@ -40,13 +40,13 @@ class UserWithdrawOrder extends Model
 
 
     // 提现完成
-    public function complete($remark)
+    public function complete($remark, $type = 1)
     {
         DB::beginTransaction();
 
         // 提现
         try {
-            Asset::handle(new Withdraw($this->fee, Withdraw::TRADE_SUBTYPE_MANUAL, $this->no, '提现成功', $this->creator_primary_user_id, Auth::user()->id));
+            Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, Auth::user()->id));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
