@@ -45,6 +45,7 @@
                                 <div class="form-group col-xs-1">
                                     <select name="third" lay-filter="">                
                                         <option value="1" selected>91平台</option>
+                                        <option value="2" selected>代练妈妈平台</option>
                                     </select>
                                 </div>
                                 <label class="layui-form-label">游戏名称</label>

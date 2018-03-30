@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -54,8 +55,8 @@ class RegisterController extends Controller
             'qq' => 'required',
             'username' => 'required',
             'name' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:6',
         ]);
     }
 
@@ -73,7 +74,7 @@ class RegisterController extends Controller
             'qq' => $data['qq'],
             'username' => $data['username'],
             'phone' => $data['phone'],
-            'password' => bcrypt($data['password']),
+            'password' => bcrypt(clientRSADecrypt($data['password'])),
             'api_token' => str_random(60),
         ]);
     }
@@ -99,4 +100,33 @@ class RegisterController extends Controller
     {
 
     }
+
+    /* Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return response()->ajax(0, $validator->errors()->all()[0]);
+        }
+
+        // 判断密码二次匹配
+        if (clientRSADecrypt($request->password_confirmation) != clientRSADecrypt($request->password)) {
+            return response()->ajax(0, '两次密码不一致!');
+        }
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return response()->ajax(1, '注册成功!');
+
+        // return $this->registered($request, $user)
+        //                 ?: redirect($this->redirectPath());
+    }
+
 }

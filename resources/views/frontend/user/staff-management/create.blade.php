@@ -120,7 +120,11 @@
                     roles.push($(this).val());
                 });
 
-                $.post("{{ route('staff-management.store') }}", {roles:roles, data:data.field}, function (result) {
+                $.post("{{ route('staff-management.store') }}", {
+                    roles:roles,
+                    data:data.field,
+                    password:encrypt(data.field.password)
+                }, function (result) {
                     layer.msg(result.message);
                     if (result.status > 0) {
                         window.location.href="{{ route('staff-management.index') }}";

@@ -12,7 +12,7 @@
 
 @section('content')
 
-    <form method="POST" action="{{ route('register') }}"  class="layui-form">
+    <form method="" action=""  class="layui-form">
     {!! csrf_field() !!}
         <div class="header">
             <div class="content">
@@ -57,7 +57,7 @@
                         {!! Geetest::render() !!}
                     </div>
                     <div class="layui-form-item">
-                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" style="width: 100%">注 册</button>
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="register" style="width: 100%">注 册</button>
                     </div>
                     <div class="register-and-forget-password">
                         <a class="register" target="_blank" href="{{ route('login') }}">登录</a>
@@ -73,27 +73,34 @@
 
 @section('js')
     <script>
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
+
         layui.use(['form', 'layedit', 'laydate'], function(){
             var form = layui.form
             ,layer = layui.layer;
-          
-            var GeetestError = "{{ $errors->count() > 0  && array_key_exists('geetest_challenge', $errors->toArray()) ? '请正确完成验证码操作!' : '' }}";
-            var errorName = "{{ $errors->count() > 0 && array_key_exists('name', $errors->toArray()) && $errors->toArray()['name'] ? '用户名已经存在!' : '' }}";
-            var errorPassword = "{{ $errors->count() > 0 && array_key_exists('password', $errors->toArray()) && $errors->toArray()['password'] ? '请按要求填写密码!' : '' }}";
-            var loginError = "{{ session('loginError') ? '异地登录异常！' : '' }}";
-            var errorEmail = "{{ $errors->count() > 0 && array_key_exists('email', $errors->toArray()) && $errors->toArray()['email'] ? '邮箱已经存在!' : '' }}";
 
-            if (GeetestError) {
-                layer.msg(GeetestError, {icon: 5, time: 1500});
-            } else if (errorName) {
-                layer.msg(errorName, {icon: 5, time: 1500});
-            } else if (errorPassword) {
-                layer.msg(errorPassword, {icon: 5, time: 1500});
-            } else if (errorEmail) {
-                layer.msg(errorEmail, {icon: 5, time: 1500});
-            } else if (loginError) {
-                layer.msg(loginError, {icon: 5, time: 1500});
-            }
+            form.on('submit(register)', function (data) {
+                $.post('{{ route('register') }}', {
+                    name:data.field.name,
+                    password:encrypt(data.field.password),
+                    password_confirmation:encrypt(data.field.password_confirmation),
+                    email:data.field.email,
+                    username:data.field.username,
+                    qq:data.field.qq,
+                    phone:data.field.phone,
+                    geetest_challenge:data.field.geetest_challenge,
+                    geetest_seccode:data.field.geetest_seccode,
+                    geetest_validate:data.field.geetest_validate
+                }, function (result) {
+                    if (result.status == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                    return false;
+                });
+                return false;
+            });
         });
     </script>
 @endsection

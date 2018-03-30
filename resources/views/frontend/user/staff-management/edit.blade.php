@@ -107,7 +107,7 @@
                     roles.push($(this).val());
                 });
 
-                $.post("{{ route('staff-management.update') }}", {id:id,roles:roles,data:data.field}, function (result) {
+                $.post("{{ route('staff-management.update') }}", {id:id,roles:roles,data:data.field,password:encrypt(data.field.password)}, function (result) {
                     layer.msg(result.message);
                     window.location.href="{{ route('staff-management.index') }}";
                 });

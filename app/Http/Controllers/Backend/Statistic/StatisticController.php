@@ -38,7 +38,7 @@ class StatisticController extends Controller
 
     	$users = DB::select("
     		SELECT DISTINCT b.name as username, a.user_id
-	    	FROM platform_order_statistics a 
+	    	FROM platform_statistics a 
 	    	LEFT JOIN users b 
 	    	ON a.user_id = b.id
     	");
