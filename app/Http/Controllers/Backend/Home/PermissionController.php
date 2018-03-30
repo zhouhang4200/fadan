@@ -70,6 +70,14 @@ class PermissionController extends Controller
     public function destroy(Request $request)
     {
         $permission = NewPermission::find($request->id);
+        // 获取该权限相关的所有角色,再找角色对应的所有用户
+        $userIds = $permission->newRoles->flatMap(function ($role) {
+            return $role->newUsers->pluck('id');
+        })->flatten()->toArray();
+
+        foreach ($userIds as $userId) {
+            Cache::forget('newPermissions:user:'.$userId);
+        }
         // 删除角色下面的权限
         $permission->newRoles()->detach();
         // 删除用户-权限下面的权限
