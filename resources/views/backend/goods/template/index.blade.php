@@ -205,10 +205,10 @@
             form.on('submit(copy)', function (data) {
                 layer.confirm('你确定要复制这个模版吗？', function (index) {
                     $.post('{{ route('goods.template.copy-template') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
-
+                        layer.msg(result.message);
                     }, 'json');
                 });
-                layer.cloak(index);
+                layer.close(index);
                 return false;
             });
 
