@@ -121,7 +121,7 @@ class RoleController extends Controller
                 }, $permissionIds);
 
                 $allUserPermissionIds = array_unique(array_merge($exceptCurrentRolePermissionIds, array_values($permissionIds)));
-                // 从小到达排序,z主账号所有的权限
+                // 从小到大排序,主账号所有的权限
                 sort($allUserPermissionIds);
                 // 清空子账号下面的缓存
                 foreach ($user->children as $child) {

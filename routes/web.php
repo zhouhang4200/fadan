@@ -84,7 +84,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
     // 代练员工管理
     Route::prefix('staff-management')->namespace('Account')->group(function () {
-        Route::get('index', 'StaffManagementController@index')->name('staff-management.index'); // 员工列表
+        Route::get('index', 'StaffManagementController@index')->name('staff-management.index')->middleware('new.permission:staff-management.index'); // 员工列表
         Route::post('forbidden', 'StaffManagementController@forbidden')->name('staff-management.forbidden'); // 子账号禁用
         Route::get('edit/{id}', 'StaffManagementController@edit')->name('staff-management.edit')->where('id', '[0-9]+'); // 员工编辑
         Route::post('update', 'StaffManagementController@update')->name('staff-management.update'); // 提交员工编辑
