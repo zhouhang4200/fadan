@@ -532,6 +532,7 @@
             form.on('submit(search)', function (data) {
                 table.reload('order', {
                     where: {
+                        page: 1,
                         status: status,
                         no: data.field.no,
                         source_order_no: data.field.source_order_no,
