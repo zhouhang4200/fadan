@@ -54,6 +54,7 @@ class OrderRepository
             'price',
             'amount',
             'created_at',
+            'service_id',
         ])
             ->filter($filters)
             ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder', 'service']);
