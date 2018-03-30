@@ -41,7 +41,7 @@
                                 <thead>
                                 <tr>
                                     <th>商户ID</th>
-                                    <th>商户别名</th>
+                                    <th>订单号</th>
                                     <th>保证金类型</th>
                                     <th>保证金</th>
                                     <th>状态</th>
@@ -53,7 +53,7 @@
                                 @forelse($cautionMoneys as $item)
                                     <tr>
                                         <td>{{ $item->user_id }}</td>
-                                        <td>{{ optional($item->user)->nickname }}</td>
+                                        <td>{{ $item->no }}</td>
                                         <td>{{ config('cautionmoney.type')[$item->type] }}</td>
                                         <td>{{ $item->amount }}</td>
                                         <td>{{ config('cautionmoney.status')[$item->status] }}</td>

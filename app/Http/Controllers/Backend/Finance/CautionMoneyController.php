@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Finance;
 
 use App\Exceptions\CustomException;
+use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Refund;
 use Asset, DB, Auth;
 use App\Exceptions\AssetException;
@@ -42,7 +43,7 @@ class CautionMoneyController extends Controller
             $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 3)->first();
 
             if ($cautionMoney) {
-                Asset::handle(new Refund($cautionMoney->amount, 3, $cautionMoney->no, config('cautionmoney.type')[$cautionMoney->type], $cautionMoney->user_id, Auth::user()->id));
+                Asset::handle(new Refund($cautionMoney->amount, 3, $cautionMoney->no, '代充扣除保证金退款', $cautionMoney->user_id, Auth::user()->id));
                 $cautionMoney->status = 2;
                 $cautionMoney->save();
             } else {
@@ -71,6 +72,8 @@ class CautionMoneyController extends Controller
             $cautionMoney = CautionMoney::where('id', $request->id)->where('status', 1)->first();
 
             if ($cautionMoney) {
+                Asset::handle(new Consume($cautionMoney->amount, 5, $cautionMoney->no, '代充扣除保证金扣款', $cautionMoney->user_id, Auth::user()->id));
+
                 $cautionMoney->status = 3;
                 $cautionMoney->save();
             } else {
@@ -84,6 +87,6 @@ class CautionMoneyController extends Controller
             return response()->ajax(0, $customException->getMessage());
         }
         DB::commit();
-        return response()->ajax(1, '退款成功');
+        return response()->ajax(1, '扣除成功');
     }
 }
