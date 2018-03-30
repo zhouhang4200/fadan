@@ -5,7 +5,7 @@
     	<li class="{{ Route::currentRouteName() == 'data.index' ? 'current' : '' }}"><a href="{{ route('data.index') }}">经营数据</a><div class="arrow"></div></li>
     @endif
 
-    @if(Auth::user()->could('home-punishes.index'))
+    @if(Auth::user()->could('home-punishes.index') && Auth::user()->parent_id == 0)
         <li class="{{ Route::currentRouteName() == 'home-punishes.index' ? 'current' : '' }}"><a href="{{ route('home-punishes.index') }}">奖惩记录</a><div class="arrow"></div></li>
     @endif
 </ul>

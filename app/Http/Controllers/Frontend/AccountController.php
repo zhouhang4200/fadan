@@ -45,7 +45,7 @@ class AccountController extends Controller
     {
         $user = Auth::user();
 
-        if ($request->password) {
+        if (clientRSADecrypt($request->password)) {
             $data['password'] = bcrypt(clientRSADecrypt($request->password));
         }
 

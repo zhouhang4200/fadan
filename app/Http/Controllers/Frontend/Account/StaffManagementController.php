@@ -70,12 +70,14 @@ class StaffManagementController extends Controller
     	DB::beginTransaction();
         // 子账号
     	$user = User::find($request->id);
-    	$data = $request->except($request->data['password']);
+        $data = $request->data;
         // 如果存在密码则修改密码
-        if ($request->password) {
+        if (clientRSADecrypt($request->password)) {
             $data['password'] = bcrypt(clientRSADecrypt($request->password));
+        } else {
+            unset($data['password']);
         }
-
+        
     	try {
             // 关联到管理员-角色表
             $roleIds = $request->roles ?? [];

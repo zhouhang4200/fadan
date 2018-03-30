@@ -84,7 +84,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
     // 代练员工管理
     Route::prefix('staff-management')->namespace('Account')->group(function () {
-        Route::get('index', 'StaffManagementController@index')->name('staff-management.index'); // 员工列表
+        Route::get('index', 'StaffManagementController@index')->name('staff-management.index')->middleware('new.permission:staff-management.index'); // 员工列表
         Route::post('forbidden', 'StaffManagementController@forbidden')->name('staff-management.forbidden'); // 子账号禁用
         Route::get('edit/{id}', 'StaffManagementController@edit')->name('staff-management.edit')->where('id', '[0-9]+'); // 员工编辑
         Route::post('update', 'StaffManagementController@update')->name('staff-management.update'); // 提交员工编辑
@@ -96,11 +96,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 岗位管理
     Route::prefix('station')->namespace('Account')->group(function () {
         Route::get('/', 'StationController@index')->name('station.index')->middleware('new.permission:station.index');
-        Route::get('create', 'StationController@create')->name('station.create')->middleware('new.permission:station.create');
-        Route::post('/', 'StationController@store')->name('station.store')->middleware('new.permission:station.store');
-        Route::get('edit/{id}', 'StationController@edit')->name('station.edit')->middleware('new.permission:station.edit');
-        Route::post('update', 'StationController@update')->name('station.update')->middleware('new.permission:station.update');
-        Route::post('destroy', 'StationController@destroy')->name('station.destroy')->middleware('new.permission:station.destroy');
+        Route::get('create', 'StationController@create')->name('station.create');
+        Route::post('/', 'StationController@store')->name('station.store');
+        Route::get('edit/{id}', 'StationController@edit')->name('station.edit');
+        Route::post('update', 'StationController@update')->name('station.update');
+        Route::post('destroy', 'StationController@destroy')->name('station.destroy');
     });
     // 员工数据统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
@@ -118,15 +118,15 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 商品列表
         Route::get('/', 'GoodsController@index')->name('frontend.goods.index')->middleware('new.permission:frontend.goods.index');
         // 添加视图
-        Route::get('create', 'GoodsController@create')->name('frontend.goods.create')->middleware('new.permission:frontend.goods.create');
+        Route::get('create', 'GoodsController@create')->name('frontend.goods.create');
         // 保存商品
-        Route::post('store', 'GoodsController@store')->name('frontend.goods.store')->middleware('new.permission:frontend.goods.store');
+        Route::post('store', 'GoodsController@store')->name('frontend.goods.store');
         // 编辑视图
-        Route::get('edit/{id}', 'GoodsController@edit')->name('frontend.goods.edit')->middleware('new.permission:frontend.goods.edit');
+        Route::get('edit/{id}', 'GoodsController@edit')->name('frontend.goods.edit');
         // 修改商品
-        Route::post('update', 'GoodsController@update')->name('frontend.goods.update')->middleware('new.permission:frontend.goods.update');
+        Route::post('update', 'GoodsController@update')->name('frontend.goods.update');
         // 删除商品
-        Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy')->middleware('new.permission:frontend.goods.destroy');
+        Route::post('destroy', 'GoodsController@destroy')->name('frontend.goods.destroy');
     });
 
     // 订单
@@ -156,39 +156,39 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 设置 - 发单设置
         Route::prefix('sending-control')->group(function () {
             Route::get('/', 'SendingController@index')->name('frontend.setting.sending-control.index')->middleware('new.permission:frontend.setting.sending-control.index');
-            Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change')->middleware('new.permission:frontend.setting.sending-control.change');
+            Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change');
         });
         // 设置-发单辅助设置
         Route::prefix('sending-assist')->group(function () {
             // 代练要求模板
             Route::prefix('require')->group(function () {
                 Route::get('/', 'SendingAssistController@require')->name('frontend.setting.sending-assist.require')->middleware('new.permission:frontend.setting.sending-assist.require');
-                Route::get('create', 'SendingAssistController@requireCreate')->name('frontend.setting.sending-assist.require.create')->middleware('new.permission:frontend.setting.sending-assist.require.create');
-                Route::post('store', 'SendingAssistController@requireStore')->name('frontend.setting.sending-assist.require.store')->middleware('new.permission:frontend.setting.sending-assist.require.store');
-                Route::get('edit/{id}', 'SendingAssistController@requireEdit')->name('frontend.setting.sending-assist.require.edit')->middleware('new.permission:frontend.setting.sending-assist.require.edit');
-                Route::post('update', 'SendingAssistController@requireUpdate')->name('frontend.setting.sending-assist.require.update')->middleware('new.permission:frontend.setting.sending-assist.require.update');
-                Route::post('destroy', 'SendingAssistController@requireDestroy')->name('frontend.setting.sending-assist.require.destroy')->middleware('new.permission:frontend.setting.sending-assist.require.destroy');
-                Route::post('set', 'SendingAssistController@requireSet')->name('frontend.setting.sending-assist.require.set')->middleware('new.permission:frontend.setting.sending-assist.require.set');
+                Route::get('create', 'SendingAssistController@requireCreate')->name('frontend.setting.sending-assist.require.create');
+                Route::post('store', 'SendingAssistController@requireStore')->name('frontend.setting.sending-assist.require.store');
+                Route::get('edit/{id}', 'SendingAssistController@requireEdit')->name('frontend.setting.sending-assist.require.edit');
+                Route::post('update', 'SendingAssistController@requireUpdate')->name('frontend.setting.sending-assist.require.update');
+                Route::post('destroy', 'SendingAssistController@requireDestroy')->name('frontend.setting.sending-assist.require.destroy');
+                Route::post('set', 'SendingAssistController@requireSet')->name('frontend.setting.sending-assist.require.set');
             });
             // 自动加价配置
             Route::prefix('auto-markup')->group(function () {
                 Route::get('', 'SendingAssistController@autoMarkup')->name('frontend.setting.sending-assist.auto-markup')->middleware('new.permission:frontend.setting.sending-assist.auto-markup');
-                Route::get('create', 'SendingAssistController@autoMarkupCreate')->name('frontend.setting.sending-assist.auto-markup.create')->middleware('new.permission:frontend.setting.sending-assist.auto-markup.create');
-                Route::post('store', 'SendingAssistController@autoMarkupStore')->name('frontend.setting.sending-assist.auto-markup.store')->middleware('new.permission:frontend.setting.sending-assist.auto-markup.store');
-                Route::get('edit/{id}', 'SendingAssistController@autoMarkupEdit')->name('frontend.setting.sending-assist.auto-markup.edit')->middleware('new.permission:frontend.setting.sending-assist.auto-markup.edit');
-                Route::post('update', 'SendingAssistController@autoMarkupUpdate')->name('frontend.setting.sending-assist.auto-markup.update')->middleware('new.permission:frontend.setting.sending-assist.auto-markup.update');
-                Route::post('destroy', 'SendingAssistController@autoMarkupDestroy')->name('frontend.setting.sending-assist.auto-markup.destroy')->middleware('new.permission:frontend.setting.sending-assist.auto-markup.destroy');
+                Route::get('create', 'SendingAssistController@autoMarkupCreate')->name('frontend.setting.sending-assist.auto-markup.create');
+                Route::post('store', 'SendingAssistController@autoMarkupStore')->name('frontend.setting.sending-assist.auto-markup.store');
+                Route::get('edit/{id}', 'SendingAssistController@autoMarkupEdit')->name('frontend.setting.sending-assist.auto-markup.edit');
+                Route::post('update', 'SendingAssistController@autoMarkupUpdate')->name('frontend.setting.sending-assist.auto-markup.update');
+                Route::post('destroy', 'SendingAssistController@autoMarkupDestroy')->name('frontend.setting.sending-assist.auto-markup.destroy');
             });
         });
         // api 风控设置
         Route::prefix('api-risk-management')->group(function () {
             Route::get('/', 'ApiRiskManagementController@index')->name('frontend.setting.api-risk-management.index')->middleware('new.permission:frontend.setting.api-risk-management.index');
-            Route::post('set', 'ApiRiskManagementController@set')->name('frontend.setting.api-risk-management.set')->middleware('new.permission:frontend.setting.api-risk-management.set');
+            Route::post('set', 'ApiRiskManagementController@set')->name('frontend.setting.api-risk-management.set');
         });
         // 皮肤交易设置
         Route::prefix('skin')->group(function () {
             Route::get('/', 'SkinController@index')->name('frontend.setting.skin.index')->middleware('new.permission:frontend.setting.skin.index');
-            Route::post('set', 'SkinController@set')->name('frontend.setting.skin.set')->middleware('new.permission:frontend.setting.skin.set');
+            Route::post('set', 'SkinController@set')->name('frontend.setting.skin.set');
         });
         // 自动抓取订单配置
         Route::prefix('automatically-grab')->group(function (){
@@ -208,7 +208,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 店铺抓取订单授权
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('new.permission:frontend.setting.tb-auth.index');
-            Route::get('store', 'TbAuthController@store')->name('frontend.setting.tb-auth.store')->middleware('new.permission:frontend.setting.tb-auth.store');
+            Route::get('store', 'TbAuthController@store')->name('frontend.setting.tb-auth.store');
         });
     });
 
@@ -220,14 +220,14 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	    // 资金流水
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow')->middleware('new.permission:frontend.finance.amount-flow');
 	    // 资金流水导出
-	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export')->middleware('new.permission:frontend.finance.amount-flow.export');
+	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
 
 	    // 资产日报
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily')->middleware('new.permission:frontend.finance.asset-daily');
 
-        // 我的提现
-        Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store')->middleware('new.permission:frontend.finance.withdraw-order.store');
-		// 财务提现
+        // 提现按钮
+        Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store');
+		// 我的提现
         Route::get('withdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.withdraw-order')->middleware('new.permission:frontend.finance.withdraw-order');
 	});
 
