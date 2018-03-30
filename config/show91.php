@@ -37,3 +37,4 @@ return [
 		'getPlays'    	   => 'http://tm.38sd.com:81/api/oauth/getPlays', // 增加代练时间，商家用
 	],
 ];
+
