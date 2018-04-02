@@ -95,7 +95,7 @@ class SteamOrderController extends Controller
 					} else {
 						$debit_money = bcmul(0.01, $request['consume_money'], 4);
 					}
-					Asset::handle(new Consume($debit_money, 6, $request['order_no'], 'Steam手续费', $userId));
+					Asset::handle(new Consume($debit_money, 5, $request['order_no'], 'Steam手续费', $userId));
                 }
             }
             DB::commit();
