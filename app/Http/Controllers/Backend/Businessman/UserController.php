@@ -60,6 +60,7 @@ class UserController extends Controller
         try {
             User::where('id', $request->id)->update([
                 'type' => $request->type,
+                'leveling_type' => $request->leveling_type,
                 'nickname' => $request->nickname,
                 'remark' => $request->remark,
             ]);
