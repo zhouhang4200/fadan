@@ -33,7 +33,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use Excel;
+use Redis, Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
@@ -244,11 +244,15 @@ class IndexController extends Controller
                 $orderData['customer_service_name'] = User::where('id', $userId)->value('username');
             }
 
+            
             try {
-                $orderNo = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
+                $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
+
+                // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
+                $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
 
                 // 提示哪些平台下单成功，哪些平台下单失败
-                $orderDetails = OrderDetail::where('order_no', $orderNo)
+                $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 

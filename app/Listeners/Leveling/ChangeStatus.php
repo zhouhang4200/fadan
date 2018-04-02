@@ -87,31 +87,37 @@ class ChangeStatus
             case 4: // 未定的代练平台
                 return true;
                 break;
-            default: // 如果此单还没被接单，那么third值为空，此时同时调用所有平台发送修改订单接口
-                // 向91发送
-                call_user_func_array([Show91::class, $name], [$order, $bool]);
+            default: 
+                // 如果此单还没被接单，那么third值为空，此时同时调用所有平台发送修改订单接口
+                if ($orderDetails['show91_order_no']) {
+                    // 向91发送
+                    call_user_func_array([Show91::class, $name], [$order, $bool]);
+                }
+
                 // 向代练妈妈发送修改订单, 根据$name-》91的方法名，转换为代练妈妈的方法名，代练妈妈的方法修改订单方法
                 // 只有一个，所以需要传递第二个参数，操作序号$operate
-                switch ($name) {
-                    case 'addPrice':
-                        $operate = 22002; // 补款
-                        $name = 'operationOrder';
-                        call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
-                        break;
-                    case 'editOrderAccPwd':
-                        $operate = 22003; // 修改账号密码
-                        $name = 'operationOrder';
-                        call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
-                        break;
-                    case 'addLimitTime':
-                        $operate = 22001; // 增加代练时间
-                        $name = 'operationOrder';
-                        call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
-                        break;
-                    case 'addOrder':
-                        $name = 'releaseOrder'; // 修改订单
-                        call_user_func_array([DailianMama::class, $name], [$order, true]);
-                        break;
+                if ($orderDetails['dailianmama_order_no']) {
+                    switch ($name) {
+                        case 'addPrice':
+                            $operate = 22002; // 补款
+                            $name = 'operationOrder';
+                            call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
+                            break;
+                        case 'editOrderAccPwd':
+                            $operate = 22003; // 修改账号密码
+                            $name = 'operationOrder';
+                            call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
+                            break;
+                        case 'addLimitTime':
+                            $operate = 22001; // 增加代练时间
+                            $name = 'operationOrder';
+                            call_user_func_array([DailianMama::class, $name], [$order, $operate, true]);
+                            break;
+                        case 'addOrder':
+                            $name = 'releaseOrder'; // 修改订单
+                            call_user_func_array([DailianMama::class, $name], [$order, true]);
+                            break;
+                    }
                 }
                 break;
         }
