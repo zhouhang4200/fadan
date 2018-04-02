@@ -317,14 +317,11 @@ class IndexController extends Controller
      * @param Request $request
      * @param OrderRepository $orderRepository
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
-     * @param TaobaoTrade $taobaoTrade
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function detail(Request $request,
                            OrderRepository $orderRepository,
-                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository,
-                            TaobaoTrade $taobaoTrade
-    )
+                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -335,7 +332,7 @@ class IndexController extends Controller
             ->pluck('field_value', 'field_name')
             ->toArray();
         // 获取淘宝订单数据
-        $taobaoTrade = TaobaoTradeRepository::detail($orderDetails['source_order_no']);
+        $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
 
         if (! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
@@ -451,7 +448,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate'));
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade'));
     }
 
     /**
