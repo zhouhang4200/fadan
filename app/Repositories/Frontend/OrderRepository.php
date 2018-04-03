@@ -53,52 +53,52 @@ class OrderRepository
 
         if ($type == 1) { // 接单方
             if ($status == 'need') {
-                $query->where('status', 3);
+                $query->where('orders.status', 3);
             } elseif ($status == 'ing') {
-                $query->where('status', 4);
+                $query->where('orders.status', 4);
             } elseif ($status == 'finish') {
-                $query->whereIn('status', [7, 8]);
+                $query->whereIn('orders.status', [7, 8]);
             } elseif ($status == 'after-sales') {
-                $query->where('status', 6);
+                $query->where('orders.status', 6);
             } elseif ($status == 'cancel') {
-                $query->where('status', 10);
+                $query->where('orders.status', 10);
             } elseif ($status == 'market') {
-                $query->where('status', 1);
+                $query->where('orders.status', 1);
             } elseif ($status == 'search' && $searchType == 1) { // 按集市订单号搜索
-                $query->where('no', $searchContent);
+                $query->where('orders.no', $searchContent);
             } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
-                $query->where('foreign_order_no', $searchContent);
+                $query->where('orders.foreign_order_no', $searchContent);
             } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
                 $orderNo = OrderDetail::findOrdersBy('account', $searchContent, 1);
-                $query->whereIn('no', $orderNo);
+                $query->whereIn('orders.no', $orderNo);
             } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
 
             }
         } else {
             if ($status == 'need') {
-                $query->whereIn('status', [11, 3, 5]);
+                $query->whereIn('orders.status', [11, 3, 5]);
             } elseif ($status == 'ing') {
-                $query->whereIn('status', [3, 4]);
+                $query->whereIn('orders.status', [3, 4]);
             } elseif ($status == 'finish') {
-                $query->whereIn('status', [7, 8]);
+                $query->whereIn('orders.status', [7, 8]);
             } elseif ($status == 'after-sales') {
-                $query->where('status', 6);
+                $query->where('orders.status', 6);
             } elseif ($status == 'cancel') {
-                $query->where('status', 10);
+                $query->where('orders.status', 10);
             } elseif ($status == 'market') {
-                $query->where('status', 1);
+                $query->where('orders.status', 1);
             } elseif ($status == 'search' && $searchType == 1) { // 按集市订单号搜索
-                $query->where('no', $searchContent);
+                $query->where('orders.no', $searchContent);
             } elseif ($status == 'search' && $searchType == 2) { // 按外部订单号搜索
-                $query->where('foreign_order_no', $searchContent);
+                $query->where('orders.foreign_order_no', $searchContent);
             } elseif ($status == 'search' && $searchType == 3) { // 按账号搜索
                 $orderNo = OrderDetail::findOrdersBy('account', $searchContent);
-                $query->whereIn('no', $orderNo);
+                $query->whereIn('orders.no', $orderNo);
             } elseif ($status == 'search' && $searchType == 4) { // 按备注搜索
 
             }
         }
-        $query->where('service_id', '!=', 4);
+        $query->where('orders.service_id', '!=', 4);
         return $query->paginate($pageSize);
     }
 
