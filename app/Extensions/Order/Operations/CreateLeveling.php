@@ -230,7 +230,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             }
             // 写入（七天没接单）自动下架列表中
 
-            return $this->order->no;      
+            return $this->order;      
         }
     }
 }
