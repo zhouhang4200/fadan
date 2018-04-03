@@ -976,11 +976,11 @@ class IndexController extends Controller
             $isOverAmount = bcsub($order->amount, $data['amount']);
             // 写入双金与订单双击比较
             if ($isOverDeposit < 0) {
-                return response()->ajax(0, '操作失败！要求退回双金金额大于订单双金!');
+                return response()->ajax(0, '操作失败！要求退回双金金额不能大于订单双金!');
             }
             // 写入代练费与订单代练费比较
             if ($isOverAmount < 0) {
-                return response()->ajax(0, '操作失败！要求退回代练费大于订单代练费!');
+                return response()->ajax(0, '操作失败！要求退回代练费不能大于订单代练费!');
             }
             // 判断是接单还是发单方操作
             if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
