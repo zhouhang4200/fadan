@@ -15,6 +15,7 @@ use App\Models\OrderHistory;
 use App\Models\SmsTemplate;
 use App\Models\TaobaoTrade;
 use App\Models\User;
+use App\Repositories\Api\TaobaoTradeRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Repositories\Frontend\OrderRepository;
@@ -321,7 +322,9 @@ class IndexController extends Controller
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function detail(Request $request, OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    public function detail(Request $request,
+                           OrderRepository $orderRepository,
+                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -331,6 +334,8 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
+        // 获取淘宝订单数据
+        $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
 
         if (! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
@@ -433,7 +438,6 @@ class IndexController extends Controller
                 $detail['complain_desc'] = $text;
             }
         }
-
         // 仲裁结果
         if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2 && $detail['leveling_consult']['user_id'] == 0) {
             $text = '客服进行了仲裁。';
@@ -447,7 +451,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate'));
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade'));
     }
 
     /**

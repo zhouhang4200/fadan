@@ -58,12 +58,20 @@
                                         </div>
 
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">类型</label>
+                                            <label class="layui-form-label">代充类型</label>
                                             <div class="layui-input-block">
-                                                <input type="radio" name="type" value="1" title="发单" @if($user->type == 1) checked @endif>
-                                                <input type="radio" name="type" value="2" title="接单" @if($user->type == 2) checked @endif>
+                                                <input type="radio" name="type" value="1" title="接单" @if($user->type == 1) checked @endif>
+                                                <input type="radio" name="type" value="2" title="发单" @if($user->type == 2) checked @endif>
                                             </div>
                                         </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">代练类型</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" name="leveling_type" value="1" title="接单" @if($user->leveling_type == 1) checked @endif>
+                                                <input type="radio" name="leveling_type" value="2" title="发单" @if($user->leveling_type == 2) checked @endif>
+                                            </div>
+                                        </div>
+
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">别名</label>
                                             <div class="layui-input-block">
@@ -106,7 +114,9 @@
                 id:data.field.id,
                 type:data.field.type,
                 nickname:data.field.nickname,
-                remark:data.field.remark}, function (result) {
+                remark:data.field.remark,
+                leveling_type:data.field.leveling_type,
+            }, function (result) {
                  layer.msg(result.message);
             }, 'json');
             return false;

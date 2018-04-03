@@ -9,6 +9,7 @@ use App\Models\CautionMoney;
 use App\Models\RealNameIdent;
 use App\Models\UserTransferAccountInfo;
 use App\Repositories\Api\UserRechargeOrderRepository;
+use App\Repositories\Backend\UserWithdrawOrderRepository;
 use Illuminate\Http\Request;
 
 use Asset, Auth, View, DB;
@@ -59,6 +60,7 @@ class UserController extends Controller
         try {
             User::where('id', $request->id)->update([
                 'type' => $request->type,
+                'leveling_type' => $request->leveling_type,
                 'nickname' => $request->nickname,
                 'remark' => $request->remark,
             ]);
@@ -85,12 +87,41 @@ class UserController extends Controller
      */
     public function recharge(Request $request, UserRechargeOrderRepository $userRechargeOrderRepository)
     {
+        if (empty($request->user_id) || $request->user_id <= 0) {
+            return response()->ajax(0, '用户ID不正确');
+        }
+
+        if (empty($request->amount) || $request->amount <= 0) {
+            return response()->ajax(0, '金额只能是大于0的整数');
+        }
+
         try {
-            $userRechargeOrderRepository->store($request->amount, $request->id, '手动加款', generateOrderNo(), '', false);
-            return response()->ajax(1, '加款成功');
+            $userRechargeOrderRepository->store($request->amount, $request->user_id, $request->remark, generateOrderNo(), '', false);
         } catch (CustomException $exception) {
             return response()->ajax(0, $exception->getMessage());
         }
+
+        return response()->ajax(1, '加款成功');
+    }
+
+    // 手动减款
+    public function subtractMoney(Request $request)
+    {
+        if (empty($request->user_id) || $request->user_id <= 0) {
+            return response()->ajax(0, '用户ID不正确');
+        }
+
+        if (empty($request->amount) || $request->amount <= 0) {
+            return response()->ajax(0, '金额只能是大于0的整数');
+        }
+
+        try {
+            UserWithdrawOrderRepository::subtractMoney($request->user_id, $request->amount, $request->remark);
+        } catch (CustomException $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+
+        return response()->ajax(1, '减款成功');
     }
 
     /**
@@ -131,15 +162,15 @@ class UserController extends Controller
     {
         $exist = CautionMoney::where('user_id', $request->user_id)
             ->where('type', $request->type)
-            ->where('status', 1)
             ->first();
-        if ($exist) {
-            return response()->ajax(0, '该商户已经扣过保证金');
+        if (isset($exist->status) && $exist->status == 1) {
+            return response()->ajax(0, '该商户已生成保证金单据，需财务进行扣款');
+        } elseif(isset($exist->status) && $exist->status == 3) {
+            return response()->ajax(0, '该商户已经扣除保证金');
         }
         DB::beginTransaction();
         try {
             $no = generateOrderNo();
-            Asset::handle(new Consume($request->amount, 5, $no, config('cautionmoney.type')[$request->type], $request->user_id, Auth::user()->id));
 
             CautionMoney::create([
                'no' => $no,
@@ -147,14 +178,11 @@ class UserController extends Controller
                'amount' => $request->amount,
                'type' => $request->type,
             ]);
-        } catch (CustomException $customException) {
-            DB::rollback();
-            return response()->ajax(0, '扣款失败');
         } catch (AssetException $assetException) {
             DB::rollback();
             return response()->ajax(0, $assetException->getMessage());
         }
         DB::commit();
-        return response()->ajax(1, '扣款成功');
+        return response()->ajax(1, '扣款单据已生成，等待财务完成扣款');
     }
 }

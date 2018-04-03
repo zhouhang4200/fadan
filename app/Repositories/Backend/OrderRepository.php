@@ -54,14 +54,16 @@ class OrderRepository
             'price',
             'amount',
             'created_at',
+            'service_id',
         ])
             ->filter($filters)
-            ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder']);
+            ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder', 'service']);
 
         $response = new StreamedResponse(function () use ($order){
             $out = fopen('php://output', 'w');
             fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
             fputcsv($out, [
+                '服务',
                 '买家',
                 '卖家',
                 '卖家ID备注',
@@ -105,6 +107,7 @@ class OrderRepository
                     // 订单详情
                     $detail = collect($v['detail'])->pluck( 'field_value','field_name');
                     $data = [
+                        $v['service']['name'],
                         $v['creator_primary_user_id'],
                         $v['gainer_primary_user_id'],
                         $v['gainer_primary_user']['nickname'] ?? '',

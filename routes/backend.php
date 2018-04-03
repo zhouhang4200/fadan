@@ -122,6 +122,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('edit', 'UserController@edit')->name('frontend.user.edit')->middleware('permission:frontend.user.edit');
         // 手动加款
         Route::post('recharge', 'UserController@recharge')->name('frontend.user.recharge')->middleware('permission:frontend.user.recharge');
+        // 手动减款
+        Route::post('subtract-money', 'UserController@subtractMoney')->name('frontend.user.subtract-money')->middleware('permission:frontend.user.subtract-money');
         // 扣保证金
         Route::post('caution-money', 'UserController@cautionMoney')->name('businessman.caution-money')->middleware('permission:businessman.caution-money');
         // 商户资料
@@ -140,12 +142,6 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('/{id}', 'WeightController@show')->name('frontend.user.weight.show')->middleware('permission:frontend.user.weight.show');
             // 修改商户权重
             Route::post('edit', 'WeightController@edit')->name('frontend.user.weight.edit')->middleware('permission:frontend.user.weight.edit');
-        });
-        // 商户保证金
-        Route::prefix('caution-money')->group(function(){
-            Route::get('/', 'CautionMoneyController@index')->name('businessman.caution-money.index')->middleware('permission:businessman.caution-money.index');
-            Route::post('refund', 'CautionMoneyController@refund')->name('businessman.caution-money.refund')->middleware('permission:businessman.caution-money.refund');
-            Route::post('deduction', 'CautionMoneyController@deduction')->name('businessman.caution-money.deduction')->middleware('permission:businessman.caution-money.deduction');
         });
         // 商户承包商品配置
         Route::prefix('goods-contractor')->group(function(){
@@ -310,6 +306,15 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('user-widthdraw-order/complete/{userWithdrawOrder}', 'UserWithdrawOrderController@complete')->name('finance.user-widthdraw-order.complete')->middleware('permission:finance.user-widthdraw-order.complete');
         // 用户提现拒绝
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse')->middleware('permission:finance.user-widthdraw-order.refuse');
+        // 用户加款列表
+        Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');
+
+        // 商户保证金
+        Route::prefix('caution-money')->group(function(){
+            Route::get('/', 'CautionMoneyController@index')->name('finance.caution-money.index')->middleware('permission:finance.caution-money.index');
+            Route::post('refund', 'CautionMoneyController@refund')->name('finance.caution-money.refund')->middleware('permission:finance.caution-money.refund');
+            Route::post('deduction', 'CautionMoneyController@deduction')->name('finance.caution-money.deduction')->middleware('permission:finance.caution-money.deduction');
+        });
     });
 
     Route::prefix('template')->group(function () {

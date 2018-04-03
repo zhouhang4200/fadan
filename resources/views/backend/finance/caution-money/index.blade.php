@@ -41,7 +41,7 @@
                                 <thead>
                                 <tr>
                                     <th>商户ID</th>
-                                    <th>商户别名</th>
+                                    <th>订单号</th>
                                     <th>保证金类型</th>
                                     <th>保证金</th>
                                     <th>状态</th>
@@ -53,15 +53,16 @@
                                 @forelse($cautionMoneys as $item)
                                     <tr>
                                         <td>{{ $item->user_id }}</td>
-                                        <td>{{ optional($item->user)->nickname }}</td>
+                                        <td>{{ $item->no }}</td>
                                         <td>{{ config('cautionmoney.type')[$item->type] }}</td>
                                         <td>{{ $item->amount }}</td>
                                         <td>{{ config('cautionmoney.status')[$item->status] }}</td>
                                         <td>{{ $item->created_at }}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 1)
-                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="refund" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">退返保证金</button>
                                             <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="deduction" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">扣除保证金</button>
+                                            @elseif($item->status == 3)
+                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="refund" data-id="{{ $item->id }}" data-user_id="{{ $item->user_id }}" data-amount="{{ $item->amount }}">退返保证金</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -100,11 +101,12 @@
                 var amount  = data.elem.getAttribute('data-amount');
 
                 layer.confirm('您确认要将保证金:' +  + amount + '退给商户' + userId   + ' 吗?', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('businessman.caution-money.refund') }}', {id:id}, function(result){
+                    $.post('{{ route('finance.caution-money.refund') }}', {id:id}, function(result){
                         layer.msg(result.message);
                         reload();
                     }, 'json');
                     layer.closeAll();
+                    reload();
                 });
                 return false;
             });
@@ -115,10 +117,12 @@
                 var amount  = data.elem.getAttribute('data-amount');
 
                 layer.confirm('您确认要扣除商户: ' + userId +' 的商户保证金 ' + amount + ' 元吗？', {icon: 3, title:'提示'}, function(index){
-                    $.post('{{ route('businessman.caution-money.deduction') }}', {id:id}, function(result){
-                        layer.msg(result.message)
+                    $.post('{{ route('finance.caution-money.deduction') }}', {id:id}, function(result){
+                        layer.msg(result.message);
+                        reload();
                     }, 'json');
                     layer.closeAll();
+                    reload();
                 });
                 return false;
             });

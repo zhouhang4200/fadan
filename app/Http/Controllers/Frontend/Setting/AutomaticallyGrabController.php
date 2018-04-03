@@ -37,6 +37,7 @@ class AutomaticallyGrabController extends Controller
             return response()->json(\View::make('frontend.setting.automatically-grab.list', [
                 'automaticallyGrabGoods' => $automaticallyGrabGoods,
                 'foreignGoodsId' => $foreignGoodsId,
+                'services' => $services,
             ])->render());
         }
 

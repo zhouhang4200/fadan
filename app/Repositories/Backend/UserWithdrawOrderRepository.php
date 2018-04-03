@@ -3,15 +3,23 @@ namespace App\Repositories\Backend;
 
 use App\Models\UserWithdrawOrder;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Exceptions\CustomException;
+use App\Extensions\Asset\Freeze;
+use DB;
+use Asset;
+use Auth;
 
 class UserWithdrawOrderRepository
 {
-    public function getList($timeStart, $timeEnd, $userId, $no, $status, $adminRemark, $pageSize = 20)
+    public function getList($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark, $pageSize = 20)
     {
         $dataList = UserWithdrawOrder::orderBy('creator_primary_user_id')->orderBy('id')
             ->with('user')
             ->when(!empty($userId), function ($query) use ($userId) {
                 return $query->where('creator_primary_user_id', $userId);
+            })
+            ->when(!empty($type), function ($query) use ($type) {
+                return $query->where('type', $type);
             })
             ->when(!empty($status), function ($query) use ($status) {
                 return $query->where('status', $status);
@@ -46,9 +54,9 @@ class UserWithdrawOrderRepository
      * @param $status
      * @param $adminRemark
      */
-    public function export($timeStart, $timeEnd, $userId, $no, $status, $adminRemark)
+    public function export($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark)
     {
-        $order = $this->getList($timeStart, $timeEnd, $userId, $no, $status, $adminRemark, 0);
+        $order = $this->getList($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark, 0);
 
         $response = new StreamedResponse(function () use ($order){
             $out = fopen('php://output', 'w');
@@ -59,6 +67,7 @@ class UserWithdrawOrderRepository
                 '开户行',
                 '卡号',
                 '提现金额',
+                '类型',
                 '状态',
                 '申请时间',
                 '处理时间',
@@ -71,6 +80,7 @@ class UserWithdrawOrderRepository
                     $v->user->realNameIdent->bank_name ?? '',
                     isset($v->user->realNameIdent->bank_number) ? $v->user->realNameIdent->bank_number . "\t" : '',
                     $v->fee,
+                    config('withdraw.type')[$v->type],
                     config('withdraw.status')[$v->status],
                     $v->created_at,
                     $v->uddate_at,
@@ -82,5 +92,50 @@ class UserWithdrawOrderRepository
             'Content-Disposition' => 'attachment; filename="提现记录.csv"',
         ]);
         $response->send();
+    }
+
+    /**
+     * 手工减款
+     * @return mixed
+     */
+    public static function subtractMoney($userId, $fee, $remark)
+    {
+        DB::beginTransaction();
+
+        $no = generateOrderNo();
+
+        // 资产操作
+        Asset::handle(new Freeze($fee, 3, $no, $remark, $userId, Auth::user()->id));
+
+        // 创建提现单
+        $withdraw = new UserWithdrawOrder;
+        $withdraw->no                      = $no;
+        $withdraw->type                    = 2;
+        $withdraw->status                  = 1;
+        $withdraw->fee                     = $fee;
+        $withdraw->creator_user_id         = $userId;
+        $withdraw->creator_primary_user_id = $userId;
+        $withdraw->remark                  = $remark;
+
+        if (!$withdraw->save()) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        // 写多态关联
+        if (!$withdraw->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        if (!$withdraw->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            DB::rollback();
+            throw new Exception('申请失败');
+        }
+
+        // 减款
+        $withdraw->complete($remark, 2);
+
+        DB::commit();
     }
 }

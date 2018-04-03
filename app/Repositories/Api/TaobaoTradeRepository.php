@@ -160,4 +160,13 @@ class TaobaoTradeRepository
 
         return ['trade' => $trade, 'order' => $order];
     }
+
+    /**
+     * 根据淘宝订单号获取订单数据
+     * @param $tid
+     */
+    public static function detail($tid)
+    {
+        return TaobaoTrade::where('tid', $tid)->first();
+    }
 }

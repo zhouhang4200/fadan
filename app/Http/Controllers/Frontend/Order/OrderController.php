@@ -103,12 +103,15 @@ class OrderController extends Controller
             $orders = Order::filter($filters)
                     ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId()) // 发单
                     ->latest('created_at')
+                    ->with('foreignOrder')
                     ->get();
 
             // 标题
             $title = [
                 '接单id',
                 '订单号',
+                '外部单号',
+                '店名',
                 '类型',
                 '游戏',
                 '商品名',
@@ -128,6 +131,8 @@ class OrderController extends Controller
                         $datas[] = [
                             $order['gainer_primary_user_id'] ?? '--',
                             $order['no'] ?? '--',
+                            $order['foreign_order']['foreign_order_no'] . "\t" ?? '--',
+                            $order['foreign_order']['channel_name'] ?? '--',
                             $order['service_name'] ?? '--',
                             $order['game_name'] ?? '--',
                             $order['goods_name'] ?? '--',
@@ -161,12 +166,15 @@ class OrderController extends Controller
             $orders = Order::filter($filters)
                     ->where('gainer_primary_user_id', Auth::user()->getPrimaryUserId()) // 接单
                     ->latest('created_at')
+                    ->with('foreignOrder')
                     ->get();
 
             // 标题
             $title = [
                 '发单id',
                 '订单号',
+                '外部单号',
+                '店名',
                 '类型',
                 '游戏',
                 '商品名',
@@ -186,6 +194,8 @@ class OrderController extends Controller
                         $datas[] = [
                             $order['creator_primary_user_id'] ?? '--',
                             $order['no'] ?? '--',
+                            $order['foreign_order']['foreign_order_no'] . "\t" ?? '--',
+                            $order['foreign_order']['channel_name'] ?? '--',
                             $order['service_name'] ?? '--',
                             $order['game_name'] ?? '--',
                             $order['goods_name'] ?? '--',

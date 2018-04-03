@@ -293,4 +293,9 @@ class Order extends Model
     {
         return $this->hasOne(OrderCharge::class, 'order_no', 'no');
     }
+
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'id', 'service_id');
+    }
 }
