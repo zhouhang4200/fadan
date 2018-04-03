@@ -250,11 +250,8 @@ class IndexController extends Controller
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
-<<<<<<< HEAD
                 // 发单主用户是否配置了自动加价
-=======
                 // 查找主账号下面设置爱的自动加价模板
->>>>>>> 702f71f68ab01e52c64bed5b9f00366fc873869c
                 $orderAutoMarkup = OrderAutoMarkup::where('user_id', $order->creator_primary_user_id)
                     ->where('markup_amount', '>=', $order->amount)
                     ->oldest('markup_amount')
@@ -262,11 +259,7 @@ class IndexController extends Controller
 
                 if ($orderAutoMarkup) {
                     // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
-<<<<<<< HEAD
                     $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->amount.'@'.$order->created_at);
-=======
-                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
->>>>>>> 702f71f68ab01e52c64bed5b9f00366fc873869c
                 }
 
                 // 提示哪些平台下单成功，哪些平台下单失败

@@ -17,23 +17,46 @@
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.order' ? 'current' : '' }}"><a href="{{ route('frontend.order.receive') }}">订单</a><div class="arrow"></div></li>
                 @endif
 
-                @if(Auth::user()->could('frontend.finance.asset'))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route('frontend.finance.asset') }}">财务</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'frontend.finance.asset',
+                    'frontend.finance.asset-daily',
+                    'frontend.finance.amount-flow',
+                    'frontend.finance.withdraw-order',
+                ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route($route) }}">财务</a><div class="arrow"></div></li>
                 @endif
 
-                @if(Auth::user()->could('frontend.workbench.index'))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.index') }}">工作台</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'frontend.workbench.index',
+                ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
                 @endif
-                @if(Auth::user()->could('frontend.workbench.leveling.index'))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route('frontend.workbench.leveling.index') }}">工作台</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'frontend.workbench.leveling.index',
+                    'frontend.workbench.leveling.create',
+                    'frontend.workbench.leveling.wait',
+                ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
                 @endif
 
                     <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'home-accounts.index' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'user-groups.index' ? 'current' : '' || Route::currentRouteName() == 'rbacgroups.index' ? 'current' : '' || Route::currentRouteName() == 'idents.index' ? 'current' : '' || Route::currentRouteName() == 'home-system-logs.index' ? 'current' : '' || in_array(Route::currentRouteName(), ['users.create', 'users.edit', 'home-accounts.edit', 'user-groups.create', 'user-groups.edit', 'rbacgroups.create', 'rbacgroups.edit', 'idents.create']) ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
-                @if(Auth::user()->could('frontend.setting.sending-control.index'))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route('frontend.setting.sending-control.index') }}">设置</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'frontend.setting.sending-control.index',
+                    'frontend.setting.receiving-control.index',
+                    'frontend.setting.api-risk-management.index',
+                    'frontend.setting.skin.index',
+                    'frontend.setting.sms.index',
+                    'frontend.setting.tb-auth.store',
+                    'frontend.setting.sending-assist.require',
+                ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route($route) }}">设置</a><div class="arrow"></div></li>
                 @endif
-                @if(Auth::user()->could('frontend.statistic.employee'))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route('frontend.statistic.employee') }}">统计</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'frontend.statistic.employee',
+                    'frontend.statistic.order',
+                    'frontend.statistic.sms',
+                ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route($route) }}">统计</a><div class="arrow"></div></li>
                 @endif
                 @if(Auth::user()->could('frontend.steam.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.steam' ? 'current' : '' }}"><a href="{{ route('frontend.steam.goods.index') }}">Steam</a><div class="arrow"></div></li>

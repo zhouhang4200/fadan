@@ -376,9 +376,19 @@ class User extends Authenticatable
     {
         $userHasPermissions = $this->getUserPermissions() ? $this->getUserPermissions()->pluck('name')->toArray() : [];
         
-        // 如果有权限,判断当前页面权限是否在等路人权限中
-        if (in_array($permission, $userHasPermissions)) {
-            return true;
+        // 如果是数组
+        if (is_array($permission)) {
+            foreach ($permission as $value) {
+                // 如果有权限,判断当前页面权限是否在等路人权限中
+                if (in_array($value, $userHasPermissions)) {
+                    return $value;
+                }
+            }
+        } else {
+            // 如果有权限,判断当前页面权限是否在等路人权限中
+            if (in_array($permission, $userHasPermissions)) {
+                return $permission;
+            }
         }
         return false;
     }
