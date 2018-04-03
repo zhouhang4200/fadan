@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
@@ -322,6 +323,18 @@ class IndexController extends Controller
     public function getSelectChild(Request $request)
     {
         return GoodsTemplateWidgetValue::where('parent_id', $request->parent_id)->get();
+    }
+
+    /**
+     * 获取游戏代练模版
+     * @param Request $request
+     */
+    public function getGameLevelingTemplate(Request $request)
+    {
+        return GameLevelingRequirementsTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+            ->whereIn('game_id', [0 , $request->game_id])
+            ->orderBy('game_id')
+            ->get();
     }
 
     /**

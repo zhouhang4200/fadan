@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\Repositories\Backend\GameRepository;
 use Auth;
 use Illuminate\Http\Request;
-use App\Models\OrderTemplate;
+use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\OrderAutoMarkup;
 use App\Http\Controllers\Controller;
 
@@ -16,7 +17,9 @@ class SendingAssistController extends Controller
 	 */
     public function require(Request $request)
     {
-    	$orderTemplates = OrderTemplate::where('user_id', Auth::user()->getPrimaryUserId())->paginate(10);
+    	$orderTemplates = GameLevelingRequirementsTemplate::where('user_id', Auth::user()->getPrimaryUserId())
+            ->with('game')
+            ->paginate(10);
 
     	if ($request->ajax()) {
             return response()->json(view()->make('frontend.setting.sending-assist.require-form', [
@@ -31,9 +34,10 @@ class SendingAssistController extends Controller
      * 要求代练模板-新增功能
      * @return [type] [description]
      */
-    public function requireCreate()
+    public function requireCreate(GameRepository $gameRepository)
     {
-    	return view('frontend.setting.sending-assist.require-create');
+        $game = $gameRepository->available();
+    	return view('frontend.setting.sending-assist.require-create', compact('game'));
     }
 
     /**
@@ -44,13 +48,14 @@ class SendingAssistController extends Controller
     public function requireStore(Request $request)
     {
     	// 检查输入是否为空
-    	$res = $this->validate($request, OrderTemplate::rules(), OrderTemplate::messages());
+    	$res = $this->validate($request, GameLevelingRequirementsTemplate::rules(), GameLevelingRequirementsTemplate::messages());
     	// 数据
     	$datas['name'] = $request->name;
+    	$datas['game_id'] = $request->game_id;
     	$datas['content'] = $request->content;
     	$datas['user_id'] = Auth::user()->getPrimaryUserId();
 
-    	OrderTemplate::create($datas);
+        GameLevelingRequirementsTemplate::create($datas);
 
     	return response()->ajax(1, '添加成功!');
     }
@@ -63,18 +68,19 @@ class SendingAssistController extends Controller
     public function requireSet(Request $request)
     {
     	// 获取当前的模型
-    	$orderTemplate = OrderTemplate::find($request->id);
+    	$orderTemplate = GameLevelingRequirementsTemplate::find($request->id);
 
     	if ($orderTemplate->status == 0) {
 	    	// 设置当前的值为1
-	    	$OrderTemplate = OrderTemplate::where('id', $request->id)->update(['status' => 1]);
+	    	$OrderTemplate = GameLevelingRequirementsTemplate::where('id', $request->id)->update(['status' => 1]);
     	} elseif ($orderTemplate->status == 1) {
     		// 设置当前的值为1
-	    	$OrderTemplate = OrderTemplate::where('id', $request->id)->update(['status' => 0]);
+	    	$OrderTemplate = GameLevelingRequirementsTemplate::where('id', $request->id)->update(['status' => 0]);
     	}
     	// 将其他值设置为0
-    	OrderTemplate::where('id', '!=', $request->id)
+        GameLevelingRequirementsTemplate::where('id', '!=', $request->id)
     		->where('user_id', Auth::user()->getPrimaryUserId())
+            ->where('game_id', $orderTemplate->game_id)
     		->update(['status' => 0]);
 
     	return response()->ajax(1, '设置成功!');
@@ -85,12 +91,13 @@ class SendingAssistController extends Controller
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public function requireEdit($id)
+    public function requireEdit($id, GameRepository $gameRepository)
     {
     	// 获取当前模型
-    	$orderTemplate = OrderTemplate::find($id);
+    	$orderTemplate = GameLevelingRequirementsTemplate::find($id);
+        $game = $gameRepository->available();
 
-    	return view('frontend.setting.sending-assist.require-edit', compact('orderTemplate'));
+    	return view('frontend.setting.sending-assist.require-edit', compact('orderTemplate', 'game'));
     }
 
     /**
@@ -101,8 +108,9 @@ class SendingAssistController extends Controller
     public function requireUpdate(Request $request)
     {
     	// 获取当前模型
-    	$orderTemplate = OrderTemplate::find($request->id);
+    	$orderTemplate = GameLevelingRequirementsTemplate::find($request->id);
     	$orderTemplate->name = $request->name;
+    	$orderTemplate->game_id = $request->game_id;
     	$orderTemplate->content = $request->content;
     	$orderTemplate->save();
 
@@ -116,7 +124,7 @@ class SendingAssistController extends Controller
      */
     public function requireDestroy(Request $request)
     {
-    	OrderTemplate::destroy($request->id);
+        GameLevelingRequirementsTemplate::destroy($request->id);
 
     	return response()->ajax(1, '删除成功!');
     }
