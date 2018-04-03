@@ -258,7 +258,7 @@ class IndexController extends Controller
 
                 if ($orderAutoMarkup) {
                     // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
-                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
+                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->amount.'@'.$order->created_at);
                 }
 
                 // 提示哪些平台下单成功，哪些平台下单失败

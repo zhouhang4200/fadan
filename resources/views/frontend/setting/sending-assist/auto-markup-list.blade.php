@@ -14,7 +14,7 @@
         <tbody>
         @forelse($orderAutoMarkups as $k => $orderAutoMarkup)
             <tr>
-                <td>{{ $orderAutoMarkup->markup_amount == intval($orderAutoMarkup->markup_amount) ? '发单价 <= '.intval($orderAutoMarkup->markup_amount) : '发单价 <= '.$orderAutoMarkup->markup_amount }}</td>
+                <td>{{ $orderAutoMarkup->markup_amount == intval($orderAutoMarkup->markup_amount) ? '发单价 ≤ '.intval($orderAutoMarkup->markup_amount) : '发单价 ≤ '.$orderAutoMarkup->markup_amount }}</td>
                 <td>{{ $orderAutoMarkup->markup_time > 60 ? bcdiv($orderAutoMarkup->markup_time, 60, 0).'小时'. $orderAutoMarkup->markup_time % 60 . '分钟' : $orderAutoMarkup->markup_time . '分钟' }}</td>
                 <td>{{ $orderAutoMarkup->markup_type == 1 ? '百分比' : '绝对值' }}</td>
                 <td>{{ $orderAutoMarkup->markup_money == intval($orderAutoMarkup->markup_money) ? intval($orderAutoMarkup->markup_money) : $orderAutoMarkup->markup_money }}</td>

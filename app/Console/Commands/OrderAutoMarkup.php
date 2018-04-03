@@ -2,13 +2,19 @@
 
 namespace App\Console\Commands;
 
+use DB;
 use Redis;
+use Asset;
+use Exception;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
 use App\Services\Show91;
 use App\Models\OrderDetail;
+use App\Models\OrderHistory;
 use App\Services\DailianMama;
 use Illuminate\Console\Command;
+use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
 use App\Models\OrderAutoMarkup as OrderAutoMarkupModel;
 
@@ -53,8 +59,10 @@ class OrderAutoMarkup extends Command
         foreach ($redisDatas as $orderNo => $numberAndTime) {
             // 获取加价次数
             $number = explode('@', $numberAndTime) ? explode('@', $numberAndTime)[0] : null;
+            // 订单第一次的下单金额
+            $firstAmount = explode('@', $numberAndTime) ? explode('@', $numberAndTime)[1] : null;
             // 订单下单时间
-            $addTime = explode('@', $numberAndTime) ? explode('@', $numberAndTime)[1] : null;
+            $addTime = explode('@', $numberAndTime) ? explode('@', $numberAndTime)[2] : null;
 
             // 如果此次数和时间不存在则换下一条
             if (! isset($number) || ! isset($addTime)) {
@@ -65,6 +73,11 @@ class OrderAutoMarkup extends Command
             // 获取订单对象
             $order = Order::where('no', $orderNo)->first();
 
+            // 获取订单详情
+            $orderDetails = OrderDetail::where('order_no', $order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+
             // 如果此订单不在 未接单  状态,删除redis
             if ($order->status != 1) {
                 Redis::hDel('order:autoMarkups', $order->no);
@@ -73,7 +86,7 @@ class OrderAutoMarkup extends Command
 
             // 查找主账号下面设置爱的自动加价模板
             $orderAutoMarkup = OrderAutoMarkupModel::where('user_id', $order->creator_primary_user_id)
-                ->where('markup_amount', '>=', $order->amount)
+                ->where('markup_amount', '>=', $firstAmount)
                 ->oldest('markup_amount')
                 ->first();
 
@@ -84,7 +97,7 @@ class OrderAutoMarkup extends Command
             }
 
             // 如果加价到了最大次数，删掉Redis
-            if ($orderAutoMarkup->markup_number == $number) {
+            if ($orderAutoMarkup->markup_number == $number || $orderAutoMarkup->markup_money == 0) {
                 Redis::hDel('order:autoMarkups', $order->no);
                 continue;
             }
@@ -104,9 +117,21 @@ class OrderAutoMarkup extends Command
             // 首次加价，redis 存的时间和订单取得下单时间一致，说明是第一次
             if ($isReady && $number == 0) {
                 // 加价
-                $this->addPrice($order, $markupMoney, $number);
+                $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
+                $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
+
+                if (! $resShow91 && ! $resDailianMama) {
+                    continue;
+                }
+                // 支出流水和订单日志
+                $result = $this->writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails);
+
+                if (! $result) {
+                    continue;
+                }
+
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
-                Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$orderAutoMarkupStartTime->toDateTimeString());
+                Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$orderAutoMarkupStartTime->toDateTimeString());
                 // 写下日志
                 myLog('order.automarkup', [
                     '订单号' => $order->no,
@@ -122,9 +147,20 @@ class OrderAutoMarkup extends Command
 
             if (($number < $orderAutoMarkup->markup_number || $orderAutoMarkup->markup_number == 0) && $nextIsReady && $number != 0) {
                 // 加价
-                $this->addPrice($order, $markupMoney, $number);
+                $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
+                $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
+
+                if (! $resShow91 && ! $resDailianMama) {
+                    continue;
+                }
+                // 支出流水和订单日志
+                $result = $this->writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails);
+
+                if (! $result) {
+                    continue;
+                }
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
-                Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$nextAddTime->toDateTimeString());
+                Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
                 // 写下日志
                 myLog('order.automarkup', [
                     '订单号' => $order->no,
@@ -139,29 +175,123 @@ class OrderAutoMarkup extends Command
      * 向 91 和 代练妈妈加价
      * 订单， 加价金额
      */
-    public function addPrice($order, $markupMoney, $number)
+    public function addShow91Price($order, $markupMoney, $number, $orderDetails)
     {
-        try {
-            // 获取订单详情
-            $orderDetails = OrderDetail::where('order_no', $order->no)
-                ->pluck('field_value', 'field_name')
-                ->toArray();
+        // 获取订单详情
+        // $orderDetails = OrderDetail::where('order_no', $order->no)
+        //     ->pluck('field_value', 'field_name')
+        //     ->toArray();
 
-             // 如果91下单成功，则91加价
-            if ($orderDetails['show91_order_no']) {
+         // 如果91下单成功，则91加价
+        if ($orderDetails['show91_order_no']) {
+            try {
                 $name = 'addPrice';
                 $order->addAmount = $markupMoney;
                 call_user_func_array([Show91::class, $name], [$order, false]);
+                return true;
+            } catch (DailianException $e) {
+                // 91下架接口
+                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 代练妈妈加款
+     * @param [type] $order       [description]
+     * @param [type] $markupMoney [description]
+     * @param [type] $number      [description]
+     */
+    public function addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails)
+    {
+        // 获取订单详情
+        // $orderDetails = OrderDetail::where('order_no', $order->no)
+        //     ->pluck('field_value', 'field_name')
+        //     ->toArray();
+
+        // 如果代练妈妈下单成功，则代练妈妈加价
+        if ($orderDetails['dailianmama_order_no']) {
+            try {
+                $name = 'releaseOrder';
+                $order->amount = bcadd(bcmul($markupMoney, bcadd($number, 1)), $firstAmount);
+                call_user_func_array([DailianMama::class, $name], [$order, true]);
+                return true;
+            } catch (DailianException $e) {
+                // 代练妈妈下架接口
+                DailianMama::closeOrder($order);
+                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 支出流水和订单记录
+     * @param  [type] $order       [description]
+     * @param  [type] $markupMoney [description]
+     * @param  [type] $number      [description]
+     * @return [type]              [description]
+     */
+    public function writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails)
+    {
+        DB::beginTransaction();
+        try {
+            // 获取订单详情
+            // $orderDetails = OrderDetail::where('order_no', $order->no)
+            //     ->pluck('field_value', 'field_name')
+            //     ->toArray();
+            // 增加后的金额
+            $afterAddAmount = bcadd(bcmul($markupMoney, bcadd($number, 1)), $firstAmount);
+            // 流水
+            Asset::handle(new Expend($markupMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            // 订单金额更新
+            // $order->price = $afterAddAmount;
+            // $order->amount = $afterAddAmount;
+            Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
+            // 订单详情金额更新
+            OrderDetail::where('order_no', $order->no)
+                ->where('field_name', 'game_leveling_amount')
+                ->update(['field_value' => $afterAddAmount]);
+
+            // 主账号对象
+            $user = User::find($order->creator_primary_user_id);
+            
+            // 第几次加价
+            $number = $number+1;
+            // 写订单日志
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = $order->creator_user_id;
+            $data['admin_user_id'] = '';
+            $data['type'] = '';
+            $data['name'] = '';
+            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$markupMoney.'元，加价后订单金额为'.$afterAddAmount.'元.';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (Exception $e) {
+            if ($orderDetails['show91_order_no']) {
+                // 91下架接口
+                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
             }
 
-            // 如果代练妈妈下单成功，则代练妈妈加价
             if ($orderDetails['dailianmama_order_no']) {
-                $name = 'releaseOrder';
-                $order->amount = bcadd($markupMoney*($number+1), $order->amount);
-                call_user_func_array([DailianMama::class, $name], [$order, true]);
+                 // 代练妈妈下架接口
+                DailianMama::closeOrder($order);
+                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
             }
-        } catch (DailianException $e) {
-            myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+            DB::rollback();
+            return false;
         }
+        DB::commit();
+        return true;
     }
 }
