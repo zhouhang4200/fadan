@@ -707,7 +707,7 @@ if (!function_exists('employees')) {
 if (!function_exists('taobaoAesEncrypt')) {
     function taobaoAesEncrypt($str)
     {
-        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $key = 'VuP4ywn451DF/a3BU9bQOQ==';
         $iv = '0102030405060708';
 
         return base64_encode(openssl_encrypt($str, 'aes-128-cbc', base64_decode($key), true, $iv));
@@ -718,7 +718,7 @@ if (!function_exists('taobaoAesEncrypt')) {
 if (!function_exists('taobaoAesDecrypt')) {
     function taobaoAesDecrypt($str, $ifJsonDecode = true)
     {
-        $key = 'VuWvywn8p1DF/a3BU9bQOQ==';
+        $key = 'VuP4ywn451DF/a3BU9bQOQ==';
         $iv = '0102030405060708';
 
         $result = openssl_decrypt(base64_decode($str), 'aes-128-cbc', base64_decode($key), true, $iv);
@@ -981,6 +981,23 @@ if(!function_exists('taobaoAccessToken')){
         $token = cache()->add(config('redis.taobaoAccessToken') . $nickName, $result->access_token, 259200);
         return $token;
     }
+
+    if (!function_exists('hasEmployees')) {
+    /**
+     * 获取某个岗位有哪些员工
+     * @param string $prefix
+     * @return string
+     */
+    function hasEmployees($userRole)
+    {
+        $userNames = $userRole->newUsers ? $userRole->newUsers->pluck('username')->toArray() : '';
+
+        if ($userNames) {
+            return implode($userNames, '、');
+        }
+        return '';
+    }
+}
 }
 
 if(!function_exists('clientRSADecrypt')){

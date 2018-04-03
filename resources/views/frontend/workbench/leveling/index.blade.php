@@ -469,6 +469,7 @@
             $('.cancel').click(function(){
                 layer.closeAll();
             });
+
             //方法级渲染
             table.render({
                 elem: '#orer-list',
@@ -508,7 +509,7 @@
                     next: '下一页'
                 }
             });
-
+            // 根据状态获取订单
             element.on('tab(order-list)', function () {
                  status = this.getAttribute('lay-id');
                 // 清空角标
@@ -528,6 +529,7 @@
             form.on('checkbox(urgent_order)', function(data){
                 urgentOrder = data.elem.checked ? 1 : 0;
             });
+
             // 搜索
             form.on('submit(search)', function (data) {
                 table.reload('order', {

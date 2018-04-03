@@ -156,7 +156,7 @@ class RbacGroupController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 删除岗位，同时删除子账号下面的权限
      *
      * @param  \App\Models\RbacGroup  $rbacGroup
      * @return \Illuminate\Http\Response
@@ -165,19 +165,23 @@ class RbacGroupController extends Controller
     {
         $rbacGroup = RbacGroup::find($id);
         $bool = $rbacGroup->delete();
-
+        // 岗位删除成功之后，再删除子账号下面的权限
         if ($bool) {
+            // 获取此岗位下面所有的权限值
             $rbacGroup->permissions()->detach();
-            
+            // 主账号先删除此岗位
             UserRbacGroup::where('rbac_group_id', $id)->delete();
-
+            // 获取该主账号下所有的子账号
             $children = User::where('parent_id', Auth::id())->get();
-
+            // 遍历所有的子账号
             foreach ($children as $child) {
+                // 获取子账号拥有的岗位
                 $rbacGroups = $child->rbacGroups;
+                // 遍历每个岗位，将岗位扁平化为一维数组
                 $permissions = $rbacGroups->map(function ($rbacGroup) {
                     return $rbacGroup->permissions;                   
                 })->flatten();
+                // 删除此子账号下拥有的权限
                 $child->permissions()->detach();
             }          
             return response()->json(['code' => '1', 'message' => '删除成功!']);

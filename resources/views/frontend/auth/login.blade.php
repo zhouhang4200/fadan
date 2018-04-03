@@ -24,9 +24,9 @@
                         <input type="password" name="password" required="" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input layui-form-danger">
                         <i class="layui-icon icon"> &#x1005;</i>
                     </div>
-                    <div class="layui-form-item ">
-                        {!! Geetest::render() !!}
-                    </div>
+                    {{--<div class="layui-form-item ">--}}
+                        {{--{!! Geetest::render() !!}--}}
+                    {{--</div>--}}
                     <div class="layui-form-item">
                         <button class="layui-btn layui-btn-normal" lay-submit lay-filter="doLogin" style="width: 100%">登 录</button>
                     </div>

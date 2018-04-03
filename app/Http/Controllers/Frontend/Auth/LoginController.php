@@ -69,13 +69,13 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = \Validator::make($request->all(), [
-            'geetest_challenge' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->ajax(0, $validator->errors()->all()[0]);
-        }
+//        $validator = \Validator::make($request->all(), [
+//            'geetest_challenge' => 'required'
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->ajax(0, $validator->errors()->all()[0]);
+//        }
 
         // 对前端转输数据进行解密
         $request['password'] = clientRSADecrypt($request->password);
@@ -83,9 +83,9 @@ class LoginController extends Controller
         // 检查账号是否被禁用
         $user = User::where('name', $request->name)->first();
 
-        if ($user && \Hash::check($request->password, $user->password)) {
+        if ($user && \Hash::check($request['password'], $user->password)) {
             if ($user->status == 1) {
-                 return redirect('/login')->withInput()->with('forbidden', '您的账号已被禁用!');
+                 return response()->ajax(0, '您的账号已被禁用!');
             }
         }
 

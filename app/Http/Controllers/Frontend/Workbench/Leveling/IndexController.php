@@ -35,12 +35,13 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use Redis, Excel;
+use Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
 use TopClient;
 use TradeFullinfoGetRequest;
+use App\Models\OrderAutoMarkup;
 
 /**
  * 代练订单
@@ -248,12 +249,20 @@ class IndexController extends Controller
 
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
-                
-                // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
-                $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
+
+                // 查找主账号下面设置爱的自动加价模板
+                $orderAutoMarkup = OrderAutoMarkup::where('user_id', $order->creator_primary_user_id)
+                    ->where('markup_amount', '>=', $order->amount)
+                    ->oldest('markup_amount')
+                    ->first();
+
+                if ($orderAutoMarkup) {
+                    // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
+                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
+                }
 
                 // 提示哪些平台下单成功，哪些平台下单失败
-                $orderDetails = OrderDetail::where('order_no', $order->no)
+                $orderDetails = OrderDetail::where('order_no', $orderNo)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 
@@ -335,9 +344,7 @@ class IndexController extends Controller
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function detail(Request $request,
-                           OrderRepository $orderRepository,
-                           GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
+    public function detail(Request $request, OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
         // 获取可用游戏
         $game = $this->game;
@@ -464,7 +471,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade'));
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate'));
     }
 
     /**

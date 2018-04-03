@@ -253,17 +253,14 @@ class User extends Authenticatable
         }
 
         if (isset($filters['startDate']) && empty($filters['endDate'])) {
-
             $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if (isset($filters['endDate']) && empty($filters['startDate'])) {
-
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if (isset($filters['endDate']) && $filters['startDate']) {
-
             $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
 
@@ -308,28 +305,10 @@ class User extends Authenticatable
         }
 
         if ($filters['station']) {
-            $userIds = UserRbacGroup::where('rbac_group_id', $filters['station'])->pluck('user_id');
+            $userIds = NewRole::find($filters['station'])->newUsers->pluck('id');
             $query->whereIn('id', $userIds);
         }
         return $query->where('parent_id', Auth::user()->getPrimaryUserId());
-    }
-
-    public static function staffManagementRules()
-    {
-        return [
-            'name' => 'required|string|max:50|unique:users',
-            'username' => 'required|string|max:50|unique:users',
-            'password' => 'required|string|min:6|max:12',
-        ];
-    }
-
-    public static function staffManagementMessages()
-    {
-        return [
-            'name.required' => '账号必须填写',
-            'username.required' => '昵称必须填写',
-            'password.required' => '密码必须填写',
-        ];
     }
 
     public function employeeStatistics()
@@ -360,5 +339,47 @@ class User extends Authenticatable
     public function gainerPrimaryOrders()
     {
         return $this->hasMany(Order::class, 'gainer_primary_user_id', 'id');
+    }
+
+    public function newRoles() {
+        return $this->belongsToMany(NewRole::class);
+    }
+
+    public function newPermissions() {
+        return $this->belongsToMany(NewPermission::class);
+    }
+
+    /**
+     * 后去账号下的所有权限
+     * @return [type] [description]
+     */
+    public function getUserPermissions()
+    {
+        $key = 'newPermissions:user:'.$this->id;
+
+        return Cache::rememberForever($key, function () {
+            return $this->newPermissions
+                ->merge($this->load('newRoles', 'newRoles.newPermissions')
+                ->newRoles->flatMap(function ($role) {
+                    return $role->newPermissions;
+                })->sort()->values())
+                ->sort()
+                ->values();
+        });
+    }
+
+     /**
+     * 当前等路人是否有权限查看当前路由，视图是否显示
+     * @return [type] [description]
+     */
+    public function could($permission)
+    {
+        $userHasPermissions = $this->getUserPermissions() ? $this->getUserPermissions()->pluck('name')->toArray() : [];
+        
+        // 如果有权限,判断当前页面权限是否在等路人权限中
+        if (in_array($permission, $userHasPermissions)) {
+            return true;
+        }
+        return false;
     }
 }

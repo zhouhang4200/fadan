@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Session;
+use Illuminate\Support\Facades\Blade;
 use App\Observers\ModelObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;

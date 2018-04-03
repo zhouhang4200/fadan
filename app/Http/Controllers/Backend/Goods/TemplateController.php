@@ -146,13 +146,27 @@ class TemplateController extends Controller
      */
     public function copyTemplate(Request $request)
     {
-//        DB::beginTransaction();
+        $template = GoodsTemplate::find($request->id);
+        // 复制模板数据
+        $copyTemplate = $template->replicate()->toArray();
+        // 创建模板
+        $newGoodsTemplate = GoodsTemplate::create($copyTemplate);
+        // 获取原模板的字段值
+        $goodsTemplateWidgets = GoodsTemplateWidget::where('goods_template_id', $template->id)->get();
 
-        $template = GoodsTemplate::where('id', $request->id)->first();
-        $template->replicate()->save();
+        $datas = [];
+        foreach ($goodsTemplateWidgets as $k => $goodsTemplateWidget) {
+            $datas[$k] = $goodsTemplateWidget->replicate()->toArray();
+            $datas[$k]['goods_template_id'] = $newGoodsTemplate['id'];
+        }
+        GoodsTemplateWidget::insert($datas);
+        // 找到区id
+        $reasonId = GoodsTemplateWidget::where('goods_template_id', $newGoodsTemplate['id'])
+        ->where('field_name', 'region')->value('id');
+        // 更新服的父id为区id
+        GoodsTemplateWidget::where('goods_template_id', $newGoodsTemplate['id'])
+        ->where('field_name', 'serve')->update(['field_parent_id' => $reasonId]);
 
-        GoodsTemplateWidget::where('goods_template_id', $template->id)->get();
-
+        return response()->ajax(1, '复制成功!');
     }
-
 }

@@ -435,4 +435,32 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('export', 'ConfigController@export')->name('config.export');
         Route::post('import', 'ConfigController@import')->name('config.import');
     });
+
+    // 新的前台权限
+    Route::namespace('Home')->prefix('home')->group(function () {
+        Route::prefix('module')->group(function () {
+            Route::get('/', 'ModuleController@index')->name('home.module.index');
+            Route::post('add', 'ModuleController@add')->name('home.module.add');
+            Route::post('update', 'ModuleController@update')->name('home.module.update');
+            Route::post('destroy', 'ModuleController@destroy')->name('home.module.destroy');
+        });
+        Route::prefix('permission')->group(function () {
+            Route::get('/', 'PermissionController@index')->name('home.permission.index');
+            Route::post('add', 'PermissionController@add')->name('home.permission.add');
+            Route::post('update', 'PermissionController@update')->name('home.permission.update');
+            Route::post('destroy', 'PermissionController@destroy')->name('home.permission.destroy');
+        });
+        Route::prefix('role')->group(function () {
+            Route::get('/', 'RoleController@index')->name('home.role.index');
+            Route::get('create', 'RoleController@create')->name('home.role.create');
+            Route::get('edit/{id}', 'RoleController@edit')->name('home.role.edit');
+            Route::post('add', 'RoleController@add')->name('home.role.add');
+            Route::post('update', 'RoleController@update')->name('home.role.update');
+            Route::post('destroy', 'RoleController@destroy')->name('home.role.destroy');
+        });
+        Route::prefix('user')->group(function () {
+            Route::get('/', 'UserRoleController@index')->name('home.user.index');
+            Route::post('match', 'UserRoleController@match')->name('home.user.match');
+        });
+    });
 });
