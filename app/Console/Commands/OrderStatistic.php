@@ -90,8 +90,8 @@ class OrderStatistic extends Command
                     ) m 
                     LEFT JOIN users n ON m.user_id = n.id
             ");
-            
-            if ($orderDatas) {         
+
+            if ($orderDatas) {
                 $orderDatas = array_map(function ($userData) {
                     return (array) $userData;
                 }, $orderDatas);

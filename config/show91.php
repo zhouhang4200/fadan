@@ -26,7 +26,7 @@ return [
 		'topic'            => 'http://www.show91.com/oauth/topic', // 查看订单截图
 		'addpic'           => 'http://www.show91.com/oauth/addpic', // 上传截图
 		'chedan'           => 'http://www.show91.com/oauth/chedan', // 对已发布的订单发起主动撤单，返回资金
-		'accept'           => 'http://www.show91.com/oauth/accept', // 订单确认验收结算
+		'accept'           => 'http://www.show91.com/oauth/accept',  // 订单确认验收结算
 		'messageList'      => 'http://www.show91.com/oauth/messageList', // 获取订单留言
 		'addevidence'      => 'http://www.show91.com/oauth/addevidence', // 添加申诉证据
 		'addPrice'         => 'http://www.show91.com/oauth/addPrice', // 订单补款
@@ -37,3 +37,4 @@ return [
 		'getPlays'    	   => 'http://www.show91.com/oauth/getPlays', // 增加代练时间，商家用
 	],
 ];
+

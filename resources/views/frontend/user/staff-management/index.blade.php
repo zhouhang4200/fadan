@@ -8,10 +8,6 @@
         .layui-layer-btn{
             text-align:center !important;
         }
-        td {
-            word-wrap : break-word;
-            word-break:break-all;
-        }
     </style>
 @endsection
 
@@ -20,10 +16,10 @@
 @endsection
 
 @section('main')
-    <form class="layui-form" method="" action="">
-        <div class="layui-inline" style="float:left">
+    <form class="layui-form" method="" action="" >
+            <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px; padding-left: 0px;">员工姓名</label>
+                <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
                 <div class="layui-input-inline">               
                     <select name="username" lay-verify="" lay-search="">
                         <option value="">请输入员工姓名</option>
@@ -41,8 +37,8 @@
                 <div class="layui-input-inline">
                     <select name="station" lay-filter="">                
                         <option value="">请输入岗位名称</option>
-                        @forelse($groups as $group)
-                            <option value="{{ $group->id }}" {{ $group->id == $station ? 'selected' : '' }} >{{ $group->name }}</option>
+                        @forelse($userRoles as $userRole)
+                            <option value="{{ $userRole->id }}" {{ $userRole->id == $station ? 'selected' : '' }} >{{ $userRole->name }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -57,60 +53,15 @@
         </div>                     
     </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <form class="layui-form" action="">
-        <table class="layui-table" lay-size="sm" style="text-align:center;">
-            <thead>
-            <tr>
-                <th width="4%">编号</th>
-                <th width="6%">员工姓名</th>
-                <th width="8%">账号</th>
-                <th width="6%">类型</th>
-                <th width="10%">岗位</th>
-                <th width="7%">QQ</th>
-                <th width="10%">微信</th>
-                <th width="10%">电话</th>
-                <th width="10%">最后操作时间</th>
-                <th width="10%">备注</th>
-                <th>状态</th>
-                <th width="20%">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
-                    <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ config('user.type')[$user->type] }}</td>
-                        <td>{{ $user->rbacGroups->pluck('name')->count() > 0 ? implode(' |
-                        ', $user->rbacGroups->pluck('name')->toArray()) : '--' }}</td>
-                        <td>{{ $user->qq ?? '--' }}</td>
-                        <td>{{ $user->wechat ?? '--' }}</td>
-                        <td>{{ $user->phone ?? '--' }}</td>
-                        <td>{{ $user->updated_at ?? '--' }}</td>
-                        <td >{{ $user->remark ?? '--' }}</td>
-                        <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 0 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="启用|禁用"></td>
-                        <td>
-                        @if(!$user->deleted_at)
-                            <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
-                            <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $user->id }}">删除</button>
-                        @else
-                            --
-                        @endif
-                        </td>
-                    </tr>
-                @empty
-                @endforelse
-            </tbody>
-        </table>
-        </form>
+    <div class="layui-tab-item layui-show" lay-size="sm" id="staff">
+    @include('frontend.user.staff-management.list')
+        {!! $users->appends([
+            'name' => $name,
+            'userName' => $userName,
+            'station' => $station,
+        ])->render() !!}
     </div>
-    {!! $users->appends([
-        'name' => $name,
-        'userName' => $userName,
-        'station' => $station,
-    ])->render() !!}
+
 
 @endsection
 <!--START 底部-->
@@ -119,6 +70,12 @@
         layui.use(['form', 'layedit', 'laydate'], function(){
             var laydate = layui.laydate;
             var form = layui.form;
+            // 获取路由后面的参数
+            String.prototype.getAddrVal = String.prototype.getAddrVal||function(name){
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var data = this.substr(1).match(reg);
+                return data!=null?decodeURIComponent(data[2]):null;
+            }
             // 账号启用禁用
             form.on('switch(open)', function(data){
                 var id = data.elem.getAttribute('lay-data');
@@ -127,12 +84,7 @@
                     url: "{{ route('staff-management.forbidden') }}",
                     data:{id:id},
                     success: function (data) {
-                        if (data.status) {
-                            layer.msg(data.message, {icon: 6, time:1000});
-                            
-                        } else {
-                            layer.msg('启用失败', {icon: 5, time:1500}); 
-                        }
+                        layer.msg(data.message);
                     }
                 });
             });
@@ -149,31 +101,37 @@
             // 删除
             form.on('submit(delete)', function (data) {
                 var id = data.elem.getAttribute('lay-data');
-                console.log(id);
+                var s=window.location.search; //先截取当前url中“?”及后面的字符串
+                var page=s.getAddrVal('page');
+
                 layer.confirm('确认删除吗？', {
                       btn: ['确认', '取消'] 
                       ,title: '提示'
                       ,icon: 3
-                    }, function(index, layero){
+                    }, function(index, layers){
                         $.ajax({
                             type: 'DELETE',
                             url: "{{ route('staff-management.delete') }}",
                             data:{id:id},
                             success: function (data) {
-                                if (data.status) {
-                                    layer.msg(data.message, {icon: 6, time:1000});
-                                    
+                                layer.msg(data.message);
+                                if (page) {
+                                    $.get("{{ route('staff-management.index') }}?page="+page, function (result) {
+                                        $('#staff').html(result);
+                                        form.render();
+                                    }, 'json');
                                 } else {
-                                    layer.msg(data.message, {icon: 5, time:1500}); 
+                                    $.get("{{ route('staff-management.index') }}", function (result) {
+                                        $('#staff').html(result);
+                                        form.render();
+                                    }, 'json');
                                 }
                             }
                         });
                         layer.closeAll();
-                        window.location.href="{{ route('staff-management.index') }}";
                     }, function(index){
                         layer.closeAll();
                     });
-          
                 return false;
             });
         });

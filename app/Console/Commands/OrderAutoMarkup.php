@@ -90,6 +90,7 @@ class OrderAutoMarkup extends Command
                 ->oldest('markup_amount')
                 ->first();
 
+
             // 不存在则跳出循环,删除redis
             if (! $orderAutoMarkup) {
                 Redis::hDel('order:autoMarkups', $order->no);
@@ -145,7 +146,7 @@ class OrderAutoMarkup extends Command
             // 下一次加价时间
             $nextIsReady = $now->diffInMinutes($nextAddTime, false) < 0 ? true : false;
 
-            if (($number < $orderAutoMarkup->markup_number || $orderAutoMarkup->markup_number == 0) && $nextIsReady && $number != 0) {
+            if (($number < $orderAutoMarkup->markup_number || $orderAutoMarkup->markup_number == 0) && $nextIsReady) {
                 // 加价
                 $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
                 $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
@@ -159,6 +160,7 @@ class OrderAutoMarkup extends Command
                 if (! $result) {
                     continue;
                 }
+
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
                 Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
                 // 写下日志

@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\TestDeleteOrder', // 删除订单
         'App\Console\Commands\TestAppealOrder', // 仲裁订单
         'App\Console\Commands\AddOurNoticeOrderFromRedis', // 从redis获取我们平台操作失败的报警订单
-        'App\Console\Commands\OrderAutoMarkup', // 代练自动加价
+        'App\Console\Commands\OrderAutoMarkup', // 订单自动加价
     ];
 
     /**
@@ -57,7 +57,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:statistic')->daily();
         $schedule->command('order:notice')->everyMinute();
         $schedule->command('add:notice')->everyMinute();
-        $schedule->command('order:markup')->everyMinute();
     }
 
     /**

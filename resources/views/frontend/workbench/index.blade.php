@@ -161,7 +161,7 @@
 <!--START 主体-->
 <div class="main">
     <div class="workbench-wrapper">
-        @can('frontend.workbench.order')
+        @if(Auth::user()->could('frontend.workbench.order'))
             <div class="left-menu" id="left-menu">
             <form class="layui-form " action="">
                 <div class="layui-form-item">
@@ -207,7 +207,7 @@
             <div class="open-btn"> 打开下单面板</div>
             <div class="close-btn layui-hide">关闭下单面板</div>
         </div>
-        @endcan
+        @endif
         <div class="right-content">
             <div class="content">
                 <div class="path"><span>工作台</span>

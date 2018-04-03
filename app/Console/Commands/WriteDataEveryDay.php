@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
+use Log;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
