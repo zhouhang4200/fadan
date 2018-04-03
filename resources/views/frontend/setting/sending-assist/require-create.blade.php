@@ -4,7 +4,7 @@
 
 @section('css')
     <style>
-        .layui-input, .layui-textarea {
+        .layui-input, .layui-textarea,.layui-form-select{
             width: 450px;
         }
     </style>
@@ -34,6 +34,18 @@
                                 <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入名称" class="layui-input">
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关联游戏:</label>
+                            <div class="layui-input-inline">
+                                <select name="game_id" lay-verify="required" lay-search>
+                                    <option value="0"></option>
+                                    @foreach($game as $index => $value)
+                                    <option value="{{ $index }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">模板内容:</label>
                             <div class="layui-input-block">
@@ -97,7 +109,7 @@
             });
             // 同意
             form.on('submit(submit)', function (data) {
-                $.post("{{ route('frontend.setting.sending-assist.require.store') }}", {name:data.field.name, content:data.field.content}, function (result) {
+                $.post("{{ route('frontend.setting.sending-assist.require.store') }}", {name:data.field.name, game_id:data.field.game_id,content:data.field.content}, function (result) {
                     layer.msg(result.message);
                     window.location.href="{{ route('frontend.setting.sending-assist.require') }}";
                 });

@@ -3,6 +3,7 @@
         <thead>
         <tr>
             <th style="width:10%">模板名称</th>
+            <th style="width:10%">关联游戏</th>
             <th>模板内容</th>
             <th style="width:7%;">设为默认</th>
             <th style="width:15%;">操作</th>
@@ -12,6 +13,7 @@
         @forelse($orderTemplates as $orderTemplate)
             <tr>
                 <td>{{ $orderTemplate->name }}</td>
+                <td>{{ $orderTemplate->game->name ?? '' }}</td>
                 <td>{{ $orderTemplate->content }}</td>
                 <td style="padding-bottom: 0px;padding-top: 0px;">
                     <div class="layui-form-item" pane="" style="width:50px;margin-bottom: 0px;">
