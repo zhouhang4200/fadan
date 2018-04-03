@@ -69,13 +69,13 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-//        $validator = \Validator::make($request->all(), [
-//            'geetest_challenge' => 'required'
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return response()->ajax(0, $validator->errors()->all()[0]);
-//        }
+        $validator = \Validator::make($request->all(), [
+            'geetest_challenge' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->ajax(0, $validator->errors()->all()[0]);
+        }
 
         // 对前端转输数据进行解密
         $request['password'] = clientRSADecrypt($request->password);
