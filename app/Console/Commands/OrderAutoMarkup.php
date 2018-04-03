@@ -61,7 +61,7 @@ class OrderAutoMarkup extends Command
                 Redis::hDel('order:autoMarkups', $order->no);
                 continue;
             }
-            
+
             // 获取订单对象
             $order = Order::where('no', $orderNo)->first();
 
@@ -96,7 +96,11 @@ class OrderAutoMarkup extends Command
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
                 Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$orderAutoMarkupStartTime->toDateTimeString());
                 // 写下日志
-                myLog('order.automarkup', ['订单号:'.$order->no.',自动加价:'.$markupMoney.'元,时间:'.$now->toDateTimeString().',自动加价成功!']);
+                myLog('order.automarkup', [
+                    '订单号' => $order->no,
+                    '加价金额' => $markupMoney,
+                    '时间' => $now->toDateTimeString(),
+                    '结果' => '成功!']);
             }
 
             // 如果加价次数在加价次数之类，并且到了下一次的加价时间，则继续加价
@@ -110,7 +114,11 @@ class OrderAutoMarkup extends Command
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
                 Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$nextAddTime->toDateTimeString());
                 // 写下日志
-                myLog('order.automarkup', ['订单号:'.$order->no.',自动加价:'.$markupMoney.'元,时间:'.$now->toDateTimeString().',自动加价成功!']);
+                myLog('order.automarkup', [
+                    '订单号' => $order->no,
+                    '加价金额' => $markupMoney,
+                    '时间' => $now->toDateTimeString(),
+                    '结果' => '成功!']);
             }
         }
     }
@@ -129,8 +137,8 @@ class OrderAutoMarkup extends Command
 
              // 如果91下单成功，则91加价
             if ($orderDetails['show91_order_no']) {
-                $order->addAmount = $markupMoney;
                 $name = 'addPrice';
+                $order->addAmount = $markupMoney;
                 call_user_func_array([Show91::class, $name], [$order, false]);
             }
 
