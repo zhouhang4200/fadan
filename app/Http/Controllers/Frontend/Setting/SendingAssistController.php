@@ -74,7 +74,7 @@ class SendingAssistController extends Controller
 	    	// 设置当前的值为1
 	    	$OrderTemplate = GameLevelingRequirementsTemplate::where('id', $request->id)->update(['status' => 1]);
     	} elseif ($orderTemplate->status == 1) {
-    		// 设置当前的值为1
+    		// 设置当前的值为0
 	    	$OrderTemplate = GameLevelingRequirementsTemplate::where('id', $request->id)->update(['status' => 0]);
     	}
     	// 将其他值设置为0
@@ -165,7 +165,22 @@ class SendingAssistController extends Controller
     {
         // 数据
         $datas['user_id'] = Auth::user()->getPrimaryUserId();
-        $datas['markup_amount'] = is_numeric($request->data['markup_amount']) ? round($request->data['markup_amount'], 2) : 0;
+        // 数据
+        $requestMarkupAmount = is_numeric($request->data['markup_amount']) ? round($request->data['markup_amount'], 2) : 0;
+        // 如果填的值不合法则
+        if (! $requestMarkupAmount) {
+            return response()->ajax(0, '发单价和加价频率加价次数必须大于0');
+        }
+        // 查看发单价是否有重复
+        $sameMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())
+            ->where('markup_amount', $requestMarkupAmount)
+            ->count();
+
+        if ($sameMarkupAmount > 0) {
+            return response()->ajax(0, '发单价已存在');
+        }
+        // 数据
+        $datas['markup_amount'] = $requestMarkupAmount;
         $datas['markup_time'] = is_numeric($request->data['hours']) && is_numeric($request->data['minutes']) ?
                                 intval(bcadd(bcmul(60, $request->data['hours']), $request->data['minutes'])) : 0;
         $datas['markup_type'] = $request->data['markup_type'];
@@ -173,15 +188,7 @@ class SendingAssistController extends Controller
         $datas['markup_frequency'] = is_numeric($request->data['markup_frequency']) ? intval($request->data['markup_frequency']) : 0;
         $datas['markup_number'] = is_numeric($request->data['markup_number']) ? intval($request->data['markup_number']) : 0;
 
-        // 取次账号最后一次的数据的发单价
-        $latestMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()
-            ->getPrimaryUserId())
-            ->latest('id')
-            ->value('markup_amount');
-        
-        if (bcsub($datas['markup_amount'], $latestMarkupAmount) <= 0) {
-            return response()->ajax(0, '添加失败,发单价必须大于上一次所填的发单价!');
-        }
+        // 保存
         $res = OrderAutoMarkup::create($datas);
 
         if (! $res) {
@@ -214,39 +221,39 @@ class SendingAssistController extends Controller
         return view('frontend.setting.sending-assist.auto-markup-edit', compact('orderAutoMarkup'));
     }
 
+    /**
+     * 自动加价配置编辑
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function autoMarkupUpdate(Request $request)
     {
         $orderAutoMarkup = OrderAutoMarkup::find($request->data['id']);
         // 数据
-        $orderAutoMarkup->markup_amount = is_numeric($request->data['markup_amount']) ? round($request->data['markup_amount'], 2) : 0;
+        $requestMarkupAmount = is_numeric($request->data['markup_amount']) ? round($request->data['markup_amount'], 2) : 0;
+        // 如果填的值不合法则
+        if (! $requestMarkupAmount) {
+            return response()->ajax(0, '发单价和加价频率加价次数必须大于0');
+        }
+        // 查看发单价是否有重复
+        $sameMarkupAmount = OrderAutoMarkup::where('user_id', $orderAutoMarkup->user_id)
+            ->where('markup_amount', $requestMarkupAmount)
+            ->count();
+
+        if ($sameMarkupAmount > 0 && $orderAutoMarkup->markup_amount != $requestMarkupAmount) {
+            return response()->ajax(0, '发单价已存在');
+        }
+        // 数据
+        $orderAutoMarkup->markup_amount = $requestMarkupAmount;
         $orderAutoMarkup->markup_time = is_numeric($request->data['hours']) && is_numeric($request->data['minutes']) ?
                                 intval(bcadd(bcmul(60, $request->data['hours']), $request->data['minutes'])) : 0;
         $orderAutoMarkup->markup_type = $request->data['markup_type'];
         $orderAutoMarkup->markup_money = is_numeric($request->data['markup_money']) ? round($request->data['markup_money'], 2) : 0;
         $orderAutoMarkup->markup_frequency = is_numeric($request->data['markup_frequency']) ? intval($request->data['markup_frequency']) : 0;
         $orderAutoMarkup->markup_number = is_numeric($request->data['markup_number']) ? intval($request->data['markup_number']) : 0;
-        // 取上一条价格
-        $startMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()
-            ->getPrimaryUserId())
-            ->where('id', '<', $orderAutoMarkup->id)
-            ->latest('id')
-            ->first();
-        // 去下一条价格
-        $endMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()
-            ->getPrimaryUserId())
-            ->where('id', '>', $orderAutoMarkup->id)
-            ->oldest('id')
-            ->first();
-        
-        if ($startMarkupAmount && bcsub($orderAutoMarkup->markup_amount, $startMarkupAmount->markup_amount) <= 0) {
-            return response()->ajax(0, '更新失败,发单价必须大于前一条所填的发单价!');
-        }
-
-        if ($endMarkupAmount && bcsub($orderAutoMarkup->markup_amount, $endMarkupAmount->markup_amount) >= 0) {
-            return response()->ajax(0, '更新失败,发单价必须小于后一条所填的发单价!');
-        }
-
+        // 保存
         $res = $orderAutoMarkup->save();
+
         if (! $res) {
             return response()->ajax(0, '更新失败!');
         }

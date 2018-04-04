@@ -24,7 +24,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 修改资料，上传头像
     Route::prefix('users')->namespace('User')->group(function () {
         Route::get('persional', 'UserController@persional')->name('users.persional');
-        Route::post('persional', 'UserController@updatePersional')->name('users.update-persional')->middleware('new.permission:users.update-persional');
+        Route::post('persional', 'UserController@updatePersional')->name('users.update-persional');
         Route::post('voucher', 'UserController@updateVoucher')->name('users.update-voucher');
         Route::post('upload-images', 'UserController@uploadImages')->name('users.upload-images');
     });

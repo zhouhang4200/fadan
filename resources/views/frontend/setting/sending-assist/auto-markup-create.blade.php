@@ -8,10 +8,36 @@
             width: 450px;
         }
         .layui-form-label {
-            width:120px;
+            width:140px;
         }
         .layui-input-inline input {
             width:185px;
+        }
+        .tip,
+        .tips{
+            width: 300px;
+            height: 50px;
+            padding: 5%;
+            color: #fff;
+            border-radius: 10px;
+            background-color:#91C5FF;
+            position: absolute;
+            left:273px;
+            top: -67px;
+            padding: 5px;
+        }
+        .tip{
+            top:-65px;
+            left: 275px;
+        }
+        .tip::after,
+        .tips::after{
+            content: '';
+            border: 10px solid rgba(0, 0, 0, 0);
+            border-top-color:#91C5FF; 
+            position: absolute;
+            right: 255px;
+            top:60px;
         }
     </style>
 @endsection
@@ -37,7 +63,11 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">*发单价≤:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="markup_amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="markup_amount" lay-verify="required|number|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <a href="#" class="tooltip">
+                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <span>填写值必须为大于0的正整数</span>
+                                </a>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -50,6 +80,10 @@
                             <label class="layui-form-label">*加价开始时间(m):</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="minutes" lay-verify="required|minute|integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <a href="#" class="tooltip">
+                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <span>订单上架后第1次加价的时间，填写值必须为正整数可以为0</span>
+                                </a>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -60,24 +94,32 @@
                                     <option value="0" selected="">绝对值</option>
                                     <option value="1">百分比</option>
                                 </select>
+                                <a href="#" class="tooltip">
+                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <span>选择“绝对值”，则“增加值”中填写的值为增加的金额；选择“百分比”，则“增加值”中填写的值（百分数）乘以订单代练价格为增加的金额，所填写的值均为正整数或带2位小数</span>
+                                </a>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">*增加金额:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="markup_money" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="markup_money" lay-verify="required|number|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">*加价频率(m):</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="markup_frequency" lay-verify="required|integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="markup_frequency" lay-verify="required|integer|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">加价次数限制:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="markup_number" lay-verify="integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="markup_number" lay-verify="integer|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <a href="#" class="tooltip">
+                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <span>不填则为无次数限制</span>
+                                </a>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -149,6 +191,11 @@
                 hour: function(value) {
                     if (value < 0) {
                         return '输入值不能小于0';
+                    }
+                },
+                overZero : function (value) {
+                    if (value <= 0) {
+                        return '输入值必须大于0';
                     }
                 }
             });

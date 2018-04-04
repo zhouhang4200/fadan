@@ -18,7 +18,7 @@
                 <td>{{ $orderAutoMarkup->markup_time > 60 ? bcdiv($orderAutoMarkup->markup_time, 60, 0).'小时'. $orderAutoMarkup->markup_time % 60 . '分钟' : $orderAutoMarkup->markup_time . '分钟' }}</td>
                 <td>{{ $orderAutoMarkup->markup_type == 1 ? '百分比' : '绝对值' }}</td>
                 <td>{{ $orderAutoMarkup->markup_money == intval($orderAutoMarkup->markup_money) ? intval($orderAutoMarkup->markup_money) : $orderAutoMarkup->markup_money }}</td>
-                <td>{{ $orderAutoMarkup->markup_frequency }}</td>
+                <td>{{ $orderAutoMarkup->markup_frequency }}分/次</td>
                 <td>{{ $orderAutoMarkup->markup_number }}</td>
                 <td>
                     <div style="text-align: center">
