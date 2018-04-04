@@ -29,7 +29,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('upload-images', 'UserController@uploadImages')->name('users.upload-images');
     });
 
-    // 违规管理
+    // 奖惩记录
     Route::prefix('punish')->namespace('Punish')->group(function () {
         Route::get('home-punishes', 'PunishController@index')->name('home-punishes.index')->middleware('new.permission:home-punishes.index');
         Route::post('home-punishes/payment', 'PunishController@payment')->name('home-punishes.payment'); // 付款
@@ -37,19 +37,44 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     });
 
 	// 实名认证
-	Route::get('idents', 'IdentController@index')->name('idents.index');
+	Route::get('idents', 'IdentController@index')->name('idents.index')->middleware('new.permission:idents.index');
 	Route::get('idents/create', 'IdentController@create')->name('idents.create');
 	Route::post('idents', 'IdentController@store')->name('idents.store');
 	Route::get('idents/{id}/edit', 'IdentController@edit')->name('idents.edit');
 	Route::put('idents/{id}', 'IdentController@update')->name('idents.update');
 	Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 
+	// 子账号管理
+	// Route::resource('users', 'UserController', ['except' => ['show']]);
+	// Route::get('users', 'UserController@index')->name('users.index')->middleware('new.permission:users.index');
+	// Route::get('users/create', 'UserController@create')->name('users.create')->middleware('new.permission:users.create');
+	// Route::post('users', 'UserController@store')->name('users.store')->middleware('new.permission:users.store');
+	// Route::get('users/{id}/edit', 'UserController@edit')->name('users.edit')->middleware('new.permission:users.edit');
+	// Route::put('users/{id}', 'UserController@update')->name('users.update')->middleware('new.permission:users.update');
+	// Route::delete('users/{id}', 'UserController@destroy')->name('users.destroy')->middleware('new.permission:users.destroy');
+	// 分组管理
+	// Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
+	// Route::get('rbacgroups', 'RbacGroupController@index')->name('rbacgroups.index')->middleware('new.permission:rbacgroups.index');
+	// Route::get('rbacgroups/create', 'RbacGroupController@create')->name('rbacgroups.create')->middleware('new.permission:rbacgroups.create');
+	// Route::post('rbacgroups', 'RbacGroupController@store')->name('rbacgroups.store')->middleware('new.permission:rbacgroups.store');
+	// Route::get('rbacgroups/{id}/edit', 'RbacGroupController@edit')->name('rbacgroups.edit')->middleware('new.permission:rbacgroups.edit');
+	// Route::put('rbacgroups/{id}', 'RbacGroupController@update')->name('rbacgroups.update')->middleware('new.permission:rbacgroups.update');
+	// Route::delete('rbacgroups/{id}', 'RbacGroupController@destroy')->name('rbacgroups.destroy')->middleware('new.permission:rbacgroups.destroy');
+	// 子账号分组
+	// Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
+	// Route::get('user-groups', 'UserGroupController@index')->name('user-groups.index')->middleware('new.permission:user-groups.index');
+	// Route::get('user-groups/create', 'UserGroupController@create')->name('user-groups.create')->middleware('new.permission:user-groups.create');
+	// Route::post('user-groups', 'UserGroupController@store')->name('user-groups.store')->middleware('new.permission:user-groups.store');
+	// Route::get('user-groups/{id}/edit', 'UserGroupController@edit')->name('user-groups.edit')->middleware('new.permission:user-groups.edit');
+	// Route::put('user-groups/{id}', 'UserGroupController@update')->name('user-groups.update')->middleware('new.permission:user-groups.update');
+	// Route::delete('user-groups/{id}', 'UserGroupController@destroy')->name('user-groups.destroy')->middleware('new.permission:user-groups.destroy');
+    // 
 	// 系统日志
 	Route::get('home-system-logs', 'SystemLogController@index')->name('home-system-logs.index')->middleware('new.permission:home-system-logs.index');
     // 登录记录
     Route::get('login/history', 'LoginController@history')->name('login.history')->middleware('new.permission:login.history');
     // 我的账号
-    Route::get('home-accounts', 'AccountController@index')->name('home-accounts.index')->middleware('new.permission:home-accounts.index');
+    Route::get('home-accounts', 'AccountController@index')->name('home-accounts.index');
     Route::get('home-accounts/{id}/edit', 'AccountController@edit')->name('home-accounts.edit');
     Route::post('home-accounts', 'AccountController@update')->name('home-accounts.update');
 
@@ -73,9 +98,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('update', 'StationController@update')->name('station.update');
         Route::post('destroy', 'StationController@destroy')->name('station.destroy');
     });
-    // 员工数据统计
+    // 统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
+        // 员工数据统计
         Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee')->middleware('new.permission:frontend.statistic.employee');
+        // 订单统计
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('new.permission:frontend.statistic.order');
         // 短信
         Route::prefix('sms')->group(function (){
@@ -187,12 +214,15 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	Route::namespace('Finance')->prefix('finance')->group(function () {
 		// 我的资产
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset')->middleware('new.permission:frontend.finance.asset');
+
 	    // 资金流水
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow')->middleware('new.permission:frontend.finance.amount-flow');
 	    // 资金流水导出
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
+
 	    // 资产日报
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily')->middleware('new.permission:frontend.finance.asset-daily');
+
         // 余额提现
         Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store')->middleware('new.permission:frontend.finance.withdraw-order.store');
 		// 我的提现
