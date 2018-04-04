@@ -636,7 +636,6 @@ class DailianMama
         }
 
         if ($res && $res['result'] !== 1) {
-            myLog('ex', [$res]);
             throw new DailianException('代练妈妈平台:操作失败!');
         }
         return $res['data'];
