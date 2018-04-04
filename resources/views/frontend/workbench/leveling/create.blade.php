@@ -338,6 +338,7 @@
                                 template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '淘宝');
                             } catch(err){
 
                             }
@@ -350,6 +351,15 @@
                                 template += element.field_display_name + '：\r\n'
                             }
                         });
+                        @if(isset($taobaoTrade->tid))
+                        try {
+                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
+                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                        } catch(err){
+
+                        }
+                        @endif
                         $('#user-template').val(template);
                     }
                     layTpl(getTpl).render(result.content, function(html){
