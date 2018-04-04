@@ -44,31 +44,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	Route::put('idents/{id}', 'IdentController@update')->name('idents.update');
 	Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 
-	// 子账号管理
-	// Route::resource('users', 'UserController', ['except' => ['show']]);
-	// Route::get('users', 'UserController@index')->name('users.index')->middleware('new.permission:users.index');
-	// Route::get('users/create', 'UserController@create')->name('users.create')->middleware('new.permission:users.create');
-	// Route::post('users', 'UserController@store')->name('users.store')->middleware('new.permission:users.store');
-	// Route::get('users/{id}/edit', 'UserController@edit')->name('users.edit')->middleware('new.permission:users.edit');
-	// Route::put('users/{id}', 'UserController@update')->name('users.update')->middleware('new.permission:users.update');
-	// Route::delete('users/{id}', 'UserController@destroy')->name('users.destroy')->middleware('new.permission:users.destroy');
-	// 分组管理
-	// Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
-	// Route::get('rbacgroups', 'RbacGroupController@index')->name('rbacgroups.index')->middleware('new.permission:rbacgroups.index');
-	// Route::get('rbacgroups/create', 'RbacGroupController@create')->name('rbacgroups.create')->middleware('new.permission:rbacgroups.create');
-	// Route::post('rbacgroups', 'RbacGroupController@store')->name('rbacgroups.store')->middleware('new.permission:rbacgroups.store');
-	// Route::get('rbacgroups/{id}/edit', 'RbacGroupController@edit')->name('rbacgroups.edit')->middleware('new.permission:rbacgroups.edit');
-	// Route::put('rbacgroups/{id}', 'RbacGroupController@update')->name('rbacgroups.update')->middleware('new.permission:rbacgroups.update');
-	// Route::delete('rbacgroups/{id}', 'RbacGroupController@destroy')->name('rbacgroups.destroy')->middleware('new.permission:rbacgroups.destroy');
-	// 子账号分组
-	// Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
-	// Route::get('user-groups', 'UserGroupController@index')->name('user-groups.index')->middleware('new.permission:user-groups.index');
-	// Route::get('user-groups/create', 'UserGroupController@create')->name('user-groups.create')->middleware('new.permission:user-groups.create');
-	// Route::post('user-groups', 'UserGroupController@store')->name('user-groups.store')->middleware('new.permission:user-groups.store');
-	// Route::get('user-groups/{id}/edit', 'UserGroupController@edit')->name('user-groups.edit')->middleware('new.permission:user-groups.edit');
-	// Route::put('user-groups/{id}', 'UserGroupController@update')->name('user-groups.update')->middleware('new.permission:user-groups.update');
-	// Route::delete('user-groups/{id}', 'UserGroupController@destroy')->name('user-groups.destroy')->middleware('new.permission:user-groups.destroy');
-    // 
 	// 系统日志
 	Route::get('home-system-logs', 'SystemLogController@index')->name('home-system-logs.index')->middleware('new.permission:home-system-logs.index');
     // 登录记录
@@ -138,16 +113,16 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 接单权限
         Route::prefix('receiving-control')->group(function () {
             Route::get('/', 'ReceivingControlController@index')->name('frontend.setting.receiving-control.index')->middleware('new.permission:frontend.setting.receiving-control.index');
-            Route::get('get-control-user', 'ReceivingControlController@getControlUser')->name('frontend.setting.receiving-control.get-control-user')->middleware('new.permission:frontend.setting.receiving-control.get-control-user');
-            Route::get('get-control-category', 'ReceivingControlController@getControlCategory')->name('frontend.setting.receiving-control.get-control-category')->middleware('new.permission:frontend.setting.receiving-control.get-control-category');
-            Route::get('get-control-goods', 'ReceivingControlController@getControlGoods')->name('frontend.setting.receiving-control.get-control-goods')->middleware('new.permission:frontend.setting.receiving-control.get-control-goods');
-            Route::post('add-user', 'ReceivingControlController@addUser')->name('frontend.setting.receiving-control.add-user')->middleware('new.permission:frontend.setting.receiving-control.add-user');
-            Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category')->middleware('new.permission:frontend.setting.receiving-control.add-category');
-            Route::post('add-goods', 'ReceivingControlController@addGoods')->name('frontend.setting.receiving-control.add-goods')->middleware('new.permission:frontend.setting.receiving-control.add-goods');
-            Route::post('delete-control-user', 'ReceivingControlController@deleteControlUser')->name('frontend.setting.receiving-control.delete-control-user')->middleware('new.permission:frontend.setting.receiving-control.delete-control-user');
-            Route::post('delete-control-category', 'ReceivingControlController@deleteControlCategory')->name('frontend.setting.receiving-control.delete-control-category')->middleware('new.permission:frontend.setting.receiving-control.delete-control-category');
-            Route::post('delete-control-goods', 'ReceivingControlController@deleteControlGoods')->name('frontend.setting.receiving-control.delete-control-goods')->middleware('new.permission:frontend.setting.receiving-control.delete-control-goods');
-            Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode')->middleware('new.permission:frontend.setting.receiving-control.control-mode');
+            Route::get('get-control-user', 'ReceivingControlController@getControlUser')->name('frontend.setting.receiving-control.get-control-user');
+            Route::get('get-control-category', 'ReceivingControlController@getControlCategory')->name('frontend.setting.receiving-control.get-control-category');
+            Route::get('get-control-goods', 'ReceivingControlController@getControlGoods')->name('frontend.setting.receiving-control.get-control-goods');
+            Route::post('add-user', 'ReceivingControlController@addUser')->name('frontend.setting.receiving-control.add-user');
+            Route::post('add-category', 'ReceivingControlController@addCategory')->name('frontend.setting.receiving-control.add-category');
+            Route::post('add-goods', 'ReceivingControlController@addGoods')->name('frontend.setting.receiving-control.add-goods');
+            Route::post('delete-control-user', 'ReceivingControlController@deleteControlUser')->name('frontend.setting.receiving-control.delete-control-user');
+            Route::post('delete-control-category', 'ReceivingControlController@deleteControlCategory')->name('frontend.setting.receiving-control.delete-control-category');
+            Route::post('delete-control-goods', 'ReceivingControlController@deleteControlGoods')->name('frontend.setting.receiving-control.delete-control-goods');
+            Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode');
         });
         // 设置 - 发单设置
         Route::prefix('sending-control')->group(function () {
@@ -212,15 +187,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	Route::namespace('Finance')->prefix('finance')->group(function () {
 		// 我的资产
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset')->middleware('new.permission:frontend.finance.asset');
-
 	    // 资金流水
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow')->middleware('new.permission:frontend.finance.amount-flow');
 	    // 资金流水导出
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
-
 	    // 资产日报
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily')->middleware('new.permission:frontend.finance.asset-daily');
-
         // 余额提现
         Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store')->middleware('new.permission:frontend.finance.withdraw-order.store');
 		// 我的提现

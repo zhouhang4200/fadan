@@ -437,7 +437,7 @@
                 $('input[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 layui.form.render();
             }
-            // 加载代练模板
+            // 加载代练要求模板
             function loadGameLevelingTemplate(gameId) {
                 $.post('{{ route("frontend.workbench.leveling.game-leveling-template") }}', {game_id:gameId}, function (result) {
                     var optionsHtml = '<option value="">请选择模板</option>';
