@@ -35,7 +35,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use Redis, Excel;
+use  Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
