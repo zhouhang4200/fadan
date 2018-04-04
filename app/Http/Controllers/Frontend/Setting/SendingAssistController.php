@@ -95,7 +95,7 @@ class SendingAssistController extends Controller
     {
     	// 获取当前模型
     	$orderTemplate = GameLevelingRequirementsTemplate::find($id);
-        $game = $gameRepository->available();
+        $game = $gameRepository->availableByServiceId(4);
 
     	return view('frontend.setting.sending-assist.require-edit', compact('orderTemplate', 'game'));
     }
@@ -112,6 +112,7 @@ class SendingAssistController extends Controller
     	$orderTemplate->name = $request->name;
     	$orderTemplate->game_id = $request->game_id;
     	$orderTemplate->content = $request->content;
+        $orderTemplate->status = 0;
     	$orderTemplate->save();
 
     	return response()->ajax(1, '修改成功!');

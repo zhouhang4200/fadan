@@ -334,9 +334,26 @@
                         template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
                         template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                         @if(isset($taobaoTrade->tid))
+                            try {
                                 template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                        template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                        template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                                template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                                template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '淘宝');
+                            } catch(err){
+
+                            }
+                            if (template.indexOf('订单来源') == -1) {
+                                template += '订单来源：淘宝'  + '\r\n';
+                            }
+                            if (template.indexOf('来源订单号') == -1) {
+                                template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
+                            }
+                            if (template.indexOf('来源价格') == -1) {
+                                template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
+                            }
+                            if (template.indexOf('号主旺旺') == -1) {
+                                template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
+                            }
                         @endif
                         $('#user-template').val(template);
                     } else {
@@ -346,6 +363,15 @@
                                 template += element.field_display_name + '：\r\n'
                             }
                         });
+                        @if(isset($taobaoTrade->tid))
+                        try {
+                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
+                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                        } catch(err){
+
+                        }
+                        @endif
                         $('#user-template').val(template);
                     }
                     layTpl(getTpl).render(result.content, function(html){
@@ -411,10 +437,10 @@
                 $('input[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 layui.form.render();
             }
-            // 加载代练模板
+            // 加载代练要求模板
             function loadGameLevelingTemplate(gameId) {
                 $.post('{{ route("frontend.workbench.leveling.game-leveling-template") }}', {game_id:gameId}, function (result) {
-                    var optionsHtml = '';
+                    var optionsHtml = '<option value="">请选择模板</option>';
                     $.each(result, function (index, value) {
                         if (value.status  == 1) {
                             optionsHtml += '<option value="'  + value.content + '" data-content="' + value.content +  ' "  selected> ' + value.name  +'</option>';
@@ -429,16 +455,11 @@
             }
             form.on('select', function(data){
                 var fieldName = $(data.elem).attr("name"); //得到被选中的值
+                // 选择要求模后自动填充模板内容
                 if (fieldName == 'game_leveling_requirements_template') {
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
             });
-            // 选择要求模后自动填充模板内容
-            $('select[name=game_leveling_requirements_template]').change(function () {
-                alert(1);
-                console.log($(this).val());
-            });
-
         });
     </script>
 @endsection
