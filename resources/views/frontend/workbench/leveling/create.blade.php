@@ -423,7 +423,9 @@
                             }
                             break;
                         default:
-                            $formDom.val(value);
+                            if (value != '') {
+                                $formDom.val(value);
+                            }
                             break;
                     }
                 }
