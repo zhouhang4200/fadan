@@ -225,7 +225,8 @@ class Playing extends DailianAbstract implements DailianInterface
                     break;
             }
             // 写入留言获取
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['third_order_no'], $orderDetails['third'], 0);
+            $updateAfterOrderDetail = $this->checkThirdClientOrder($this->order);
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $updateAfterOrderDetail['third_order_no'], $updateAfterOrderDetail['third'], 0);
         }
     }
 }
