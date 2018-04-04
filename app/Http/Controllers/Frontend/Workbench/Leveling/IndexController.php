@@ -1100,14 +1100,16 @@ class IndexController extends Controller
     public function waitList(Request $request)
     {
         $tid = $request->tid;
+        $status = $request->status;
         $buyerNick = $request->buyer_nick;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
 
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate'))
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
             ->where('handle_status', 0)
             ->where('service_id', 4)
+            ->orderBy('id', 'desc')
             ->paginate(30);
 
         return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [

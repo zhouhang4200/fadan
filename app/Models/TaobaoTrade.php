@@ -26,7 +26,9 @@ class TaobaoTrade extends Model
             if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
                 $query->where('created', '>=', $filters['startDate']);
             }
-
+            if (isset($filters['status']) &&  !empty($filters['status'])) {
+                $query->where('handle_status', $filters['status']);
+            }
             if (isset($filters['endDate']) && !empty($filters['endDate'])) {
                 $query->where('created', '<=', $filters['endDate']." 23:59:59");
             }

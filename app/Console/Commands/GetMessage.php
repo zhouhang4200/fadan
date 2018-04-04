@@ -139,7 +139,7 @@ class GetMessage extends Command
 
         if (count($message['list'])) {
             $this->dailianMamaMessageList = array_merge($this->dailianMamaMessageList, $message['list']);
-            $this->get($orderNO, $message['beginid']);
+            $this->dailianMamaMessage($orderNO, $message['beginid']);
         }
     }
 }

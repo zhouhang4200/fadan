@@ -15,7 +15,7 @@
         @forelse($orders as $item)
             <tr data-no="{{ $item->tid }}">
                 <td>{{ $item->tid }}</td>
-                <td>{{ $item->buyer_nick }}</td>
+                <td><a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $item->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="{{ $item->buyer_nick }}"> {{ $item->buyer_nick }}</a> </div></td>
                 <td>{{ $item->price }}</td>
                 <td>{{ $item->num }}</td>
                 <td>{{ $item->payment }}</td>

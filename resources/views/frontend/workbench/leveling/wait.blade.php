@@ -69,7 +69,17 @@
                     <input type="text" name="buyer_nick" autocomplete="off" class="layui-input">
                 </div>
             </div>
-
+            <div class="layui-inline">
+                <label class="layui-form-mid">状态</label>
+                <div class="layui-input-inline">
+                    <select name="city" lay-verify="required">
+                        <option value=""></option>
+                        <option value="0">待处理</option>
+                        <option value="1">已处理</option>
+                        <option value="2">已删除</option>
+                    </select>
+                </div>
+            </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">下单时间：</label>
                 <div class="layui-input-inline" style="">
