@@ -418,7 +418,7 @@
             // 加载代练模板
             function loadGameLevelingTemplate(gameId) {
                 $.post('{{ route("frontend.workbench.leveling.game-leveling-template") }}', {game_id:gameId}, function (result) {
-                    var optionsHtml = '';
+                    var optionsHtml = '<option value="">请选择模板</option>';
                     $.each(result, function (index, value) {
                         if (value.status  == 1) {
                             optionsHtml += '<option value="'  + value.content + '" data-content="' + value.content +  ' "  selected> ' + value.name  +'</option>';
@@ -433,16 +433,11 @@
             }
             form.on('select', function(data){
                 var fieldName = $(data.elem).attr("name"); //得到被选中的值
+                // 选择要求模后自动填充模板内容
                 if (fieldName == 'game_leveling_requirements_template') {
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
             });
-            // 选择要求模后自动填充模板内容
-            $('select[name=game_leveling_requirements_template]').change(function () {
-                alert(1);
-                console.log($(this).val());
-            });
-
         });
     </script>
 @endsection
