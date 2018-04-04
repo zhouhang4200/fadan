@@ -7,9 +7,7 @@
             <li class="{{ in_array(Route::currentRouteName(), ['idents.index', 'idents.create', 'idents.edit']) ? 'current' : '' }}"><a href="{{ route('idents.create') }}"> 实名认证 </a><div class="arrow"></div></li>
         @endif
     @endif
-    @if(Auth::user()->could('login.history'))
         <li class="{{ in_array(Route::currentRouteName(), ['login.history']) ? 'current' : '' }}"><a href="{{ route('login.history') }}"> 登录记录 </a><div class="arrow"></div></li>
-    @endif
     @if(Auth::user()->could('station.index'))
         <li class="{{ in_array(Route::currentRouteName(), ['station.index', 'station.create', 'station.edit']) ? 'current' : '' }}"><a href="{{ route('station.index') }}"> 岗位管理 </a><div class="arrow"></div></li>
     @endif

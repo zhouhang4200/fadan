@@ -38,8 +38,18 @@
                 ]))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
                 @endif
-
-                    <li class="{{ Route::currentRouteName() == 'users.index' || Route::currentRouteName() == 'home-accounts.index' || Route::currentRouteName() == 'login.history' ? 'current' : '' || Route::currentRouteName() == 'user-groups.index' ? 'current' : '' || Route::currentRouteName() == 'rbacgroups.index' ? 'current' : '' || Route::currentRouteName() == 'idents.index' ? 'current' : '' || Route::currentRouteName() == 'home-system-logs.index' ? 'current' : '' || in_array(Route::currentRouteName(), ['users.create', 'users.edit', 'home-accounts.edit', 'user-groups.create', 'user-groups.edit', 'rbacgroups.create', 'rbacgroups.edit', 'idents.create']) ? 'current' : '' }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
+                @if($route = Auth::user()->could([
+                    'staff-management.index',
+                    'station.index',
+                ]))
+                    <li class="{{ 
+                        substr(Route::currentRouteName(), 0, 16) == 'staff-management' ? 'current' : '' ||
+                        substr(Route::currentRouteName(), 0, 7) == 'station' ? 'current' : '' ||
+                        substr(Route::currentRouteName(), 0, 13) == 'home-accounts' ? 'current' : '' ||
+                        substr(Route::currentRouteName(), 0, 6) == 'idents' ? 'current' : '' ||
+                        Route::currentRouteName() == 'login.history' ? 'current' : '' 
+                    }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
+                @endif
                 @if($route = Auth::user()->could([
                     'frontend.setting.sending-control.index',
                     'frontend.setting.receiving-control.index',
