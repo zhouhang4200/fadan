@@ -29,7 +29,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\GoodsTemplate;
 
-use DB, Order, Exception, Asset;
+use DB, Order, Exception, Asset, Redis;
 use App\Repositories\Frontend\GameRepository;
 use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
@@ -262,7 +262,7 @@ class IndexController extends Controller
                 }
 
                 // 提示哪些平台下单成功，哪些平台下单失败
-                $orderDetails = OrderDetail::where('order_no', $orderNo)
+                $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 
