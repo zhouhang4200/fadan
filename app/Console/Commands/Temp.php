@@ -45,6 +45,7 @@ class Temp extends Command
      */
     public function handle()
     {
+        $this->get('551522832617378011716001');
 
     }
 

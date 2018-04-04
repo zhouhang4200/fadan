@@ -102,10 +102,8 @@ class GetMessage extends Command
                     $currentCount = count($this->dailianMamaMessageList);
 
                     $addCount = $currentCount - $data->count;
-
                     $message = [];
-
-                    if ($currentCount != $data->count) {
+                    if ($addCount > 0) {
                         for ($i = $addCount - 1; $i >= 0; $i--) {
                             $message[] = [
                                 'third' => $data->platform,
@@ -122,6 +120,7 @@ class GetMessage extends Command
                         // 更新角标
                         levelingMessageCount($data->user_id, 1, $addCount);
                     }
+                    $this->dailianMamaMessageList = [];
                 }
             }
             sleep(1);
@@ -136,8 +135,9 @@ class GetMessage extends Command
     protected function dailianMamaMessage($orderNO, $beginId = 0)
     {
         $message = DailianMama::chatOldList($orderNO, $beginId);
-
+        myLog('data', [$message, $beginId, count($message['list'])]);
         if (count($message['list'])) {
+
             $this->dailianMamaMessageList = array_merge($this->dailianMamaMessageList, $message['list']);
             $this->dailianMamaMessage($orderNO, $message['beginid']);
         }
