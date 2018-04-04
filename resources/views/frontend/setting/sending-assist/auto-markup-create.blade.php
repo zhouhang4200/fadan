@@ -35,7 +35,7 @@
                     {!! csrf_field() !!}
                     <div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">*发单价<=:</label>
+                            <label class="layui-form-label">*发单价≤:</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="markup_amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>

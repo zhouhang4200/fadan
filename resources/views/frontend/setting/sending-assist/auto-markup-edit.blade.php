@@ -33,7 +33,7 @@
                     <input type="hidden" name="id" value={{ $orderAutoMarkup->id }} >
                     <div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">*发单价<=:</label>
+                            <label class="layui-form-label">*发单价≤:</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="markup_amount" lay-verify="required|number" value="{{ $orderAutoMarkup->markup_amount }}" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>

@@ -35,7 +35,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use Excel;
+use Redis, Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
@@ -250,6 +250,7 @@ class IndexController extends Controller
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
 
+                // 发单主用户是否配置了自动加价
                 // 查找主账号下面设置爱的自动加价模板
                 $orderAutoMarkup = OrderAutoMarkup::where('user_id', $order->creator_primary_user_id)
                     ->where('markup_amount', '>=', $order->amount)
@@ -258,7 +259,7 @@ class IndexController extends Controller
 
                 if ($orderAutoMarkup) {
                     // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
-                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->created_at);
+                    $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->amount.'@'.$order->created_at);
                 }
 
                 // 提示哪些平台下单成功，哪些平台下单失败

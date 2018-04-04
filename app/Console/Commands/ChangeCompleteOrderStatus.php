@@ -57,9 +57,10 @@ class ChangeCompleteOrderStatus extends Command
                 $readyOnTime = $carbon->diffInSeconds($overTime, false);
   
                 if ($readyOnTime <= 0) {
-                    Redis::hDel('complete_orders', $orderNo);
                     // 订单完成操作
-                    DailianFactory::choose('complete')->run($orderNo, 0);
+                    DailianFactory::choose('complete')->run($orderNo, 0, true);
+                    // 删除redis
+                    Redis::hDel('complete_orders', $orderNo);
                 }
             }
         } catch (DailianException $e) {
