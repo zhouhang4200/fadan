@@ -12,19 +12,13 @@ class UserRoleController extends Controller
 {
     public function index(Request $request)
     {
+        $id = $request->id;
     	// 获取所有的用户
-    	$users = User::where('parent_id', 0)->paginate(10);
+    	$users = User::where('parent_id', 0)->filter(compact('id'))->paginate(10);
     	// 获取所有的角色
     	$roles = NewRole::where('user_id', 0)->get();
 
-    	if ($request->ajax()) {
-    		return response()->json(view()->make('backend.home.user.list', [
-                'users' => $users,
-                'roles' => $roles,
-            ])->render());
-    	}
-
-    	return view('backend.home.user.index', compact('users', 'roles'));
+    	return view('backend.home.user.index', compact('users', 'roles', 'id'));
     }
 
     /**
