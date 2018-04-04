@@ -35,7 +35,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use Excel;
+use Redis, Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
@@ -263,7 +263,7 @@ class IndexController extends Controller
                 }
 
                 // 提示哪些平台下单成功，哪些平台下单失败
-                $orderDetails = OrderDetail::where('order_no', $orderNo)
+                $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
 

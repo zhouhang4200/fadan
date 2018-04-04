@@ -146,7 +146,7 @@ class OrderAutoMarkup extends Command
             // 下一次加价时间
             $nextIsReady = $now->diffInMinutes($nextAddTime, false) < 0 ? true : false;
 
-            if (($number < $orderAutoMarkup->markup_number || $orderAutoMarkup->markup_number == 0) && $nextIsReady) {
+            if (($number < $orderAutoMarkup->markup_number || $orderAutoMarkup->markup_number == 0) && $nextIsReady && $number > 0) {
                 // 加价
                 $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
                 $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
@@ -158,6 +158,17 @@ class OrderAutoMarkup extends Command
                 $result = $this->writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails);
 
                 if (! $result) {
+                    if ($orderDetails['show91_order_no']) {
+                        // 91下架接口
+                        Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                        myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                    }
+
+                    if ($orderDetails['dailianmama_order_no']) {
+                         // 代练妈妈下架接口
+                        DailianMama::closeOrder($order);
+                        myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                    }
                     continue;
                 }
 
@@ -270,8 +281,8 @@ class OrderAutoMarkup extends Command
             $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = '';
             $data['type'] = '';
-            $data['name'] = '';
-            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$markupMoney.'元，加价后订单金额为'.$afterAddAmount.'元.';
+            $data['name'] = '加价';
+            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$markupMoney.'元，加价后订单金额为'.$afterAddAmount.'元';
             $data['before'] = '';
             $data['after'] = '';
             $data['created_at'] = Carbon::now()->toDateTimeString();
@@ -279,17 +290,6 @@ class OrderAutoMarkup extends Command
 
             OrderHistory::create($data);
         } catch (Exception $e) {
-            if ($orderDetails['show91_order_no']) {
-                // 91下架接口
-                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
-            }
-
-            if ($orderDetails['dailianmama_order_no']) {
-                 // 代练妈妈下架接口
-                DailianMama::closeOrder($order);
-                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
-            }
             DB::rollback();
             return false;
         }
