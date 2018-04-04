@@ -103,7 +103,7 @@ class GetMessage extends Command
 
                     $addCount = $currentCount - $data->count;
                     $message = [];
-                    if ($addCount > 0) {
+                    if ($currentCount != $data->count) {
                         for ($i = $addCount - 1; $i >= 0; $i--) {
                             $message[] = [
                                 'third' => $data->platform,
@@ -135,7 +135,7 @@ class GetMessage extends Command
     protected function dailianMamaMessage($orderNO, $beginId = 0)
     {
         $message = DailianMama::chatOldList($orderNO, $beginId);
-        myLog('data', [$message, $beginId, count($message['list'])]);
+
         if (count($message['list'])) {
 
             $this->dailianMamaMessageList = array_merge($this->dailianMamaMessageList, $message['list']);
