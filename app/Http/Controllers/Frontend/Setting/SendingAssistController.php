@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
-use App\Repositories\Backend\GameRepository;
+use App\Repositories\Frontend\GameRepository;
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\GameLevelingRequirementsTemplate;
@@ -36,7 +36,7 @@ class SendingAssistController extends Controller
      */
     public function requireCreate(GameRepository $gameRepository)
     {
-        $game = $gameRepository->available();
+        $game = $gameRepository->availableByServiceId(4);
     	return view('frontend.setting.sending-assist.require-create', compact('game'));
     }
 
