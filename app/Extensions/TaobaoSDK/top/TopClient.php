@@ -205,9 +205,11 @@ class TopClient
 	protected function logCommunicationError($apiName, $requestUrl, $errorCode, $responseTxt)
 	{
 		$localIp = isset($_SERVER["SERVER_ADDR"]) ? $_SERVER["SERVER_ADDR"] : "CLI";
-		$logger = new TopLogger;
-		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
-		$logger->conf["separator"] = "^_^";
+//		$logger = new TopLogger;
+//		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
+//		$logger->conf["separator"] = "^_^";
+
+
 		$logData = array(
             date("Y-m-d H:i:s"),
             $apiName,
@@ -219,7 +221,9 @@ class TopClient
             $errorCode,
             str_replace("\n","",$responseTxt)
 		);
-		$logger->log($logData);
+//		$logger->log($logData);
+
+        myLog('tb-error', $logData);
 	}
 
 	public function execute($request, $session = null,$bestUrl = null)
@@ -334,12 +338,13 @@ class TopClient
 		//如果TOP返回了错误码，记录到业务错误日志中
 		if (isset($respObject->code))
 		{
-			$logger = new TopLogger;
-			$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_biz_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
-			$logger->log(array(
-				date("Y-m-d H:i:s"),
-				$resp
-			));
+            myLog('tb-error', [json_encode($resp)]);
+//			$logger = new TopLogger;
+//			$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_biz_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
+//			$logger->log(array(
+//				date("Y-m-d H:i:s"),
+//				$resp
+//			));
 		}
 		return $respObject;
 	}
