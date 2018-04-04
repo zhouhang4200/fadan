@@ -340,7 +340,10 @@
                                 template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
                                 template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '淘宝');
                             } catch(err){
-
+                                template += '订单来源：淘宝'  + '\r\n';
+                                template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
+                                template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
+                                template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
                             }
                         @endif
                         $('#user-template').val(template);
