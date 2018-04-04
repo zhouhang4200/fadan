@@ -66,8 +66,6 @@ class Playing extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 从自动下架任务中删除
             autoUnShelveDel($this->orderNo);
-            // 写入留言获取
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $this->orderDetail['third_order_no'], $this->orderDetail['third'], 0);
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
@@ -226,6 +224,8 @@ class Playing extends DailianAbstract implements DailianInterface
                     throw new DailianException('未找到订单对应的第三方平台!');
                     break;
             }
+            // 写入留言获取
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $orderDetails['third_order_no'], $orderDetails['third'], 0);
         }
     }
 }
