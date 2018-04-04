@@ -334,9 +334,13 @@
                         template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
                         template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                         @if(isset($taobaoTrade->tid))
+                            try {
                                 template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                        template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                        template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                                template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                                template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                            } catch(err){
+
+                            }
                         @endif
                         $('#user-template').val(template);
                     } else {
