@@ -351,6 +351,9 @@
                             if (template.indexOf('来源价格') == -1) {
                                 template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
                             }
+                            if (template.indexOf('号主旺旺') == -1) {
+                                template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
+                            }
                         @endif
                         $('#user-template').val(template);
                     } else {
