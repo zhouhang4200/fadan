@@ -37,42 +37,17 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     });
 
 	// 实名认证
-	Route::get('idents', 'IdentController@index')->name('idents.index')->middleware('new.permission:idents.index');
+	Route::get('idents', 'IdentController@index')->name('idents.index');
 	Route::get('idents/create', 'IdentController@create')->name('idents.create');
 	Route::post('idents', 'IdentController@store')->name('idents.store');
 	Route::get('idents/{id}/edit', 'IdentController@edit')->name('idents.edit');
 	Route::put('idents/{id}', 'IdentController@update')->name('idents.update');
 	Route::post('upload-images', 'IdentController@uploadImages')->name('ident.upload-images');
 
-	// 子账号管理
-	// Route::resource('users', 'UserController', ['except' => ['show']]);
-	// Route::get('users', 'UserController@index')->name('users.index')->middleware('new.permission:users.index');
-	// Route::get('users/create', 'UserController@create')->name('users.create')->middleware('new.permission:users.create');
-	// Route::post('users', 'UserController@store')->name('users.store')->middleware('new.permission:users.store');
-	// Route::get('users/{id}/edit', 'UserController@edit')->name('users.edit')->middleware('new.permission:users.edit');
-	// Route::put('users/{id}', 'UserController@update')->name('users.update')->middleware('new.permission:users.update');
-	// Route::delete('users/{id}', 'UserController@destroy')->name('users.destroy')->middleware('new.permission:users.destroy');
-	// 分组管理
-	// Route::resource('rbacgroups', 'RbacGroupController', ['except' => ['show']]);
-	// Route::get('rbacgroups', 'RbacGroupController@index')->name('rbacgroups.index')->middleware('new.permission:rbacgroups.index');
-	// Route::get('rbacgroups/create', 'RbacGroupController@create')->name('rbacgroups.create')->middleware('new.permission:rbacgroups.create');
-	// Route::post('rbacgroups', 'RbacGroupController@store')->name('rbacgroups.store')->middleware('new.permission:rbacgroups.store');
-	// Route::get('rbacgroups/{id}/edit', 'RbacGroupController@edit')->name('rbacgroups.edit')->middleware('new.permission:rbacgroups.edit');
-	// Route::put('rbacgroups/{id}', 'RbacGroupController@update')->name('rbacgroups.update')->middleware('new.permission:rbacgroups.update');
-	// Route::delete('rbacgroups/{id}', 'RbacGroupController@destroy')->name('rbacgroups.destroy')->middleware('new.permission:rbacgroups.destroy');
-	// 子账号分组
-	// Route::resource('user-groups', 'UserGroupController', ['except' => ['show']]);
-	// Route::get('user-groups', 'UserGroupController@index')->name('user-groups.index')->middleware('new.permission:user-groups.index');
-	// Route::get('user-groups/create', 'UserGroupController@create')->name('user-groups.create')->middleware('new.permission:user-groups.create');
-	// Route::post('user-groups', 'UserGroupController@store')->name('user-groups.store')->middleware('new.permission:user-groups.store');
-	// Route::get('user-groups/{id}/edit', 'UserGroupController@edit')->name('user-groups.edit')->middleware('new.permission:user-groups.edit');
-	// Route::put('user-groups/{id}', 'UserGroupController@update')->name('user-groups.update')->middleware('new.permission:user-groups.update');
-	// Route::delete('user-groups/{id}', 'UserGroupController@destroy')->name('user-groups.destroy')->middleware('new.permission:user-groups.destroy');
-    // 
 	// 系统日志
 	Route::get('home-system-logs', 'SystemLogController@index')->name('home-system-logs.index')->middleware('new.permission:home-system-logs.index');
     // 登录记录
-    Route::get('login/history', 'LoginController@history')->name('login.history')->middleware('new.permission:login.history');
+    Route::get('login/history', 'LoginController@history')->name('login.history');
     // 我的账号
     Route::get('home-accounts', 'AccountController@index')->name('home-accounts.index');
     Route::get('home-accounts/{id}/edit', 'AccountController@edit')->name('home-accounts.edit');
