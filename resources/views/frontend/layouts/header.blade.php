@@ -38,10 +38,6 @@
                 ]))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
                 @endif
-                @if($route = Auth::user()->could([
-                    'staff-management.index',
-                    'station.index',
-                ]))
                     <li class="{{ 
                         substr(Route::currentRouteName(), 0, 16) == 'staff-management' ? 'current' : '' ||
                         substr(Route::currentRouteName(), 0, 7) == 'station' ? 'current' : '' ||
@@ -49,7 +45,6 @@
                         substr(Route::currentRouteName(), 0, 6) == 'idents' ? 'current' : '' ||
                         Route::currentRouteName() == 'login.history' ? 'current' : '' 
                     }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
-                @endif
                 @if($route = Auth::user()->could([
                     'frontend.setting.sending-control.index',
                     'frontend.setting.receiving-control.index',
