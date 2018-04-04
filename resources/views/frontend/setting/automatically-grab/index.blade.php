@@ -14,7 +14,7 @@
     <div class="explanation">
         <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
         <ul>
-            <li>用途：获取您授权后的淘宝店铺订单。</li>
+            <li>用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺旺旺绑定。</li>
         </ul>
     </div>
 

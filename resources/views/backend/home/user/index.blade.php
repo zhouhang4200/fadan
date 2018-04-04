@@ -23,8 +23,54 @@
                             <li class="layui-this" lay-id="add">用户角色列表</li>
                         </ul>
                         <div class="layui-tab-content">
+                            <header class="main-box-header clearfix">
+                                <div class="filter-block">
+                                    <form class="layui-form" action="">
+                                        <div class="row">
+                                            <div class=" col-xs-2">
+                                                <input type="text" class="layui-input" name="id"  placeholder="账号ID" value="{{ $id }}">
+                                            </div>
+                                            <div class=" col-xs-2">
+                                                <button type="submit" class="layui-btn layui-btn-normal ">搜索</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </header>
                             <div class="layui-tab-item layui-show" id="user-list">
-                                @include('backend.home.user.list', ['users' => $users])
+                                <form class="layui-form" action="">
+                                    <table class="layui-table" lay-size="sm">
+                                        <thead>
+                                        <tr>
+                                            <th>用户ID</th>
+                                            <th>用户账号</th>
+                                            <th>拥有角色</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @forelse($users as $user)
+                                            <tr>
+                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>
+                                                    @forelse($user->newRoles as $role)
+                                                        【{{ $role->alias }}】
+                                                    @empty
+                                                        --
+                                                    @endforelse
+                                                </td>
+                                                <td style="text-align: center">
+                                                    <button lay-id="{{ $user->id }}" lay-name="{{ $user->name }}" lay-role-ids="{{ implode($user->newRoles()->pluck('new_roles.id')->toArray(), '-') ?? '' }}" lay-submit="" class="layui-btn layui-btn-normal" lay-filter="match">设置角色</button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
+                                        </tbody>
+                                    </table>
+                                </form>
+                                {{ $users->links() }}
                             </div>
                         </div>
                 </div>

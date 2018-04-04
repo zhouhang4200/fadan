@@ -29,7 +29,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\GoodsTemplate;
 
-use DB, Order, Exception, Asset;
+use DB, Order, Exception, Asset, Redis;
 use App\Repositories\Frontend\GameRepository;
 use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
