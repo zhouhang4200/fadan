@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+
+use App\Models\User;
 use Closure;
 use Auth;
 use Validator;
@@ -23,18 +25,20 @@ class Partner
      */
     public function handle($request, Closure $next)
     {
-        // 检测是否有订单号
+        // 判断请求是否为重复使用
+        if (time() - $request->timestamp > 20) {
+            return response()->partner(0, '无效请求');
+        }
 
         // 检测appId
         $request->user = User::where('app_id', $request->app_id)->first();
-
         if ( ! $request->user) {
-            return response()->parnter(0, 'app_id错误');
+            return response()->partner(0, 'app_id错误');
         }
 
         // 检测sign
         if ( ! $this->checkSign($request)) {
-            dd(1);
+            return response()->partner(0, '签名错误');
         }
         return $next($request);
     }
@@ -48,15 +52,18 @@ class Partner
     {
         // 获取所有参数 并对参数进行排序
         $par = $request->all();
-        sort($par);
+        ksort($par);
         $str = '';
         foreach ($par  as $key => $value) {
             if ($key != 'sign') {
                 $str .= $key . '=' . $value . '&';
             }
         }
-        $newStr = rtrim('&', $str);
-        dd($newStr);
-        return false;
+        $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
+
+        if ($sign != $request->sign) {
+            return false;
+        }
+        return true;
     }
 }
