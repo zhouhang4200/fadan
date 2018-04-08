@@ -118,7 +118,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">加价次数限制:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="markup_number" lay-verify="integer|overZero" value="{{ $orderAutoMarkup->markup_number }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="markup_number" lay-verify="integer" value="{{ $orderAutoMarkup->markup_number }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                 <a href="#" class="tooltip">
                                     <i class="iconfont icon-wenhao" id=""></i>
                                     <span>不填则为无次数限制</span>

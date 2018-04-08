@@ -361,6 +361,7 @@ class IndexController extends Controller
         if (! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
             $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
+        
             OrderDetail::where('order_no', $detail['no'])
                 ->where('field_name', 'hatchet_man_phone')
                 ->update(['field_value' => $orderInfo['data']['taker_phone']]);

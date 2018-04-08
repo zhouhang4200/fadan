@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Redis;
+use Exception;
 use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
