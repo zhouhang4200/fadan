@@ -1,4 +1,4 @@
-[2018-04-08 18:31:02] local.ERROR: 代练妈妈平台:操作失败! {"exception":"[object] (App\\Exceptions\\DailianException(code: 0): 代练妈妈平台:操作失败! at /Users/zero/project/s.market.dev/app/Services/DailianMama.php:639)
+[2018-04-08 18:33:03] local.ERROR: 代练妈妈平台:操作失败! {"exception":"[object] (App\\Exceptions\\DailianException(code: 0): 代练妈妈平台:操作失败! at /Users/zero/project/s.market.dev/app/Services/DailianMama.php:639)
 [stacktrace]
 #0 /Users/zero/project/s.market.dev/app/Console/Commands/GetMessageDailianmama.php(97): App\\Services\\DailianMama::chatOldList('551523164595827...', 0)
 #1 /Users/zero/project/s.market.dev/app/Console/Commands/GetMessageDailianmama.php(61): App\\Console\\Commands\\GetMessageDailianmama->dailianMamaMessage('551523164595827...')
@@ -18,7 +18,7 @@
 #15 /Users/zero/project/s.market.dev/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
 #16 {main}
 "} 
-[2018-04-08 18:32:01] local.ERROR: 代练妈妈平台:操作失败! {"exception":"[object] (App\\Exceptions\\DailianException(code: 0): 代练妈妈平台:操作失败! at /Users/zero/project/s.market.dev/app/Services/DailianMama.php:639)
+[2018-04-08 18:34:01] local.ERROR: 代练妈妈平台:操作失败! {"exception":"[object] (App\\Exceptions\\DailianException(code: 0): 代练妈妈平台:操作失败! at /Users/zero/project/s.market.dev/app/Services/DailianMama.php:639)
 [stacktrace]
 #0 /Users/zero/project/s.market.dev/app/Console/Commands/GetMessageDailianmama.php(97): App\\Services\\DailianMama::chatOldList('551523164595827...', 0)
 #1 /Users/zero/project/s.market.dev/app/Console/Commands/GetMessageDailianmama.php(61): App\\Console\\Commands\\GetMessageDailianmama->dailianMamaMessage('551523164595827...')
