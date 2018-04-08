@@ -83,7 +83,7 @@
                                 <input type="text" name="minutes" lay-verify="required|minute|integer" value="{{ $orderAutoMarkup->markup_time <= 60 ? $orderAutoMarkup->markup_time : intval($orderAutoMarkup->markup_time % 60) }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                 <a href="#" class="tooltip">
                                     <i class="iconfont icon-wenhao" id=""></i>
-                                    <span>订单上架后第1次加价的时间，填写值必须为正整数可以为0</span>
+                                    <span>订单上架后第1次加价的时间，填写值必须为正整数，可以为0</span>
                                 </a>
                             </div>
                         </div>

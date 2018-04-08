@@ -137,7 +137,9 @@ class SendingAssistController extends Controller
      */
     public function autoMarkup(Request $request)
     {
-        $orderAutoMarkups = OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())->orderBy('id')->paginate(10);
+        $orderAutoMarkups = OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())
+            ->oldest('markup_amount')
+            ->paginate(10);
 
         if ($request->ajax()) {
             return response()->json(view()->make('frontend.setting.sending-assist.auto-markup-list', [
