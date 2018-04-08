@@ -13,6 +13,7 @@ use Validator;
  */
 class Partner
 {
+
     /**
      * Handle an incoming request.
      *
@@ -22,22 +23,40 @@ class Partner
      */
     public function handle($request, Closure $next)
     {
-        $validator = Validator::make($request->all(), [
-            'api_token' => 'bail|required|min:1|max:60',
-        ]);
+        // 检测是否有订单号
 
-        if ($validator->fails()) {
-            return response()->jsonReturn(0, '参数不正确');
+        // 检测appId
+        $request->user = User::where('app_id', $request->app_id)->first();
+
+        if ( ! $request->user) {
+            return response()->parnter(0, 'app_id错误');
         }
 
-        if (!Auth::guard('api')->validate(['api_token' => $request->api_token])) {
-            return response()->jsonReturn(-1, 'token不存在');
+        // 检测sign
+        if ( ! $this->checkSign($request)) {
+            dd(1);
         }
-
-        if (Auth::guard('api')->user()->api_token_expire < time()) {
-            return response()->jsonReturn(-1, 'token已过期，请重新登陆');
-        }
-
         return $next($request);
+    }
+
+    /**
+     * 检测签名
+     * @param $request
+     * @return bool
+     */
+    public function checkSign($request)
+    {
+        // 获取所有参数 并对参数进行排序
+        $par = $request->all();
+        sort($par);
+        $str = '';
+        foreach ($par  as $key => $value) {
+            if ($key != 'sign') {
+                $str .= $key . '=' . $value . '&';
+            }
+        }
+        $newStr = rtrim('&', $str);
+        dd($newStr);
+        return false;
     }
 }
