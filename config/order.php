@@ -122,7 +122,7 @@ return [
         'refuseRevoke'      => RefuseRevoke::class, // 不同意撤销
         'applyArbitration'  => Arbitrationing::class, // 申请仲裁 
         'cancelArbitration' => CancelArbitration::class, // 取消仲裁 
-        'arbitration'       => Arbitrationed::class, // 同意仲裁 
+        'arbitration'       => Arbitrationed::class, // 强制仲裁
         'delete'            => Delete::class, // 删除
         'applyComplete'     => ApplyComplete::class, // 申请验收 
         'cancelComplete'    => CancelComplete::class, // 取消验收 
