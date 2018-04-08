@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+
+use App\Models\User;
 use Closure;
 use Auth;
 use Validator;
@@ -13,6 +15,7 @@ use Validator;
  */
 class Partner
 {
+
     /**
      * Handle an incoming request.
      *
@@ -22,22 +25,45 @@ class Partner
      */
     public function handle($request, Closure $next)
     {
-        $validator = Validator::make($request->all(), [
-            'api_token' => 'bail|required|min:1|max:60',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->jsonReturn(0, '参数不正确');
+        // 判断请求是否为重复使用
+        if (time() - $request->timestamp > 20) {
+            return response()->partner(0, '无效请求');
         }
 
-        if (!Auth::guard('api')->validate(['api_token' => $request->api_token])) {
-            return response()->jsonReturn(-1, 'token不存在');
+        // 检测appId
+        $request->user = User::where('app_id', $request->app_id)->first();
+        if ( ! $request->user) {
+            return response()->partner(0, 'app_id错误');
         }
 
-        if (Auth::guard('api')->user()->api_token_expire < time()) {
-            return response()->jsonReturn(-1, 'token已过期，请重新登陆');
+        // 检测sign
+        if ( ! $this->checkSign($request)) {
+            return response()->partner(0, '签名错误');
         }
-
         return $next($request);
+    }
+
+    /**
+     * 检测签名
+     * @param $request
+     * @return bool
+     */
+    public function checkSign($request)
+    {
+        // 获取所有参数 并对参数进行排序
+        $par = $request->all();
+        ksort($par);
+        $str = '';
+        foreach ($par  as $key => $value) {
+            if ($key != 'sign') {
+                $str .= $key . '=' . $value . '&';
+            }
+        }
+        $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
+
+        if ($sign != $request->sign) {
+            return false;
+        }
+        return true;
     }
 }

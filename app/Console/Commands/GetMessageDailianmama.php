@@ -49,7 +49,7 @@ class GetMessageDailianmama extends Command
      */
     public function handle()
     {
-        while(1) {
+
             // 获取所有需要获取留言的订单
             foreach (levelingMessageGet() as $orderNo => $data) {
                 $data = json_decode($data);
@@ -85,7 +85,6 @@ class GetMessageDailianmama extends Command
                     $this->dailianMamaMessageList = [];
                 }
             }
-        }
     }
 
     /**
