@@ -635,8 +635,8 @@
                             data:data.field
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message);
                                 layer.closeAll();
+                                layer.alert(result.message);
                             } else {
                                 layer.alert(result.message);
                             }

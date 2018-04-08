@@ -95,9 +95,9 @@ abstract class DailianAbstract
     	$statusName = config('order.status_leveling')[$this->handledStatus];
     	// 操作前的状态
     	$beforeStatusName = config('order.status_leveling')[$this->beforeHandleStatus];
-        $user = User::find($this->userId);
+        $username = User::find($this->userId) ? User::find($this->userId)->username : '';
     	// 详情
-        $this->description = "用户[{$user->username}]将订单从[$beforeStatusName]设置为[$statusName]状态！";
+        $this->description = "用户[$username]将订单从[$beforeStatusName]设置为[$statusName]状态！";
     }
 
     // 保存操作日志
