@@ -107,7 +107,7 @@ class OrderAutoMarkup extends Command
             $markupType = $orderAutoMarkup->markup_type;
 
             // 根据此类型算加价金额
-            $markupMoney = $markupType == 1 ? bcmul($orderAutoMarkup->markup_money*0.01, $order->amount) : $orderAutoMarkup->markup_money;
+            $markupMoney = $markupType == 1 ? bcmul($orderAutoMarkup->markup_money*0.01, $firstAmount, 2) : $orderAutoMarkup->markup_money;
 
             // 自动加价记录里面最早开始加价时间小于当前时间
             $orderAutoMarkupStartTime = Carbon::parse($order->created_at)->addMinutes($orderAutoMarkup->markup_time);
@@ -258,7 +258,7 @@ class OrderAutoMarkup extends Command
             //     ->pluck('field_value', 'field_name')
             //     ->toArray();
             // 增加后的金额
-            $afterAddAmount = bcadd(bcmul($markupMoney, bcadd($number, 1)), $firstAmount);
+            $afterAddAmount = bcadd(bcmul($markupMoney, bcadd($number, 1)), $firstAmount, 2);
             // 流水
             Asset::handle(new Expend($markupMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
             // 订单金额更新
