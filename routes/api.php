@@ -43,12 +43,46 @@ Route::post('refuse/consult', 'LevelingController@refuseConsult'); //拒绝验�
 
 Route::any('getOrder', 'SteamOrderController@getOrder');
 Route::any('returnOrderData', 'SteamOrderController@returnOrderData');
+
+
 // 代练妈妈回调
 Route::post('order/change', 'DailianMamaController@orderChange');
 
-//Route::post('kamen', 'OrderController@KamenOrder');
-//Route::any('test', 'TestController@test');
-
+// 代练对下游合作商接口
+Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group(function () {
+    // 订单相关接口
+    Route::prefix('order')->group(function () {
+        // 订单查询
+        Route::post('query', 'OrderController@receiving');
+        // 接单
+        Route::post('receive', 'OrderController@receive');
+        // 申请验收
+        Route::post('apply-complete', 'OrderController@applyComplete');
+        // 取消验收
+        Route::post('cancel-complete', 'OrderController@cancelComplete');
+        // 撤销
+        Route::post('revoke', 'OrderController@revoke');
+        // 取消撤销
+        Route::post('cancel-revoke', 'OrderController@cancelRevoke');
+        // 不同意撤销
+        Route::post('refuse-revoke', 'OrderController@refuseRevoke');
+        // 同意撤销
+        Route::post('agree-revoke', 'OrderController@agreeRevoke');
+        // 强制撤销
+        Route::post('force-revoke', 'OrderController@forceRevoke');
+        // 申请仲裁
+        Route::post('apply-arbitration', 'OrderController@applyArbitration');
+        // 取消仲裁
+        Route::post('cancel-arbitration', 'OrderController@cancelArbitration');
+        // 强制仲裁
+        Route::post('force-arbitration', 'OrderController@forceArbitration');
+        // 异常
+        Route::post('abnormal', 'OrderController@abnormal');
+        // 取消异常
+        Route::post('cancel-abnormal', 'OrderController@cancelAbnormal');
+    });
+});
+// 淘宝抓取订单
 Route::middleware('taobao.api')->group(function () {
     Route::post('taobao/store', 'TaobaoController@store');
     Route::post('taobao/trade-success', 'TaobaoController@tradeSuccess');
