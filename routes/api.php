@@ -49,8 +49,7 @@ Route::any('returnOrderData', 'SteamOrderController@returnOrderData');
 Route::post('order/change', 'DailianMamaController@orderChange');
 
 // 代练对下游合作商接口
-// Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group(function () {
-Route::prefix('partner')->namespace('Partner')->group(function () {
+Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group(function () {
     // 订单相关接口
     Route::prefix('order')->group(function () {
         // 订单查询
