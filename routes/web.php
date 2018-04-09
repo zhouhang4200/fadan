@@ -234,7 +234,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 // 申请售后
                 Route::post('after-sales', 'OrderOperationController@afterSales')->name('frontend.workbench.order-operation.after-sales')->middleware('new.permission:frontend.workbench.order-operation.after-sales');
                 // 接单
-                Route::group(['middleware'=>'throttle:15, 10'],function(){
+                Route::group(['middleware'=>'throttle:40'],function(){
                     Route::post('receiving', 'OrderOperationController@receiving')->name('frontend.workbench.order-operation.receiving')->middleware('new.permission:frontend.workbench.order-operation.receiving');
                 });
                 // 支付

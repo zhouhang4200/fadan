@@ -18,6 +18,14 @@
                 @endif
 
                 @if($route = Auth::user()->could([
+                              'frontend.workbench.leveling.index',
+                              'frontend.workbench.leveling.create',
+                              'frontend.workbench.leveling.wait',
+                          ]))
+                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
+                @endif
+
+                @if($route = Auth::user()->could([
                     'frontend.finance.asset',
                     'frontend.finance.asset-daily',
                     'frontend.finance.amount-flow',
@@ -31,13 +39,7 @@
                 ]))
                     <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
                 @endif
-                @if($route = Auth::user()->could([
-                    'frontend.workbench.leveling.index',
-                    'frontend.workbench.leveling.create',
-                    'frontend.workbench.leveling.wait',
-                ]))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.workbench' ? 'current' : '' }}"><a href="{{ route($route) }}">工作台</a><div class="arrow"></div></li>
-                @endif
+
                     <li class="{{ 
                         substr(Route::currentRouteName(), 0, 16) == 'staff-management' ? 'current' : '' ||
                         substr(Route::currentRouteName(), 0, 7) == 'station' ? 'current' : '' ||

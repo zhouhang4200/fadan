@@ -288,7 +288,7 @@
 <!--START 底部-->
 @section('js')
     <script type="text/html" id="operation">
-        <a href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no  }}" class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>
+        {{--<a href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no  }}" class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>--}}
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>

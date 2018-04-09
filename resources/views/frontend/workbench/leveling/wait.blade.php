@@ -72,11 +72,11 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">状态</label>
                 <div class="layui-input-inline">
-                    <select name="city" lay-verify="required">
+                    <select name="status" lay-verify="">
                         <option value=""></option>
-                        <option value="0">待处理</option>
+                        <option value="0" selected>待处理</option>
                         <option value="1">已处理</option>
-                        <option value="2">已删除</option>
+                        <option value="2">已隐藏</option>
                     </select>
                 </div>
             </div>
@@ -119,15 +119,15 @@
 
             getOrder();
             // 获取订单
-            function getOrder(tid, wangWang, startDate, endDate) {
-                $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {tid:tid, buyer_nick: wangWang, start_date: startDate, end_date:endDate}, function (result) {
+            function getOrder(tid, wangWang, status, startDate, endDate) {
+                $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {tid:tid, buyer_nick: wangWang, status: status, start_date: startDate, end_date:endDate}, function (result) {
                     $('.order').html(result);
                     layui.form.render();
                 }, 'json');
             }
 
             form.on('submit(search)', function (data) {
-               getOrder(data.field.tid, data.field.buyer_nick, data.field.start_date, data.field.end_date);
+               getOrder(data.field.tid, data.field.buyer_nick, data.field.status, data.field.start_date, data.field.end_date);
             });
         });
     </script>

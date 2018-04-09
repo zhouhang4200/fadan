@@ -22,6 +22,7 @@
                 <td>{{ $item->created }}</td>
                 <td>
                     <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
+                    <button href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn ">隐藏</button>
                 </td>
             </tr>
         @empty
