@@ -81,6 +81,16 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
         // 取消异常
         Route::post('cancel-abnormal', 'OrderController@cancelAbnormal');
     });
+
+    // 查询区服接口
+    Route::prefix('game')->group(function () {
+        // 游戏列表
+        Route::post('/', 'GameController@games');
+        // 区列表
+        Route::post('region', 'GameController@regions');
+        // 服列表
+        Route::post('server', 'GameController@servers');
+    });
 });
 // 淘宝抓取订单
 Route::middleware('taobao.api')->group(function () {
@@ -141,4 +151,3 @@ Route::middleware('internal.api')->prefix('user-info')->namespace('Fulu')->group
 Route::prefix('uplay')->group(function (){
     Route::any('account-verification', 'UplayController@accountVerification');
 });
-
