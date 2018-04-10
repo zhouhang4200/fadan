@@ -98,7 +98,7 @@ class OrderAutoMarkup extends Command
             }
 
             // 如果加价到了最大次数，删掉Redis
-            if ($orderAutoMarkup->markup_number == $number || $orderAutoMarkup->markup_money == 0) {
+            if (($orderAutoMarkup->markup_number == $number || $orderAutoMarkup->markup_money == 0) && $orderAutoMarkup->markup_number != 0) {
                 Redis::hDel('order:autoMarkups', $order->no);
                 continue;
             }
