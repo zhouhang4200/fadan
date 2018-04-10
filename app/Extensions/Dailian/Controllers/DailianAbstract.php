@@ -42,6 +42,10 @@ abstract class DailianAbstract
         // 获取订单
         $this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
 
+        if (! $this->order) {
+            throw new DailianException('订单不存在');
+        }
+
         // 如果不是平台做的操作,判断操作者是不是当前登陆者,
 //        if (! in_array(Auth::user()->getPrimaryUserId(), [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
 //            throw new DailianException('订单操作人不是当前登陆者本人!');
@@ -125,6 +129,7 @@ abstract class DailianAbstract
         $orderDetails = OrderDetail::where('order_no', $order->no)
             ->pluck('field_value', 'field_name')
             ->toArray();
+
 
         if (! $orderDetails['show91_order_no'] && ! $orderDetails['dailianmama_order_no']) {
             throw new DailianException('第三方订单号不存在!');
