@@ -33,15 +33,47 @@ class AutomaticallyGrabController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        if ($request->ajax()) {
-            return response()->json(\View::make('frontend.setting.automatically-grab.list', [
+        return view('frontend.setting.automatically-grab.index', compact('automaticallyGrabGoods', 'foreignGoodsId', 'services'));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request)
+    {
+        $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
+            ->where('id', $request->id)
+            ->first();
+
+        if ($automaticallyGrabGoods) {
+            return response()->json(\View::make('frontend.setting.automatically-grab.edit', [
                 'automaticallyGrabGoods' => $automaticallyGrabGoods,
-                'foreignGoodsId' => $foreignGoodsId,
-                'services' => $services,
             ])->render());
         }
+    }
 
-        return view('frontend.setting.automatically-grab.index', compact('automaticallyGrabGoods', 'foreignGoodsId', 'services'));
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function edit(Request $request)
+    {
+        try {
+
+            $automaticallyGrabGoods = AutomaticallyGrabGoods::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> $request->id])->first();
+
+            if (is_null($automaticallyGrabGoods->id)) {
+                return response()->ajax(0, '商品不存在');
+            } else {
+                $automaticallyGrabGoods->foreign_goods_id = $request->foreign_goods_id;
+                $automaticallyGrabGoods->remark = $request->remark;
+                $automaticallyGrabGoods->save();
+            }
+            return response()->ajax(1, '修改成功');
+        } catch (CustomException $exception){
+            return response()->ajax(0, '修改失败');
+        }
     }
 
     /**
@@ -63,11 +95,10 @@ class AutomaticallyGrabController extends Controller
 
         $exist = AutomaticallyGrabGoods::where('service_id', $serviceId)
             ->where('foreign_goods_id', $goodsId)
-            ->where('user_id', Auth::user()->getPrimaryUserId())
             ->first();
 
         if ($exist) {
-            return response()->ajax(0, '该服务类型的商品ID已存在');
+            return response()->ajax(0, '该商品ID已存在');
         }
         try {
             AutomaticallyGrabGoods::create([

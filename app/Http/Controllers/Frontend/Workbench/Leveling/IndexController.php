@@ -160,6 +160,7 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
+                $orderCurrent['third_name'] = isset(config('partner.platform')[$orderCurrent['third']]) ? config('partner.platform')[$orderCurrent['third']]['name'] : '';
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
@@ -1088,9 +1089,30 @@ class IndexController extends Controller
      * 待发单
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function wait()
+    public function wait(Request $request)
     {
-        return view('frontend.workbench.leveling.wait');
+        $tid = $request->tid;
+        $status = $request->status;
+        $buyerNick = $request->buyer_nick;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 0)
+            ->where('service_id', 4)
+            ->orderBy('id', 'desc')
+            ->paginate(30);
+
+        return view('frontend.workbench.leveling.wait')->with([
+                'tid' => $tid,
+                'status' => $status,
+                'orders' => $orders,
+                'buyerNick' => $buyerNick,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ]
+        );
     }
 
     /**
@@ -1115,6 +1137,7 @@ class IndexController extends Controller
 
         return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [
             'tid' => $tid,
+            'status' => $status,
             'orders' => $orders,
             'buyerNick' => $buyerNick,
             'startDate' => $startDate,

@@ -24,8 +24,8 @@
 		</li>
 	@endif
 
-	<li class="{{  Route::currentRouteName()  == 'frontend.automatically-grab.goods' ? 'current' : '' }}">
-		<a href="{{ route('frontend.automatically-grab.goods') }}">抓取商品配置</a>
+	<li class="{{  Route::currentRouteName()  == 'frontend.setting.automatically-grab.goods' ? 'current' : '' }}">
+		<a href="{{ route('frontend.setting.automatically-grab.goods') }}">抓取商品配置</a>
 		<div class="arrow"></div>
 	</li>
 

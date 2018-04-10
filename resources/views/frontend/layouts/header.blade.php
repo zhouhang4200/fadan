@@ -13,6 +13,7 @@
                 @if(Auth::user()->could('frontend.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.goods' ? 'current' : '' }}"><a href="{{ route('frontend.goods.index') }}">商品</a><div class="arrow"></div></li>
                 @endif
+
                 @if(Auth::user()->could('frontend.order.receive'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.order' ? 'current' : '' }}"><a href="{{ route('frontend.order.receive') }}">订单</a><div class="arrow"></div></li>
                 @endif
@@ -30,8 +31,11 @@
                     'frontend.finance.asset-daily',
                     'frontend.finance.amount-flow',
                     'frontend.finance.withdraw-order',
+                    'frontend.statistic.employee',
+                    'frontend.statistic.order',
+                    'frontend.statistic.sms',
                 ]))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance' ? 'current' : '' }}"><a href="{{ route($route) }}">财务</a><div class="arrow"></div></li>
+                    <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.finance'  || substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route($route) }}">财务</a><div class="arrow"></div></li>
                 @endif
 
                 @if($route = Auth::user()->could([
@@ -58,13 +62,13 @@
                 ]))
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route($route) }}">设置</a><div class="arrow"></div></li>
                 @endif
-                @if($route = Auth::user()->could([
-                    'frontend.statistic.employee',
-                    'frontend.statistic.order',
-                    'frontend.statistic.sms',
-                ]))
-                    <li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route($route) }}">统计</a><div class="arrow"></div></li>
-                @endif
+                {{--@if($route = Auth::user()->could([--}}
+                    {{--'frontend.statistic.employee',--}}
+                    {{--'frontend.statistic.order',--}}
+                    {{--'frontend.statistic.sms',--}}
+                {{--]))--}}
+                    {{--<li class="{{ substr(Route::currentRouteName(), 0, 18) == 'frontend.statistic' ? 'current' : '' }}"><a href="{{ route($route) }}">统计</a><div class="arrow"></div></li>--}}
+                {{--@endif--}}
                 @if(Auth::user()->could('frontend.steam.goods.index'))
                     <li class="{{ substr(Route::currentRouteName(), 0, 14) == 'frontend.steam' ? 'current' : '' }}"><a href="{{ route('frontend.steam.goods.index') }}">Steam</a><div class="arrow"></div></li>
                 @endif

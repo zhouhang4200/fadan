@@ -263,6 +263,7 @@
     <div class="send-message" style="display: none;padding: 20px">
         <form class="layui-form" action="" id="goods-add-form">
             <input type="hidden" name="type" value="">
+            <div style="height: 20px;line-height: 20px;color:red;padding-bottom: 10px">短信费：0.1元/条</div>
             <div class="layui-form-item">
                 <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
                     <option value="">选择模版</option>
@@ -292,6 +293,7 @@
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
+                    <option value="detail" data-no="@{{ d.no }}" >详情</option>
                 @{{# if (!d.master && d.status == 1) {  }}
                     <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
                 @{{# }  }}
@@ -399,8 +401,15 @@
         </div>
     </script>
     <script type="text/html" id="noTemplate">
-        千手：@{{ d.no }} @{{# if(d.urgent_order == 1 && d.master) { }}<span style="color:red">急</span> @{{#  } }} <br/>
-        外部： @{{ d.source_order_no }}
+        {{--千手：@{{ d.no }} @{{# if(d.urgent_order == 1 && d.master) { }}<span style="color:red">急</span> @{{#  } }} <br/>--}}
+        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{ d.source_order_no }}</a> <br/>
+        @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{  d.third_order_no }} </a>  @{{#  } }}
+    </script>
+    <script type="text/html" id="wwTemplate">
+        @{{# if(d.third_name) { }}
+        <a  style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=@{{ d.client_wang_wang }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="@{{ d.client_wang_wang }}"> @{{ d.client_wang_wang }}</a><img
+                src="/frontend/images/ww.png" alt="">
+        @{{#  } }}
     </script>
     <script type="text/html" id="gameTemplate">
         @{{ d.game_name }} <br/>
@@ -478,30 +487,34 @@
                 size: 'sm',
                 cols: [[
                     {title: '订单号',width: '225',templet: '#noTemplate'},// ,fixed: 'left'
-                    {field: 'order_source', title: '订单来源', width: '100'},
-                    {field: 'label', title: '标签', width: '60',templet: '#labelTemplate'},
+                    {title: '号主旺旺',width: '150',templet: '#wwTemplate'},// ,fixed: 'left'
+//                    {field: 'client_wang_wang', title: '号主旺旺', width: '150'},
                     {field: 'customer_service_remark', title: '客服备注', width: '150'},
                     {field: 'game_leveling_title', title: '代练标题', width: '250'},
-                    {field: 'status_text', title: '订单状态', width: '120'},
                     {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
-                    {field: 'game_leveling_type', title: '代练类型', width: '100'},
                     {title: '账号/密码', templet: '#accountPasswordTemplate', width: '100'},
                     {field: 'role', title: '角色名称', width: '100'},
-                    {field: 'original_amount', title: '来源价格', width: '100'},
+                    {field: 'status_text', title: '订单状态', width: '120'},
                     {field: 'amount', title: '代练价格', width: '80'},
                     {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
                     {field: 'security_deposit', title: '安全保证金', width: '80'},
+                    {field: 'created_at', title: '发单时间', width: '150'},
+                    {field: 'receiving_time', title: '接单时间', width: '150'},
+                    {field: 'leveling_time', title: '代练时间', width: '80'},
+                    {field: 'left_time', title: '剩余时间', width: '120'},
+                    {field: 'hatchet_man_name', title: '打手呢称', width: '120'},
+                    {field: 'hatchet_man_phone', title: '打手电话', width: '120'},
+                    {field: 'client_phone', title: '号主电话', width: '120'},
+                    {field: 'original_amount', title: '来源价格', width: '100'},
                     {field: 'payment_amount', title: '支付金额', width: '80'},
                     {field: 'get_amount', title: '获得金额', width: '80'},
                     {field: 'poundage', title: '手续费', width: '80'},
                     {field: 'profit', title: '利润', width: '80'},
-                    {field: 'leveling_time', title: '代练时间', width: '80'},
-                    {field: 'left_time', title: '剩余时间', width: '120'},
-                    {field: 'created_at', title: '发单时间', width: '150'},
-                    {field: 'receiving_time', title: '接单时间', width: '150'},
+                    {field: 'customer_service_name', title: '发单客服', width: '80'},
                     {title: '操作', fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
+//                height: 315,
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
@@ -590,6 +603,9 @@
 
                 if (!data.value) {
                     return false;
+                }
+                if (data.value == 'detail') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no='  + orderNo);
                 }
                 // 留言
                 if (data.value == 'message') {

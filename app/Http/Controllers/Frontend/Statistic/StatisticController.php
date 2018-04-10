@@ -89,7 +89,7 @@ class StatisticController extends Controller
             return $this->exportEmployee($excelDatas, $totalData);
         }
 
-    	return view('frontend.statistic.employee', compact('datas', 'userName', 'startDate', 'endDate', 'children', 'fullUrl', 'totalData', 'parent'));
+    	return view('frontend.finance.employee', compact('datas', 'userName', 'startDate', 'endDate', 'children', 'fullUrl', 'totalData', 'parent'));
     }
 
     /**
@@ -162,7 +162,7 @@ class StatisticController extends Controller
             return $this->exportOrder($excelDatas, $totalData);
         }
 
-    	return view('frontend.statistic.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
+    	return view('frontend.finance.order', compact('datas', 'startDate', 'endDate', 'fullUrl', 'totalData'));
     }
 
     /**

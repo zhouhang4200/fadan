@@ -165,9 +165,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
         // 自动抓取订单配置
         Route::prefix('automatically-grab')->group(function (){
-            Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.automatically-grab.goods')->middleware('new.permission:frontend.automatically-grab.goods');
-            Route::post('add', 'AutomaticallyGrabController@add')->name('frontend.automatically-grab.add');
-            Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.automatically-grab.delete');
+            Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.setting.automatically-grab.goods')->middleware('new.permission:frontend.automatically-grab.goods');
+            Route::post('add', 'AutomaticallyGrabController@add')->name('frontend.setting.automatically-grab.add');
+            Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.setting.automatically-grab.delete');
+            Route::post('show', 'AutomaticallyGrabController@show')->name('frontend.setting.automatically-grab.show');
+            Route::post('edit', 'AutomaticallyGrabController@edit')->name('frontend.setting.automatically-grab.edit');
         });
         // 短信管理
         Route::prefix('sms')->group(function () {
@@ -189,15 +191,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 	Route::namespace('Finance')->prefix('finance')->group(function () {
 		// 我的资产
 	    Route::get('asset', 'AssetController@index')->name('frontend.finance.asset')->middleware('new.permission:frontend.finance.asset');
-
 	    // 资金流水
 	    Route::get('amount-flow', 'AmountFlowController@index')->name('frontend.finance.amount-flow')->middleware('new.permission:frontend.finance.amount-flow');
 	    // 资金流水导出
 	    Route::get('amount-flow/export', 'AmountFlowController@export')->name('frontend.finance.amount-flow.export');
-
 	    // 资产日报
         Route::get('asset-daily', 'AssetDailyController@index')->name('frontend.finance.asset-daily')->middleware('new.permission:frontend.finance.asset-daily');
-
         // 余额提现
         Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store')->middleware('new.permission:frontend.finance.withdraw-order.store');
 		// 我的提现
@@ -211,12 +210,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::get('/', 'IndexController@index')->name('frontend.workbench.index')->middleware('new.permission:frontend.workbench.index');
         // 清空角标
         Route::post('clear-count', 'IndexController@clearCount')->name('frontend.workbench.clear-count');
-
         // 代充
         Route::namespace('Recharge')->prefix('recharge')->group(function (){
             // 首页
             Route::get('/', 'IndexController@index')->name('frontend.workbench.recharge.index')->middleware('new.permission:frontend.workbench.recharge.index');
-
             // 订单操作
             Route::prefix('order-operation')->group(function (){
                 // 订单详情

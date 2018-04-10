@@ -72,8 +72,8 @@
                             <th>累计用户提现</th>
                             <th>累计用户消费</th>
                             <th>累计退款给用户</th>
-                            <th>累计用户成交次数</th>
-                            <th>累计用户成交金额</th>
+                            <th>累计用户支出</th>
+                            <th>累计用户收入</th>
                             <th>时间</th>
                         </tr>
                         </thead>
@@ -96,8 +96,8 @@
                                     <td>{{ $data->total_withdraw + 0}}</td>
                                     <td>{{ $data->total_consume + 0}}</td>
                                     <td>{{ $data->total_refund + 0}}</td>
-                                    <td>{{ $data->total_trade_quantity }}</td>
-                                    <td>{{ $data->total_trade_amount + 0}}</td>
+                                    <td>{{ $data->total_expend }}</td>
+                                    <td>{{ $data->total_income + 0}}</td>
                                     <td>{{ $data->created_at}}</td>
                                 </tr>
                             @endforeach

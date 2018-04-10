@@ -59,46 +59,72 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="tid" autocomplete="off" class="layui-input">
+                    <input type="text" name="tid" autocomplete="off" class="layui-input" value="{{ $tid }}">
                 </div>
             </div>
 
             <div class="layui-inline">
                 <label class="layui-form-mid">旺旺号：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="buyer_nick" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-mid">状态</label>
-                <div class="layui-input-inline">
-                    <select name="status" lay-verify="">
-                        <option value=""></option>
-                        <option value="0" selected>待处理</option>
-                        <option value="1">已处理</option>
-                        <option value="2">已隐藏</option>
-                    </select>
+                    <input type="text" name="buyer_nick" autocomplete="off" class="layui-input" value="{{ $buyerNick }}">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">下单时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="">
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="{{ $startDate }}">
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value=" {{ $endDate }}">
                 </div>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
+                <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="" lay-filter="search">查询</button>
             </div>
         </div>
 
-        <div class="layui-form-item">
-
-        </div>
     </form>
 
-    <div class="order">
-
+    <div class="layui-tab layui-tab-brief" lay-filter="order">
+        <ul class="layui-tab-title">
+            <li class="@if($status == 0) layui-this  @endif" lay-id="0">全部</li>
+            <li class="@if($status == 1) layui-this  @endif" lay-id="1">待处理</li>
+            <li class="@if($status == 2) layui-this  @endif" lay-id="2">已处理</li>
+            <li class="@if($status == 3) layui-this  @endif" lay-id="3">已隐藏</li>
+        </ul>
+        <div class="layui-tab-content">
+            <table class="layui-table" lay-size="sm">
+                <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>买家旺旺</th>
+                    <th>购买单价</th>
+                    <th>购买数量</th>
+                    <th>实付金额</th>
+                    <th>下单时间</th>
+                    <th width="13%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse($orders as $item)
+                    <tr data-no="{{ $item->tid }}">
+                        <td>{{ $item->tid }}</td>
+                        <td ><a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $item->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="{{ $item->buyer_nick }}"> {{ $item->buyer_nick }}</a><img
+                                    src="/frontend/images/ww.png" alt=""></td>
+                        <td>{{ $item->price }}</td>
+                        <td>{{ $item->num }}</td>
+                        <td>{{ $item->payment }}</td>
+                        <td>{{ $item->created }}</td>
+                        <td>
+                            <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
+                            <button href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn ">隐藏</button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="11">没有数据</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+            {!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate ])->render() !!}
+        </div>
     </div>
 
 @endsection
@@ -117,17 +143,8 @@
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
-            getOrder();
-            // 获取订单
-            function getOrder(tid, wangWang, status, startDate, endDate) {
-                $.post('{{ route('frontend.workbench.leveling.wait-list') }}', {tid:tid, buyer_nick: wangWang, status: status, start_date: startDate, end_date:endDate}, function (result) {
-                    $('.order').html(result);
-                    layui.form.render();
-                }, 'json');
-            }
-
-            form.on('submit(search)', function (data) {
-               getOrder(data.field.tid, data.field.buyer_nick, data.field.status, data.field.start_date, data.field.end_date);
+            element.on('tab(order)', function(){
+                window.location.href='{{ route('frontend.workbench.leveling.wait') }}?status=' + this.getAttribute('lay-id');
             });
         });
     </script>

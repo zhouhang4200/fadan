@@ -48,7 +48,7 @@ class SmsController extends Controller
         }
         $record = $query->paginate(20);
 
-        return view('frontend.statistic.sms.index', compact('record', 'startDate', 'endDate', 'fullUrl'));
+        return view('frontend.finance.sms.index', compact('record', 'startDate', 'endDate', 'fullUrl'));
     }
 
     /**
@@ -94,6 +94,6 @@ class SmsController extends Controller
         }
         $recordDetail  = $query->paginate(20);
 
-        return view('frontend.statistic.sms.show', compact('recordDetail', 'orderNo', 'clientPhone', 'foreignOrderNo', 'fullUrl'));
+        return view('frontend.finance.sms.show', compact('recordDetail', 'orderNo', 'clientPhone', 'foreignOrderNo', 'fullUrl'));
     }
 }
