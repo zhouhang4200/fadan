@@ -26,9 +26,9 @@ class Partner
     public function handle($request, Closure $next)
     {
         // 判断请求是否为重复使用
-        if (time() - $request->timestamp > 20) {
-            return response()->partner(0, '无效请求');
-        }
+//        if (time() - $request->timestamp > 20) {
+//            return response()->partner(0, '无效请求');
+//        }
 
         // 检测appId
         $request->user = User::where('app_id', $request->app_id)->first();
