@@ -557,7 +557,7 @@
         $(function() {
             $('#tableDataGridExample').datagrid({
                 showRowIndex:false,
-//                height:100,
+                height:200,
 //                width:1400,
                 rowDefaultHeight:40,
                 responsive:false,
