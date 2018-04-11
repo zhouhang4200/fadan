@@ -4,6 +4,8 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <link href="{{ asset('/frontend/js/zui/css/zui.css') }}" rel="stylesheet">
+    <link href="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.css') }}" rel="stylesheet">
     <style>
         .wrapper {
             width: 1600px;
@@ -44,7 +46,7 @@
             margin-left: 200px;
         }
         #info .layui-form-item .layui-form-label{
-           width: 160px;
+            width: 160px;
         }
         /*下拉菜单*/
         .layui-table-fixed .layui-table-body {
@@ -68,6 +70,15 @@
             height: 40px !important;
             line-height: 40px !important;
         }
+
+        .datagrid-cell {
+            overflow: inherit !important;
+
+        }
+        .datagrid-fixed.datagrid-cell {
+            z-index: auto;
+        }
+
     </style>
 @endsection
 
@@ -107,12 +118,7 @@
                     <input type="text" name="wang_wang" autocomplete="off" class="layui-input">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-mid">加急订单：</label>
-                <div class="layui-input-inline" style="">
-                    <input type="checkbox" name="urgent_order" lay-skin="primary" value="0" lay-filter="urgent_order">
-                </div>
-            </div>
+
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -179,10 +185,93 @@
             <li class="" lay-id="22">已下架</li>
             <li class="" lay-id="23">强制撤销</li>
         </ul>
-        <div class="layui-tab-content"></div>
-    </div>
+        <div class="layui-tab-content">
+            <table class="table table-bordered" id="tableDataGridExample">
+                <thead>
+                <tr>
+                    <th width="255">订单号</th>
+                    <th width="100">号主旺旺</th>
+                    <th>客服备注</th>
+                    <th width="500">代练标题</th>
+                    <th width="500">游戏/区/服</th>
+                    <th width="500">账号/密码</th>
+                    <th>角色名称</th>
+                    <th width="500">订单状态</th>
+                    <th width="500">代练价格</th>
+                    <th>效率保证金</th>
+                    <th>安全保证金</th>
+                    <th>发单时间</th>
+                    <th>接单时间</th>
+                    <th>代练时间</th>
+                    <th width="500">剩余时间</th>
+                    <th>打手呢称</th>
+                    <th>打手电话</th>
+                    <th>号主电话</th>
+                    <th>来源价格</th>
+                    <th>支付金额</th>
+                    <th width="500">获得金额</th>
+                    <th width="500">手续费</th>
+                    <th>利润</th>
+                    <th>发单客服</th>
+                    <th width="200">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse($orders as $item)
+                @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
+                <tr>
+                    <td>
+                        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or '' }}</a> <br/>
+                        @if(isset($detail['third']) && $detail['third'])
+                            {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                        @endif
+                    </td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }}</td>
 
-    <table class="layui-hide layui-form" id="orer-list" lay-filter="user" lay-size="sm"></table>
+                    <td>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">下方左侧对齐 <span class="caret"></span></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="###">操作</a></li>
+                                <li><a href="###">另一个操作</a></li>
+                                <li class="divider"></li>
+                                <li><a href="###">更多操作</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    
+                </tr>
+                    @empty
+
+                @endforelse
+                </tbody>
+                </table>
+
+        </div>
+    </div>
 
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
@@ -241,7 +330,7 @@
     <div class="complain" style="display: none; padding: 10px 10px 0 10px">
         <div class="layui-tab-content">
             <form class="layui-form">
-            <input type="hidden" id="order_no" name="order_no">
+                <input type="hidden" id="order_no" name="order_no">
                 <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0px">
@@ -293,13 +382,13 @@
         <div class="layui-input-inline">
             <select  lay-filter="order-operation">
                 <option value="">请选择操作</option>
-                    <option value="detail" data-no="@{{ d.no }}" >详情</option>
+                <option value="detail" data-no="@{{ d.no }}" >详情</option>
                 @{{# if (!d.master && d.status == 1) {  }}
-                    <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
+                <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 22) {  }}
-                    <option value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</option>
+                <option value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 1) {  }}
@@ -319,7 +408,7 @@
                 @{{# }  }}
 
                 @{{# if (d.master && (d.status == 13 || d.status == 14 || d.status == 17)) {  }}
-                    <option value="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</option>
+                <option value="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</option>
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 18) {  }}
@@ -327,19 +416,19 @@
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                    @{{# if (d.consult == 1 && d.status == 15) {  }}
-                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
-                    @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
-                    <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                    <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
-                    @{{# }  }}
+                @{{# if (d.consult == 1 && d.status == 15) {  }}
+                <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
+                @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
+                <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
+                @{{# }  }}
                 @{{# } else {  }}
-                    @{{# if (d.consult == 2 && d.status == 15) {  }}
-                    <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
-                    @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
-                    <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                    <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
-                    @{{# }  }}
+                @{{# if (d.consult == 2 && d.status == 15) {  }}
+                <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
+                @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
+                <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
+                <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
+                @{{# }  }}
                 @{{# }  }}
 
                 @{{# if (d.status == 13 || d.status == 14 || d.status == 17 || d.status == 18) {  }}
@@ -351,13 +440,13 @@
                 @{{# }  }}
 
                 @{{# if (d.master) {  }}
-                    @{{# if (d.complain == 1 && d.status == 16) {  }}
-                    <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
-                    @{{# }  }}
+                @{{# if (d.complain == 1 && d.status == 16) {  }}
+                <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
+                @{{# }  }}
                 @{{# } else {  }}
-                    @{{# if (d.complain == 2 && d.status == 16) {  }}
-                    <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
-                    @{{# }  }}
+                @{{# if (d.complain == 2 && d.status == 16) {  }}
+                <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
+                @{{# }  }}
                 @{{# }  }}
 
                 @{{# if (d.master && d.status == 14) {  }}
@@ -424,19 +513,19 @@
     </script>
     <script type="text/html" id="labelTemplate">
         @{{# if (d.label == '红色') { }}
-            <div style="height:100%;width:100%;background-color: #ff6159"></div>
+        <div style="height:100%;width:100%;background-color: #ff6159"></div>
         @{{# } else if(d.label == '橙色') { }}
-            <div style="height:100%;width:100%;background-color: #f9a749"></div>
+        <div style="height:100%;width:100%;background-color: #f9a749"></div>
         @{{# } else if(d.label == '黄色') { }}
-            <div style="height:100%;width:100%;background-color: #f4cf54"></div>
+        <div style="height:100%;width:100%;background-color: #f4cf54"></div>
         @{{# } else if(d.label == '绿色') { }}
-            <div style="height:100%;width:100%;background-color: #69cd5d"></div>
+        <div style="height:100%;width:100%;background-color: #69cd5d"></div>
         @{{# } else if(d.label == '蓝色') { }}
-            <div style="height:100%;width:100%;background-color: #48b7f2"></div>
+        <div style="height:100%;width:100%;background-color: #48b7f2"></div>
         @{{# } else if(d.label == '紫色') { }}
-            <div style="height:100%;width:100%;background-color: #d285df"></div>
+        <div style="height:100%;width:100%;background-color: #d285df"></div>
         @{{# } else if(d.label == '灰色') { }}
-            <div style="height:100%;width:100%;background-color: #a5a5a7"></div>
+        <div style="height:100%;width:100%;background-color: #a5a5a7"></div>
         @{{# } }}
     </script>
     <script type="text/html" id="changeStyleTemplate">
@@ -460,7 +549,27 @@
             }
         </style>
     </script>
+
+    <script src="{{ asset('/frontend/js/zui/js/zui.js') }}"></script>
+    <script src="{{ asset('/frontend/js/zui/lib/selectable/zui.selectable.js') }}"></script>
+    <script src="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.js') }}"></script>
     <script>
+        $(function() {
+            $('#tableDataGridExample').datagrid({
+                showRowIndex:false,
+//                height:100,
+//                width:1400,
+                rowDefaultHeight:40,
+                responsive:false,
+                states: {
+                    fixedLeftUntil: 1,    // 固定左侧第一列
+                    fixedRightFrom: 25,   // 从第12列开始固定到右侧
+                    fixedTopUntil: 0,     // 固定顶部第一行（标题行）
+                    fixedBottomFrom: 100, // 从第100行（在此例中是最后一行）开始固定到底部
+                }
+            });
+            $('.datagrid-cell').css('overflow', 'inherit')
+        });
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,
@@ -524,7 +633,7 @@
             });
             // 根据状态获取订单
             element.on('tab(order-list)', function () {
-                 status = this.getAttribute('lay-id');
+                status = this.getAttribute('lay-id');
                 // 清空角标
                 $.post('{{ route("frontend.workbench.clear-count") }}', {status:status}, function () {
                 }, 'json');

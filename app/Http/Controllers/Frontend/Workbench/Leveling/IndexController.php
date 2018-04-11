@@ -76,6 +76,103 @@ class IndexController extends Controller
         return view('frontend.workbench.leveling.index', compact('game', 'employee', 'tags', 'smsTemplate'));
     }
 
+    public function test(Request $request, OrderRepository $orderRepository)
+    {
+        $no = $request->input('no', 0);
+        $sourceOrderNo = $request->input('source_order_no', 0);
+        $customerServiceName = $request->input('customer_service_name', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $wangWang = $request->input('wang_wang');
+        $urgentOrder = $request->input('urgent_order', 0);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $label = $request->input('label');
+        $pageSize = $request->input('limit', 10);
+
+        $game = $this->game;
+        $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
+        $smsTemplate = SmsTemplate::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->get();
+
+        if ($request->export) {
+
+            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
+
+            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+        }
+
+        $orders = $orderRepository->levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName);
+
+
+//            $orderArr = [];
+//            foreach ($orders as $item) {
+//                $orderInfo = $item->toArray();
+//
+//                // 删掉无用的数据
+//                unset($orderInfo['detail']);
+//
+//                $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
+//                $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+//                $orderInfo['consult'] = $orderInfo['leveling_consult']['consult'] ?? '';
+//                $orderInfo['complain'] = $orderInfo['leveling_consult']['complain'] ?? '';
+//
+//                // 当前订单数据
+//                $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
+//
+//                if (!in_array($orderInfo['status'], [19, 20, 21])){
+//                    $orderCurrent['payment_amount'] = '';
+//                    $orderCurrent['get_amount'] = '';
+//                    $orderCurrent['poundage'] = '';
+//                    $orderCurrent['profit'] = '';
+//                } else {
+//                    // 支付金额
+//                    if ($orderInfo['status'] == 21) {
+//                        $amount = $orderInfo['leveling_consult']['api_amount'];
+//                    } else {
+//                        $amount = $orderInfo['leveling_consult']['amount'];
+//                    }
+//                    // 支付金额
+//                    $orderCurrent['payment_amount'] = $amount !=0 ?  $amount + 0:  $orderInfo['amount'] + 0;
+//
+//                    $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'] + 0;
+//                    $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'] + 0;
+//                    $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
+//                    // 利润
+//                    $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
+//                }
+//
+//                $days = $orderCurrent['game_leveling_day'] ?? 0;
+//                $hours = $orderCurrent['game_leveling_hour'] ?? 0;
+//                $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+//
+//                // 如果存在接单时间
+//                if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+//                    // 计算到期的时间戳
+//                    $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+//                    // 计算剩余时间
+//                    $leftSecond = $expirationTimestamp - time();
+//                    $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
+//                } else {
+//                    $orderCurrent['left_time'] = '';
+//                }
+////                $orderCurrent['third_name'] = isset(config('partner.platform')[$orderCurrent['third']]) ? config('partner.platform')[$orderCurrent['third']]['name'] : '';
+//
+//                $temp = [];
+//                foreach ($orderCurrent as $key => $value) {
+//                    if (is_string($value)) {
+//                        $temp[$key] = htmlspecialchars($value);
+//                    } else {
+//                        $temp[$key] = $value;
+//                    }
+//                }
+//                $orderArr[] = $temp;
+//            }
+
+
+        return view('frontend.workbench.leveling.index-new', compact('orders', 'game', 'employee', 'tags', 'smsTemplate'));
+    }
+
     /**
      * @param Request $request
      * @param OrderRepository $orderRepository
@@ -160,7 +257,7 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
-                $orderCurrent['third_name'] = isset(config('partner.platform')[$orderCurrent['third']]) ? config('partner.platform')[$orderCurrent['third']]['name'] : '';
+//                $orderCurrent['third_name'] = isset(config('partner.platform')[$orderCurrent['third']]) ? config('partner.platform')[$orderCurrent['third']]['name'] : '';
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
