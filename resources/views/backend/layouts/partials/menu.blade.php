@@ -102,7 +102,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
 
                             <li>
-                                <a href="{{ route('frontend.user.oriented.index') }}" @if($currentRouteName == 'frontend.user.oriented.index'') class="active" @endif>
+                                <a href="{{ route('frontend.user.oriented.index') }}" @if($currentRouteName == 'frontend.user.oriented.index') class="active" @endif>
                                     游戏指定分配
                                 </a>
                             </li>
