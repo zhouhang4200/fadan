@@ -22,6 +22,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.foreign.index',
                         'order.after-service.index',
                         'order.leveling.index',
+                        'frontend.user.oriented.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
@@ -101,8 +102,8 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
 
                             <li>
-                                <a href="{{ route('businessman.goods-contractor.index') }}" @if($currentRouteName == 'businessman.goods-contractor.index') class="active" @endif>
-                                    商户承包商品配置
+                                <a href="{{ route('frontend.user.oriented.index') }}" @if($currentRouteName == 'frontend.user.oriented.index'') class="active" @endif>
+                                    游戏指定分配
                                 </a>
                             </li>
 
