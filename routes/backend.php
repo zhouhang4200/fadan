@@ -149,6 +149,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('store', 'GoodsContractor@store')->name('businessman.goods-contractor.store');
             Route::post('destroy', 'GoodsContractor@destroy')->name('businessman.goods-contractor.destroy');
         });
+		// 订单定向分配
+		Route::prefix('oriented')->group(function () {
+			Route::get('/', 'GameAutoAssignController@index')->name('frontend.user.oriented.index');
+			Route::post('store', 'GameAutoAssignController@store')->name('frontend.user.oriented.store');
+			Route::post('delete', 'GameAutoAssignController@delete')->name('frontend.user.oriented.delete');
+		});
     });
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
