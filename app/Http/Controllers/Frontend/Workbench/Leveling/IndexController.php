@@ -1196,10 +1196,15 @@ class IndexController extends Controller
 
         $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 0)
             ->where('service_id', 4)
             ->orderBy('id', 'desc')
             ->paginate(30);
+
+        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->count();
+        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 0)->count();
+        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 1)->count();
+        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 2)->count();
+
 
         return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,
@@ -1208,38 +1213,26 @@ class IndexController extends Controller
                 'buyerNick' => $buyerNick,
                 'startDate' => $startDate,
                 'endDate' => $endDate,
+                'totalCount' => $totalCount,
+                'disposeCount' => $disposeCount,
+                'unDisposeCount' => $unDisposeCount,
+                'hideCount' => $hideCount,
             ]
         );
     }
 
     /**
-     * 待发单数据
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function waitList(Request $request)
+    public function waitUpdate(Request $request)
     {
-        $tid = $request->tid;
         $status = $request->status;
-        $buyerNick = $request->buyer_nick;
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
 
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
-            ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 0)
-            ->where('service_id', 4)
-            ->orderBy('id', 'desc')
-            ->paginate(30);
-
-        return response()->json(\View::make('frontend.workbench.leveling.wait-order-list', [
-            'tid' => $tid,
-            'status' => $status,
-            'orders' => $orders,
-            'buyerNick' => $buyerNick,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-        ])->render());
+        if (in_array($status, [0, 2])) {
+            TaobaoTrade::where('id', $request->id)
+                ->where('user_id', auth()->user()->getPrimaryUserId())
+                ->update(['handle_status' => $status]);
+        }
     }
 }
 

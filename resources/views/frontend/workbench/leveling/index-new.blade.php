@@ -3,7 +3,7 @@
 @section('title', '工作台 - 代练')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    {{--<link href="{{ asset('/css/index.css') }}" rel="stylesheet">--}}
     <link href="{{ asset('/frontend/js/zui/css/zui.css') }}" rel="stylesheet">
     <link href="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.css') }}" rel="stylesheet">
     <style>
@@ -49,35 +49,21 @@
             width: 160px;
         }
         /*下拉菜单*/
-        .layui-table-fixed .layui-table-body {
-            overflow: visible;
-        }
-        .layui-table-box, .layui-table-view {
-            position: relative;
-            overflow: unset;
-        }
-        tr > .laytable-cell-2-label {
-            padding: 0 !important;
-        }
-        .layui-table-view .layui-table[lay-size=sm] .layui-table-cell {
-            height: 40px;
-            line-height: 20px;
-        }
-        .layui-form-select dl {
-            max-height: 500px;
-        }
-        .layui-table-header  .layui-table-cell {
-            height: 40px !important;
-            line-height: 40px !important;
-        }
+        select {
+            border: solid 1px #000;
 
-        .datagrid-cell {
-            overflow: inherit !important;
+            appearance:none;
+            -moz-appearance:none;
+            -webkit-appearance:none;
+
+            padding-right: 14px;
+
+            background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
 
         }
-        .datagrid-fixed.datagrid-cell {
-            z-index: auto;
-        }
+
+
+        select::-ms-expand { display: none; }
 
     </style>
 @endsection
@@ -186,47 +172,52 @@
             <li class="" lay-id="23">强制撤销</li>
         </ul>
         <div class="layui-tab-content">
-            <table class="table table-bordered" id="tableDataGridExample">
-                <thead>
-                <tr>
-                    <th width="255">订单号</th>
-                    <th width="100">号主旺旺</th>
-                    <th>客服备注</th>
-                    <th width="500">代练标题</th>
-                    <th width="500">游戏/区/服</th>
-                    <th width="500">账号/密码</th>
-                    <th>角色名称</th>
-                    <th width="500">订单状态</th>
-                    <th width="500">代练价格</th>
-                    <th>效率保证金</th>
-                    <th>安全保证金</th>
-                    <th>发单时间</th>
-                    <th>接单时间</th>
-                    <th>代练时间</th>
-                    <th width="500">剩余时间</th>
-                    <th>打手呢称</th>
-                    <th>打手电话</th>
-                    <th>号主电话</th>
-                    <th>来源价格</th>
-                    <th>支付金额</th>
-                    <th width="500">获得金额</th>
-                    <th width="500">手续费</th>
-                    <th>利润</th>
-                    <th>发单客服</th>
-                    <th width="200">操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse($orders as $item)
+
+
+        </div>
+
+        <table class="table table-bordered" id="tableDataGridExample">
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th >号主旺旺</th>
+                <th>客服备注</th>
+                <th>代练标题</th>
+                <th>游戏/区/服</th>
+                <th>账号/密码</th>
+                <th>角色名称</th>
+                <th>订单状态</th>
+                <th>代练价格</th>
+                <th>效率保证金</th>
+                <th>安全保证金</th>
+                <th>发单时间</th>
+                <th>接单时间</th>
+                <th>代练时间</th>
+                <th width="500">剩余时间</th>
+                <th>打手呢称</th>
+                <th>打手电话</th>
+                <th>号主电话</th>
+                <th>来源价格</th>
+                <th>支付金额</th>
+                <th>获得金额</th>
+                <th >手续费</th>
+                <th>利润</th>
+                <th>发单客服</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse($orders as $item)
                 @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
                 <tr>
                     <td>
-                        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or '' }}</a> <br/>
+                        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
                         @if(isset($detail['third']) && $detail['third'])
                             {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
                         @endif
+
                     </td>
-                    <td>{{ $item->no }}</td>
+                    <td>{{ $item->no }} <br>   {{ $item->no }} </td>
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
@@ -250,27 +241,25 @@
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
 
-                    <td>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">下方左侧对齐 <span class="caret"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="###">操作</a></li>
-                                <li><a href="###">另一个操作</a></li>
-                                <li class="divider"></li>
-                                <li><a href="###">更多操作</a></li>
-                            </ul>
-                        </div>
+                    <td width="300">
+                        <select lay-ignore style="padding:0 30px">
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                            <option>ssssssssss</option>
+                        </select>
                     </td>
-                    
+
                 </tr>
-                    @empty
+            @empty
 
-                @endforelse
-                </tbody>
-                </table>
-
-        </div>
+            @endforelse
+            </tbody>
+        </table>
     </div>
 
     <div class="consult" style="display: none; padding:  0 20px">
@@ -551,7 +540,7 @@
     </script>
 
     <script src="{{ asset('/frontend/js/zui/js/zui.js') }}"></script>
-    <script src="{{ asset('/frontend/js/zui/lib/selectable/zui.selectable.js') }}"></script>
+    {{--<script src="{{ asset('/frontend/js/zui/lib/selectable/zui.selectable.js') }}"></script>--}}
     <script src="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.js') }}"></script>
     <script>
         $(function() {
@@ -559,17 +548,16 @@
                 showRowIndex:false,
                 height:200,
 //                width:1400,
-                rowDefaultHeight:40,
+                rowDefaultHeight:60,
                 responsive:false,
                 states: {
                     fixedLeftUntil: 1,    // 固定左侧第一列
                     fixedRightFrom: 25,   // 从第12列开始固定到右侧
                     fixedTopUntil: 0,     // 固定顶部第一行（标题行）
-                    fixedBottomFrom: 100, // 从第100行（在此例中是最后一行）开始固定到底部
                 }
             });
-            $('.datagrid-cell').css('overflow', 'inherit')
         });
+
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,

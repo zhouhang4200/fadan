@@ -85,10 +85,10 @@
 
     <div class="layui-tab layui-tab-brief" lay-filter="order">
         <ul class="layui-tab-title">
-            <li class="@if($status == 0) layui-this  @endif" lay-id="0">全部</li>
-            <li class="@if($status == 1) layui-this  @endif" lay-id="1">待处理</li>
-            <li class="@if($status == 2) layui-this  @endif" lay-id="2">已处理</li>
-            <li class="@if($status == 3) layui-this  @endif" lay-id="3">已隐藏</li>
+            <li class="@if($status == 99) layui-this  @endif" lay-id="99">全部 @if($totalCount)<span class="layui-badge">{{ $totalCount }}</span>@endif</li>
+            <li class="@if($status == 0) layui-this  @endif" lay-id="0">待处理 @if($unDisposeCount)<span class="layui-badge">{{ $unDisposeCount }}</span>@endif</li>
+            <li class="@if($status == 1) layui-this  @endif" lay-id="1">已处理 @if($disposeCount)<span class="layui-badge">{{ $disposeCount }}</span>@endif</li>
+            <li class="@if($status == 2) layui-this  @endif" lay-id="2">已隐藏 @if($hideCount)<span class="layui-badge">{{ $hideCount }}</span>@endif</li>
         </ul>
         <div class="layui-tab-content">
             <table class="layui-table" lay-size="sm">
@@ -115,7 +115,11 @@
                         <td>{{ $item->created }}</td>
                         <td>
                             <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
-                            <button href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn ">隐藏</button>
+                            @if($item->handle_status == 0)
+                                <button href="{{ route('frontend.workbench.leveling.wait-update', ['id' => $item->id, 'status' => 2]) }}" class="layui-btn update">隐藏</button>
+                            @elseif($item->handle_status == 2)
+                                <button href="{{ route('frontend.workbench.leveling.wait-update', ['id' => $item->id, 'status' => 0]) }}" class="layui-btn update">显示</button>
+                            @endif
                         </td>
                     </tr>
                 @empty
@@ -137,14 +141,19 @@
                 layer = layui.layer,
                 layTpl = layui.laytpl,
                 element = layui.element,
-                laydate = layui.laydate,
-                table = layui.table;
+                laydate = layui.laydate;
 
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
             element.on('tab(order)', function(){
                 window.location.href='{{ route('frontend.workbench.leveling.wait') }}?status=' + this.getAttribute('lay-id');
+            });
+
+            $('.update').on('click', function () {
+                $.post($(this).attr('href'), {ad:1}, function () {
+                    window.location.href='{{ route('frontend.workbench.leveling.wait') }}?status=' + '{{ $status }}';
+                });
             });
         });
     </script>

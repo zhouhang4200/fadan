@@ -7,7 +7,7 @@
 @endsection
 
 @section('submenu')
-    @include('frontend.finance.submenu')
+    @include('frontend.statistic.submenu')
 @endsection
 
 @section('main')
@@ -15,17 +15,12 @@
     <form class="layui-form" id="search">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-mid">千手单号：</label>
+                <label class="layui-form-mid">订单号：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="order_no" autocomplete="off" class="layui-input" value="{{ $orderNo }}">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-mid">外部单号：</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="foreign_order_no" autocomplete="off" class="layui-input" value="{{ $foreignOrderNo }}">
-                </div>
-            </div>
+
             <div class="layui-inline">
                 <label class="layui-form-mid">发送手机：</label>
                 <div class="layui-input-inline">
@@ -39,19 +34,19 @@
 
     <div class="layui-tab-item layui-show" lay-size="sm">
         <form class="layui-form" action="">
-        <table class="layui-table" lay-size="sm" style="">
-            <thead>
-            <tr>
-                <th>订单号</th>
-                <th>发送手机</th>
-                <th>发送内容</th>
-                <th>发送时间</th>
-            </tr>
-            </thead>
-            <tbody>
+            <table class="layui-table" lay-size="sm" style="">
+                <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>发送手机</th>
+                    <th>发送内容</th>
+                    <th>发送时间</th>
+                </tr>
+                </thead>
+                <tbody>
                 @forelse($recordDetail as $item)
                     <tr>
-                        <td width="20%">千手单号：{{ $item->order_no }} <br/> 外部单号：{{ $item->foreign_order_no }}</td>
+                        <td width="20%">天猫：{{ $item->order_no }} <br/> @if($item->third ) {{  config('partner.platform')[$item->third]  }}：{{ $item->foreign_order_no }} @endif</td>
                         <td width="13%">{{ $item->client_phone }}</td>
                         <td>{{ $item->contents }}</td>
                         <td width="10%">{{ $item->created_at }}</td>
@@ -61,8 +56,8 @@
                         <td colspan="10">暂时没有数据</td>
                     </tr>
                 @endforelse
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         </form>
     </div>
     {!! $recordDetail->appends([

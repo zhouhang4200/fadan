@@ -427,8 +427,8 @@
                             <fieldset><legend><a name="hr">订单数据</a></legend></fieldset>
                         </div>
                         <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">平台单号：</div>
-                            <div class="layui-col-md8">{{ $detail['no']  }}</div>
+                            <div class="layui-col-md4 text_right">接单平台单号：</div>
+                            <div class="layui-col-md8">{{ $detail['third_order_no']  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">订单状态：</div>

@@ -205,9 +205,10 @@ if (!function_exists('waitReceivingAdd')) {
      * @param string $createdDate 订单创建时间
      * @param string $wangWang 关联的旺旺
      * @param integer $sendUser 发单用户ID
+     * @param integer $gainerPrimaryUserId 接单人主ID
      * @return mixed
      */
-    function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '', $sendUser = 0)
+    function waitReceivingAdd($orderNo, $receivingDate, $createdDate, $wangWang = '', $sendUser = 0, $gainerPrimaryUserId = 0)
     {
         $redis = RedisConnect::order();
 
@@ -216,6 +217,7 @@ if (!function_exists('waitReceivingAdd')) {
             'created_date' => $createdDate,
             'wang_wang' => $wangWang,
             'creator_primary_user_id' => $sendUser,
+            'gainer_primary_user_id' => $gainerPrimaryUserId,
         ]));
     }
 }

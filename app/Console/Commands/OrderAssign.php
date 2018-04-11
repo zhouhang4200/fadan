@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Extensions\Order\Operations\Cancel;
 use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Extensions\Order\Operations\GrabClose;
+use App\Models\GameAutoAssign;
 use App\Models\User;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\RedisConnect;
@@ -67,10 +68,15 @@ class OrderAssign extends Command
                     }
                     continue;
                 } else {
-                    // 如果是王者直接分配给1131
-                    if (in_array($orderInfo->game_id, [3,4,1,58, 13,105,10,60,81,113,22 ,7,26,5,80,111 ,125,110,44])  && $orderInfo->creator_primary_user_id != 8307) {
+                    // 用当前订单的游戏ID与发单人主ID,查找自动分配置表
+                    $config = GameAutoAssign::where('game_id', $orderInfo->game_id)
+                        ->where('creator_primary_user_id', $orderInfo->creator_primary_user_id)
+                        ->first();
+
+                    // 如果配置存在，并且返回集市的接单人主ID与配置中的接单人ID不一样则将订单分配给该商户
+                    if ($config && isset($data->gainer_primary_user_id) && $data->gainer_primary_user_id != $config->gainer_primary_user_id) {
                         try {
-                            $this->assign($orderNo, 8329);
+                            $this->assign($orderNo, $config->gainer_primary_user_id);
                         } catch (\Exception $exception) {
                             myLog('exception', [$orderNo, $exception->getMessage()]);
                         }
@@ -111,8 +117,6 @@ class OrderAssign extends Command
                                 myLog('exception', [$orderNo, '- 分配订单失败 -' . $exception->getMessage()]);
                                 continue;
                             }
-                        } else if (in_array($orderInfo->game_id, [3,4,1,58, 13,105,10,60,81,113,22 ,7,26,5,80,111 ,125,110,44])  && $orderInfo->creator_primary_user_id != 8307) {
-                            $this->assign($orderNo, 8329);
                         } else {
                             $currentTim = strtotime(date('Y-m-d H:i:s'));
                             $currentAfter = strtotime(date('Y-m-d H:i:s', $currentTim)) + 10;
@@ -153,7 +157,8 @@ class OrderAssign extends Command
                                     date('Y-m-d H:i:s', $currentAfter),
                                     $data->created_date,
                                     $data->wang_wang,
-                                    $data->creator_primary_user_id ?? 0
+                                    $data->creator_primary_user_id ?? 0,
+                                    $data->gainer_primary_user_id ?? 0
                                 );
                                 continue;
                             }

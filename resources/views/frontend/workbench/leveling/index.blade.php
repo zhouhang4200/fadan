@@ -79,15 +79,20 @@
     <form class="layui-form" id="search">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-mid">平台单号：</label>
+                <label class="layui-form-mid">&nbsp;&nbsp;&nbsp; 订单号：</label>
                 <div class="layui-input-inline">
                     <input type="text" name="no" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">外部单号：</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="source_order_no" autocomplete="off" class="layui-input">
+                <label class="layui-form-mid">天猫状态：</label>
+                <div class="layui-input-inline" style="">
+                    <select name="customer_service_name" lay-search="">
+                        <option value="">请选择或输入</option>
+                        <option value="1">买家付完款</option>
+                        <option value="2">交易成功</option>
+                        <option value="3">买家发起退款</option>
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
@@ -107,12 +112,6 @@
                     <input type="text" name="wang_wang" autocomplete="off" class="layui-input">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-mid">加急订单：</label>
-                <div class="layui-input-inline" style="">
-                    <input type="checkbox" name="urgent_order" lay-skin="primary" value="0" lay-filter="urgent_order">
-                </div>
-            </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -128,12 +127,12 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">订单标签：</label>
+                <label class="layui-form-mid">接单平台：</label>
                 <div class="layui-input-inline" style="">
                     <select name="label">
                         <option value="">全部</option>
-                        @foreach ($tags as $tag)
-                            <option value="{{ $tag }}">{{ $tag }}</option>
+                        @foreach (config('partner.platform') as $key => $value)
+                            <option value="{{ $key }}">{{ $value['name'] }}</option>
                         @endforeach
                     </select>
                 </div>
