@@ -513,7 +513,7 @@
                     {title: '操作',fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
                 ]],
                 id: 'order',
-                height: 200,
+//                height: 200,
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
