@@ -5,7 +5,6 @@
             <th>编号</th>
             <th>员工姓名</th>
             <th>账号</th>
-            <th>代充类型</th>
             <th>代练类型</th>
             <th>岗位</th>
             <th>QQ</th>
@@ -23,7 +22,6 @@
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ config('user.type')[$user->type] }}</td>
                     <td>{{ config('user.leveling_type')[$user->leveling_type] }}</td>
                     <td>{{ $user->newRoles->pluck('alias')->count() > 0 ? implode(' |
                     ', $user->newRoles->pluck('alias')->toArray()) : '--' }}</td>
