@@ -612,9 +612,9 @@
 
     <script>
         $(document).ready(function () {
-            var h = $("body").height() - 800 + 'px';
+            var h = $("body").height() - 600 + 'px';
             var table = $('#tableDataGridExample').DataTable({
-                scrollY: h,
+                scrollY: '300px',
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,
