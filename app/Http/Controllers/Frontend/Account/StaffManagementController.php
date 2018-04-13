@@ -163,6 +163,8 @@ class StaffManagementController extends Controller
         $data['api_token'] = Str::random(25);
         $data['password'] = bcrypt(clientRSADecrypt($request->password));
         $data['parent_id'] = Auth::user()->getPrimaryUserId();
+        $data['app_id'] = str_random(60);
+        $data['app_secret'] = str_random(60);
         $roleIds = $request->roles ?: [];
         // 添加子账号同时添加角色
         $user = User::create($data);
