@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\Temp',
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
-        'App\Console\Commands\WriteDataEveryDay',
+        'App\Console\Commands\WriteDataEveryDay', // 订单集市等每天的数据
         'App\Console\Commands\EmployeeStatistic', // 代练平台员工统计
         'App\Console\Commands\OrderStatistic', // 代练平台订单统计
         'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
