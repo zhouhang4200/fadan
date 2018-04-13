@@ -79,7 +79,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                     // 遍历代练平台
                     foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        // 如果订单详情里面存在某个代练平台的订单号
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
                             // 控制器-》方法-》参数
                             call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['offSale']], [$orderDatas]);
