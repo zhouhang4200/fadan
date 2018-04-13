@@ -77,20 +77,40 @@ class UnLock extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelLock']], [$orderDatas]);
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+                /**
+                 * 以下 只 适用于 91  和 代练妈妈
+                 * @var [type]
+                 */
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {
                     case 1:
                         // 91 取消锁定
-                        $options = ['oid' => $orderDetails['show91_order_no']];
-                        Show91::changeOrderBlock($options);
+                        Show91::changeOrderBlock(['oid' => $orderDetails['show91_order_no']]);
                         break;
                     case 2:
                         // 代练妈妈解除锁定接口
                         DailianMama::operationOrder($this->order, 20010);
-                        break;
-                    default:
-                        throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
                 return true;

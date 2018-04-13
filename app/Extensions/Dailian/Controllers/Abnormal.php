@@ -28,7 +28,7 @@ class Abnormal extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId, $runAfter = false)
     {	
     	DB::beginTransaction();
     	try {
@@ -69,27 +69,28 @@ class Abnormal extends DailianAbstract implements DailianInterface
 
     public function after()
     {
+        // 发单方没有异常操作，暂时屏蔽
         if ($this->runAfter) {
-            try {
-                // 订单详情
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-                // 接单后才 third 才会有值, 没接单 third 值为''
-                switch ($orderDetails['third']) {
-                    case 1:
-                        throw new Exception('91平台没有此操作!');
-                        break;
-                    case 2:
-                        // 代练妈妈异常接口
-                        DailianMama::operationOrder($this->order, 20004);
-                        break;
-                    default:
-                        throw new DailianException('不存在第三方接单平台!');
-                        break;
-                }
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            }
+            // try {
+            //     // 订单详情
+            //     $orderDetails = $this->checkThirdClientOrder($this->order);
+            //     // 接单后才 third 才会有值, 没接单 third 值为''
+            //     switch ($orderDetails['third']) {
+            //         case 1:
+            //             throw new Exception('91平台没有此操作!');
+            //             break;
+            //         case 2:
+            //             // 代练妈妈异常接口
+            //             DailianMama::operationOrder($this->order, 20004);
+            //             break;
+            //         default:
+            //             throw new DailianException('不存在第三方接单平台!');
+            //             break;
+            //     }
+            //     return true;
+            // } catch (DailianException $e) {
+            //     throw new DailianException($e->getMessage());
+            // }
         }
     }
 }

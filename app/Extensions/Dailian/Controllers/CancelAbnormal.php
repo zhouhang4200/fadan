@@ -67,25 +67,26 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
 
     public function after()
     {
+        // 发单方没有取消异常操作，暂时屏蔽
         if ($this->runAfter) {
-            try {
-                $orderDetails = $this->checkThirdClientOrder($this->order);
+            // try {
+            //     $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                switch ($orderDetails['third']) {
-                    case 1:
-                        throw new DailianException('91平台没有此操作!');
-                        break;
-                    case 2:
-                        // 代练妈妈取消异常
-                        DailianMama::operationOrder($this->order, 20011);
-                        break;
-                    default:
-                        throw new DailianException('第三方接单平台不存在!');
-                        break;
-                }
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            }
+            //     switch ($orderDetails['third']) {
+            //         case 1:
+            //             throw new DailianException('91平台没有此操作!');
+            //             break;
+            //         case 2:
+            //             // 代练妈妈取消异常
+            //             DailianMama::operationOrder($this->order, 20011);
+            //             break;
+            //         default:
+            //             throw new DailianException('第三方接单平台不存在!');
+            //             break;
+            //     }
+            // } catch (DailianException $e) {
+            //     throw new DailianException($e->getMessage());
+            // }
         }
     }
 }

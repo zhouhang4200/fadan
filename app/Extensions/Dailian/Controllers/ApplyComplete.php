@@ -74,6 +74,7 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
+            // 申请验收之后redis写入记录
             $now = Carbon::now()->toDateTimeString();
             $key = $this->orderNo;
             Redis::hSet('complete_orders', $key, $now);

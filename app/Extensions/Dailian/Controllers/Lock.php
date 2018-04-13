@@ -76,21 +76,43 @@ class Lock extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                if (config('leveling.third_orders')) {
+                     // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['lock']], [$orderDatas]);
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+                /**
+                 * 以下只适用于  91  和 代练妈妈
+                 */
+
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {
                     case 1:
                         throw new DailianException('该订单被91平台接单，91平台无此操作!');
-                        // 91锁定接口
-                        // $options = ['oid' => $orderDetails['show91_order_no']];
-                        // Show91::changeOrderBlock($options);
                         break;
                     case 2:
                         // 代练妈妈锁定接口
                         DailianMama::operationOrder($this->order, 20002);
-                        break;
-                    default:
-                        throw new DailianException('第三方接单平台不存在!');
                         break;
                 }
                 return true;

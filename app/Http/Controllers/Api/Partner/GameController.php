@@ -68,4 +68,27 @@ class GameController extends Controller
 
 		return response()->partner(1, '成功', $servers);
     }
+
+       /**
+     * 获取某个游戏的代练类型
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function gameTypes(Request $request)
+    {
+        $gameName = $request->game_name ?? '';
+
+        $regions = DB::select("
+            SELECT a.field_value as name FROM goods_template_widget_values a
+            LEFT JOIN goods_template_widgets b
+            ON a.goods_template_widget_id=b.id
+            WHERE a.field_name='game_leveling_type' 
+            AND a.goods_template_widget_id=
+                (SELECT id FROM goods_template_widgets WHERE goods_template_id=
+                    (SELECT id FROM goods_templates WHERE game_id=(select id from games where name='$gameName' LIMIT 1) AND service_id=4 AND STATUS=1 LIMIT 1)
+                AND field_name='game_leveling_type' LIMIT 1)
+            ") ?? '空';
+
+        return response()->partner(1, '成功', $regions);
+    }
 }

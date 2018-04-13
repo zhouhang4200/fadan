@@ -73,26 +73,45 @@ class NoReceive extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['onSale']], [$orderDatas]);
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                /**
+                 * 以下只适用于  91  和 代练妈妈
+                 */
+
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91配置，只有91需要配置，其他不要配置
-                        $options = ['oid' => $orderDetails['show91_order_no']];
-                        Show91::grounding($options);
-                        break;
-                    case 2:
-                        // 代练妈妈上架
-                        DailianMama::upOrder($this->order);
-                        break;
-                    default:
-                        // 未接单情况下，所有的平台上架
-                        // 91配置，只有91需要配置，其他不要配置
-                        $options = ['oid' => $orderDetails['show91_order_no']];
-                        Show91::grounding($options);
-                        // 代练妈妈上架
-                        DailianMama::upOrder($this->order);
-                        break;
+                // 上架91订单
+                if ($orderDetails['show91_order_no']) {
+                    Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                }
+                // 代练妈妈上架
+                if ($orderDetails['dailianmama_order_no']) {
+                    DailianMama::upOrder($this->order);
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

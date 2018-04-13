@@ -858,8 +858,23 @@ class IndexController extends Controller
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 
-                    // 修改订单, 91和代练妈妈通用
+                    /**修改订单**/
+                    //**修改订单, 91和代练妈妈通用 **/
                     event(new AutoRequestInterface($order, 'addOrder', true));
+                    /** 修改订单, 其他平台通用 **/
+                    if (config('leveling.third_orders')) {
+                        // 获取订单和订单详情以及仲裁协商信息
+                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                        // 遍历代练平台
+                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                            // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                            if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                                // 控制器-》方法-》参数
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDatas]);
+                            }
+                        }
+                    }
+                    /**修改订单**/
                 }
 
                 // 已接单  异常 更新部分信息 （加价 加时间天 加时间小时 修改密码 ）
@@ -879,8 +894,21 @@ class IndexController extends Controller
                         ]);
                         $order->addAmount = $addAmount;
                         
-                        // 加价
+                        // 加价 91 和 代练妈妈通用
                         event(new AutoRequestInterface($order, 'addPrice'));
+                        // 加价 其他平台通用
+                        if (config('leveling.third_orders')) {
+                            // 获取订单和订单详情以及仲裁协商信息
+                            $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                           // 遍历代练平台
+                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDatas]);
+                                }
+                            }
+                        }
                     } else if ($order->price > $requestData['game_leveling_amount']) {
                         return response()->ajax(0, '代练价格只可增加');
                     }
@@ -890,16 +918,42 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
                             'field_value' => $requestData['password']
                         ]);
-
+                        // 账号密码修改，91和代练妈妈通用
                         event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+                        // 其他平台通用
+                        if (config('leveling.third_orders')) {
+                             // 获取订单和订单详情以及仲裁协商信息
+                            $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                            // 遍历代练平台
+                                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateAccountAndPassword']], [$orderDatas]);
+                                }
+                            }
+                        }
                     }
 
                     if ($requestData['account'] != $orderDetail['account']) {
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'account')->update([
                             'field_value' => $requestData['password']
                         ]);
-
+                        // 账号密码修改，91和代练妈妈通用
                         event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+                        // 其他平台通用
+                        if (config('leveling.third_orders')) {
+                             // 获取订单和订单详情以及仲裁协商信息
+                            $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                            // 遍历代练平台
+                                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateAccountAndPassword']], [$orderDatas]);
+                                }
+                            }
+                        }
                     }
 
                     // 修改 游戏代练天
@@ -927,6 +981,7 @@ class IndexController extends Controller
                     if (isset($addDays) && !isset($addHours)) {
                         $order->addDays = $addDays;
                         $order->addHours = 0;
+                        // 仅限 91 和 代练妈妈
                         event(new AutoRequestInterface($order, 'addLimitTime'));
                     } elseif (!isset($addDays) && isset($addHours)) {
                         $order->addDays = 0;
@@ -936,6 +991,20 @@ class IndexController extends Controller
                         $order->addDays = $addDays;
                         $order->addHours = $addHours;
                         event(new AutoRequestInterface($order, 'addLimitTime'));
+                    }
+
+                     // 其他平台通用
+                     if (config('leveling.third_orders')) {
+                         // 获取订单和订单详情以及仲裁协商信息
+                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                        // 遍历代练平台
+                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                // 控制器-》方法-》参数
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$orderDatas]);
+                            }
+                        }
                     }
                 }
                 // 待验收 可加价格
@@ -955,6 +1024,19 @@ class IndexController extends Controller
                         // 接口加价
                         $order->addAmount = $addAmount;
                         event(new AutoRequestInterface($order, 'addPrice'));
+                        // 加价 其他平台通用
+                        if (config('leveling.third_orders')) {
+                            // 获取订单和订单详情以及仲裁协商信息
+                            $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                           // 遍历代练平台
+                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDatas]);
+                                }
+                            }
+                        }
                     } else {
                         return response()->ajax(1, '代练价格只可增加');
                     }
@@ -1233,6 +1315,88 @@ class IndexController extends Controller
                 ->where('user_id', auth()->user()->getPrimaryUserId())
                 ->update(['handle_status' => $status]);
         }
+    }
+
+        /**
+     * 获取订单，订单详情，协商仲裁的所有信息
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
+    public function getOrderAndOrderDetailAndLevelingConsult($orderNo)
+    {
+        $collectionArr =  DB::select("
+            SELECT a.order_no, 
+                MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
+                MAX(CASE WHEN a.field_name='serve' THEN a.field_value ELSE '' END) AS serve,
+                MAX(CASE WHEN a.field_name='account' THEN a.field_value ELSE '' END) AS account,
+                MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS PASSWORD,
+                MAX(CASE WHEN a.field_name='role' THEN a.field_value ELSE '' END) AS role,
+                MAX(CASE WHEN a.field_name='game_leveling_type' THEN a.field_value ELSE '' END) AS game_leveling_type,
+                MAX(CASE WHEN a.field_name='game_leveling_title' THEN a.field_value ELSE '' END) AS game_leveling_title,
+                MAX(CASE WHEN a.field_name='game_leveling_instructions' THEN a.field_value ELSE '' END) AS game_leveling_instructions,
+                MAX(CASE WHEN a.field_name='game_leveling_requirements' THEN a.field_value ELSE '' END) AS game_leveling_requirements,
+                MAX(CASE WHEN a.field_name='auto_unshelve_time' THEN a.field_value ELSE '' END) AS auto_unshelve_time,
+                MAX(CASE WHEN a.field_name='game_leveling_amount' THEN a.field_value ELSE '' END) AS game_leveling_amount,
+                MAX(CASE WHEN a.field_name='game_leveling_day' THEN a.field_value ELSE '' END) AS game_leveling_day,
+                MAX(CASE WHEN a.field_name='game_leveling_hour' THEN a.field_value ELSE '' END) AS game_leveling_hour,
+                MAX(CASE WHEN a.field_name='security_deposit' THEN a.field_value ELSE '' END) AS security_deposit,
+                MAX(CASE WHEN a.field_name='efficiency_deposit' THEN a.field_value ELSE '' END) AS efficiency_deposit,
+                MAX(CASE WHEN a.field_name='user_phone' THEN a.field_value ELSE '' END) AS user_phone,
+                MAX(CASE WHEN a.field_name='user_qq' THEN a.field_value ELSE '' END) AS user_qq,
+                MAX(CASE WHEN a.field_name='source_price' THEN a.field_value ELSE '' END) AS source_price,
+                MAX(CASE WHEN a.field_name='client_name' THEN a.field_value ELSE '' END) AS client_name,
+                MAX(CASE WHEN a.field_name='client_phone' THEN a.field_value ELSE '' END) AS client_phone,
+                MAX(CASE WHEN a.field_name='client_qq' THEN a.field_value ELSE '' END) AS client_qq,
+                MAX(CASE WHEN a.field_name='client_wang_wang' THEN a.field_value ELSE '' END) AS client_wang_wang,
+                MAX(CASE WHEN a.field_name='game_leveling_require_day' THEN a.field_value ELSE '' END) AS game_leveling_require_day,
+                MAX(CASE WHEN a.field_name='game_leveling_require_hour' THEN a.field_value ELSE '' END) AS game_leveling_require_hour,
+                MAX(CASE WHEN a.field_name='customer_service_remark' THEN a.field_value ELSE '' END) AS customer_service_remark,
+                MAX(CASE WHEN a.field_name='receiving_time' THEN a.field_value ELSE '' END) AS receiving_time,
+                MAX(CASE WHEN a.field_name='checkout_time' THEN a.field_value ELSE '' END) AS checkout_time,
+                MAX(CASE WHEN a.field_name='customer_service_name' THEN a.field_value ELSE '' END) AS customer_service_name,
+                MAX(CASE WHEN a.field_name='third_order_no' THEN a.field_value ELSE '' END) AS third_order_no,
+                MAX(CASE WHEN a.field_name='third' THEN a.field_value ELSE '' END) AS third,
+                MAX(CASE WHEN a.field_name='poundage' THEN a.field_value ELSE '' END) AS poundage,
+                MAX(CASE WHEN a.field_name='price_markup' THEN a.field_value ELSE '' END) AS price_markup,
+                MAX(CASE WHEN a.field_name='show91_order_no' THEN a.field_value ELSE '' END) AS show91_order_no,
+                MAX(CASE WHEN a.field_name='dailianmama_order_no' THEN a.field_value ELSE '' END) AS dailianmama_order_no,
+                MAX(CASE WHEN a.field_name='hatchet_man_qq' THEN a.field_value ELSE '' END) AS hatchet_man_qq,
+                MAX(CASE WHEN a.field_name='hatchet_man_phone' THEN a.field_value ELSE '' END) AS hatchet_man_phone,
+                MAX(CASE WHEN a.field_name='game_leveling_requirements_template' THEN a.field_value ELSE '' END) AS game_leveling_requirements_template,
+                b.no,
+                b.amount,
+                b.creator_user_id, 
+                b.creator_primary_user_id, 
+                b.game_id, 
+                b.gainer_user_id, 
+                b.gainer_primary_user_id,
+                c.user_id,
+                c.amount AS pay_amount,
+                c.deposit,
+                c.api_amount,
+                c.api_deposit,
+                c.api_service,
+                c.status,
+                c.consult,
+                c.complain,
+                c.complete,
+                c.remark,
+                c.revoke_message,
+                c.complain_message
+            FROM order_details a
+            LEFT JOIN orders b
+            ON a.order_no = b.no
+            LEFT JOIN leveling_consults c
+            ON a.order_no = c.order_no
+            WHERE a.order_no='$orderNo'");
+        
+        $collection = is_array($collectionArr) ? $collectionArr[0] : '';
+
+        if (empty($collection) || ! $collection->no) {
+            throw new DailianException('订单号错误');
+        }
+
+        return (array) $collection;
     }
 }
 

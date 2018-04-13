@@ -101,9 +101,28 @@ class Revoking extends DailianAbstract implements DailianInterface
                         // 代练妈妈协商接口
                         DailianMama::operationOrder($this->order, 20006);
                         break;
-                    default:
-                        throw new DailianException('不存在第三方接单平台!');
-                        break;
+                }
+
+
+
+
+
+
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                    // 如果没有撤销信息，抛出错误
+                    if (! $orderDatas['consult_order_no']) {
+                        throw new DailianException('撤销记录不存在');
+                    }
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['applyRevoke']], [$orderDatas]);
+                        }
+                    }
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

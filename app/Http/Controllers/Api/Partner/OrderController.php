@@ -92,15 +92,34 @@ class OrderController extends Controller
      */
     public function receive(Request $request)
     {
+        DB::beginTransaction();
         try {
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
+            if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
+                return response()->partner(0, '打手信息缺失');
+            }
+            // 外部平台调用我们的接单操作
             DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
+            // 写入打手信息(QQ, 电话， 昵称)
+            OrderDetail::where('order_no', $orderData->no)
+                ->where('field_name', 'hatchet_man_qq')
+                ->update(['field_value' => $request->hatchet_man_qq]);
 
-            return response()->partner(1, '成功');
+            OrderDetail::where('order_no', $orderData->no)
+                ->where('field_name', 'hatchet_man_phone')
+                ->update(['field_value' => $request->hatchet_man_phone]);
+
+            OrderDetail::where('order_no', $orderData->no)
+                ->where('field_name', 'hatchet_man_name')
+                ->update(['field_value' => $request->hatchet_man_name]);          
+
         } catch (DailianException $e) {
+            DB::rollback();
             return response()->partner(0, $e->getMessage());
         }
+        DB::commit();
+        return response()->partner(1, '成功');
     }
 
     /**
@@ -347,20 +366,48 @@ class OrderController extends Controller
     }
 
     /**
-     * 强制仲裁
+     * 客服仲裁(强制仲裁)
      * @param Request $request
      */
     public function forceArbitration(Request $request)
     {
+        DB::beginTransaction();
         try {
+            $apiAmount = $request->api_amount; // 回传代练费
+            $apiDeposit = $request->api_deposit; // 回传的双金
+            $apiService = $request->api_service; // 回传的手续费
+
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
-            DailianFactory::choose('arbitration')->run($orderData->no, $request->user->id, false);
+            if (! is_numeric($apiDeposit) || ! is_numeric($apiService) || ! is_numeric($apiAmount)) {
+                throw new DailianException('回传双金、手续费和代练费必须是数字');
+            }
 
-            return response()->partner(1, '成功');
+            if ($apiDeposit < 0 || $apiService < 0 || $apiAmount < 0) {
+                throw new DailianException('回传双金、手续费和代练费必须大于等于0');
+            }
+
+            $data = [
+                'api_amount' => $apiAmount,
+                'api_deposit' => $apiDeposit,
+                'api_service' => $apiService,
+                'complete' => 2,
+            ];
+            // 更新代练协商申诉表
+            LevelingConsult::updateOrCreate(['order_no' => $orderData->no], $data);
+            // 同意申诉
+            DailianFactory::choose('arbitration')->run($orderData->no, $request->user->id, 0);
+            // 手续费写到order_detail中
+            OrderDetail::where('field_name', 'poundage')
+                ->where('order_no', $orderData->no)
+                ->update(['field_value' => $apiService]);
+
         } catch (DailianException $e) {
+            DB::rollBack();
             return response()->partner(0, $e->getMessage());
         }
+        DB::commit();
+        return response()->partner(1, '成功');
     }
 
     /**

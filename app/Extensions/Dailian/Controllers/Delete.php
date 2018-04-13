@@ -11,13 +11,13 @@ use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
 
 /**
- * 删除操作
+ * 撤单（删除）操作
  */
 class Delete extends DailianAbstract implements DailianInterface
 {
     protected $acceptableStatus = [1, 22]; // 状态：1未接单， 22已下架
 	protected $beforeHandleStatus; // 操作之前的状态:
-    protected $handledStatus    = 24; // 状态：24已删除
+    protected $handledStatus    = 24; // 状态：24已删除(已撤单)
     protected $type             = 23; // 操作：23删除
 
 	/**
@@ -99,33 +99,46 @@ class Delete extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
             try {
-                $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                        }
+                    }
+                }
 
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91删除接口
-                        $options = ['oid' => $orderDetails['show91_order_no']]; 
-                        Show91::chedan($options);
-                        break;
-                    case 2:
-                        // 代练妈妈删除订单接口
+
+
+
+
+
+
+
+
+
+
+
+                /**
+                 * 以下只适用于  91  和 代练妈妈
+                 */
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情
+                    $orderDetails = $this->checkThirdClientOrder($this->order);
+
+                    if ($orderDetails['show91_order_no']) {
+                        // 91下架接口
+                        Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+                    }
+
+                    if ($orderDetails['dailianmama_order_no']) {
+                        // 代练妈妈下架接口
                         DailianMama::deleteOrder($this->order);
-                        break;
-                    default:
-                        if ($orderDetails['show91_order_no']) {
-                            // 没接单的情况下，下架两边的订单
-                            // 91下架接口
-                            $options = ['oid' => $orderDetails['show91_order_no']]; 
-                            Show91::chedan($options);
-                        }
-
-                        if ($orderDetails['dailianmama_order_no']) {
-                            // 代练妈妈下架接口
-                            DailianMama::deleteOrder($this->order);
-                        }
-                        break;
+                    }
                 }
                 return true;
             } catch (DailianException $e) {
