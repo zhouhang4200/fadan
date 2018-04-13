@@ -183,20 +183,18 @@
 
                     @{{# if(item.help_text != '无') {  }}
                     <a href="#" class="tooltip">
-                        <i class="iconfont icon-wenhao" id="recharge"></i>
+                        <i class="iconfont icon-iconset0143" id="recharge"></i>
                         <span>@{{ item.help_text }}</span>
                     </a>
                     @{{# }  }}
-
                 </div>
-
             </div>
 
             @{{#  row--; }}
 
             @{{# if(row == 0) { }}
         </div>
-        <div class="layui-row form-group">
+        <div class="layui-row form-group @{{ item.field_display_name  }}">
             @{{# }  }}
 
             @{{# })  }}

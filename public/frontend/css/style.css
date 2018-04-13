@@ -69,7 +69,7 @@ body {
 .icon-ui:before { content: "\e625"; }
 .wrapper {
 	position: relative;
-	width: 1600px;
+	width: 1400px;
     margin: auto;
     zoom: 1;
 }
@@ -184,7 +184,7 @@ body {
     position: relative;
 }
 .main .left {
-    width: 170px;
+    width: 140px;
     float: left;
 }
 .main .sticky .left {
@@ -324,7 +324,7 @@ body {
 
 .main .right{
 	background-color: #FFF;
-    width: 1430px;
+    width: 1230px;
     min-height: 849px;
     float: right;
     box-shadow: 0 2px 10px rgba(0,0,0,.2);

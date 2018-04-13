@@ -3,38 +3,9 @@
 @section('title', '工作台 - 代练')
 
 @section('css')
-    {{--<link href="{{ asset('/css/index.css') }}" rel="stylesheet">--}}
-    <link href="{{ asset('/frontend/js/zui/css/zui.css') }}" rel="stylesheet">
-    <link href="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css">
     <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
-        .layui-laypage-skip input {
-            height: 27px !important;
-        }
-        .laytable-cell-1-0, .laytable-cell-1-5, .laytable-cell-1-7{
-            height: 40px !important;
-        }
-        /*th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
-            line-height: 40px !important;
-        }*/
-        .laytable-cell-1-22{
-            height: 40px !important;
-            line-height: 40px !important;
-        }
-        .layui-laypage-em {
-            background-color: #ff7a00 !important;
-        }
-        .layui-form-select .layui-input {
-            padding-right:0 !important;
-        }
-        .layui-table-fixed-r .layui-table-cell {
-            overflow: inherit;
-        }
         .layui-form-item .layui-inline {
             margin-bottom: 5px;
             margin-right: 5px;
@@ -42,29 +13,203 @@
         .layui-form-mid {
             margin-right: 4px;
         }
-        #info .layui-form-item .layui-input-block{
-            margin-left: 200px;
+        .layui-tab-title li {
+            min-width: 60px;
+            padding: 0 15px;
         }
-        #info .layui-form-item .layui-form-label{
-            width: 160px;
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-button {
+            width: 0;
+            height: 0;
+        }
+        ::-webkit-scrollbar-button:start:decrement,
+        ::-webkit-scrollbar-button:end:increment {
+            display: block;
+        }
+        ::-webkit-scrollbar-button:vertical:start:increment,
+        ::-webkit-scrollbar-button:vertical:end:decrement {
+            display: none;
+        }
+        ::-webkit-scrollbar-track:vertical,
+        ::-webkit-scrollbar-track:horizontal,
+        ::-webkit-scrollbar-thumb:vertical,
+        ::-webkit-scrollbar-thumb:horizontal,
+        ::-webkit-scrollbar-track:vertical,
+        ::-webkit-scrollbar-track:horizontal,
+        ::-webkit-scrollbar-thumb:vertical,
+        ::-webkit-scrollbar-thumb:horizontal {
+            border-color: transparent;
+            border-style: solid;
+        }
+        ::-webkit-scrollbar-track:vertical::-webkit-scrollbar-track:horizontal {
+            background-color: #fff;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb {
+            min-height: 28px;
+            padding-top: 100;
+            background-color: rgba(0, 0, 0, .2);
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            border-radius: 5px;
+            -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, .4);
+            -webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .25);
+        }
+        ::-webkit-scrollbar-thumb:active {
+            background-color: rgba(0, 0, 0, .5);
+            -webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, .35);
+        }
+        ::-webkit-scrollbar-track:vertical,
+        ::-webkit-scrollbar-track:horizontal,
+        ::-webkit-scrollbar-thumb:vertical,
+        ::-webkit-scrollbar-thumb:horizontal {
+            border-width: 0;
+        }
+        ::-webkit-scrollbar-track:hover {
+            background-color: rgba(0, 0, 0, .05);
+            -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, .1);
+        }
+        ::-webkit-scrollbar-track:active {
+            background-color: rgba(0, 0, 0, .05);
+            -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, .14), inset -1px -1px 0 rgba(0, 0, 0, .07);
+        }
+        .scrollbar-hover::-webkit-scrollbar,
+        .scrollbar-hover::-webkit-scrollbar-button,
+        .scrollbar-hover::-webkit-scrollbar-track,
+        .scrollbar-hover::-webkit-scrollbar-thumb {
+            visibility: hidden;
+        }
+        .scrollbar-hover:hover::-webkit-scrollbar,
+        .scrollbar-hover:hover::-webkit-scrollbar-button,
+        .scrollbar-hover:hover::-webkit-scrollbar-track,
+        .scrollbar-hover:hover::-webkit-scrollbar-thumb {
+            visibility: visible;
         }
         /*下拉菜单*/
-        select {
-            border: solid 1px #000;
-
-            appearance:none;
-            -moz-appearance:none;
-            -webkit-appearance:none;
-
-            padding-right: 14px;
-
-            background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
-
+        table.dataTable thead th, table.dataTable thead td {
+            padding: 10px 18px;
+            border: 1px solid #ddd;
+            background: #e6e6e6;
         }
-
-
-        select::-ms-expand { display: none; }
-
+        .dropup,
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-toggle:focus {
+            outline: 0;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            float: left;
+            min-width: 100px;
+            padding: 5px 0;
+            margin: 2px 0 0;
+            list-style: none;
+            font-size: 14px;
+            text-align: left;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            background-clip: padding-box;
+        }
+        .dropdown-menu.pull-right {
+            right: 0;
+            left: auto;
+        }
+        .dropdown-menu .divider {
+            height: 1px;
+            margin: 9px 0;
+            overflow: hidden;
+            background-color: #e5e5e5;
+        }
+        .dropdown-menu > li > a {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: normal;
+            line-height: 1.42857143;
+            color: #333333;
+            white-space: nowrap;
+        }
+        .dropdown-menu > li > a:hover,
+        .dropdown-menu > li > a:focus {
+            text-decoration: none;
+            color: #262626;
+            background-color: #f5f5f5;
+        }
+        .dropdown-menu > .active > a,
+        .dropdown-menu > .active > a:hover,
+        .dropdown-menu > .active > a:focus {
+            color: #fff;
+            text-decoration: none;
+            outline: 0;
+            background-color: #337ab7;
+        }
+        .dropdown-menu > .disabled > a,
+        .dropdown-menu > .disabled > a:hover,
+        .dropdown-menu > .disabled > a:focus {
+            color: #777777;
+        }
+        .dropdown-menu > .disabled > a:hover,
+        .dropdown-menu > .disabled > a:focus {
+            text-decoration: none;
+            background-color: transparent;
+            background-image: none;
+            filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+            cursor: not-allowed;
+        }
+        .open > .dropdown-menu {
+            display: block;
+        }
+        .open > a {
+            outline: 0;
+        }
+        .dropdown-header {
+            display: block;
+            padding: 3px 20px;
+            font-size: 12px;
+            line-height: 1.42857143;
+            color: #777777;
+            white-space: nowrap;
+        }
+        .dropdown-backdrop {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: 990;
+        }
+        .pull-right > .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+        .dropup .caret,
+        .navbar-fixed-bottom .dropdown .caret {
+            border-top: 0;
+            border-bottom: 4px dashed;
+            border-bottom: 4px solid \9;
+            content: "";
+        }
+        .dropup .dropdown-menu,
+        .navbar-fixed-bottom .dropdown .dropdown-menu {
+            top: auto;
+            bottom: 100%;
+            margin-bottom: 2px;
+        }
     </style>
 @endsection
 
@@ -91,9 +236,9 @@
                 <label class="layui-form-mid">代练游戏：</label>
                 <div class="layui-input-inline">
                     <select name="game_id" lay-search="">
-                        <option value="">请选择游戏</option>
+                        <li value="">请选择游戏</li>
                         @foreach($game as  $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
+                            <li value="{{ $key }}">{{ $value }}</li>
                         @endforeach
                     </select>
                 </div>
@@ -111,9 +256,9 @@
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
                     <select name="customer_service_name" lay-search="">
-                        <option value="">请选择或输入</option>
+                        <li value="">请选择或输入</li>
                         @forelse($employee as $item)
-                            <option value="{{ $item->username }}">{{ $item->username }}</option>
+                            <li value="{{ $item->username }}">{{ $item->username }}</li>
                         @empty
                         @endforelse
                     </select>
@@ -123,9 +268,9 @@
                 <label class="layui-form-mid">订单标签：</label>
                 <div class="layui-input-inline" style="">
                     <select name="label">
-                        <option value="">全部</option>
+                        <li value="">全部</li>
                         @foreach ($tags as $tag)
-                            <option value="{{ $tag }}">{{ $tag }}</option>
+                            <li value="{{ $tag }}">{{ $tag }}</li>
                         @endforeach
                     </select>
                 </div>
@@ -171,29 +316,25 @@
             <li class="" lay-id="22">已下架</li>
             <li class="" lay-id="23">强制撤销</li>
         </ul>
-        <div class="layui-tab-content">
-
-
-        </div>
-
-        <table class="table table-bordered" id="tableDataGridExample">
+        <br>
+        <table class="row-border stripe  cell-border order-column" id="tableDataGridExample">
             <thead>
             <tr>
                 <th>订单号</th>
-                <th >号主旺旺</th>
-                <th>客服备注</th>
+                <th width="65px">号主旺旺</th>
+                <th width="100">客服备注</th>
                 <th>代练标题</th>
-                <th>游戏/区/服</th>
-                <th>账号/密码</th>
-                <th>角色名称</th>
-                <th>订单状态</th>
+                <th width="90">游戏/区/服</th>
+                <th width="90">账号/密码</th>
+                <th width="50">角色名称</th>
+                <th width="50px">订单状态</th>
                 <th>代练价格</th>
                 <th>效率保证金</th>
                 <th>安全保证金</th>
                 <th>发单时间</th>
                 <th>接单时间</th>
                 <th>代练时间</th>
-                <th width="500">剩余时间</th>
+                <th>剩余时间</th>
                 <th>打手呢称</th>
                 <th>打手电话</th>
                 <th>号主电话</th>
@@ -203,10 +344,11 @@
                 <th >手续费</th>
                 <th>利润</th>
                 <th>发单客服</th>
-                <th>操作</th>
+                <th width="100px">操作</th>
             </tr>
             </thead>
             <tbody>
+            @php $i= 1; $total  = $orders->total();   @endphp
             @forelse($orders as $item)
                 @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
                 <tr>
@@ -217,7 +359,17 @@
                         @endif
 
                     </td>
-                    <td>{{ $item->no }} <br>   {{ $item->no }} </td>
+                    <td>
+                        @if(isset($detail['client_wang_wang']))
+                        <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank">联系旺旺号<img src="/frontend/images/ww.gif"></a></li>
+                        @endif
+                    </td>
+                    <td>{{ $detail['customer_service_remark'] or '' }}</td>
+                    <td>{{ $detail['game_leveling_title'] or '' }}</td>
+                    <td>{{ $item->game_name }} <br/> {{ isset($detail['region']) ?  $detail['region'] . ' / ' . $detail['serve'] : ''  }}</td>
+                    <td>{{ $detail['account'] or '' }} <br/> {{ $detail['password'] or '' }}</td>
+                    <td>{{ $detail['role'] or '' }}</td>
+                    <td>{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</td>
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
@@ -233,28 +385,116 @@
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
                     <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-                    <td>{{ $item->no }}</td>
-
-                    <td width="300">
-                        <select lay-ignore style="padding:0 30px">
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                            <option>ssssssssss</option>
-                        </select>
+                    <td>
+                        {{ $item->no }}
                     </td>
 
+                    <td>
+                        <div class="dropdown @if($i >= $total - 4) dropup @endif">
+                            <button style="width:100px;" type="button" class="layui-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                订单操作 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no]) }}">详情</a></li>
+
+                                @if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 1)
+                                <li><a  class="operation" data-operation="receive" data-no="{{ $item->no }}" href="#">接单</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 22)
+                                <li><a  class="operation" data-operation="onSale" data-no="{{ $item->no }}" href="#">上架</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 1)
+                                <li><a  class="operation" data-operation="offSale" data-no="{{ $item->no }}"  href="#">下架</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))
+                                <li><a href="{{ route('frontend.workbench.leveling.repeat', ['no' => $item->no]) }}">重发</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13 || $item->status == 14 || $item->status == 17))
+                                <li><a  class="operation" data-operation="lock" data-no="{{ $item->no }}"  href="#">锁定</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 18)
+                                <li><a  class="operation" data-operation="cancelLock" data-no="{{ $item->no }}"  href="#">取消锁定</a></li>
+                                @endif
+
+                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
+                                {{--@if ($item->leveling_consult->consult == 1 && $item->status == 15)--}}
+                                {{--<li value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</li>--}}
+                                {{--@elseif($item->leveling_consult->consult == 2 && ($item->status == 15 || $item->status == 16))--}}
+                                {{--<li value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</li>--}}
+                                {{--<li value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</li>--}}
+                                {{--@endif--}}
+                                {{----}}
+                                {{--@if($item->leveling_consult->consult == 2 && $item->status == 15)--}}
+                                {{--<li value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</li>--}}
+                                {{--@elseif($item->leveling_consult->consult == 1 && ($item->status == 15 || $item->status == 16))--}}
+                                {{--<li value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</li>--}}
+                                {{--<li value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</li>--}}
+                                {{--@endif--}}
+                                {{--@endif--}}
+
+                                @if ($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
+                                <li><a  class="operation" data-operation="revoke" data-no="{{ $item->no }}"  href="#">撤销</a></li>
+                                @endif
+
+                                @if ($item->status == 13 || $item->status == 14 || $item->status == 15)
+                                <li><a  class="operation" data-operation="applyArbitration" data-no="{{ $item->no }}"  href="">申请仲裁</a></li>
+                                @endif
+
+                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
+                                    {{--@if($item->leveling_consult->complain == 1 && $item->status == 16)--}}
+                                    {{--<li value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</li>--}}
+                                    {{--@endif--}}
+                                   {{----}}
+                                    {{--@if($item->leveling_consult->complain == 2 && $item->status == 16)--}}
+                                    {{--<li value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</li>--}}
+                                    {{--@endif--}}
+                                {{--@endif--}}
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 14)
+                                <li><a  class="operation" data-operation="complete" data-no="{{ $item->no }}"   href="#">完成</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())
+                                <li><a  href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no, 'tab' => 1]) }}">留言</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())
+                                <li><a href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no, 'tab' => 2]) }}">操作记录</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && isset($detail['client_wang_wang']))
+                                <li><a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank">联系旺旺号</a></li>
+                                @endif
+
+                                @if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 1 || $item->status == 22))
+                                <li><a  class="operation" data-operation="delete" data-no="{{ $item->no }}"  href="">撤单</a></li>
+                                @endif
+
+                                @if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13))
+                                <li><a  class="operation" data-operation="applyComplete" data-no="{{ $item->no }}" href="">申请完成</a></li>
+                                @endif
+
+                                @if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 14))
+                                <li><a  class="operation" data-operation="cancelComplete" data-no="{{ $item->no }}"  href="">取消验收</a></li>
+                                @endif
+
+                                @if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13))
+                                <li><a  class="operation" data-operation="abnormal" data-no="{{ $item->no }}"  href="#">异常</a></li>
+                                @endif
+
+                                @if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 17))
+                                <li><a  class="operation" data-operation="cancelAbnormal" data-no="{{ $item->no }}"  href="#"></a>取消异常</li>
+                                @endif
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
+                @php $i++  @endphp
             @empty
 
             @endforelse
@@ -344,9 +584,9 @@
             <div style="height: 20px;line-height: 20px;color:red;padding-bottom: 10px">短信费：0.1元/条</div>
             <div class="layui-form-item">
                 <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
-                    <option value="">选择模版</option>
+                    <li value="">选择模版</li>
                     @forelse($smsTemplate as $item)
-                        <option value="{{ $item->contents }}" data-template="">{{ $item->name }}</option>
+                        <li value="{{ $item->contents }}" data-template="">{{ $item->name }}</li>
                     @empty
                     @endforelse
                 </select>
@@ -366,202 +606,32 @@
 
 <!--START 底部-->
 @section('js')
-    <script type="text/html" id="operation">
-        {{--<a href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no  }}" class="layui-btn layui-btn layui-btn-normal  " lay-event="edit">详情</a>--}}
-        <div class="layui-input-inline">
-            <select  lay-filter="order-operation">
-                <option value="">请选择操作</option>
-                <option value="detail" data-no="@{{ d.no }}" >详情</option>
-                @{{# if (!d.master && d.status == 1) {  }}
-                <option value="receive" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">接单</option>
-                @{{# }  }}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-                @{{# if (d.master && d.status == 22) {  }}
-                <option value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.status == 1) {  }}
-                <option value="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</option>
-                @{{# }  }}
-
-                @{{# if (d.master && (d.status == 14 || d.status == 15 || d.status == 16 || d.status == 17 || d.status == 18 || d.status == 19 || d.status == 20 || d.status == 21)) {  }}
-                <option value="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.urgent_order != 1) {  }}
-                <option value="urgent" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">加急</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.urgent_order == 1) {  }}
-                <option value="unUrgent" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消加急</option>
-                @{{# }  }}
-
-                @{{# if (d.master && (d.status == 13 || d.status == 14 || d.status == 17)) {  }}
-                <option value="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.status == 18) {  }}
-                <option value="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</option>
-                @{{# }  }}
-
-                @{{# if (d.master) {  }}
-                @{{# if (d.consult == 1 && d.status == 15) {  }}
-                <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
-                @{{# } else if (d.consult == 2 && (d.status == 15 || d.status == 16)) {  }}
-                <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
-                @{{# }  }}
-                @{{# } else {  }}
-                @{{# if (d.consult == 2 && d.status == 15) {  }}
-                <option value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</option>
-                @{{# } else if (d.consult == 1 && (d.status == 15 || d.status == 16)) {  }}
-                <option value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</option>
-                <option value="refuseRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">不同意撤销</option>
-                @{{# }  }}
-                @{{# }  }}
-
-                @{{# if (d.status == 13 || d.status == 14 || d.status == 17 || d.status == 18) {  }}
-                <option value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</option>
-                @{{# }  }}
-
-                @{{# if (d.status == 13 || d.status == 14 || d.status == 15) {  }}
-                <option value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</option>
-                @{{# }  }}
-
-                @{{# if (d.master) {  }}
-                @{{# if (d.complain == 1 && d.status == 16) {  }}
-                <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
-                @{{# }  }}
-                @{{# } else {  }}
-                @{{# if (d.complain == 2 && d.status == 16) {  }}
-                <option value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</option>
-                @{{# }  }}
-                @{{# }  }}
-
-                @{{# if (d.master && d.status == 14) {  }}
-                <option value="complete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">完成</option>
-                @{{# }  }}
-
-                @{{# if (d.master) {  }}
-                <option value="sendSms" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">发短信</option>
-                @{{# }  }}
-
-                @{{# if (d.master) {  }}
-                <option value="message" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">留言</option>
-                @{{# }  }}
-
-                @{{# if (d.master) {  }}
-                <option value="operationRecord" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">操作记录</option>
-                @{{# }  }}
-
-                @{{# if (d.master && d.client_wang_wang) {  }}
-                <option value="wangWang" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-wang-wang="@{{ d.client_wang_wang }}">联系旺旺号</option>
-                @{{# }  }}
-
-                @{{# if (d.master && (d.status == 1 || d.status == 22)) {  }}
-                <option value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</option>
-                @{{# }  }}
-
-                @{{# if (!d.master && (d.status == 13)) {  }}
-                <option value="applyComplete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请完成</option>
-                @{{# }  }}
-
-                @{{# if (!d.master && (d.status == 14)) {  }}
-                <option value="cancelComplete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消验收</option>
-                @{{# }  }}
-                @{{# if (!d.master && (d.status == 13)) {  }}
-                <option value="abnormal" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">异常</option>
-                @{{# }  }}
-                @{{# if (!d.master && (d.status == 17)) {  }}
-                <option value="cancelAbnormal" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消异常</option>
-                @{{# }  }}
-            </select>
-        </div>
-    </script>
-    <script type="text/html" id="noTemplate">
-        {{--千手：@{{ d.no }} @{{# if(d.urgent_order == 1 && d.master) { }}<span style="color:red">急</span> @{{#  } }} <br/>--}}
-        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{ d.source_order_no }}</a> <br/>
-        @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{  d.third_order_no }} </a>  @{{#  } }}
-    </script>
-    <script type="text/html" id="wwTemplate">
-        @{{# if(d.third_name) { }}
-        <a  style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=@{{ d.client_wang_wang }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="@{{ d.client_wang_wang }}"> @{{ d.client_wang_wang }}</a><img
-                src="/frontend/images/ww.png" alt="">
-        @{{#  } }}
-    </script>
-    <script type="text/html" id="gameTemplate">
-        @{{ d.game_name }} <br/>
-        @{{ d.region }} / @{{ d.serve }}
-    </script>
-    <script type="text/html" id="accountPasswordTemplate">
-        @{{ d.account }} <br/>
-        @{{ d.password }}
-    </script>
-    <script type="text/html" id="getAmountTemplate">
-        @{{ d.get_amount ? d.get_amount : '' }} <br/>
-    </script>
-    <script type="text/html" id="labelTemplate">
-        @{{# if (d.label == '红色') { }}
-        <div style="height:100%;width:100%;background-color: #ff6159"></div>
-        @{{# } else if(d.label == '橙色') { }}
-        <div style="height:100%;width:100%;background-color: #f9a749"></div>
-        @{{# } else if(d.label == '黄色') { }}
-        <div style="height:100%;width:100%;background-color: #f4cf54"></div>
-        @{{# } else if(d.label == '绿色') { }}
-        <div style="height:100%;width:100%;background-color: #69cd5d"></div>
-        @{{# } else if(d.label == '蓝色') { }}
-        <div style="height:100%;width:100%;background-color: #48b7f2"></div>
-        @{{# } else if(d.label == '紫色') { }}
-        <div style="height:100%;width:100%;background-color: #d285df"></div>
-        @{{# } else if(d.label == '灰色') { }}
-        <div style="height:100%;width:100%;background-color: #a5a5a7"></div>
-        @{{# } }}
-    </script>
-    <script type="text/html" id="changeStyleTemplate">
-        <style>
-            .laytable-cell-@{{ d  }}-0, .laytable-cell-@{{ d  }}-5, .laytable-cell-@{{ d  }}-7 {
-                height: 40px !important;
-            }
-            .laytable-cell-@{{ d  }}-22 {
-                height: 40px !important;
-                line-height: 40px !important;
-            }
-            .layui-table-fixed .layui-table-body {
-                overflow: visible;
-            }
-            .layui-table-box, .layui-table-view {
-                position: relative;
-                overflow: unset;
-            }
-            .layui-table-mend {
-                width：0 !important;
-            }
-        </style>
-    </script>
-
-    <script src="{{ asset('/frontend/js/zui/js/zui.js') }}"></script>
-    {{--<script src="{{ asset('/frontend/js/zui/lib/selectable/zui.selectable.js') }}"></script>--}}
-    <script src="{{ asset('/frontend/js/zui/lib/datagrid/zui.datagrid.js') }}"></script>
     <script>
-        $(function() {
-            $('#tableDataGridExample').datagrid({
-                showRowIndex:false,
-                height:200,
-//                width:1400,
-                rowDefaultHeight:60,
-                responsive:false,
-                states: {
-                    fixedLeftUntil: 1,    // 固定左侧第一列
-                    fixedRightFrom: 25,   // 从第12列开始固定到右侧
-                    fixedTopUntil: 0,     // 固定顶部第一行（标题行）
+        $(document).ready(function () {
+            var h = $("body").height() - 800 + 'px';
+            var table = $('#tableDataGridExample').DataTable({
+                scrollY: h,
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                ordering: false,
+                info: false,
+                searching: false,
+                fixedColumns: {
+                    leftColumns: 1,
+                    rightColumns: 1
                 }
             });
         });
 
+
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,
-                    layTpl = layui.laytpl,
                     element = layui.element,
                     laydate = layui.laydate,
                     table = layui.table;
@@ -576,114 +646,15 @@
                 layer.closeAll();
             });
 
-            //方法级渲染
-            table.render({
-                elem: '#orer-list',
-                url: '{{ route('frontend.workbench.leveling.order-list') }}',
-                method: 'post',
-                size: 'sm',
-                cols: [[
-                    {title: '订单号',width: '225',templet: '#noTemplate'},// ,fixed: 'left'
-                    {title: '号主旺旺',width: '150',templet: '#wwTemplate'},// ,fixed: 'left'
-//                    {field: 'client_wang_wang', title: '号主旺旺', width: '150'},
-                    {field: 'customer_service_remark', title: '客服备注', width: '150'},
-                    {field: 'game_leveling_title', title: '代练标题', width: '250'},
-                    {title: '游戏/区/服', templet: '#gameTemplate', width: '150'},
-                    {title: '账号/密码', templet: '#accountPasswordTemplate', width: '100'},
-                    {field: 'role', title: '角色名称', width: '100'},
-                    {field: 'status_text', title: '订单状态', width: '120'},
-                    {field: 'amount', title: '代练价格', width: '80'},
-                    {field: 'efficiency_deposit', title: '效率保证金', width: '80'},
-                    {field: 'security_deposit', title: '安全保证金', width: '80'},
-                    {field: 'created_at', title: '发单时间', width: '150'},
-                    {field: 'receiving_time', title: '接单时间', width: '150'},
-                    {field: 'leveling_time', title: '代练时间', width: '80'},
-                    {field: 'left_time', title: '剩余时间', width: '120'},
-                    {field: 'hatchet_man_name', title: '打手呢称', width: '120'},
-                    {field: 'hatchet_man_phone', title: '打手电话', width: '120'},
-                    {field: 'client_phone', title: '号主电话', width: '120'},
-                    {field: 'original_amount', title: '来源价格', width: '100'},
-                    {field: 'payment_amount', title: '支付金额', width: '80'},
-                    {field: 'get_amount', title: '获得金额', width: '80'},
-                    {field: 'poundage', title: '手续费', width: '80'},
-                    {field: 'profit', title: '利润', width: '80'},
-                    {field: 'customer_service_name', title: '发单客服', width: '80'},
-                    {title: '操作',fixed:'right',width: '230', toolbar: '#operation'}//fixed:'right',
-                ]],
-                id: 'order',
-                height: 200,
-                page: {
-                    layout: [ 'count', 'prev', 'page', 'next', 'skip'],
-                    groups: 10,
-                    prev: '上一页',
-                    next: '下一页'
-                }
-            });
-            // 根据状态获取订单
-            element.on('tab(order-list)', function () {
-                status = this.getAttribute('lay-id');
-                // 清空角标
-                $.post('{{ route("frontend.workbench.clear-count") }}', {status:status}, function () {
-                }, 'json');
-                //执行重载
-                table.reload('order', {
-                    where: {
-                        status: status
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            });
-            form.on('checkbox(urgent_order)', function(data){
-                urgentOrder = data.elem.checked ? 1 : 0;
-            });
-
-            // 搜索
-            form.on('submit(search)', function (data) {
-                table.reload('order', {
-                    where: {
-                        page: 1,
-                        status: status,
-                        no: data.field.no,
-                        source_order_no: data.field.source_order_no,
-                        game_id: data.field.game_id,
-                        need: data.field.status,
-                        wang_wang: data.field.wang_wang,
-                        urgent_order: urgentOrder,
-                        start_date: data.field.start_date,
-                        end_date: data.field.end_date,
-                        label: data.field.label,
-                        customer_service_name: data.field.customer_service_name
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            });
             var userId = "{{ Auth::id() }}";
 
-            function reload() {
-                //执行重载
-                table.reload('order', {
-                    where: {
-                        status: status
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        layui.form.render();
-                    }
-                });
-            }
             // 对订单操作
-            form.on('select(order-operation)', function (data) {
-
-                var orderNo = $(data.elem).find("option:selected").attr("data-no");
-                var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
-                var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
-                var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
+            $('.operation').click(function () {
+                var operation = $(this).data('operation');
+                var orderNo = $(this).data("data-no");
+                var orderAmount = $(this).data("data-amount");
+                var orderSafe = $(this).data("data-safe");
+                var orderEffect = $(this).data("data-effect");
 
                 if (!orderAmount) {
                     orderAmount = 0;
@@ -698,43 +669,11 @@
                 $('#safe').val(orderSafe);
                 $('#effect').val(orderEffect);
 
-                if (!data.value) {
+                if (!operation) {
                     return false;
                 }
-                if (data.value == 'detail') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no='  + orderNo);
-                }
-                // 留言
-                if (data.value == 'message') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=1');
-                }
-                // 操作记录
-                if (data.value == 'operationRecord') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=2');
-                }
-                // 重发
-                if (data.value == 'repeat') {
-                    var no = $(data.elem).find("option:selected").attr("data-no");
-                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + orderNo);
-                }
-                // 联系旺旺
-                if (data.value == 'wangWang') {
-                    var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
-                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
-                    return false;
-                }
-                if (data.value == 'sendSms') {
-                    $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + orderNo + '"/>');
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '发送短信',
-                        area: ['500px'],
-                        content: $('.send-message')
-                    });
-                    return false
-                }
-                if (data.value == 'revoke') {
+
+                if (operation == 'revoke') {
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -758,7 +697,7 @@
                         return false;
                     });
 
-                } else if (data.value == 'applyArbitration') {
+                } else if (operation == 'applyArbitration') {
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -783,7 +722,7 @@
                         return false;
                     });
 
-                } else if (data.value == 'delete') {
+                } else if (operation == 'delete') {
                     layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -800,7 +739,7 @@
 
                         layer.close(index);
                     });
-                } else if(data.value == 'complete') {
+                } else if(operation == 'complete') {
                     layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -816,7 +755,7 @@
                         });
                         layer.close(index);
                     });
-                } else if(data.value ==  'agreeRevoke') {
+                } else if(operation ==  'agreeRevoke') {
                     layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -836,7 +775,7 @@
                         });
                         layer.close(index);
                     });
-                }  else {
+                } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo,
                         userId:userId,
@@ -855,23 +794,12 @@
                         reload();
                     });
                 }
-
-            });
-            // 发送短信
-            form.on('submit(confirm-send-sms)', function (data) {
-                $.post('{{ route('frontend.workbench.leveling.send-sms') }}', {no:data.field.no, contents:data.field.contents},function (result) {
-                    layer.closeAll();
-                    layer.msg(result.message);
-                }, 'json');
                 return false;
             });
-            // 重新渲染后重写样式
-            function changeStyle(index) {
-                var getTpl = changeStyleTemplate.innerHTML, view = $('body');
-                layTpl(getTpl).render(index, function(html){
-                    view.append(html);
-                });
-            }
+
+            form.on('select(order-operation)', function (data) {
+
+            });
 
             // 导出
             form.on('submit(export)', function (data) {
@@ -879,13 +807,8 @@
                 var datas = '?no=' + fields.no+'&source_order_no='+fields.source_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
                 window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
             });
-            // 选择短信模板
-            form.on('select(chose-sms-template)', function(data){
-                $('textarea[name=contents]').val(data.value);
-            });
-
+            
             var hasData = "{{ session('message') }}";
-
             if (hasData) {
                 layer.alert(hasData, function () {
                     layer.closeAll();

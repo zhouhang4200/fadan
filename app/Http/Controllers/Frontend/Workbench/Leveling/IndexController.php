@@ -88,7 +88,7 @@ class IndexController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $label = $request->input('label');
-        $pageSize = $request->input('limit', 10);
+        $pageSize = $request->input('limit', 30);
 
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();

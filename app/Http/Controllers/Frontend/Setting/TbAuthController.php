@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\Models\TaobaoShopAuthorization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -51,6 +52,7 @@ class TbAuthController extends Controller
         $sign = $request->input('sign');
         $wangWang = $request->input('retMsg');
 
+        $taobaoShopAuth = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->get();
         $bindResult = 0;
         if ($id && $sign && $wangWang) {
             if ($sign == md5(Auth::user()->id . Auth::user()->name)) {
@@ -65,6 +67,14 @@ class TbAuthController extends Controller
                 $bindResult = 2;
             }
         }
-        return view('frontend.setting.tb-auth.store', compact('bindResult'));
+        return view('frontend.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function storeAuth(Request $request)
+    {
+
     }
 }

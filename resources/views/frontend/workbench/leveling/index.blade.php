@@ -703,7 +703,7 @@
                         layer.close(index);
                     });
                 } else if(data.value == 'complete') {
-                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
                             userId:userId,

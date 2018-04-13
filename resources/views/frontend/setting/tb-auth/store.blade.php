@@ -33,6 +33,31 @@
         @endif
 
     </form>
+
+    <table class="layui-table" lay-size="sm">
+        <thead>
+        <tr>
+            <th>店铺旺旺</th>
+            <th>添加时间</th>
+            <th width="13%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        @forelse($taobaoShopAuth as $item)
+            <tr>
+                <td>{{ $item->wnag_wang }}</td>
+                <td>{{ $item->created_at }}</td>
+                <td>{{ $item->updated_at }}</td>
+                <td>
+                    <button class="layui-btn layui-btn-normal layui-btn-small" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button>
+                </td>
+            </tr>
+        @empty
+
+        @endforelse
+        </tbody>
+    </table>
+
 @endsection
 
 @section('js')

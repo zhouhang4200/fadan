@@ -140,6 +140,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail = new OrderDetail;
                 $orderDetail->order_no = $this->order->no;
                 $orderDetail->field_name = $k;
+                $orderDetail->field_name_alias = $k;
                 $orderDetail->field_display_name = $v;
                 $orderDetail->field_value = $this->details[$k] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
