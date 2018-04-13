@@ -48,7 +48,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'qq', 'phone', 'password', 'type', 'leveling_type','parent_id', 'group_id',
         'username', 'wechat', 'status', 'age', 'remark', 'wang_wang', 'store_wang_wang',
-        'online', 'nickname', 'voucher', 'api_token', 'api_token_expire',
+        'online', 'nickname', 'voucher', 'api_token', 'api_token_expire','app_id', 'app_secret'
     ];
 
     protected $dates = ['deleted_at'];
