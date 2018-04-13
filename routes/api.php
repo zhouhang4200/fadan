@@ -92,6 +92,8 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
         Route::post('server', 'GameController@servers');
         // 代练游戏类型
         Route::post('type', 'GameController@gameTypes');
+        // 游戏，区服信息总览
+        Route::post('data', 'GameController@datas');
     });
 });
 // 淘宝抓取订单
