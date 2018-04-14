@@ -178,7 +178,7 @@ class Playing extends DailianAbstract implements DailianInterface
                             // 更新 third_order_no 为对应平台的订单号
                             OrderDetail::where('order_no', $this->order->no)
                                 ->where('field_name', 'third_order_no')
-                                ->update(['field_value' => $orderDatas[$thirdOrderNoName]);
+                                ->update(['field_value' => $orderDatas[$thirdOrderNoName]]);
                         }
                     // 其他平台订单撤单
                     } else {
