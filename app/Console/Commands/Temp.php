@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderAttachmentRepository;
+use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\DailianMama;
 use App\Services\Show91;
 use App\Services\SmSApi;
@@ -45,6 +47,11 @@ class Temp extends Command
      */
     public function handle()
     {
+        $order = OrderDetail::where('field_value', 'ORD180312103737677782')->first();
+
+        $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
+        $orders = json_decode($orderData);
+        dd($order,$orders);
         $this->get('551522832617378011716001');
 
     }

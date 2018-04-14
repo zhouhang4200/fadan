@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Repositories\Frontend\OrderDetailRepository;
 use Order, DB, Exception;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ class OrderController extends Controller
      */
     public function getOrderAndOrderDetails($orderNo)
     {
+        $order = OrderDetail::where('field_value', $orderNo)->first();
+        if (!$order) {
+            throw new DailianException('订单号不存在!');
+        }
+        $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
+        return json_decode($orderData);
         $array =  DB::select("
             SELECT a.order_no, 
                 MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
@@ -99,21 +106,25 @@ class OrderController extends Controller
             if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
                 return response()->partner(0, '打手信息缺失');
             }
-            // 外部平台调用我们的接单操作
-            DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
-            // 写入打手信息(QQ, 电话， 昵称)
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_qq')
-                ->update(['field_value' => $request->hatchet_man_qq]);
+            if ($orderData) {
+                // 外部平台调用我们的接单操作
+                DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
+                // 写入打手信息(QQ, 电话， 昵称)
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_qq')
+                    ->update(['field_value' => $request->hatchet_man_qq]);
 
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_phone')
-                ->update(['field_value' => $request->hatchet_man_phone]);
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_phone')
+                    ->update(['field_value' => $request->hatchet_man_phone]);
 
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_name')
-                ->update(['field_value' => $request->hatchet_man_name]);          
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_name')
+                    ->update(['field_value' => $request->hatchet_man_name]);
 
+            } else {
+                return response()->partner(0, '订单不存在');
+            }
         } catch (DailianException $e) {
             DB::rollback();
             return response()->partner(0, $e->getMessage());
@@ -129,6 +140,9 @@ class OrderController extends Controller
     public function applyComplete(Request $request)
     {
         try {
+
+
+
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
             DailianFactory::choose('applyComplete')->run($orderData->no, $request->user->id);
