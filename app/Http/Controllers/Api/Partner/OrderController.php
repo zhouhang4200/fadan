@@ -99,21 +99,25 @@ class OrderController extends Controller
             if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
                 return response()->partner(0, '打手信息缺失');
             }
-            // 外部平台调用我们的接单操作
-            DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
-            // 写入打手信息(QQ, 电话， 昵称)
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_qq')
-                ->update(['field_value' => $request->hatchet_man_qq]);
+            if ($orderData) {
+                // 外部平台调用我们的接单操作
+                DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
+                // 写入打手信息(QQ, 电话， 昵称)
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_qq')
+                    ->update(['field_value' => $request->hatchet_man_qq]);
 
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_phone')
-                ->update(['field_value' => $request->hatchet_man_phone]);
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_phone')
+                    ->update(['field_value' => $request->hatchet_man_phone]);
 
-            OrderDetail::where('order_no', $orderData->no)
-                ->where('field_name', 'hatchet_man_name')
-                ->update(['field_value' => $request->hatchet_man_name]);          
+                OrderDetail::where('order_no', $orderData->no)
+                    ->where('field_name', 'hatchet_man_name')
+                    ->update(['field_value' => $request->hatchet_man_name]);
 
+            } else {
+                return response()->partner(0, '订单不存在');
+            }
         } catch (DailianException $e) {
             DB::rollback();
             return response()->partner(0, $e->getMessage());

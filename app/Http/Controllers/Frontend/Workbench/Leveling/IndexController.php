@@ -170,7 +170,7 @@ class IndexController extends Controller
 //            }
 
 
-        return view('frontend.workbench.leveling.index-new', compact('orders', 'game', 'employee', 'tags', 'smsTemplate'));
+        return view('frontend.workbench.leveling.tb', compact('orders', 'game', 'employee', 'tags', 'smsTemplate'));
     }
 
     /**

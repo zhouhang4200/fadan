@@ -46,11 +46,14 @@ abstract class DailianAbstract
 //        if (! in_array(Auth::user()->getPrimaryUserId(), [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
 //            throw new DailianException('订单操作人不是当前登陆者本人!');
 //        }
-        $this->orderDetail = $this->order->detail->pluck('field_value', 'field_name');
 
         if (empty($this->order)) {
             throw new DailianException('订单不存在');
         }
+
+        $this->orderDetail = $this->order->detail->pluck('field_value', 'field_name');
+
+
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
             \Log::alert('订单：' .$this->order->no . '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus);
