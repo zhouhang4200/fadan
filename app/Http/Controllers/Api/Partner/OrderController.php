@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Repositories\Frontend\OrderDetailRepository;
 use Order, DB, Exception;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ class OrderController extends Controller
      */
     public function getOrderAndOrderDetails($orderNo)
     {
+        $order = OrderDetail::where('field_value', $orderNo)->first();
+        if (!$order) {
+            throw new DailianException('订单号不存在!');
+        }
+        $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
+        return json_decode($orderData);
         $array =  DB::select("
             SELECT a.order_no, 
                 MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
@@ -133,6 +140,9 @@ class OrderController extends Controller
     public function applyComplete(Request $request)
     {
         try {
+
+
+
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
             DailianFactory::choose('applyComplete')->run($orderData->no, $request->user->id);

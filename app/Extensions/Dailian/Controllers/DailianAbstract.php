@@ -129,6 +129,10 @@ abstract class DailianAbstract
             ->pluck('field_value', 'field_name')
             ->toArray();
 
+        if(! $orderDetails) {
+            throw new DailianException('订单号不存在!');
+        }
+
         if (! $orderDetails['show91_order_no'] && ! $orderDetails['dailianmama_order_no']) {
             throw new DailianException('第三方订单号不存在!');
         }
