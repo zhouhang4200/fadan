@@ -789,15 +789,14 @@
                         layer.close(index);
                     });
                 } else if (opt == 'complete') {
-
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox' name='delivery'> 同时提交淘宝/天猫订单发货", {
-//                        icon: 3,
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
                         title: '提示'
                     }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo: orderNo,
                             userId: userId,
-                            keyWord: opt
+                            keyWord: opt,
+                            delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
@@ -893,8 +892,10 @@
                 return false;
             });
 
-            $('.delivery').click(function () {
-               alert(1);
+            $('body').on('click', '#delivery', function () {
+                if($(this).is(':checked')) {
+                    delivery = 1;
+                }
             });
         });
     </script>

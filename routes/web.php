@@ -112,6 +112,14 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
     // 用户设置
     Route::namespace('Setting')->prefix('setting')->group(function () {
+
+        // 设置 - 商户联系方式模板
+        Route::prefix('businessman-contact')->group(function () {
+            Route::get('/', 'BusinessmanController@index')->name('frontend.setting.setting.businessman-contact.index');
+            Route::post('store', 'BusinessmanController@store')->name('frontend.setting.businessman-contact.store');
+            Route::post('destroy', 'BusinessmanController@destroy')->name('frontend.setting.businessman-contact.destroy');
+        });
+
         // 接单权限
         Route::prefix('receiving-control')->group(function () {
             Route::get('/', 'ReceivingControlController@index')->name('frontend.setting.receiving-control.index')->middleware('new.permission:frontend.setting.receiving-control.index');

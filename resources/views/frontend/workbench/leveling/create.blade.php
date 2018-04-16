@@ -153,16 +153,7 @@
 
                     @{{# if(item.field_type == 1) {  }}
 
-                    @{{# if(item.field_name == '1' || item.field_name == '1') { }}
-                    <select lay-ignore class="select-input @{{ item.field_name }}" name="@{{ item.field_name }}">
-                        <option value="">输入或选择</option>
-                    </select>
-                    @{{# }else{  }}
-
                     <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}" value="@{{# if (item.field_default_value != "null") { item.field_default_value  } }}">
-
-                    @{{# } }}
-
 
                     @{{# } }}
 
@@ -240,7 +231,7 @@
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
-
+            var gameId = 1;
             //自定义验证规则
             form.verify({
                 zero: function(value){
@@ -336,6 +327,7 @@
             });
             // 切换游戏时加截新的模版
             form.on('select(game)', function (data) {
+                gameId = data.value;
                 loadTemplate(data.value)
             });
             // 模版预览 下拉框值
@@ -413,6 +405,7 @@
                     });
                     setDefaultValueOption();
                     loadGameLevelingTemplate(id);
+                    loadBusinessmanContactTemplate();
                     analysis()
                 }, 'json');
             }
@@ -486,9 +479,26 @@
                     });
                     $('select[name=game_leveling_requirements_template]').html(optionsHtml);
                     layui.form.render();
-                    $('.select-input').comboSelect();
                 }, 'json');
             }
+            // 加载代练要求模板
+            function loadBusinessmanContactTemplate() {
+                $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:0}, function (result) {
+                    var qqTemplate = '<option value="">请选择</option>';
+                    var phoneTemplate = '<option value="">请选择</option>';
+                    $.each(result, function (index, value) {
+                        if (value.type == 1) {
+                            phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  ' "> ' + value.name  +'</option>';
+                        } else {
+                            qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name  +'</option>';
+                        }
+                    });
+                    $('select[name=user_qq]').html(qqTemplate);
+                    $('select[name=user_phone]').html(phoneTemplate);
+                    layui.form.render();
+                }, 'json');
+            }
+
             form.on('select', function(data){
                 var fieldName = $(data.elem).attr("name"); //得到被选中的值
                 // 选择要求模后自动填充模板内容
@@ -501,7 +511,10 @@
                 layer.open({
                     type: 2,
                     area: ['700px', '400px'],
-                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}',
+                    cancel: function(index, layero){
+                        loadGameLevelingTemplate(gameId);
+                    }
                 });
             });
             // 添加商户电话模版
@@ -509,7 +522,10 @@
                 layer.open({
                     type: 2,
                     area: ['700px', '400px'],
-                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                    content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 1]) }}',
+                    cancel: function(index, layero){
+                        loadBusinessmanContactTemplate();
+                    }
                 });
             });
             // 添加商户QQ模版
@@ -517,7 +533,10 @@
                 layer.open({
                     type: 2,
                     area: ['700px', '400px'],
-                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                    content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 2]) }}',
+                    cancel: function(index, layero){
+                        loadBusinessmanContactTemplate();
+                    }
                 });
             });
         });

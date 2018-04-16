@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\BusinessmanContactTemplate;
 use App\Repositories\Frontend\GameRepository;
 use Auth;
 use Illuminate\Http\Request;
