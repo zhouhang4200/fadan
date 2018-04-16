@@ -49,14 +49,14 @@
             width: 100px;
         }
 
+        .fixed-table-box .fixed-table_body tr.rowHover button{
+            background-color:#eef1f6;
+        }
         .opt-btn {
-            background-color: #ff7a00;
             padding: 2px;
-            color:#fff;
             border: none;
             margin-bottom: 2px;
         }
-
 
     </style>
 @endsection
@@ -311,6 +311,9 @@
                         </td>
                     </tr>
                 @empty
+                    <tr>
+                        <td colspan="9999">暂无数据</td>
+                    </tr>
                 @endforelse
                 </tbody>
             </table>
