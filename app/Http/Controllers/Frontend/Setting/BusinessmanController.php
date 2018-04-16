@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Frontend\Setting;
 
 use Auth;
 use Illuminate\Http\Request;
-use App\BusinessmanContactTemplate;
+use App\Models\BusinessmanContactTemplate;
 use App\Http\Controllers\Controller;
 
 /**
