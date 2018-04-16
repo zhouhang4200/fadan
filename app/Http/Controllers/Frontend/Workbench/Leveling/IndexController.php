@@ -401,7 +401,7 @@ class IndexController extends Controller
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
 
-        if (! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
+        if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
             $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
         
