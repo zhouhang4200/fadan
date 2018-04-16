@@ -424,7 +424,7 @@
                             <div class="table-cell" style="width: 220px">
                                 天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
                                 @if(isset($detail['third']) && $detail['third'])
-                                    {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                                    {{ config('partner.platform')[(int)$detail['third']]['name']  }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} {{ $detail['third'] }} </a>
                                 @endif
                             </div>
                         </td>
@@ -726,25 +726,25 @@
                     return false;
                 }
                 if (data.value == 'detail') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no='  + orderNo);
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no=' + orderNo);
                 }
                 // 留言
                 if (data.value == 'message') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=1');
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=1');
                 }
                 // 操作记录
                 if (data.value == 'operationRecord') {
-                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=2');
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=2');
                 }
                 // 重发
                 if (data.value == 'repeat') {
                     var no = $(data.elem).find("option:selected").attr("data-no");
-                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + orderNo);
+                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/' + orderNo);
                 }
                 // 联系旺旺
                 if (data.value == 'wangWang') {
                     var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
-                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
+                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang + '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
                     return false;
                 }
                 if (data.value == 'sendSms') {
@@ -766,10 +766,10 @@
                         area: ['650px', '550px'],
                         content: $('.consult')
                     });
-                    form.on('submit(consult)', function(data){
+                    form.on('submit(consult)', function (data) {
                         $.post("{{ route('frontend.workbench.leveling.consult') }}", {
-                            orderNo:orderNo,
-                            data:data.field
+                            orderNo: orderNo,
+                            data: data.field
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.closeAll();
@@ -791,10 +791,10 @@
                         content: $('.complain')
                     });
                     $('#order_no').val(orderNo);
-                    form.on('submit(complain)', function(data){
+                    form.on('submit(complain)', function (data) {
                         $.post("{{ route('frontend.workbench.leveling.complain') }}", {
-                            orderNo:orderNo,
-                            data:data.field
+                            orderNo: orderNo,
+                            data: data.field
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
@@ -808,11 +808,11 @@
                     });
 
                 } else if (data.value == 'delete') {
-                    layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
+                    layer.confirm('确认删除吗？', {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo:orderNo,
-                            userId:userId,
-                            keyWord:data.value
+                            orderNo: orderNo,
+                            userId: userId,
+                            keyWord: data.value
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
@@ -824,12 +824,15 @@
 
                         layer.close(index);
                     });
-                } else if(data.value == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {icon: 3, title:'提示'}, function(index){
+                } else if (data.value == 'complete') {
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {
+                        icon: 3,
+                        title: '提示'
+                    }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo:orderNo,
-                            userId:userId,
-                            keyWord:data.value
+                            orderNo: orderNo,
+                            userId: userId,
+                            keyWord: data.value
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message);
@@ -840,12 +843,12 @@
                         });
                         layer.close(index);
                     });
-                } else if(data.value ==  'agreeRevoke') {
-                    layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
+                } else if (data.value == 'agreeRevoke') {
+                    layer.confirm('确定同意撤销吗？', {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo:orderNo,
-                            userId:userId,
-                            keyWord:data.value
+                            orderNo: orderNo,
+                            userId: userId,
+                            keyWord: data.value
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message, function () {
@@ -860,11 +863,11 @@
                         });
                         layer.close(index);
                     });
-                }  else {
+                } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                        orderNo:orderNo,
-                        userId:userId,
-                        keyWord:data.value
+                        orderNo: orderNo,
+                        userId: userId,
+                        keyWord: data.value
                     }, function (result) {
                         if (result.status == 1) {
                             layer.alert(result.message, function () {
@@ -907,13 +910,18 @@
                 $(".data-table-content").css('height', h + 'px');
                 $(".data-table-fixed-content").css('height', h - 20 + 'px');
                 $(".fixed-table-box").fixedTable();
-                layui.from.render();
+                layui.form.render();
             }
-            $(window).resize(function() {
+
+            $(window).resize(function () {
                 setDateTableHeight();
             });
             $(document).ready(function () {
                 setDateTableHeight();
+            });
+
+            $(".data-table-content").scroll(function() {
+                layui.form.render();
             });
         });
     </script>

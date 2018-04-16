@@ -2,6 +2,7 @@
 
 namespace App\Listeners\OrderApplyComplete;
 
+use App\Events\OrderApplyComplete;
 use App\Events\OrderFinish;
 use App\Models\SmsTemplate;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,7 +21,7 @@ class SendSms
      * @param  OrderFinish  $event
      * @return void
      */
-    public function handle(OrderFinish $event)
+    public function handle(OrderApplyComplete $event)
     {
         // 如果订单类型为代练，则找出订单客户订单号找出商户设置的模版发送短信
         if ($event->order->service_id == 4) {
