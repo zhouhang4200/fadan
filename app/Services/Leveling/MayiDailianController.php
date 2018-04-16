@@ -125,16 +125,16 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 	 */
 	public function applyRevoke($orderDatas) {
 		$options = [
-			'method'        => 'dlOrderTs',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'dlBzmoneyGold' => $orderDatas['deposit'],
-			'needsMoney'    => $orderDatas['pay_amount'],
-			'tsContent'     => $orderDatas['revoke_message'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderTs'),
+			'method'     => 'dlOrderTs',
+			'nid'        => $orderDatas['mayi_order_no'],
+			'bzmoney'    => $orderDatas['deposit'],
+			'needsMoney' => $orderDatas['amount'],
+			'tsContent'  => $orderDatas['revoke_message'],
+			'appid'      => config('leveling.mayidailian.appid'),
+			'appsecret'  => config('leveling.mayidailian.appsecret'),
+			'TimeStamp'  => $this->time,
+			'Ver'        => config('leveling.mayidailian.Ver'),
+			'sign'       => $this->getSign('dlOrderTs'),
 		];
 
 		$this->normalRequest($options);
@@ -216,7 +216,20 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 	 * @param  [type] $orderDatas [description]
 	 * @return [type]             [description]
 	 */
-	public function cancelArbitration($orderDatas) {} 
+	public function cancelArbitration($orderDatas) {
+		$options = [
+			'method'    => 'dlOrdereUpdatePass',
+			'order_id'  => $orderDatas['mayi_order_no'],
+			'bz'        => '取消仲裁',
+			'appid'     => config('leveling.mayidailian.appid'),
+			'appsecret' => config('leveling.mayidailian.appsecret'),
+			'TimeStamp' => $this->time,
+			'Ver'       => config('leveling.mayidailian.Ver'),
+			'sign'      => $this->getSign('dlOrdereUpdatePass'),
+		];
+
+		$this->normalRequest($options);
+	} 
 
 	/**
 	 * 强制仲裁（客服仲裁
@@ -354,7 +367,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 			'hours'         => bcadd(bcmul($orderDatas['game_leveling_day'], 24, 0), $orderDatas['game_leveling_hour'], 0),
 			'use_gold'      => 0,
 			'bzmoney_gold'  => $orderDatas['efficiency_deposit'],
-			'bzmoney_exp'   => $orderDatas['bzmoney_exp'],
+			'bzmoney_exp'   => $orderDatas['security_deposit'],
 			'gaccount'      => $orderDatas['account'],
 			'gpassword'     => $orderDatas['password'],
 			'jsm'           => $orderDatas['role'],
@@ -384,9 +397,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 			'method'       => 'dlOrdereUpdateSpec',
 			'order_id'     => $orderDatas['mayi_order_no'],
 			'append_hours' => $orderDatas['game_leveling_day'],
-			'append_hours' => $orderDatas['game_leveling_hour'],
-			'append_price' => 0,
-			'zfpwd'        => config('leveling.mayidailian.password'),
+			'append_day'   => $orderDatas['game_leveling_hour'],
 			'appid'        => config('leveling.mayidailian.appid'),
 			'appsecret'    => config('leveling.mayidailian.appsecret'),
 			'TimeStamp'    => $this->time,
@@ -403,16 +414,14 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 	 */
 	public function addMoney($orderDatas) {
 		$options = [
-			'method'       => 'dlOrdereUpdateSpec',
+			'method'       => 'dlOrdereUpdatePaymoney',
 			'order_id'     => $orderDatas['mayi_order_no'],
-			'append_hours' => 0,
-			'append_price' => $orderDatas['game_leveling_amount'],
-			'zfpwd'        => config('leveling.mayidailian.password'),
+			'append_price' => $orderDatas['amount'],
 			'appid'        => config('leveling.mayidailian.appid'),
 			'appsecret'    => config('leveling.mayidailian.appsecret'),
 			'TimeStamp'    => $this->time,
 			'Ver'          => config('leveling.mayidailian.Ver'),
-			'sign'         => $this->getSign('dlOrdereUpdateSpec'),
+			'sign'         => $this->getSign('dlOrdereUpdatePaymoney'),
 		];
 
 		$this->normalRequest($options);
@@ -497,15 +506,15 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 	 */
 	public function updateAccountAndPassword($orderDatas) {
 		$options = [
-			'method'    => 'dlOrderMessageList',
-			'nid'       => $orderDatas['mayi_order_no'],
+			'method'    => 'dlOrdereUpdatePass',
+			'order_id'  => $orderDatas['mayi_order_no'],
+			'account'   => $orderDatas['account'],
+			'gpassword' => $orderDatas['password'],
 			'appid'     => config('leveling.mayidailian.appid'),
 			'appsecret' => config('leveling.mayidailian.appsecret'),
 			'TimeStamp' => $this->time,
 			'Ver'       => config('leveling.mayidailian.Ver'),
-			'sign'      => $this->getSign('dlOrderMessageList'),
-			'account'   => $orderDatas['account'],
-			'password'  => $orderDatas['password'],
+			'sign'      => $this->getSign('dlOrdereUpdatePass'),
 		];
 
 		$this->normalRequest($options);
