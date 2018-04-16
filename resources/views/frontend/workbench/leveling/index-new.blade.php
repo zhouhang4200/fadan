@@ -235,11 +235,11 @@
                             // 支付金额
                             $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
         
-                            $paymentAmount = (float)$detail['payment_amount'] + 0;
-                            $getAmount= (float)$detail['get_amount'] + 0;
-                            $poundage = (float)$detail['poundage'] + 0;
+                            $paymentAmount = (float)$paymentAmount + 0;
+                            $getAmount= (float)$getAmount + 0;
+                            $poundage = (float)$poundage + 0;
                             // 利润
-                            $profit = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
+                            $profit = ((float)$detail['source_price'] - $paymentAmount + $getAmount - $poundage) + 0;
                         }
         
                         $days = $detail['game_leveling_day'] ?? 0;
