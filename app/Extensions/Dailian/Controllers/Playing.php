@@ -264,7 +264,7 @@ class Playing extends DailianAbstract implements DailianInterface
 
             // 写入留言获取
             $updateAfterOrderDetail = $this->checkThirdClientOrder($this->order);
-            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $updateAfterOrderDetail['third_order_no'], $updateAfterOrderDetail['third'], 0);
+            levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $updateAfterOrderDetail['source_order_no'], $updateAfterOrderDetail['third'], 0);
         }
     }
 }

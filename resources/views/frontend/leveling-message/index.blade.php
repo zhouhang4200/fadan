@@ -19,7 +19,7 @@
         <tbody>
         @forelse($message as $item)
             <tr data-no="{{ $item->order_no }}">
-                <td width="30%">千手订单：{{ $item->order_no }}</td>
+                <td width="30%">天猫单号：{{ $item->foreign_order_no }}</td>
                 <td>{{ $item->created_at }}  留言：{{ str_limit( $item->contents, 58) }}</td>
                 <td width="15%">
                     <a href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item->order_no }}&tab=1" class="opt"  data-no="{{ $item->order_no }}" target="_blank" lay-submit=""  lay-filter="detail">详情</a> <span class="opt" lay-submit=""  lay-filter="del" data-id="{{ $item->id }}">删除</span>
