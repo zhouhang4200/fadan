@@ -195,7 +195,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('new.permission:frontend.setting.tb-auth.index');
             Route::get('store', 'TbAuthController@store')->name('frontend.setting.tb-auth.store');
-            Route::post('store-auth', 'TbAuthController@storeAuth')->name('frontend.setting.tb-auth.store-auth');
         });
     });
 

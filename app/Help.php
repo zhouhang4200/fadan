@@ -803,19 +803,21 @@ if (!function_exists('levelingMessageAdd')) {
      * 添加 要获取留言的订单
      * @param integer $userId 用户ID
      * @param integer $orderNo 千手订单号
-     * @param string $foreignOrderNo 外部平台单号
+     * @param string $thirdOrderNo 外部平台单号
      * @param integer $platform  平台 1 91 2 代练妈妈
      * @param integer $count 上一次留言数
+     * @param integer $sourceOrderNo 天猫订单号
      * @return mixed
      */
-    function levelingMessageAdd($userId, $orderNo, $foreignOrderNo, $platform, $count = 0)
+    function levelingMessageAdd($userId, $orderNo, $thirdOrderNo, $platform, $sourceOrderNo, $count = 0 )
     {
         $redis = RedisConnect::order();
 
         return $redis->hset(config('redis.order.levelingMessage'), $orderNo, json_encode([
             'user_id' => $userId,
             'order_no' => $orderNo,
-            'foreign_order_no' => $foreignOrderNo,
+            'foreign_order_no' => $sourceOrderNo,
+            'third_order_no' => $thirdOrderNo,
             'platform' => $platform,
             'count' => $count,
         ]));

@@ -19,11 +19,11 @@
     </div>
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-inline">
-            <label class="layui-form-label">店铺旺旺</label>
-            <div class="layui-input-inline">
-                <input type="text" name="wang_wang" autocomplete="off" lay-verify="required" class="layui-input" value=""  placeholder="请输入店铺旺旺">
-            </div>
-            <button class="layui-btn" lay-submit="" lay-filter="auth">授权</button>
+            @php
+                $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
+                $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
+            @endphp
+            <a href="{{ $url }}" class="layui-btn" lay-submit="" lay-filter="auth">授权</a>
         </div>
     </form>
 
@@ -57,21 +57,6 @@
     <script>
         layui.use(['form', 'element'], function(){
             var form = layui.form ,layer = layui.layer ,element = layui.element;
-
-            //监听提交
-            form.on('submit(auth)', function(data){
-                $.post('{{ route('frontend.setting.tb-auth.store-auth') }}', { wang_wang:data.field.wang_wang }, function (result) {
-                    if (result.status == 1) {
-                        layer.alert('授权成功', {
-                            title: '最终的提交信息'
-                        });
-
-                    } else {
-                        window.open(result.content.url);
-                    }
-                }, 'json');
-                return false;
-            });
 
             @if($bindResult == 1)
                 reload();

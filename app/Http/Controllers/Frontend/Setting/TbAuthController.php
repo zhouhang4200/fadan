@@ -76,30 +76,4 @@ class TbAuthController extends Controller
         }
         return view('frontend.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
     }
-
-    /**
-     * @param Request $request
-     */
-    public function storeAuth(Request $request)
-    {
-        $taobaoShopAuth = TaobaoShopAuthorization::where('wang_wang', $request->wang_wang)->first();
-
-        // 相关旺旺授权过， 则自动将写入一条当前用户的相关信息，否则返回授权地址
-        if ($taobaoShopAuth) {
-            $userExist = TaobaoShopAuthorization::where('wang_wang', $request->wang_wang)
-                ->where('user_id', auth()->user()->getPrimaryUserId())
-                ->first();
-            if ( !$userExist) {
-                TaobaoShopAuthorization::create([
-                    'wang_wang'  => $taobaoShopAuth->wang_wang,
-                    'user_id'  => auth()->user()->getPrimaryUserId(),
-                ]);
-            }
-            return response()->ajax(1, '授权成功');
-        } else {
-            $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
-            $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
-            return response()->ajax(0, '需要授权', ['url' => $url]);
-        }
-    }
 }

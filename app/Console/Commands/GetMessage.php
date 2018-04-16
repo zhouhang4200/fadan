@@ -83,6 +83,8 @@ class GetMessage extends Command
                                 'third' => $data->platform,
                                 'user_id' => $data->user_id,
                                 'order_no' => $data->order_no,
+                                'third_order_no' => $data->third_order_no,
+                                'foreign_order_no' => $data->foreign_order_no,
                                 'contents' => $messageArr[$i]['mess'],
                                 'date' => $messageArr[$i]['created_on'],
                                 'send_time' => $messageArr[$i]['created_on'],
@@ -90,7 +92,12 @@ class GetMessage extends Command
                         }
                         LevelingMessage::insert($message);
                         // 更新数量
-                        levelingMessageAdd($data->user_id, $orderNo, $data->foreign_order_no, $data->platform, $currentCount);
+                        levelingMessageAdd($data->user_id,
+                            $orderNo,
+                            $data->third_order_no,
+                            $data->platform,
+                            $data->foreign_order_no,
+                            $currentCount);
                         // 更新角标
                         levelingMessageCount($data->user_id, 1, $addCount);
                     }
