@@ -48,7 +48,7 @@ class OrderSend extends Command
                 foreach (config('partner.platform') as $platform) {
                     try {
                         // 如果是蚂蚁代练
-                        if ('mayi' == $paltform['name']) {
+                        if ('mayi' == $platform['name']) {
                             $time = time();
                             // 获取 sign
                             $sign = md5('dlOrderAdd'.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.appsecret').config('leveling.mayidailian.Ver'));
@@ -62,6 +62,7 @@ class OrderSend extends Command
                             }
                             // 最后合成的参数
                             $orderData = $str.$publicStr;
+                            dd(base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv'])));
                         }
                         $response = $client->request('POST', $platform['receive'], [
                            'form_params' => [
