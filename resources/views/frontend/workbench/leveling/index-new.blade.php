@@ -74,6 +74,11 @@
             margin-bottom: 0
         }
 
+        .pagination > .active span {
+            color: #fff;
+            background: #ff7a00;
+            border: 1px solid #ff7a00;
+        }
     </style>
 @endsection
 
