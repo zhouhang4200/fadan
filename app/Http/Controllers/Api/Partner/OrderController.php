@@ -25,10 +25,12 @@ class OrderController extends Controller
     public function getOrderAndOrderDetails($orderNo)
     {
         $order = OrderDetail::where('field_value', $orderNo)->first();
+
         if (!$order) {
             throw new DailianException('订单号不存在!');
         }
         $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
+        
         return json_decode($orderData);
         $array =  DB::select("
             SELECT a.order_no, 

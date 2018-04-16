@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\AddOurNoticeOrderFromRedis', // 从redis获取我们平台操作失败的报警订单
         'App\Console\Commands\OrderAutoMarkup', // 订单自动加价
         'App\Console\Commands\GetMessageDailianmama', // 订单自动加价
+        'App\Console\Commands\OrderSend', //推送下单信息
     ];
 
     /**

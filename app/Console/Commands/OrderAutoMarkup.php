@@ -77,9 +77,13 @@ class OrderAutoMarkup extends Command
             $orderDetails = OrderDetail::where('order_no', $order->no)
                 ->pluck('field_value', 'field_name')
                 ->toArray();
+            // 如果是已下架，跳出循环
+            if (22 == $order->status) {
+                continue;
+            }
 
-            // 如果此订单不在 未接单  状态,删除redis
-            if ($order->status != 1) {
+            // 如果此订单不在 未接单并且不是已下架  状态,删除redis
+            if ($order->status != 1 && $order->status != 22) {
                 Redis::hDel('order:autoMarkups', $order->no);
                 continue;
             }
@@ -157,23 +161,24 @@ class OrderAutoMarkup extends Command
                 // 支出流水和订单日志
                 $result = $this->writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails);
 
+                
                 if (! $result) {
                     if ($orderDetails['show91_order_no']) {
                         // 91下架接口
-                        Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                        Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
                         myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                     }
 
                     if ($orderDetails['dailianmama_order_no']) {
                          // 代练妈妈下架接口
-                        DailianMama::closeOrder($order);
+                        DailianMama::deleteOrder($order);
                         myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                     }
                     continue;
                 }
-
                 // 加价之后，redis次数+1, 时间换到最新加价的时间
                 Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
+
                 // 写下日志
                 myLog('order.automarkup', [
                     '订单号' => $order->no,
@@ -204,7 +209,7 @@ class OrderAutoMarkup extends Command
                 return true;
             } catch (DailianException $e) {
                 // 91下架接口
-                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+                Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
                 myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                 return false;
             }
@@ -234,7 +239,7 @@ class OrderAutoMarkup extends Command
                 return true;
             } catch (DailianException $e) {
                 // 代练妈妈下架接口
-                DailianMama::closeOrder($order);
+                DailianMama::deleteOrder($order);
                 myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                 return false;
             }

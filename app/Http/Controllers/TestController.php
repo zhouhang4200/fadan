@@ -60,6 +60,7 @@ use App\Models\GoodsTemplateWidgetValue;
 use App\Models\ThirdServer;
 use App\Models\ThirdArea;
 use App\Models\ThirdGame;
+use App\Models\OrderDetail;
 
 class TestController extends Controller
 {
@@ -212,6 +213,7 @@ class TestController extends Controller
 
     public function index()
     {
+        return $this->addPrice();
         return $this->getDailianmamaInfo();
         return $this->testSwitch('hang', 10);
         $this->testClone();
@@ -519,5 +521,26 @@ dd($thirdAreas);
 
         }
         // dd($thirdServers);
+    }
+
+
+    public function addPrice()
+    {
+        $orderNo = '2018041616101400000580';
+        // $orderNo = '2018041616344300000016';
+        $order = OrderModel::where('no', $orderNo)->first();
+
+        $afterAddAmount = 5.13; // 增加之后的金额
+        $differPrice = 0.03; //差值
+
+        Asset::handle(new Expend($differPrice, 7, $orderNo, '代练改价支出', 8317));
+
+        $order->price = $afterAddAmount;
+        $order->amount = $afterAddAmount;
+        $order->save();
+
+        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+            'field_value' => $afterAddAmount
+        ]);
     }
 }

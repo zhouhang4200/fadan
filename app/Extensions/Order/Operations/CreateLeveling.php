@@ -252,7 +252,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                     ->where('field_name', 'dailianmama_order_no')
                     ->update(['field_value' => $dailianMamaResult['order_no'],]);
             } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
-                throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
+                // throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
             }
 
             return $this->order;      
