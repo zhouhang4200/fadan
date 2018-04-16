@@ -40,7 +40,7 @@
             margin-right: 4px;
         }
         .layui-tab-title li {
-            min-width: 55px;
+            min-width: 42px;
         }
         .w-150 {
             width: 150px;
@@ -72,7 +72,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">&nbsp;&nbsp;&nbsp; 订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="no" autocomplete="off" class="layui-input" data-opt="{{ $no }}">
+                    <input type="text" name="no" autocomplete="off" class="layui-input" value="{{ $no }}">
                 </div>
             </div>
             <div class="layui-inline">
@@ -100,7 +100,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">号主旺旺：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input" data-opt="{{ $wangWang }}">
+                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input" value="{{ $wangWang }}">
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
                     <select name="customer_service_name" lay-search="">
-                        <option data-opt="">请选择或输入</option>
+                        <option value="">请选择或输入</option>
                         @forelse($employee as $item)
                             <option data-opt="{{ $item->username }}" @if($item->username == $customerServiceName) selected @endif>{{ $item->username }}</option>
                         @empty
@@ -121,7 +121,7 @@
                 <label class="layui-form-mid">接单平台：</label>
                 <div class="layui-input-inline" style="">
                     <select name="platform">
-                        <option data-opt="">全部</option>
+                        <option value="">全部</option>
                         @foreach (config('partner.platform') as $key => $value)
                             <option data-opt="{{ $key }}" @if($key == $platform)  selected @endif>{{ $value['name'] }}</option>
                         @endforeach
@@ -131,10 +131,10 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发布时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" data-opt="{{ $startDate }}">
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="{{ $startDate }}">
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" data-opt="{{ $endDate }}">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">导出</button>
@@ -145,31 +145,47 @@
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="@if($status == 0) layui-this @endif" lay-id="0">全部 <span
-                        class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span>
+            <li class="@if($status == 0) layui-this @endif" lay-id="0">全部
+                @if($allStatusCount) <span class="layui-badge layui-bg-blue">{{ $allStatusCount }}</span>@endif
             </li>
-            <li class="@if($status == 1) layui-this @endif" lay-id="1">未接单</li>
-            <li class="@if($status == 13) layui-this @endif" lay-id="13">代练中</li>
+            <li class="@if($status == 1) layui-this @endif" lay-id="1">
+                未接单
+                @if(isset($statusCount[1])) <span class="layui-badge layui-bg-blue">{{ $statusCount[1] }}</span>@endif
+            </li>
+            <li class="@if($status == 13) layui-this @endif" lay-id="13">
+                代练中
+                @if(isset($statusCount[13])) <span class="layui-badge layui-bg-blue">{{ $statusCount[13] }}</span>@endif
+            </li>
             <li class="@if($status == 14) layui-this @endif" lay-id="14">待验收
-                <span class="layui-badge layui-bg-blue quantity-14 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) }}</span>
+                @if(isset($statusCount[14])) <span class="layui-badge layui-bg-blue">{{ $statusCount[14] }}</span>@endif
             </li>
             <li class="@if($status == 15) layui-this @endif" lay-id="15">撤销中
-                <span class="layui-badge layui-bg-blue quantity-15 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) }}</span>
+                @if(isset($statusCount[15])) <span class="layui-badge layui-bg-blue">{{ $statusCount[15] }}</span>@endif
             </li>
             <li class="@if($status == 16) layui-this @endif" lay-id="16">仲裁中
-                <span class="layui-badge layui-bg-blue quantity-16 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) }}</span>
+                @if(isset($statusCount[16])) <span class="layui-badge layui-bg-blue">{{ $statusCount[16] }}</span>@endif
             </li>
             <li class="@if($status == 17) layui-this @endif" lay-id="17">异常
-                <span class="layui-badge layui-bg-blue quantity-17 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) }}</span>
+                @if(isset($statusCount[17])) <span class="layui-badge layui-bg-blue">{{ $statusCount[17] }}</span>@endif
             </li>
             <li class="@if($status == 18) layui-this @endif" lay-id="18">锁定
-                <span class="layui-badge layui-bg-blue quantity-18 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) }}</span>
+                @if(isset($statusCount[18])) <span class="layui-badge layui-bg-blue">{{ $statusCount[18] }}</span>@endif
             </li>
-            <li class="@if($status == 19) layui-this @endif" lay-id="19">已撤销</li>
-            <li class="@if($status == 20) layui-this @endif" lay-id="20">已结算</li>
-            <li class="@if($status == 21) layui-this @endif" lay-id="21">已仲裁</li>
-            <li class="@if($status == 22) layui-this @endif" lay-id="22">已下架</li>
-            <li class="@if($status == 23) layui-this @endif" lay-id="23">强制撤销</li>
+            <li class="@if($status == 19) layui-this @endif" lay-id="19">已撤销
+                @if(isset($statusCount[19])) <span class="layui-badge layui-bg-blue">{{ $statusCount[19] }}</span>@endif
+            </li>
+            <li class="@if($status == 20) layui-this @endif" lay-id="20">已结算
+                @if(isset($statusCount[20])) <span class="layui-badge layui-bg-blue">{{ $statusCount[20] }}</span>@endif
+            </li>
+            <li class="@if($status == 21) layui-this @endif" lay-id="21">已仲裁
+                @if(isset($statusCount[21])) <span class="layui-badge layui-bg-blue">{{ $statusCount[21] }}</span>@endif
+            </li>
+            <li class="@if($status == 22) layui-this @endif" lay-id="22">已下架
+                @if(isset($statusCount[22])) <span class="layui-badge layui-bg-blue">{{ $statusCount[22] }}</span>@endif
+            </li>
+            <li class="@if($status == 23) layui-this @endif" lay-id="23">强制撤销
+                @if(isset($statusCount[23])) <span class="layui-badge layui-bg-blue">{{ $statusCount[23] }}</span>@endif
+            </li>
         </ul>
     </div>
 
@@ -632,6 +648,7 @@
             // 当前tab 所在位置
             var status = 0;
             var urgentOrder = 0;
+            var delivery = 0;
 
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
@@ -772,8 +789,9 @@
                         layer.close(index);
                     });
                 } else if (opt == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {
-                        icon: 3,
+
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' name='delivery'> 同时提交淘宝/天猫订单发货", {
+//                        icon: 3,
                         title: '提示'
                     }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
@@ -873,6 +891,10 @@
                     title: '最终的提交信息'
                 });
                 return false;
+            });
+
+            $('.delivery').click(function () {
+               alert(1);
             });
         });
     </script>

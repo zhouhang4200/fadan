@@ -4,6 +4,7 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
+    <link href="{{ asset('/frontend/css/combo.select.css') }}" rel="stylesheet">
     <style>
         .wrapper {
             width: 1600px;
@@ -135,6 +136,7 @@
 
 <!--START 底部-->
 @section('js')
+    <script src="/frontend/js/jquery.combo.select.js"></script>
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <div class="layui-row form-group">
@@ -150,24 +152,39 @@
                 <div class="layui-col-md8">
 
                     @{{# if(item.field_type == 1) {  }}
+
+                    @{{# if(item.field_name == '1' || item.field_name == '1') { }}
+                    <select lay-ignore class="select-input @{{ item.field_name }}" name="@{{ item.field_name }}">
+                        <option value="">输入或选择</option>
+                    </select>
+                    @{{# }else{  }}
+
                     <input type="text" name="@{{ item.field_name }}"  autocomplete="off" class="layui-input" lay-verify="@{{# if (item.field_required == 1) {  }}required@{{# } }}|@{{ item.verify_rule }}" display-name="@{{item.field_display_name}}" value="@{{# if (item.field_default_value != "null") { item.field_default_value  } }}">
+
+                    @{{# } }}
+
+
                     @{{# } }}
 
                     @{{# if(item.field_type == 2) {  }}
-                    <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}"  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
-                        <option value=""></option>
-                        @{{#  if(item.user_values.length > 0){ }}
-                        @{{#  layui.each(item.user_values, function(i, v){ }}
-                        <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
-                        @{{#  }); }}
-                        @{{#  } else { }}
-                        @{{#  if(item.values.length > 0){ }}
-                        @{{#  layui.each(item.values, function(i, v){ }}
-                        <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
-                        @{{#  }); }}
-                        @{{#  }  }}
-                        @{{#  }  }}
-                    </select>
+
+
+                        <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}"  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
+                            <option value=""></option>
+                            @{{#  if(item.user_values.length > 0){ }}
+                            @{{#  layui.each(item.user_values, function(i, v){ }}
+                            <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
+                            @{{#  }); }}
+                            @{{#  } else { }}
+                            @{{#  if(item.values.length > 0){ }}
+                            @{{#  layui.each(item.values, function(i, v){ }}
+                            <option value="@{{ v.field_value }}" data-id="@{{ v.id  }}">@{{ v.field_value }}</option>
+                            @{{#  }); }}
+                            @{{#  }  }}
+                            @{{#  }  }}
+                        </select>
+
+
                     @{{# } }}
 
                     @{{# if(item.field_type == 3) {  }}
@@ -190,6 +207,18 @@
 
                     @{{# if(item.field_name == 'game_leveling_requirements_template') {  }}
                     <a href="#" class="tooltip" id="game_leveling_requirements_template">
+                        <i class="iconfont icon-plus-bd" id="recharge"></i>
+                    </a>
+                    @{{# }  }}
+
+                    @{{# if(item.field_name == 'user_phone') {  }}
+                    <a href="#" class="tooltip" id="user_phone">
+                        <i class="iconfont icon-plus-bd" id="recharge"></i>
+                    </a>
+                    @{{# }  }}
+
+                    @{{# if(item.field_name == 'user_qq') {  }}
+                    <a href="#" class="tooltip" id="user_qq">
                         <i class="iconfont icon-plus-bd" id="recharge"></i>
                     </a>
                     @{{# }  }}
@@ -439,8 +468,8 @@
             // 设置默认选中填充的值
             function setDefaultValueOption() {
                 $("select[name=game_leveling_type]").val('排位');
-                $('input[name=user_phone]').val('{{ $businessmanInfo->phone }}');
-                $('input[name=user_qq]').val('{{ $businessmanInfo->qq }}');
+                $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
+                $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 layui.form.render();
             }
             // 加载代练要求模板
@@ -457,6 +486,7 @@
                     });
                     $('select[name=game_leveling_requirements_template]').html(optionsHtml);
                     layui.form.render();
+                    $('.select-input').comboSelect();
                 }, 'json');
             }
             form.on('select', function(data){
@@ -468,7 +498,22 @@
             });
             // 添加代练要求模板
             $('.layui-form').on('click', '#game_leveling_requirements_template', function () {
-
+                layer.open({
+                    type: 2,
+                    area: ['700px', '400px'],
+                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                });
+            });
+            // 添加商户电话模版
+            $('.layui-form').on('click', '#user_phone', function () {
+                layer.open({
+                    type: 2,
+                    area: ['700px', '400px'],
+                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                });
+            });
+            // 添加商户QQ模版
+            $('.layui-form').on('click', '#user_qq', function () {
                 layer.open({
                     type: 2,
                     area: ['700px', '400px'],

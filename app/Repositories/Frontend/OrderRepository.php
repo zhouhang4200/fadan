@@ -183,9 +183,11 @@ class OrderRepository
         $query->when($status != 0, function ($query) use ($status) {
             return $query->where('status', $status);
         });
-        $query->when(!empty($no), function ($query) use ($no) {
-            $orderNo = OrderDetail::findOrdersBy('order_source', $no);
-            return $query->whereIn('no', $orderNo);
+        $query->when(!empty($no), function ($query) use ($no, $type) {
+            $thirdOrder = OrderDetail::findOrdersBy('third_order_no', $no, $type);
+            $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
+
+            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder));
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);

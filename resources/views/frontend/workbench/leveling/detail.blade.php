@@ -509,7 +509,7 @@
                             <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
                         </div>
                         <div class="layui-row form-group">
-                            <div class="layui-col-md3 text_right">订单号：</div>
+                            <div class="layui-col-md3 text_right">天猫单号：</div>
                             <div class="layui-col-md8">{{ $taobaoTrade->tid or '' }}</div>
                         </div>
                         <div class="layui-row form-group">

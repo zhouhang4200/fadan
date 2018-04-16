@@ -20,7 +20,7 @@
 @section('main') 
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-            <li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
+            {{--<li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
             <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
         </ul>
         <div class="explanation" style="margin-top:15px;margin-bottom:-5px;">

@@ -102,6 +102,14 @@ class IndexController extends Controller
         // 获取订单
         $orders = $orderRepository->levelingDataList($status, $no,  $tbStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
+        // 查询各状态订单数
+        $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
+            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->count();
+
         return view('frontend.workbench.leveling.index-new')->with([
             'orders' => $orders,
             'game' => $game,
@@ -115,6 +123,8 @@ class IndexController extends Controller
             'platform' => $platform,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'statusCount' => $statusCount,
+            'allStatusCount' => $allStatusCount,
         ]);
     }
 
@@ -247,7 +257,7 @@ class IndexController extends Controller
             $req = new TradeFullinfoGetRequest;
             $req->setFields("tid, type, status, payment, orders, seller_memo");
             $req->setTid($tid);
-            $resp = $client->execute($req, taobaoAccessToken($businessmanInfo->store_wang_wang));
+            $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
 
             if (!empty($resp->trade->seller_memo)) {
                 $taobaoTrade->seller_memo = $resp->trade->seller_memo;
@@ -1225,7 +1235,7 @@ class IndexController extends Controller
     public function wait(Request $request)
     {
         $tid = $request->tid;
-        $status = $request->status;
+        $status = $request->input('status', 0);
         $buyerNick = $request->buyer_nick;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
