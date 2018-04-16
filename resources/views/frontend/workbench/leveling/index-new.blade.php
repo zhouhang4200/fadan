@@ -976,7 +976,7 @@
             }
 
             function setDateTableHeight() {
-                var windowsH = $(window).height() - 330;
+                var windowsH = $(window).height() - 300;
                 var contentH = $('.data-table-content').height();
                 var h = 0;
                 if (contentH > windowsH) {
