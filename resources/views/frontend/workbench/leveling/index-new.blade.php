@@ -209,18 +209,24 @@
                 @forelse($orders as $item)
                     @php 
                         $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  
-                    
+
+                        $paymentAmount = '';
+                        $getAmount= '';
+                        $poundage = '';
+                        $profit= '';
                         if (!in_array($item->status, [19, 20, 21])){
                             $paymentAmount = '';
                             $getAmount= '';
                             $poundage = '';
                             $profit= '';
                         } else {
-                            // 支付金额
-                            if ($item->status == 21) {
-                                $amount = $item->leveling_consult->api_amount;
-                            } else {
-                                $amount = $item->leveling_consult->amount;
+                            if ($item->leveling_consult) {
+                                  // 支付金额
+                                if ($item->status == 21) {
+                                    $amount = $item->leveling_consult->api_amount;
+                                } else {
+                                    $amount = $item->leveling_consult->amount;
+                                }
                             }
                             // 支付金额
                             $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
