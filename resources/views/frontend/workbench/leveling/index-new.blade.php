@@ -40,7 +40,7 @@
             margin-right: 4px;
         }
         .layui-tab-title li {
-            min-width: 55px;
+            min-width: 42px;
         }
         .w-150 {
             width: 150px;
