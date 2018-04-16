@@ -526,21 +526,21 @@ dd($thirdAreas);
 
     public function addPrice()
     {
-        $orderNo = '2018041616101400000580';
+        // $orderNo = '2018041616101400000580';
         // $orderNo = '2018041616344300000016';
-        $order = OrderModel::where('no', $orderNo)->first();
+        // $order = OrderModel::where('no', $orderNo)->first();
 
-        $afterAddAmount = 5.13; // 增加之后的金额
-        $differPrice = 0.03; //差值
+        // $afterAddAmount = 5.13; // 增加之后的金额
+        // $differPrice = 0.03; //差值
 
-        Asset::handle(new Expend($differPrice, 7, $orderNo, '代练改价支出', 8317));
+        // Asset::handle(new Expend($differPrice, 7, $orderNo, '代练改价支出', 8317));
 
-        $order->price = $afterAddAmount;
-        $order->amount = $afterAddAmount;
-        $order->save();
+        // $order->price = $afterAddAmount;
+        // $order->amount = $afterAddAmount;
+        // $order->save();
 
-        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-            'field_value' => $afterAddAmount
-        ]);
+        // OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+        //     'field_value' => $afterAddAmount
+        // ]);
     }
 }
