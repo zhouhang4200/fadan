@@ -108,7 +108,8 @@ class IndexController extends Controller
             ->groupBy('status')
             ->pluck('count', 'status');
 
-        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->count();
+        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->where('service_id', 4)->where('status', '!=', 24)->count();
 
         return view('frontend.workbench.leveling.index-new')->with([
             'orders' => $orders,
