@@ -139,7 +139,7 @@ class OrderAutoMarkup extends Command
                     $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
                     // 加价之后，redis次数+1, 时间换到最新加价的时间
                     Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$orderAutoMarkupStartTime->toDateTimeString());
-                dd($result);
+      
                     // 写下日志
                     myLog('order.automarkup', [
                         '订单号' => $order->no,
