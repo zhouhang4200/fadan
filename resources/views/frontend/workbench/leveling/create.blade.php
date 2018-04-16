@@ -190,7 +190,7 @@
 
                     @{{# if(item.field_name == 'game_leveling_requirements_template') {  }}
                     <a href="#" class="tooltip" id="game_leveling_requirements_template">
-                        <i class="iconfont icon-iconset0143" id="recharge"></i>
+                        <i class="iconfont icon-plus-bd" id="recharge"></i>
                     </a>
                     @{{# }  }}
 

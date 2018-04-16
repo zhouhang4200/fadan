@@ -25,7 +25,7 @@
             @empty
             @endforelse
         </div>
-        <div class="" style="width: 310px;float: left">
+        <div class="" style="width: 300px;float: left">
             <form class="layui-form" action="">
                 <input type="hidden" name="id" value="0">
                 <div class="layui-form-item">
