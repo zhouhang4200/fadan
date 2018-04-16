@@ -60,8 +60,8 @@ body{
 }
 .fixed-table-box .table-cell{
     display: block;
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 20px;
     word-break: break-all;
     white-space: nowrap;
     overflow: hidden;
@@ -70,7 +70,9 @@ body{
 }
 /* 表头 start */
 .fixed-table-box>.fixed-table_header-wraper{
+    height: 51px;
     overflow: hidden;
+    overflow-y: auto;
 }
 .fixed-table-box .fixed-table_header.fixed-header{
     position: absolute;
@@ -100,7 +102,7 @@ body{
 
 /* 行固定表格 start*/
 .fixed-table-box.head-fixed .fixed-table_body-wraper{
-    overflow-y: auto;
+    overflow: auto;
 }
 .fixed-table-box.head-fixed .fixed-table_header,
 .fixed-table-box.head-fixed .fixed-table_body{

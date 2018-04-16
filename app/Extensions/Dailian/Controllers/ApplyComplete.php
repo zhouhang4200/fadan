@@ -2,7 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderApplyComplete;
 use DB;
+use ErrorException;
 use Redis;
 use Carbon\Carbon;
 use App\Exceptions\DailianException; 
@@ -78,6 +80,15 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             $now = Carbon::now()->toDateTimeString();
             $key = $this->orderNo;
             Redis::hSet('complete_orders', $key, $now);
+
+            // 调用事件
+            try {
+                event(new OrderApplyComplete($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('receiving', [$errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('receiving', [$exception->getMessage()]);
+            }
         }
     }
 }

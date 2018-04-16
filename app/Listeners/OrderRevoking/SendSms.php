@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\OrderFinish;
+namespace App\Listeners\OrderRevoking;
 
 use App\Events\OrderFinish;
 use App\Models\SmsTemplate;
@@ -8,9 +8,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
- * 订单完成后发送短信通知，只有订单类型为代练是才发送
+ * 订单撤销中发送短信通知，只有订单类型为代练是才发送
  * Class tb
- * @package App\Listeners\OrderFinish
+ * @package App\Listeners\OrderRevoking
  */
 class SendSms
 {
@@ -27,7 +27,7 @@ class SendSms
             // 获取商户设置的模板
             $template = SmsTemplate::where('user_id', $event->order->creator_primary_user_id)
                 ->where('status', 1)
-                ->where('purpose', 2)
+                ->where('purpose', 4)
                 ->first();
             if ($template) {
                 $detail = $event->order->detail->pluck('field_value', 'field_name');
@@ -37,7 +37,7 @@ class SendSms
                         $event->order->no,
                         $detail['client_phone'],
                         $template->contents,
-                        '代练订单完成短信',
+                        '代练订单撤销短信',
                         $detail['source_order_no'],
                         $detail['third_order_no'],
                         $detail['third']

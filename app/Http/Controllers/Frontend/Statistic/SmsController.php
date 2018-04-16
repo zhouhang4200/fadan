@@ -60,12 +60,11 @@ class SmsController extends Controller
     {
         $orderNo = $request->order_no;
         $clientPhone = $request->client_phone;
-        $foreignOrderNo = $request->foreign_order_no;
         $export = $request->export;
         $fullUrl = $request->fullUrl();
 
         $query = SmsSendRecord::where('user_id', Auth::user()->getPrimaryUserId())
-            ->filter(compact('startDate', 'endDate', 'orderNo', 'clientPhone', 'foreignOrderNo'))
+            ->filter(compact('startDate', 'endDate', 'orderNo', 'clientPhone'))
             ->orderBy('id', 'desc')
             ->where('date', $request->date);
 

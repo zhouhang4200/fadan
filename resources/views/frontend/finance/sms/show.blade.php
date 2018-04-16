@@ -46,7 +46,7 @@
                 <tbody>
                 @forelse($recordDetail as $item)
                     <tr>
-                        <td width="20%">天猫：{{ $item->order_no }} <br/> @if($item->third ) {{  config('partner.platform')[$item->third]  }}：{{ $item->foreign_order_no }} @endif</td>
+                        <td width="20%">天猫：{{ $item->foreign_order_no }} <br/> @if($item->third) {{  config('partner.platform')[$item->third]['name']  }}：{{ $item->third_order_no }} @endif</td>
                         <td width="13%">{{ $item->client_phone }}</td>
                         <td>{{ $item->contents }}</td>
                         <td width="10%">{{ $item->created_at }}</td>
@@ -63,7 +63,6 @@
     {!! $recordDetail->appends([
         'client_phone' => $clientPhone,
         'order_no' => $orderNo,
-        'foreign_order_no' => $foreignOrderNo,
     ])->render() !!}
 
 @endsection

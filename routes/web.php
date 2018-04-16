@@ -142,6 +142,9 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('update', 'SendingAssistController@requireUpdate')->name('frontend.setting.sending-assist.require.update');
                 Route::post('destroy', 'SendingAssistController@requireDestroy')->name('frontend.setting.sending-assist.require.destroy');
                 Route::post('set', 'SendingAssistController@requireSet')->name('frontend.setting.sending-assist.require.set');
+                // 获取代练模版弹窗
+                Route::get('pop', 'SendingAssistController@requirePop')->name('frontend.setting.sending-assist.require.pop');
+                Route::post('pop-store', 'SendingAssistController@requirePopStore')->name('frontend.setting.sending-assist.require.pop.store');
             });
             // 自动加价配置
             Route::prefix('auto-markup')->group(function () {
@@ -184,6 +187,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::prefix('tb-auth')->group(function () {
             Route::get('/', 'TbAuthController@index')->name('frontend.setting.tb-auth.index')->middleware('new.permission:frontend.setting.tb-auth.index');
             Route::get('store', 'TbAuthController@store')->name('frontend.setting.tb-auth.store');
+            Route::post('store-auth', 'TbAuthController@storeAuth')->name('frontend.setting.tb-auth.store-auth');
         });
     });
 
@@ -288,7 +292,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('send-sms', 'IndexController@sendSms')->name('frontend.workbench.leveling.send-sms');
             // 获取代练模版 
             Route::post('game-leveling-template', 'IndexController@getGameLevelingTemplate')->name('frontend.workbench.leveling.game-leveling-template');
-        });
+
+         });
 
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

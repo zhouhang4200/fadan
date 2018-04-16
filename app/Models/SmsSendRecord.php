@@ -33,10 +33,10 @@ class SmsSendRecord extends Model
             $query->where('client_phone', $filter['clientPhone']);
         }
         if (isset($filter['orderNo']) && $filter['orderNo']) {
-            $query->where('order_no', $filter['orderNo']);
+            $query->where('foreign_order_no', $filter['orderNo']);
         }
-        if (isset($filter['foreignOrderNo']) && $filter['foreignOrderNo']) {
-            $query->where('foreign_order_no', $filter['foreignOrderNo']);
+        if (isset($filter['orderNo']) && $filter['orderNo']) {
+            $query->orWhere('third_order_no', $filter['orderNo']);
         }
         return $query;
     }

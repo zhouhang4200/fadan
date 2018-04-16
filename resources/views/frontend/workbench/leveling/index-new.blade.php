@@ -3,9 +3,54 @@
 @section('title', '工作台 - 代练')
 
 @section('css')
-
-
     <link rel="stylesheet" href="/frontend/css/fixed-table.css">
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track:vertical::-webkit-scrollbar-track:horizontal {
+            background-color: #fff;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb {
+            min-height: 28px;
+            padding-top: 100;
+            background-color: rgba(0, 0, 0, .2);
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            border-radius: 5px;
+            -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+        }
+        .layui-laypage-em {
+            background-color: #ff7a00 !important;
+        }
+        .layui-form-select .layui-input {
+            padding-right:0 !important;
+        }
+        .layui-table-fixed-r .layui-table-cell {
+            overflow: inherit;
+        }
+        .layui-form-item .layui-inline {
+            margin-bottom: 5px;
+            margin-right: 5px;
+        }
+        .layui-form-mid {
+            margin-right: 4px;
+        }
+        .layui-tab-title li {
+            min-width: 55px;
+        }
+        .w-150 {
+            width: 150px;
+        }
+        .w-100 {
+            width: 100px;
+        }
+
+
+    </style>
 @endsection
 
 @section('submenu')
@@ -13,27 +58,33 @@
 @endsection
 
 @section('main')
-    <form class="layui-form" id="search">
+    <form class="layui-form" id="search" method="get">
+        <input type="hidden" name="status" value="{{ $status }}">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-mid">平台单号：</label>
+                <label class="layui-form-mid">&nbsp;&nbsp;&nbsp; 订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="no" autocomplete="off" class="layui-input">
+                    <input type="text" name="no" autocomplete="off" class="layui-input" value="{{ $no }}">
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">外部单号：</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="source_order_no" autocomplete="off" class="layui-input">
+                <label class="layui-form-mid">天猫状态：</label>
+                <div class="layui-input-inline" style="">
+                    <select name="customer_service_name" lay-search="">
+                        <option value="">请选择或输入</option>
+                        <option value="1">买家付完款</option>
+                        <option value="2">交易成功</option>
+                        <option value="3">买家发起退款</option>
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">代练游戏：</label>
                 <div class="layui-input-inline">
                     <select name="game_id" lay-search="">
-                        <li value="">请选择游戏</li>
+                        <option value="">请选择游戏</option>
                         @foreach($game as  $key => $value)
-                            <li value="{{ $key }}">{{ $value }}</li>
+                            <option value="{{ $key }}" @if($gameId == $key) selected @endif>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -41,31 +92,30 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">号主旺旺：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input">
+                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input" value="{{ $wangWang }}">
                 </div>
             </div>
-
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
                     <select name="customer_service_name" lay-search="">
-                        <li value="">请选择或输入</li>
+                        <option value="">请选择或输入</option>
                         @forelse($employee as $item)
-                            <li value="{{ $item->username }}">{{ $item->username }}</li>
+                            <option value="{{ $item->username }}" @if($item->username == $customerServiceName) selected @endif>{{ $item->username }}</option>
                         @empty
                         @endforelse
                     </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">订单标签：</label>
+                <label class="layui-form-mid">接单平台：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="label">
-                        <li value="">全部</li>
-                        @foreach ($tags as $tag)
-                            <li value="{{ $tag }}">{{ $tag }}</li>
+                    <select name="platform">
+                        <option value="">全部</option>
+                        @foreach (config('partner.platform') as $key => $value)
+                            <option value="{{ $key }}" @if($key == $platform)  selected @endif>{{ $value['name'] }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -73,13 +123,13 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发布时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" >
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="{{ $startDate }}">
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="search">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button>
+                <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
+                <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">导出</button>
 
             </div>
         </div>
@@ -87,215 +137,32 @@
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
-            <li class="" lay-id="1">未接单</li>
-            <li class="" lay-id="13">代练中</li>
-            <li class="" lay-id="14">待验收
+            <li class="@if($status == 0) layui-this @endif" lay-id="0">全部 <span
+                        class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span>
+            </li>
+            <li class="@if($status == 1) layui-this @endif" lay-id="1">未接单</li>
+            <li class="@if($status == 13) layui-this @endif" lay-id="13">代练中</li>
+            <li class="@if($status == 14) layui-this @endif" lay-id="14">待验收
                 <span class="layui-badge layui-bg-blue quantity-14 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) }}</span>
             </li>
-            <li class="" lay-id="15">撤销中
+            <li class="@if($status == 15) layui-this @endif" lay-id="15">撤销中
                 <span class="layui-badge layui-bg-blue quantity-15 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) }}</span>
             </li>
-            <li class="" lay-id="16">仲裁中
+            <li class="@if($status == 16) layui-this @endif" lay-id="16">仲裁中
                 <span class="layui-badge layui-bg-blue quantity-16 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) }}</span>
             </li>
-            <li class="" lay-id="17">异常
+            <li class="@if($status == 17) layui-this @endif" lay-id="17">异常
                 <span class="layui-badge layui-bg-blue quantity-17 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) }}</span>
             </li>
-            <li class="" lay-id="18">锁定
+            <li class="@if($status == 18) layui-this @endif" lay-id="18">锁定
                 <span class="layui-badge layui-bg-blue quantity-18 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) }}</span>
             </li>
-            <li class="" lay-id="19">已撤销</li>
-            <li class="" lay-id="20">已结算</li>
-            <li class="" lay-id="21">已仲裁</li>
-            <li class="" lay-id="22">已下架</li>
-            <li class="" lay-id="23">强制撤销</li>
+            <li class="@if($status == 19) layui-this @endif" lay-id="19">已撤销</li>
+            <li class="@if($status == 20) layui-this @endif" lay-id="20">已结算</li>
+            <li class="@if($status == 21) layui-this @endif" lay-id="21">已仲裁</li>
+            <li class="@if($status == 22) layui-this @endif" lay-id="22">已下架</li>
+            <li class="@if($status == 23) layui-this @endif" lay-id="23">强制撤销</li>
         </ul>
-        <br>
-
-        {{--<table class="row-border stripe  cell-border order-column" id="tableDataGridExample">--}}
-            {{--<thead>--}}
-            {{--<tr>--}}
-                {{--<th>订单号</th>--}}
-                {{--<th width="65px">号主旺旺</th>--}}
-                {{--<th width="100">客服备注</th>--}}
-                {{--<th>代练标题</th>--}}
-                {{--<th width="90">游戏/区/服</th>--}}
-                {{--<th width="90">账号/密码</th>--}}
-                {{--<th width="50">角色名称</th>--}}
-                {{--<th width="50px">订单状态</th>--}}
-                {{--<th>代练价格</th>--}}
-                {{--<th>效率保证金</th>--}}
-                {{--<th>安全保证金</th>--}}
-                {{--<th>发单时间</th>--}}
-                {{--<th>接单时间</th>--}}
-                {{--<th>代练时间</th>--}}
-                {{--<th>剩余时间</th>--}}
-                {{--<th>打手呢称</th>--}}
-                {{--<th>打手电话</th>--}}
-                {{--<th>号主电话</th>--}}
-                {{--<th>来源价格</th>--}}
-                {{--<th>支付金额</th>--}}
-                {{--<th>获得金额</th>--}}
-                {{--<th >手续费</th>--}}
-                {{--<th>利润</th>--}}
-                {{--<th>发单客服</th>--}}
-                {{--<th width="100px">操作</th>--}}
-            {{--</tr>--}}
-            {{--</thead>--}}
-            {{--<tbody>--}}
-            {{--@php $i= 1; $total  = $orders->total();   @endphp--}}
-            {{--@forelse($orders as $item)--}}
-                {{--@php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp--}}
-                {{--<tr>--}}
-                    {{--<td>--}}
-                        {{--天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>--}}
-                        {{--@if(isset($detail['third']) && $detail['third'])--}}
-                            {{--{{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>--}}
-                        {{--@endif--}}
-
-                    {{--</td>--}}
-                    {{--<td>--}}
-                        {{--@if(isset($detail['client_wang_wang']))--}}
-                        {{--<a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank">联系旺旺号<img src="/frontend/images/ww.gif"></a></li>--}}
-                        {{--@endif--}}
-                    {{--</td>--}}
-                    {{--<td>{{ $detail['customer_service_remark'] or '' }}</td>--}}
-                    {{--<td>{{ $detail['game_leveling_title'] or '' }}</td>--}}
-                    {{--<td>{{ $item->game_name }} <br/> {{ isset($detail['region']) ?  $detail['region'] . ' / ' . $detail['serve'] : ''  }}</td>--}}
-                    {{--<td>{{ $detail['account'] or '' }} <br/> {{ $detail['password'] or '' }}</td>--}}
-                    {{--<td>{{ $detail['role'] or '' }}</td>--}}
-                    {{--<td>{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>{{ $item->no }}</td>--}}
-                    {{--<td>--}}
-                        {{--{{ $item->no }}--}}
-                    {{--</td>--}}
-
-                    {{--<td>--}}
-                        {{--<div class="dropdown @if($i >= $total - 4) dropup @endif">--}}
-                            {{--<button style="width:100px;" type="button" class="layui-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
-                                {{--订单操作 <span class="caret"></span>--}}
-                            {{--</button>--}}
-                            {{--<ul class="dropdown-menu">--}}
-                                {{--<li><a href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no]) }}">详情</a></li>--}}
-
-                                {{--@if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 1)--}}
-                                {{--<li><a  class="operation" data-operation="receive" data-no="{{ $item->no }}" href="#">接单</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 22)--}}
-                                {{--<li><a  class="operation" data-operation="onSale" data-no="{{ $item->no }}" href="#">上架</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 1)--}}
-                                {{--<li><a  class="operation" data-operation="offSale" data-no="{{ $item->no }}"  href="#">下架</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))--}}
-                                {{--<li><a href="{{ route('frontend.workbench.leveling.repeat', ['no' => $item->no]) }}">重发</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13 || $item->status == 14 || $item->status == 17))--}}
-                                {{--<li><a  class="operation" data-operation="lock" data-no="{{ $item->no }}"  href="#">锁定</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 18)--}}
-                                {{--<li><a  class="operation" data-operation="cancelLock" data-no="{{ $item->no }}"  href="#">取消锁定</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
-                                {{--@if ($item->leveling_consult->consult == 1 && $item->status == 15)--}}
-                                {{--<li value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</li>--}}
-                                {{--@elseif($item->leveling_consult->consult == 2 && ($item->status == 15 || $item->status == 16))--}}
-                                {{--<li value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</li>--}}
-                                {{--<li value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</li>--}}
-                                {{--@endif--}}
-                                {{----}}
-                                {{--@if($item->leveling_consult->consult == 2 && $item->status == 15)--}}
-                                {{--<li value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</li>--}}
-                                {{--@elseif($item->leveling_consult->consult == 1 && ($item->status == 15 || $item->status == 16))--}}
-                                {{--<li value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</li>--}}
-                                {{--<li value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</li>--}}
-                                {{--@endif--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)--}}
-                                {{--<li><a  class="operation" data-operation="revoke" data-no="{{ $item->no }}"  href="#">撤销</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->status == 13 || $item->status == 14 || $item->status == 15)--}}
-                                {{--<li><a  class="operation" data-operation="applyArbitration" data-no="{{ $item->no }}"  href="">申请仲裁</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
-                                    {{--@if($item->leveling_consult->complain == 1 && $item->status == 16)--}}
-                                    {{--<li value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</li>--}}
-                                    {{--@endif--}}
-                                   {{----}}
-                                    {{--@if($item->leveling_consult->complain == 2 && $item->status == 16)--}}
-                                    {{--<li value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</li>--}}
-                                    {{--@endif--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && $item->status == 14)--}}
-                                {{--<li><a  class="operation" data-operation="complete" data-no="{{ $item->no }}"   href="#">完成</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
-                                {{--<li><a  href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no, 'tab' => 1]) }}">留言</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId())--}}
-                                {{--<li><a href="{{ route('frontend.workbench.leveling.detail', ['no' => $item->no, 'tab' => 2]) }}">操作记录</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && isset($detail['client_wang_wang']))--}}
-                                {{--<li><a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank">联系旺旺号</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if ($item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 1 || $item->status == 22))--}}
-                                {{--<li><a  class="operation" data-operation="delete" data-no="{{ $item->no }}"  href="">撤单</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13))--}}
-                                {{--<li><a  class="operation" data-operation="applyComplete" data-no="{{ $item->no }}" href="">申请完成</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 14))--}}
-                                {{--<li><a  class="operation" data-operation="cancelComplete" data-no="{{ $item->no }}"  href="">取消验收</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 13))--}}
-                                {{--<li><a  class="operation" data-operation="abnormal" data-no="{{ $item->no }}"  href="#">异常</a></li>--}}
-                                {{--@endif--}}
-
-                                {{--@if (!$item->creator_primary_user_id == Auth::user()->getPrimaryUserId() && ($item->status == 17))--}}
-                                {{--<li><a  class="operation" data-operation="cancelAbnormal" data-no="{{ $item->no }}"  href="#"></a>取消异常</li>--}}
-                                {{--@endif--}}
-                            {{--</ul>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--@php $i++  @endphp--}}
-            {{--@empty--}}
-
-            {{--@endforelse--}}
-            {{--</tbody>--}}
-        {{--</table>--}}
     </div>
 
     <div class="fixed-table-box row-col-fixed">
@@ -304,102 +171,255 @@
             <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
                 <thead>
                 <tr>
-                    <th class="" data-fixed="true"><div class="table-cell">订单号</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class=""><div class="table-cell">号主旺旺</div></th>
-                    <th class="w-100" data-fixed="true" data-direction="right"><div class="table-cell">操作</div></th>
+                    <td  data-fixed="true"><div class="table-cell" style="width: 220px">订单号</div></td>
+                    <th><div class="table-cell w-150" style="line-height: 40px">号主旺旺</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">客服备注</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">代练标题</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">游戏/区/服</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">账号/密码</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">角色名称</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">订单状态</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">代练价格</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">效率保证金</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">安全保证金</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">发单时间</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">接单时间</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">代练时间</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">剩余时间</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">打手呢称</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">打手电话</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">号主电话</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">来源价格</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">支付金额</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">获得金额</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">手续费</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">利润</div></th>
+                    <th><div class="table-cell w-150" style="line-height: 40px">发单客服</div></th>
+                    <th class="w-100" data-fixed="true" data-direction="right"><div class="table-cell w-150" style="line-height: 40px">操作</div></th>
                 </tr>
                 </thead>
             </table>
         </div>
         <!-- 表头 end -->
-
+        
         <!-- 表格内容 start -->
-        <div class="fixed-table_body-wraper">
-            <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
+        <div class="fixed-table_body-wraper data-table-content">
+            <table class="fixed-table_body  layui-form" cellspacing="0" cellpadding="0" border="0">
                 <tbody>
-
                 @forelse($orders as $item)
-                    @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
+                    @php 
+                        $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  
+                    
+                        if (!in_array($item->status, [19, 20, 21])){
+                            $paymentAmount = '';
+                            $getAmount= '';
+                            $poundage = '';
+                            $profit= '';
+                        } else {
+                            // 支付金额
+                            if ($item->status == 21) {
+                                $amount = $item->leveling_consult->api_amount;
+                            } else {
+                                $amount = $item->leveling_consult->amount;
+                            }
+                            // 支付金额
+                            $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
+        
+                            $paymentAmount = (float)$detail['payment_amount'] + 0;
+                            $getAmount= (float)$detail['get_amount'] + 0;
+                            $poundage = (float)$detail['poundage'] + 0;
+                            // 利润
+                            $profit = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
+                        }
+        
+                        $days = $detail['game_leveling_day'] ?? 0;
+                        $hours = $detail['game_leveling_hour'] ?? 0;
+                        $levelingTime = $days . '天' . $hours . '小时'; // 代练时间
+        
+                        // 如果存在接单时间
+                        if (isset($detail['receiving_time']) && !empty($detail['receiving_time'])) {
+                            // 计算到期的时间戳
+                            $expirationTimestamp = strtotime($detail['receiving_time']) + $days * 86400 + $hours * 3600;
+                            // 计算剩余时间
+                            $leftSecond = $expirationTimestamp - time();
+                            $leftTime = Sec2Time($leftSecond); // 剩余时间
+                        } else {
+                            $leftTime = '';
+                        }
+                    
+                    @endphp
                     <tr>
-                        <td class="" data-fixed="true"><div class="table-cell">订单号</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class=""><div class="table-cell">号主旺旺</div></td>
-                        <td class="">
-                            <div class="table-cell">
-                                <a href="###">查看</a>
-                                <a href="###">编辑</a>
+                        <td>
+                            <div class="table-cell" style="width: 220px">
+                                天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
+                                @if(isset($detail['third']) && $detail['third'])
+                                    {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                                @endif
+                            </div>
+                        </td>
+                        <td>
+                            <div class="table-cell w-150">
+                            @if(isset($detail['client_wang_wang']))
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank">联系旺旺号<img src="/frontend/images/ww.gif"></a></li>
+                            @endif
+                            </div>
+                        </td>
+                        <td><div class="table-cell w-150"> {{ $detail['customer_service_remark'] or '' }}</div></td>
+                        <td><div class="table-cell w-150"> {{ $detail['game_leveling_title'] or '' }}</div></td>
+                        <td><div class="table-cell w-150"> {{ $item->game_name }} <br/> {{ isset($detail['region']) ?  $detail['region'] . '/' . $detail['serve'] : ''  }}</div></td>
+                        <td><div class="table-cell w-150"> {{ $detail['account'] or '' }} <br/> {{ $detail['password'] or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['role'] or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $item->amount }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['efficiency_deposit'] or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['security_deposit'] or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $item->created_at  }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['receiving_time'] or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $levelingTime }}</div></td>
+                        <td><div class="table-cell w-150">{{ $leftTime }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['hatchet_man_name']   or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['hatchet_man_phone']   or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['client_phone']   or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['original_amount']   or '' }}</div></td>
+                        <td><div class="table-cell w-150">{{ $paymentAmount }}</div></td>
+                        <td><div class="table-cell w-150">{{ $getAmount  }}</div></td>
+                        <td><div class="table-cell w-150">{{ $poundage  }}</div></td>
+                        <td><div class="table-cell w-150">{{ $profit }}</div></td>
+                        <td><div class="table-cell w-150">{{ $detail['customer_service_name'] or '' }}</div></td>
+                        <td>
+                            <div class="table-cell w-150" style="overflow:visible;padding-right: 15px">
+                                <select  lay-filter="order-operation">
+                                        <option value="">请选择操作</option>
+                                        <option value="detail" data-no="{{ $item->no }}" >详情</option>
+
+                                        @if(auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id  && $item->status == 1)
+                                            <option value="receive" data-no="{{ $item->no }}" >接单</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 22)
+                                            <option value="onSale" data-no="{{ $item->no }}" >上架</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 1)
+                                            <option value="offSale" data-no="{{ $item->no }}" >下架</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))
+                                            <option value="repeat" data-no="{{ $item->no }}" >重发</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13 || $item->status == 14 || $item->status == 17))
+                                            <option value="lock" data-no="{{ $item->no }}" >锁定</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 18)
+                                            <option value="cancelLock" data-no="{{ $item->no }}" >取消锁定</option>
+                                        @endif
+
+                                        {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
+                                        {{--@if(d.consult == 1 && $item->status == 15)--}}
+                                        {{--<option value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
+                                        {{--@elseif(d.consult == 2 && ($item->status == 15 || $item->status == 16))--}}
+                                        {{--<option value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
+                                        {{--<option value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
+                                        {{--@endif--}}
+                                        {{--@else--}}
+                                        {{--@if(d.consult == 2 && $item->status == 15)--}}
+                                        {{--<option value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
+                                        {{--@elseif(d.consult == 1 && ($item->status == 15 || $item->status == 16))--}}
+                                        {{--<option value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
+                                        {{--<option value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
+                                        {{--@endif--}}
+                                        {{--@endif--}}
+
+                                        @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
+                                            <option value="revoke" data-no="{{ $item->no }}" >撤销</option>
+                                        @endif
+
+                                        @if($item->status == 13 || $item->status == 14 || $item->status == 15)
+                                            <option value="applyArbitration" data-no="{{ $item->no }}" >申请仲裁</option>
+                                        @endif
+
+                                        {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
+                                        {{--@if(d.complain == 1 && $item->status == 16)--}}
+                                        {{--<option value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
+                                        {{--@endif--}}
+                                        {{--@else--}}
+                                        {{--@if(d.complain == 2 && $item->status == 16)--}}
+                                        {{--<option value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
+                                        {{--@endif--}}
+                                        {{--@endif--}}
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
+                                            <option value="complete" data-no="{{ $item->no }}" >完成</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                            <option value="message" data-no="{{ $item->no }}" >留言</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                            <option value="operationRecord" data-no="{{ $item->no }}" >操作记录</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && isset($detail['client_wang_wang']))
+                                            <option value="wangWang" data-no="{{ $item->no }}"  data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</option>
+                                        @endif
+
+                                        @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
+                                            <option value="delete" data-no="{{ $item->no }}" >撤单</option>
+                                        @endif
+
+                                        @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
+                                            <option value="applyComplete" data-no="{{ $item->no }}" >申请完成</option>
+                                        @endif
+
+                                        @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14))
+                                            <option value="cancelComplete" data-no="{{ $item->no }}" >取消验收</option>
+                                        @endif
+                                        @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
+                                            <option value="abnormal" data-no="{{ $item->no }}" >异常</option>
+                                        @endif
+                                        @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 17))
+                                            <option value="cancelAbnormal" data-no="{{ $item->no }}" >取消异常</option>
+                                        @endif
+                                    </select>
                             </div>
                         </td>
                     </tr>
                 @empty
-
                 @endforelse
-
                 </tbody>
             </table>
         </div>
         <!-- 表格内容 end -->
-
         <!-- 固定列 start -->
         <div class="fixed-table_fixed fixed-table_fixed-left">
             <div class="fixed-table_header-wraper">
                 <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
                     <thead>
                     <tr>
-                        <th class="" data-fixed="true"><div class="table-cell">订单号</div></th>
+                        <th class="w-150"><div class="table-cell" style="width: 220px;line-height: 40px">订单号</div></th>
                     </tr>
                     </thead>
                 </table>
             </div>
-
-            <div class="fixed-table_body-wraper">
+            <div class="fixed-table_body-wraper data-table-fixed-content">
                 <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
                     @forelse($orders as $item)
-                        <tr>
-                            <td class=""><div class="table-cell">订单号</div></td>
-                        </tr>
+                    @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
+                    <tr>
+                        <td>
+                            <div class="table-cell" style="width: 220px">
+                                天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
+                                @if(isset($detail['third']) && $detail['third'])
+                                    {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-
                     @endforelse
                     </tbody>
                 </table>
@@ -410,26 +430,121 @@
                 <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
                     <thead>
                     <tr>
-                        <th class=""><div class="table-cell">操作</div></th>
+                        <th class="w-100"><div class="table-cell w-150"  style="overflow:visible;padding-right: 15px;line-height: 40px">操作</div></th>
                     </tr>
                     </thead>
                 </table>
             </div>
-
-            <div class="fixed-table_body-wraper">
-                <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
+            <div class="fixed-table_body-wraper data-table-fixed-content">
+                <table class="fixed-table_body layui-form" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
+
                     @forelse($orders as $item)
+                        @php $detail = $item->detail->pluck('field_value', 'field_name')->toArray();  @endphp
                         <tr>
-                            <td class="">
-                                <div class="table-cell">
-                                    <a href="#">查看</a>
-                                    <a href="#">编辑</a>
+                            <td class="w-100">
+
+                                <div class="table-cell w-150" style="overflow:visible;padding-right: 15px">
+                                    <select  lay-filter="order-operation">
+                                            <option value="">请选择操作</option>
+                                            <option value="detail" data-no="{{ $item->no }}" >详情</option>
+
+                                            @if(auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id  && $item->status == 1)
+                                            <option value="receive" data-no="{{ $item->no }}" >接单</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 22)
+                                            <option value="onSale" data-no="{{ $item->no }}" >上架</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 1)
+                                            <option value="offSale" data-no="{{ $item->no }}" >下架</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))
+                                            <option value="repeat" data-no="{{ $item->no }}" >重发</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13 || $item->status == 14 || $item->status == 17))
+                                            <option value="lock" data-no="{{ $item->no }}" >锁定</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 18)
+                                            <option value="cancelLock" data-no="{{ $item->no }}" >取消锁定</option>
+                                            @endif
+
+                                            {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
+                                                {{--@if(d.consult == 1 && $item->status == 15)--}}
+                                                {{--<option value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
+                                                {{--@elseif(d.consult == 2 && ($item->status == 15 || $item->status == 16))--}}
+                                                {{--<option value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
+                                                {{--<option value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
+                                                {{--@endif--}}
+                                            {{--@else--}}
+                                                {{--@if(d.consult == 2 && $item->status == 15)--}}
+                                                {{--<option value="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
+                                                {{--@elseif(d.consult == 1 && ($item->status == 15 || $item->status == 16))--}}
+                                                {{--<option value="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
+                                                {{--<option value="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
+                                               {{--@endif--}}
+                                            {{--@endif--}}
+
+                                            @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
+                                            <option value="revoke" data-no="{{ $item->no }}" >撤销</option>
+                                            @endif
+
+                                            @if($item->status == 13 || $item->status == 14 || $item->status == 15)
+                                            <option value="applyArbitration" data-no="{{ $item->no }}" >申请仲裁</option>
+                                            @endif
+
+                                            {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
+                                                {{--@if(d.complain == 1 && $item->status == 16)--}}
+                                                {{--<option value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
+                                                {{--@endif--}}
+                                             {{--@else--}}
+                                                {{--@if(d.complain == 2 && $item->status == 16)--}}
+                                                {{--<option value="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
+                                                {{--@endif--}}
+                                            {{--@endif--}}
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
+                                            <option value="complete" data-no="{{ $item->no }}" >完成</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                            <option value="message" data-no="{{ $item->no }}" >留言</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                            <option value="operationRecord" data-no="{{ $item->no }}" >操作记录</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && isset($detail['client_wang_wang']))
+                                            <option value="wangWang" data-no="{{ $item->no }}"  data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</option>
+                                            @endif
+
+                                            @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
+                                            <option value="delete" data-no="{{ $item->no }}" >撤单</option>
+                                            @endif
+
+                                            @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
+                                            <option value="applyComplete" data-no="{{ $item->no }}" >申请完成</option>
+                                            @endif
+
+                                            @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14))
+                                            <option value="cancelComplete" data-no="{{ $item->no }}" >取消验收</option>
+                                            @endif
+                                            @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
+                                            <option value="abnormal" data-no="{{ $item->no }}" >异常</option>
+                                            @endif
+                                            @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 17))
+                                            <option value="cancelAbnormal" data-no="{{ $item->no }}" >取消异常</option>
+                                            @endif
+                                        </select>
                                 </div>
                             </td>
                         </tr>
                     @empty
-
                     @endforelse
 
                     </tbody>
@@ -439,8 +554,7 @@
         <!-- 固定列 end -->
     </div>
 
-
-
+    {{ $orders->links() }}
 
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
@@ -451,37 +565,43 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">*我愿意支付代练费（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入代练费" class="layui-input" style="width:400px">
+                            <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off"
+                                   placeholder="请输入代练费" class="layui-input" style="width:400px">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">我已支付代练费（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="order_amount" id="order_amount" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="order_amount" id="order_amount" lay-verify="" value=""
+                                   autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">*需要对方赔付保证金</label>
                         <div class="layui-input-block">
-                            <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入保证金" class="layui-input" style="width:400px">
+                            <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off"
+                                   placeholder="请输入保证金" class="layui-input" style="width:400px">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">对方已预付安全保证金（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off"
+                                   placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">对方已预付效率保证金（元）</label>
                         <div class="layui-input-block">
-                            <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                            <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off"
+                                   placeholder="" class="layui-input" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">撤销理由</label>
                         <div class="layui-input-block">
-                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required"
+                                      class="layui-textarea" style="width:400px"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -503,13 +623,16 @@
                 <div>
                     <div class="layui-form-item">
                         <div class="layui-input-block" style="margin:0px">
-                            <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required" class="layui-textarea" style="width:90%;margin:auto;height:150px !important;"></textarea>
+                            <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required"
+                                      class="layui-textarea"
+                                      style="width:90%;margin:auto;height:150px !important;"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
 
                         <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认</button>
+                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                            </button>
                             <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
                         </div>
                     </div>
@@ -518,56 +641,38 @@
         </div>
     </div>
 
-    <div class="send-message" style="display: none;padding: 20px">
-        <form class="layui-form" action="" id="goods-add-form">
-            <input type="hidden" name="type" value="">
-            <div style="height: 20px;line-height: 20px;color:red;padding-bottom: 10px">短信费：0.1元/条</div>
-            <div class="layui-form-item">
-                <select name="service_id" lay-verify="" lay-filter="chose-sms-template">
-                    <li value="">选择模版</li>
-                    @forelse($smsTemplate as $item)
-                        <li value="{{ $item->contents }}" data-template="">{{ $item->name }}</li>
-                    @empty
-                    @endforelse
-                </select>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea" style="margin:auto;height:150px !important;"></textarea>
-            </div>
+    {{--<div class="send-message" style="display: none;padding: 20px">--}}
+        {{--<form class="layui-form" action="" id="goods-add-form">--}}
+            {{--<input type="hidden" name="type" value="">--}}
+            {{--<div style="height: 20px;line-height: 20px;color:red;padding-bottom: 10px">短信费：0.1元/条</div>--}}
+            {{--<div class="layui-form-item">--}}
+                {{--<select name="service_id" lay-verify="" lay-filter="chose-sms-template">--}}
+                    {{--<li value="">选择模版</li>--}}
+                    {{--@forelse($smsTemplate as $item)--}}
+                        {{--<li value="{{ $item->contents }}" data-template="">{{ $item->name }}</li>--}}
+                    {{--@empty--}}
+                    {{--@endforelse--}}
+                {{--</select>--}}
+            {{--</div>--}}
+            {{--<div class="layui-form-item layui-form-text">--}}
+                {{--<textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea"--}}
+                          {{--style="margin:auto;height:150px !important;"></textarea>--}}
+            {{--</div>--}}
 
-            <div class="layui-form-item">
-                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>
-                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
-            </div>
-        </form>
-    </div>
-
+            {{--<div class="layui-form-item">--}}
+                {{--<button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>--}}
+                {{--<span cancel class="layui-btn  layui-btn-normal cancel">取消</span>--}}
+            {{--</div>--}}
+        {{--</form>--}}
+    {{--</div>--}}
 @endsection
 
 <!--START 底部-->
 @section('js')
     <script src="/frontend/js/fixed-table.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script>
-        $(document).ready(function () {
-            //初始化FixedTable
-            $(".fixed-table-box").fixedTable();
-//            var h = $("body").height() - 600 + 'px';
-//            var table = $('#tableDataGridExample').DataTable({
-//                scrollY: '300px',
-//                scrollX: true,
-//                scrollCollapse: true,
-//                paging: false,
-//                ordering: false,
-//                info: false,
-//                searching: false,
-//                fixedColumns: {
-//                    leftColumns: 1,
-//                    rightColumns: 1
-//                }
-//            });
-        });
-
-
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,
@@ -581,19 +686,18 @@
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
-            $('.cancel').click(function(){
+            $('.cancel').click(function () {
                 layer.closeAll();
             });
 
             var userId = "{{ Auth::id() }}";
 
             // 对订单操作
-            $('.operation').click(function () {
-                var operation = $(this).data('operation');
-                var orderNo = $(this).data("data-no");
-                var orderAmount = $(this).data("data-amount");
-                var orderSafe = $(this).data("data-safe");
-                var orderEffect = $(this).data("data-effect");
+            form.on('select(order-operation)', function (data) {
+                var orderNo = $(data.elem).find("option:selected").attr("data-no");
+                var orderAmount = $(data.elem).find("option:selected").attr("data-amount");
+                var orderSafe = $(data.elem).find("option:selected").attr("data-safe");
+                var orderEffect = $(data.elem).find("option:selected").attr("data-effect");
 
                 if (!orderAmount) {
                     orderAmount = 0;
@@ -608,11 +712,43 @@
                 $('#safe').val(orderSafe);
                 $('#effect').val(orderEffect);
 
-                if (!operation) {
+                if (!data.value) {
                     return false;
                 }
-
-                if (operation == 'revoke') {
+                if (data.value == 'detail') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no='  + orderNo);
+                }
+                // 留言
+                if (data.value == 'message') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=1');
+                }
+                // 操作记录
+                if (data.value == 'operationRecord') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no='  + orderNo + '&tab=2');
+                }
+                // 重发
+                if (data.value == 'repeat') {
+                    var no = $(data.elem).find("option:selected").attr("data-no");
+                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/'  + orderNo);
+                }
+                // 联系旺旺
+                if (data.value == 'wangWang') {
+                    var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
+                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang  +  '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
+                    return false;
+                }
+                if (data.value == 'sendSms') {
+                    $('.send-message  .layui-form').append('<input type="hidden" name="no" value="' + orderNo + '"/>');
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '发送短信',
+                        area: ['500px'],
+                        content: $('.send-message')
+                    });
+                    return false
+                }
+                if (data.value == 'revoke') {
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -636,7 +772,7 @@
                         return false;
                     });
 
-                } else if (operation == 'applyArbitration') {
+                } else if (data.value == 'applyArbitration') {
                     layer.open({
                         type: 1,
                         shade: 0.2,
@@ -661,7 +797,7 @@
                         return false;
                     });
 
-                } else if (operation == 'delete') {
+                } else if (data.value == 'delete') {
                     layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -678,8 +814,8 @@
 
                         layer.close(index);
                     });
-                } else if(operation == 'complete') {
-                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                } else if(data.value == 'complete') {
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
                             userId:userId,
@@ -694,7 +830,7 @@
                         });
                         layer.close(index);
                     });
-                } else if(operation ==  'agreeRevoke') {
+                } else if(data.value ==  'agreeRevoke') {
                     layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
@@ -714,7 +850,7 @@
                         });
                         layer.close(index);
                     });
-                } else {
+                }  else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo:orderNo,
                         userId:userId,
@@ -733,26 +869,42 @@
                         reload();
                     });
                 }
-                return false;
-            });
-
-            form.on('select(order-operation)', function (data) {
-
             });
 
             // 导出
             form.on('submit(export)', function (data) {
                 var fields = data.field;
-                var datas = '?no=' + fields.no+'&source_order_no='+fields.source_order_no+'&gameId='+fields.game_id+'&wangWang='+fields.wang_wang+'&startDate='+fields.start_date+'&endDate='+fields.end_date+'&status='+status+'&urgentOrder='+urgentOrder;
-                window.location.href="{{ route('frontend.workbench.leveling.excel') }}"+datas;
+                var datas = '?no=' + fields.no + '&source_order_no=' + fields.source_order_no + '&gameId=' + fields.game_id + '&wangWang=' + fields.wang_wang + '&startDate=' + fields.start_date + '&endDate=' + fields.end_date + '&status=' + status + '&urgentOrder=' + urgentOrder;
+                window.location.href = "{{ route('frontend.workbench.leveling.excel') }}" + datas;
             });
-            
+
             var hasData = "{{ session('message') }}";
             if (hasData) {
                 layer.alert(hasData, function () {
                     layer.closeAll();
                 });
             }
+
+            function setDateTableHeight() {
+                var windowsH = $(window).height() - 350;
+                var contentH = $('.data-table-content').height();
+                var h = 0;
+                if (contentH > windowsH) {
+                    h = windowsH;
+                } else {
+                    h = contentH;
+                }
+                $(".data-table-content").css('height', h + 'px');
+                $(".data-table-fixed-content").css('height', h - 20 + 'px');
+                $(".fixed-table-box").fixedTable();
+                layui.from.render();
+            }
+            $(window).resize(function() {
+                setDateTableHeight();
+            });
+            $(document).ready(function () {
+                setDateTableHeight();
+            });
         });
     </script>
 @endsection

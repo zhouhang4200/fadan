@@ -2,7 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderArbitrationing;
 use DB;
+use ErrorException;
 use Redis;
 use Image;
 use App\Services\Show91;
@@ -121,8 +123,18 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         }
                     }
                 }
+
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            }
+
+            // 调用事件
+            try {
+                event(new OrderArbitrationing($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('ex', ['OrderArbitrationing 事件', $errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('ex', ['OrderArbitrationing 事件',$exception->getMessage()]);
             }
         }
     }

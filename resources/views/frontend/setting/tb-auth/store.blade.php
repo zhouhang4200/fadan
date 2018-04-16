@@ -18,20 +18,13 @@
     </ul>
     </div>
     <form class="layui-form layui-form-pane" action="">
-
-        <?php $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  Auth::user()->id . '&sign=' . md5(Auth::user()->id . Auth::user()->name)  ?>
-        @if(Auth::user()->store_wang_wang)
-            <div class="layui-inline">
-                <label class="layui-form-label">已绑定旺旺</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="qq" autocomplete="off" class="layui-input" value="{{ Auth::user()->store_wang_wang }}">
-                </div>
-                <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">修改绑定</a>
+        <div class="layui-inline">
+            <label class="layui-form-label">店铺旺旺</label>
+            <div class="layui-input-inline">
+                <input type="text" name="wang_wang" autocomplete="off" lay-verify="required" class="layui-input" value=""  placeholder="请输入店铺旺旺">
             </div>
-        @else
-            <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">现在绑定</a>
-        @endif
-
+            <button class="layui-btn" lay-submit="" lay-filter="auth">授权</button>
+        </div>
     </form>
 
     <table class="layui-table" lay-size="sm">
@@ -43,11 +36,11 @@
         </tr>
         </thead>
         <tbody>
+
         @forelse($taobaoShopAuth as $item)
             <tr>
-                <td>{{ $item->wnag_wang }}</td>
+                <td>{{ $item->wang_wang }}</td>
                 <td>{{ $item->created_at }}</td>
-                <td>{{ $item->updated_at }}</td>
                 <td>
                     <button class="layui-btn layui-btn-normal layui-btn-small" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button>
                 </td>
@@ -65,10 +58,23 @@
         layui.use(['form', 'element'], function(){
             var form = layui.form ,layer = layui.layer ,element = layui.element;
 
+            //监听提交
+            form.on('submit(auth)', function(data){
+                $.post('{{ route('frontend.setting.tb-auth.store-auth') }}', { wang_wang:data.field.wang_wang }, function (result) {
+                    if (result.status == 1) {
+                        layer.alert('授权成功', {
+                            title: '最终的提交信息'
+                        });
+
+                    } else {
+                        window.open(result.content.url);
+                    }
+                }, 'json');
+                return false;
+            });
+
             @if($bindResult == 1)
-                layer.msg('授权成功');
-            @elseif($bindResult == 2)
-                layer.msg('授权失败，该旺旺已经绑定其它账号');
+                reload();
             @endif
         });
     </script>

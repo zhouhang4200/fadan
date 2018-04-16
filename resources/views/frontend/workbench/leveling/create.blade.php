@@ -187,6 +187,13 @@
                         <span>@{{ item.help_text }}</span>
                     </a>
                     @{{# }  }}
+
+                    @{{# if(item.field_name == 'game_leveling_requirements_template') {  }}
+                    <a href="#" class="tooltip" id="game_leveling_requirements_template">
+                        <i class="iconfont icon-iconset0143" id="recharge"></i>
+                    </a>
+                    @{{# }  }}
+
                 </div>
             </div>
 
@@ -458,6 +465,15 @@
                 if (fieldName == 'game_leveling_requirements_template') {
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
+            });
+            // 添加代练要求模板
+            $('.layui-form').on('click', '#game_leveling_requirements_template', function () {
+
+                layer.open({
+                    type: 2,
+                    area: ['700px', '400px'],
+                    content: '{{ route('frontend.setting.sending-assist.require.pop') }}'
+                });
             });
         });
     </script>

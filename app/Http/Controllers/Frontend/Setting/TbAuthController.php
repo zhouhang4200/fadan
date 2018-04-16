@@ -53,18 +53,25 @@ class TbAuthController extends Controller
         $wangWang = $request->input('retMsg');
 
         $taobaoShopAuth = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->get();
+
         $bindResult = 0;
         if ($id && $sign && $wangWang) {
             if ($sign == md5(Auth::user()->id . Auth::user()->name)) {
-                $exist = Auth::user()->where('store_wang_wang', $wangWang)->first();
+
+                $exist = TaobaoShopAuthorization::where('wang_wang', $wangWang)->first();
 
                 if (!$exist) {
-                    $user = Auth::user();
-                    $user->store_wang_wang = $wangWang;
-                    $user->save();
-                    $bindResult = 1;
+                    $userExist = TaobaoShopAuthorization::where('wang_wang', $wangWang)
+                        ->where('user_id', auth()->user()->getPrimaryUserId())
+                        ->first();
+                    if ( !$userExist) {
+                        TaobaoShopAuthorization::create([
+                            'wang_wang'  => $wangWang,
+                            'user_id'  => auth()->user()->getPrimaryUserId(),
+                        ]);
+                    }
                 }
-                $bindResult = 2;
+                $bindResult = 1;
             }
         }
         return view('frontend.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
@@ -75,6 +82,24 @@ class TbAuthController extends Controller
      */
     public function storeAuth(Request $request)
     {
+        $taobaoShopAuth = TaobaoShopAuthorization::where('wang_wang', $request->wang_wang)->first();
 
+        // 相关旺旺授权过， 则自动将写入一条当前用户的相关信息，否则返回授权地址
+        if ($taobaoShopAuth) {
+            $userExist = TaobaoShopAuthorization::where('wang_wang', $request->wang_wang)
+                ->where('user_id', auth()->user()->getPrimaryUserId())
+                ->first();
+            if ( !$userExist) {
+                TaobaoShopAuthorization::create([
+                    'wang_wang'  => $taobaoShopAuth->wang_wang,
+                    'user_id'  => auth()->user()->getPrimaryUserId(),
+                ]);
+            }
+            return response()->ajax(1, '授权成功');
+        } else {
+            $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
+            $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
+            return response()->ajax(0, '需要授权', ['url' => $url]);
+        }
     }
 }

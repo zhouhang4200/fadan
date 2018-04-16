@@ -61,6 +61,72 @@ class SendingAssistController extends Controller
     }
 
     /**
+     * 游戏代练模版弹窗
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function requirePop(Request $request, GameRepository $gameRepository)
+    {
+        $game = $gameRepository->availableByServiceId(4);
+
+        $template = GameLevelingRequirementsTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+            ->get();
+
+        return view('frontend.setting.sending-assist.require-pop')->with([
+            'template' => $template,
+            'game' => $game,
+        ]);
+    }
+
+    /**
+     * 游戏代练模版弹窗
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function requirePopStore(Request $request, GameRepository $gameRepository)
+    {
+        $id = $request->input('id', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $name = $request->name;
+        $content = $request->content;
+
+        if ($id == 0) {
+            if ($status) {
+                GameLevelingRequirementsTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                    ->where('game_id', $gameId)
+                    ->update(['status' => 0]);
+            }
+            GameLevelingRequirementsTemplate::create([
+                'user_id' => auth()->user()->getPrimaryUserId(),
+                'game_id' => $gameId,
+                'status' => $status,
+                'name' => $name,
+                'content' => $content,
+            ]);
+            return response()->ajax(1, '添加成功');
+        } else {
+            $template = GameLevelingRequirementsTemplate::where('id', $id)
+                ->where('user_id', auth()->user()->getPrimaryUserId())
+                ->first();
+            if ($template) {
+                $template->game_id = $gameId;
+                $template->status = $status;
+                $template->name = $name;
+                $template->content = $content;
+                $template->save();
+            }
+            if ($status) {
+                GameLevelingRequirementsTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                    ->where('id', '!=', $template->id)
+                    ->where('game_id',  $template->game_id)
+                    ->update(['status' => 0]);
+            }
+            return response()->ajax(1, '修改成功');
+        }
+    }
+
+    /**
      * 设置默认模板
      * @param  Request $request [description]
      * @return [type]           [description]

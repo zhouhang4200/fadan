@@ -349,9 +349,7 @@
 
             $fixedTableBody.on("scroll", function (){
                 var $this = $(this);
-                var w = $this.scrollLeft();
-                console.log(w);
-                fixedTableHeader.scrollLeft(w+22);
+                fixedTableHeader.scrollLeft($this.scrollLeft());
                 $fixedCols.scrollTop($this.scrollTop());
             });
             return this;
@@ -362,7 +360,7 @@
                 w1 = 0,
                 w2 = 0;
             document.body.appendChild(div);
-            
+
             div.style.position = "fixed";
             div.style.left = "-2000px";
             div.style.width = "200px";

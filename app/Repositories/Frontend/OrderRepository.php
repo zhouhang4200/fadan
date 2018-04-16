@@ -150,18 +150,17 @@ class OrderRepository
      * 代练订单
      * @param $status
      * @param $no
-     * @param $sourceOrderNo
+     * @param $tbStatus
      * @param $gameId
      * @param $wangWang
-     * @param $urgentOrder
-     * @param $label
-     * @param $pageSize
+     * @param $customerServiceName
+     * @param $platform
      * @param $startDate
      * @param $endDate
-     * @param $customerServiceName
+     * @param $pageSize
      * @return mixed
      */
-    public function levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName)
+    public function levelingDataList($status, $no,  $tbStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize = 50)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
@@ -184,15 +183,22 @@ class OrderRepository
         $query->when($status != 0, function ($query) use ($status) {
             return $query->where('status', $status);
         });
-        $query->when($no != 0, function ($query) use ($no) {
-            return $query->where('no', $no);
-        });
-        $query->when($sourceOrderNo != 0, function ($query) use ($sourceOrderNo, $type) {
-            $orderNo = OrderDetail::findOrdersBy('source_order_no', $sourceOrderNo, $type);
+        $query->when(!empty($no), function ($query) use ($no) {
+            $orderNo = OrderDetail::findOrdersBy('order_source', $no);
             return $query->whereIn('no', $orderNo);
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
+        });
+        $query->when($platform != 0, function ($query) use ($platform, $type) {
+            $orderNoArr = [];
+            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
+            if ($orderNo) {
+                $orderNoArr = $orderNo;
+            } else {
+                $orderNoArr = [999];
+            }
+            return $query->whereIn('no', $orderNoArr);
         });
         $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
             $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
@@ -202,14 +208,7 @@ class OrderRepository
             $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
             return $query->whereIn('no', $orderNo);
         });
-        $query->when($urgentOrder != 0, function ($query) use ($urgentOrder, $type) {
-            $orderNo = OrderDetail::findOrdersBy('urgent_order', $urgentOrder, $type);
-            return $query->whereIn('no', $orderNo);
-        });
-        $query->when(!empty($label), function ($query) use ($label, $type) {
-            $orderNo = OrderDetail::findOrdersBy('label', $label, $type);
-            return $query->whereIn('no', $orderNo);
-        });
+
         $query->when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);
         });

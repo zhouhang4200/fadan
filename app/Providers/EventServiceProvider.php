@@ -36,6 +36,18 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderReceiving' => [
             'App\Listeners\OrderReceiving\SendSms',
         ],
+        // 订单撤销中事件
+        'App\Events\OrderRevoking' => [
+            'App\Listeners\OrderRevoking\SendSms',
+        ],
+        // 订单仲裁中事件
+        'App\Events\OrderArbitrationing' => [
+            'App\Listeners\OrderArbitrationing\SendSms',
+        ],
+        // 订单申请验收事件
+        'App\Events\OrderApplyComplete' => [
+            'App\Listeners\OrderApplyComplete\SendSms',
+        ],
     ];
 
     /**

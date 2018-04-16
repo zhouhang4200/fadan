@@ -8,7 +8,7 @@
     <script src="/frontend/js/fixed-table.js"></script>
     <style>
         .fixed-table-box{
-            width: 800px;
+            width: 1000px;
             margin: 50px auto;
         }
         .fixed-table-box>.fixed-table_body-wraper{/*内容了表格主体内容有纵向滚动条*/
@@ -47,13 +47,38 @@
         <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
             <thead>
             <tr>
-                <td class="w-150" data-fixed="true"><div class="table-cell">日期</div></td>
-                <td class="w-120"><div class="table-cell">姓名</div></td>
-                <td class="w-120"><div class="table-cell">省份</div></td>
-                <td class="w-120"><div class="table-cell">市区</div></td>
-                <td class="w-300"><div class="table-cell">地址</div></td>
-                <td class="w-120"><div class="table-cell">邮编</div></td>
-                <td class="w-100" data-fixed="true" data-direction="right"><div class="table-cell">操作</div></td>
+                <td  data-fixed="true"><div class="table-cell w-150">订单号</div></td>
+                <td><div class="table-cell w-150">号主旺旺</div></td>
+                <td><div class="table-cell w-150">客服备注</div></td>
+                <td><div class="table-cell w-150">代练标题</div></td>
+                <td><div class="table-cell w-150">游戏/区/服</div></td>
+                <td><div class="table-cell w-150">账号/密码</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">账号/密码</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">效率保证金</div></td>
+                <td><div class="table-cell w-150">安全保证金</div></td>
+                <td><div class="table-cell w-150">发单时间</div></td>
+                <td><div class="table-cell w-150">接单时间</div></td>
+                <td><div class="table-cell w-150">代练时间</div></td>
+                <td><div class="table-cell w-150">剩余时间</div></td>
+                <td><div class="table-cell w-150">打手呢称</div></td>
+                <td><div class="table-cell w-150">打手电话</div></td>
+                <td><div class="table-cell w-150">号主电话</div></td>
+                <td><div class="table-cell w-150">来源价格</div></td>
+                <td><div class="table-cell w-150">支付金额</div></td>
+                <td><div class="table-cell w-150">获得金额</div></td>
+                <td><div class="table-cell w-150">手续费</div></td>
+                <td><div class="table-cell w-150">利润</div></td>
+                <td><div class="table-cell w-150">发单客服</div></td>
+                <td class="w-100" data-fixed="true" data-direction="right"><div class="table-cell w-150">操作</div></td>
             </tr>
             </thead>
         </table>
@@ -63,269 +88,116 @@
     <div class="fixed-table_body-wraper">
         <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
             <tbody>
+            @forelse($orders as $item)
             <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
+                <td><div class="table-cell w-150"> 2016-05-03</div></td>
+                <td><div class="table-cell w-150">王小虎</div></td>
+                <td><div class="table-cell w-150">上海</div></td>
+                <td><div class="table-cell w-150">普陀区</div></td>
+                <td><div class="table-cell w-150">上海市普陀区金沙江路 1518 路</div></td>
+                <td><div class="table-cell w-150">200333</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">200333</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">角色名称</div></td>
+                <td><div class="table-cell w-150">订单状态</div></td>
+                <td><div class="table-cell w-150">代练价格</div></td>
+                <td><div class="table-cell w-150">效率保证金</div></td>
+                <td><div class="table-cell w-150">安全保证金</div></td>
+                <td><div class="table-cell w-150">发单时间</div></td>
+                <td><div class="table-cell w-150">接单时间</div></td>
+                <td><div class="table-cell w-150">代练时间</div></td>
+                <td><div class="table-cell w-150">剩余时间</div></td>
+                <td><div class="table-cell w-150">打手呢称</div></td>
+                <td><div class="table-cell w-150">打手电话</div></td>
+                <td><div class="table-cell w-150">号主电话</div></td>
+                <td><div class="table-cell w-150">来源价格</div></td>
+                <td><div class="table-cell w-150">支付金额</div></td>
+                <td><div class="table-cell w-150">获得金额</div></td>
+                <td><div class="table-cell w-150">手续费</div></td>
+                <td><div class="table-cell w-150">利润</div></td>
+                <td><div class="table-cell w-150">发单客服</div></td>
+                <td>
+                    <div class="table-cell w-150">
                         <a href="###">查看</a>
                         <a href="###">编辑</a>
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>
-                <td class="w-120"><div class="table-cell">王小虎</div></td>
-                <td class="w-120"><div class="table-cell">上海</div></td>
-                <td class="w-120"><div class="table-cell">普陀区</div></td>
-                <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>
-                <td class="w-120"><div class="table-cell">200333</div></td>
-                <td class="w-100">
-                    <div class="table-cell">
-                        <a href="###">查看</a>
-                        <a href="###">编辑</a>
-                    </div>
-                </td>
-            </tr>
+            @empty
+            @endforelse
             </tbody>
         </table>
     </div>
     <!-- 表格内容 end -->
 
     <!-- 固定列 start -->
-    {{--<div class="fixed-table_fixed fixed-table_fixed-left">--}}
-        {{--<div class="fixed-table_header-wraper">--}}
-            {{--<table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">--}}
-                {{--<thead>--}}
-                {{--<tr>--}}
-                    {{--<th class="w-150"><div class="table-cell">日期</div></th>--}}
-                {{--</tr>--}}
-                {{--</thead>--}}
-            {{--</table>--}}
-        {{--</div>--}}
+    <div class="fixed-table_fixed fixed-table_fixed-left">
+        <div class="fixed-table_header-wraper">
+            <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
+                <thead>
+                <tr>
+                    <th class="w-150"><div class="table-cell w-150">订单号</div></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
 
-        {{--<div class="fixed-table_body-wraper">--}}
-            {{--<table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">--}}
-                {{--<tbody>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-150"><div class="table-cell"> 2016-05-03</div></td>--}}
-                {{--</tr>--}}
-                {{--</tbody>--}}
-            {{--</table>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-    {{--<div class="fixed-table_fixed fixed-table_fixed-right">--}}
-        {{--<div class="fixed-table_header-wraper">--}}
-            {{--<table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">--}}
-                {{--<thead>--}}
-                {{--<tr>--}}
-                    {{--<th class="w-100"><div class="table-cell">操作</div></th>--}}
-                {{--</tr>--}}
-                {{--</thead>--}}
-            {{--</table>--}}
-        {{--</div>--}}
+        <div class="fixed-table_body-wraper">
+            <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                @forelse($orders as $item)
+                <tr>
+                    <td class="w-150"><div class="table-cell w-150"> 2016-05-03</div></td>
+                </tr>
+                @empty
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="fixed-table_fixed fixed-table_fixed-right">
+        <div class="fixed-table_header-wraper">
+            <table class="fixed-table_header" cellspacing="0" cellpadding="0" border="0">
+                <thead>
+                <tr>
+                    <th class="w-100"><div class="table-cell w-150">操作</div></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
 
-        {{--<div class="fixed-table_body-wraper">--}}
-            {{--<table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">--}}
-                {{--<tbody>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--<tr>--}}
-                    {{--<td class="w-100">--}}
-                        {{--<div class="table-cell">--}}
-                            {{--<a href="###">查看</a>--}}
-                            {{--<a href="###">编辑</a>--}}
-                        {{--</div>--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--</tbody>--}}
-            {{--</table>--}}
-        {{--</div>--}}
-    {{--</div>--}}
+        <div class="fixed-table_body-wraper">
+            <table class="fixed-table_body" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                @forelse($orders as $item)
+                <tr>
+                    <td class="w-100">
+                        <div class="table-cell w-150">
+                            <a href="###">查看</a>
+                            <a href="###">编辑</a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                @endforelse
+
+                </tbody>
+            </table>
+        </div>
+    </div>
     <!-- 固定列 end -->
 </div>
-
-<div class="btns">
-    <button type="button" id="empty_data">清空数据</button>
-    <button type="button" id="add_data">添加数据</button>
-    <button type="button" id="del_row">删除行</button>
-</div>
-
-
 
 
 
 <script>
     //初始化FixedTable
     $(".fixed-table-box").fixedTable();
-
-
-
-
-
 
     //清空表格
     $("#empty_data").on("click", function (){
@@ -337,14 +209,14 @@
             var html = '';
             for(var i = 0; i < 5; i ++){
                 html += '<tr>';
-                html += '    <td class="w-150"><div class="table-cell"> 2016-05-03</div></td>';
-                html += '    <td class="w-120"><div class="table-cell">王小虎</div></td>';
-                html += '    <td class="w-120"><div class="table-cell">上海</div></td>';
-                html += '    <td class="w-120"><div class="table-cell">普陀区</div></td>';
-                html += '    <td class="w-300"><div class="table-cell">上海市普陀区金沙江路 1518 路</div></td>';
-                html += '    <td class="w-120"><div class="table-cell">200333</div></td>';
+                html += '    <td class="w-150"><div class="table-cell w-150"> 2016-05-03</div></td>';
+                html += '    <td><div class="table-cell w-150">王小虎</div></td>';
+                html += '    <td><div class="table-cell w-150">上海</div></td>';
+                html += '    <td><div class="table-cell w-150">普陀区</div></td>';
+                html += '    <td class="w-300"><div class="table-cell w-150">上海市普陀区金沙江路 1518 路</div></td>';
+                html += '    <td><div class="table-cell w-150">200333</div></td>';
                 html += '    <td class="w-100">';
-                html += '        <div class="table-cell">';
+                html += '        <div class="table-cell w-150">';
                 html += '            <a href="###">查看</a>';
                 html += '            <a href="###">编辑</a>';
                 html += '        </div>';

@@ -205,14 +205,6 @@ class Playing extends DailianAbstract implements DailianInterface
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
 
-            try {
-                event(new OrderReceiving($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('receiving', [$errorException->getMessage()]);
-            } catch (\Exception $exception) {
-                myLog('receiving', [$exception->getMessage()]);
-            }
-
             // 根据userid, 判断是哪个平台接单
             switch ($this->userId) {
                 case 8456: 
@@ -261,6 +253,15 @@ class Playing extends DailianAbstract implements DailianInterface
                     throw new DailianException('未找到订单对应的第三方平台!');
                     break;
             }
+            // 调用事件
+            try {
+                event(new OrderReceiving($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('receiving', [$errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('receiving', [$exception->getMessage()]);
+            }
+
             // 写入留言获取
             $updateAfterOrderDetail = $this->checkThirdClientOrder($this->order);
             levelingMessageAdd($this->order->creator_primary_user_id, $this->order->no, $updateAfterOrderDetail['third_order_no'], $updateAfterOrderDetail['third'], 0);

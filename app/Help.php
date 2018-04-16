@@ -739,10 +739,12 @@ if (!function_exists('sendSms')){
      * @param $phone  integer 接收手机号
      * @param $content string 发送内容
      * @param $remark string 备注
-     * @param $foreignOrderNo string 外部订单号
+     * @param $foreignOrderNo
+     * @param $thirdOrderNo string 外部订单号
+     * @param $third integer string 第三方平台
      * @return array
      */
-    function sendSms($sendUserId, $orderNo,$phone, $content, $remark, $foreignOrderNo = '')
+    function sendSms($sendUserId, $orderNo, $phone, $content, $remark, $foreignOrderNo = '', $thirdOrderNo = '', $third = 0)
     {
         // 扣款
         try {
@@ -757,6 +759,8 @@ if (!function_exists('sendSms')){
             // 发送成功写发送记录
             SmsSendRecord::create([
                 'foreign_order_no' => $foreignOrderNo,
+                'third_order_no' => $thirdOrderNo,
+                'third' => $third,
                 'user_id' => $sendUserId,
                 'order_no' => $orderNo,
                 'client_phone' => $phone,

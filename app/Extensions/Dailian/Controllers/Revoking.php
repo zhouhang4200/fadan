@@ -2,12 +2,14 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\OrderRevoking;
 use DB;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+use ErrorException;
 
 /**
  * 申请撤销操作
@@ -104,10 +106,6 @@ class Revoking extends DailianAbstract implements DailianInterface
                 }
 
 
-
-
-
-
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
@@ -126,6 +124,15 @@ class Revoking extends DailianAbstract implements DailianInterface
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            }
+
+            // 调用事件
+            try {
+                event(new OrderRevoking($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('ex', ['OrderRevoking 事件',  $errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('ex', ['OrderRevoking 事件', $exception->getMessage()]);
             }
         }
     }
