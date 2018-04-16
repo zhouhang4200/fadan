@@ -297,9 +297,10 @@
                 if($fixedTableBox.find(".fixed-table-box_fixed-right-patch").length == 0){
                     var rightPatch = $('<div class="fixed-table-box_fixed-right-patch"></div>'),
                         height = $fixedTableHeader.height();
+                    console.log(height);
                     rightPatch.css({
                         width: scrollWidth2,
-                        height: height-2
+                        height: height
                     });
                     $fixedTableBox.append(rightPatch);
                 }
@@ -312,6 +313,7 @@
                 fixedTable = $fixedTableBox.find(".fixed-table_fixed");
             if(fixedTable.height() != Math.abs(maxHeight - scrollWidth)){
                 var height = maxHeight - scrollWidth;
+
                 fixedTable.height(maxHeight - scrollWidth);
             }
 

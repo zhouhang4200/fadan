@@ -56,12 +56,13 @@ body{
     position: relative;
     text-align: left;
     padding: 5px 0;
+    /*line-height: 18px;*/
     border: 1px solid #dfe6ec;
 }
 .fixed-table-box .table-cell{
     display: block;
-    height: 50px;
-    line-height: 25px;
+    height: 36px;
+    /*line-height: 18px;*/
     word-break: break-all;
     white-space: nowrap;
     overflow: hidden;
@@ -70,7 +71,7 @@ body{
 }
 /* 表头 start */
 .fixed-table-box>.fixed-table_header-wraper{
-    height: 51px;
+    height: 37px;
     overflow: hidden;
     overflow-y: auto;
 }
