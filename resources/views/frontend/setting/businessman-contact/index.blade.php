@@ -30,14 +30,14 @@
                 <input type="hidden" name="id" value="0">
                 <input type="hidden" name="type" value="{{ $type }}">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">模板名称</label>
+                    <label class="layui-form-label">姓名</label>
                     <div class="layui-input-block">
                         <input type="text" name="name" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
                 <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">模板内容</label>
+                    <label class="layui-form-label">{{ $type == 1 ? '联系电话' : '联系QQ' }}</label>
                     <div class="layui-input-block">
                         <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
                     </div>
