@@ -220,14 +220,17 @@
                             $poundage = '';
                             $profit= '';
                         } else {
-                            if ($item->leveling_consult) {
-                                  // 支付金额
+                            try {
+                               // 支付金额
                                 if ($item->status == 21) {
                                     $amount = $item->leveling_consult->api_amount;
                                 } else {
                                     $amount = $item->leveling_consult->amount;
                                 }
+                            } catch (ErrorException $exception) {
+                                myLog('ex', [$exception->getMessage()]);
                             }
+
                             // 支付金额
                             $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
         
