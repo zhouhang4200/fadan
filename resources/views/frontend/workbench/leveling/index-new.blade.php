@@ -67,7 +67,7 @@
 
 @section('main')
     <form class="layui-form" id="search" method="get">
-        <input type="hidden" name="status" data-opt="{{ $status }}">
+        <input type="hidden" name="status" value="{{ $status }}">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-mid">&nbsp;&nbsp;&nbsp; 订单号：</label>
@@ -271,7 +271,7 @@
                             <div class="table-cell" style="width: 220px">
                                 天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
                                 @if(isset($detail['third']) && $detail['third'])
-                                    {{ config('parent.platform')[$detail['third']]['name'] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                                    {{ config('parent.platform')[(int)$detail['third']]['name'] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
                                 @endif
                             </div>
                         </td>
@@ -633,12 +633,15 @@
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
 
+            element.on('tab(order-list)', function(){
+                window.location.href='{{ route('frontend.workbench.leveling.test') }}/?status=' +  this.getAttribute('lay-id');
+            });
+
             $('.cancel').click(function () {
                 layer.closeAll();
             });
 
             var userId = "{{ Auth::id() }}";
-
 
 
             // 对订单操作
