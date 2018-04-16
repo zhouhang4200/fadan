@@ -72,7 +72,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">&nbsp;&nbsp;&nbsp; 订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="no" autocomplete="off" class="layui-input" data-opt="{{ $no }}">
+                    <input type="text" name="no" autocomplete="off" class="layui-input" value="{{ $no }}">
                 </div>
             </div>
             <div class="layui-inline">
@@ -100,7 +100,7 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">号主旺旺：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input" data-opt="{{ $wangWang }}">
+                    <input type="text" name="wang_wang" autocomplete="off" class="layui-input" value="{{ $wangWang }}">
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@
                 <label class="layui-form-mid">发单客服：</label>
                 <div class="layui-input-inline" style="">
                     <select name="customer_service_name" lay-search="">
-                        <option data-opt="">请选择或输入</option>
+                        <option value="">请选择或输入</option>
                         @forelse($employee as $item)
                             <option data-opt="{{ $item->username }}" @if($item->username == $customerServiceName) selected @endif>{{ $item->username }}</option>
                         @empty
@@ -121,7 +121,7 @@
                 <label class="layui-form-mid">接单平台：</label>
                 <div class="layui-input-inline" style="">
                     <select name="platform">
-                        <option data-opt="">全部</option>
+                        <option value="">全部</option>
                         @foreach (config('partner.platform') as $key => $value)
                             <option data-opt="{{ $key }}" @if($key == $platform)  selected @endif>{{ $value['name'] }}</option>
                         @endforeach
@@ -131,10 +131,10 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">发布时间：</label>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" data-opt="{{ $startDate }}">
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date" value="{{ $startDate }}">
                 </div>
                 <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" data-opt="{{ $endDate }}">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">导出</button>
