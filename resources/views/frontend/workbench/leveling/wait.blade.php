@@ -114,8 +114,8 @@
                         <td>{{ $item->payment }}</td>
                         <td>{{ $item->created }}</td>
                         <td>
-                            <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
                             @if($item->handle_status == 0)
+                                <a href="{{ route('frontend.workbench.leveling.create', ['tid' => $item->tid]) }}" class="layui-btn layui-btn-normal">发布</a>
                                 <button href="{{ route('frontend.workbench.leveling.wait-update', ['id' => $item->id, 'status' => 2]) }}" class="layui-btn update">隐藏</button>
                             @elseif($item->handle_status == 2)
                                 <button href="{{ route('frontend.workbench.leveling.wait-update', ['id' => $item->id, 'status' => 0]) }}" class="layui-btn update">显示</button>

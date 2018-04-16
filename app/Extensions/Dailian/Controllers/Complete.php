@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderFinish;
+use App\Models\TaobaoTrade;
 use DB;
 use Asset;
 use ErrorException;
@@ -12,6 +13,8 @@ use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException; 
 use App\Repositories\Frontend\OrderDetailRepository;
+use LogisticsDummySendRequest;
+use TopClient;
 
 /**
  * 订单完成操作
@@ -22,7 +25,8 @@ class Complete extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus = 14; // 操作之前的状态:14待验收
     protected $handledStatus      = 20; // 状态：20已结算
     protected $type               = 12; // 操作：12完成
-    
+    protected $delivery           = 0; // 淘宝订单发货
+
 	/**
      * [run 完成 -> 已结算]
      * @param  [type] $orderNo     [订单号]
@@ -33,7 +37,7 @@ class Complete extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId, $runAfter = 1, $delivery = 0)
     {	
     	DB::beginTransaction();
         try {
@@ -41,6 +45,7 @@ class Complete extends DailianAbstract implements DailianInterface
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
+            $this->delivery = $delivery;
             // 获取订单对象
             $this->getObject();
 
@@ -175,6 +180,31 @@ class Complete extends DailianAbstract implements DailianInterface
                 } catch (\Exception $exception) {
                     myLog('finish', [$exception->getMessage()]);
                 }
+
+                // 将相关的淘宝订单发货
+                if ($this->delivery == 1) {
+                    $sourceOrderNo = OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name_alias', 'source_order_no')
+                        ->pluck('field_value', 'field_name_alias')
+                        ->toArray();
+                    if (count($sourceOrderNo)) {
+                        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
+                        if ($taobaoTrade) {
+                            // 发货
+                            // 获取备注并更新
+                            $client = new TopClient;
+                            $client->format = 'json';
+                            $client->appkey = '12141884';
+                            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+                            foreach ($taobaoTrade as $item) {
+                                $req = new LogisticsDummySendRequest;
+                                $req->setTid($item->tid);
+                                $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                            }
+                        }
+                    }
+                }
+
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());

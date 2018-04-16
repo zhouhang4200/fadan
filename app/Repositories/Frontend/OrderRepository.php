@@ -150,7 +150,7 @@ class OrderRepository
      * 代练订单
      * @param $status
      * @param $no
-     * @param $tbStatus
+     * @param $taobaoStatus
      * @param $gameId
      * @param $wangWang
      * @param $customerServiceName
@@ -160,7 +160,7 @@ class OrderRepository
      * @param $pageSize
      * @return mixed
      */
-    public function levelingDataList($status, $no,  $tbStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize = 50)
+    public function levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize = 50)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
@@ -188,6 +188,11 @@ class OrderRepository
             $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
 
             return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder));
+        });
+        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus, $type) {
+            $foreignOrder = OrderDetail::findOrdersBy('taobao_status', $taobaoStatus, $type);
+
+            return $query->whereIn('no', $foreignOrder);
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);

@@ -47,12 +47,30 @@ class Temp extends Command
      */
     public function handle()
     {
-        $order = OrderDetail::where('field_value', 'ORD180312103737677782')->first();
+        $sendOrder = [
+            'order_no' => 1,
+            'game_name' => 1,
+            'game_region' => 1,
+            'game_serve' => 1,
+            'game_role' => 1,
+            'game_account' => 1,
+            'game_password' => 1,
+            'game_leveling_type' => 1,
+            'game_leveling_title' => 2,
+            'game_leveling_price' => 1,
+            'game_leveling_day' => 1,
+            'game_leveling_hour' => 1,
+            'game_leveling_security_deposit' => 1,
+            'game_leveling_efficiency_deposit' => 1,
+            'game_leveling_requirements' => 11,
+            'game_leveling_instructions' => 1,
+            'businessman_phone' => 1,
+            'businessman_qq' => 1,
+        ];
 
-        $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
-        $orders = json_decode($orderData);
-        dd($order,$orders);
-        $this->get('551522832617378011716001');
+        var_dump(base64_encode(openssl_encrypt(\GuzzleHttp\json_encode($sendOrder), 'aes-128-cbc', '45584685d8e4f5e8e4e2685', true, '1234567891111152')));
+
+//        45584685d8e4f5e8e4e2685
 
     }
 

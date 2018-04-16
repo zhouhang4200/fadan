@@ -6,6 +6,7 @@ use App\Exceptions\AssetException as Exception;
 use App\Models\Game;
 use App\Models\GoodsTemplate;
 use App\Models\GoodsTemplateWidget;
+use App\Models\TaobaoTrade;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -133,21 +134,50 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
         // 记录订单详情
         if (!empty($this->details)) {
-            $widget = GoodsTemplateWidget::where('goods_template_id', $this->templateId)->pluck('field_display_name', 'field_name');
+            $widget = GoodsTemplateWidget::where('goods_template_id', $this->templateId)->get();
 
-            foreach ($widget as $k => $v) {
+            foreach ($widget as $item) {
 
                 $orderDetail = new OrderDetail;
                 $orderDetail->order_no = $this->order->no;
-                $orderDetail->field_name = $k;
-                $orderDetail->field_name_alias = $k;
-                $orderDetail->field_display_name = $v;
-                $orderDetail->field_value = $this->details[$k] ?? '';
+                $orderDetail->field_name = $item->field_name;
+                $orderDetail->field_name_alias = $item->field_name_alias;
+                $orderDetail->field_display_name = $item->field_display_name;
+                $orderDetail->field_value = $this->details[$item->field_name] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
+                // 写入关联淘宝订单号
+                if ($item->field_name == 'source_order_no' && !empty($this->details[$item->field_name])) {
+                    $taobaoOrderNo = new OrderDetail;
+                    $taobaoOrderNo->order_no = $this->order->no;
+                    $taobaoOrderNo->field_name = 'source_order_no_hide';
+                    $taobaoOrderNo->field_name_alias = 'source_order_no';
+                    $taobaoOrderNo->field_display_name = '关联淘宝订单号';
+                    $taobaoOrderNo->field_value = $this->details[$item->field_name] ?? '';
+                    $taobaoOrderNo->creator_primary_user_id = $this->order->creator_primary_user_id;
+                    $taobaoOrderNo->save();
+
+                    // 更新淘宝待发单状态
+                    $taobaoTrade = TaobaoTrade::where('tid', $this->details[$item->field_name])->first();
+                    if ($taobaoTrade) {
+                        $taobaoTrade->handle_status = 1;
+                        $taobaoTrade->save();
+
+                        // 淘宝订单状态记录
+                        $taobaoOrderNoStatus = new OrderDetail;
+                        $taobaoOrderNoStatus->order_no = $this->order->no;
+                        $taobaoOrderNoStatus->field_name = 'taobao_status';
+                        $taobaoOrderNoStatus->field_name_alias = 'taobao_status';
+                        $taobaoOrderNoStatus->field_display_name = '淘宝订单状态';
+                        $taobaoOrderNoStatus->field_value = 1;
+                        $taobaoOrderNoStatus->creator_primary_user_id = $this->order->creator_primary_user_id;
+                        $taobaoOrderNoStatus->save();
+                    }
+                }
+
                 // 如果有设置自动下架时间，则将此订单加入自动下架任务中
-                if ($k == 'auto_unshelve_time' && !empty($this->details[$k])) {
-                    $str = trim($this->details[$k]);
+                if ($item->filed_name == 'auto_unshelve_time' && !empty($this->details[$item->filed_name])) {
+                    $str = trim($this->details[$item->filed_name]);
                     if (preg_match('/\d+/', $str, $result)) {
                         if (is_numeric($result[0])) {
                             autoUnShelveAdd($this->order->no, $this->userId, date('Y-m-d H:i:s'), $result[0]);
@@ -225,35 +255,35 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             $redis = RedisConnect::order();
             $redis->lpush('order:send', json_encode($sendOrder));
 
-            // 给91下订单
-            $show91Result = Show91::addOrder($this->order);
-             // 给代练妈妈下订单
-            $dailianMamaResult = DailianMama::releaseOrder($this->order);
-
-            // 判断各个平台下单成功情况
-            if ($show91Result['status'] && $dailianMamaResult['status']) {
-                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-                OrderDetail::where('order_no', $this->order->no)
-                    ->where('field_name', 'show91_order_no')
-                    ->update(['field_value' => $show91Result['order_no'],]);
-
-                // 如果成功，将订单写入订单详情表
-                OrderDetail::where('order_no', $this->order->no)
-                    ->where('field_name', 'dailianmama_order_no')
-                    ->update(['field_value' => $dailianMamaResult['order_no'],]);
-            } elseif ($show91Result['status'] && ! $dailianMamaResult['status']) {
-                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-                OrderDetail::where('order_no', $this->order->no)
-                    ->where('field_name', 'show91_order_no')
-                    ->update(['field_value' => $show91Result['order_no'],]);
-            } elseif (! $show91Result['status'] && $dailianMamaResult['status']) {
-                // 如果成功，将订单写入订单详情表
-                OrderDetail::where('order_no', $this->order->no)
-                    ->where('field_name', 'dailianmama_order_no')
-                    ->update(['field_value' => $dailianMamaResult['order_no'],]);
-            } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
-                // throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
-            }
+//            // 给91下订单
+//            $show91Result = Show91::addOrder($this->order);
+//             // 给代练妈妈下订单
+//            $dailianMamaResult = DailianMama::releaseOrder($this->order);
+//
+//            // 判断各个平台下单成功情况
+//            if ($show91Result['status'] && $dailianMamaResult['status']) {
+//                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
+//                OrderDetail::where('order_no', $this->order->no)
+//                    ->where('field_name', 'show91_order_no')
+//                    ->update(['field_value' => $show91Result['order_no'],]);
+//
+//                // 如果成功，将订单写入订单详情表
+//                OrderDetail::where('order_no', $this->order->no)
+//                    ->where('field_name', 'dailianmama_order_no')
+//                    ->update(['field_value' => $dailianMamaResult['order_no'],]);
+//            } elseif ($show91Result['status'] && ! $dailianMamaResult['status']) {
+//                // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
+//                OrderDetail::where('order_no', $this->order->no)
+//                    ->where('field_name', 'show91_order_no')
+//                    ->update(['field_value' => $show91Result['order_no'],]);
+//            } elseif (! $show91Result['status'] && $dailianMamaResult['status']) {
+//                // 如果成功，将订单写入订单详情表
+//                OrderDetail::where('order_no', $this->order->no)
+//                    ->where('field_name', 'dailianmama_order_no')
+//                    ->update(['field_value' => $dailianMamaResult['order_no'],]);
+//            } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
+//                // throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
+//            }
 
             return $this->order;      
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
@@ -80,7 +81,7 @@ class IndexController extends Controller
     {
         $status = $request->input('status', 0);
         $no = $request->input('no', '');
-        $tbStatus = $request->input('tb_status', 0);
+        $taobaoStatus = $request->input('taobao_status', 0);
         $gameId = $request->input('game_id', 0);
         $wangWang = $request->input('wang_wang');
         $customerServiceName = $request->input('customer_service_name');
@@ -100,7 +101,7 @@ class IndexController extends Controller
         }
 
         // 获取订单
-        $orders = $orderRepository->levelingDataList($status, $no,  $tbStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
         // 查询各状态订单数
         $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
@@ -120,6 +121,7 @@ class IndexController extends Controller
             'customerServiceName' => $customerServiceName,
             'gameId' => $gameId,
             'status' => $status,
+            'taobaoStatus' => $taobaoStatus,
             'wangWang' => $wangWang,
             'platform' => $platform,
             'startDate' => $startDate,
@@ -1067,6 +1069,7 @@ class IndexController extends Controller
     {
         $keyWord = $request->keyWord; // 关键字,关联对应的类
         $orderNo = $request->orderNo; // 订单号
+        $delivery = $request->input('delivery', 0); // 是否将淘宝订单发货
         $userId = Auth::id(); // 操作人id
 
         DB::beginTransaction();
@@ -1080,6 +1083,8 @@ class IndexController extends Controller
                     ->update(['field_value' => $keyWord == 'urgent' ? 1 : 0]);
                 // 写操作记录
                 $bool = true;
+            } else if ($keyWord == 'complete') {
+                (new Complete())->run($orderNo, auth()->id, 1, (int)$delivery);
             } else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }

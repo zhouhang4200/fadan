@@ -65,9 +65,8 @@
 
         .opt-btn {
             color: #1f93ff;
-            padding: 1px 2px;
+            padding: 0 2px;
             border: none;
-            margin-bottom: 2px;
         }
 
         .layui-form-item {
@@ -99,11 +98,11 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">天猫状态：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="customer_service_name" lay-search="">
-                        <option data-opt="">请选择或输入</option>
-                        <option data-opt="1">买家付完款</option>
-                        <option data-opt="2">交易成功</option>
-                        <option data-opt="3">买家发起退款</option>
+                    <select name="taobao_status" lay-search="">
+                        <option value="0">请选择或输入</option>
+                        <option value="1"  @if($taobaoStatus == 1) selected  @endif>买家付完款</option>
+                        <option value="2"  @if($taobaoStatus == 2) selected  @endif>交易成功</option>
+                        <option value="3"  @if($taobaoStatus == 3) selected  @endif>买家发起退款</option>
                     </select>
                 </div>
             </div>
@@ -111,9 +110,9 @@
                 <label class="layui-form-mid">代练游戏：</label>
                 <div class="layui-input-inline">
                     <select name="game_id" lay-search="">
-                        <option data-opt="">请选择游戏</option>
+                        <option value="">请选择游戏</option>
                         @foreach($game as  $key => $value)
-                            <option data-opt="{{ $key }}" @if($gameId == $key) selected @endif>{{ $value }}</option>
+                            <option value="{{ $key }}" @if($gameId == $key) selected @endif>{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>

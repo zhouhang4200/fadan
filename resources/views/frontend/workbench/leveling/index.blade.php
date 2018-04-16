@@ -87,8 +87,8 @@
             <div class="layui-inline">
                 <label class="layui-form-mid">天猫状态：</label>
                 <div class="layui-input-inline" style="">
-                    <select name="customer_service_name" lay-search="">
-                        <option value="">请选择或输入</option>
+                    <select name="taobao_status" lay-search="">
+                        <option value="0">请选择或输入</option>
                         <option value="1">买家付完款</option>
                         <option value="2">交易成功</option>
                         <option value="3">买家发起退款</option>
