@@ -257,7 +257,7 @@ class IndexController extends Controller
             $req = new TradeFullinfoGetRequest;
             $req->setFields("tid, type, status, payment, orders, seller_memo");
             $req->setTid($tid);
-            $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->buyer_nick));
+            $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
 
             if (!empty($resp->trade->seller_memo)) {
                 $taobaoTrade->seller_memo = $resp->trade->seller_memo;
