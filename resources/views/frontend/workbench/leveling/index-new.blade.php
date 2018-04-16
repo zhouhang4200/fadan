@@ -214,6 +214,7 @@
                         $getAmount= '';
                         $poundage = '';
                         $profit= '';
+                        $amount = 0;
                         if (!in_array($item->status, [19, 20, 21])){
                             $paymentAmount = '';
                             $getAmount= '';
