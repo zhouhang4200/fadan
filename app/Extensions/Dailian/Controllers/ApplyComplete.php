@@ -85,9 +85,9 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             try {
                 event(new OrderApplyComplete($this->order));
             } catch (ErrorException $errorException) {
-                myLog('receiving', [$errorException->getMessage()]);
+                myLog('ex', ['申请验收', $errorException->getMessage()]);
             } catch (\Exception $exception) {
-                myLog('receiving', [$exception->getMessage()]);
+                myLog('ex', ['申请验收', $exception->getMessage()]);
             }
         }
     }

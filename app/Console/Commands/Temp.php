@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Events\OrderApplyComplete;
+use App\Events\OrderArbitrationing;
+use App\Events\OrderRevoking;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderAttachmentRepository;
@@ -47,29 +50,9 @@ class Temp extends Command
      */
     public function handle()
     {
-        $sendOrder = [
-            'order_no' => 1,
-            'game_name' => 1,
-            'game_region' => 1,
-            'game_serve' => 1,
-            'game_role' => 1,
-            'game_account' => 1,
-            'game_password' => 1,
-            'game_leveling_type' => 1,
-            'game_leveling_title' => 2,
-            'game_leveling_price' => 1,
-            'game_leveling_day' => 1,
-            'game_leveling_hour' => 1,
-            'game_leveling_security_deposit' => 1,
-            'game_leveling_efficiency_deposit' => 1,
-            'game_leveling_requirements' => 11,
-            'game_leveling_instructions' => 1,
-            'businessman_phone' => 1,
-            'businessman_qq' => 1,
-        ];
+        $order = \App\Models\Order::where('no', '2018041623150800000007')->lockForUpdate()->first();
 
-        var_dump(base64_encode(openssl_encrypt(\GuzzleHttp\json_encode($sendOrder), 'aes-128-cbc', '45584685d8e4f5e8e4e2685', true, '1234567891111152')));
-
+        event(new OrderRevoking($order));
 //        45584685d8e4f5e8e4e2685
 
     }

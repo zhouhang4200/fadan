@@ -3,7 +3,6 @@
 namespace App\Listeners\OrderApplyComplete;
 
 use App\Events\OrderApplyComplete;
-use App\Events\OrderFinish;
 use App\Models\SmsTemplate;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
