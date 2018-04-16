@@ -648,6 +648,7 @@
             // 当前tab 所在位置
             var status = 0;
             var urgentOrder = 0;
+            var delivery = 0;
 
             laydate.render({elem: '#start-date'});
             laydate.render({elem: '#end-date'});
@@ -788,8 +789,9 @@
                         layer.close(index);
                     });
                 } else if (opt == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox'> 同时提交淘宝/天猫订单发货", {
-                        icon: 3,
+
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' name='delivery'> 同时提交淘宝/天猫订单发货", {
+//                        icon: 3,
                         title: '提示'
                     }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
@@ -889,6 +891,10 @@
                     title: '最终的提交信息'
                 });
                 return false;
+            });
+
+            $('.delivery').click(function () {
+               alert(1);
             });
         });
     </script>
