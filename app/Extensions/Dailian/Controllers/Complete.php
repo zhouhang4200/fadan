@@ -11,7 +11,7 @@ use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderDetailRepository;
 use LogisticsDummySendRequest;
 use TopClient;
@@ -38,7 +38,7 @@ class Complete extends DailianAbstract implements DailianInterface
      * @return [type]              [true or exception]
      */
     public function run($orderNo, $userId, $runAfter = 1, $delivery = 0)
-    {	
+    {
     	DB::beginTransaction();
         try {
     		// 赋值
@@ -98,7 +98,7 @@ class Complete extends DailianAbstract implements DailianInterface
                 throw new DailianException('流水记录写入失败');
             }
 
-            if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {    
+            if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {
                 // 接单 退回安全保证金
                 Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
 
@@ -133,12 +133,21 @@ class Complete extends DailianAbstract implements DailianInterface
     }
 
     /**
-     * 订单验收结算 
+     * 订单验收结算
      * @return [type] [description]
      */
     public function after()
     {
         if ($this->runAfter) {
+
+            try {
+                event(new OrderFinish($this->order));
+            } catch (ErrorException $errorException) {
+                myLog('ex', ['订单完成 异常', $errorException->getMessage()]);
+            } catch (\Exception $exception) {
+                myLog('ex', ['订单完成 异常', $exception->getMessage()]);
+            }
+
             try {
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
@@ -163,7 +172,7 @@ class Complete extends DailianAbstract implements DailianInterface
                     case 1:
                         // 91 完成接口
                         $options = [
-                            'oid' => $orderDetails['show91_order_no'], 
+                            'oid' => $orderDetails['show91_order_no'],
                             'p' => config('show91.password'),
                         ];
                         Show91::accept($options);
@@ -173,21 +182,20 @@ class Complete extends DailianAbstract implements DailianInterface
                         DailianMama::operationOrder($this->order, 20013);
                         break;
                 }
-                try {
-                    event(new OrderFinish($this->order));
-                } catch (ErrorException $errorException) {
-                    myLog('finish', [$errorException->getMessage()]);
-                } catch (\Exception $exception) {
-                    myLog('finish', [$exception->getMessage()]);
-                }
 
-                // 将相关的淘宝订单发货
+
+                // 将相关的淘宝订单发货''
                 if ($this->delivery == 1) {
                     $sourceOrderNo = OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name_alias', 'source_order_no')
                         ->pluck('field_value', 'field_name_alias')
                         ->toArray();
                     if (count($sourceOrderNo)) {
+                        // 将订单号淘宝订单状态改为交易成功
+                        OrderDetail::where('order_no', $this->order->no)
+                            ->where('field_name', 'taobao_status')
+                            ->update(['field_value' => 2]);
+
                         $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
                         if ($taobaoTrade) {
                             // 发货
@@ -197,9 +205,13 @@ class Complete extends DailianAbstract implements DailianInterface
                             $client->appkey = '12141884';
                             $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
                             foreach ($taobaoTrade as $item) {
-                                $req = new LogisticsDummySendRequest;
-                                $req->setTid($item->tid);
-                                $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                                try {
+                                    $req = new LogisticsDummySendRequest;
+                                    $req->setTid($item->tid);
+                                    $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                                } catch (\Whoops\Exception\ErrorException $exception) {
+                                    myLog('ex', ['淘宝订单发货异常', $exception->getMessage()]);
+                                }
                             }
                         }
                     }

@@ -7,6 +7,7 @@ use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\OrderDetail;
+use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\DailianMama;
@@ -50,11 +51,12 @@ class Temp extends Command
      */
     public function handle()
     {
-        $order = \App\Models\Order::where('no', '2018041623150800000007')->lockForUpdate()->first();
-
-        event(new OrderRevoking($order));
-//        45584685d8e4f5e8e4e2685
-
+        $sourceOrderNo = OrderDetail::where('order_no', '2018041623150800000007')
+            ->where('field_name_alias', 'source_order_no')
+            ->pluck('field_value', 'field_name_alias')
+            ->toArray();
+        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
+        dd($taobaoTrade);
     }
 
     public function get($orderNO, $beginId = 0)

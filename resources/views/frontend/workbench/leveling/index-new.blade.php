@@ -334,10 +334,10 @@
                             $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
 
                             $paymentAmount = (float)$paymentAmount + 0;
-                            $getAmount= (float)$getAmount + 0;
+                            $getAmount= (float)(float)$detail['get_amount']  + 0;
                             $poundage = (float)$poundage + 0;
                             // 利润
-                            $profit = ((float)$detail['source_price'] - $paymentAmount + $getAmount - $poundage) + 0;
+                            $profit = ((float)$detail['source_price'] - $paymentAmount + (float)$detail['get_amount'] - $poundage) + 0;
                         }
 
                         $days = $detail['game_leveling_day'] ?? 0;
@@ -519,24 +519,33 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
-                                    {{--@if(d.consult == 1 && $item->status == 15)--}}
-                                    {{--<option data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
-                                    {{--@elseif(d.consult == 2 && ($item->status == 15 || $item->status == 16))--}}
-                                    {{--<option data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
-                                    {{--<option data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
-                                    {{--@endif--}}
-                                    {{--@else--}}
-                                    {{--@if(d.consult == 2 && $item->status == 15)--}}
-                                    {{--<option data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</option>--}}
-                                    {{--@elseif(d.consult == 1 && ($item->status == 15 || $item->status == 16))--}}
-                                    {{--<option data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</option>--}}
-                                    {{--<option data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</option>--}}
-                                    {{--@endif--}}
-                                    {{--@endif--}}
+                                    @if(isset($item->leveling_consult->consult) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                        @if($item->leveling_consult->consult == 1 && $item->status == 15)
+                                            <button data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</button>
+                                                @php $btnCount++;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @elseif($item->leveling_consult->consult== 2 && ($item->status == 15 || $item->status == 16))
+                                            <button data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</button>
+                                            <button data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</button>
+                                                @php $btnCount = $btnCount + 2;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @endif
+                                    @elseif(isset($item->leveling_consult->consult))
+
+                                        @if($item->leveling_consult->consult== 2 && $item->status == 15)
+                                            <button data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</button>
+                                                @php $btnCount++;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @elseif($item->leveling_consult->consult== 1 && ($item->status == 15 || $item->status == 16))
+                                            <button data-opt="agreeRevoke" data-no="{{ $item->no }}">同意撤销</button>
+                                            <button data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</button>
+                                                @php $btnCount = $btnCount + 2;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @endif
+                                    @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
-                                        <button class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}">撤销</button>
+                                        <button class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">撤销</button>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
@@ -549,15 +558,19 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    {{--@if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)--}}
-                                    {{--@if(d.complain == 1 && $item->status == 16)--}}
-                                    {{--<option data-opt="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
-                                    {{--@endif--}}
-                                    {{--@else--}}
-                                    {{--@if(d.complain == 2 && $item->status == 16)--}}
-                                    {{--<option data-opt="cancelArbitration" data-no="{{ $item->no }}" >取消仲裁</option>--}}
-                                    {{--@endif--}}
-                                    {{--@endif--}}
+                                    @if(isset($item->leveling_consult->complain) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                        @if($item->leveling_consult->complain == 1 && $item->status == 16)
+                                        <button data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</button>
+                                                @php $btnCount++;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @endif
+                                    @elseif(isset($item->leveling_consult->complain))
+                                        @if($item->leveling_consult->complain == 2 && $item->status == 16)
+                                        <button data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</button>
+                                                @php $btnCount++;  @endphp
+                                                @if($btnCount == 3)<br/> @endif
+                                        @endif
+                                    @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
                                         <button class="opt-btn" data-opt="complete" data-no="{{ $item->no }}">完成
@@ -579,7 +592,6 @@
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
-
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
                                         <button class="opt-btn" data-opt="delete" data-no="{{ $item->no }}">撤单</button>
@@ -814,7 +826,6 @@
                 }
                 // 重发
                 if (opt == 'repeat') {
-                    var no = $(data.elem).find("option:selected").attr("data-no");
                     window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/' + orderNo);
                 }
                 // 联系旺旺
