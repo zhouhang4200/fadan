@@ -53,6 +53,7 @@
             background-color:#eef1f6;
         }
         .opt-btn {
+            color:#1f93ff;
             padding: 2px;
             border: none;
             margin-bottom: 2px;
@@ -446,7 +447,7 @@
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 15)
-                                        <button class="opt-btn" data-opt="applyArbitration" data-no="{{ $item->no }}" >申请仲裁</button>
+                                        <button class="opt-btn" data-opt="applyArbitration" data-no="{{ $item->no }}" >仲裁</button>
                                             @php $btnCount++;  @endphp
                                             @if($btnCount == 3)<br/> @endif
                                     @endif
