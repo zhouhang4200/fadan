@@ -102,6 +102,14 @@ class IndexController extends Controller
         // 获取订单
         $orders = $orderRepository->levelingDataList($status, $no,  $tbStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
+        // 查询各状态订单数
+        $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
+            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->count();
+
         return view('frontend.workbench.leveling.index-new')->with([
             'orders' => $orders,
             'game' => $game,
@@ -115,6 +123,8 @@ class IndexController extends Controller
             'platform' => $platform,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'statusCount' => $statusCount,
+            'allStatusCount' => $allStatusCount,
         ]);
     }
 

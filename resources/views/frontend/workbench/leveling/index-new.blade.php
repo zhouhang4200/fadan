@@ -145,31 +145,47 @@
 
     <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
         <ul class="layui-tab-title">
-            <li class="@if($status == 0) layui-this @endif" lay-id="0">全部 <span
-                        class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span>
+            <li class="@if($status == 0) layui-this @endif" lay-id="0">全部
+                @if($allStatusCount) <span class="layui-badge layui-bg-blue">{{ $allStatusCount }}</span>@endif
             </li>
-            <li class="@if($status == 1) layui-this @endif" lay-id="1">未接单</li>
-            <li class="@if($status == 13) layui-this @endif" lay-id="13">代练中</li>
+            <li class="@if($status == 1) layui-this @endif" lay-id="1">
+                未接单
+                @if(isset($statusCount[1])) <span class="layui-badge layui-bg-blue">{{ $statusCount[1] }}</span>@endif
+            </li>
+            <li class="@if($status == 13) layui-this @endif" lay-id="13">
+                代练中
+                @if(isset($statusCount[13])) <span class="layui-badge layui-bg-blue">{{ $statusCount[13] }}</span>@endif
+            </li>
             <li class="@if($status == 14) layui-this @endif" lay-id="14">待验收
-                <span class="layui-badge layui-bg-blue quantity-14 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 14, 3) }}</span>
+                @if(isset($statusCount[14])) <span class="layui-badge layui-bg-blue">{{ $statusCount[14] }}</span>@endif
             </li>
             <li class="@if($status == 15) layui-this @endif" lay-id="15">撤销中
-                <span class="layui-badge layui-bg-blue quantity-15 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 15, 3) }}</span>
+                @if(isset($statusCount[15])) <span class="layui-badge layui-bg-blue">{{ $statusCount[15] }}</span>@endif
             </li>
             <li class="@if($status == 16) layui-this @endif" lay-id="16">仲裁中
-                <span class="layui-badge layui-bg-blue quantity-16 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 16, 3) }}</span>
+                @if(isset($statusCount[16])) <span class="layui-badge layui-bg-blue">{{ $statusCount[16] }}</span>@endif
             </li>
             <li class="@if($status == 17) layui-this @endif" lay-id="17">异常
-                <span class="layui-badge layui-bg-blue quantity-17 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 17, 3) }}</span>
+                @if(isset($statusCount[17])) <span class="layui-badge layui-bg-blue">{{ $statusCount[17] }}</span>@endif
             </li>
             <li class="@if($status == 18) layui-this @endif" lay-id="18">锁定
-                <span class="layui-badge layui-bg-blue quantity-18 @if(orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) == 0) layui-hide  @endif">{{ orderStatusCount(auth()->user()->getPrimaryUserId(), 18, 3) }}</span>
+                @if(isset($statusCount[18])) <span class="layui-badge layui-bg-blue">{{ $statusCount[18] }}</span>@endif
             </li>
-            <li class="@if($status == 19) layui-this @endif" lay-id="19">已撤销</li>
-            <li class="@if($status == 20) layui-this @endif" lay-id="20">已结算</li>
-            <li class="@if($status == 21) layui-this @endif" lay-id="21">已仲裁</li>
-            <li class="@if($status == 22) layui-this @endif" lay-id="22">已下架</li>
-            <li class="@if($status == 23) layui-this @endif" lay-id="23">强制撤销</li>
+            <li class="@if($status == 19) layui-this @endif" lay-id="19">已撤销
+                @if(isset($statusCount[19])) <span class="layui-badge layui-bg-blue">{{ $statusCount[19] }}</span>@endif
+            </li>
+            <li class="@if($status == 20) layui-this @endif" lay-id="20">已结算
+                @if(isset($statusCount[20])) <span class="layui-badge layui-bg-blue">{{ $statusCount[20] }}</span>@endif
+            </li>
+            <li class="@if($status == 21) layui-this @endif" lay-id="21">已仲裁
+                @if(isset($statusCount[21])) <span class="layui-badge layui-bg-blue">{{ $statusCount[21] }}</span>@endif
+            </li>
+            <li class="@if($status == 22) layui-this @endif" lay-id="22">已下架
+                @if(isset($statusCount[22])) <span class="layui-badge layui-bg-blue">{{ $statusCount[22] }}</span>@endif
+            </li>
+            <li class="@if($status == 23) layui-this @endif" lay-id="23">强制撤销
+                @if(isset($statusCount[23])) <span class="layui-badge layui-bg-blue">{{ $statusCount[23] }}</span>@endif
+            </li>
         </ul>
     </div>
 
