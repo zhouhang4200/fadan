@@ -424,7 +424,7 @@
                             <div class="table-cell" style="width: 220px">
                                 天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a> <br/>
                                 @if(isset($detail['third']) && $detail['third'])
-                                    {{ config('parent.platform')[$detail['third']] }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
+                                    {{ config('partner.platform')[(int)$detail['third']]['name']  }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} {{ $detail['third'] }} </a>
                                 @endif
                             </div>
                         </td>
