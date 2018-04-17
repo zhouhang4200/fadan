@@ -67,7 +67,7 @@ class IndexController extends Controller
      * @param OrderRepository $orderRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request, OrderRepository $orderRepository)
+    public function oldIndex(Request $request, OrderRepository $orderRepository)
     {
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
@@ -77,7 +77,13 @@ class IndexController extends Controller
         return view('frontend.workbench.leveling.index', compact('game', 'employee', 'tags', 'smsTemplate'));
     }
 
-    public function test(Request $request, OrderRepository $orderRepository)
+    /**
+     * 新订单列表
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function index(Request $request, OrderRepository $orderRepository)
     {
         $status = $request->input('status', 0);
         $no = $request->input('no', '');
@@ -132,6 +138,7 @@ class IndexController extends Controller
     }
 
     /**
+     * 旧的订单列表暂时不删除
      * @param Request $request
      * @param OrderRepository $orderRepository
      * @return \Illuminate\Http\JsonResponse

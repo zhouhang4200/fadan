@@ -5,6 +5,12 @@
 @section('css')
     <link rel="stylesheet" href="/frontend/css/fixed-table.css">
     <style>
+        .wrapper {
+            width: 1600px;
+        }
+        .main .right {
+            width: 1430px;
+        }
         ::-webkit-scrollbar {
             width: 10px;
             height: 10px;

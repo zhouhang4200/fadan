@@ -127,7 +127,7 @@
                 @endforelse
                 </tbody>
             </table>
-            {!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate ])->render() !!}
+            {!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate, 'status' => $status ])->render() !!}
         </div>
     </div>
 
