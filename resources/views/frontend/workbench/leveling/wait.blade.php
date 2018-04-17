@@ -94,7 +94,7 @@
                     <th>购买数量</th>
                     <th>实付金额</th>
                     <th>下单时间</th>
-                    <th width="13%">操作</th>
+                    <th width="15%">操作</th>
                 </tr>
                 </thead>
                 <tbody>
