@@ -1037,6 +1037,13 @@
                     delivery = 1;
                 }
             });
+
+            function reload() {
+                setTimeout(function () {
+                    location.reload();
+                }, 800);
+            }
         });
+
     </script>
 @endsection
