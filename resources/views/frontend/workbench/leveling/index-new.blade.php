@@ -986,6 +986,7 @@
                         reload();
                     });
                 }
+                location.reload();
             });
 
             // 导出
