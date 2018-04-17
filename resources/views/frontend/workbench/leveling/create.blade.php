@@ -4,7 +4,6 @@
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <link href="{{ asset('/frontend/css/combo.select.css') }}" rel="stylesheet">
     <style>
         .wrapper {
             width: 1600px;
@@ -136,7 +135,6 @@
 
 <!--START 底部-->
 @section('js')
-    <script src="/frontend/js/jquery.combo.select.js"></script>
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <div class="layui-row form-group">
