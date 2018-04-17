@@ -51,7 +51,7 @@ class OrderSend extends Command
                         if ('mayi' == $platform['name']) {
                             $time = time();
                             // 获取 sign
-                            $sign = md5('dlOrderAdd'.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.appsecret').config('leveling.mayidailian.Ver'));
+                            $sign = md5('dlOrderAdd'.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.Ver').config('leveling.mayidailian.appsecret'));
                             // 公用的串信息
                             $publicArr = [
                                 'method'    => 'dlOrderAdd',
