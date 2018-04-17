@@ -260,6 +260,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
              // 给代练妈妈下订单
             $dailianMamaResult = DailianMama::releaseOrder($this->order);
 
+            myLog('order', [$show91Result, $dailianMamaResult]);
             // 判断各个平台下单成功情况
             if ($show91Result['status'] && $dailianMamaResult['status']) {
                 // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
