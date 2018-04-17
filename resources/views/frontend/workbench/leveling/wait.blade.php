@@ -88,7 +88,9 @@
             <table class="layui-table" lay-size="sm">
                 <thead>
                 <tr>
+                    <th>店铺</th>
                     <th>订单号</th>
+                    <th>绑定游戏</th>
                     <th>买家旺旺</th>
                     <th>购买单价</th>
                     <th>购买数量</th>
@@ -100,9 +102,11 @@
                 <tbody>
                 @forelse($orders as $item)
                     <tr data-no="{{ $item->tid }}">
+                        <td>{{ $item->seller_nick }}</td>
                         <td>{{ $item->tid }}</td>
-                        <td ><a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $item->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="{{ $item->buyer_nick }}"> {{ $item->buyer_nick }}</a><img
-                                    src="/frontend/images/ww.gif" alt=""></td>
+                        <td>{{ $item->game_name }}</td>
+                        <td><a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $item->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="{{ $item->buyer_nick }}"><img
+                                        src="/frontend/images/ww.gif" alt="" width="20px"> {{ $item->buyer_nick }}</a></td>
                         <td>{{ $item->price }}</td>
                         <td>{{ $item->num }}</td>
                         <td>{{ $item->payment }}</td>

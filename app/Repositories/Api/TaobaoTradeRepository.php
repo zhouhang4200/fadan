@@ -30,9 +30,11 @@ class TaobaoTradeRepository
                 ->first();
 
             if ($auth) {
-                // 写入订单所属用户与服务类型
+                // 写入订单所属用户与服务类型游戏ID与游戏名
                 $trade['user_id'] = $goods->user_id;
                 $trade['service_id'] = $goods->service_id;
+                $trade['game_id'] = $goods->game_id;
+                $trade['game_name'] = $goods->game_name;
 
                 // 创建交易数据
                 $taobaoTrade = TaobaoTrade::create($trade);

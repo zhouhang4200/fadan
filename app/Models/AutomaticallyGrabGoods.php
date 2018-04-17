@@ -16,6 +16,8 @@ class AutomaticallyGrabGoods extends Model
       'foreign_goods_id',
       'status',
       'remark',
+      'seller_nick',
+      'game_id',
     ];
 
     /**
@@ -29,6 +31,14 @@ class AutomaticallyGrabGoods extends Model
             $query->where('foreign_goods_id', $filters['foreignGoodsId']);
         }
         return $query;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function game()
+    {
+        return $this->hasOne(Game::class, 'id', 'game_id');
     }
 
 }

@@ -33,7 +33,9 @@
     <table class="layui-table" lay-size="sm">
         <thead>
         <tr>
+            <th>店铺</th>
             <th>淘宝商品ID</th>
+            <th>绑定游戏</th>
             <th>备注</th>
             <th>添加时间</th>
             <th>更新时间</th>
@@ -43,7 +45,9 @@
         <tbody>
         @forelse($automaticallyGrabGoods as $item)
             <tr>
+                <td>{{ $item->seller_nick }}</td>
                 <td>{{ $item->foreign_goods_id }}</td>
+                <td>{{ $item->game->name ?? '' }}</td>
                 <td>{{ $item->remark }}</td>
                 <td>{{ $item->created_at }}</td>
                 <td>{{ $item->updated_at }}</td>
@@ -64,7 +68,24 @@
         <form class="layui-form" action="" id="goods-add-form">
             <input type="hidden" name="type" value="">
             <input type="hidden" name="service_id" value="4">
-
+            <div class="layui-form-item">
+                <select name="seller_nick" lay-verify="required">
+                    <option value=""></option>
+                    @forelse($shop as  $value)
+                        <option value="{{ $value }}">{{ $value }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <select name="game_id" lay-verify="required">
+                    <option value=""></option>
+                    @forelse($game as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @empty
+                    @endforelse
+                </select>
+            </div>
             <div class="layui-form-item">
                 <input type="text" name="foreign_goods_id" required lay-verify="required" placeholder="淘宝链接" autocomplete="off" class="layui-input">
             </div>
@@ -124,6 +145,8 @@
             form.on('submit(goods-add-save)', function (data) {
                 $.post('{{ route('frontend.setting.automatically-grab.add') }}', {
                     service_id:data.field.service_id,
+                    game_id:data.field.game_id,
+                    seller_nick:data.field.seller_nick,
                     foreign_goods_id:data.field.foreign_goods_id,
                     remark:data.field.remark
                 }, function (result) {
@@ -147,11 +170,13 @@
                             type: 1,
                             shade: 0.2,
                             title: '修改',
-                            area: ['500px'],
-                            content: result
+                            area: ['500px', '400px'],
+                            content: result,
+                            success: function(layero, index){
+                                form.render();
+                            }
                         });
                     }
-
                 }, 'json');
                 return false;
             });
@@ -160,7 +185,9 @@
                 $.post('{{ route('frontend.setting.automatically-grab.edit') }}', {
                     id:data.field.id,
                     foreign_goods_id: data.field.foreign_goods_id,
-                    remark: data.field.remark
+                    remark: data.field.remark,
+                    game_id: data.field.game_id,
+                    seller_nick: data.field.seller_nick
                 }, function (result) {
                     layer.closeAll();
                     layer.msg(result.message);

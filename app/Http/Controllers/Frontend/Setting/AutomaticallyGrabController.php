@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
 use App\Models\AutomaticallyGrabGoods;
+use App\Models\TaobaoShopAuthorization;
 use App\Models\UserSetting;
-use App\Repositories\Backend\ServiceRepository;
+use App\Repositories\Frontend\GameRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Repositories\Frontend\ServiceRepository;
 
 /**
  * 自动抓取淘宝订单设置
@@ -23,25 +25,35 @@ class AutomaticallyGrabController extends Controller
      * @param ServiceRepository $serviceRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function goods(Request $request, ServiceRepository $serviceRepository)
+    public function goods(Request $request,  GameRepository $gameRepository)
     {
         $foreignGoodsId = $request->foreign_goods_id;
-        $services = $serviceRepository->available();
+        $game = $gameRepository->availableByServiceId(4);
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('foreignGoodsId'))
+            ->with('game')
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        return view('frontend.setting.automatically-grab.index', compact('automaticallyGrabGoods', 'foreignGoodsId', 'services'));
+        return view('frontend.setting.automatically-grab.index')->with([
+            'game' => $game,
+            'automaticallyGrabGoods' => $automaticallyGrabGoods,
+            'foreignGoodsId' => $foreignGoodsId,
+            'shop' => $shop,
+        ]);
     }
 
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request)
+    public function show(Request $request,  GameRepository $gameRepository)
     {
+        $game = $gameRepository->availableByServiceId(4);
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
+
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->where('id', $request->id)
             ->first();
@@ -49,6 +61,8 @@ class AutomaticallyGrabController extends Controller
         if ($automaticallyGrabGoods) {
             return response()->json(\View::make('frontend.setting.automatically-grab.edit', [
                 'automaticallyGrabGoods' => $automaticallyGrabGoods,
+                'game' => $game,
+                'shop' => $shop,
             ])->render());
         }
     }
@@ -68,6 +82,8 @@ class AutomaticallyGrabController extends Controller
             } else {
                 $automaticallyGrabGoods->foreign_goods_id = $request->foreign_goods_id;
                 $automaticallyGrabGoods->remark = $request->remark;
+                $automaticallyGrabGoods->game_id = $request->game_id;
+                $automaticallyGrabGoods->seller_nick = $request->seller_nick;
                 $automaticallyGrabGoods->save();
             }
             return response()->ajax(1, '修改成功');
@@ -84,6 +100,8 @@ class AutomaticallyGrabController extends Controller
     {
         $goodsId = $request->foreign_goods_id;
         $serviceId = $request->service_id;
+        $gameId = $request->game_id;
+        $sellerNick= $request->seller_nick;
 
         if (!is_numeric($goodsId)) {
             return response()->ajax(0, '商品ID不合法');
@@ -105,6 +123,8 @@ class AutomaticallyGrabController extends Controller
                 'user_id' => Auth::user()->getPrimaryUserId(),
                 'service_id' => $serviceId,
                 'foreign_goods_id' => $goodsId,
+                'game_id' => $gameId,
+                'seller_nick' => $sellerNick,
                 'remark' => $request->remark,
             ]);
             return response()->ajax(1, '添加成功');
