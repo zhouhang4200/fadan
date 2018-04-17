@@ -373,7 +373,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="table-cell w-150" style="width: 100px">{{ $item->game_name }}</div>
+                            <div class="table-cell w-150" style="width: 100px"></div>
                         </td>
                         <td>
                             <div class="table-cell w-150">
