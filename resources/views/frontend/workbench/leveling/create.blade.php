@@ -5,12 +5,12 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
+        /*.wrapper {*/
+            /*width: 1600px;*/
+        /*}*/
+        /*.main .right {*/
+            /*width: 1430px;*/
+        /*}*/
         .layui-input-block{
             margin-left: 50px;
         }
