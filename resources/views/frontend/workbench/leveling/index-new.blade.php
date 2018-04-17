@@ -881,7 +881,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
+                            location.reload();
                         });
                         return false;
                     });
@@ -905,7 +905,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
+                            location.reload();
                         });
                         layer.closeAll();
                         return false;
@@ -923,7 +923,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
+                            location.reload();
                         });
 
                         layer.close(index);
@@ -943,7 +943,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
+                            location.reload();
                         });
                         layer.close(index);
                     });
@@ -963,7 +963,7 @@
                                     layer.closeAll();
                                 });
                             }
-                            reload();
+                            location.reload();
                         });
                         layer.close(index);
                     });
@@ -983,10 +983,9 @@
                                 layer.closeAll();
                             });
                         }
-                        reload();
+                        location.reload();
                     });
                 }
-                location.reload();
             });
 
             // 导出
