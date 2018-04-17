@@ -48,7 +48,7 @@ class OrderSend extends Command
                 foreach (config('partner.platform') as $platform) {
                     try {
                         // 如果是蚂蚁代练
-                        if ('mayi' == $platform['name']) {
+                        if ('蚂蚁代练' == $platform['name']) {
                             $time = time();
                             // 获取 sign
                             $sign = md5('dlOrderAdd'.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.Ver').config('leveling.mayidailian.appsecret'));
