@@ -61,7 +61,7 @@ class Temp extends Command
         if (count($sourceOrderNo)) {
             $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
             // 发货
-            dump($taobaoTrade);
+            dump($sourceOrderNo, $taobaoTrade);
             // 获取备注并更新
             $client = new TopClient;
             $client->format = 'json';
