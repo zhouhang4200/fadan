@@ -59,11 +59,6 @@ class Temp extends Command
             ->pluck('field_value', 'field_name_alias')
             ->toArray();
         if (count($sourceOrderNo)) {
-            // 将订单号淘宝订单状态改为交易成功
-            OrderDetail::where('order_no', $this->order->no)
-                ->where('field_name', 'taobao_status')
-                ->update(['field_value' => 2]);
-
             $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
             // 发货
             // 获取备注并更新
