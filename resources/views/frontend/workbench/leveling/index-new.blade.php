@@ -78,6 +78,9 @@
             background: #ff7a00;
             border: 1px solid #ff7a00;
         }
+        .layui-form-mid {
+            margin-right: 5px;
+        }
     </style>
 @endsection
 

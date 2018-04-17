@@ -265,7 +265,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
                 OrderDetail::where('order_no', $this->order->no)
                     ->where('field_name', 'show91_order_no')
-                    ->update(['field_value' => $show91Result['order_no'],]);
+                    ->update(['field_value' => $show91Result['order_no']]);
 
                 // 如果成功，将订单写入订单详情表
                 OrderDetail::where('order_no', $this->order->no)
