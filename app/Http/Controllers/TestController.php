@@ -526,6 +526,11 @@ dd($thirdAreas);
 
     public function addPrice()
     {
+        $orderData = "bbuz/0T/HzAQ+ZFWscOAph6KfByKt8juFNKDWRHnCehUC/kr7pC455c5dGrMhbMlawNtOAucQwob85TnlsMKIR2lg+AsGqp1Vrj+GEbBxXSKIV0ea0z0cFc+SLHNVEbQOW5N9q5NOb1YsfjwLiUn0jC8RzdQ+mAvH0PtvvV6EOPVeDd+j/4WJUVv5ylpvqe590xoBAdp88V5yz8wKvP9eMrW8m/IuAOKqW8JWTuqOqyl5jM1PvF3ASB/2bYV8FEqIn/fLkuB07q/UofDOp5kjvZRFwCq202UM+2FuwPmZ2cKow2UyfJM4wZK/sYNGRe3Z/PN3uTH1owFXjpHa+ZweD9TtB1wD52H1z4yzWJL9Kp71P2OSSAXQsnWv495ZW4mIbiSAdewUAJn8SsUCg/2dLPSg3DGHQl30CNPD5zJCvFxaU33SQklHnvnBMsPZolBlkrC25imNLM/o1MhHGgvNMEidC01tcrogA/vFkSxGEEwMhD94NnS/kBkc48zlNoL6vnryE8VuL0uGvookToYVg/oYyyamhr8qofbBZ5H3C3OBZPOG2pHJvfdfDF98Wd7flRx8vH/1AvShDnVPwUhS5SctvP53eJq9nJxbkcGOP1SXQx8qnwbDjY6CMqxiJgzRaYB9Oju/8Ir90Q+rtExRyrkuNcacMcRVPEAvG0isQjrb5Xf1mULv0LUWvTJYLqlXs8gTF9pJJgYfMThFYKIEzVq2nLi0fH5Nmq4H2e4OtzkBWp3mZyIas9zkokysRvoT95FfJYDldvwDNYp/FhBTA0MG+AH/fyKv52iWMtiGVZ+QStvH16EtX0Zacz2puKKKMt0XL6sfKpJYI8E+s5PymqYtHjH+voNyMIRmzWVtshrrRhdNVp7Xn5BsqqXo9hyvX+PICOp4pMAlc3l/7Ap0uQgpVFIxQkO7zWGeD8Azt/dTlBvGuNVBmlhlBvi7B2n";
+
+        $decriptData = openssl_decrypt($orderData, 'aes-128-cbc', '45584685d8e4f5e8e4e2685', false, '1234567891111152');
+
+        dd(json_decode($decriptData, true));
         // $orderNo = '2018041616101400000580';
         // $orderNo = '2018041616344300000016';
         // $order = OrderModel::where('no', $orderNo)->first();

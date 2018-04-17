@@ -53,16 +53,16 @@ class OrderSend extends Command
                             // 获取 sign
                             $sign = md5('dlOrderAdd'.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.appsecret').config('leveling.mayidailian.Ver'));
                             // 公用的串信息
-                            $publicStr = "method=dlOrderAdd&appid=".config('leveling.mayidailian.appid')."&appsecret=".config('leveling.mayidailian.appsecret')."&TimeStamp=".$time."&Ver=1.0&sign=".$sign;
+                            $publicArr = [
+                                'method'    => 'dlOrderAdd',
+                                'appid'     => config('leveling.mayidailian.appid'),
+                                'appsecret' => config('leveling.mayidailian.appsecret'),
+                                'TimeStamp' => $time,
+                                'Ver'       => '1.0',
+                                'sign'      => $sign,
+                            ];
                             $orderData = json_decode($orderData, true);
-                            // 遍历结果，用 & 连接
-                            $str = '';
-                            foreach ($orderData as $key => $value) {
-                                $str .= $key . '=' . $value . '&';
-                            }
-                            // 最后合成的参数
-                            $orderData = $str.$publicStr;
-                            dd(base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv'])));
+                            $orderData = json_encode(array_merge($orderData, $publicArr));
                         }
                         $response = $client->request('POST', $platform['receive'], [
                            'form_params' => [
