@@ -363,7 +363,7 @@
                                 template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
-                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '淘宝');
+                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '天猫');
                             } catch(err){
                                 $('input[name=source_order_no]').val({{ $taobaoTrade->tid }});
                                 $('input[name=order_source]').val('天猫');
@@ -371,7 +371,7 @@
                                 $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                             }
                             if (template.indexOf('订单来源') == -1) {
-                                template += '订单来源：淘宝'  + '\r\n';
+                                template += '订单来源：天猫'  + '\r\n';
                             }
                             if (template.indexOf('来源订单号') == -1) {
                                 template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
