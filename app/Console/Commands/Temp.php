@@ -51,12 +51,31 @@ class Temp extends Command
      */
     public function handle()
     {
-        $sourceOrderNo = OrderDetail::where('order_no', '2018041623150800000007')
+        $sourceOrderNo = OrderDetail::where('order_no', $this->order->no)
             ->where('field_name_alias', 'source_order_no')
             ->pluck('field_value', 'field_name_alias')
             ->toArray();
-        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
-        dd($taobaoTrade);
+        if (count($sourceOrderNo)) {
+            // 将订单号淘宝订单状态改为交易成功
+            OrderDetail::where('order_no', $this->order->no)
+                ->where('field_name', 'taobao_status')
+                ->update(['field_value' => 2]);
+
+            $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
+            // 发货
+            // 获取备注并更新
+            $client = new TopClient;
+            $client->format = 'json';
+            $client->appkey = '12141884';
+            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+            foreach ($taobaoTrade as $item) {
+                $req = new LogisticsDummySendRequest;
+                $req->setTid($item->tid);
+                $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                dump($resp);
+            }
+        }
+
     }
 
     public function get($orderNO, $beginId = 0)
