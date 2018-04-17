@@ -1,4 +1,7 @@
 /*重写样式*/
+.layui-nav .layui-nav-item {
+    line-height: 58px  !important;
+}
 .layui-tab-title li {
     line-height: 35px !important;
 }
