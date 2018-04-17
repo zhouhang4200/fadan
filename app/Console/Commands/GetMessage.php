@@ -56,7 +56,7 @@ class GetMessage extends Command
 
                 if ($data->platform == 1) { // 91 平台
                     // 取留言
-                    $messageList = Show91::messageList(['oid' => $data->foreign_order_no]);
+                    $messageList = Show91::messageList(['oid' => $data->third_order_no]);
                     // 转为数组
                     $messageListArr = json_decode(json_encode($messageList), true);
 
