@@ -388,9 +388,10 @@
                         });
                         @if(isset($taobaoTrade->tid))
                         try {
-                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                            $('input[name=source_order_no]').val({{ $taobaoTrade->tid }});
+                            $('input[name=order_source]').val('天猫');
+                            $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                            $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                         } catch(err){
 
                         }
