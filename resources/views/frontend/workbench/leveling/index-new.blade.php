@@ -881,7 +881,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            location.reload();
+                            reload();
                         });
                         return false;
                     });
@@ -905,7 +905,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            location.reload();
+                            reload();
                         });
                         layer.closeAll();
                         return false;
@@ -923,7 +923,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            location.reload();
+                            reload();
                         });
 
                         layer.close(index);
@@ -943,7 +943,7 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            location.reload();
+                            reload();
                         });
                         layer.close(index);
                     });
@@ -963,7 +963,7 @@
                                     layer.closeAll();
                                 });
                             }
-                            location.reload();
+                            reload();
                         });
                         layer.close(index);
                     });
@@ -983,7 +983,7 @@
                                 layer.closeAll();
                             });
                         }
-                        location.reload();
+                        reload();
                     });
                 }
             });
