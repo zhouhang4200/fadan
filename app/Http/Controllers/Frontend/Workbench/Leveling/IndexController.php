@@ -1091,7 +1091,7 @@ class IndexController extends Controller
                 // 写操作记录
                 $bool = true;
             } else if ($keyWord == 'complete') {
-                (new Complete())->run($orderNo, auth()->id, 1, (int)$delivery);
+                (new Complete())->run($orderNo, auth()->user()->id, 1, (int)$delivery);
             } else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
