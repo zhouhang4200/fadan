@@ -108,7 +108,7 @@ class IndexController extends Controller
 
         // 获取订单
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
-//dd($orders->toArray());
+
         // 查询各状态订单数
         $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
             ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())

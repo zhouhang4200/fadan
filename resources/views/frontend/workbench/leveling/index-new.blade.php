@@ -649,7 +649,24 @@
         @endif
     </div>
     <br>
-    {{ $orders->links() }}
+    {!! $orders->appends([
+            'orders' => $orders,
+            'game' => $game,
+            'employee' => $employee,
+            'tags' => $tags,
+            'no' => $no,
+            'customerServiceName' => $customerServiceName,
+            'gameId' => $gameId,
+            'status' => $status,
+            'taobaoStatus' => $taobaoStatus,
+            'wangWang' => $wangWang,
+            'platform' => $platform,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'statusCount' => $statusCount,
+            'allStatusCount' => $allStatusCount,
+        ])->render() !!}
+
 
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
