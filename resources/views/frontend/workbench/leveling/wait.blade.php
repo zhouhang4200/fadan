@@ -5,12 +5,6 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
         .layui-laypage-skip input {
             height: 27px !important;
         }
@@ -100,7 +94,7 @@
                     <th>购买数量</th>
                     <th>实付金额</th>
                     <th>下单时间</th>
-                    <th width="13%">操作</th>
+                    <th width="15%">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -127,7 +121,7 @@
                 @endforelse
                 </tbody>
             </table>
-            {!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate ])->render() !!}
+            {!! $orders->appends(['tid' => $tid, 'buyer_nick' => $buyerNick, 'start_date' => $startDate, 'status' => $status ])->render() !!}
         </div>
     </div>
 

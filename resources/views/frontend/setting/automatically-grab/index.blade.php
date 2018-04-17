@@ -37,7 +37,7 @@
             <th>备注</th>
             <th>添加时间</th>
             <th>更新时间</th>
-            <th width="13%">操作</th>
+            <th width="15%">操作</th>
         </tr>
         </thead>
         <tbody>

@@ -8,19 +8,7 @@
     <!--START 样式表-->
     @include('frontend.layouts.links')
     <style>
-        .wrapper {
-            position: relative;
-            min-width: 1200px;
-            width: auto;
-            padding: 0 30px;
-            margin: auto;
-            zoom: 1;
-        }
-        .right-content {
-            height: 800px;
-            background-color: #fff;
-            position: inherit;
-        }
+  
         .left-menu {
             width: 265px;
             background-color: #F5F5F5;

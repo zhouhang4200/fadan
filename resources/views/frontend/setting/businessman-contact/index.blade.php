@@ -19,7 +19,7 @@
         <div class="" style="width: 300px;height:280px;padding:10px;float: left;border: 1px solid #ccc">
             @forelse($template as $item)
                 <div style="height: 25px;line-height: 25px;cursor:default">
-                    <span  class="edit" data-id="{{ $item->id }}"  data-name="{{ $item->name }}" data-content="{{ $item->content }}">{{ $item->name }} </span>
+                    <span  class="edit" data-id="{{ $item->id }}"  data-name="{{ $item->name }}" data-content="{{ $item->content }}">{{ $item->name }}-{{ $item->content }} </span>
                     <span style="float: right" class="delete" data-id="{{ $item->id }}">x</span>
                 </div>
             @empty
@@ -32,14 +32,14 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">姓名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="name" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                        <input type="text" name="name" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">{{ $type == 1 ? '联系电话' : '联系QQ' }}</label>
                     <div class="layui-input-block">
-                        <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        <textarea name="content" placeholder="请输入{{ $type == 1 ? '联系电话' : '联系QQ' }}" class="layui-textarea"  lay-verify="required|{{ $type == 1 ? 'phone' : 'number' }}"></textarea>
                     </div>
                 </div>
                 <div class="layui-form-item">

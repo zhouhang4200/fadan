@@ -3,6 +3,7 @@ namespace App\Repositories\Api;
 
 use App\Exceptions\CustomException as Exception;
 use App\Models\AutomaticallyGrabGoods;
+use App\Models\TaobaoShopAuthorization;
 use App\Models\TaobaoTrade;
 use App\Models\TaobaoOrder;
 
@@ -22,20 +23,28 @@ class TaobaoTradeRepository
         $goods = AutomaticallyGrabGoods::where('foreign_goods_id', $trade['num_iid'])->first();
 
         if ($goods) {
-            // 写入订单所属用户与服务类型
-            $trade['user_id'] = $goods->user_id;
-            $trade['service_id'] = $goods->service_id;
 
-            // 创建交易数据
-            $taobaoTrade = TaobaoTrade::create($trade);
-            if (!$taobaoTrade) {
-                throw new Exception('创建失败');
+            // 查找是否有绑定旺旺授权
+            $auth = TaobaoShopAuthorization::where('wang_wang', $trade['seller_nick'])
+                ->where('user_id', $goods->user_id)
+                ->first();
+
+            if ($auth) {
+                // 写入订单所属用户与服务类型
+                $trade['user_id'] = $goods->user_id;
+                $trade['service_id'] = $goods->service_id;
+
+                // 创建交易数据
+                $taobaoTrade = TaobaoTrade::create($trade);
+                if (!$taobaoTrade) {
+                    throw new Exception('创建失败');
+                }
+
+                // 创建订单数据
+                $order['taobao_trade_id'] = $taobaoTrade->id;
+                $order['alipay_id'] = $taobaoTrade->alipay_id;
+                TaobaoOrder::create($order);
             }
-
-            // 创建订单数据
-            $order['taobao_trade_id'] = $taobaoTrade->id;
-            $order['alipay_id'] = $taobaoTrade->alipay_id;
-            TaobaoOrder::create($order);
         }
 
         return true;

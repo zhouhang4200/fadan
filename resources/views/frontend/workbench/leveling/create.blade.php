@@ -5,12 +5,12 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        .wrapper {
-            width: 1600px;
-        }
-        .main .right {
-            width: 1430px;
-        }
+        /*.wrapper {*/
+            /*width: 1600px;*/
+        /*}*/
+        /*.main .right {*/
+            /*width: 1430px;*/
+        /*}*/
         .layui-input-block{
             margin-left: 50px;
         }
@@ -351,22 +351,27 @@
                 $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, tid:'{{ $tid  }}'}, function (result) {
                     var template;
                     if (result.content.sellerMemo) {
+
                         var temp  = result.content.sellerMemo  + '\r\n';
                         // 替换所有半角除号为全角
                         template = temp.replace(/:/g, '：');
                         template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
                         template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
                         @if(isset($taobaoTrade->tid))
+
                             try {
                                 template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
                                 template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
-                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '淘宝');
+                                template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '天猫');
                             } catch(err){
-
+                                $('input[name=source_order_no]').val({{ $taobaoTrade->tid }});
+                                $('input[name=order_source]').val('天猫');
+                                $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                                $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                             }
                             if (template.indexOf('订单来源') == -1) {
-                                template += '订单来源：淘宝'  + '\r\n';
+                                template += '订单来源：天猫'  + '\r\n';
                             }
                             if (template.indexOf('来源订单号') == -1) {
                                 template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
@@ -387,10 +392,12 @@
                             }
                         });
                         @if(isset($taobaoTrade->tid))
+
                         try {
-                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                            $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
+                            $('input[name=order_source]').val('天猫');
+                            $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                            $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                         } catch(err){
 
                         }
@@ -461,6 +468,12 @@
                 $("select[name=game_leveling_type]").val('排位');
                 $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
                 $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
+                @if(isset($taobaoTrade->tid))
+                    $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
+                    $('input[name=order_source]').val('天猫');
+                    $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                    $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
+                @endif
                 layui.form.render();
             }
             // 加载代练要求模板
@@ -469,7 +482,7 @@
                     var optionsHtml = '<option value="">请选择模板</option>';
                     $.each(result, function (index, value) {
                         if (value.status  == 1) {
-                            optionsHtml += '<option value="'  + value.content + '" data-content="' + value.content +  ' "  selected> ' + value.name  +'</option>';
+                            optionsHtml += '<option value="'  + value.content + '" data-content="' + value.content +  ' "  selected> ' + value.name  + '</option>';
                             $('textarea[name=game_leveling_requirements]').val(value.content);
                         } else {
                             optionsHtml += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name  +'</option>';
@@ -486,9 +499,9 @@
                     var phoneTemplate = '<option value="">请选择</option>';
                     $.each(result, function (index, value) {
                         if (value.type == 1) {
-                            phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  ' "> ' + value.name  +'</option>';
+                            phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  ' "> ' + value.name + '-' + value.content  +'</option>';
                         } else {
-                            qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name  +'</option>';
+                            qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '">' + value.name + '-' + value.content  +'</option>';
                         }
                     });
                     $('select[name=user_qq]').html(qqTemplate);
