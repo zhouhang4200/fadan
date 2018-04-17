@@ -351,7 +351,7 @@
                 $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, tid:'{{ $tid  }}'}, function (result) {
                     var template;
                     if (result.content.sellerMemo) {
-                        alert(1);
+
                         var temp  = result.content.sellerMemo  + '\r\n';
                         // 替换所有半角除号为全角
                         template = temp.replace(/:/g, '：');
