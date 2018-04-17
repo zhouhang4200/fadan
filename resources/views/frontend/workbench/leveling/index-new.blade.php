@@ -59,7 +59,7 @@
             width: 100px;
         }
 
-        .fixed-table-box .fixed-table_body tr.rowHover button {
+        .fixed-table-box .fixed-table_body tr.rowHover a {
             background-color: #eef1f6;
         }
 
@@ -483,147 +483,147 @@
                                 <div class="table-cell w-150">
 
                                     @if(auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id  && $item->status == 1)
-                                        <button class="opt-btn" data-opt="receive" data-no="{{ $item->no }}">接单</button>
+                                        <a class="opt-btn" data-opt="receive" data-no="{{ $item->no }}">接单</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 22)
-                                        <button class="opt-btn" data-opt="onSale" data-no="{{ $item->no }}">上架</button>
+                                        <a class="opt-btn" data-opt="onSale" data-no="{{ $item->no }}">上架</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 1)
-                                        <button class="opt-btn" data-opt="offSale" data-no="{{ $item->no }}">下架</button>
+                                        <a class="opt-btn" data-opt="offSale" data-no="{{ $item->no }}">下架</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))
-                                        <button class="opt-btn" data-opt="repeat" data-no="{{ $item->no }}">重发</button>
+                                        <a class="opt-btn" data-opt="repeat" data-no="{{ $item->no }}">重发</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13 || $item->status == 14 || $item->status == 17))
-                                        <button class="opt-btn" data-opt="lock" data-no="{{ $item->no }}">锁定</button>
+                                        <a class="opt-btn" data-opt="lock" data-no="{{ $item->no }}">锁定</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 18)
-                                        <button class="opt-btn" data-opt="cancelLock" data-no="{{ $item->no }}">取消锁定
-                                        </button>
+                                        <a class="opt-btn" data-opt="cancelLock" data-no="{{ $item->no }}">取消锁定
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(isset($item->leveling_consult->consult) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
                                         @if($item->leveling_consult->consult == 1 && $item->status == 15)
-                                            <button data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</button>
+                                            <a data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->leveling_consult->consult== 2 && ($item->status == 15 || $item->status == 16))
-                                            <button data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</button>
-                                            <button data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</button>
+                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</a>
+                                            <a data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
                                     @elseif(isset($item->leveling_consult->consult))
 
                                         @if($item->leveling_consult->consult== 2 && $item->status == 15)
-                                            <button data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</button>
+                                            <a data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->leveling_consult->consult== 1 && ($item->status == 15 || $item->status == 16))
-                                            <button data-opt="agreeRevoke" data-no="{{ $item->no }}">同意撤销</button>
-                                            <button data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</button>
+                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}">同意撤销</a>
+                                            <a data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
-                                        <button class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">撤销</button>
+                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 15)
-                                        <button class="opt-btn" data-opt="applyArbitration" data-no="{{ $item->no }}">
+                                        <a class="opt-btn" data-opt="applyArbitration" data-no="{{ $item->no }}">
                                             仲裁
-                                        </button>
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(isset($item->leveling_consult->complain) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
                                         @if($item->leveling_consult->complain == 1 && $item->status == 16)
-                                        <button data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</button>
+                                        <a data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
                                     @elseif(isset($item->leveling_consult->complain))
                                         @if($item->leveling_consult->complain == 2 && $item->status == 16)
-                                        <button data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</button>
+                                        <a data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
-                                        <button class="opt-btn" data-opt="complete" data-no="{{ $item->no }}">完成
-                                        </button>
+                                        <a class="opt-btn" data-opt="complete" data-no="{{ $item->no }}">完成
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        <button class="opt-btn" data-opt="message" data-no="{{ $item->no }}">留言</button>
+                                        <a class="opt-btn" data-opt="message" data-no="{{ $item->no }}">留言</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        <button class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">
+                                        <a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">
                                             操作记录
-                                        </button>
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
-                                        <button class="opt-btn" data-opt="delete" data-no="{{ $item->no }}">撤单</button>
+                                        <a class="opt-btn" data-opt="delete" data-no="{{ $item->no }}">撤单</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
-                                        <button class="opt-btn" data-opt="applyComplete" data-no="{{ $item->no }}">
+                                        <a class="opt-btn" data-opt="applyComplete" data-no="{{ $item->no }}">
                                             申请完成
-                                        </button>
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14))
-                                        <button class="opt-btn" data-opt="cancelComplete" data-no="{{ $item->no }}">
+                                        <a class="opt-btn" data-opt="cancelComplete" data-no="{{ $item->no }}">
                                             取消验收
-                                        </button>
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
                                     @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
-                                        <button class="opt-btn" data-opt="abnormal" data-no="{{ $item->no }}">异常
-                                        </button>
+                                        <a class="opt-btn" data-opt="abnormal" data-no="{{ $item->no }}">异常
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
                                     @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 17))
-                                        <button class="opt-btn" data-opt="cancelAbnormal" data-no="{{ $item->no }}">
+                                        <a class="opt-btn" data-opt="cancelAbnormal" data-no="{{ $item->no }}">
                                             取消异常
-                                        </button>
+                                        </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
