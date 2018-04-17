@@ -21,6 +21,7 @@ use OSS\Core\OssException;
 use OSS\OssClient;
 use TopClient;
 use TradeFullinfoGetRequest;
+use TraderatesGetRequest;
 
 /**
  * Class OrderTestData
@@ -54,28 +55,24 @@ class Temp extends Command
     {
         $no = $this->argument('no');
 
-        $sourceOrderNo = OrderDetail::select()->where('order_no', $no)
-            ->whereIn('field_name_alias', ['source_order_no'])
-            ->pluck('field_value')
-            ->toArray();
-
-        $uniqueArray = array_unique($sourceOrderNo);
-
-        if (count($uniqueArray)) {
-            $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
             // 获取备注并更新
             $client = new TopClient;
             $client->format = 'json';
             $client->appkey = '12141884';
             $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-            foreach ($taobaoTrade as $item) {
-                $req = new LogisticsDummySendRequest;
-                $req->setTid($item->tid);
-                $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
-                dump($resp);
-            }
-        }
 
+            $req = new TraderatesGetRequest;
+            $req->setFields("tid,oid,role,nick,result,created,rated_nick,item_title,item_price,content,reply,num_iid");
+            $req->setRateType("get");
+            $req->setRole("buyer");
+            $req->setResult("good");
+            $req->setPageNo("1");
+            $req->setPageSize("150");
+            $req->setUseHasNext("true");
+            $req->setNumIid("545532985990");
+            $resp = $client->execute($req, taobaoAccessToken('斗奇网游专营店'));
+
+            dd($resp);
     }
 
     public function get($orderNO, $beginId = 0)

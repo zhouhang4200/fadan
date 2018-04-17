@@ -18,6 +18,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Registered\AddDefaultPermission',
             'App\Listeners\Registered\UserWeightInit',
             'App\Listeners\Registered\CreateLevelingAutoSmsTemplate',
+            'App\Listeners\Registered\CreateTransferAccountInfo',
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\Login\WriteLoginRecord',
