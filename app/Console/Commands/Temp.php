@@ -16,6 +16,7 @@ use App\Services\SmSApi;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
+use LogisticsDummySendRequest;
 use OSS\Core\OssException;
 use OSS\OssClient;
 use TopClient;
@@ -32,7 +33,7 @@ class Temp extends Command
      *
      * @var string
      */
-    protected $signature = 'Temp';
+    protected $signature = 'Temp {no}';
 
     /**
      * The console command description.
@@ -51,7 +52,9 @@ class Temp extends Command
      */
     public function handle()
     {
-        $sourceOrderNo = OrderDetail::where('order_no', $this->order->no)
+        $no = $this->argument('no');
+
+        $sourceOrderNo = OrderDetail::where('order_no', $no)
             ->where('field_name_alias', 'source_order_no')
             ->pluck('field_value', 'field_name_alias')
             ->toArray();
