@@ -54,14 +54,15 @@ class Temp extends Command
     {
         $no = $this->argument('no');
 
-        $sourceOrderNo = OrderDetail::where('order_no', $no)
-            ->where('field_name_alias', 'source_order_no')
-            ->pluck('field_value', 'field_name_alias')
+        $sourceOrderNo = OrderDetail::select()->where('order_no', $no)
+            ->whereIn('field_name_alias', ['source_order_no'])
+            ->pluck('field_value')
             ->toArray();
-        if (count($sourceOrderNo)) {
-            $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
-            // 发货
-            dump($sourceOrderNo, $taobaoTrade);
+
+        $uniqueArray = array_unique($sourceOrderNo);
+
+        if (count($uniqueArray)) {
+            $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
             // 获取备注并更新
             $client = new TopClient;
             $client->format = 'json';

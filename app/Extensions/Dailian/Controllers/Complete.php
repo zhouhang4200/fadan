@@ -183,36 +183,36 @@ class Complete extends DailianAbstract implements DailianInterface
                         break;
                 }
 
-
                 // 将相关的淘宝订单发货''
                 if ($this->delivery == 1) {
-                    $sourceOrderNo = OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name_alias', 'source_order_no')
-                        ->pluck('field_value', 'field_name_alias')
+                    $sourceOrderNo = OrderDetail::select()->where('order_no', $this->order->no)
+                        ->whereIn('field_name_alias', ['source_order_no'])
+                        ->pluck('field_value')
                         ->toArray();
-                    if (count($sourceOrderNo)) {
+
+                    // 去重
+                    $uniqueArray = array_unique($sourceOrderNo);
+
+                    if (count($uniqueArray)) {
                         // 将订单号淘宝订单状态改为交易成功
                         OrderDetail::where('order_no', $this->order->no)
                             ->where('field_name', 'taobao_status')
                             ->update(['field_value' => 2]);
 
-                        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $sourceOrderNo)->get();
-                        if ($taobaoTrade) {
-                            // 发货
-                            // 获取备注并更新
-                            $client = new TopClient;
-                            $client->format = 'json';
-                            $client->appkey = '12141884';
-                            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-                            foreach ($taobaoTrade as $item) {
-                                try {
-                                    $req = new LogisticsDummySendRequest;
-                                    $req->setTid($item->tid);
-                                    $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
-                                } catch (\Whoops\Exception\ErrorException $exception) {
-                                    myLog('ex', ['淘宝订单发货异常', $exception->getMessage()]);
-                                }
-                            }
+                        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
+                        // 获取备注并更新
+                        $client = new TopClient;
+                        $client->format = 'json';
+                        $client->appkey = '12141884';
+                        $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+                        foreach ($taobaoTrade as $item) {
+                           try {
+                               $req = new LogisticsDummySendRequest;
+                               $req->setTid($item->tid);
+                               $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                           } catch (\ErrorException $exception) {
+                               myLog('ex', [$exception->getMessage()]);
+                           }
                         }
                     }
                 }
