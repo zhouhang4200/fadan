@@ -35,6 +35,20 @@ class GoodsTemplate extends Model
         'updated_admin_user_id',
     ];
 
+    /**
+     * 过滤
+     * @param $query
+     * @param array $filters
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if (isset($filters['serviceId']) && $filters['serviceId']) {
+            $query->where('service_id', $filters['serviceId']);
+        }
+        if (isset($filters['gameId']) && $filters['gameId']) {
+            $query->where('game_id', $filters['gameId']);
+        }
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

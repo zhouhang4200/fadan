@@ -16,11 +16,29 @@
             <div class="main-box">
                 <header class="main-box-header clearfix">
                     <div class="filter-block pull-left">
-                        <form class="form-inline" role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name"  placeholder="输入模版名称" value="{{ $name }}">
+                        <form class="layui-form">
+                            <div class="row">
+                                <div class="form-group col-xs-3">
+                                    <input type="text" class="form-control" name="name"  placeholder="输入模版名称" value="{{ $name }}">
+                                </div>
+                                <div class="form-group col-xs-3">
+                                    <select class="layui-input" name="service_id" lay-search="">
+                                        <option value="0">请选择服务</option>
+                                        @foreach($services as $key => $value)
+                                            <option value="{{ $key }}" @if($key == $serviceId) selected  @endif>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-3">
+                                    <select class="layui-input" name="game_id" lay-search="">
+                                        <option value="0">请选择游戏</option>
+                                        @foreach($games as $key => $value)
+                                            <option value="{{ $key }}" @if($key == $gameId) selected  @endif>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-success">搜索</button>
                             </div>
-                            <button type="submit" class="btn btn-success">搜索</button>
                         </form>
                     </div>
                     <div class="filter-block pull-right">
@@ -71,7 +89,7 @@
                             @endforelse
                             </tbody>
                         </table>
-                        {{ $goodsTemplates->appends(['name' => $name])->links() }}
+                        {{ $goodsTemplates->appends(['name' => $name, 'service_id' => $serviceId])->links() }}
                     </div>
                 </div>
             </div>

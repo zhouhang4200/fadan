@@ -37,22 +37,24 @@ class TemplateController extends Controller
 
 
     /**
-     * 商品模版
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         $name = $request->name;
+        $serviceId = $request->service_id;
+        $gameId = $request->game_id;
 
-        $goodsTemplates = GoodsTemplate::with(['createdAdmin', 'updatedAdmin', 'service', 'game'])
+        $goodsTemplates = GoodsTemplate::filter(compact('serviceId', 'gameId'))
+            ->with(['createdAdmin', 'updatedAdmin', 'service', 'game'])
             ->orderBy('id', 'desc')
             ->paginate(30);
 
         $services = $this->service->available();
         $games = $this->game->available();
 
-        return view('backend.goods.template.index', compact('goodsTemplates', 'name', 'services', 'games'));
+        return view('backend.goods.template.index', compact('goodsTemplates', 'name', 'services', 'games', 'serviceId', 'gameId'));
     }
 
     /**
