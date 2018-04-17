@@ -379,7 +379,7 @@
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
                                     <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8"
-                                       class="btn btn-save buyer" target="_blank">联系旺旺号<img
+                                       class="btn btn-save buyer" target="_blank">{{ $detail['client_wang_wang'] }}<img
                                                 src="/frontend/images/ww.gif"></a></li>
                                 @endif
                             </div>
@@ -784,7 +784,7 @@
             laydate.render({elem: '#end-date'});
 
             element.on('tab(order-list)', function () {
-                window.location.href = '{{ route('frontend.workbench.leveling.test') }}/?status=' + this.getAttribute('lay-id');
+                window.location.href = '{{ route('frontend.workbench.leveling.index') }}/?status=' + this.getAttribute('lay-id');
             });
 
             $('.cancel').click(function () {
