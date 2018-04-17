@@ -54,7 +54,7 @@
 
 @section('main')
     <div class="layui-row  layui-col-space20">
-        <div class="layui-col-md6">
+        <div class="layui-col-md7">
             <div class="site-title">
                 <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
             </div>
@@ -99,34 +99,34 @@
             </div>
         </div>
 
-        <div class="layui-col-md3">
+        <div class="layui-col-md2">
             <div class="site-title">
                 <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
             </div>
 
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">天猫单号：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->tid or '' }}</div>
+                <div class="layui-col-md5 text_right">天猫单号：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->tid or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">买家旺旺：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->buyer_nick or '' }}</div>
+                <div class="layui-col-md5 text_right">买家旺旺：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->buyer_nick or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">购买单价：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->price or '' }}</div>
+                <div class="layui-col-md5 text_right">购买单价：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->price or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">购买数量：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->num or '' }}</div>
+                <div class="layui-col-md5 text_right">购买数量：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->num or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">实付金额：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->payment or '' }}</div>
+                <div class="layui-col-md5 text_right">实付金额：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->payment or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md3 text_right">下单时间：</div>
-                <div class="layui-col-md8">{{ $taobaoTrade->created or '' }}</div>
+                <div class="layui-col-md5 text_right">下单时间：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->created or '' }}</div>
             </div>
 
         </div>
