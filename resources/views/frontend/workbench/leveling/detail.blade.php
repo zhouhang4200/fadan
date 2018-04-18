@@ -348,7 +348,7 @@
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif" lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
 
-                                                        @if($item->field_name = 'user_phone')
+                                                        @if($item->field_name == 'user_phone')
                                                             @foreach($contact as $v)
                                                                 @if($v->type == 1)
                                                                     <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
@@ -386,7 +386,7 @@
                                                         <option value=""></option>
 
 
-                                                        @if($item->field_name = 'user_phone')
+                                                        @if($item->field_name == 'user_phone')
                                                             @foreach($contact as $v)
                                                                 @if($v->type == 1)
                                                                     <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
