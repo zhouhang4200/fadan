@@ -59,14 +59,12 @@
             width: 100px;
         }
 
-        .fixed-table-box .fixed-table_body tr.rowHover a {
-            background-color: #eef1f6;
-        }
 
         .opt-btn {
             color: #1f93ff;
             padding: 0 2px;
             border: none;
+            cursor:pointer;
         }
 
         .layui-form-item {
@@ -223,7 +221,7 @@
                         <div class="table-cell" style="width: 228px;line-height: 26px">订单号</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px;width: 100px">店铺</div>
+                        <div class="table-cell w-150" style="line-height: 26px">订单状态</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">号主旺旺</div>
@@ -243,9 +241,7 @@
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">角色名称</div>
                     </th>
-                    <th>
-                        <div class="table-cell w-150" style="line-height: 26px">订单状态</div>
-                    </th>
+
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">代练价格</div>
                     </th>
@@ -373,8 +369,9 @@
                             </div>
                         </td>
                         <td>
-                            <div class="table-cell w-150" style="width: 100px"></div>
+                            <div class="table-cell w-150">{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</div>
                         </td>
+
                         <td>
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
@@ -401,9 +398,7 @@
                         <td>
                             <div class="table-cell w-150">{{ $detail['role'] or '' }}</div>
                         </td>
-                        <td>
-                            <div class="table-cell w-150">{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</div>
-                        </td>
+
                         <td>
                             <div class="table-cell w-150">{{ $item->amount }}</div>
                         </td>
