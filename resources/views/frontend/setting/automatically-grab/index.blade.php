@@ -3,7 +3,11 @@
 @section('title', '设置 - 抓单商品配置')
 
 @section('css')
-
+    <style>
+        .layui-form-select dl {
+            max-height: 190px;
+        }
+    </style>
 @endsection
 
 @section('submenu')
@@ -71,7 +75,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">店铺</label>
                 <div class="layui-input-block">
-                <select name="seller_nick" lay-verify="required">
+                <select name="seller_nick" lay-verify="required" lay-search>
                     <option value=""></option>
                     @forelse($shop as  $value)
                         <option value="{{ $value }}">{{ $value }}</option>
@@ -83,7 +87,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">绑定游戏</label>
                 <div class="layui-input-block">
-                <select name="game_id" lay-verify="required">
+                <select name="game_id" lay-verify="required" lay-search>
                     <option value=""></option>
                     @forelse($game as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>

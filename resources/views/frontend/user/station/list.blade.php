@@ -1,11 +1,11 @@
 <table class="layui-table" lay-size="sm">
     <thead>
     <tr>
-        <th>序号</th>
-        <th>岗位名称</th>
-        <th>岗位员工</th>
+        <th style="width:5%">序号</th>
+        <th style="width:10%">岗位名称</th>
+        <th style="width:10%">岗位员工</th>
         <th>拥有权限</th>
-        <th style="width:12%">操作</th>
+        <th style="width:15%">操作</th>
     </tr>
     </thead>
     <tbody>
