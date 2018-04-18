@@ -53,26 +53,16 @@ class Temp extends Command
      */
     public function handle()
     {
-        $no = $this->argument('no');
+        $client = new Client();
+        $response = $client->request('POST', 'http://fulutop.kamennet.com/session/index', [
+            'query' => http_build_query([
+                'nickName' => '网游增值服务商',
+                'sign' => strtoupper(md5('nickName网游增值服务商'. 'fltop31bf3856ad364e35'))
+            ]),
+        ]);
+        $result = json_decode($response->getBody()->getContents());
+        dd($result);
 
-            // 获取备注并更新
-            $client = new TopClient;
-            $client->format = 'json';
-            $client->appkey = '12141884';
-            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-
-            $req = new TraderatesGetRequest;
-            $req->setFields("tid,oid,role,nick,result,created,rated_nick,item_title,item_price,content,reply,num_iid");
-            $req->setRateType("get");
-            $req->setRole("buyer");
-            $req->setResult("good");
-            $req->setPageNo("1");
-            $req->setPageSize("150");
-            $req->setUseHasNext("true");
-            $req->setNumIid("545532985990");
-            $resp = $client->execute($req, taobaoAccessToken('斗奇网游专营店'));
-
-            dd($resp);
     }
 
     public function get($orderNO, $beginId = 0)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
 use App\Models\AutomaticallyGrabGoods;
+use App\Models\Game;
 use App\Models\TaobaoShopAuthorization;
 use App\Models\UserSetting;
 use App\Repositories\Frontend\GameRepository;
@@ -37,6 +38,7 @@ class AutomaticallyGrabController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(20);
 
+
         return view('frontend.setting.automatically-grab.index')->with([
             'game' => $game,
             'automaticallyGrabGoods' => $automaticallyGrabGoods,
@@ -49,7 +51,7 @@ class AutomaticallyGrabController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request,  GameRepository $gameRepository)
+    public function show(Request $request, GameRepository $gameRepository)
     {
         $game = $gameRepository->availableByServiceId(4);
         $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
@@ -83,6 +85,7 @@ class AutomaticallyGrabController extends Controller
                 $automaticallyGrabGoods->foreign_goods_id = $request->foreign_goods_id;
                 $automaticallyGrabGoods->remark = $request->remark;
                 $automaticallyGrabGoods->game_id = $request->game_id;
+                $automaticallyGrabGoods->game_name = Game::where('id', $request->game_id)->value('name');
                 $automaticallyGrabGoods->seller_nick = $request->seller_nick;
                 $automaticallyGrabGoods->save();
             }
@@ -124,6 +127,7 @@ class AutomaticallyGrabController extends Controller
                 'service_id' => $serviceId,
                 'foreign_goods_id' => $goodsId,
                 'game_id' => $gameId,
+                'game_name' => Game::where('id', $gameId)->value('name'),
                 'seller_nick' => $sellerNick,
                 'remark' => $request->remark,
             ]);
