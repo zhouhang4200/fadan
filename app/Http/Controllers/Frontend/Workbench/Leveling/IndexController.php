@@ -424,15 +424,28 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
+        // 获取商户的联系方式模版信息
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
-
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
+        // 写订单日志
+        OrderHistory::create([
+            'order_no' => $detail['no'],
+            'user_id' => auth()->user()->id,
+            'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+            'admin_user_id' => 0,
+            'type' => 32,
+            'name' => config('order.operation_type')[32],
+            'description' => auth()->user()->nickname . ' 查看订单',
+            'before' => serialize([]),
+            'after' => serialize([]),
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
 
         if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
             $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
-        
+
             OrderDetail::where('order_no', $detail['no'])
                 ->where('field_name', 'hatchet_man_phone')
                 ->update(['field_value' => $orderInfo['data']['taker_phone']]);
@@ -444,7 +457,7 @@ class IndexController extends Controller
             OrderDetail::where('order_no', $detail['no'])
                 ->where('field_name', 'hatchet_man_name')
                 ->update(['field_value' => $orderInfo['data']['takerNickname']]);
-                
+
             $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
             $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
             $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
@@ -565,12 +578,15 @@ class IndexController extends Controller
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+        // 获取商户的联系方式模版信息
+        $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
+
         // 写入订单关联数据
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
-        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game'));
+        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game', 'contact'));
     }
 
     /**
@@ -1270,7 +1286,6 @@ class IndexController extends Controller
         $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 0)->count();
         $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 1)->count();
         $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 2)->count();
-
 
         return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,

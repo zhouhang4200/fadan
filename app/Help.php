@@ -747,11 +747,11 @@ if (!function_exists('sendSms')){
     function sendSms($sendUserId, $orderNo, $phone, $content, $remark, $foreignOrderNo = '', $thirdOrderNo = '', $third = 0)
     {
         // 扣款
-        try {
-            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, $sendUserId));
-        } catch (CustomException $exception) {
-            return ['status' => 0, 'message' => $exception->getMessage()];
-        }
+//        try {
+//            Asset::handle(new Consume(0.1, 4, $orderNo, $remark, $sendUserId));
+//        } catch (CustomException $exception) {
+//            return ['status' => 0, 'message' => $exception->getMessage()];
+//        }
 
         $sendResult = (new SmSApi())->send(2, $phone, $content, $sendUserId);
 

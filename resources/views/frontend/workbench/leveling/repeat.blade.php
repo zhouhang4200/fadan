@@ -91,18 +91,36 @@
                                             @if($item->field_type == 2)
                                                 <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@if ($item->field_required == 1) required @endif">
                                                     <option value=""></option>
-                                                    @if(count($item->user_values) > 0)
 
-                                                        @foreach($item->user_values as $v)
-                                                            <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+
+                                                    @if($item->field_name == 'user_phone')
+                                                        @foreach($contact as $v)
+                                                            @if($v->type == 1)
+                                                                <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                            @endif
                                                         @endforeach
-
+                                                    @elseif($item->field_name == 'user_qq')
+                                                        @foreach($contact as $v)
+                                                            @if($v->type == 2)
+                                                                <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                            @endif
+                                                        @endforeach
                                                     @else
 
-                                                        @if(count($item->values) > 0)
-                                                            @foreach($item->values as $v)
+                                                        @if(count($item->user_values) > 0)
+
+                                                            @foreach($item->user_values as $v)
                                                                 <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
+
+                                                        @else
+
+                                                            @if(count($item->values) > 0)
+                                                                @foreach($item->values as $v)
+                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                @endforeach
+                                                            @endif
+
                                                         @endif
 
                                                     @endif

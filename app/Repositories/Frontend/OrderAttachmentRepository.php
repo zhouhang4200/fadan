@@ -35,6 +35,7 @@ class OrderAttachmentRepository
 
             if ($orderDetail['third'] == 1) {
                 $dataList = Show91::topic(['oid' => $thirdOrderNo]);
+
             } else if ($orderDetail['third'] == 2) {
                 $dataList = DailianMama::getOrderPictureList($thirdOrderNo);
             }
@@ -51,11 +52,17 @@ class OrderAttachmentRepository
             if ($orderDetail['third'] == 1) { // 91代练
                 $imgKey = basename($value->url);
                 $dataList[$key]->description = $description[$imgKey] ?? '无';
+//                $imageList[] = [
+//                    'url' => $dataList[$key]['address'],
+//                    'username' => $dataList[$key]['nickname'],
+//                    'created_at' => $dataList[$key]['createtime'],
+//                    'description' => $dataList[$key]['description'],
+//                ];
                 $imageList[] = [
-                    'url' => $dataList[$key]['address'],
-                    'username' => $dataList[$key]['nickname'],
-                    'created_at' => $dataList[$key]['createtime'],
-                    'description' => $dataList[$key]['description'],
+                    'url' => $value->url,
+                    'username' => $value->userName,
+                    'created_at' => $value->created_on,
+                    'description' => '',
                 ];
             } elseif($orderDetail['third'] == 2) { // 代练妈妈
                 $imageList[] = [

@@ -137,7 +137,7 @@ class TaobaoTradeRepository
             'trade_from'             => $data['TradeFrom'],
             'type'                   => $data['Type'],
             'zero_purchase'          => $data['ZeroPurchase'],
-            'handle_status'            => 0,
+            'handle_status'          => 0,
         ];
 
         $dataOrder = $data['Orders'][0];
