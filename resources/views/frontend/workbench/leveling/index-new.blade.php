@@ -221,7 +221,7 @@
                         <div class="table-cell" style="width: 228px;line-height: 26px">订单号</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">订单状态</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width:50px;padding: 0 10px">订单状态</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">号主旺旺</div>
@@ -369,14 +369,16 @@
                             </div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</div>
+                            <div class="table-cell w-150" style="line-height: 26px;width:50px;padding: 0 10px">{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</div>
                         </td>
 
                         <td>
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
                                     <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8"
-                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}</a></li>
+                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}
+                                        <br/> {{ $detail['seller_nick'] or '' }}
+                                    </a>
                                 @endif
                             </div>
                         </td>
@@ -545,7 +547,7 @@
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
-                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">撤销</a>
+                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">协商撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif

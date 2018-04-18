@@ -118,6 +118,18 @@ class AutoMarkupOrderEveryHour extends Command
             return false;
         }
 
+
+        // 如果是已下架，跳出循环
+        if (22 == $order->status) {
+            return false;
+        }
+
+        // 如果此订单不在 未接单并且不是已下架  状态,删除redis
+        if ($order->status != 1 && $order->status != 22) {
+            $this->deleteRedisHashKey($orderNo);
+            return false;
+        }
+
         return $order;
     }
 
