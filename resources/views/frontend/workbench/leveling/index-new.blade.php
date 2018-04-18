@@ -376,7 +376,9 @@
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
                                     <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8"
-                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}</a></li>
+                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}
+                                        <br/> {{ $detail['seller_nick'] or '' }}
+                                    </a>
                                 @endif
                             </div>
                         </td>
