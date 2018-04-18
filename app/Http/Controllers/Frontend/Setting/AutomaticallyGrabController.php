@@ -30,7 +30,7 @@ class AutomaticallyGrabController extends Controller
     {
         $foreignGoodsId = $request->foreign_goods_id;
         $game = $gameRepository->availableByServiceId(4);
-        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->pluck('wang_wang');
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('foreignGoodsId'))
@@ -54,7 +54,7 @@ class AutomaticallyGrabController extends Controller
     public function show(Request $request, GameRepository $gameRepository)
     {
         $game = $gameRepository->availableByServiceId(4);
-        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->pluck('wang_wang');
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->where('id', $request->id)
