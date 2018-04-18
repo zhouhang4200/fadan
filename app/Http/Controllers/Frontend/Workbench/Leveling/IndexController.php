@@ -253,7 +253,7 @@ class IndexController extends Controller
     {
         $game = $this->game;
         $tid = $request->tid;
-        $gameId = $request->input('game_id', 1);
+        $gameId = $request->game_id ? $request->game_id : 1;
         $businessmanInfo = auth()->user()->getPrimaryInfo();
 
         // 有淘宝订单则更新淘宝订单卖家备注
