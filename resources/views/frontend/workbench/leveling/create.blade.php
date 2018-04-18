@@ -137,6 +137,7 @@
 @section('js')
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
+        <input type="hidden" name="seller_nick" value="">
         <div class="layui-row form-group">
             @{{# var row = 0;}}
             @{{#  layui.each(d.template, function(index, item){ }}
@@ -473,6 +474,7 @@
                     $('input[name=order_source]').val('天猫');
                     $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
                     $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
+                    $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
                 @endif
                 layui.form.render();
             }

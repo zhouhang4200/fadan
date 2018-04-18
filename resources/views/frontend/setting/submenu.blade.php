@@ -37,7 +37,7 @@
 	@endif
 
 	@if(Auth::user()->could('frontend.setting.tb-auth.index'))
-		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.index' ? 'current' : '' }}">
+		<li class="{{  Route::currentRouteName()  == 'frontend.setting.tb-auth.store' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.tb-auth.store') }}">店铺授权</a>
 			<div class="arrow"></div>
 		</li>

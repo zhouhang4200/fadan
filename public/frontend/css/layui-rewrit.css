@@ -1,4 +1,7 @@
 /*重写样式*/
+.layui-table a:hover,.fixed-table-box a:hover {
+    color:#ff7a00 !important;
+}
 .layui-nav .layui-nav-item {
     line-height: 58px  !important;
 }
