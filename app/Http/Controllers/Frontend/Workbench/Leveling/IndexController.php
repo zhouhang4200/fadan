@@ -574,12 +574,15 @@ class IndexController extends Controller
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
         $template = $goodsTemplateWidgetRepository->getWidgetBy($templateId);
+        // 获取商户的联系方式模版信息
+        $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
+
         // 写入订单关联数据
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
-        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game'));
+        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game', 'contact'));
     }
 
     /**
@@ -1279,7 +1282,6 @@ class IndexController extends Controller
         $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 0)->count();
         $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 1)->count();
         $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 2)->count();
-
 
         return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,
