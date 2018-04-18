@@ -296,7 +296,7 @@ abstract class DailianAbstract
             ->first();
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
         if (! $beforeStatus) {
-            throw new DailianException('订单不存在');
+            throw new DailianException('订单不存在1');
         }
         
         if (in_array($order->status, [13, 14, 15])) {
