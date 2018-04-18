@@ -1,10 +1,10 @@
 <table class="layui-table" lay-size="sm">
     <thead>
     <tr>
-        <th>操作人</th>
-        <th>操作名</th>
+        <th width="8%">操作人</th>
+        <th width="8%">操作名</th>
         <th>描述</th>
-        <th>时间</th>
+        <th width="10%">时间</th>
     </tr>
     </thead>
     <tbody>
