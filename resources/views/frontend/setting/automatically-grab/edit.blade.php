@@ -1,4 +1,4 @@
-<div id="goods-form" style="padding: 20px">
+<div id="goods-form" style="padding: 30px 60px 0 0px;">
     <form class="layui-form" action="" id="goods-edit-form">
         <input type="hidden" name="id" value="{{ $automaticallyGrabGoods->id }}">
         <div class="layui-form-item">

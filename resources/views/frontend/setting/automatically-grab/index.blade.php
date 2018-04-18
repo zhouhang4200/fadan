@@ -64,7 +64,7 @@
 
     {{ $automaticallyGrabGoods->links() }}
 
-    <div id="goods-add" style="display: none;padding: 20px">
+    <div id="goods-add" style="display: none;padding: 30px 60px 0 0px;">
         <form class="layui-form" action="" id="goods-add-form">
             <input type="hidden" name="type" value="">
             <input type="hidden" name="service_id" value="4">
