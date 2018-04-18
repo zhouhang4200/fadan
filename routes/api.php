@@ -80,6 +80,10 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
         Route::post('abnormal', 'OrderController@abnormal');
         // 取消异常
         Route::post('cancel-abnormal', 'OrderController@cancelAbnormal');
+        // 回传
+        Route::post('callback', 'OrderController@callback');
+        // 完成
+        Route::post('complete', 'OrderController@complete');
     });
 
     // 查询区服接口

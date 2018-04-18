@@ -416,7 +416,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 		$options = [
 			'method'       => 'dlOrdereUpdatePaymoney',
 			'order_id'     => $orderDatas['mayi_order_no'],
-			'append_price' => $orderDatas['amount'],
+			'append_price' => $orderDatas['game_leveling_amount'],
 			'appid'        => config('leveling.mayidailian.appid'),
 			'appsecret'    => config('leveling.mayidailian.appsecret'),
 			'TimeStamp'    => $this->time,

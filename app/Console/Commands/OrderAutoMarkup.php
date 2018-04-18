@@ -136,10 +136,13 @@ class OrderAutoMarkup extends Command
                     $result = $this->writeLogAndExpendFlows($order, $markupMoney, $number, $firstAmount, $orderDetails);
                     // 加价
                     if ($result) {
-                        $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
-                        $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
                         // 加价之后，redis次数+1, 时间换到最新加价的时间
                         Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$orderAutoMarkupStartTime->toDateTimeString());
+                        // 91 和 代练妈妈加价
+                        $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
+                        $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
+                        // 其他平台加价
+                        $this->otherClientAddPrice($orderDetails);
           
                         // 写下日志
                         myLog('order.automarkup', [
@@ -159,6 +162,18 @@ class OrderAutoMarkup extends Command
                             DailianMama::closeOrder($order);
                             myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                         }
+                        if (config('leveling.third_orders')) {
+                            // 遍历代练平台
+                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                // if ($third == $orderDetails['third'] && isset($orderDetails['third_order_no']) && ! empty($orderDetails['third_order_no'])) {
+                                if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+                                }
+                            }
+                        }
+                        myLog('order.automarkup', ['订单号' => $orderDetails['order_no'], '原因' => $e->getMessage(), '结果' => '自动加价失败!']);   
                         continue;
                     }
                 }
@@ -184,13 +199,28 @@ class OrderAutoMarkup extends Command
                             DailianMama::closeOrder($order);
                             myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
                         }
+
+                        if (config('leveling.third_orders')) {
+                            // 遍历代练平台
+                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                // if ($third == $orderDetails['third'] && isset($orderDetails['third_order_no']) && ! empty($orderDetails['third_order_no'])) {
+                                if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+                                }
+                            }
+                        }
+                        myLog('order.automarkup', ['订单号' => $orderDetails['order_no'], '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
                         continue;
                     } else {
+                        // 加价之后，redis次数+1, 时间换到最新加价的时间
+                        Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
                         // 流水扣成功，掉调外面借口
                         $resShow91 = $this->addShow91Price($order, $markupMoney, $number, $orderDetails);
                         $resDailianMama = $this->addDailianMamaPrice($order, $markupMoney, $number, $firstAmount, $orderDetails);
-                        // 加价之后，redis次数+1, 时间换到最新加价的时间
-                        Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
+                        // 其他平台加价
+                        $this->otherClientAddPrice($orderDetails);
                         
                         // 写下日志
                         myLog('order.automarkup', [
@@ -321,5 +351,40 @@ class OrderAutoMarkup extends Command
         }
         DB::commit();
         return true;
+    }
+
+    /**
+     * 其他平台加价，按我们的规则来
+     * @param  [type] $orderDetails [description]
+     * @return [type]               [description]
+     */
+    public function otherClientAddPrice($orderDetails)
+    {
+        try {
+            // 加价 其他平台通用
+            if (config('leveling.third_orders')) {
+               // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDetails]);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+           if (config('leveling.third_orders')) {
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    // if ($third == $orderDetails['third'] && isset($orderDetails['third_order_no']) && ! empty($orderDetails['third_order_no'])) {
+                    if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+                    }
+                }
+            }
+            myLog('order.automarkup', ['订单号' => $orderDetails['order_no'], '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
+        }
     }
 }

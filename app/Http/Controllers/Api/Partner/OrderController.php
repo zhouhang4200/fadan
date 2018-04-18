@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+use Carbon\Carbon;
 use App\Repositories\Frontend\OrderDetailRepository;
 use Order, DB, Exception;
 use App\Models\OrderDetail;
@@ -30,7 +31,7 @@ class OrderController extends Controller
             throw new DailianException('订单号不存在!');
         }
         $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
-        
+
         return json_decode($orderData);
         $array =  DB::select("
             SELECT a.order_no, 
@@ -130,7 +131,10 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollback();
             return response()->partner(0, $e->getMessage());
-        }
+        }  catch (Exception $e) {
+            DB::rollback();
+            return response()->partner(0, '接口异常');
+        } 
         DB::commit();
         return response()->partner(1, '成功');
     }
@@ -142,9 +146,6 @@ class OrderController extends Controller
     public function applyComplete(Request $request)
     {
         try {
-
-
-
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
             DailianFactory::choose('applyComplete')->run($orderData->no, $request->user->id);
@@ -152,7 +153,9 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
-        }
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
+        } 
     }
 
     /**
@@ -169,7 +172,9 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
-        }
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
+        } 
     }
 
     /**
@@ -181,9 +186,9 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             // 接口传过来的参数
-            $apiAmount  = $request->api_amount;  // 回传代练费
-            $apiDeposit = $request->api_deposit; // 回传双金
-            $apiService = $request->api_service; // 回传手续费
+            $apiAmount  = $request->input('api_amount', '');  // 回传代练费
+            $apiDeposit = $request->input('api_deposit', ''); // 回传双金
+            $apiService = $request->input('api_service', ''); // 回传手续费
             $content    = $request->input('content', '无'); // 回传的撤销说明
             // 判断传入的金额是否合法
             if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
@@ -227,6 +232,9 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
+        }  catch (Exception $e) {
+            DB::rollBack();
+            return response()->partner(0, '接口异常');
         }
         DB::commit();
         return response()->partner(1, '成功');
@@ -238,16 +246,15 @@ class OrderController extends Controller
      */
     public function cancelRevoke(Request $request)
     {
-        DB::beginTransaction();
         try {
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
             // 会变成锁定
             DailianFactory::choose('cancelRevoke')->run($orderData->no, $request->user->id, false);
         } catch (DailianException $e) {
-            DB::rollBack();
             return response()->partner(0, $e->getMessage());
-        }
-        DB::commit();
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
+        } 
         return response()->partner(1, '成功');
     }
 
@@ -257,16 +264,15 @@ class OrderController extends Controller
      */
     public function refuseRevoke(Request $request)
     {
-        DB::beginTransaction();
         try {
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
             // 会变成锁定
             DailianFactory::choose('cancelRevoke')->run($orderData->no, $request->user->id, false);
         } catch (DailianException $e) {
-            DB::rollBack();
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
-        DB::commit();
         return response()->partner(1, '成功');
     }
 
@@ -278,7 +284,7 @@ class OrderController extends Controller
     {
         DB::beginTransaction();
         try {
-            $apiService = $request->api_service;
+            $apiService = $request->input('api_service', '');
 
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
@@ -306,6 +312,9 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->partner(0, '接口异常');
         }
         DB::commit();
         return response()->partner(1, '成功');
@@ -325,6 +334,8 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
     }
 
@@ -334,34 +345,29 @@ class OrderController extends Controller
      */
     public function applyArbitration(Request $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-            try {
-                $content = $request->input('content', '无');
+            $content = $request->input('content', '无');
 
-                $orderData = $this->getOrderAndOrderDetails($request->order_no);
+            $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
-                $data = [
-                    'user_id' => $request->user->id,
-                    'complain' => 2,
-                    'complain_message' => $content,
-                ];
+            $data = [
+                'user_id' => $request->user->id,
+                'complain' => 2,
+                'complain_message' => $content,
+            ];
+            LevelingConsult::updateOrCreate(['order_no' => $orderData->no], $data);
 
-                $result  = LevelingConsult::updateOrCreate(['order_no' => $orderData->no], $data);
-
-                myLog('apply-arbitration', ['user' => $request->user->id, 'message' => $content, 'no' => $orderData->no, 'result' => $result]);
-
-                DailianFactory::choose('applyArbitration')->run($orderData->no, $request->user->id, false);
-            } catch (DailianException $e) {
-                DB::rollBack();
-                myLog('apply-arbitration', [$e->getMessage()]);
-                return response()->partner(0, $e->getMessage());
-            }
-            DB::commit();
-            return response()->partner(1, '成功');
-        } catch (\Exception $exception) {
-            myLog('apply-arbitration', [$exception->getMessage()]);
+            DailianFactory::choose('applyArbitration')->run($orderData->no, $request->user->id, false);
+        } catch (DailianException $e) {
+            DB::rollBack();
+            return response()->partner(0, $e->getMessage());
+        }  catch (Exception $e) {
+            DB::rollBack();
+            return response()->partner(0, '接口异常');
         }
+        DB::commit();
+        return response()->partner(1, '成功');
     }
 
     /**
@@ -378,6 +384,8 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
     }
 
@@ -389,9 +397,9 @@ class OrderController extends Controller
     {
         DB::beginTransaction();
         try {
-            $apiAmount = $request->api_amount; // 回传代练费
-            $apiDeposit = $request->api_deposit; // 回传的双金
-            $apiService = $request->api_service; // 回传的手续费
+            $apiAmount = $request->input('api_amount', ''); // 回传代练费
+            $apiDeposit = $request->input('api_deposit', ''); // 回传的双金
+            $apiService = $request->input('api_service', ''); // 回传的手续费
 
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
@@ -421,6 +429,8 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
         DB::commit();
         return response()->partner(1, '成功');
@@ -440,6 +450,8 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
     }
 
@@ -457,6 +469,60 @@ class OrderController extends Controller
             return response()->partner(1, '成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
+        }
+    }
+
+    /**
+     * 
+     * @param  Request  $request [description]
+     * @return function          [description]
+     */
+    public function callback(Request $request) 
+    {
+        try {
+            $order = OrderModel::where('no', $request->input('no', ''))->first();
+
+            if (! $order) {
+                 return response()->partner(0, '我方订单号缺失或错误');
+            }
+
+            if (! $request->input('order_no', '')) {
+                return response()->partner(0, '您的代练平台订单号缺失');
+            }
+
+            $third = config('leveling.third')[$request->user->id];
+
+            // 更新订单详情表数据
+            OrderDetail::where('order_no', $order->no)
+                ->where('field_name', config('leveling.third_orders')[$third])
+                ->update(['field_value' => $request->order_no]);
+
+            myLog('mayi-callback', ['order_no' => $order->no, 'mayi_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
+            return response()->partner(1, '成功');
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
+        }
+    }
+
+    /**
+     * 完成操作
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function complete(Request $request)
+    {
+        try {
+            $orderData = $this->getOrderAndOrderDetails($request->order_no);
+
+            DailianFactory::choose('complete')->run($orderData->no, $request->user->id, false);
+
+            return response()->partner(1, '成功');
+        } catch (DailianException $e) {
+            return response()->partner(0, $e->getMessage());
+        } catch (Exception $e) {
+            return response()->partner(0, '接口异常');
         }
     }
 }
