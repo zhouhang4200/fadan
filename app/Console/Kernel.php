@@ -36,6 +36,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\OrderAutoMarkup', // 订单自动加价
         'App\Console\Commands\GetMessageDailianmama', // 订单自动加价
         'App\Console\Commands\OrderSend', //推送下单信息
+        'App\Console\Commands\AutoMarkupOrderEveryHour', // 每小时执行一次加价
     ];
 
     /**
@@ -61,6 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('add:notice')->everyMinute();
         $schedule->command('order:markup')->everyMinute();
         $schedule->command('command:getMessageDailianmama')->everyMinute();
+        $schedule->command('markup-order:one-hour')->everyMinute();
     }
 
     /**
