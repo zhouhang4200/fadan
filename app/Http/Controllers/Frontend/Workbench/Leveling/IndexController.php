@@ -338,7 +338,7 @@ class IndexController extends Controller
                 // } elseif ($orderDetails['dailianmama_order_no'] && ! $orderDetails['show91_order_no']) {
                 //     return response()->ajax(1, '部分平台下单成功！请联系客服查询未发布成功的平台及原因！');
                 // }
-                
+                // dd($orderDetails);
                 // 下单成功之后，查看此订单是否设置了每小时自动加价
                 $this->checkIfAutoMarkup($order, $orderDetails);
 
@@ -1388,12 +1388,17 @@ class IndexController extends Controller
      * @param  [type] $orderDetails [description]
      * @return [type]               [description]
      */
-    public function checkIfAutoMarkup($orderDetails)
+    public function checkIfAutoMarkup($order, $orderDetails)
     {
         // 如果这笔订单存在加价幅度和加价上限，
-        if (isset($orderDetails['markup_range']) && ! empty($orderDetails['markup_range']) && isset($orderDetails['markup_top_limit']) && ! empty($orderDetails['amrkup_top_limit'])) {
+        if (isset($orderDetails['markup_range']) && ! empty($orderDetails['markup_range']) && isset($orderDetails['markup_top_limit']) && ! empty($orderDetails['markup_top_limit'])) {
+            $bool = bcsub($orderDetails['game_leveling_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
+
+            if (! $bool) {
+                return false;
+            }
             // 将此订单存入哈希
-            $key = $orderDetails['order_no'];
+            $key = $order->no;
             $name = "order:automarkup-every-hour";
             $value = "0@".$orderDetails['game_leveling_amount']."@".$order->created_at;
 

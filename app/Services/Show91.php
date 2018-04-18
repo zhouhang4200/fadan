@@ -217,7 +217,6 @@ class Show91
             $options['order.order_id'] = $orderDetails['show91_order_no'];
         }
         $res = static::formDataRequest(config('show91.url.addOrder'), $options);
-// dd($res, $options, $orderDetails);
 
         $res = json_decode($res, true);
 

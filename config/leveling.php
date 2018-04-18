@@ -20,7 +20,7 @@ return [
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [
-		// 3 => MayiDailianController::class,
+		3 => MayiDailianController::class,
 		// 4 => DD373Controller::class,
 	],
 

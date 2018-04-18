@@ -2,15 +2,19 @@
 
 namespace App\Console\Commands;
 
+use DB;
 use Redis;
 use Asset;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\OrderDetail;
 use App\Services\Show91;
 use App\Services\DailianMama;
 use Illuminate\Console\Command;
 use App\Extensions\Asset\Expend;
+use App\Exceptions\DailianException;
 
 class AutoMarkupOrderEveryHour extends Command
 {
@@ -45,53 +49,57 @@ class AutoMarkupOrderEveryHour extends Command
      */
     public function handle()
     {
-        // 取redis的值
-        $name = "order:automarkup-every-hour";
-        $automarkupOrders = Redis::hGet($name);
-        // 如果存在值
-        if ($automarkupOrders) {
-            foreach ($automarkupOrders  as $orderNo => $addAmountAndTime) {
-                // 获取订单数据 
-                $order = $this->getOrder($orderNo);
+        try {
+            // 取redis的值
+            $name = "order:automarkup-every-hour";
+            $automarkupOrders = Redis::hGetAll($name);
+            // 如果存在值
+            if ($automarkupOrders) {
+                foreach ($automarkupOrders  as $orderNo => $addAmountAndTime) {
+                    // 获取订单数据 
+                    $order = $this->getOrder($orderNo);
 
-                if (! $order) {
-                    continue;
-                }
-                // 获取订单详情
-                $orderDetails = $this->getOrderDetails($orderNo);
+                    if (! $order) {
+                        continue;
+                    }
+                    // 获取订单详情
+                    $orderDetails = $this->getOrderDetails($orderNo);
 
-                if (! $orderDetails) {
-                    continue;
-                }
-                // 解析redis值
-                $datas = $this->parse($addAmountAndTime, $orderNo);
+                    if (! $orderDetails) {
+                        continue;
+                    }
+                    // 解析redis值
+                    $datas = $this->parse($addAmountAndTime, $orderNo);
 
-                if (! $datas) {
-                    continue;
-                }
-                // 检查redis里面存的订单当前代练费是否等于数据库的代练费
-                $this->checkRedisAmountEqualOrderAmount($datas, $order);
-                // 检查是否到了加价时间
-                $isBegin = $this->checkTimeToAddPrice($datas);
+                    if (! $datas) {
+                        continue;
+                    }
+                    // 检查redis里面存的订单当前代练费是否等于数据库的代练费
+                    $this->checkRedisAmountEqualOrderAmount($datas, $order);
+                    // 检查是否到了加价时间
+                    $isBegin = $this->checkTimeToAddPrice($datas, $order, $orderDetails);
 
-                if (! $isBegin) {
-                    continue;
-                }
-                // 写我们的加价流水和日志
-                $bool = $this->addFlowsAndHistory($order, $orderDetails, $datas, $isBegin = false);
+                    if (! $isBegin) {
+                        continue;
+                    }
+                    // 写我们的加价流水和日志
+                    $bool = $this->addFlowsAndHistory($order, $orderDetails, $datas);
 
-                if (! $bool) {
-                    continue;
-                }
-                // Redis的值增加
-                $this->increase($datas, $order);
-                // 调外面加价接口
-                $res = $this->addPriceToThirdClient($datas, $orderDetails, $bool = false);
+                    if (! $bool) {
+                        continue;
+                    }
+                    // Redis的值增加
+                    $this->increase($datas, $order, $orderDetails);
+                    // 调外面加价接口
+                    $res = $this->addPriceToThirdClient($datas, $order, $orderDetails);
 
-                if (! $res) {
-                    continue;
+                    if (! $res) {
+                        continue;
+                    }
                 }
             }
+        } catch (Exception $e) {
+            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => $e->getMessage()]);
         }
     }
 
@@ -100,13 +108,13 @@ class AutoMarkupOrderEveryHour extends Command
      * @param  [type] $orderNo [description]
      * @return [type]          [description]
      */
-    public function getrOrder($orderNo)
+    public function getOrder($orderNo)
     {
         $order = Order::where('no', $orderNo)->first();
 
         if (! $order) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('auto-markup:every-hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
+            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
             return false;
         }
 
@@ -124,11 +132,11 @@ class AutoMarkupOrderEveryHour extends Command
 
         if (! $orderDetail) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('auto-markup:every-hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
+            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
             return false;
         }
 
-        return OrderDetail::where('order_no', $order->no)
+        return OrderDetail::where('order_no', $orderNo)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
     }
@@ -142,7 +150,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         if (! isset($datas) || ! $datas) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('auto-markup:every-hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
+            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
             return false;
         }
 
@@ -151,7 +159,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         if (! is_array($datas) || ! $datas) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('auto-markup:every-hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
+            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
             return false;
         }
 
@@ -200,12 +208,8 @@ class AutoMarkupOrderEveryHour extends Command
      * @param [type] $orderDetails [description]
      * @param [type] $datas        [description]
      */
-    public function addFlowsAndHistory($order, $orderDetails, $datas, $isBegin)
+    public function addFlowsAndHistory($order, $orderDetails, $datas)
     {
-        if (! $isBegin) {
-            return false; 
-        }
-
         DB::beginTransaction();
         try {
             // 加价后的订单金额
@@ -213,12 +217,11 @@ class AutoMarkupOrderEveryHour extends Command
             // 流水
             Asset::handle(new Expend($orderDetails['markup_range'], 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
 
-            Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
+            $res = Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
             // 订单详情金额更新
-            OrderDetail::where('order_no', $order->no)
+            $res1 = OrderDetail::where('order_no', $order->no)
                 ->where('field_name', 'game_leveling_amount')
                 ->update(['field_value' => $afterAddAmount]);
-
             // 主账号对象
             $user = User::find($order->creator_primary_user_id);
             
@@ -237,22 +240,18 @@ class AutoMarkupOrderEveryHour extends Command
             $data['created_at'] = Carbon::now()->toDateTimeString();
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
-            OrderHistory::create($data);
-            return true;
+            $res2 = OrderHistory::create($data);
         } catch (Exception $e) {
             DB::rollback();
-            mylog('auto-markup:every-hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
+            mylog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
             return false;
         }
         DB::commit();
+        return true;
     }
 
-    public function addPriceToThirdClient($datas, $order, $orderDetails, $bool)
+    public function addPriceToThirdClient($datas, $order, $orderDetails)
     {
-        if (! $bool) {
-            return false;
-        }
-
         if ($orderDetails['show91_order_no']) {
             try {
                 $name = 'addPrice';
@@ -261,7 +260,7 @@ class AutoMarkupOrderEveryHour extends Command
             } catch (DailianException $e) {
                 // 91下架接口
                 Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-                mylog('auto-markup:every-hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
+                mylog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
             }
         }
 
@@ -273,7 +272,7 @@ class AutoMarkupOrderEveryHour extends Command
             } catch (DailianException $e) {
                 // 代练妈妈下架接口
                 DailianMama::closeOrder($order);
-                myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
             }
         }
 
@@ -300,7 +299,7 @@ class AutoMarkupOrderEveryHour extends Command
                     }
                 }
             }
-            myLog('order.automarkup', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
+            myLog('order.automarkup.every.hour', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
         }
     }
 
@@ -310,13 +309,13 @@ class AutoMarkupOrderEveryHour extends Command
      * @param  [type] $orderDetails [description]
      * @return [type]               [description]
      */
-    public function increase($datas, $orderDetails)
+    public function increase($datas, $order, $orderDetails)
     {
         $number = $datas['add_number'] + 1;
         $amount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
-        $time = Carbon::parse($datas['add_time'])->addHours(1)->toDateTimeString();
+        $time = Carbon::parse($datas['add_time'])->addMinutes(1)->toDateTimeString();
 
-        $key = $datas['add_time'];
+        $key = $order->no;
         $name = "order:automarkup-every-hour";
         $value = $number.'@'.$amount."@".$time;
         Redis::hSet($name, $key, $value);
@@ -327,11 +326,19 @@ class AutoMarkupOrderEveryHour extends Command
      * @param  [type] $datas [description]
      * @return [type]        [description]
      */
-    public function checkTimeToAddPrice($datas)
+    public function checkTimeToAddPrice($datas, $order, $orderDetails)
     {
+        // 时间是否到了加价的点
         $now = Carbon::now();
-        $addTime = Carbon::parse($datas['add_time'])->addHours(1);
+        $addTime = Carbon::parse($datas['add_time'])->addMinutes(1);
 
+        // 加价金额是否到了上限
+        $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false ;
+
+        if (! $isOverAmount) {
+            $this->deleteRedisHashKey($order->no);
+            return false;
+        }
         return $now->diffInMinutes($addTime, false) < 0 ? true : false;
     }
 }
