@@ -393,7 +393,7 @@
                         </td>
                         <td>
                             <div class="table-cell w-150"> {{ $detail['account'] or '' }}
-                                <br/> {{ $detail['password'] or '' }}</div>
+                                <br/> {{ isset($detail['password']) ? substr_replace($detail['password'] , '****', '-1', '4'): '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $detail['role'] or '' }}</div>
