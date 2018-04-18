@@ -43,6 +43,7 @@ class TaobaoController extends Controller
         try {
             $data = TaobaoTradeRepository::getParams($request->data);
             $data['trade']['trade_status'] = 2; // 1.买家付完款 2.交易成功 3.买家发起退款
+            $data['trade']['handle_status'] = 1;
 
             TaobaoTradeRepository::update($data['trade'], $data['order']);
         } catch (Exception $e) {
@@ -63,6 +64,7 @@ class TaobaoController extends Controller
         try {
             $data = TaobaoTradeRepository::getParams($request->data);
             $data['trade']['trade_status'] = 3; // 1.买家付完款 2.交易成功 3.买家发起退款
+            $data['trade']['handle_status'] = 1;
 
             TaobaoTradeRepository::update($data['trade'], $data['order']);
         } catch (Exception $e) {
