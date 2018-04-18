@@ -6,6 +6,7 @@ use App\Models\TaobaoShopAuthorization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Psy\Exception\ErrorException;
 
 /**
  * Class SkinController
@@ -75,5 +76,19 @@ class TbAuthController extends Controller
             }
         }
         return view('frontend.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function destroy(Request $request)
+    {
+        try {
+            TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->where('id', $request->id)->delete();
+            return response()->ajax(1, '删除成功');
+        } catch (ErrorException $exception) {
+            return response()->ajax(0, '删除失败');
+        }
     }
 }

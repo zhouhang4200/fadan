@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Extensions\Dailian\Controllers\Complete;
+use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
@@ -423,6 +424,8 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
+        $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
+
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
 
@@ -541,7 +544,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade'));
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact'));
     }
 
     /**

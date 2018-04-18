@@ -20,7 +20,14 @@ class TaobaoApi
 
         if (isset($requestAll['data']) && !empty($requestAll['data'])) {
             $request->data = taobaoAesDecrypt($requestAll['data']);
-            myLog('api-request', ['淘宝data解密', $request->url(), $_SERVER['QUERY_STRING'],  $request->data]);
+            myLog('api-request', [
+                '淘宝data解密',
+                $request->url(),
+                $_SERVER['QUERY_STRING'],
+                $request->data['Tid'],
+                $request->data['BuyerNick'],
+                $request->data['SellerNick'],
+            ]);
         } else {
             return response()->tb(0, '请求格式错误');
         }

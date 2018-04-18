@@ -61,6 +61,21 @@
             @if($bindResult == 1)
                 reload();
             @endif
+
+            // 删除
+            form.on('submit(delete-goods)', function (data) {
+                layer.confirm('您确定要删除吗?', {icon: 3, title:'提示'}, function(){
+                    $.post('{{ route('frontend.setting.tb-auth.destroy') }}', {id:data.elem.getAttribute('data-id')}, function (result) {
+                        layer.msg(result.message);
+                        if (result.status == 1) {
+                            setTimeout(function () {
+                                location.reload();
+                            }, 700);
+                        }
+                    }, 'json');
+                });
+                return false;
+            });
         });
     </script>
 @endsection
