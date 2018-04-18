@@ -420,10 +420,23 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
+        // 获取商户的联系方式模版信息
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
-
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
+        // 写订单日志
+        OrderHistory::create([
+            'order_no' => $detail['no'],
+            'user_id' => auth()->user()->id,
+            'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+            'admin_user_id' => 0,
+            'type' => 32,
+            'name' => config('order.operation_type')[32],
+            'description' => auth()->user()->nickname . ' 查看订单',
+            'before' => serialize([]),
+            'after' => serialize([]),
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
 
         if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
             // 获取91平台的打手电话和QQ更新到订单详情表
