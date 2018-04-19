@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Models\LevelingMessage;
 use App\Repositories\Frontend\OrderDetailRepository;
 use Order, DB, Exception;
 use App\Models\OrderDetail;
@@ -10,6 +11,7 @@ use App\Models\Order as OrderModel;
 use App\Http\Controllers\Controller;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use Psy\Test\Exception\RuntimeExceptionTest;
 
 /**
  * Class OrderController
@@ -459,4 +461,30 @@ class OrderController extends Controller
             return response()->partner(0, $e->getMessage());
         }
     }
+
+    /**
+     * @param Request $request
+     */
+    public function newMessage(Request $request)
+    {
+        try {
+            $thirdOrderNo = $request->order_no;
+            $contents = $request->contents;
+            $date = $request->date;
+
+            LevelingMessage::create([
+                'user_id' => 1, // 第三方平台在我们平台的ID
+                'third' => 1,
+                'third_order_no' => 1, // 第三方平台单号
+                'foreign_order_no' => 1, // 天猫单号
+                'order_no' => 1, // 我们平台单号
+                'date' => 1, // 第三方平台单号留言时间
+                'contents' => 1, // 第三方平台单号留言内容
+            ]);
+        } catch (\Exception $exception) {
+            return response()->partner(0, '接收失败');
+        }
+        return response()->partner(1, '接收成功');
+    }
+
 }
