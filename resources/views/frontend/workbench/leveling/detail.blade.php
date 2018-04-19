@@ -544,7 +544,7 @@
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">买家旺旺：</div>
                             <div class="layui-col-md8">
-                            @if($taobaoTrade->buyer_nick)
+                            @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
                             <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8"
                                class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
                             </a>
