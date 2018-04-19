@@ -79,6 +79,16 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
+
+        // 调用事件
+        try {
+            event(new OrderArbitrationing($this->order));
+        } catch (ErrorException $errorException) {
+            myLog('ex', ['OrderArbitrationing 事件', $errorException->getMessage()]);
+        } catch (\Exception $exception) {
+            myLog('ex', ['OrderArbitrationing 事件',$exception->getMessage()]);
+        }
+
         if ($this->runAfter) {
             try {
                 $orderDetails = $this->checkThirdClientOrder($this->order);
@@ -128,14 +138,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                 throw new DailianException($e->getMessage());
             }
 
-            // 调用事件
-            try {
-                event(new OrderArbitrationing($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('ex', ['OrderArbitrationing 事件', $errorException->getMessage()]);
-            } catch (\Exception $exception) {
-                myLog('ex', ['OrderArbitrationing 事件',$exception->getMessage()]);
-            }
         }
     }
 }

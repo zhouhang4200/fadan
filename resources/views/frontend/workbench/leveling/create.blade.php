@@ -5,12 +5,6 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        /*.wrapper {*/
-            /*width: 1600px;*/
-        /*}*/
-        /*.main .right {*/
-            /*width: 1430px;*/
-        /*}*/
         .layui-input-block{
             margin-left: 50px;
         }
@@ -18,7 +12,6 @@
             margin-bottom: 7px;
             position: relative;
         }
-
         .layui-form-mid {
             text-align: right;
         }
@@ -105,12 +98,23 @@
             </div>
 
             <div class="layui-row form-group">
+                <div class="layui-col-md5 text_right">店铺名：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->seller_nick or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">天猫单号：</div>
                 <div class="layui-col-md7">{{ $taobaoTrade->tid or '' }}</div>
             </div>
             <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">买家旺旺：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->buyer_nick or '' }}</div>
+                <div class="layui-col-md7">
+                    @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
+                        <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
+                           class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
+                        </a>
+                    @else
+                    @endif
+                </div>
             </div>
             <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">购买单价：</div>

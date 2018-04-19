@@ -255,10 +255,6 @@
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
                         @endif
 
-                        {{--@if ($detail['master'])--}}
-                            {{--<button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="sendSms" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">发短信</button>--}}
-                        {{--@endif--}}
-
                         @if ($detail['master'] && isset($detail['client_wang_wang']) &&  $detail['client_wang_wang'])
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="wangWang" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</button>
                         @endif
@@ -538,12 +534,23 @@
                             <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
                         </div>
                         <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">店铺名：</div>
+                            <div class="layui-col-md8">{{ $taobaoTrade->seller_nick or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">天猫单号：</div>
                             <div class="layui-col-md8">{{ $taobaoTrade->tid or '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">买家旺旺：</div>
-                            <div class="layui-col-md8">{{ $taobaoTrade->buyer_nick or '' }}</div>
+                            <div class="layui-col-md8">
+                            @if($taobaoTrade->buyer_nick)
+                            <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick }}&siteid=cntaobao&status=1&charset=utf-8"
+                               class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
+                            </a>
+                            @else
+                            @endif
+                           </div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">购买单价：</div>

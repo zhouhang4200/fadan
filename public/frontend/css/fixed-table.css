@@ -61,8 +61,18 @@ body{
 }
 .fixed-table-box .table-cell{
     display: block;
-    height: 36px;
+    height: 38px;
     /*line-height: 18px;*/
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 15px;
+}
+
+.fixed-table-box .table-cell-th {
+    display: block;
+    line-height: 25px;
     word-break: break-all;
     white-space: nowrap;
     overflow: hidden;
@@ -71,7 +81,7 @@ body{
 }
 /* 表头 start */
 .fixed-table-box>.fixed-table_header-wraper{
-    height: 37px;
+    height: 36px;
     overflow: hidden;
     overflow-y: auto;
 }

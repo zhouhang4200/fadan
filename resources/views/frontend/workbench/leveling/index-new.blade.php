@@ -586,11 +586,11 @@
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        <a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">
-                                            操作记录
-                                        </a>
-                                        @php $btnCount++;  @endphp
-                                        @if($btnCount == 3)<br/> @endif
+                                        {{--<a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">--}}
+                                            {{--操作记录--}}
+                                        {{--</a>--}}
+                                        {{--@php $btnCount++;  @endphp--}}
+                                        {{--@if($btnCount == 3)<br/> @endif--}}
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
