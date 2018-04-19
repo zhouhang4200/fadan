@@ -541,7 +541,7 @@
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 1]) }}',
                     cancel: function(index, layero){
-                        loadBusinessmanContactTemplate();
+                        loadBusinessmanContactTemplate(gameId);
                     }
                 });
             });
@@ -552,7 +552,7 @@
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 2]) }}',
                     cancel: function(index, layero){
-                        loadBusinessmanContactTemplate();
+                        loadBusinessmanContactTemplate(gameId);
                     }
                 });
             });

@@ -209,6 +209,7 @@ class Show91
             'order.game_play_id'   => 1,
             'order.game_play_id'   => $gameType,
         ];
+        myLog('order', [$order->no, $options]);
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             if (! $orderDetails['show91_order_no']) {

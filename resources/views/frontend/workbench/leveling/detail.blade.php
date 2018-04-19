@@ -255,9 +255,6 @@
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
                         @endif
 
-                        @if ($detail['master'] && isset($detail['client_wang_wang']) &&  $detail['client_wang_wang'])
-                            <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="wangWang" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" data-wang-wang="{{ $detail['client_wang_wang'] }}">联系旺旺号</button>
-                        @endif
 
                         @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
                             <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>

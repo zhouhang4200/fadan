@@ -13,10 +13,13 @@
         margin-left: 88px;
         min-height: 36px;
     }
+    .layui-form-select dl {
+        max-height: 200px;
+    }
 </style>
 <div class="pop" style="padding: 30px">
     <div class="">
-        <div class="" style="width: 300px;height:280px;padding:10px;float: left;border: 1px solid #ccc">
+        <div class="" style="width: 300px;height:280px;padding:10px;float: left;border: 1px solid #ccc;overflow-y: auto">
             @forelse($template as $item)
                 <div style="height: 25px;line-height: 25px;cursor:default">
                     <span  class="edit" data-id="{{ $item->id }}" data-status="{{ $item->status }}" data-game="{{ $item->game_id }}" data-name="{{ $item->name }}" data-content="{{ $item->content }}">{{ $item->name }} </span>
