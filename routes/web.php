@@ -143,7 +143,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::prefix('sending-assist')->group(function () {
             // 代练要求模板
             Route::prefix('require')->group(function () {
-                Route::get('/', 'SendingAssistController@require')->name('frontend.setting.sending-assist.require')->middleware('new.permission:frontend.setting.sending-assist.require');
+                Route::get('/', 'SendingAssistController@require')->name('frontend.setting.sending-assist.require')->middleware('frontend.setting.sending-assist.auto-markup');
                 Route::get('create', 'SendingAssistController@requireCreate')->name('frontend.setting.sending-assist.require.create');
                 Route::post('store', 'SendingAssistController@requireStore')->name('frontend.setting.sending-assist.require.store');
                 Route::get('edit/{id}', 'SendingAssistController@requireEdit')->name('frontend.setting.sending-assist.require.edit');
