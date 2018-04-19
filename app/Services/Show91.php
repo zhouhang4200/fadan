@@ -161,7 +161,7 @@ class Show91
             ->first();
 
         if (! $orderRegionCorrespondence) {
-            return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！'];
+            return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！', $order->game_id, $areaId, $serverId];
         }
 
         // 找游戏类型
