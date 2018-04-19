@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Setting;
 
 use App\Exceptions\CustomException;
 use App\Models\AutomaticallyGrabGoods;
+use App\Models\Game;
 use App\Models\TaobaoShopAuthorization;
 use App\Models\UserSetting;
 use App\Repositories\Frontend\GameRepository;
@@ -29,13 +30,14 @@ class AutomaticallyGrabController extends Controller
     {
         $foreignGoodsId = $request->foreign_goods_id;
         $game = $gameRepository->availableByServiceId(4);
-        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->pluck('wang_wang');
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('foreignGoodsId'))
             ->with('game')
             ->orderBy('id', 'desc')
             ->paginate(20);
+
 
         return view('frontend.setting.automatically-grab.index')->with([
             'game' => $game,
@@ -49,10 +51,10 @@ class AutomaticallyGrabController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request,  GameRepository $gameRepository)
+    public function show(Request $request, GameRepository $gameRepository)
     {
         $game = $gameRepository->availableByServiceId(4);
-        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->id)->pluck('wang_wang');
+        $shop = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->pluck('wang_wang');
 
         $automaticallyGrabGoods = AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
             ->where('id', $request->id)
@@ -83,6 +85,7 @@ class AutomaticallyGrabController extends Controller
                 $automaticallyGrabGoods->foreign_goods_id = $request->foreign_goods_id;
                 $automaticallyGrabGoods->remark = $request->remark;
                 $automaticallyGrabGoods->game_id = $request->game_id;
+                $automaticallyGrabGoods->game_name = Game::where('id', $request->game_id)->value('name');
                 $automaticallyGrabGoods->seller_nick = $request->seller_nick;
                 $automaticallyGrabGoods->save();
             }
@@ -124,6 +127,7 @@ class AutomaticallyGrabController extends Controller
                 'service_id' => $serviceId,
                 'foreign_goods_id' => $goodsId,
                 'game_id' => $gameId,
+                'game_name' => Game::where('id', $gameId)->value('name'),
                 'seller_nick' => $sellerNick,
                 'remark' => $request->remark,
             ]);

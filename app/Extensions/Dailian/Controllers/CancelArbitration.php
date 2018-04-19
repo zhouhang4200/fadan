@@ -74,25 +74,46 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
 
     public function getBeforeStatus($orderNo)
     {
-        $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
-        // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
-        if (! $beforeStatus) {
-            throw new DailianException('订单操作记录不存在');
-        }
-        if ($beforeStatus == 16 || $beforeStatus == 18) {
-            $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
-            $arr = [];
-            foreach ($orderHistories as $key => $orderHistory) {
-                $status = unserialize($orderHistory->before);
+        // $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+        // // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        // if (! $beforeStatus) {
+        //     throw new DailianException('订单操作记录不存在');
+        // }
+        // if ($beforeStatus == 16 || $beforeStatus == 18) {
+        //     $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
+        //     $arr = [];
+        //     foreach ($orderHistories as $key => $orderHistory) {
+        //         $status = unserialize($orderHistory->before);
 
-                if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
-                    $arr[$key] = $status['status'];
-                }
-            }
-            $this->handledStatus = current($arr);
-        } else {
-            $this->handledStatus = $beforeStatus;
+        //         if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
+        //             $arr[$key] = $status['status'];
+        //         }
+        //     }
+        //     $this->handledStatus = current($arr);
+        // } else {
+        //     $this->handledStatus = $beforeStatus;
+        // }
+        // 
+        $orderDetail = OrderDetail::where('order_no', $orderNo)
+            ->where('field_name', 'order_previous_status')
+            ->first();
+
+        if (! $orderDetail) {
+            throw new DailianException('订单前一个状态不存在');
         }
+
+        $previousArr = explode('|', $orderDetail->field_value);
+
+        if (! is_array($previousArr)) {
+            throw new DailianException('订单前一个状态数据异常');
+        }
+
+        if (in_array(15, $previousArr)) {
+            $this->handledStatus = 15;
+        } else {
+            $this->handledStatus = $previousArr[0];
+        }
+
     }
 
     public function changeConsultStatus()

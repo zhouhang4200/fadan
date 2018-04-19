@@ -22,22 +22,17 @@ class CreateLevelingAutoSmsTemplate
     public function handle(Registered $event)
     {
         if ($event->user->getTable() == 'users') {
-            SmsTemplate::insert([
-                [
+            $template = [];
+            foreach (config('sms.purpose') as $key => $value) {
+                $template[] =  [
                     'user_id' => $event->user->id,
-                    'name' => config('sms.purpose')[1],
-                    'contents' => config('sms.levelingTemplate')[1],
-                    'purpose' => 1,
+                    'name' => config('sms.purpose')[$key],
+                    'contents' => config('sms.levelingTemplate')[$key],
+                    'purpose' => $key,
                     'type' => 1,
-                ],
-                [
-                    'user_id' => $event->user->id,
-                    'name' => config('sms.purpose')[2],
-                    'contents' => config('sms.levelingTemplate')[2],
-                    'purpose' => 2,
-                    'type' => 1,
-                ],
-            ]);
+                ];
+            }
+            SmsTemplate::insert($template);
         }
     }
 }

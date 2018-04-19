@@ -73,6 +73,9 @@ abstract class DailianAbstract
         $this->orderHistory->name          = config('order.operation_type')[$this->type];
         $this->orderHistory->before        = serialize($this->order->toArray());
         $this->orderHistory->created_at    = date('Y-m-d H:i:s');
+
+        // 更新订单详情里面订单前一个状态
+        $this->updateOrderPreviousStatus($this->order);
     }
     // 设置订单属性
     public function setAttributes() {}
@@ -279,5 +282,40 @@ abstract class DailianAbstract
         }
 
         return (array) $collection;
+    }
+
+    /**
+     * 更新订单详情里面订单前一个状态
+     * @param  [type] $order [description]
+     * @return [type]        [description]
+     */
+    public function updateOrderPreviousStatus($order)
+    {
+        $beforeStatus = OrderDetail::where('order_no', $order->no)
+            ->where('field_name', 'order_previous_status')
+            ->first();
+        // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        if (! $beforeStatus) {
+            throw new DailianException('订单不存在1');
+        }
+        
+        if (in_array($order->status, [13, 14, 15])) {
+            if ($order->status == 15) {
+                $orderDetail = OrderDetail::where('order_no', $order->no)
+                    ->where('field_name', 'order_previous_status')
+                    ->first();
+
+                // 混合状态， 当申请撤销再申请仲裁的时候，特例 13|15
+                $previousStatus = $orderDetail->field_value."|".$order->status;
+
+                OrderDetail::where('order_no', $order->no)
+                    ->where('field_name', 'order_previous_status')
+                    ->update(['field_value' =>  $previousStatus]);
+            } else {
+                OrderDetail::where('order_no', $order->no)
+                    ->where('field_name', 'order_previous_status')
+                    ->update(['field_value' =>  $order->status]);
+            }
+        }
     }
 }

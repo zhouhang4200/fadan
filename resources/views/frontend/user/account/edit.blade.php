@@ -22,14 +22,16 @@
                     <input type="password" name="password" value="" lay-verify="" placeholder="最少6位,不填写则为原密码" autocomplete="off" class="layui-input">
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">代充</label>
-                <div class="layui-input-inline">
-                    <input type="radio" name="type" value="1" title="接单" @if($user->type == 1) checked="" @endif>
-                    <input type="radio" name="type" value="2" title="发单" @if($user->type == 2) checked="" @endif>
+            @if(Auth::user()->could('frontend.workbench.recharge.index'))
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代充</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="type" value="1" title="接单" @if($user->type == 1) checked="" @endif>
+                        <input type="radio" name="type" value="2" title="发单" @if($user->type == 2) checked="" @endif>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">设置为接单：则工作台显您接的单，发单：则工作显示您发出的单</div>
                 </div>
-                <div class="layui-form-mid layui-word-aux">设置为接单：则工作台显您接的单，发单：则工作显示您发出的单</div>
-            </div>
+            @endif
             <div class="layui-form-item">
                 <label class="layui-form-label">代练</label>
                 <div class="layui-input-inline">

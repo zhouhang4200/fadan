@@ -61,7 +61,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             // 如果还原前一个状态为 申请验收 ，redis 加订单
             addRedisCompleteOrders($this->orderNo, $this->handledStatus);
             
-            if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
+            if ($this->order->detail()->where('field_name', 'third')->value('field_value') == 2) {
                 (new Lock)->run($orderNo, $userId, $runAfter = false);
             }
             // 操作成功，删除redis里面以前存在的订单报警
@@ -79,29 +79,45 @@ class UnRevoke extends DailianAbstract implements DailianInterface
 
     public function getBeforeStatus($orderNo)
     {
-        $history = OrderHistory::where('order_no', $orderNo)->latest('id')->value('before');
+        // $history = OrderHistory::where('order_no', $orderNo)->latest('id')->value('before');
 
-        // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
-        if (! $history) {
-            throw new DailianException('订单操作记录不存在');
+        // // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
+        // if (! $history) {
+        //     throw new DailianException('订单操作记录不存在');
+        // }
+
+        // $beforeStatus = unserialize($history)['status'];
+
+        // if ($beforeStatus == 16 || $beforeStatus == 18) {
+        //     $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
+        //     $arr = [];
+        //     foreach ($orderHistories as $key => $orderHistory) {
+        //         $status = unserialize($orderHistory->before);
+
+        //         if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
+        //             $arr[$key] = $status['status'];
+        //         }
+        //     }
+        //     $this->handledStatus = current($arr);
+        // } else {
+        //     $this->handledStatus = $beforeStatus;
+        // }
+        // 
+        $orderDetail = OrderDetail::where('order_no', $orderNo)
+            ->where('field_name', 'order_previous_status')
+            ->first();
+
+        if (! $orderDetail) {
+            throw new DailianException('订单前一个状态不存在');
         }
 
-        $beforeStatus = unserialize($history)['status'];
+        $previousArr = explode('|', $orderDetail->field_value);
 
-        if ($beforeStatus == 16 || $beforeStatus == 18) {
-            $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
-            $arr = [];
-            foreach ($orderHistories as $key => $orderHistory) {
-                $status = unserialize($orderHistory->before);
-
-                if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
-                    $arr[$key] = $status['status'];
-                }
-            }
-            $this->handledStatus = current($arr);
-        } else {
-            $this->handledStatus = $beforeStatus;
+        if (! is_array($previousArr)) {
+            throw new DailianException('订单前一个状态数据异常');
         }
+
+        $this->handledStatus = $previousArr[0];
     }
 
     public function changeConsultStatus()

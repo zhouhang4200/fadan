@@ -65,7 +65,7 @@
                         <div class="layui-col-md8">
                             <select name="game_id" lay-verify="required" lay-search="" show-name="x" display-name="游戏" lay-filter="game">
                                 @foreach($game as $key => $value)
-                                    <option value="{{ $key }}">{{ $value }}</option>
+                                    <option value="{{ $key }}" @if($gameId == $key) selected  @endif>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -230,7 +230,7 @@
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
-            var gameId = 1;
+            var gameId = '{{ $gameId }}';
             //自定义验证规则
             form.verify({
                 zero: function(value){
@@ -327,7 +327,7 @@
             // 切换游戏时加截新的模版
             form.on('select(game)', function (data) {
                 gameId = data.value;
-                loadTemplate(data.value)
+                loadTemplate(gameId)
             });
             // 模版预览 下拉框值
             form.on('select(change-select)', function(data){
@@ -345,7 +345,7 @@
                 return false;
             });
             // 加载默认模板
-            loadTemplate(1);
+            loadTemplate(gameId);
             // 加载模板
             function loadTemplate(id) {
                 var getTpl = goodsTemplate.innerHTML, view = $('#template');

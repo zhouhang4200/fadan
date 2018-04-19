@@ -35,7 +35,8 @@ class UnLock extends DailianAbstract implements DailianInterface
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
             // 获取锁定前的状态
-            $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+            // $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
+            $this->getBeforeStatus($orderNo);
     		// 获取订单对象
 		    $this->getObject();
 		    // 创建操作前的订单日志详情
@@ -118,5 +119,29 @@ class UnLock extends DailianAbstract implements DailianInterface
                 throw new DailianException($e->getMessage());
             }
         }
+    }
+
+    /**
+     * 获取订单前一个状态
+     * @param  [type] $orderNo [description]
+     * @return [type]          [description]
+     */
+    public function getBeforeStatus($orderNo)
+    {
+        $orderDetail = OrderDetail::where('order_no', $orderNo)
+            ->where('field_name', 'order_previous_status')
+            ->first();
+
+        if (! $orderDetail) {
+            throw new DailianException('订单前一个状态不存在');
+        }
+
+        $previousArr = explode('|', $orderDetail->field_value);
+
+        if (! is_array($previousArr)) {
+            throw new DailianException('订单前一个状态数据异常');
+        }
+
+        $this->handledStatus = $previousArr[0];
     }
 }

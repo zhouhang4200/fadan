@@ -253,6 +253,7 @@ class IndexController extends Controller
     {
         $game = $this->game;
         $tid = $request->tid;
+        $gameId = $request->game_id ? $request->game_id : 1;
         $businessmanInfo = auth()->user()->getPrimaryInfo();
 
         // 有淘宝订单则更新淘宝订单卖家备注
@@ -276,7 +277,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'taobaoTrade', 'businessmanInfo'));
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
     }
 
     /**

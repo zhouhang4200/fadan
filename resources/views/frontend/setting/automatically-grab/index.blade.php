@@ -3,7 +3,11 @@
 @section('title', '设置 - 抓单商品配置')
 
 @section('css')
-
+    <style>
+        .layui-form-select dl {
+            max-height: 190px;
+        }
+    </style>
 @endsection
 
 @section('submenu')
@@ -64,37 +68,51 @@
 
     {{ $automaticallyGrabGoods->links() }}
 
-    <div id="goods-add" style="display: none;padding: 20px">
+    <div id="goods-add" style="display: none;padding: 30px 60px 0 0px;">
         <form class="layui-form" action="" id="goods-add-form">
             <input type="hidden" name="type" value="">
             <input type="hidden" name="service_id" value="4">
             <div class="layui-form-item">
-                <select name="seller_nick" lay-verify="required">
+                <label class="layui-form-label">店铺</label>
+                <div class="layui-input-block">
+                <select name="seller_nick" lay-verify="required" lay-search>
                     <option value=""></option>
                     @forelse($shop as  $value)
                         <option value="{{ $value }}">{{ $value }}</option>
                     @empty
                     @endforelse
                 </select>
+                </div>
             </div>
             <div class="layui-form-item">
-                <select name="game_id" lay-verify="required">
+                <label class="layui-form-label">绑定游戏</label>
+                <div class="layui-input-block">
+                <select name="game_id" lay-verify="required" lay-search>
                     <option value=""></option>
                     @forelse($game as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @empty
                     @endforelse
                 </select>
+                </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">淘宝链接</label>
+                <div class="layui-input-block">
                 <input type="text" name="foreign_goods_id" required lay-verify="required" placeholder="淘宝链接" autocomplete="off" class="layui-input">
+                    </div>
             </div>
             <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注信息</label>
+                <div class="layui-input-block">
                 <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+                    </div>
             </div>
             <div class="layui-form-item">
+                <div class="layui-input-block">
                 <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
                 <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
+                    </div>
             </div>
         </form>
     </div>
