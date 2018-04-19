@@ -505,9 +505,24 @@
                     var phoneTemplate = '<option value="">请选择</option>';
                     $.each(result, function (index, value) {
                         if (value.type == 1) {
-                            phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  ' "> ' + value.name + '-' + value.content  +'</option>';
+
+                            if (value.status == 1) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
+
+                            }
+
                         } else {
-                            qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '">' + value.name + '-' + value.content  +'</option>';
+                            if (value.status == 1) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
                         }
                     });
                     $('select[name=user_qq]').html(qqTemplate);

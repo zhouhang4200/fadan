@@ -222,7 +222,7 @@
                         <div class="table-cell w-150" style="line-height: 26px;width:50px;padding: 0 10px">订单状态</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">号主旺旺</div>
+                        <div class="table-cell w-150" style="line-height: 26px">玩家旺旺</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">客服备注</div>
@@ -374,9 +374,9 @@
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
                                     <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8"
-                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}
+                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}</a>
                                         <br/> {{ $detail['seller_nick'] or '' }}
-                                    </a>
+
                                 @endif
                             </div>
                         </td>
