@@ -95,15 +95,19 @@ class Temp extends Command
                 $result = json_decode($response->getBody()->getContents());
 
                 myLog('temp-log', [
-                    '订单号' => $item->no,
-                    '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                    '我们订单号' => $item->no,
+                    '91订单号' => $show91OrderNO->field_value,
+                    '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                    '我们状态' => config('order.status_leveling')[$item->status],
                     '修改结果' => $result
                 ]);
 
             } else {
                 myLog('temp-log', [
-                    '订单号' => $item->no,
+                    '我们订单号' => $item->no,
+                    '91订单号' => $show91OrderNO->field_value,
                     '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                    '我们状态' => config('order.status_leveling')[$item->status],
                     '状态码' => $orderDetail['data']['order_status']
                 ]);
             }
