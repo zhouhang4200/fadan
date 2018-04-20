@@ -72,7 +72,7 @@ class Temp extends Command
 
 
         // 获取所有没有接单的单
-       $allOrder =  \App\Models\Order::where('service_id', 4)->where('status', 1)->first();
+       $allOrder =  \App\Models\Order::where('service_id', 4)->where('status', 1)->get();
 
         foreach ($allOrder as $item) {
 
