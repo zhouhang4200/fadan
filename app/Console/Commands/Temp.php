@@ -104,6 +104,44 @@ class Temp extends Command
                             '我们状态' => config('order.status_leveling')[$item->status],
                             '修改结果' => $result
                         ]);
+                    } else if ($orderDetail['data']['order_status'] == 2) {
+                        // 调用自己接单接口
+                        $client = new Client();
+                        $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
+                            'form_params' => [
+                                'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                                'orderNo' => $show91OrderNO->field_value,
+                            ],
+                        ]);
+                        $result = json_decode($response->getBody()->getContents());
+
+                        myLog('temp-log', [
+                            '类型' => '待验收改接单',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '修改结果' => $result
+                        ]);
+
+                        // 调用自己接单接口
+                        $client = new Client();
+                        $response = $client->request('POST', 'http://js.qsios.com/api/apply/complete', [
+                            'form_params' => [
+                                'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                                'orderNo' => $show91OrderNO->field_value,
+                            ],
+                        ]);
+                        $result = json_decode($response->getBody()->getContents());
+
+                        myLog('temp-log', [
+                            '类型' => '改成待验收',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '修改结果' => $result
+                        ]);
 
                     } else {
                         myLog('temp-log', [
