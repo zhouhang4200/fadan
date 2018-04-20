@@ -178,7 +178,7 @@ class Temp extends Command
                     $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
 
                     // 91 是待验收
-                    if ($orderDetail['data']['order_status'] == 2) {
+                    if ($orderDetail['data']['order_status'] == 2 || $orderDetail['data']['order_status'] == 3) {
 
                         // 调用自己接单接口
                         $client = new Client();
