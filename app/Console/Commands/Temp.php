@@ -220,8 +220,9 @@ class Temp extends Command
                     ]);
                 }
             }
+        } else {
+            $this->queryShow91Order($status);
         }
-
     }
 
     public function get($orderNO, $beginId = 0)
@@ -232,6 +233,16 @@ class Temp extends Command
             $this->message = array_merge($this->message, $message['list']);
             $this->get($orderNO, $message['beginid']);
         }
+    }
+
+    /**
+     * 查询show91订单
+     * @param $orderNO
+     */
+    public function queryShow91Order($orderNO)
+    {
+        $orderDetail = Show91::orderDetail(['oid' => $orderNO]);
+        dd($orderDetail);
     }
 
 }
