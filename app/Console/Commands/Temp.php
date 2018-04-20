@@ -61,7 +61,7 @@ class Temp extends Command
         if ($orderDetail['data']['order_status'] == 1) {
             $orderNO = OrderDetail::where('field_name', 'show91_order_no')->where('field_value', $no)->value('order_no');
             if ($orderNO) {
-                $order = \App\Models\Order::where('no', $orderNO)->where('status', 0);
+                $order = \App\Models\Order::where('no', $orderNO)->where('status', 2)->first();
                 if ($order && $order->status == 1) {
                     // 调用自己接单接口
                     $client = new Client();
@@ -73,6 +73,8 @@ class Temp extends Command
                     ]);
                     $result = json_decode($response->getBody()->getContents());
                     myLog('temp-log', [$no, $result]);
+                } else {
+                    myLog('temp-log', [$no, '没有订单']);
                 }
             }
         } else {
