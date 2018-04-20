@@ -274,18 +274,28 @@ class Temp extends Command
             $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
 
             if ($detail) {
-                $show91 = $this->queryShow91Order($detail->field_value);
 
-                myLog('price', [
-                    'no'=> $item->no,
-                    '91no' => $detail->field_value,
-                    '我们价格' => $item->amount,
-                    '91' => $show91['data']['price']
-                ]);
+                if ($detail->field_value) {
+                    $show91 = $this->queryShow91Order($detail->field_value);
+
+                    myLog('price', [
+                        'no'=> $item->no,
+                        '91no' => $detail->field_value,
+                        '我们价格' => $item->amount,
+                        '91' => $show91['data']['price']
+                    ]);
+                } else {
+                    myLog('price', [
+                        'no'=> $item->no,
+                        '我们价格' => $item->amount,
+                        '错误' => '没有91单号',
+                    ]);
+                }
             } else {
                 myLog('price', [
                     'no'=> $item->no,
                     '我们价格' => $item->amount,
+                    '错误' => '没有详情',
                 ]);
             }
         }
