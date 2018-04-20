@@ -142,6 +142,7 @@
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <input type="hidden" name="seller_nick" value="">
+        <input type="hidden" name="pre_sale" value="" display-name="接单客服">
         <div class="layui-row form-group">
             @{{# var row = 0;}}
             @{{#  layui.each(d.template, function(index, item){ }}

@@ -446,10 +446,10 @@
 
                     <div class="layui-col-md3">
                         <div class="site-title">
-                            <fieldset><legend><a name="hr">订单数据</a></legend></fieldset>
+                            <fieldset><legend><a name="hr">平台数据</a></legend></fieldset>
                         </div>
                         <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">接单平台单号：</div>
+                            <div class="layui-col-md4 text_right">平台单号：</div>
                             <div class="layui-col-md8">{{ $detail['third_order_no']  }}</div>
                         </div>
                         <div class="layui-row form-group">
@@ -509,6 +509,10 @@
                             <div class="layui-col-md8">{{ $detail['checkout_time'] ?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">接单客服：</div>
+                            <div class="layui-col-md8">{{ $detail['pre_sale'] ?? ''  }}</div>
+                        </div>
+                        <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">发单客服：</div>
                             <div class="layui-col-md8">{{ $detail['customer_service_name'] ?? ''  }}</div>
                         </div>
@@ -528,7 +532,7 @@
 
                     <div class="layui-col-md3">
                         <div class="site-title">
-                            <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
+                            <fieldset><legend><a name="hr">淘宝数据</a></legend></fieldset>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">店铺名：</div>
@@ -537,6 +541,10 @@
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">天猫单号：</div>
                             <div class="layui-col-md8">{{ $taobaoTrade->tid or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">订单状态：</div>
+                            <div class="layui-col-md8">{{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">玩家旺旺：</div>
