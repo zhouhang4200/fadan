@@ -68,65 +68,120 @@ class Temp extends Command
      */
     public function handle()
     {
-        $no = $this->argument('no');
+        $status = $this->argument('no');
 
+        // 我们是待接单
+        if ($status == 1) {
+            // 获取所有没有接单的单
+            $allOrder = \App\Models\Order::where('service_id', 4)->where('status', 1)->get();
 
-        // 获取所有没有接单的单
-       $allOrder =  \App\Models\Order::where('service_id', 4)->where('status', 1)->get();
+            foreach ($allOrder as $item) {
 
-        foreach ($allOrder as $item) {
+                $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
 
-            $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+                if ($show91OrderNO->field_value) {
+                    // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
+                    $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
 
-            if ($show91OrderNO->field_value) {
-                // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
-                $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
+                    // 代练中
+                    if ($orderDetail['data']['order_status'] == 1) {
 
-                // 代练中
-                if ($orderDetail['data']['order_status'] == 1) {
+                        // 调用自己接单接口
+                        $client = new Client();
+                        $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
+                            'form_params' => [
+                                'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                                'orderNo' => $show91OrderNO->field_value,
+                            ],
+                        ]);
+                        $result = json_decode($response->getBody()->getContents());
 
-                    // 调用自己接单接口
-                $client = new Client();
-                $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
-                    'form_params' => [
-                        'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
-                        'orderNo' => $show91OrderNO->field_value,
-                    ],
-                ]);
-                $result = json_decode($response->getBody()->getContents());
+                        myLog('temp-log', [
+                            '类型' => '要修改',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '修改结果' => $result
+                        ]);
 
-                    myLog('temp-log', [
-                        '类型' => '要修改',
-                        '我们订单号' => $item->no,
-                        '91订单号' => $show91OrderNO->field_value,
-                        '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
-                        '我们状态' => config('order.status_leveling')[$item->status],
-                    '修改结果' => $result
-                    ]);
-
+                    } else {
+                        myLog('temp-log', [
+                            '类型' => '不用修改',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '状态码' => $orderDetail['data']['order_status']
+                        ]);
+                    }
                 } else {
                     myLog('temp-log', [
-                        '类型' => '不用修改',
+                        '类型' => '没有91单号',
                         '我们订单号' => $item->no,
-                        '91订单号' => $show91OrderNO->field_value,
-                        '状态' => $this->show91Status[$orderDetail['data']['order_status']],
-                        '我们状态' => config('order.status_leveling')[$item->status],
-                        '状态码' => $orderDetail['data']['order_status']
-                    ]);
-                }
-            } else {
-                myLog('temp-log', [
-                    '类型' => '没有91单号',
-                    '我们订单号' => $item->no,
 //                    '91订单号' => $show91OrderNO->field_value,
 //                    '状态' => $this->show91Status[$orderDetail['data']['order_status']],
-                    '我们状态' => config('order.status_leveling')[$item->status],
+                        '我们状态' => config('order.status_leveling')[$item->status],
 //                    '状态码' => $orderDetail['data']['order_status']
-                ]);
+                    ]);
+                }
             }
 
+        } else if($status == 13) {
+            // 获取所有没有接单的单
+            $allOrder = \App\Models\Order::where('service_id', 4)->where('status', 13)->get();
 
+            foreach ($allOrder as $item) {
 
+                $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+
+                if ($show91OrderNO->field_value) {
+                    // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
+                    $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
+
+                    // 91 是待验收
+                    if ($orderDetail['data']['order_status'] == 2) {
+
+                        // 调用自己接单接口
+                        $client = new Client();
+                        $response = $client->request('POST', 'http://js.qsios.com/api/apply/complete', [
+                            'form_params' => [
+                                'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                                'orderNo' => $show91OrderNO->field_value,
+                            ],
+                        ]);
+                        $result = json_decode($response->getBody()->getContents());
+
+                        myLog('temp-log', [
+                            '类型' => '要修改',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '修改结果' => $result
+                        ]);
+
+                    } else {
+                        myLog('temp-log', [
+                            '类型' => '不用修改',
+                            '我们订单号' => $item->no,
+                            '91订单号' => $show91OrderNO->field_value,
+                            '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '状态码' => $orderDetail['data']['order_status']
+                        ]);
+                    }
+                } else {
+                    myLog('temp-log', [
+                        '类型' => '没有91单号',
+                        '我们订单号' => $item->no,
+//                    '91订单号' => $show91OrderNO->field_value,
+//                    '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                        '我们状态' => config('order.status_leveling')[$item->status],
+//                    '状态码' => $orderDetail['data']['order_status']
+                    ]);
+                }
+            }
         }
 
     }
