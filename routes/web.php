@@ -176,7 +176,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
         // 自动抓取订单配置
         Route::prefix('automatically-grab')->group(function (){
-            Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.setting.automatically-grab.goods')->middleware('new.permission:frontend.setting.automatically-grab.goods');
+            Route::get('goods', 'AutomaticallyGrabController@goods')->name('frontend.setting.automatically-grab.goods')->middleware('new.permission:frontend.automatically-grab.goods');
             Route::post('add', 'AutomaticallyGrabController@add')->name('frontend.setting.automatically-grab.add');
             Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.setting.automatically-grab.delete');
             Route::post('show', 'AutomaticallyGrabController@show')->name('frontend.setting.automatically-grab.show');

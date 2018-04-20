@@ -23,12 +23,12 @@
 			<div class="arrow"></div>
 		</li>
 	@endif
-	@if(Auth::user()->could('frontend.setting.automatically-grab.goods'))
-		<li class="{{  Route::currentRouteName()  == 'frontend.setting.automatically-grab.goods' ? 'current' : '' }}">
-			<a href="{{ route('frontend.setting.automatically-grab.goods') }}">抓取商品配置</a>
-			<div class="arrow"></div>
-		</li>
-	@endif
+
+	<li class="{{  Route::currentRouteName()  == 'frontend.setting.automatically-grab.goods' ? 'current' : '' }}">
+		<a href="{{ route('frontend.setting.automatically-grab.goods') }}">抓取商品配置</a>
+		<div class="arrow"></div>
+	</li>
+
 	@if(Auth::user()->could('frontend.setting.sms.index'))
 		<li class="{{  Route::currentRouteName()  == 'frontend.setting.sms.index' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.sms.index') }}">短信管理</a>

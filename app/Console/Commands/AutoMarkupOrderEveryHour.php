@@ -118,6 +118,7 @@ class AutoMarkupOrderEveryHour extends Command
             return false;
         }
 
+
         // 如果是已下架，跳出循环
         if (22 == $order->status) {
             return false;

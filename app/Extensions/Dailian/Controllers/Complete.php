@@ -64,6 +64,8 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 
             $this->after();
+            // 发短信
+            $this->sendMessage();
             $this->orderCount();
             // 删除状态不阻碍申请验收redis 订单
             delRedisCompleteOrders($this->orderNo);
@@ -139,15 +141,6 @@ class Complete extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-
-            try {
-                event(new OrderFinish($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('ex', ['订单完成 异常', $errorException->getMessage()]);
-            } catch (\Exception $exception) {
-                myLog('ex', ['订单完成 异常', $exception->getMessage()]);
-            }
-
             try {
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
@@ -221,6 +214,21 @@ class Complete extends DailianAbstract implements DailianInterface
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
             }
+        }
+    }
+
+    /**
+     * 发短信
+     * @return [type] [description]
+     */
+    public function sendMessage()
+    {
+        try {
+            event(new OrderFinish($this->order));
+        } catch (ErrorException $errorException) {
+            myLog('ex', ['订单完成 异常', $errorException->getMessage()]);
+        } catch (\Exception $exception) {
+            myLog('ex', ['订单完成 异常', $exception->getMessage()]);
         }
     }
 }
