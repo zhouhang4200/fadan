@@ -53,15 +53,31 @@ class Temp extends Command
      */
     public function handle()
     {
-        $client = new Client();
-        $response = $client->request('POST', 'http://fulutop.kamennet.com/session/index', [
-            'query' => http_build_query([
-                'nickName' => '网游增值服务商',
-                'sign' => strtoupper(md5('nickName网游增值服务商'. 'fltop31bf3856ad364e35'))
-            ]),
-        ]);
-        $result = json_decode($response->getBody()->getContents());
-        dd($result);
+        $no = $this->argument('no');
+
+        $orderDetail = Show91::orderDetail(['oid' => $no]);
+
+        // 代练中
+        if ($orderDetail['data']['order_status'] == 1) {
+            $orderNO = OrderDetail::where('field_name', 'show91_order_no')->where('field_value', $no)->value('order_no');
+            if ($orderNO) {
+                $order = \App\Models\Order::where('no', $orderNO)->where('status', 0);
+                if ($order && $order->status == 1) {
+                    // 调用自己接单接口
+                    $client = new Client();
+                    $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
+                        'form_params' => [
+                            'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                            'orderNo' => $no,
+                        ],
+                    ]);
+                    $result = json_decode($response->getBody()->getContents());
+                    myLog('temp-log', [$no, $result]);
+                }
+            }
+        } else {
+            myLog('temp-log', [$no, $orderDetail['data']['order_status']]);
+        }
 
     }
 
