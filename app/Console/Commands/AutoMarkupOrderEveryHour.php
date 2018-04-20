@@ -99,7 +99,7 @@ class AutoMarkupOrderEveryHour extends Command
                 }
             }
         } catch (Exception $e) {
-            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => $e->getMessage()]);
         }
     }
 
@@ -114,7 +114,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         if (! $order) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
+            myLog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
             return false;
         }
 
@@ -144,7 +144,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         if (! $orderDetail) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
+            myLog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '订单号不存在']);
             return false;
         }
 
@@ -162,7 +162,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         if (! isset($datas) || ! $datas) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
+            myLog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
             return false;
         }
 
@@ -171,7 +171,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         if (! is_array($datas) || ! $datas) {
             $this->deleteRedisHashKey($orderNo);
-            mylog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
+            myLog('order.automarkup.every.hour', ['订单号' => $orderNo, '结果' => '失败', '原因' => '无相关数据']);
             return false;
         }
 
@@ -255,7 +255,7 @@ class AutoMarkupOrderEveryHour extends Command
             $res2 = OrderHistory::create($data);
         } catch (Exception $e) {
             DB::rollback();
-            mylog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
             return false;
         }
         DB::commit();
@@ -272,7 +272,7 @@ class AutoMarkupOrderEveryHour extends Command
             } catch (DailianException $e) {
                 // 91下架接口
                 Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-                mylog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
+                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
             }
         }
 

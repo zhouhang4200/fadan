@@ -133,11 +133,11 @@ class OrderController extends Controller
             }
         } catch (DailianException $e) {
             DB::rollback();
-            mylog('order.operate.receive', ['订单号' => $orderData->no, '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.operate.receive', ['订单号' => $orderData->no, '结果' => '失败', '原因' => $e->getMessage()]);
             return response()->partner(0, $e->getMessage());
         }  catch (Exception $e) {
             DB::rollback();
-            mylog('order.operate.receive', ['订单号' => $orderData->no, '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.operate.receive', ['订单号' => $orderData->no, '结果' => '失败', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         } 
         DB::commit();
