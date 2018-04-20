@@ -331,7 +331,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 22, 13]) || $item->field_name == 'label')
+                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 22]) || ($item->field_type == 2 && $detail['status'] == 13 && in_array($item->field_name, ['game_leveling_day' , 'game_leveling_hour'])))
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"   lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
 
