@@ -33,9 +33,9 @@ class OrderController extends Controller
         if (!$order) {
             throw new DailianException('订单号不存在!');
         }
-        $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
+        // $orderData = collect(OrderDetailRepository::getByOrderNo($order->order_no))->toJson();
 
-        return json_decode($orderData);
+        // return json_decode($orderData);
         $array =  DB::select("
             SELECT a.order_no, 
                 MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
@@ -88,8 +88,9 @@ class OrderController extends Controller
             
             if (isset($array) && is_array($array)) {
                 return $array[0];
+            } else {
+                return response()->ajax(0, '接口错误，请重试');
             }
-            return response()->ajax(0, '接口错误，请重试');
     }
 
     /**

@@ -249,9 +249,6 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->where('field_name', 'hatchet_man_name')
                         ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
                     break;
-                default:
-                    throw new DailianException('未找到订单对应的第三方平台!');
-                    break;
             }
             // 调用事件
             try {
