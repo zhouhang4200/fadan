@@ -291,7 +291,7 @@ class IndexController extends Controller
             // 原始订单数据
             $orderData = $request->data;
             $userId = Auth::user()->id; // 下单用户
-            $gameId = $orderData['game_id']; // 模版ID
+            $gameId = $orderData['game_id']; // 游戏ID
             $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
             $originalPrice = $orderData['source_price']; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
