@@ -1296,13 +1296,18 @@ class IndexController extends Controller
         $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)
+            ->where('trade_status', '!=', 2)
             ->orderBy('id', 'desc')
             ->paginate(30);
 
-        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->count();
-        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 0)->count();
-        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 1)->count();
-        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 2)->count();
+        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('trade_status', '!=', 2)->count();
+        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 0)->where('trade_status', '!=', 2)->count();
+        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 1)->where('trade_status', '!=', 2)->count();
+        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
 
         return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,

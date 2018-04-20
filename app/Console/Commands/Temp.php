@@ -220,8 +220,8 @@ class Temp extends Command
                     ]);
                 }
             }
-        } else {
-            $this->queryShow91Order($status);
+        } else if($status == 14) {
+            $this->e();
         }
     }
 
@@ -241,8 +241,54 @@ class Temp extends Command
      */
     public function queryShow91Order($orderNO)
     {
-        $orderDetail = Show91::orderDetail(['oid' => $orderNO]);
-        dd($orderDetail);
+        return Show91::orderDetail(['oid' => $orderNO]);
+    }
+
+    public function addPrice()
+    {
+//        $params = [
+//            'account' => config('show91.account'),
+//            'sign' => config('show91.sign'),
+//        ];
+//
+//        $options = [
+//            'oid' => 'ORD180419201049808771',
+//            'appwd' => config('show91.password'),
+//            'cash' => 61,
+//        ];
+//
+//        $options = array_merge($params, $options);
+//
+//        $client = new Client;
+//        $response = $client->request('POST', config('show91.url.addPrice'), [
+//            'query' => $options,
+//        ]);
+//       dd($response->getBody()->getContents());
+    }
+
+    public function e()
+    {
+       $allOrder =  \App\Models\Order::where('creator_primary_user_id', 8711)->whereIn('status', [1,13,14,16,20])->get();
+
+        foreach ($allOrder as $item) {
+            $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+
+            if ($detail) {
+                $show91 = $this->queryShow91Order($detail->field_value);
+
+                myLog('price', [
+                    'no'=> $item->no,
+                    '91no' => $detail->field_value,
+                    '我们价格' => $item->amount,
+                    '91' => $show91['data']['price']
+                ]);
+            } else {
+                myLog('price', [
+                    'no'=> $item->no,
+                    '我们价格' => $item->amount,
+                ]);
+            }
+        }
     }
 
 }

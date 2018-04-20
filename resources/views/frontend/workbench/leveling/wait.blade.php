@@ -81,7 +81,7 @@
         <ul class="layui-tab-title">
             <li class="@if($status == 99) layui-this  @endif" lay-id="99">全部 @if($totalCount)<span class="layui-badge">{{ $totalCount }}</span>@endif</li>
             <li class="@if($status == 0) layui-this  @endif" lay-id="0">待处理 @if($unDisposeCount)<span class="layui-badge">{{ $unDisposeCount }}</span>@endif</li>
-            <li class="@if($status == 1) layui-this  @endif" lay-id="1">已处理 @if($disposeCount)<span class="layui-badge">{{ $disposeCount }}</span>@endif</li>
+            <li class="@if($status == 1) layui-this  @endif" lay-id="1">已发布 @if($disposeCount)<span class="layui-badge">{{ $disposeCount }}</span>@endif</li>
             <li class="@if($status == 2) layui-this  @endif" lay-id="2">已隐藏 @if($hideCount)<span class="layui-badge">{{ $hideCount }}</span>@endif</li>
         </ul>
         <div class="layui-tab-content">
