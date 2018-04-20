@@ -45,7 +45,22 @@ class Temp extends Command
 
     protected $message = [];
 
+    protected $show91Status = [
+        0 => "已发布",
+        1 => "代练中",
+        2 => "待验收",
+        3 => "待结算",
+        4 => "已结算",
+        5 => "已挂起",
+        6 => "已撤单",
+        7 => "已取消",
+        10 => "等待工作室接单",
+        11 => "等待玩家付款",
+        12 => "玩家超时未付款",
+    ];
+
     protected $messageBeginId = 0;
+
     /**
      * Execute the console command.
      *
@@ -55,30 +70,43 @@ class Temp extends Command
     {
         $no = $this->argument('no');
 
-        $orderDetail = Show91::orderDetail(['oid' => $no]);
 
-        // 代练中
-        if ($orderDetail['data']['order_status'] == 1) {
-            $orderNO = OrderDetail::where('field_name', 'show91_order_no')->where('field_value', $no)->value('order_no');
-            if ($orderNO) {
-                $order = \App\Models\Order::where('no', $orderNO)->where('status', 2)->first();
-                if ($order && $order->status == 1) {
-                    // 调用自己接单接口
-                    $client = new Client();
-                    $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
-                        'form_params' => [
-                            'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
-                            'orderNo' => $no,
-                        ],
-                    ]);
-                    $result = json_decode($response->getBody()->getContents());
-                    myLog('temp-log', [$no, $result]);
-                } else {
-                    myLog('temp-log', [$no, '没有订单']);
-                }
+        // 获取所有没有接单的单
+       $allOrder =  \App\Models\Order::where('service_id', 4)->where('status', 1)->first();
+
+        foreach ($allOrder as $item) {
+
+            $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+
+            // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
+            $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
+
+            // 代练中
+            if ($orderDetail['data']['order_status'] == 1) {
+
+                // 调用自己接单接口
+                $client = new Client();
+                $response = $client->request('POST', 'http://js.qsios.com/api/receive/order', [
+                    'form_params' => [
+                        'sign' => 'a46ae5de453bfaadc8548a3e48c151db',
+                        'orderNo' => $no,
+                    ],
+                ]);
+                $result = json_decode($response->getBody()->getContents());
+
+                myLog('temp-log', [
+                    '订单号' => $item->no,
+                    '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                    '修改结果' => $result
+                ]);
+
+            } else {
+                myLog('temp-log', [
+                    '订单号' => $item->no,
+                    '状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                    '状态码' => $orderDetail['data']['order_status']
+                ]);
             }
-        } else {
-            myLog('temp-log', [$no, $orderDetail['data']['order_status']]);
         }
 
     }
