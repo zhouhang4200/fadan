@@ -13,13 +13,16 @@
         margin-left: 88px;
         min-height: 36px;
     }
+    .layui-form-select dl {
+        max-height: 200px;
+    }
 </style>
-<div class="pop" style="padding: 30px">
+<div class="pop" style="padding: 30px;overflow-y: auto">
     <div class="">
         <div class="" style="width: 300px;height:280px;padding:10px;float: left;border: 1px solid #ccc">
             @forelse($template as $item)
                 <div style="height: 25px;line-height: 25px;cursor:default">
-                    <span  class="edit" data-id="{{ $item->id }}"  data-name="{{ $item->name }}" data-content="{{ $item->content }}">{{ $item->name }}-{{ $item->content }} </span>
+                    <span  class="edit" data-id="{{ $item->id }}"  data-status="{{ $item->status }}" data-game="{{ $item->game_id }}"  data-name="{{ $item->name }}" data-content="{{ $item->content }}">{{ $item->name }}-{{ $item->content }} </span>
                     <span style="float: right" class="delete" data-id="{{ $item->id }}">x</span>
                 </div>
             @empty
@@ -29,6 +32,17 @@
             <form class="layui-form" action="">
                 <input type="hidden" name="id" value="0">
                 <input type="hidden" name="type" value="{{ $type }}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">游戏</label>
+                    <div class="layui-input-block">
+                        <select name="game_id" lay-verify="" id="game">
+                            <option value="0"></option>
+                            @foreach($game as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">姓名</label>
                     <div class="layui-input-block">
@@ -43,9 +57,15 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">是否默认</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="status" value="1" lay-skin="switch">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formDemo" style="height: 28px;line-height: 28px">确定</button>
-                        <button type="reset" class="layui-btn">重置</button>
+                        <button type="reset" class="layui-btn reset">重置</button>
                     </div>
                 </div>
             </form>
@@ -68,6 +88,8 @@
                 id:data.field.id,
                 name:data.field.name,
                 type:data.field.type,
+                status:data.field.status,
+                game_id:data.field.game_id,
                 content:data.field.content
             }, function (result) {
                 layer.msg(result.message);
@@ -89,6 +111,7 @@
                 $('input:checkbox[name=status]').prop('checked', false);
             }
             form.render();
+            selectedGame($(this).data('game'));
         });
 
         $('.pop').on('click', '.delete', function () {
@@ -103,6 +126,10 @@
                 layer.close(index);
                 $('.layui-form')[0].reset()
             });
+        });
+
+        $('.pop').on('click', '.reset', function () {
+           $('input[name=id]').val(0);
         });
 
         function selectedGame(value) {

@@ -5,12 +5,6 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-        /*.wrapper {*/
-            /*width: 1600px;*/
-        /*}*/
-        /*.main .right {*/
-            /*width: 1430px;*/
-        /*}*/
         .layui-input-block{
             margin-left: 50px;
         }
@@ -18,7 +12,6 @@
             margin-bottom: 7px;
             position: relative;
         }
-
         .layui-form-mid {
             text-align: right;
         }
@@ -105,12 +98,23 @@
             </div>
 
             <div class="layui-row form-group">
+                <div class="layui-col-md5 text_right">店铺名：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->seller_nick or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">天猫单号：</div>
                 <div class="layui-col-md7">{{ $taobaoTrade->tid or '' }}</div>
             </div>
             <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">买家旺旺：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->buyer_nick or '' }}</div>
+                <div class="layui-col-md7">
+                    @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
+                        <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
+                           class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
+                        </a>
+                    @else
+                    @endif
+                </div>
             </div>
             <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">购买单价：</div>
@@ -138,6 +142,7 @@
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <input type="hidden" name="seller_nick" value="">
+        <input type="hidden" name="pre_sale" value="" display-name="接单客服">
         <div class="layui-row form-group">
             @{{# var row = 0;}}
             @{{#  layui.each(d.template, function(index, item){ }}
@@ -501,9 +506,24 @@
                     var phoneTemplate = '<option value="">请选择</option>';
                     $.each(result, function (index, value) {
                         if (value.type == 1) {
-                            phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  ' "> ' + value.name + '-' + value.content  +'</option>';
+
+                            if (value.status == 1) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
+
+                            }
+
                         } else {
-                            qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '">' + value.name + '-' + value.content  +'</option>';
+                            if (value.status == 1) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
                         }
                     });
                     $('select[name=user_qq]').html(qqTemplate);
@@ -537,7 +557,7 @@
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 1]) }}',
                     cancel: function(index, layero){
-                        loadBusinessmanContactTemplate();
+                        loadBusinessmanContactTemplate(gameId);
                     }
                 });
             });
@@ -548,7 +568,7 @@
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 2]) }}',
                     cancel: function(index, layero){
-                        loadBusinessmanContactTemplate();
+                        loadBusinessmanContactTemplate(gameId);
                     }
                 });
             });

@@ -161,7 +161,7 @@ class Show91
             ->first();
 
         if (! $orderRegionCorrespondence) {
-            return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！'];
+            return ['status' => 0, 'message' => '91代练平台:91平台下没有此游戏！', $order->game_id, $areaId, $serverId];
         }
 
         // 找游戏类型
@@ -209,6 +209,7 @@ class Show91
             'order.game_play_id'   => 1,
             'order.game_play_id'   => $gameType,
         ];
+        myLog('order', [$order->no, $options]);
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             if (! $orderDetails['show91_order_no']) {

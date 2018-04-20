@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+
 use Carbon\Carbon;
+use App\Models\LevelingMessage;
 use App\Repositories\Frontend\OrderDetailRepository;
 use Order, DB, Exception;
 use App\Models\OrderDetail;
@@ -11,6 +13,7 @@ use App\Models\Order as OrderModel;
 use App\Http\Controllers\Controller;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use Psy\Test\Exception\RuntimeExceptionTest;
 
 /**
  * Class OrderController
@@ -81,7 +84,7 @@ class OrderController extends Controller
             FROM order_details a
             LEFT JOIN orders b
             ON a.order_no = b.no
-            WHERE a.order_no=(SELECT distinct(order_no) FROM order_details WHERE field_value='$orderNo')");
+            WHERE a.order_no=(SELECT order_no FROM order_details WHERE field_value='$orderNo' limit 1)");
             
             if (isset($array) && is_array($array)) {
                 return $array[0];
@@ -527,4 +530,30 @@ class OrderController extends Controller
             return response()->partner(0, '接口异常');
         }
     }
+
+    /**
+     * @param Request $request
+     */
+    public function newMessage(Request $request)
+    {
+        try {
+            $thirdOrderNo = $request->order_no;
+            $contents = $request->contents;
+            $date = $request->date;
+
+            LevelingMessage::create([
+                'user_id' => 1, // 第三方平台在我们平台的ID
+                'third' => 1,
+                'third_order_no' => 1, // 第三方平台单号
+                'foreign_order_no' => 1, // 天猫单号
+                'order_no' => 1, // 我们平台单号
+                'date' => 1, // 第三方平台单号留言时间
+                'contents' => 1, // 第三方平台单号留言内容
+            ]);
+        } catch (\Exception $exception) {
+            return response()->partner(0, '接收失败');
+        }
+        return response()->partner(1, '接收成功');
+    }
+
 }

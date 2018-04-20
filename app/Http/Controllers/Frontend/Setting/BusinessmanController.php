@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\Repositories\Frontend\GameRepository;
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\BusinessmanContactTemplate;
@@ -16,10 +17,13 @@ class BusinessmanController extends Controller
 {
     /**
      * @param Request $request
+     * @param GameRepository $gameRepository
      * @return $view
      */
-    public function index(Request $request)
+    public function index(Request $request, GameRepository $gameRepository)
     {
+        $game = $gameRepository->availableByServiceId(4);
+
         $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
             ->where('type', $request->type)
             ->get();
@@ -33,6 +37,7 @@ class BusinessmanController extends Controller
         return view('frontend.setting.businessman-contact.index')->with([
             'template' => $template,
             'type' => $request->type,
+            'game' => $game,
         ]);
     }
 
@@ -41,24 +46,49 @@ class BusinessmanController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->id != 0) {
-            $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
-                ->where('id', $request->id)
-                ->first();
-            $template->name = $request->name;
-            $template->content = $request->content;
-            $template->save();
-            return response()->ajax(1, '修改成功');
-        } else {
+        $id = $request->input('id', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $name = $request->name;
+        $type = $request->type;
+        $content = $request->content;
+
+        if ($id == 0) {
+            if ($status) {
+                BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                    ->where('game_id', $gameId)
+                    ->update(['status' => 0]);
+            }
             BusinessmanContactTemplate::create([
-              'user_id' => auth()->user()->getPrimaryUserId(),
-              'name' => $request->name,
-              'type' => $request->type,
-              'content' => $request->content,
+                'user_id' => auth()->user()->getPrimaryUserId(),
+                'name' => $name,
+                'type' => $type,
+                'status' => $status,
+                'game_id' => $gameId,
+                'content' => $content
             ]);
             return response()->ajax(1, '添加成功');
-        }
+        } else {
 
+            $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                ->where('id', $id)
+                ->first();
+            $template->name = $name;
+            $template->type = $type;
+            $template->status = $status;
+            $template->game_id = $gameId;
+            $template->content = $content;
+            $template->save();
+
+            if ($status) {
+                BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                    ->where('id', '!=', $template->id)
+                    ->where('game_id',  $template->game_id)
+                    ->update(['status' => 0]);
+
+                return response()->ajax(1, '修改成功');
+            }
+        }
     }
 
     /**

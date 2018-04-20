@@ -48,7 +48,7 @@ class OrderSend extends Command
                 foreach (config('partner.platform') as $platform) {
                     try {
                         $response = $client->request('POST', $platform['receive'], [
-                            'query' => [
+                            'form_params' => [
                                'data' => base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv'])),
                             ]
                         ]);

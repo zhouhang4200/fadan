@@ -84,6 +84,8 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
         Route::post('callback', 'OrderController@callback');
         // 完成
         Route::post('complete', 'OrderController@complete');
+        // 新留言通知接口
+        Route::post('new-message', 'OrderController@newMessage');
     });
 
     // 查询区服接口

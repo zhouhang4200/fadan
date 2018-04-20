@@ -138,7 +138,7 @@
                                 <tr>
                                     <td>千手：{{ $order->no }} <br> 外部：{{ $order->foreign_order_no }}</td>
                                     <td>{{ config('order.source')[$order->source] ?? '' }}</td>
-                                    <td>{{ config('order.status')[$order->status] ?? '' }}</td>
+                                    <td>{{ isset(config('order.status')[$order->status]) ? config('order.status')[$order->status] : (isset(config('order.status_leveling')[$order->status]) ? config('order.status_leveling')[$order->status] : '') }}</td>
                                     <td>{{ $order->goods_name }}</td>
                                     <td>{{ $order->service_name }}</td>
                                     <td>{{ $order->game_name }}</td>

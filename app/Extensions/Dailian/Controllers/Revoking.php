@@ -77,16 +77,16 @@ class Revoking extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        if ($this->runAfter) {
+        // 调用事件
+        try {
+            event(new OrderRevoking($this->order));
+        } catch (ErrorException $errorException) {
+            myLog('ex', ['申请撤销 事件',  $errorException->getMessage()]);
+        } catch (\Exception $exception) {
+            myLog('ex', ['申请撤销 事件', $exception->getMessage()]);
+        }
 
-            // 调用事件
-            try {
-                event(new OrderRevoking($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('ex', ['申请撤销 事件',  $errorException->getMessage()]);
-            } catch (\Exception $exception) {
-                myLog('ex', ['申请撤销 事件', $exception->getMessage()]);
-            }
+        if ($this->runAfter) {
 
             try {
 

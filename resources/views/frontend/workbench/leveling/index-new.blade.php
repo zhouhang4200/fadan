@@ -97,7 +97,7 @@
                 <label class="layui-form-mid">天猫状态：</label>
                 <div class="layui-input-inline" style="">
                     <select name="taobao_status" lay-search="">
-                        <option value="0">请选择或输入</option>
+                        <option value="">请选择状态</option>
                         <option value="1"  @if($taobaoStatus == 1) selected  @endif>买家付完款</option>
                         <option value="2"  @if($taobaoStatus == 2) selected  @endif>交易成功</option>
                         <option value="3"  @if($taobaoStatus == 3) selected  @endif>买家发起退款</option>
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">号主旺旺：</label>
+                <label class="layui-form-mid">玩家旺旺：</label>
                 <div class="layui-input-inline" style="">
                     <input type="text" name="wang_wang" autocomplete="off" class="layui-input" value="{{ $wangWang }}">
                 </div>
@@ -150,13 +150,11 @@
             </div>
             <div class="layui-inline">
                 <label class="layui-form-mid">发布时间：</label>
-                <div class="layui-input-inline" style="">
-                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date"
-                           value="{{ $startDate }}">
+                <div class="layui-input-inline"  style="width: 150px;">
+                    <input type="text" name="start_date" autocomplete="off" class="layui-input" id="start-date"  value="{{ $startDate }}">
                 </div>
-                <div class="layui-input-inline" style="">
-                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date"
-                           value="{{ $endDate }}">
+                <div class="layui-input-inline"  style="width: 152px;">
+                    <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">导出</button>
@@ -224,7 +222,7 @@
                         <div class="table-cell w-150" style="line-height: 26px;width:50px;padding: 0 10px">订单状态</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">号主旺旺</div>
+                        <div class="table-cell w-150" style="line-height: 26px">玩家旺旺</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">客服备注</div>
@@ -376,9 +374,9 @@
                             <div class="table-cell w-150">
                                 @if(isset($detail['client_wang_wang']))
                                     <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $detail['client_wang_wang'] }}&siteid=cntaobao&status=1&charset=utf-8"
-                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}
+                                       class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $detail['client_wang_wang'] }}</a>
                                         <br/> {{ $detail['seller_nick'] or '' }}
-                                    </a>
+
                                 @endif
                             </div>
                         </td>
@@ -526,7 +524,7 @@
                                             <a data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
-                                        @elseif($item->leveling_consult->consult== 2 && ($item->status == 15 || $item->status == 16))
+                                        @elseif($item->leveling_consult->consult== 2 && ($item->status == 15))
                                             <a data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</a>
                                             <a data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
@@ -538,7 +536,7 @@
                                             <a data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
-                                        @elseif($item->leveling_consult->consult== 1 && ($item->status == 15 || $item->status == 16))
+                                        @elseif($item->leveling_consult->consult== 1 && $item->status == 15)
                                             <a data-opt="agreeRevoke" data-no="{{ $item->no }}">同意撤销</a>
                                             <a data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
@@ -588,11 +586,11 @@
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        <a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">
-                                            操作记录
-                                        </a>
-                                        @php $btnCount++;  @endphp
-                                        @if($btnCount == 3)<br/> @endif
+                                        {{--<a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">--}}
+                                            {{--操作记录--}}
+                                        {{--</a>--}}
+                                        {{--@php $btnCount++;  @endphp--}}
+                                        {{--@if($btnCount == 3)<br/> @endif--}}
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
@@ -779,8 +777,6 @@
 <!--START 底部-->
 @section('js')
     <script src="/frontend/js/fixed-table.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <script>
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,

@@ -947,54 +947,70 @@ class IndexController extends Controller
                     }
 
                     // 修改 游戏代练天
-                    if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
-                        // 接口增加天数
+                    // if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
+                    //     // 接口增加天数
+                    //     $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
+                    //     // 更新值
+                    //     OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
+                    //         'field_value' => $requestData['game_leveling_day']
+                    //     ]);
+                    // } else if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day']) {
+                    //     return response()->ajax(0, '代练时间只可增加');
+                    // }
+
+                    // if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && ($requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']
+                    //         || ($requestData['game_leveling_hour'] < $orderDetail['game_leveling_hour'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']))
+                    // ) {
+                    //     $addHours = bcsub($request->data['game_leveling_hour'], $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'), 0);
+                    //     // 更新值
+                    //     OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
+                    //         'field_value' => $requestData['game_leveling_hour']
+                    //     ]);
+                    // }
+
+                    if ($requestData['game_leveling_day'] > $orderDetail['game_leveling_day'] || ($requestData['game_leveling_day'] == $orderDetail['game_leveling_day'] && $requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour'])) {
+                         // 接口增加的天数
                         $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
                         // 更新值
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
                             'field_value' => $requestData['game_leveling_day']
                         ]);
-                    } else if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day']) {
-                        return response()->ajax(0, '代练时间只可增加');
-                    }
-
-                    if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && ($requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']
-                            || ($requestData['game_leveling_hour'] < $orderDetail['game_leveling_hour'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']))
-                    ) {
+                        // 增加的小时数
                         $addHours = bcsub($request->data['game_leveling_hour'], $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'), 0);
                         // 更新值
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                             'field_value' => $requestData['game_leveling_hour']
                         ]);
-                    }
-
-                    if (isset($addDays) && !isset($addHours)) {
-                        $order->addDays = $addDays;
-                        $order->addHours = 0;
-                        // 仅限 91 和 代练妈妈
-                        event(new AutoRequestInterface($order, 'addLimitTime'));
-                    } elseif (!isset($addDays) && isset($addHours)) {
-                        $order->addDays = 0;
-                        $order->addHours = $addHours;
-                        event(new AutoRequestInterface($order, 'addLimitTime'));
-                    } elseif (isset($addDays) && isset($addHours)) {
-                        $order->addDays = $addDays;
-                        $order->addHours = $addHours;
-                        event(new AutoRequestInterface($order, 'addLimitTime'));
-                    }
-
-                     // 其他平台通用
-                     if (config('leveling.third_orders')) {
-                         // 获取订单和订单详情以及仲裁协商信息
-                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                        // 遍历代练平台
-                            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                                if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                                // 控制器-》方法-》参数
-                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$orderDatas]);
+                        // 91和代练妈妈接口加时
+                        if (isset($addDays) && !isset($addHours)) {
+                            $order->addDays = $addDays;
+                            $order->addHours = 0;
+                            // 仅限 91 和 代练妈妈
+                            event(new AutoRequestInterface($order, 'addLimitTime'));
+                        } elseif (!isset($addDays) && isset($addHours)) {
+                            $order->addDays = 0;
+                            $order->addHours = $addHours;
+                            event(new AutoRequestInterface($order, 'addLimitTime'));
+                        } elseif (isset($addDays) && isset($addHours)) {
+                            $order->addDays = $addDays;
+                            $order->addHours = $addHours;
+                            event(new AutoRequestInterface($order, 'addLimitTime'));
+                        }
+                         // 其他平台通用加时
+                        if (config('leveling.third_orders')) {
+                             // 获取订单和订单详情以及仲裁协商信息
+                            $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                            // 遍历代练平台
+                                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                                    // 控制器-》方法-》参数
+                                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$orderDatas]);
+                                }
                             }
                         }
+                    } elseif ($requestData['game_leveling_day'] < $orderDetail['game_leveling_day'] || ($requestData['game_leveling_day'] == $orderDetail['game_leveling_day'] && $requestData['game_leveling_hour'] < $orderDetail['game_leveling_hour'])) {
+                        return response()->ajax(0, '请重新选择天和小时，代练时间只可增加');
                     }
                 }
                 // 待验收 可加价格
@@ -1329,7 +1345,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
                 MAX(CASE WHEN a.field_name='serve' THEN a.field_value ELSE '' END) AS serve,
                 MAX(CASE WHEN a.field_name='account' THEN a.field_value ELSE '' END) AS account,
-                MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS PASSWORD,
+                MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS password,
                 MAX(CASE WHEN a.field_name='role' THEN a.field_value ELSE '' END) AS role,
                 MAX(CASE WHEN a.field_name='game_leveling_type' THEN a.field_value ELSE '' END) AS game_leveling_type,
                 MAX(CASE WHEN a.field_name='game_leveling_title' THEN a.field_value ELSE '' END) AS game_leveling_title,
@@ -1359,6 +1375,8 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='poundage' THEN a.field_value ELSE '' END) AS poundage,
                 MAX(CASE WHEN a.field_name='price_markup' THEN a.field_value ELSE '' END) AS price_markup,
                 MAX(CASE WHEN a.field_name='show91_order_no' THEN a.field_value ELSE '' END) AS show91_order_no,
+                MAX(CASE WHEN a.field_name='mayi_order_no' THEN a.field_value ELSE '' END) AS mayi_order_no,
+                MAX(CASE WHEN a.field_name='dd373_order_no' THEN a.field_value ELSE '' END) AS dd373_order_no,
                 MAX(CASE WHEN a.field_name='dailianmama_order_no' THEN a.field_value ELSE '' END) AS dailianmama_order_no,
                 MAX(CASE WHEN a.field_name='hatchet_man_qq' THEN a.field_value ELSE '' END) AS hatchet_man_qq,
                 MAX(CASE WHEN a.field_name='hatchet_man_phone' THEN a.field_value ELSE '' END) AS hatchet_man_phone,
