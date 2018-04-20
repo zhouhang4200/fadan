@@ -219,7 +219,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             'TimeStamp'     => $time,
             'Ver'           => config('leveling.mayidailian.Ver'),
             'sign'          => static::getSign('dlOrdertsPub', $time),
-            'bz'		=> ! empty($orderDatas['complain_message']) ?: '空',
+            'bz'		    => ! empty($orderDatas['complain_message']) ?: '空',
         ];
 
         static::normalRequest($options);

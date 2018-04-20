@@ -112,7 +112,13 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		        }
         		break;
         	default:
-        		# code...
+        		foreach (config('leveling.third') as $userId => $third) {
+        			if ($orderDetails['third'] == $third) {
+        				if ($this->userId != $userId) {
+        					throw new DailianException('当前操作人不是该订单操作者本人!');
+        				}
+        			}
+        		}
         		break;
         }
 
