@@ -362,7 +362,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         $number = $datas['add_number'] + 1;
         $amount = bcadd($datas['add_amount'], $rangeMoney, 2);
-        $time = Carbon::parse($datas['add_time'])->addMinutes(1)->toDateTimeString();
+        $time = Carbon::parse($datas['add_time'])->addHours(1)->toDateTimeString();
 
         $key = $order->no;
         $name = "order:automarkup-every-hour";
@@ -379,7 +379,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         // 时间是否到了加价的点
         $now = Carbon::now();
-        $addTime = Carbon::parse($datas['add_time'])->addMinutes(1);
+        $addTime = Carbon::parse($datas['add_time'])->addHours(1);
         // 加价金额是否到了上限
         $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
 
