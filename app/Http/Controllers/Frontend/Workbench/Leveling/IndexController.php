@@ -808,7 +808,7 @@ class IndexController extends Controller
                     if ($order->price != $requestData['game_leveling_amount']) {
                         // 加价
                         if ($order->price < $requestData['game_leveling_amount']) {
-                            $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                            $amount = bcsub($requestData['game_leveling_amount'], $order->price, 2);
                             if (abs($order->price) == $amount) {
                                 throw new CustomException('金额不合法');
                             }
@@ -822,7 +822,7 @@ class IndexController extends Controller
                                 'field_value' => $requestData['game_leveling_amount']
                             ]);
                         } else { // 减价
-                            $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                            $amount = bcsub($order->price, $requestData['game_leveling_amount'], 2);
                             if (abs($order->price) == $amount) {
                                 throw new CustomException('金额不合法');
                             }

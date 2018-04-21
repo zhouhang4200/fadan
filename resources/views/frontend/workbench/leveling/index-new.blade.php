@@ -830,18 +830,22 @@
                 }
                 if (opt == 'detail') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}?no=' + orderNo);
+                    return false;
                 }
                 // 留言
                 if (opt == 'message') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=1');
+                    return false;
                 }
                 // 操作记录
                 if (opt == 'operationRecord') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=2');
+                    return false;
                 }
                 // 重发
                 if (opt == 'repeat') {
                     window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/' + orderNo);
+                    return false;
                 }
                 // 联系旺旺
                 if (opt == 'wangWang') {
