@@ -33,6 +33,6 @@ interface LevelingInterface
 	public static function orderDetail($orderDatas); // 获取订单详情
 	public static function getScreenshot($orderDatas); // 获取订单截图
 	public static function getMessage($orderDatas); // 获取留言
-	public static function replyMessage($orderDatas, $message); // 回复留言
+	public static function replyMessage($orderDatas); // 回复留言
 	public static function updateAccountAndPassword($orderDatas); // 更改接单后的游戏账号密码
 }

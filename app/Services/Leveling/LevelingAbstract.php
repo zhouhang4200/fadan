@@ -178,7 +178,7 @@ class LevelingAbstract extends Controller implements LevelingInterface
 	 * 回复留言
 	 * @return [type] [description]
 	 */
-	public static function replyMessage($orderDatas, $message) {}
+	public static function replyMessage($orderDatas) {}
 
 	/**
 	 * 更改接单后的游戏账号密码

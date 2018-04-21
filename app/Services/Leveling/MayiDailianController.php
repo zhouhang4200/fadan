@@ -510,12 +510,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * 回复留言
      * @return [type] [description]
      */
-    public static function replyMessage($orderDatas, $message) {
+    public static function replyMessage($orderDatas) {
         $time = time();
         $options = [
             'method'    => 'dlOrderMessageReply',
             'nid'       => $orderDatas['mayi_order_no'],
-            'lytext'    => $message ?? '留言',
+            'lytext'    => $orderDatas['message'] ?? '留言',
             'appid'     => config('leveling.mayidailian.appid'),
             'appsecret' => config('leveling.mayidailian.appsecret'),
             'TimeStamp' => $time,
