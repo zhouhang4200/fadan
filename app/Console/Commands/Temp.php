@@ -222,8 +222,9 @@ class Temp extends Command
                 }
             }
         } else  {
-            (new Revoked())->run('2018042109054600000281', 8711, 0);
+//            (new Revoked())->run('2018042109054600000281', 8711, 0);
 //            $this->addPrice();
+            $this->e();
         }
     }
 
