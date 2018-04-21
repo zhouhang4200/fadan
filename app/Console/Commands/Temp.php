@@ -6,6 +6,7 @@ use App\Events\OrderApplyComplete;
 use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Extensions\Dailian\Controllers\Revoked;
 use App\Models\OrderDetail;
 use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderAttachmentRepository;
@@ -221,8 +222,9 @@ class Temp extends Command
                 }
             }
         } else  {
-            dd($this->e());
+//            (new Revoked())->run('2018042109054600000281', 8711, 0);
 //            $this->addPrice();
+            $this->e();
         }
     }
 

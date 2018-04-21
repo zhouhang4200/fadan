@@ -444,6 +444,41 @@
                         </form>
                     </div>
 
+                    @php
+                        $paymentAmount = '';
+                       $getAmount= '';
+                       $poundage = '';
+                       $profit= '';
+                       $amount = 0;
+                       if (!in_array($detail['status'], [19, 20, 21])){
+                           $paymentAmount = '';
+                           $getAmount= '';
+                           $poundage = '';
+                           $profit= '';
+                       } else {
+                           try {
+                              // 支付金额
+                               if ($detail['status'] == 21) {
+                                   $amount = $detail['leveling_consult']['api_amount'] ?? '';
+                               } else {
+                                   $amount = $detail['leveling_consult']['amount'] ?? '';
+                               }
+                           } catch (ErrorException $exception) {
+                               myLog('ex', [$exception->getMessage()]);
+                           }
+
+                           // 支付金额
+                           $paymentAmount = $amount !=0 ?  $amount + 0:  $detail['amount'] + 0;
+
+                           $paymentAmount = (float)$paymentAmount + 0;
+                           $getAmount= (float)(float)$detail['get_amount']  + 0;
+                           $poundage = (float)$poundage + 0;
+                           // 利润
+                           $profit = ((float)$detail['source_price'] - $paymentAmount + (float)$detail['get_amount'] - $poundage) + 0;
+                       }
+                    @endphp
+
+
                     <div class="layui-col-md3">
                         <div class="site-title">
                             <fieldset><legend><a name="hr">平台数据</a></legend></fieldset>
@@ -525,9 +560,22 @@
                             <div class="layui-col-md8">{{ $detail['complain_desc'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">仲裁结果：</div>
-                            <div class="layui-col-md8">{{ $detail['complain_result'] ?? '' }}</div>
+                            <div class="layui-col-md4 text_right">支付金额：</div>
+                            <div class="layui-col-md8">{{ $paymentAmount ?? '' }}</div>
                         </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">获得金额：</div>
+                            <div class="layui-col-md8">{{ $getAmount  ?? '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">手续费：</div>
+                            <div class="layui-col-md8">{{ $poundage ?? '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md4 text_right">利润：</div>
+                            <div class="layui-col-md8">{{ $profit }}</div>
+                        </div>
+
                     </div>
 
                     <div class="layui-col-md3">

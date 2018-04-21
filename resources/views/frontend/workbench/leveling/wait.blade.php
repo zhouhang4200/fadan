@@ -52,6 +52,7 @@
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-mid">订单号：</label>
+                <input type="hidden" name="status" value="{{ $status }}">
                 <div class="layui-input-inline">
                     <input type="text" name="tid" autocomplete="off" class="layui-input" value="{{ $tid }}">
                 </div>
