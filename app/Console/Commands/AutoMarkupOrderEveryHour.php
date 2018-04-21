@@ -90,12 +90,6 @@ class AutoMarkupOrderEveryHour extends Command
                     }
                     // Redis的值增加
                     $this->increase($datas, $order, $orderDetails);
-                    // 调外面加价接口
-                    $res = $this->addPriceToThirdClient($datas, $order, $orderDetails);
-
-                    if (! $res) {
-                        continue;
-                    }
                 }
             }
         } catch (Exception $e) {
@@ -224,10 +218,22 @@ class AutoMarkupOrderEveryHour extends Command
     {
         DB::beginTransaction();
         try {
-            // 加价后的订单金额
-            $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
-            // 流水
-            Asset::handle(new Expend($orderDetails['markup_range'], 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            //如果上限 - 代练金额  小于  加价幅度 但是又大于0
+            if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+                // 加价金额
+                $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
+                // 加价后的订单金额
+                $afterAddAmount = $orderDetails['markup_top_limit'];
+                // 流水
+                Asset::handle(new Expend($rangeMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            } else {
+                // 加价金额
+                $rangeMoney = $orderDetails['markup_range'];
+                // 加价后的订单金额
+                $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+                // 流水
+                Asset::handle(new Expend($orderDetails['markup_range'], 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            }
 
             $res = Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
             // 订单详情金额更新
@@ -246,45 +252,62 @@ class AutoMarkupOrderEveryHour extends Command
             $data['admin_user_id'] = '';
             $data['type'] = '';
             $data['name'] = '加价';
-            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$orderDetails['markup_range'].'元，加价后订单金额为'.$afterAddAmount.'元';
+            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$rangeMoney.'元，加价后订单金额为'.$afterAddAmount.'元';
             $data['before'] = '';
             $data['after'] = '';
             $data['created_at'] = Carbon::now()->toDateTimeString();
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
-            $res2 = OrderHistory::create($data);
+            OrderHistory::create($data);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
             return false;
         }
         DB::commit();
+
+        // 调外面加价接口
+        $res = $this->addPriceToThirdClient($datas, $order, $orderDetails);
+
         return true;
     }
 
     public function addPriceToThirdClient($datas, $order, $orderDetails)
     {
+         //如果上限 - 代练金额  小于  加价幅度 但是又大于0
+        if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+            // 加价金额
+            $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
+            // 加价后的订单金额
+            $afterAddAmount = $orderDetails['markup_top_limit'];
+        } else {
+            // 加价金额
+            $rangeMoney = $orderDetails['markup_range'];
+            // 加价后的订单金额
+            $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+        }
+
         if ($orderDetails['show91_order_no']) {
             try {
                 $name = 'addPrice';
-                $order->addAmount = $orderDetails['markup_range'];
+                $order->addAmount = $rangeMoney;
                 call_user_func_array([Show91::class, $name], [$order, false]);
             } catch (DailianException $e) {
                 // 91下架接口
                 Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '结果' => '失败', '原因' => $e->getMessage()]);
+                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '当前金额' => $datas['add_amount'], '增加的金额' => $rangeMoney, '结果' => '失败', '原因' => $e->getMessage()]);
             }
         }
 
         if ($orderDetails['dailianmama_order_no']) {
             try {
                 $name = 'releaseOrder';
-                $order->amount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+                $order->amount = bcadd($datas['add_amount'], $rangeMoney, 2);
                 call_user_func_array([DailianMama::class, $name], [$order, true]);
             } catch (DailianException $e) {
                 // 代练妈妈下架接口
                 DailianMama::closeOrder($order);
-                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '当前金额' => $datas['add_amount'], '增加的金额' => $rangeMoney, '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
             }
         }
 
@@ -323,8 +346,21 @@ class AutoMarkupOrderEveryHour extends Command
      */
     public function increase($datas, $order, $orderDetails)
     {
+        //如果上限 - 代练金额  小于  加价幅度 但是又大于0
+        if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+            // 加价金额
+            $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
+            // 加价后的订单金额
+            $afterAddAmount = $orderDetails['markup_top_limit'];
+        } else {
+            // 加价金额
+            $rangeMoney = $orderDetails['markup_range'];
+            // 加价后的订单金额
+            $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+        }
+
         $number = $datas['add_number'] + 1;
-        $amount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+        $amount = bcadd($datas['add_amount'], $rangeMoney, 2);
         $time = Carbon::parse($datas['add_time'])->addMinutes(1)->toDateTimeString();
 
         $key = $order->no;
@@ -343,20 +379,16 @@ class AutoMarkupOrderEveryHour extends Command
         // 时间是否到了加价的点
         $now = Carbon::now();
         $addTime = Carbon::parse($datas['add_time'])->addMinutes(1);
-
         // 加价金额是否到了上限
         $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
 
-        // 加款的增加值
-        // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > $orderDetails['markup_range'])
-        // $isOverAmount = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > $orderDetails['markup_range'] ? true : false;
-
-        // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > 0 && bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
-
-        // }
-
         if (! $isOverAmount) {
             $this->deleteRedisHashKey($order->no);
+            return false;
+        }
+
+        // 如果超过了加价值 
+        if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) <= 0) {
             return false;
         }
         return $now->diffInMinutes($addTime, false) < 0 ? true : false;
