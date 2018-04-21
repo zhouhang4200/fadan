@@ -493,7 +493,7 @@ class OrderController extends Controller
     public function callback(Request $request) 
     {
         try {
-            myLog('callback', ['进来了']);
+            myLog('callback', ['no' => $request->no ?? '', 'order_no' => $request->order_no ?? '', 'appid' => $request->app_id ?? '', 'timestamp' => $request->timestamp ?? '', 'sign' => $request->sign ?? '']);
 
             if (! isset($request->no) || ! isset($request->order_no)) {
                 return response()->partner(0, '订单参数缺失');
