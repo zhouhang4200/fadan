@@ -58,7 +58,6 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function normalRequest($options = [], $method = 'POST')
     {
-        // dd($options);
         $client = new Client;
         $response = $client->request($method, config('leveling.mayidailian.url'), [
             'form_params' => $options,
@@ -516,7 +515,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         $options = [
             'method'    => 'dlOrderMessageReply',
             'nid'       => $orderDatas['mayi_order_no'],
-            'lytext'    => $message,
+            'lytext'    => $message ?? '留言',
             'appid'     => config('leveling.mayidailian.appid'),
             'appsecret' => config('leveling.mayidailian.appsecret'),
             'TimeStamp' => $time,

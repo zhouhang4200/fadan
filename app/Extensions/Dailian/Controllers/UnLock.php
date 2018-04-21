@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
+use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Models\OrderHistory;
 use App\Exceptions\DailianException; 
@@ -142,6 +143,11 @@ class UnLock extends DailianAbstract implements DailianInterface
             throw new DailianException('订单前一个状态数据异常');
         }
 
-        $this->handledStatus = $previousArr[0];
+        if (in_array(13, $previousArr)) {
+             $this->handledStatus = 13;
+        } else {
+            $this->handledStatus = $previousArr[0];
+        }
+
     }
 }

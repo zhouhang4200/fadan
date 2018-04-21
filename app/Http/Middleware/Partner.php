@@ -60,7 +60,7 @@ class Partner
             }
         }
         $sign = md5(urlencode(rtrim($str,  '&') . $request->user->app_secret));
-
+// dd($sign);
         if ($sign != $request->sign) {
             return false;
         }

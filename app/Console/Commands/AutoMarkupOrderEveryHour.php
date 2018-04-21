@@ -345,7 +345,15 @@ class AutoMarkupOrderEveryHour extends Command
         $addTime = Carbon::parse($datas['add_time'])->addMinutes(1);
 
         // 加价金额是否到了上限
-        $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false ;
+        $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
+
+        // 加款的增加值
+        // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > $orderDetails['markup_range'])
+        // $isOverAmount = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > $orderDetails['markup_range'] ? true : false;
+
+        // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) > 0 && bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+
+        // }
 
         if (! $isOverAmount) {
             $this->deleteRedisHashKey($order->no);

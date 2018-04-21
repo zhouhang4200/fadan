@@ -195,10 +195,12 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             // 接口传过来的参数
-            $apiAmount  = $request->input('api_amount', '');  // 回传代练费
-            $apiDeposit = $request->input('api_deposit', ''); // 回传双金
-            $apiService = $request->input('api_service', ''); // 回传手续费
-            $content    = $request->input('content', '无'); // 回传的撤销说明
+            $apiAmount  = $request->api_amount ?? '';  // 回传代练费
+            $apiDeposit = $request->api_deposit ?? ''; // 回传双金
+            $apiService = $request->api_service ?? ''; // 回传手续费
+            $content    = $request->content ?? '无'; 
+            // 回传的撤销说明
+
             // 判断传入的金额是否合法
             if (! is_numeric($apiAmount) || ! is_numeric($apiDeposit) || ! is_numeric($apiService)) {
                 return response()->partner(0, '代练费和双金或手续费必须是数字');
@@ -491,24 +493,32 @@ class OrderController extends Controller
     public function callback(Request $request) 
     {
         try {
-            $order = OrderModel::where('no', $request->input('no', ''))->first();
+            myLog('callback', ['进来了']);
 
-            if (! $order) {
-                 return response()->partner(0, '我方订单号缺失或错误');
+            if (! isset($request->no) || ! isset($request->order_no)) {
+                return response()->partner(0, '订单参数缺失');
             }
 
-            if (! $request->input('order_no', '')) {
-                return response()->partner(0, '您的代练平台订单号缺失');
+            // return ['name' => '我是谁?'];
+
+            $order = OrderModel::where('no', $request->no)->first();
+
+            if (! $order) {
+                return response()->partner(0, '订单不存在');
             }
 
             $third = config('leveling.third')[$request->user->id];
+
+            if (! $third) {
+                return response()->partner(0, '平台不存在');
+            }
 
             // 更新订单详情表数据
             OrderDetail::where('order_no', $order->no)
                 ->where('field_name', config('leveling.third_orders')[$third])
                 ->update(['field_value' => $request->order_no]);
 
-            myLog('order.operate.mayi-callback', ['order_no' => $order->no, 'mayi_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
+            myLog('order.operate.mayi-callback', ['order_no' => $request->no, 'third_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
             return response()->partner(1, '成功');
         } catch (Exception $e) {
             return response()->partner(0, '接口异常');
@@ -542,17 +552,17 @@ class OrderController extends Controller
     {
         try {
             $thirdOrderNo = $request->order_no;
-            $contents = $request->contents;
+            $contents = $request->message;
             $date = $request->date;
 
             LevelingMessage::create([
                 'user_id' => 1, // 第三方平台在我们平台的ID
                 'third' => 1,
-                'third_order_no' => 1, // 第三方平台单号
+                'third_order_no' => $thirdOrderNo, // 第三方平台单号
                 'foreign_order_no' => 1, // 天猫单号
                 'order_no' => 1, // 我们平台单号
-                'date' => 1, // 第三方平台单号留言时间
-                'contents' => 1, // 第三方平台单号留言内容
+                'date' => $date, // 第三方平台单号留言时间
+                'contents' => $contents, // 第三方平台单号留言内容
             ]);
         } catch (\Exception $exception) {
             return response()->partner(0, '接收失败');

@@ -117,7 +117,11 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             throw new DailianException('订单前一个状态数据异常');
         }
 
-        $this->handledStatus = $previousArr[0];
+        if (in_array(18, $previousArr)) {
+            $this->handledStatus = 18;
+        } else {
+            $this->handledStatus = $previousArr[0];
+        }
     }
 
     public function changeConsultStatus()
