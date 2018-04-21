@@ -221,7 +221,7 @@ class Temp extends Command
                 }
             }
         } else  {
-            dd($this->queryShow91Order($status));
+            dd($this->e());
 //            $this->addPrice();
         }
     }
