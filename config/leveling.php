@@ -68,5 +68,24 @@ return [
 	'dd373' => [
 		'appid'     => 'bXxE7ElEpTbaqaX',
 		'appsecret' => 'OJq18DavoMk4YkF9ZKZpa',
+		'url' => [
+			'onSale' => 'http://sdk.dd373.com/DLSdk.html?action=UpOrder', // 上架
+			'offSale' => 'http://sdk.dd373.com/DLSdk.html?action=DownOrder', // 下架
+			'applyRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=applyCancel', // 申请撤销
+			'cancelRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=CancelAction', // 取消撤销
+			'agreeRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=CancelAction', // 取消撤销
+			'applyArbitration' => 'http://sdk.dd373.com/DLSdk.html?action=applyArbitrate', // 申请仲裁
+			'cancelArbitration' => 'http://sdk.dd373.com/DLSdk.html?action=undoArbitrate', // 取消仲裁
+			'complete' => 'http://sdk.dd373.com/DLSdk.html?action=confirmOrder', // 订单完成
+			'lock' => '', // 锁定
+			'cancelLock' => '', // 取消锁定
+			'delete' => 'http://sdk.dd373.com/DLSdk.html?action=deleteOrder', // 删除订单
+			'updateOrder' => '', // 修改订单
+			'addTime' => 'http://sdk.dd373.com/DLSdk.html?action=addTime', // 加时
+			'addMoney' => 'http://sdk.dd373.com/DLSdk.html?action=addPirce', // 加款
+			'orderDetail' => 'http://sdk.dd373.com/DLSdk.html?action=getDetails', // 订单详情
+			'getScreenshot' => 'http://sdk.dd373.com/DLSdk.html?action=getImages', // 订单截图
+			'getMessage' => 'http://sdk.dd373.com/DLSdk.html?action=getMessages', //获取留言
+		],
 	],
 ];
