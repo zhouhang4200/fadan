@@ -220,8 +220,9 @@ class Temp extends Command
                     ]);
                 }
             }
-        } else if($status == 14) {
-            $this->e();
+        } else  {
+            dd($this->e());
+//            $this->addPrice();
         }
     }
 
@@ -246,29 +247,29 @@ class Temp extends Command
 
     public function addPrice()
     {
-//        $params = [
-//            'account' => config('show91.account'),
-//            'sign' => config('show91.sign'),
-//        ];
-//
-//        $options = [
-//            'oid' => 'ORD180419201049808771',
-//            'appwd' => config('show91.password'),
-//            'cash' => 61,
-//        ];
-//
-//        $options = array_merge($params, $options);
-//
-//        $client = new Client;
-//        $response = $client->request('POST', config('show91.url.addPrice'), [
-//            'query' => $options,
-//        ]);
-//       dd($response->getBody()->getContents());
+        $params = [
+            'account' => config('show91.account'),
+            'sign' => config('show91.sign'),
+        ];
+
+        $options = [
+            'oid' => 'ORD180419231621110767',
+            'appwd' => config('show91.password'),
+            'cash' => 4,
+        ];
+
+        $options = array_merge($params, $options);
+
+        $client = new Client;
+        $response = $client->request('POST', config('show91.url.addPrice'), [
+            'query' => $options,
+        ]);
+       dd($response->getBody()->getContents());
     }
 
     public function e()
     {
-       $allOrder =  \App\Models\Order::where('creator_primary_user_id', 8711)->whereIn('status', [1,13,14,16,20])->get();
+       $allOrder =  \App\Models\Order::where('service_id', 4)->whereIn('status', [1,13,14,16,20])->get();
 
         foreach ($allOrder as $item) {
             $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
@@ -282,7 +283,8 @@ class Temp extends Command
                         'no'=> $item->no,
                         '91no' => $detail->field_value,
                         '我们价格' => $item->amount,
-                        '91' => $show91['data']['price']
+                        '91' => $show91['data']['price'],
+                        '是否相关' => $show91['data']['price'] == $item->amount ? '是' : '否',
                     ]);
                 } else {
                     myLog('price', [
