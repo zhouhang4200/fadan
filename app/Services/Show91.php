@@ -42,6 +42,7 @@ class Show91
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
         $result = curl_exec($curl);
+        myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         curl_close($curl);
         return $result;
     }
@@ -66,7 +67,9 @@ class Show91
         $response = $client->request($method, $url, [
             'query' => $options,
         ]);
-        return $response->getBody()->getContents();
+        $result = $response->getBody()->getContents();
+        myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
+        return $result;
     }
 
     /*

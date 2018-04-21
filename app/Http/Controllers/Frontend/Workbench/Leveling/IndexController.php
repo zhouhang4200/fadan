@@ -444,24 +444,28 @@ class IndexController extends Controller
         ]);
 
         if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
-            // 获取91平台的打手电话和QQ更新到订单详情表
-            $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
+           try {
+               // 获取91平台的打手电话和QQ更新到订单详情表
+               $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_phone')
-                ->update(['field_value' => $orderInfo['data']['taker_phone']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_phone')
+                   ->update(['field_value' => $orderInfo['data']['taker_phone']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_qq')
-                ->update(['field_value' => $orderInfo['data']['taker_qq']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_qq')
+                   ->update(['field_value' => $orderInfo['data']['taker_qq']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_name')
-                ->update(['field_value' => $orderInfo['data']['takerNickname']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_name')
+                   ->update(['field_value' => $orderInfo['data']['takerNickname']]);
 
-            $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
-            $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
-            $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
+               $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
+               $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
+               $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
+           } catch (\Exception $exception) {
+
+           }
         }
         // 获取订单对应模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
