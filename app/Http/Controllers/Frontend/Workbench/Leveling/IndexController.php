@@ -1105,6 +1105,9 @@ class IndexController extends Controller
         } catch (AssetException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->ajax(0, $exception->getMessage());
         }
         DB::commit();
 
