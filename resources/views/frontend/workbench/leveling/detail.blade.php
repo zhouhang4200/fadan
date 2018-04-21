@@ -468,7 +468,7 @@
                            }
 
                            // 支付金额
-                           $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
+                           $paymentAmount = $amount !=0 ?  $amount + 0:  $detail['amount'] + 0;
 
                            $paymentAmount = (float)$paymentAmount + 0;
                            $getAmount= (float)(float)$detail['get_amount']  + 0;
