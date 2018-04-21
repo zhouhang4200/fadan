@@ -444,24 +444,28 @@ class IndexController extends Controller
         ]);
 
         if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
-            // 获取91平台的打手电话和QQ更新到订单详情表
-            $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
+           try {
+               // 获取91平台的打手电话和QQ更新到订单详情表
+               $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_phone')
-                ->update(['field_value' => $orderInfo['data']['taker_phone']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_phone')
+                   ->update(['field_value' => $orderInfo['data']['taker_phone']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_qq')
-                ->update(['field_value' => $orderInfo['data']['taker_qq']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_qq')
+                   ->update(['field_value' => $orderInfo['data']['taker_qq']]);
 
-            OrderDetail::where('order_no', $detail['no'])
-                ->where('field_name', 'hatchet_man_name')
-                ->update(['field_value' => $orderInfo['data']['takerNickname']]);
+               OrderDetail::where('order_no', $detail['no'])
+                   ->where('field_name', 'hatchet_man_name')
+                   ->update(['field_value' => $orderInfo['data']['takerNickname']]);
 
-            $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
-            $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
-            $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
+               $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
+               $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
+               $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
+           } catch (\Exception $exception) {
+
+           }
         }
         // 获取订单对应模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
@@ -819,7 +823,7 @@ class IndexController extends Controller
                     if ($order->price != $requestData['game_leveling_amount']) {
                         // 加价
                         if ($order->price < $requestData['game_leveling_amount']) {
-                            $amount = bcsub($requestData['game_leveling_amount'], $order->price);
+                            $amount = bcsub($requestData['game_leveling_amount'], $order->price, 2);
                             if (abs($order->price) == $amount) {
                                 throw new CustomException('金额不合法');
                             }
@@ -833,7 +837,7 @@ class IndexController extends Controller
                                 'field_value' => $requestData['game_leveling_amount']
                             ]);
                         } else { // 减价
-                            $amount = bcsub($order->price, $requestData['game_leveling_amount']);
+                            $amount = bcsub($order->price, $requestData['game_leveling_amount'], 2);
                             if (abs($order->price) == $amount) {
                                 throw new CustomException('金额不合法');
                             }
@@ -1116,6 +1120,9 @@ class IndexController extends Controller
         } catch (AssetException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->ajax(0, $exception->getMessage());
         }
         DB::commit();
 
@@ -1311,13 +1318,18 @@ class IndexController extends Controller
         $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)
+            ->where('trade_status', '!=', 2)
             ->orderBy('id', 'desc')
             ->paginate(30);
 
-        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->count();
-        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 0)->count();
-        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 1)->count();
-        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())->where('handle_status', 2)->count();
+        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('trade_status', '!=', 2)->count();
+        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 0)->where('trade_status', '!=', 2)->count();
+        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 1)->where('trade_status', '!=', 2)->count();
+        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
 
         return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,

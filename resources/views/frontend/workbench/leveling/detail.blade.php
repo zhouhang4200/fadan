@@ -323,7 +323,7 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
-                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" @if($item->field_required == 1) lay-verify="required"  @endif  value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
@@ -331,7 +331,7 @@
 
                                                 @endif
 
-                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 22, 13]) || $item->field_name == 'label')
+                                                @if($item->field_type == 2 && in_array($detail['status'], [1, 22]) || ($item->field_type == 2 && $detail['status'] == 13 && in_array($item->field_name, ['game_leveling_day' , 'game_leveling_hour'])))
                                                     <select name="{{ $item->field_name }}"  lay-search="" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"   lay-filter="change-select" data-id="{{ $item->id }}" id="select-parent-{{ $item->field_parent_id }}">
                                                         <option value=""></option>
 

@@ -249,7 +249,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 'game_leveling_efficiency_deposit' => $this->details['efficiency_deposit'],
                 'game_leveling_requirements' => $this->details['game_leveling_requirements'],
                 'game_leveling_instructions' => $this->details['game_leveling_instructions'],
-                'businessman_phone' => $this->details['user_phone'],
+                'businessman_phone' => $this->details['client_phone'],
                 'businessman_qq' => $this->details['user_qq'],
             ];
             $redis = RedisConnect::order();

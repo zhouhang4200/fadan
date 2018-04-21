@@ -49,7 +49,7 @@ class ChangeStatus
         $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
-        
+
         switch ($orderDetails['third']) {
             case 1: // 91平台
                 call_user_func_array([Show91::class, $name], [$order, $bool]);
@@ -81,7 +81,7 @@ class ChangeStatus
                         break;
                 }
                 break;
-            default: 
+            default:
                 // 如果此单还没被接单，那么third值为空，此时同时调用所有平台发送修改订单接口
                 if ($orderDetails['show91_order_no']) {
                     // 向91发送

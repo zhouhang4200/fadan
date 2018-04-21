@@ -241,13 +241,13 @@
                     </th>
 
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">代练价格</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">代练价格</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">效率保证金</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">效率保证金</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">安全保证金</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">安全保证金</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">发单时间</div>
@@ -262,7 +262,7 @@
                         <div class="table-cell w-150" style="line-height: 26px">剩余时间</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">打手呢称</div>
+                        <div class="table-cell w-150" style="line-height: 26px">打手QQ</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">打手电话</div>
@@ -271,19 +271,19 @@
                         <div class="table-cell w-150" style="line-height: 26px">号主电话</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">来源价格</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">来源价格</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">支付金额</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">支付金额</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">获得金额</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">获得金额</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">手续费</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">手续费</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">利润</div>
+                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">利润</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">发单客服</div>
@@ -400,13 +400,13 @@
                         </td>
 
                         <td>
-                            <div class="table-cell w-150">{{ $item->amount }}</div>
+                            <div class="table-cell w-150" style="width: 60px">{{ $item->amount }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $detail['efficiency_deposit'] or '' }}</div>
+                            <div class="table-cell w-150" style="width: 60px">{{ $detail['efficiency_deposit'] or '' }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $detail['security_deposit'] or '' }}</div>
+                            <div class="table-cell w-150" style="width: 60px">{{ $detail['security_deposit'] or '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $item->created_at  }}</div>
@@ -421,7 +421,7 @@
                             <div class="table-cell w-150">{{ $leftTime }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $detail['hatchet_man_name']   or '' }}</div>
+                            <div class="table-cell w-150">{{ $detail['hatchet_man_qq']   or '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $detail['hatchet_man_phone']   or '' }}</div>
@@ -430,19 +430,19 @@
                             <div class="table-cell w-150">{{ $detail['client_phone']   or '' }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $detail['source_price']   or '' }}</div>
+                            <div class="table-cell w-150" style="width: 60px;">{{ $detail['source_price']   or '' }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $paymentAmount }}</div>
+                            <div class="table-cell w-150" style="width: 60px;">{{ $paymentAmount }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $getAmount  }}</div>
+                            <div class="table-cell w-150" style="width: 60px;">{{ $getAmount  }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $poundage  }}</div>
+                            <div class="table-cell w-150" style="width: 60px;">{{ $poundage  }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $profit }}</div>
+                            <div class="table-cell w-150" style="width: 60px;">{{ $profit }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $detail['customer_service_name'] or '' }}</div>
@@ -500,7 +500,7 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 14 || $item->status == 15 || $item->status == 16 || $item->status == 17 || $item->status == 18 || $item->status == 19 || $item->status == 20 || $item->status == 21))
+                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && (in_array($item->status, [14, 15, 16, 17, 18, 19, 20, 21, 23])  ))
                                         <a class="opt-btn" data-opt="repeat" data-no="{{ $item->no }}">重发</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
@@ -830,18 +830,22 @@
                 }
                 if (opt == 'detail') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}?no=' + orderNo);
+                    return false;
                 }
                 // 留言
                 if (opt == 'message') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=1');
+                    return false;
                 }
                 // 操作记录
                 if (opt == 'operationRecord') {
                     window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=2');
+                    return false;
                 }
                 // 重发
                 if (opt == 'repeat') {
                     window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/' + orderNo);
+                    return false;
                 }
                 // 联系旺旺
                 if (opt == 'wangWang') {

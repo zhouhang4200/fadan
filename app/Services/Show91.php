@@ -42,6 +42,11 @@ class Show91
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
         $result = curl_exec($curl);
+        try {
+            myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
+        } catch (\Exception $exception) {
+            myLog('91-request', ['url' => $url, '写日志异常']);
+        }
         curl_close($curl);
         return $result;
     }
@@ -66,7 +71,13 @@ class Show91
         $response = $client->request($method, $url, [
             'query' => $options,
         ]);
-        return $response->getBody()->getContents();
+        $result = $response->getBody()->getContents();
+        try {
+            myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
+        } catch (\Exception $exception) {
+            myLog('91-request', ['url' => $url, '写日志异常']);
+        }
+        return $result;
     }
 
     /*
@@ -198,7 +209,8 @@ class Show91
             'order.require_info'   => $orderDetails['game_leveling_requirements'] ?: 1, // 代练要求
             'order.remark'         => $orderDetails['customer_service_remark'] ?: '无',//订单备注
             'order.linkman'        => $order->creator_primary_user_id, // 联系人
-            'order.linkphone'      => $orderDetails['user_phone'],
+//            'order.linkphone'      => $orderDetails['user_phone'],
+            'order.linkphone'      => $orderDetails['client_phone'],
             'order.linkqq'         => $orderDetails['user_qq'],
             'order.sms_notice'     => 0, // 短信通知
             'order.sms_mobphone'   => '1', // 短信通知电话
