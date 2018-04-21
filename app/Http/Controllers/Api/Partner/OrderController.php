@@ -507,6 +507,15 @@ class OrderController extends Controller
                 return response()->partner(0, '订单不存在');
             }
 
+            $has = OrderDetail::where('order_no', $order->no)
+                ->where('field_name', config('leveling.third_orders')[$third])
+                ->where('field_value', $request->order_no)
+                ->first();
+
+            if ($has) {
+                return response()->partner(0, '数据已存在，请勿重复访问');
+            }
+
             $third = config('leveling.third')[$request->user->id];
 
             if (! $third) {
