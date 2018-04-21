@@ -747,31 +747,6 @@
             </form>
         </div>
     </div>
-
-    {{--<div class="send-message" style="display: none;padding: 20px">--}}
-    {{--<form class="layui-form" action="" id="goods-add-form">--}}
-    {{--<input type="hidden" name="type" data-opt="">--}}
-    {{--<div style="height: 20px;line-height: 20px;color:red;padding-bottom: 10px">短信费：0.1元/条</div>--}}
-    {{--<div class="layui-form-item">--}}
-    {{--<select name="service_id" lay-verify="" lay-filter="chose-sms-template">--}}
-    {{--<li data-opt="">选择模版</li>--}}
-    {{--@forelse($smsTemplate as $item)--}}
-    {{--<li data-opt="{{ $item->contents }}" data-template="">{{ $item->name }}</li>--}}
-    {{--@empty--}}
-    {{--@endforelse--}}
-    {{--</select>--}}
-    {{--</div>--}}
-    {{--<div class="layui-form-item layui-form-text">--}}
-    {{--<textarea placeholder="请输入要发送的内容" name="contents" lay-verify="required" class="layui-textarea"--}}
-    {{--style="margin:auto;height:150px !important;"></textarea>--}}
-    {{--</div>--}}
-
-    {{--<div class="layui-form-item">--}}
-    {{--<button class="layui-btn layui-btn-normal" lay-submit lay-filter="confirm-send-sms">确认</button>--}}
-    {{--<span cancel class="layui-btn  layui-btn-normal cancel">取消</span>--}}
-    {{--</div>--}}
-    {{--</form>--}}
-    {{--</div>--}}
 @endsection
 
 <!--START 底部-->
