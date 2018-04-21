@@ -277,12 +277,12 @@ class AutoMarkupOrderEveryHour extends Command
          //如果上限 - 代练金额  小于  加价幅度 但是又大于0
         if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
             // 加价金额
-            $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
+            $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount'], 2);
             // 加价后的订单金额
             $afterAddAmount = $orderDetails['markup_top_limit'];
         } else {
             // 加价金额
-            $rangeMoney = $orderDetails['markup_range'];
+            $rangeMoney = bcadd($orderDetails['markup_range'], 0, 2);
             // 加价后的订单金额
             $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
         }
@@ -292,6 +292,7 @@ class AutoMarkupOrderEveryHour extends Command
                 $name = 'addPrice';
                 $order->addAmount = $rangeMoney;
                 call_user_func_array([Show91::class, $name], [$order, false]);
+                myLog('order.automarkup.every.hour', ['订单号' => $order->no, '当前金额' => $datas['add_amount'], '增加的金额' => $rangeMoney, '结果' => '成功']);
             } catch (DailianException $e) {
                 // 91下架接口
                 Show91::grounding(['oid' => $orderDetails['show91_order_no']]);

@@ -255,7 +255,7 @@ class OrderAutoMarkup extends Command
         if ($orderDetails['show91_order_no']) {
             try {
                 $name = 'addPrice';
-                $order->addAmount = $markupMoney;
+                $order->addAmount = bcadd($markupMoney, 0, 2);
                 call_user_func_array([Show91::class, $name], [$order, false]);
                 // return true;
             } catch (DailianException $e) {
