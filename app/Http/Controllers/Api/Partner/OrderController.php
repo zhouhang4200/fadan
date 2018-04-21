@@ -493,12 +493,11 @@ class OrderController extends Controller
     public function callback(Request $request) 
     {
         try {
-            myLog('callback', ['no' => $request->no ?? '', 'order_no' => $request->order_no ?? '', 'appid' => $request->app_id ?? '', 'timestamp' => $request->timestamp ?? '', 'sign' => $request->sign ?? '']);
+            // myLog('callback', ['no' => $request->no ?? '', 'order_no' => $request->order_no ?? '', 'appid' => $request->app_id ?? '', 'timestamp' => $request->timestamp ?? '', 'sign' => $request->sign ?? '']);
 
             if (! isset($request->no) || ! isset($request->order_no)) {
                 return response()->partner(0, '订单参数缺失');
             }
-
             // return ['name' => '我是谁?'];
 
             $order = OrderModel::where('no', $request->no)->first();
@@ -507,19 +506,20 @@ class OrderController extends Controller
                 return response()->partner(0, '订单不存在');
             }
 
-            $has = OrderDetail::where('order_no', $order->no)
+
+            $third = config('leveling.third')[$request->user->id];
+            
+            if (! $third) {
+                return response()->partner(0, '平台不存在');
+            }
+
+            $has = OrderDetail::where('order_no', $request->no)
                 ->where('field_name', config('leveling.third_orders')[$third])
                 ->where('field_value', $request->order_no)
                 ->first();
 
             if ($has) {
                 return response()->partner(0, '数据已存在，请勿重复访问');
-            }
-
-            $third = config('leveling.third')[$request->user->id];
-
-            if (! $third) {
-                return response()->partner(0, '平台不存在');
             }
 
             // 更新订单详情表数据
