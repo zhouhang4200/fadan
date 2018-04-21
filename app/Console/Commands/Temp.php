@@ -253,9 +253,9 @@ class Temp extends Command
         ];
 
         $options = [
-            'oid' => 'ORD180419231621110767',
+            'oid' => 'ORD180419220853663712',
             'appwd' => config('show91.password'),
-            'cash' => 4,
+            'cash' => 6,
         ];
 
         $options = array_merge($params, $options);
