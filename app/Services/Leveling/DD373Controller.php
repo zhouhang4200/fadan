@@ -74,7 +74,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     public static function normalRequest($options = [], $url= '', $method = 'POST')
     {
     	try {
-	        $client = new Client;
+	        $client = new Client();
 	        $response = $client->request($method, $url, [
 	            'form_params' => $options,
 	            'body' => 'x-www-form-urlencoded',
@@ -434,8 +434,25 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     public static function updateOrder($orderDatas) {
         try {
 	        $time = time();
+	        $gameName = Game::find($orderDatas['game_id']);
 	        $datas = [
-	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'order_no' => $orderDatas['dd373_order_no'],
+	        	'game_name' => $gameName,
+	        	'game_region' => $orderDatas['region'],
+	        	'game_serve' => $orderDatas['serve'],
+	        	'game_account' => $orderDatas['account'],
+	        	'game_password' => $orderDatas['password'],
+	        	'game_leveling_type' => $orderDatas['game_leveling_type'],
+	        	'game_leveling_title' => $orderDatas['game_leveling_title'],
+	        	'game_leveling_price' => $orderDatas['amount'],
+	        	'game_leveling_day' => $orderDatas['game_leveling_day'],
+	        	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
+	        	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
+	        	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
+	        	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
+	        	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
+	        	'businessman_phone' => $orderDatas['user_phone'],
+	        	'businessman_qq' => $orderDatas['user_qq'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
@@ -456,7 +473,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'hours' => '',
+	        	'days' => $orderDatas['game_leveling_day'],
+	        	'hours' => $orderDatas['game_leveling_hour'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
@@ -518,7 +536,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'platformSign' => '',
+	        	'platformSign' => config('leveling.dd373.platform-sign'),
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
