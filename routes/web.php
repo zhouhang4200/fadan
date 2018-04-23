@@ -259,7 +259,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index')->middleware('new.permission:frontend.workbench.leveling.index');
             // 根据订单状态获取订单数据
             Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
-            Route::any('test', 'IndexController@test')->name('frontend.workbench.leveling.test');
+            Route::any('test', 'IndexController@indexNew')->name('frontend.workbench.leveling.test');
             // 创建订单
             Route::get('create', 'IndexController@create')->name('frontend.workbench.leveling.create')->middleware('new.permission:frontend.workbench.leveling.create');
             // 确认下单

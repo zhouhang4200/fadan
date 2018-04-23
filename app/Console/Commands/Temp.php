@@ -71,6 +71,8 @@ class Temp extends Command
     {
         $status = $this->argument('no');
 
+        dd($this->show91OrderStatus());
+
         // 我们是待接单
         if ($status == 1) {
             // 获取所有没有接单的单
@@ -224,7 +226,7 @@ class Temp extends Command
         } else  {
 //            (new Revoked())->run('2018042109054600000281', 8711, 0);
 //            $this->addPrice();
-            $this->e();
+            dd($this->queryShow91Order($status));
         }
     }
 
@@ -235,6 +237,53 @@ class Temp extends Command
         if (count($message['list'])) {
             $this->message = array_merge($this->message, $message['list']);
             $this->get($orderNO, $message['beginid']);
+        }
+    }
+
+    /**
+     * 对比91订单状态;
+     */
+    public function show91OrderStatus()
+    {
+        // 获取所有没有接单的单
+        $allOrder = \App\Models\Order::where('service_id', 4)->get();
+
+        foreach ($allOrder as $item) {
+
+            $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+
+            if (isset($show91OrderNO->field_value) && $show91OrderNO->field_value) {
+                // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
+                $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
+
+                // 91 是待验收
+                if (isset($orderDetail['data'])) {
+
+                    myLog('status-log', [
+                        '类型' => '双方存在订单',
+                        '我们订单号' => $item->no,
+                        '91订单号' => $show91OrderNO->field_value,
+                        '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
+                        '我们状态' => config('order.status_leveling')[$item->status],
+                        '我们价格' => $item->amount,
+                        '91价格' => $orderDetail['data']['price'],
+                        '价格相等' => $item->amount == $orderDetail['data']['price'] ? '是' : '否'
+                    ]);
+
+                } else {
+                    myLog('status-log', [
+                        '类型' => '没有91单信息',
+                        '我们订单号' => $item->no,
+                        '我们状态' => config('order.status_leveling')[$item->status],
+                    ]);
+                }
+            } else {
+                myLog('status-log', [
+                    '类型' => '没有91单号',
+                    '我们订单号' => $item->no,
+                    '我们状态' => config('order.status_leveling')[$item->status],
+                ]);
+            }
         }
     }
 

@@ -96,11 +96,9 @@ class IndexController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
         $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
-//        $smsTemplate = SmsTemplate::where('user_id', Auth::user()->getPrimaryUserId())->where('type', 2)->get();
 
         if ($request->export) {
             $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
@@ -120,6 +118,64 @@ class IndexController extends Controller
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
         return view('frontend.workbench.leveling.index-new')->with([
+            'orders' => $orders,
+            'game' => $game,
+            'employee' => $employee,
+            'tags' => $tags,
+            'no' => $no,
+            'customerServiceName' => $customerServiceName,
+            'gameId' => $gameId,
+            'status' => $status,
+            'taobaoStatus' => $taobaoStatus,
+            'wangWang' => $wangWang,
+            'platform' => $platform,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'statusCount' => $statusCount,
+            'allStatusCount' => $allStatusCount,
+        ]);
+    }
+
+    /**
+     * 新订单列表
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function indexNew(Request $request, OrderRepository $orderRepository)
+    {
+        $status = $request->input('status', 0);
+        $no = $request->input('no', '');
+        $taobaoStatus = $request->input('taobao_status', 0);
+        $gameId = $request->input('game_id', 0);
+        $wangWang = $request->input('wang_wang');
+        $customerServiceName = $request->input('customer_service_name');
+        $platform = $request->input('platform', 0);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $game = $this->game;
+        $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
+
+        if ($request->export) {
+            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
+            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+        }
+
+        // 获取订单
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+
+        // 查询各状态订单数
+        $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
+            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->where('service_id', 4)->where('status', '!=', 24)->count();
+
+        return view('frontend.workbench.leveling.index-test')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
