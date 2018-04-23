@@ -71,6 +71,8 @@ class Temp extends Command
     {
         $status = $this->argument('no');
 
+        dd($this->show91OrderStatus());
+
         // 我们是待接单
         if ($status == 1) {
             // 获取所有没有接单的单
@@ -238,6 +240,9 @@ class Temp extends Command
         }
     }
 
+    /**
+     * 对比91订单状态;
+     */
     public function show91OrderStatus()
     {
         // 获取所有没有接单的单
