@@ -2,6 +2,7 @@
 
 namespace App\Services\Leveling;
 
+use Exception;
 use Carbon\Carbon;
 
 /**
@@ -10,38 +11,40 @@ use Carbon\Carbon;
 class DD373Controller extends LevelingAbstract implements LevelingInterface
 {
 	/**
-	 * 调用接口时间
-	 * @var [type]
-	 */
-	protected $time;
+     * 调用接口时间
+     * @var [type]
+     */
+    // protected static $time;
 
-	public function __construct()
-	{
-		$this->time = time();
-	}
+    public function __construct()
+    {
+        // $time = time();
+    }
 
-	/**
+    /**
      * form-data 格式提交数据
      * @param  [type] $url     [description]
      * @param  [type] $options [description]
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function formDataRequest($options = [], $method = 'POST')
+    public static function formDataRequest($options = [], $url = '', $method = 'POST')
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
-        curl_setopt($curl, CURLOPT_URL, config('leveling.dd373.url'));
+        curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
         $result = curl_exec($curl);
         curl_close($curl);
         // 记录日志
-        myLog('dd373', [
-        	'方法名' => $options['method'],
-        	'时间' => Carbon::now()->toDateTimeString(),
-        	'结果' => $result ? json_decode($result) : '',
+        myLog('mayidailian', [
+            'dd373单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
+            '方法名' => $options['method'],
+            '签名' => $options['sign'],
+            '时间' => Carbon::now()->toDateTimeString(),
+            '结果' => $result ? json_decode($result) : '',
         ]);
     }
 
@@ -52,19 +55,35 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function normalRequest($options = [], $method = 'POST')
+    public static function normalRequest($options = [], $url= '', $method = 'POST')
     {
         $client = new Client;
-        $response = $client->request($method, config('leveling.dd373.url'), [
-            'query' => $options,
+        $response = $client->request($method, $url, [
+            'form_params' => $options,
         ]);
-        $res =  $response->getBody()->getContents();
+        $result =  $response->getBody()->getContents();
         // 记录日志
-        myLog('dd373', [
-        	'方法名' => $options['method'],
-        	'时间' => Carbon::now()->toDateTimeString(),
-        	'结果' => $result ? json_decode($result) : '',
+        myLog('mayidailian', [
+            'dd373单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
+            '方法名' => $options['method'],
+            '签名' => $options['sign'],
+            '时间' => Carbon::now()->toDateTimeString(),
+            '结果' => $result ? json_decode($result) : '',
         ]);
+    }
+
+    /**
+     * 对参数进行加工
+     * @param  [type] $options [description]
+     * @return [type]          [description]
+     */
+    public function handleOptions($datas)
+    {
+    	return [
+			'jsonData'     => json_encode($datas),
+			'platformSign' => config('leveling.dd373.appid'),
+			'Sign'         => static::getSign($datas),
+        ];
     }
 
     /**
@@ -72,442 +91,472 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param  [type] $method [description]
      * @return [type]         [description]
      */
-    public function getSign($method)
+    public static function getSign($datas)
     {
-    	return md5($method.config('leveling.mayidailian.appid').$this->time.config('leveling.mayidailian.appsecret').config('leveling.mayidailian.Ver'));
+    	$string = 'JsonData='.json_encode($datas)."&".config('leveling.dd373.appid');
+
+    	myLog('dd373.sign', ['string' = $string, 'sign' => md5($string)]);
+
+        return md5($string);
     }
 
     /**
-	 * 上架
-	 * @return [type] [description]
-	 */
-    public function onSale($orderDatas) {
-    	$options = [
-			'method'        => '',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign(''),
-		];
-
-		$this->normalRequest($options);
+     * 上架
+     * @return [type] [description]
+     */
+    public static function onSale($orderDatas) {
+    	try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['onSale']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+    	}
     }
 
     /**
      * 下架
      * @return [type] [description]
      */
-	public function offSale($orderDatas) {
-		$options = [
-			'method'        => '',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign(''),
-		];
+    public static function offSale($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['offSale']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
+    	}
+    }
 
-		$this->normalRequest($options);
-	} 
+    /**
+     * 接单
+     * @return [type] [description]
+     */
+    public static function receive($orderDatas) {}
 
-	/**
-	 * 接单
-	 * @return [type] [description]
-	 */
-	public function receive($orderDatas) {}
+    /**
+     * 申请撤销
+     * @return [type] [description]
+     */
+    public static function applyRevoke($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'payAmount' => $orderDatas['amount'],
+	        	'guarantyXLFee' => $orderDatas['deposit'],
+	        	'guarantyAQFee' => ,
+	        	'PayUserType' => ,
+	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['applyRevoke']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 申请撤销
-	 * @return [type] [description]
-	 */
-	public function applyRevoke($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderTs',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'dlBzmoneyGold' => $orderDatas['deposit'],
-			'needsMoney'    => $orderDatas['pay_amount'],
-			'tsContent'     => $orderDatas['revoke_message'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderTs'),
-		];
+    /**
+     * 取消撤销
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function cancelRevoke($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'State' => 2,
+	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelRevoke']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
+    	}
+    }
 
-		$this->normalRequest($options);
-	} 
+    /**
+     * 同意撤销
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function agreeRevoke($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'State' => 1,
+	        	'reason' => '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['agreeRevoke']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 取消撤销
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function cancelRevoke($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderCancelTs',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderCancelTs'),
-		];
+    /**
+     * 强制撤销
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function forceRevoke($orderDatas) {}
 
-		$this->normalRequest($options);
-	} 
+    /**
+     * 不同意撤销
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function refuseRevoke($orderDatas) {}
 
-	/**
-	 * 同意撤销
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function agreeRevoke($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderAgreeTs',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderAgreeTs'),
-		];
+    /**
+     * 申请仲裁
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function applyArbitration($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'reason' => ! empty($orderDatas['complain_message']) ?: '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['applyArbitration']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
+    	}
+    }
 
-		$this->normalRequest($options);
-	} 
+    /**
+     * 取消仲裁
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function cancelArbitration($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'reason' => '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelArbitration']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 强制撤销
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function forceRevoke($orderDatas) {} 
+    /**
+     * 强制仲裁（客服仲裁
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function customArbitration($orderDatas) {}
 
-	/**
-	 * 不同意撤销
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function refuseRevoke($orderDatas) {} 
+    /**
+     * 申请验收
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function applyComplete($orderDatas) {}
 
-	/**
-	 * 申请仲裁
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function applyArbitration($orderDatas) {
-		$options = [
-			'method'        => 'dlOrdertsPub',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrdertsPub'),
-		];
+    /**
+     * 取消验收
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function cancelComplete($orderDatas) {}
 
-		$this->normalRequest($options);
-	} 
+    /**
+     * 完成验收
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function complete($orderDatas) {
+       	try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['complete']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 取消仲裁
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function cancelArbitration($orderDatas) {} 
+    /**
+     * 锁定
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function lock($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['lock']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 强制仲裁（客服仲裁
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function customArbitration($orderDatas) {} 
+    /**
+     * 取消锁定
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function cancelLock($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelLock']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 申请验收
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function applyComplete($orderDatas) {} 
+    /**
+     * 异常
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function abnormal($orderDatas) {}
 
-	/**
-	 * 取消验收
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function cancelComplete($orderDatas) {} 
+    /**
+     * 取消异常
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function cancelAbnormal($orderDatas) {}
 
-	/**
-	 * 完成验收
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function complete($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderAcceptance',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'password'		=> config('leveling.mayidailian.password'),
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderAcceptance'),
-		];
-
-		$this->normalRequest($options);
-	} 
-
-	/**
-	 * 锁定
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function lock($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderLock',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'remark'	    => '订单状态异常',
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderLock'),
-		];
-
-		$this->normalRequest($options);
-	} 
-
-	/**
-	 * 取消锁定
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function cancelLock($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderunLock',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'remark'	    => '订单状态正常',
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderunLock'),
-		];
-
-		$this->normalRequest($options);
-	} 
-
-	/**
-	 * 异常
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function abnormal($orderDatas) {} 
-
-	/**
-	 * 取消异常
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function cancelAbnormal($orderDatas) {} 
-
-	/**
-	 * 撤单（删除)
-	 * @param  [type] $orderDatas [description]
-	 * @return [type]             [description]
-	 */
-	public function delete($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderDel',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderDel'),
-		];
-
-		$this->normalRequest($options);
-	} 
+    /**
+     * 撤单（删除)
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function delete($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['delete']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
+    	}
+    }
 
 
 
+    /**
+     * 修改订单(未接单时候的修改订单)
+     * @return [type] [description]
+     */
+    public static function updateOrder($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['updateOrder']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
+    	}
+    }
 
+    /**
+     * 订单加时
+     * 增加后的总时间
+     */
+    public static function addTime($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'hours' => '',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['addTime']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
+    	}
+    }
 
+    /**
+     * 订单加款
+     * 增加后的总款
+     */
+    public static function addMoney($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'add_money' => $orderDatas['game_leveling_amount'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['addMoney']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 修改订单(未接单时候的修改订单)
-	 * @return [type] [description]
-	 */
-	public function updateOrder($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderUpdate',
-			'order_id'      => $orderDatas['mayi_order_no'],
-			'gameId'        => $orderDatas['game_id'],
-			'zoneId'        => $orderDatas['region'],
-			'serverId'      => $orderDatas['serve'],
-			'pertype'       => $orderDatas['game_leveling_type'],
-			'title'         => $orderDatas['game_leveling_title'],
-			'paymoney'      => $orderDatas['amount'],
-			'hours'         => bcadd(bcmul($orderDatas['game_leveling_day'], 24, 0), $orderDatas['game_leveling_hour'], 0),
-			'use_gold'      => 0,
-			'bzmoney_gold'  => $orderDatas['efficiency_deposit'],
-			'bzmoney_exp'   => $orderDatas['bzmoney_exp'],
-			'gaccount'      => $orderDatas['account'],
-			'gpassword'     => $orderDatas['password'],
-			'jsm'           => $orderDatas['role'],
-			'equipment'     => $orderDatas['game_leveling_instructions'],
-			'detaildemand'  => $orderDatas['game_leveling_requirements'],
-			'test_phone'    => $orderDatas['user_phone'],
-			'contact_phone' => $orderDatas['user_phone'],
-			'qq'            => $orderDatas['user_qq'],
-			'password'      => config('leveling.mayidailian.password'),
-			'onway'         => 1,
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderUpdate'),
-		];
+    /**
+     * 获取订单详情
+     * @return [type] [description]
+     */
+    public static function orderDetail($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['orderDetail']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
+    	}
+    }
 
-		$this->normalRequest($options);
-	}
+    /**
+     * 获取订单截图
+     * @return [type] [description]
+     */
+    public static function getScreenshot($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'platformSign' => '',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['getScreenshot']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
+    	}
+    }
 
-	/**
-	 * 订单加时
-	 * 增加后的总时间
-	 */
-	public function addTime($orderDatas) {
-		$options = [
-			'method'       => 'dlOrdereUpdateSpec',
-			'order_id'     => $orderDatas['mayi_order_no'],
-			'append_hours' => $orderDatas['game_leveling_day'],
-			'append_hours' => $orderDatas['game_leveling_hour'],
-			'append_price' => 0,
-			'zfpwd'        => config('leveling.mayidailian.password'),
-			'appid'        => config('leveling.mayidailian.appid'),
-			'appsecret'    => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'    => $this->time,
-			'Ver'          => config('leveling.mayidailian.Ver'),
-			'sign'         => $this->getSign('dlOrdereUpdateSpec'),
-		];
+    /**
+     * 获取留言
+     * @return [type] [description]
+     */
+    public static function getMessage($orderDatas) {
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['getMessage']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+    	}
+    }
 
-		$this->normalRequest($options);
-	}
+    /**
+     * 回复留言
+     * @return [type] [description]
+     */
+    public static function replyMessage($orderDatas) {
+        $time = time();
+        $options = [
+            'method'    => 'dlOrderMessageReply',
+            'nid'       => $orderDatas['mayi_order_no'],
+            'lytext'    => $orderDatas['message'] ?? '留言',
+            'appid'     => config('leveling.mayidailian.appid'),
+            'appsecret' => config('leveling.mayidailian.appsecret'),
+            'timestamp' => $time,
+            'Ver'       => config('leveling.mayidailian.Ver'),
+            'sign'      => static::getSign('dlOrderMessageReply', $time),
+        ];
 
-	/**
-	 * 订单加款
-	 * 增加后的总款
-	 */
-	public function addMoney($orderDatas) {
-		$options = [
-			'method'       => 'dlOrdereUpdateSpec',
-			'order_id'     => $orderDatas['mayi_order_no'],
-			'append_hours' => 0,
-			'append_price' => $orderDatas['game_leveling_amount'],
-			'zfpwd'        => config('leveling.mayidailian.password'),
-			'appid'        => config('leveling.mayidailian.appid'),
-			'appsecret'    => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'    => $this->time,
-			'Ver'          => config('leveling.mayidailian.Ver'),
-			'sign'         => $this->getSign('dlOrdereUpdateSpec'),
-		];
+        static::normalRequest($options);
+    }
 
-		$this->normalRequest($options);
-	}
+    /**
+     * 修改接单之后的游戏账号密码
+     * @return [type] [description]
+     */
+    public static function updateAccountAndPassword($orderDatas) {
+        $time = time();
+        $options = [
+            'method'    => 'dlOrdereUpdatePass',
+            'order_id'  => $orderDatas['mayi_order_no'],
+            'account'   => $orderDatas['account'],
+            'gpassword' => $orderDatas['password'],
+            'appid'     => config('leveling.mayidailian.appid'),
+            'appsecret' => config('leveling.mayidailian.appsecret'),
+            'timestamp' => $time,
+            'Ver'       => config('leveling.mayidailian.Ver'),
+            'sign'      => static::getSign('dlOrdereUpdatePass', $time),
+        ];
 
-	/**
-	 * 获取订单详情
-	 * @return [type] [description]
-	 */
-	public function orderDetail($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderInfo',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderInfo'),
-		];
-
-		$this->normalRequest($options);
-	} 
-
-	/**
-	 * 获取订单截图
-	 * @return [type] [description]
-	 */
-	public function getScreenshot($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderImageList',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderImageList'),
-		];
-
-		$this->normalRequest($options);
-	} 
-
-	/**
-	 * 获取留言
-	 * @return [type] [description]
-	 */
-	public function getMessage($orderDatas) {
-		$options = [
-			'method'        => 'dlOrderMessageList',
-			'nid'           => $orderDatas['mayi_order_no'],
-			'appid'         => config('leveling.mayidailian.appid'),
-			'appsecret'     => config('leveling.mayidailian.appsecret'),
-			'TimeStamp'     => $this->time,
-			'Ver'           => config('leveling.mayidailian.Ver'),
-			'sign'          => $this->getSign('dlOrderMessageList'),
-		];
-
-		$this->normalRequest($options);
-	}
-
-	/**
-	 * 回复留言
-	 * @return [type] [description]
-	 */
-	public function replyMessage($orderDatas, $message) {
-		$options = [
-			'method'    => 'dlOrderMessageReply',
-			'nid'       => $orderDatas['mayi_order_no'],
-			'lytext'    => $message,
-			'appid'     => config('leveling.mayidailian.appid'),
-			'appsecret' => config('leveling.mayidailian.appsecret'),
-			'TimeStamp' => $this->time,
-			'Ver'       => config('leveling.mayidailian.Ver'),
-			'sign'      => $this->getSign('dlOrderMessageReply'),
-		];
-
-		$this->normalRequest($options);
-	}
-
-	/**
-	 * 修改接单之后的游戏账号密码
-	 * @return [type] [description]
-	 */
-	public function updateAccountAndPassword($orderDatas) {
-		$options = [
-			'method'    => 'dlOrderMessageList',
-			'nid'       => $orderDatas['mayi_order_no'],
-			'appid'     => config('leveling.mayidailian.appid'),
-			'appsecret' => config('leveling.mayidailian.appsecret'),
-			'TimeStamp' => $this->time,
-			'Ver'       => config('leveling.mayidailian.Ver'),
-			'sign'      => $this->getSign('dlOrderMessageList'),
-			'account'   => $orderDatas['account'],
-			'password'  => $orderDatas['password'],
-		];
-
-		$this->normalRequest($options);
-	}
+        static::normalRequest($options);
+    }
 }
