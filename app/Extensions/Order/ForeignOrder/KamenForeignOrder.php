@@ -155,7 +155,7 @@ class KamenForeignOrder extends ForeignOrder
                             $data[$fieldName] = $goods->$fieldName ?? 0;
                             break;
                         default:
-                            $data[$fieldName] = $model->details->$fieldName ?: '';
+                            $data[$fieldName] = isset($model->details->$fieldName) ? $model->details->$fieldName : '';
                             break;
                     }
     			}
