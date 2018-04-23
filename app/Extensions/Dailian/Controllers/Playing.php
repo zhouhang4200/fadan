@@ -163,11 +163,13 @@ class Playing extends DailianAbstract implements DailianInterface
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                       
                 // 遍历 平台 =》 平台订单名称
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果确定为某个第三方平台，则写入第三方平台号和订单号
                     if (config('leveling.third')[$this->userId] == $third) {
+                        if (! isset($orderDatas[$thirdOrderNoName]) || empty($orderDatas[$thirdOrderNoName])) {
+                            throw new DailianException('订单号不存在，请联系淘宝代练平台配置关联订单号'); 
+                        }
                         // 如果知道了是某个平台，并且存在平台订单号，则写入数据
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
                              // 更新第三方平台为 show91
@@ -182,7 +184,6 @@ class Playing extends DailianAbstract implements DailianInterface
                         }
                     // 其他平台订单撤单
                     } else {
-                        // 如果存在这个平台订单，则下架此平台订单
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
                             // 控制器-》方法-》参数
                             call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);

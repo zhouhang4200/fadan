@@ -4,6 +4,8 @@ namespace App\Services\Leveling;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\Game;
+use GuzzleHttp\Client;
 
 /**
  * 蚂蚁代练操作控制器
@@ -30,22 +32,36 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function formDataRequest($options = [], $url = '', $method = 'POST')
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        // 记录日志
-        myLog('mayidailian', [
-            'dd373单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-            '方法名' => $options['method'],
-            '签名' => $options['sign'],
-            '时间' => Carbon::now()->toDateTimeString(),
-            '结果' => $result ? json_decode($result) : '',
-        ]);
+    	try {
+	        $curl = curl_init();
+	        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
+	        curl_setopt($curl, CURLOPT_URL, $url);
+	        curl_setopt($curl, CURLOPT_POST, 1);
+	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
+	        $result = curl_exec($curl);
+	        curl_close($curl);
+
+	        if (isset($result) && ! empty($result)) {
+	        	$arrResult = json_decode($result, true);
+
+	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
+	        			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	        		}
+	        	}
+    		}
+	        // 记录日志
+	        myLog('dd373-all-logs', [
+	            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+	            '地址' => $url ?? '',
+	            '签名' => $options['Sign'] ?? '',
+	            '时间' => Carbon::now()->toDateTimeString(),
+	            '结果' => $result ? json_decode($result) : '',
+	        ]);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+    	}
     }
 
     /**
@@ -57,19 +73,34 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function normalRequest($options = [], $url= '', $method = 'POST')
     {
-        $client = new Client;
-        $response = $client->request($method, $url, [
-            'form_params' => $options,
-        ]);
-        $result =  $response->getBody()->getContents();
-        // 记录日志
-        myLog('mayidailian', [
-            'dd373单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-            '方法名' => $options['method'],
-            '签名' => $options['sign'],
-            '时间' => Carbon::now()->toDateTimeString(),
-            '结果' => $result ? json_decode($result) : '',
-        ]);
+    	try {
+	        $client = new Client;
+	        $response = $client->request($method, $url, [
+	            'form_params' => $options,
+	            'body' => 'x-www-form-urlencoded',
+	        ]);
+	        $result =  $response->getBody()->getContents();
+
+	        if (isset($result) && ! empty($result)) {
+	        	$arrResult = json_decode($result, true);
+
+	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
+	        			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	        		}
+	        	}
+    		}
+	        // 记录日志
+	        myLog('dd373-all-logs', [
+	            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+	            '地址' => $url ?? '',
+	            '签名' => $options['Sign'] ?? '',
+	            '时间' => Carbon::now()->toDateTimeString(),
+	            '结果' => $result ? json_decode($result) : '',
+	        ]);
+        } catch (Exception $e) {
+        	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -77,11 +108,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param  [type] $options [description]
      * @return [type]          [description]
      */
-    public function handleOptions($datas)
+    public static function handleOptions($datas)
     {
     	return [
-			'jsonData'     => json_encode($datas),
-			'platformSign' => config('leveling.dd373.appid'),
+			'JsonData'     => json_encode($datas),
+			'platformSign' => config('leveling.dd373.platform-sign'),
 			'Sign'         => static::getSign($datas),
         ];
     }
@@ -93,9 +124,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function getSign($datas)
     {
-    	$string = 'JsonData='.json_encode($datas)."&".config('leveling.dd373.appid');
+    	$string = "JsonData=".json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
 
-    	myLog('dd373.sign', ['string' = $string, 'sign' => md5($string)]);
+    	myLog('dd373.sign', ['string' => $string, 'sign' => md5($string)]);
 
         return md5($string);
     }
@@ -156,14 +187,15 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'payAmount' => $orderDatas['amount'],
-	        	'guarantyXLFee' => $orderDatas['deposit'],
-	        	'guarantyAQFee' => ,
-	        	'PayUserType' => ,
+	        	'guarantyAQFee' => $orderDatas['deposit'],
+	        	'guarantyXLFee' => 0,
+	        	'PayUserType' => 1,
 	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
+	       	// dd($datas, $options);
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.dd373.url')['applyRevoke']);
     	} catch (Exception $e) {
@@ -395,7 +427,6 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     }
 
 
-
     /**
      * 修改订单(未接单时候的修改订单)
      * @return [type] [description]
@@ -524,19 +555,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return [type] [description]
      */
     public static function replyMessage($orderDatas) {
-        $time = time();
-        $options = [
-            'method'    => 'dlOrderMessageReply',
-            'nid'       => $orderDatas['mayi_order_no'],
-            'lytext'    => $orderDatas['message'] ?? '留言',
-            'appid'     => config('leveling.mayidailian.appid'),
-            'appsecret' => config('leveling.mayidailian.appsecret'),
-            'timestamp' => $time,
-            'Ver'       => config('leveling.mayidailian.Ver'),
-            'sign'      => static::getSign('dlOrderMessageReply', $time),
-        ];
-
-        static::normalRequest($options);
+        try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'content' => $orderDatas['message'] ?? '',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['replyMessage']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+    	}
     }
 
     /**
@@ -544,19 +576,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return [type] [description]
      */
     public static function updateAccountAndPassword($orderDatas) {
-        $time = time();
-        $options = [
-            'method'    => 'dlOrdereUpdatePass',
-            'order_id'  => $orderDatas['mayi_order_no'],
-            'account'   => $orderDatas['account'],
-            'gpassword' => $orderDatas['password'],
-            'appid'     => config('leveling.mayidailian.appid'),
-            'appsecret' => config('leveling.mayidailian.appsecret'),
-            'timestamp' => $time,
-            'Ver'       => config('leveling.mayidailian.Ver'),
-            'sign'      => static::getSign('dlOrdereUpdatePass', $time),
-        ];
-
-        static::normalRequest($options);
+       try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'gameAccount' => $orderDatas['account'],
+	        	'gamePassWord' => $orderDatas['password'],
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['updateAccountAndPassword']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+    	}
     }
 }
