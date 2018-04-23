@@ -252,14 +252,14 @@ class Temp extends Command
 
             $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
 
-            if (isset($show91OrderNO->field_value)) {
+            if (isset($show91OrderNO->field_value) && $show91OrderNO->field_value) {
                 // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
                 $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
 
                 // 91 是待验收
                 if (isset($orderDetail['data'])) {
 
-                    myLog('temp-log', [
+                    myLog('status-log', [
                         '类型' => '双方存在订单',
                         '我们订单号' => $item->no,
                         '91订单号' => $show91OrderNO->field_value,
@@ -271,14 +271,14 @@ class Temp extends Command
                     ]);
 
                 } else {
-                    myLog('temp-log', [
+                    myLog('status-log', [
                         '类型' => '没有91单信息',
                         '我们订单号' => $item->no,
                         '我们状态' => config('order.status_leveling')[$item->status],
                     ]);
                 }
             } else {
-                myLog('temp-log', [
+                myLog('status-log', [
                     '类型' => '没有91单号',
                     '我们订单号' => $item->no,
                     '我们状态' => config('order.status_leveling')[$item->status],
