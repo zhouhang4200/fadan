@@ -45,9 +45,9 @@ class Show91
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
-            myLog('91-request', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         } catch (\Exception $exception) {
-            myLog('91-request', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
         curl_close($curl);
         return $result;
@@ -74,12 +74,13 @@ class Show91
             'query' => $options,
         ]);
         $result = $response->getBody()->getContents();
+
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
-            myLog('91-request', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         } catch (\Exception $exception) {
-            myLog('91-request', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
 
         return $result;
