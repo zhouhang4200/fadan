@@ -1,6 +1,6 @@
-<div class="footer">
-    <p><span class="vol"></span></p>
-</div>
+{{--<div class="footer">--}}
+    {{--<p><span class="vol"></span></p>--}}
+{{--</div>--}}
 <script>
 $('#leveling-message').click(function () {
     layer.open({

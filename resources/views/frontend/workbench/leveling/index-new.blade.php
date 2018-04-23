@@ -585,14 +585,6 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        {{--<a class="opt-btn" data-opt="operationRecord" data-no="{{ $item->no }}">--}}
-                                            {{--操作记录--}}
-                                        {{--</a>--}}
-                                        {{--@php $btnCount++;  @endphp--}}
-                                        {{--@if($btnCount == 3)<br/> @endif--}}
-                                    @endif
-
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
                                         <a class="opt-btn" data-opt="delete" data-no="{{ $item->no }}">撤单</a>
                                         @php $btnCount++;  @endphp
@@ -753,6 +745,7 @@
 @section('js')
     <script src="/frontend/js/fixed-table.js"></script>
     <script>
+
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form,
                     layer = layui.layer,

@@ -2199,7 +2199,7 @@ a cite {
 }
 
 .layui-table-view .layui-table[lay-size=sm] .layui-table-cell {
-    height: 20px;
+    height: 40px;
     line-height: 20px
 }
 
@@ -2294,8 +2294,8 @@ a cite {
 }
 
 .layui-table-cell {
-    height: 28px;
-    line-height: 28px;
+    height: 40px;
+    line-height: 20px;
     padding: 0 15px;
     position: relative;
     overflow: hidden;
