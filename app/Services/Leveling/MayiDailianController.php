@@ -58,7 +58,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function normalRequest($options = [], $method = 'POST')
     {
-        $client = new Client;
+        $client = new Client();
         $response = $client->request($method, config('leveling.mayidailian.url'), [
             'form_params' => $options,
         ]);

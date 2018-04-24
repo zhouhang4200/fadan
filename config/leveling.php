@@ -2,6 +2,7 @@
 
 use App\Services\Show91;
 use App\Services\DailianMama;
+use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 
 // 代练平台操作自动匹配第三方平台
@@ -66,26 +67,31 @@ return [
 	],
 
 	'dd373' => [
+		'key' => '1234567812345678',
+		'platform-sign' => '16d10969040f430688d3c6a38df7dabb',
 		'appid'     => 'bXxE7ElEpTbaqaX',
 		'appsecret' => 'OJq18DavoMk4YkF9ZKZpa',
+		'platform-sign' => '16d10969040f430688d3c6a38df7dabb',
 		'url' => [
-			'onSale' => 'http://sdk.dd373.com/DLSdk.html?action=UpOrder', // 上架
-			'offSale' => 'http://sdk.dd373.com/DLSdk.html?action=DownOrder', // 下架
-			'applyRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=applyCancel', // 申请撤销
-			'cancelRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=CancelAction', // 取消撤销
-			'agreeRevoke' => 'http://sdk.dd373.com/DLSdk.html?action=CancelAction', // 取消撤销
-			'applyArbitration' => 'http://sdk.dd373.com/DLSdk.html?action=applyArbitrate', // 申请仲裁
-			'cancelArbitration' => 'http://sdk.dd373.com/DLSdk.html?action=undoArbitrate', // 取消仲裁
-			'complete' => 'http://sdk.dd373.com/DLSdk.html?action=confirmOrder', // 订单完成
-			'lock' => '', // 锁定
-			'cancelLock' => '', // 取消锁定
-			'delete' => 'http://sdk.dd373.com/DLSdk.html?action=deleteOrder', // 删除订单
-			'updateOrder' => '', // 修改订单
-			'addTime' => 'http://sdk.dd373.com/DLSdk.html?action=addTime', // 加时
-			'addMoney' => 'http://sdk.dd373.com/DLSdk.html?action=addPirce', // 加款
-			'orderDetail' => 'http://sdk.dd373.com/DLSdk.html?action=getDetails', // 订单详情
-			'getScreenshot' => 'http://sdk.dd373.com/DLSdk.html?action=getImages', // 订单截图
-			'getMessage' => 'http://sdk.dd373.com/DLSdk.html?action=getMessages', //获取留言
+			'onSale' => 'http://125.42.146.110:9090/DLSdk.html?action=UpOrder', // 上架
+			'offSale' => 'http://125.42.146.110:9090/DLSdk.html?action=DownOrder', // 下架
+			'applyRevoke' => 'http://125.42.146.110:9090/DLSdk.html?action=applyCancel', // 申请撤销
+			'cancelRevoke' => 'http://125.42.146.110:9090/DLSdk.html?action=CancelAction', // 取消撤销
+			'agreeRevoke' => 'http://125.42.146.110:9090/DLSdk.html?action=CancelAction', // 取消撤销
+			'applyArbitration' => 'http://125.42.146.110:9090/DLSdk.html?action=applyArbitrate', // 申请仲裁
+			'cancelArbitration' => 'http://125.42.146.110:9090/DLSdk.html?action=undoArbitrate', // 取消仲裁
+			'complete' => 'http://125.42.146.110:9090/DLSdk.html?action=confirmOrder', // 订单完成
+			'lock' => 'http://125.42.146.110:9090/DLSdk.html?action=lockAccount', // 锁定
+			'cancelLock' => 'http://125.42.146.110:9090/DLSdk.html?action=unlockaccount', // 取消锁定
+			'delete' => 'http://125.42.146.110:9090/DLSdk.html?action=deleteOrder', // 删除订单
+			'updateOrder' => 'http://125.42.146.110:9090/DLSdk.html?action=modifyOrder', // 修改订单
+			'addTime' => 'http://125.42.146.110:9090/DLSdk.html?action=addTime', // 加时
+			'addMoney' => 'http://125.42.146.110:9090/DLSdk.html?action=addPrice', // 加款
+			'orderDetail' => 'http://125.42.146.110:9090/DLSdk.html?action=getDetails', // 订单详情
+			'getScreenshot' => 'http://125.42.146.110:9090/DLSdk.html?action=getImages', // 订单截图
+			'getMessage' => 'http://125.42.146.110:9090/DLSdk.html?action=getMessages', //获取留言
+			'replyMessage' => 'http://125.42.146.110:9090/DLSdk.html?action=sendMessage', // 回复留言
+			'updateAccountAndPassword' => 'http://125.42.146.110:9090/DLSdk.html?action=changePwd', // 修改账号密码
 		],
 	],
 ];
