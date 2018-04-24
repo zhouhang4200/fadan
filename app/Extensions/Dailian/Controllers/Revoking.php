@@ -2,16 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Events\OrderRevoking;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
+use Exception;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
-use App\Models\OrderDetail;
 use App\Services\DailianMama;
+use App\Events\OrderRevoking;
 use App\Exceptions\DailianException;
-use ErrorException;
 
 /**
  * 申请撤销操作
@@ -67,10 +64,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 18);
             DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+    	}  catch (Exception $exception) {
             // 未知异常，报警异常
             throw new DailianException($exception->getMessage());
         }
@@ -120,7 +114,6 @@ class Revoking extends DailianAbstract implements DailianInterface
                         DailianMama::operationOrder($this->order, 20006);
                         break;
                 }
-
 
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息

@@ -2,16 +2,15 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
+use App\Exceptions\AssetException;
 use DB;
 use Asset;
+use Exception;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException;
-use League\Flysystem\Exception;
 
 /**
  * 撤单（删除）操作
@@ -64,10 +63,9 @@ class Delete extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
+    	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+        } catch (Exception $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }

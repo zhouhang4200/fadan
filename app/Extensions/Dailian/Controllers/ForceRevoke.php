@@ -2,14 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\AssetException;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
+use Exception;
 use App\Extensions\Asset\Income;
 use App\Models\OrderDetail;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+use App\Exceptions\AssetException;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
@@ -64,11 +63,7 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+        } catch (Exception $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }
@@ -82,7 +77,6 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
      */
     public function updateAsset()
     {
-
         $orderDetails = OrderDetail::where('order_no', $this->order->no)
                 ->pluck('field_value', 'field_name')
                 ->toArray();

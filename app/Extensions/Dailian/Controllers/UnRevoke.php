@@ -3,14 +3,12 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use App\Models\OrderHistory;
+use Exception;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
 
 /**
  * 取消撤销操作
@@ -73,10 +71,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 19);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+    	}  catch (Exception $exception) {
             // 未知异常，报警异常
             throw new DailianException($exception->getMessage());
         }

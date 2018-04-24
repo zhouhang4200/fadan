@@ -2,13 +2,11 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
 use DB;
+use Exception;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
-use App\Models\OrderHistory;
 use App\Exceptions\DailianException;
-use App\Exceptions\RequestTimeoutException;
 
 /**
  * 取消锁定操作
@@ -67,10 +65,7 @@ class UnLock extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 17);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+    	} catch (Exception $exception) {
             // 未知异常，报警异常
             throw new DailianException($exception->getMessage());
         }

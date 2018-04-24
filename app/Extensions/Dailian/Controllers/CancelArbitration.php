@@ -2,15 +2,12 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\AssetException;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
+use Exception;
 use App\Services\Show91;
-use App\Models\OrderHistory;
 use App\Models\LevelingConsult;
 use App\Services\DailianMama;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
 use App\Models\OrderDetail;
 
 /**
@@ -70,13 +67,7 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 21);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (AssetException $exception) {
-            // 未知异常
-            throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            // 警报异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+    	} catch (Exception $exception) {
             // 未知异常
             throw new DailianException($exception->getMessage());
         }

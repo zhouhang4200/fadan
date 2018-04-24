@@ -2,8 +2,8 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
 use DB;
+use Exception;
 use App\Exceptions\DailianException; 
 
 /**
@@ -57,7 +57,7 @@ class CancelComplete extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 29);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (CustomException $exception) {
+    	} catch (Exception $exception) {
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();
