@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Models\OrderHistory;
 use App\Services\Show91;
@@ -72,38 +73,23 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 19);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
     	// 返回
         return true;
     }
 
+    /**
+     * 获取前一个状态
+     * @param $orderNo
+     * @throws DailianException
+     */
     public function getBeforeStatus($orderNo)
     {
-        // $history = OrderHistory::where('order_no', $orderNo)->latest('id')->value('before');
 
-        // // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
-        // if (! $history) {
-        //     throw new DailianException('订单操作记录不存在');
-        // }
-
-        // $beforeStatus = unserialize($history)['status'];
-
-        // if ($beforeStatus == 16 || $beforeStatus == 18) {
-        //     $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
-        //     $arr = [];
-        //     foreach ($orderHistories as $key => $orderHistory) {
-        //         $status = unserialize($orderHistory->before);
-
-        //         if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
-        //             $arr[$key] = $status['status'];
-        //         }
-        //     }
-        //     $this->handledStatus = current($arr);
-        // } else {
-        //     $this->handledStatus = $beforeStatus;
-        // }
-        // 
         $orderDetail = OrderDetail::where('order_no', $orderNo)
             ->where('field_name', 'order_previous_status')
             ->first();
@@ -129,50 +115,45 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     {
         LevelingConsult::where('order_no', $this->orderNo)->update(['consult' => 0]);
     }
-     /**
+
+    /**
      * 调用外部提交协商发接口
-     * @return [type] [description]
+     * @return bool|void [type] [description]
      */
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelRevoke']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelRevoke']], [$orderDatas]);
                     }
                 }
-
-                /**
-                 * 以下只适用于 91  和 代练妈妈
-                 */
-
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91 取消撤销
-                        Show91::cancelSc(['oid' => $orderDetails['show91_order_no']]);
-                        break;
-                    case 2:
-                        // 代练妈妈取消协商接口
-                        DailianMama::operationOrder($this->order, 20012);
-                        break;
-                }
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 如果出现返回空值则写入报警。并标记为异常
-                throw new DailianException($exception->getMessage());
             }
+
+            /**
+             * 以下只适用于 91  和 代练妈妈
+             */
+
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
+            switch ($orderDetails['third']) {
+                case 1:
+                    // 91 取消撤销
+                    Show91::cancelSc(['oid' => $orderDetails['show91_order_no']]);
+                    break;
+                case 2:
+                    // 代练妈妈取消协商接口
+                    DailianMama::operationOrder($this->order, 20012);
+                    break;
+            }
+            return true;
         }
     }
 }

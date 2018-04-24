@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
 use App\Services\Show91;
@@ -62,7 +63,10 @@ class Delete extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
         return true;
     }
@@ -99,43 +103,37 @@ class Delete extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                        // if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    // if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                    if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
                     }
                 }
-
-                /**
-                 * 以下只适用于  91  和 代练妈妈
-                 */
-                // 获取订单和订单详情
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                if ($orderDetails['show91_order_no']) {
-                    // 91下架接口
-                    Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
-                }
-
-                if ($orderDetails['dailianmama_order_no']) {
-                    // 代练妈妈下架接口
-                    DailianMama::deleteOrder($this->order);
-                }
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 如果出现返回空值则写入报警。并标记为异常
-                throw new DailianException($exception->getMessage());
             }
+
+            /**
+             * 以下只适用于  91  和 代练妈妈
+             */
+            // 获取订单和订单详情
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
+            if ($orderDetails['show91_order_no']) {
+                // 91下架接口
+                Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+            }
+
+            if ($orderDetails['dailianmama_order_no']) {
+                // 代练妈妈下架接口
+                DailianMama::deleteOrder($this->order);
+            }
+            return true;
         }
     }
 }

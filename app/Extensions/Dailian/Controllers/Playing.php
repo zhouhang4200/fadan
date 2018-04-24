@@ -4,6 +4,8 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderFinish;
 use App\Events\OrderReceiving;
+use App\Exceptions\AssetException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
 use Carbon\Carbon;
@@ -27,15 +29,13 @@ class Playing extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 13; // 状态：代练中
     protected $type             = 27; // 操作：接单
 
-	/**
-     * 
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费/安全保证金]
-     * @param  [type] $apiDeposit  [回传双金/ 效率保证金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+    /**
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费/安全保证金]
+     * @internal param $ [type] $apiDeposit  [回传双金/ 效率保证金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -69,7 +69,12 @@ class Playing extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (AssetException $exception) {
+            // 资金异常
+            throw new DailianException($exception->getMessage());
+        } catch (RequestTimeoutException $exception) {
+            // 报警异常
+        }
     	DB::commit();
 
         return true;
@@ -91,55 +96,51 @@ class Playing extends DailianAbstract implements DailianInterface
 
     /**
      * [接单支出安全和效率保证金]
-     * @return [type] [description]
+     * @throws DailianException
      */
     public function updateAsset()
     {
-        DB::beginTransaction();
-        try {
-            $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
 
-            $safePayment = $orderDetails['security_deposit'];
-            $effectPayment = $orderDetails['efficiency_deposit'];
-            // 检测接单账号余额
-            $this->checkGainerMoney($safePayment, $effectPayment);
-            if ($safePayment > 0) {                      
-                // 接单 安全保证金支出
-                Asset::handle(new Expend($safePayment, 4, $this->order->no, '安全保证金支出', $this->order->gainer_primary_user_id));
+        $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
 
-                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
+        $safePayment = $orderDetails['security_deposit'];
+        $effectPayment = $orderDetails['efficiency_deposit'];
+        // 检测接单账号余额
+        $this->checkGainerMoney($safePayment, $effectPayment);
+        if ($safePayment > 0) {
+            // 接单 安全保证金支出
+            Asset::handle(new Expend($safePayment, 4, $this->order->no, '安全保证金支出', $this->order->gainer_primary_user_id));
 
-                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
             }
 
-            if ($effectPayment > 0) {                      
-                // 接单 效率保证金支出
-                Asset::handle(new Expend($effectPayment, 5, $this->order->no, '效率保证金支出', $this->order->gainer_primary_user_id));
-
-                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
-
-                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
             }
-        } catch (DailianException $e) {
-            DB::rollback();
-            throw new DailianException($e->getMessage());
         }
-        DB::commit();
+
+        if ($effectPayment > 0) {
+            // 接单 效率保证金支出
+            Asset::handle(new Expend($effectPayment, 5, $this->order->no, '效率保证金支出', $this->order->gainer_primary_user_id));
+
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
+        }
     }
 
     /**
      * 检车接单账户余额
-     * @return [type] [description]
+     * @param $safePayment
+     * @param $effectPayment
+     * @throws DailianException
      */
     public function checkGainerMoney($safePayment, $effectPayment)
     {
@@ -155,7 +156,7 @@ class Playing extends DailianAbstract implements DailianInterface
 
     /**
      * 接单之后，计算接单时间
-     * @return [type] [description]
+     * @throws DailianException
      */
     public function after()
     {
@@ -258,7 +259,6 @@ class Playing extends DailianAbstract implements DailianInterface
             } catch (\Exception $exception) {
                 myLog('receiving', [$exception->getMessage()]);
             }
-
             // 写入留言获取
             $updateAfterOrderDetail = $this->checkThirdClientOrder($this->order);
             levelingMessageAdd($this->order->creator_primary_user_id,

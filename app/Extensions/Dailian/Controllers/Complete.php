@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderFinish;
+use App\Exceptions\RequestTimeoutException;
 use App\Models\TaobaoTrade;
 use DB;
 use Asset;
@@ -141,79 +142,75 @@ class Complete extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['complete']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['complete']], [$orderDatas]);
                     }
                 }
-
-                /**
-                 * 以下只适用于  91  和 代练妈妈
-                 */
-
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91 完成接口
-                        $options = [
-                            'oid' => $orderDetails['show91_order_no'],
-                            'p' => config('show91.password'),
-                        ];
-                        Show91::accept($options);
-                        break;
-                    case 2:
-                        // 代练妈妈完成接口
-                        DailianMama::operationOrder($this->order, 20013);
-                        break;
-                }
-
-                // 将相关的淘宝订单发货''
-                if ($this->delivery == 1) {
-                    $sourceOrderNo = OrderDetail::select()->where('order_no', $this->order->no)
-                        ->whereIn('field_name_alias', ['source_order_no'])
-                        ->pluck('field_value')
-                        ->toArray();
-
-                    // 去重
-                    $uniqueArray = array_unique($sourceOrderNo);
-
-                    if (count($uniqueArray)) {
-                        // 将订单号淘宝订单状态改为交易成功
-                        OrderDetail::where('order_no', $this->order->no)
-                            ->where('field_name', 'taobao_status')
-                            ->update(['field_value' => 2]);
-
-                        $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
-                        // 获取备注并更新
-                        $client = new TopClient;
-                        $client->format = 'json';
-                        $client->appkey = '12141884';
-                        $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-                        foreach ($taobaoTrade as $item) {
-                           try {
-                               $req = new LogisticsDummySendRequest;
-                               $req->setTid($item->tid);
-                               $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
-                           } catch (\ErrorException $exception) {
-                               myLog('ex', [$exception->getMessage()]);
-                           }
-                        }
-                    }
-                }
-
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
             }
+
+            /**
+             * 以下只适用于  91  和 代练妈妈
+             */
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
+            switch ($orderDetails['third']) {
+                case 1:
+                    // 91 完成接口
+                    $options = [
+                        'oid' => $orderDetails['show91_order_no'],
+                        'p' => config('show91.password'),
+                    ];
+                    Show91::accept($options);
+                    break;
+                case 2:
+                    // 代练妈妈完成接口
+                    DailianMama::operationOrder($this->order, 20013);
+                    break;
+            }
+
+            // 将相关的淘宝订单发货''
+            if ($this->delivery == 1) {
+                $sourceOrderNo = OrderDetail::select()->where('order_no', $this->order->no)
+                    ->whereIn('field_name_alias', ['source_order_no'])
+                    ->pluck('field_value')
+                    ->toArray();
+
+                // 去重
+                $uniqueArray = array_unique($sourceOrderNo);
+
+                if (count($uniqueArray)) {
+                    // 将订单号淘宝订单状态改为交易成功
+                    OrderDetail::where('order_no', $this->order->no)
+                        ->where('field_name', 'taobao_status')
+                        ->update(['field_value' => 2]);
+
+                    $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
+                    // 获取备注并更新
+                    $client = new TopClient;
+                    $client->format = 'json';
+                    $client->appkey = '12141884';
+                    $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+                    foreach ($taobaoTrade as $item) {
+                       try {
+                           $req = new LogisticsDummySendRequest;
+                           $req->setTid($item->tid);
+                           $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                       } catch (\ErrorException $exception) {
+                           myLog('ex', [$exception->getMessage()]);
+                       }
+                    }
+                }
+            }
+
+            return true;
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
@@ -18,15 +19,14 @@ class Lock extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 18; // 状态：18锁定
     protected $type             = 16; // 操作：16锁定
 
-	/**
+    /**
      * [run 锁定 -> 锁定]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费]
+     * @internal param $ [type] $apiDeposit  [回传双金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -62,51 +62,52 @@ class Lock extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 16);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 报警异常
+        }
     	DB::commit();
 
         return true;
     }
 
-     /**
+    /**
      * 调用外部锁定发接口
-     * @return [type] [description]
+     * @return bool|void [type] [description]
+     * @throws DailianException
      */
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                     // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['lock']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && !empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['lock']], [$orderDatas]);
                     }
                 }
-
-                /**
-                 * 以下只适用于  91  和 代练妈妈
-                 */
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                switch ($orderDetails['third']) {
-                    case 1:
-                        throw new DailianException('该订单被91平台接单，91平台无此操作!');
-                        break;
-                    case 2:
-                        // 代练妈妈锁定接口
-                        DailianMama::operationOrder($this->order, 20002);
-                        break;
-                }
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
             }
+
+            /**
+             * 以下只适用于  91  和 代练妈妈
+             */
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
+            switch ($orderDetails['third']) {
+                case 1:
+                    throw new DailianException('该订单被91平台接单，91平台无此操作!');
+                    break;
+                case 2:
+                    // 代练妈妈锁定接口
+                    DailianMama::operationOrder($this->order, 20002);
+                    break;
+            }
+            return true;
+
         }
     }
 }

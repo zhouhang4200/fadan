@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderHistory;
@@ -165,6 +166,8 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (RequestTimeoutException $exception) {
+
             }
         }
     }

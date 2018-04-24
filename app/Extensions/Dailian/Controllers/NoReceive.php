@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
@@ -60,7 +61,9 @@ class NoReceive extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 将订单标记为异常
+        }
     	DB::commit();
 
         return true;
@@ -73,38 +76,32 @@ class NoReceive extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['onSale']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['onSale']], [$orderDatas]);
                     }
                 }
+            }
 
+            /**
+             * 以下只适用于  91  和 代练妈妈
+             */
+            $orderDetails = $this->checkThirdClientOrder($this->order);
 
-                /**
-                 * 以下只适用于  91  和 代练妈妈
-                 */
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                // 上架91订单
-                if ($orderDetails['show91_order_no']) {
-                    Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-                }
-                // 代练妈妈上架
-                if ($orderDetails['dailianmama_order_no']) {
-                    DailianMama::upOrder($this->order);
-                }
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 将订单标记为异常
+            // 上架91订单
+            if ($orderDetails['show91_order_no']) {
+                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+            }
+            // 代练妈妈上架
+            if ($orderDetails['dailianmama_order_no']) {
+                DailianMama::upOrder($this->order);
             }
         }
     }
