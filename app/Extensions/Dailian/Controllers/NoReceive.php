@@ -5,7 +5,6 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Exception;
 use App\Services\Show91;
-use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Exceptions\DailianException; 
 
@@ -61,7 +60,9 @@ class NoReceive extends DailianAbstract implements DailianInterface
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
+            //  写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();

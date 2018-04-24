@@ -2,14 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\AssetException;
 use DB;
 use Asset;
 use Exception;
 use App\Services\Show91;
-use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
+use App\Exceptions\AssetException;
 use App\Exceptions\DailianException;
 
 /**
@@ -64,9 +63,12 @@ class Delete extends DailianAbstract implements DailianInterface
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
+            // 我们平台操作失败，写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();
@@ -79,27 +81,20 @@ class Delete extends DailianAbstract implements DailianInterface
      */
     public function updateAsset()
     {
-        DB::beginTransaction();
-        try {
-            // 发单 退回代练费
-            Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
+        // 发单 退回代练费
+        Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
-            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new DailianException('流水记录写入失败');
-            }
-
-            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new DailianException('流水记录写入失败');
-            }
-        } catch (DailianException $e) {
-            DB::rollback();
-            throw new DailianException($e->getMessage());
+        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            throw new DailianException('流水记录写入失败');
         }
-        DB::commit();
+
+        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            throw new DailianException('流水记录写入失败');
+        }
     }
 
     /**
-     * 调用外部提交协商发接口
+     * 调用外部撤单接口
      * @return [type] [description]
      */
     public function after()

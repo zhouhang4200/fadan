@@ -8,7 +8,6 @@ use App\Services\DailianMama;
 use App\Exceptions\AssetException;
 use App\Exceptions\DailianException;
 
-
 /**
  * 锁定操作
  */
@@ -58,14 +57,14 @@ class Lock extends DailianAbstract implements DailianInterface
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
-            // 我们平台操作失败，写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, 16);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
+            //  redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
         DB::commit();

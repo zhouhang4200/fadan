@@ -2,10 +2,6 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Events\OrderReceiving;
-use App\Exceptions\AssetException;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
 use Exception;
@@ -15,9 +11,10 @@ use App\Services\Show91;
 use App\Models\UserAsset;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
+use App\Events\OrderReceiving;
+use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
-
 
 /**
  * 接单操作
@@ -74,7 +71,9 @@ class Playing extends DailianAbstract implements DailianInterface
             // 资金异常
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
-            // 未知异常，报警异常
+            //  写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();
