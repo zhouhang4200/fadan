@@ -74,10 +74,7 @@ class LevelingController
             // $this->checkOrderNotice($order);
         }
 
-        return json_encode([
-            'status' => 1,
-            'message' => $message,
-        ]);
+        return response()->partner(1, $message);
     }
 
     /**
@@ -90,16 +87,11 @@ class LevelingController
     {
         if ($order) {
             // $this->addOrderNotice($order);  
-            \Log::info($message);
             $action = \Route::currentRouteAction();
             $this->checkAndAddOrderToRedis($order, '0-1-'.$action.'-无');
         }
 
-        return json_encode([
-            'status' => 0,
-            'message' => $message,
-        ]);
-        throw new DailianException($message);
+        return response()->partner(0, $message);
     }
 
 	/**
