@@ -162,33 +162,37 @@ abstract class DailianAbstract
      */
     public function addOperateFailOrderToRedis($order, $operate)
     {
-        if (! in_array($this->userId, [8556, 8456])) {
-            // 获得订单详情
-            $orderDetails = $this->checkThirdClientOrder($order);
-            // 订单属于哪个平台
-            switch ($orderDetails['third']) {
-                case 1: // show91
-                    // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
-                    $redisValue = '1-'.$operate.'-'.$order->status;
-                    break;
-                case 2: // 代练妈妈
-                    // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
-                    $redisValue = '2-'.$operate.'-'.$order->status;
-                    break;
-                default: // 此订单还被人接单，不用写入报警
-                    return $order;
-                    break;
-            }
-
-            // 写入redis哈希 = (表名， 键， 值)
-            $result = Redis::hSet('our_notice_orders', $order->no, $redisValue);
-            // 错误日志提示主题
-            $message = $result == 1 ? '写入成功，新纪录' : ($result == 0 ? '写入成功，新值被覆盖' : '写入失败');
-                        
-            myLog('our-order-notice', ['order_no' => $order->no, 'third_order_no' => $orderDetails['third_order_no'], 'message' => '我们的平台操作失败了，报警订单正在写入redis，写入结果：' . $message]);
-
-            return $order;
+        // 获得订单详情
+        $orderDetails = $this->checkThirdClientOrder($order);
+        // 订单属于哪个平台
+        switch ($orderDetails['third']) {
+            case 1: // show91
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '1-'.$operate.'-'.$order->status;
+                break;
+            case 2: // 代练妈妈
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '2-'.$operate.'-'.$order->status;
+                break;
+            case 3: // 代练妈妈
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '3-'.$operate.'-'.$order->status;
+                break;
+            case 4: // 代练妈妈
+                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                $redisValue = '4-'.$operate.'-'.$order->status;
+                break;
         }
+
+        // 写入redis哈希 = (表名， 键， 值)
+        $result = Redis::hSet('our_notice_orders', $order->no, $redisValue);
+        // 错误日志提示主题
+        $message = $result == 1 ? '写入成功，新纪录' : ($result == 0 ? '写入成功，新值被覆盖' : '写入失败');
+                    
+        myLog('our-order-notice', ['order_no' => $order->no, 'third_order_no' => $orderDetails['third_order_no'], 'message' => '我们的平台操作失败了，报警订单正在写入redis，写入结果：' . $message]);
+
+        return $order;
+
     }
 
     /**

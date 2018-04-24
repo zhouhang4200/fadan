@@ -60,8 +60,6 @@ class Revoking extends DailianAbstract implements DailianInterface
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
         } catch (DailianException $e) {
-            // 我们平台操作失败，写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, 18);
             DB::rollBack();
             throw new DailianException($e->getMessage());
     	}  catch (Exception $exception) {

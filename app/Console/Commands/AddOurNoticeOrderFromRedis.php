@@ -106,7 +106,7 @@ class AddOurNoticeOrderFromRedis extends Command
                 $datas = $this->getShow91OrderStatus($thirdOrderNo);
 
                 if (isset($datas) && is_array($datas)) {
-                    $this->thirdStatus = isset($datas['data']['order_status']) ? config('leveling.show91.status')[$datas['data']['order_status']] : '';
+                    $this->thirdStatus = isset($datas['data']['order_status']) ?? '';
                 } else {
                     $this->thirdStatus = '';
                 }

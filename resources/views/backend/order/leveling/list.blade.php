@@ -23,7 +23,11 @@
                     @if($paginateOrderNotice->child_third_status == 100)
                     {{ config('order.show91')[$paginateOrderNotice->third_status] }}
                     @else
-                    {{ config('order.show91')[$paginateOrderNotice->third_status].' ('.config('order.show91')[$paginateOrderNotice->child_third_status].')' }}
+                        @if (isset($paginateOrderNotice->third_status))
+                        {{ config('order.show91')[$paginateOrderNotice->third_status].' ('.config('order.show91')[$paginateOrderNotice->child_third_status].')' }}
+                        @else
+                        ''
+                        @endif
                     @endif
                     </td>
                     <td>{{ config('order.third')[$paginateOrderNotice->third] }}</td>
