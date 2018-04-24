@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\AssetException;
+use App\Exceptions\CustomException;
 use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
@@ -64,6 +65,10 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             // 资金异常
             throw new DailianException($exception->getMessage());
         } catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }

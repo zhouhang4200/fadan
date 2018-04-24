@@ -63,6 +63,10 @@ class NoReceive extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (RequestTimeoutException $exception) {
             // 将订单标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
         }
     	DB::commit();
 

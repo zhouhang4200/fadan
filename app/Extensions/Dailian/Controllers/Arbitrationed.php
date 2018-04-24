@@ -10,7 +10,7 @@ use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
-use App\Services\DailianMama;
+use App\Exceptions\CustomException;
 use App\Exceptions\DailianException; 
 use App\Repositories\Frontend\OrderDetailRepository;
 
@@ -72,7 +72,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 26);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (CustomException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
     	// 返回
         return true;
@@ -143,235 +146,231 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
         // 回传双金 + 回传手续费
         // $apiAll = bcadd($apiDeposit, $apiService);
         if ($leftAmount >= 0 && $leftDeposit >= 0 && $bool >= 0) {    
-            DB::beginTransaction();
-        	try {
-        		if ($leftAmount > 0) {
-	                // 发单 代练费退回(剩余回传代练费)
-	                Asset::handle(new Income($leftAmount, 7, $this->order->no, '退还代练费', $this->order->creator_primary_user_id));
 
-	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new DailianException('流水记录写入失败');
-	                }
+            if ($leftAmount > 0) {
+                // 发单 代练费退回(剩余回传代练费)
+                Asset::handle(new Income($leftAmount, 7, $this->order->no, '退还代练费', $this->order->creator_primary_user_id));
 
-	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new DailianException('流水记录写入失败');
-	                }
-        		}
-
-                if ($apiAmount > 0) {
-	                // 接单 代练收入
-	                Asset::handle(new Income($apiAmount, 12, $this->order->no, '代练费收入', $this->order->gainer_primary_user_id));
-
-	                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-	                    throw new DailianException('流水记录写入失败');
-	                }
-
-	                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-	                    throw new DailianException('流水记录写入失败');
-	                }
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
                 }
 
-                // 如果订单安全保证金 > (回传双金 + 手续费)
-                // 安全保证金 》 回传双金
-                if (bcsub($security, $apiDeposit) > 0) {  
-                	if ($apiDeposit > 0) {
-		                // 发单 安全保证金收入
-		                Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-                	}
-
-	                if ($apiService > 0) {	                	
-		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                // 接单 剩下的安全保证金
-	                $leftSecurity = bcsub($security, $apiDeposit);
-
-	                if ($leftSecurity > 0) {
-		                Asset::handle(new Income($leftSecurity, 8, $this->order->no, '退还安全保证金', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                if ($efficiency) {
-		                // 接单 退还效率保证金
-		                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                if ($apiService > 0) {
-		                // 接单 代练手续费收入
-		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-                } else if (bcsub($security, $apiDeposit) == 0) {
-                	if ($apiDeposit > 0) {
-	                	// 发单 安全保证金收入
-		                Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-                	}
-
-	                if ($apiService > 0) {
-		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                // 接单 退还全额效率保证金
-	                if ($efficiency) {
-		                Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                if ($apiService > 0) {
-		                // 接单 代练手续费收入
-		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-                } else {
-                	// 发单 全额安全保证金收入
-                	if ($security) {
-	                	Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-                	}
-
-	                // 发单 效率保证金收入
-	                $creatorEfficiency = bcsub($apiDeposit, $security);
-
-	                if ($creatorEfficiency > 0) {
-		                Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                if ($apiService > 0) {
-		                // 发单 手续费支出
-		                Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                // 接单 退还剩余效率保证金
-	                $leftEfficiency = bcsub($efficiency, $creatorEfficiency);
-
-	                if ($leftEfficiency > 0) {
-		                Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
-
-	                if ($apiService > 0) {
-		                 // 接单 代练手续费收入
-		                Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
-
-		                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-
-		                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-		                    throw new DailianException('流水记录写入失败');
-		                }
-	                }
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
                 }
-                // 写入获得双金金额
-                OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $apiDeposit);
-                // 写入手续费
-                OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
-                // 写入结算时间
-                OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
-	        } catch (DailianException $e) {
-	            DB::rollBack();
-	        }
-	        DB::commit();
+            }
+
+            if ($apiAmount > 0) {
+                // 接单 代练收入
+                Asset::handle(new Income($apiAmount, 12, $this->order->no, '代练费收入', $this->order->gainer_primary_user_id));
+
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
+
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
+            }
+
+            // 如果订单安全保证金 > (回传双金 + 手续费)
+            // 安全保证金 》 回传双金
+            if (bcsub($security, $apiDeposit) > 0) {
+                if ($apiDeposit > 0) {
+                    // 发单 安全保证金收入
+                    Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                    // 发单 手续费支出
+                    Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                // 接单 剩下的安全保证金
+                $leftSecurity = bcsub($security, $apiDeposit);
+
+                if ($leftSecurity > 0) {
+                    Asset::handle(new Income($leftSecurity, 8, $this->order->no, '退还安全保证金', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($efficiency) {
+                    // 接单 退还效率保证金
+                    Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                    // 接单 代练手续费收入
+                    Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+            } else if (bcsub($security, $apiDeposit) == 0) {
+                if ($apiDeposit > 0) {
+                    // 发单 安全保证金收入
+                    Asset::handle(new Income($apiDeposit, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                    // 发单 手续费支出
+                    Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                // 接单 退还全额效率保证金
+                if ($efficiency) {
+                    Asset::handle(new Income($efficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                    // 接单 代练手续费收入
+                    Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+            } else {
+                // 发单 全额安全保证金收入
+                if ($security) {
+                    Asset::handle(new Income($security, 10, $this->order->no, '安全保证金收入', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                // 发单 效率保证金收入
+                $creatorEfficiency = bcsub($apiDeposit, $security);
+
+                if ($creatorEfficiency > 0) {
+                    Asset::handle(new Income($creatorEfficiency, 11, $this->order->no, '效率保证金收入', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                    // 发单 手续费支出
+                    Asset::handle(new Expend($apiService, 3, $this->order->no, '手续费支出', $this->order->creator_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                // 接单 退还剩余效率保证金
+                $leftEfficiency = bcsub($efficiency, $creatorEfficiency);
+
+                if ($leftEfficiency > 0) {
+                    Asset::handle(new Income($leftEfficiency, 9, $this->order->no, '退还效率保证金', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+
+                if ($apiService > 0) {
+                     // 接单 代练手续费收入
+                    Asset::handle(new Income($apiService, 6, $this->order->no, '代练手续费收入', $this->order->gainer_primary_user_id));
+
+                    if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+
+                    if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                        throw new DailianException('流水记录写入失败');
+                    }
+                }
+            }
+            // 写入获得双金金额
+            OrderDetailRepository::updateByOrderNo($this->orderNo, 'get_amount', $apiDeposit);
+            // 写入手续费
+            OrderDetailRepository::updateByOrderNo($this->orderNo, 'poundage', $apiService);
+            // 写入结算时间
+            OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
+
 	    } else {
 	    	throw new DailianException('参数传入错误或不满足条件');
 	    }

@@ -2,14 +2,14 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Models\OrderHistory;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
+use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use App\Exceptions\DailianException; 
 
 /**
@@ -76,6 +76,9 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     	} catch (RequestTimeoutException $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常，报警异常
+            throw new DailianException($exception->getMessage());
         }
     	DB::commit();
     	// 返回
@@ -89,7 +92,6 @@ class UnRevoke extends DailianAbstract implements DailianInterface
      */
     public function getBeforeStatus($orderNo)
     {
-
         $orderDetail = OrderDetail::where('order_no', $orderNo)
             ->where('field_name', 'order_previous_status')
             ->first();

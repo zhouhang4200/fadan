@@ -66,6 +66,9 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     	} catch (RequestTimeoutException $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常，报警异常
+            throw new DailianException($exception->getMessage());
         }
     	DB::commit();
 
@@ -117,7 +120,6 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                     }
                 }
             }
-
 
             /**
              * 以下只适用于  91  和 代练妈妈

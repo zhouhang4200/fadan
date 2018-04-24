@@ -10,7 +10,8 @@ use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+use League\Flysystem\Exception;
 
 /**
  * 撤单（删除）操作
@@ -64,6 +65,9 @@ class Delete extends DailianAbstract implements DailianInterface
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
             // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }

@@ -2,12 +2,15 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\AssetException;
+use App\Exceptions\CustomException;
 use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+use League\Flysystem\Exception;
 
 /**
  * 锁定操作
@@ -62,8 +65,14 @@ class Lock extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 16);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
+    	} catch (AssetException $exception) {
+            throw new DailianException($exception->getMessage());
+        } catch (RequestTimeoutException $exception) {
             // 报警异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 报警异常
+            throw new DailianException($exception->getMessage());
         }
     	DB::commit();
 
