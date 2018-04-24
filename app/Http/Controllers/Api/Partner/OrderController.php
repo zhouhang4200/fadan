@@ -139,7 +139,7 @@ class OrderController extends Controller
             DB::rollback();
             myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
             return response()->partner(0, $e->getMessage());
-        }  catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
@@ -243,7 +243,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
-        }  catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->partner(0, '接口异常');
         }
@@ -373,7 +373,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
-        }  catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->partner(0, '接口异常');
         }

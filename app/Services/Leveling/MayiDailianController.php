@@ -2,9 +2,11 @@
 
 namespace App\Services\Leveling;
 
+use Exception;
 use App\Models\Game;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use App\Exceptions\DailianException;
 
 /**
  * 蚂蚁代练操作控制器
@@ -31,22 +33,35 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function formDataRequest($options = [], $method = 'POST')
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
-        curl_setopt($curl, CURLOPT_URL, config('leveling.mayidailian.url'));
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        // 记录日志
-        myLog('mayidailian', [
-            '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-            '方法名' => $options['method'],
-            '签名' => $options['sign'],
-            '时间' => Carbon::now()->toDateTimeString(),
-            '结果' => $result ? json_decode($result) : '',
-        ]);
+        try {
+            $client = new Client();
+            $response = $client->request($method, config('leveling.mayidailian.url'), [
+                'form_params' => $options,
+            ]);
+            $result =  $response->getBody()->getContents();
+
+            if (isset($result) && ! empty($result)) {
+                $arrResult = json_decode($result, true);
+
+                if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+                    if (isset($arrResult['status']) && $arrResult['status'] != 1) {
+                        // 判断是否失败
+                        $message = $arrResult['message'] ?? 'dd373接口返回错误';
+                        throw new DailianException($message);
+                    }
+                }
+                // 记录日志
+                myLog('mayidailian-all-logs', [
+                    '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
+                    '方法名' => $options['method'],
+                    '签名' => $options['sign'],
+                    '时间' => Carbon::now()->toDateTimeString(),
+                    '结果' => $result ? json_decode($result) : '',
+                ]);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -58,19 +73,35 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function normalRequest($options = [], $method = 'POST')
     {
-        $client = new Client();
-        $response = $client->request($method, config('leveling.mayidailian.url'), [
-            'form_params' => $options,
-        ]);
-        $result =  $response->getBody()->getContents();
-        // 记录日志
-        myLog('mayidailian', [
-            '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-            '方法名' => $options['method'],
-            '签名' => $options['sign'],
-            '时间' => Carbon::now()->toDateTimeString(),
-            '结果' => $result ? json_decode($result) : '',
-        ]);
+        try {
+            $client = new Client();
+            $response = $client->request($method, config('leveling.mayidailian.url'), [
+                'form_params' => $options,
+            ]);
+            $result =  $response->getBody()->getContents();
+
+            if (isset($result) && ! empty($result)) {
+                $arrResult = json_decode($result, true);
+
+                if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+                    if (isset($arrResult['status']) && $arrResult['status'] !== 1) {
+                        // 判断是否失败
+                        $message = $arrResult['message'] ?? 'dd373接口返回错误';
+                        throw new DailianException($message);
+                    }
+                }
+                // 记录日志
+                myLog('mayidailian-all-logs', [
+                    '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
+                    '方法名' => $options['method'],
+                    '签名' => $options['sign'],
+                    '时间' => Carbon::now()->toDateTimeString(),
+                    '结果' => $result ? json_decode($result) : '',
+                ]);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -80,7 +111,11 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function getSign($method, $time)
     {
-        return md5($method.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.Ver').config('leveling.mayidailian.appsecret'));
+        try {
+            return md5($method.config('leveling.mayidailian.appid').$time.config('leveling.mayidailian.Ver').config('leveling.mayidailian.appsecret'));
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -88,18 +123,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function onSale($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderGrounding',
-            'order_id'      => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderGrounding', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderGrounding',
+                'order_id'      => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderGrounding', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -107,18 +146,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function offSale($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderUndercarriage',
-            'order_id'      => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderUndercarriage', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderUndercarriage',
+                'order_id'      => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderUndercarriage', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -132,21 +175,25 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function applyRevoke($orderDatas) {
-        $time = time();
-        $options = [
-            'method'     => 'dlOrderTs',
-            'nid'        => $orderDatas['mayi_order_no'],
-            'bzmoney'    => $orderDatas['deposit'],
-            'needsMoney' => $orderDatas['amount'],
-            'tsContent'  => ! empty($orderDatas['revoke_message']) ?: '空',
-            'appid'      => config('leveling.mayidailian.appid'),
-            'appsecret'  => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'  => $time,
-            'Ver'        => config('leveling.mayidailian.Ver'),
-            'sign'       => static::getSign('dlOrderTs', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'     => 'dlOrderTs',
+                'nid'        => $orderDatas['mayi_order_no'],
+                'bzmoney'    => $orderDatas['deposit'],
+                'needsMoney' => $orderDatas['amount'],
+                'tsContent'  => ! empty($orderDatas['revoke_message']) ?: '空',
+                'appid'      => config('leveling.mayidailian.appid'),
+                'appsecret'  => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'  => $time,
+                'Ver'        => config('leveling.mayidailian.Ver'),
+                'sign'       => static::getSign('dlOrderTs', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -155,18 +202,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function cancelRevoke($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderCancelTs',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderCancelTs', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderCancelTs',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderCancelTs', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
+        
     }
 
     /**
@@ -175,18 +227,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function agreeRevoke($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderAgreeTs',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderAgreeTs', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderAgreeTs',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderAgreeTs', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
+        
     }
 
     /**
@@ -209,19 +266,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function applyArbitration($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrdertsPub',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrdertsPub', $time),
-            'bz'		    => ! empty($orderDatas['complain_message']) ?: '空',
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrdertsPub',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrdertsPub', $time),
+                'bz'		    => ! empty($orderDatas['complain_message']) ?: '空',
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -230,19 +291,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function cancelArbitration($orderDatas) {
-        $time = time();
-        $options = [
-            'method'    => 'dlCancelOrdertsPub',
-            'order_id'  => $orderDatas['mayi_order_no'],
-            'bz'        => '取消仲裁',
-            'appid'     => config('leveling.mayidailian.appid'),
-            'appsecret' => config('leveling.mayidailian.appsecret'),
-            'TimeStamp' => $time,
-            'Ver'       => config('leveling.mayidailian.Ver'),
-            'sign'      => static::getSign('dlCancelOrdertsPub', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'    => 'dlCancelOrdertsPub',
+                'order_id'  => $orderDatas['mayi_order_no'],
+                'bz'        => '取消仲裁',
+                'appid'     => config('leveling.mayidailian.appid'),
+                'appsecret' => config('leveling.mayidailian.appsecret'),
+                'TimeStamp' => $time,
+                'Ver'       => config('leveling.mayidailian.Ver'),
+                'sign'      => static::getSign('dlCancelOrdertsPub', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -272,19 +337,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function complete($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderAcceptance',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'password'		=> config('leveling.mayidailian.password'),
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderAcceptance', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderAcceptance',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'password'		=> config('leveling.mayidailian.password'),
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderAcceptance', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -293,19 +362,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function lock($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderLock',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'remark'	    => '订单状态异常',
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderLock', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderLock',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'remark'	    => '订单状态异常',
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderLock', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -314,19 +387,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function cancelLock($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderunLock',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'remark'	    => '订单状态正常',
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderunLock', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderunLock',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'remark'	    => '订单状态正常',
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderunLock', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -349,18 +426,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type]             [description]
      */
     public static function delete($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderDel',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderDel', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderDel',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderDel', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
 
@@ -373,39 +454,43 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function updateOrder($orderDatas) {
-        $time = time();
-        $gameName = Game::find($orderDatas['game_id']);
-        $options = [
-            'method'        => 'dlOrderUpdate',
-            'order_id'      => $orderDatas['mayi_order_no'],
-            'gameName'      => $gameName ? $gameName->name : '',
-            'zoneName'      => $orderDatas['region'],
-            'serverName'    => $orderDatas['serve'],
-            'pertype'       => $orderDatas['game_leveling_type'],
-            'title'         => $orderDatas['game_leveling_title'],
-            'paymoney'      => $orderDatas['amount'],
-            'hours'         => bcadd(bcmul($orderDatas['game_leveling_day'], 24, 0), $orderDatas['game_leveling_hour'], 0),
-            'use_gold'      => 0,
-            'bzmoney_gold'  => $orderDatas['efficiency_deposit'],
-            'bzmoney_exp'   => $orderDatas['security_deposit'],
-            'gaccount'      => $orderDatas['account'],
-            'gpassword'     => $orderDatas['password'],
-            'jsm'           => $orderDatas['role'],
-            'equipment'     => $orderDatas['game_leveling_instructions'],
-            'detaildemand'  => $orderDatas['game_leveling_requirements'],
-            'test_phone'    => $orderDatas['user_phone'],
-            'contact_phone' => $orderDatas['user_phone'],
-            'qq'            => $orderDatas['user_qq'],
-            'password'      => config('leveling.mayidailian.password'),
-            'onway'         => 1,
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderUpdate', $time),
-        ];
+        try {
+            $time = time();
+            $gameName = Game::find($orderDatas['game_id']);
+            $options = [
+                'method'        => 'dlOrderUpdate',
+                'order_id'      => $orderDatas['mayi_order_no'],
+                'gameName'      => $gameName ? $gameName->name : '',
+                'zoneName'      => $orderDatas['region'],
+                'serverName'    => $orderDatas['serve'],
+                'pertype'       => $orderDatas['game_leveling_type'],
+                'title'         => $orderDatas['game_leveling_title'],
+                'paymoney'      => $orderDatas['amount'],
+                'hours'         => bcadd(bcmul($orderDatas['game_leveling_day'], 24, 0), $orderDatas['game_leveling_hour'], 0),
+                'use_gold'      => 0,
+                'bzmoney_gold'  => $orderDatas['efficiency_deposit'],
+                'bzmoney_exp'   => $orderDatas['security_deposit'],
+                'gaccount'      => $orderDatas['account'],
+                'gpassword'     => $orderDatas['password'],
+                'jsm'           => $orderDatas['role'],
+                'equipment'     => $orderDatas['game_leveling_instructions'],
+                'detaildemand'  => $orderDatas['game_leveling_requirements'],
+                'test_phone'    => $orderDatas['user_phone'],
+                'contact_phone' => $orderDatas['user_phone'],
+                'qq'            => $orderDatas['user_qq'],
+                'password'      => config('leveling.mayidailian.password'),
+                'onway'         => 1,
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderUpdate', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -413,20 +498,24 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * 增加后的总时间
      */
     public static function addTime($orderDatas) {
-        $time = time();
-        $options = [
-            'method'       => 'dlOrdereUpdateSpec',
-            'order_id'     => $orderDatas['mayi_order_no'],
-            'append_hours' => $orderDatas['game_leveling_day'],
-            'append_day'   => $orderDatas['game_leveling_hour'],
-            'appid'        => config('leveling.mayidailian.appid'),
-            'appsecret'    => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'    => $time,
-            'Ver'          => config('leveling.mayidailian.Ver'),
-            'sign'         => static::getSign('dlOrdereUpdateSpec', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'       => 'dlOrdereUpdateSpec',
+                'order_id'     => $orderDatas['mayi_order_no'],
+                'append_hours' => $orderDatas['game_leveling_day'],
+                'append_day'   => $orderDatas['game_leveling_hour'],
+                'appid'        => config('leveling.mayidailian.appid'),
+                'appsecret'    => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'    => $time,
+                'Ver'          => config('leveling.mayidailian.Ver'),
+                'sign'         => static::getSign('dlOrdereUpdateSpec', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -434,19 +523,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * 增加后的总款
      */
     public static function addMoney($orderDatas) {
-        $time = time();
-        $options = [
-            'method'       => 'dlOrdereUpdatePaymoney',
-            'order_id'     => $orderDatas['mayi_order_no'],
-            'append_price' => $orderDatas['game_leveling_amount'],
-            'appid'        => config('leveling.mayidailian.appid'),
-            'appsecret'    => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'    => $time,
-            'Ver'          => config('leveling.mayidailian.Ver'),
-            'sign'         => static::getSign('dlOrdereUpdatePaymoney', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'       => 'dlOrdereUpdatePaymoney',
+                'order_id'     => $orderDatas['mayi_order_no'],
+                'append_price' => $orderDatas['game_leveling_amount'],
+                'appid'        => config('leveling.mayidailian.appid'),
+                'appsecret'    => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'    => $time,
+                'Ver'          => config('leveling.mayidailian.Ver'),
+                'sign'         => static::getSign('dlOrdereUpdatePaymoney', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -454,18 +547,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function orderDetail($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderInfo',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderInfo', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderInfo',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderInfo', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -473,18 +570,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function getScreenshot($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderImageList',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderImageList', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderImageList',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderImageList', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -492,18 +593,22 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function getMessage($orderDatas) {
-        $time = time();
-        $options = [
-            'method'        => 'dlOrderMessageList',
-            'nid'           => $orderDatas['mayi_order_no'],
-            'appid'         => config('leveling.mayidailian.appid'),
-            'appsecret'     => config('leveling.mayidailian.appsecret'),
-            'TimeStamp'     => $time,
-            'Ver'           => config('leveling.mayidailian.Ver'),
-            'sign'          => static::getSign('dlOrderMessageList', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'        => 'dlOrderMessageList',
+                'nid'           => $orderDatas['mayi_order_no'],
+                'appid'         => config('leveling.mayidailian.appid'),
+                'appsecret'     => config('leveling.mayidailian.appsecret'),
+                'TimeStamp'     => $time,
+                'Ver'           => config('leveling.mayidailian.Ver'),
+                'sign'          => static::getSign('dlOrderMessageList', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -511,19 +616,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function replyMessage($orderDatas) {
-        $time = time();
-        $options = [
-            'method'    => 'dlOrderMessageReply',
-            'nid'       => $orderDatas['mayi_order_no'],
-            'lytext'    => $orderDatas['message'] ?? '留言',
-            'appid'     => config('leveling.mayidailian.appid'),
-            'appsecret' => config('leveling.mayidailian.appsecret'),
-            'TimeStamp' => $time,
-            'Ver'       => config('leveling.mayidailian.Ver'),
-            'sign'      => static::getSign('dlOrderMessageReply', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'    => 'dlOrderMessageReply',
+                'nid'       => $orderDatas['mayi_order_no'],
+                'lytext'    => $orderDatas['message'] ?? '留言',
+                'appid'     => config('leveling.mayidailian.appid'),
+                'appsecret' => config('leveling.mayidailian.appsecret'),
+                'TimeStamp' => $time,
+                'Ver'       => config('leveling.mayidailian.Ver'),
+                'sign'      => static::getSign('dlOrderMessageReply', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -531,19 +640,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @return [type] [description]
      */
     public static function updateAccountAndPassword($orderDatas) {
-        $time = time();
-        $options = [
-            'method'    => 'dlOrdereUpdatePass',
-            'order_id'  => $orderDatas['mayi_order_no'],
-            'account'   => $orderDatas['account'],
-            'gpassword' => $orderDatas['password'],
-            'appid'     => config('leveling.mayidailian.appid'),
-            'appsecret' => config('leveling.mayidailian.appsecret'),
-            'TimeStamp' => $time,
-            'Ver'       => config('leveling.mayidailian.Ver'),
-            'sign'      => static::getSign('dlOrdereUpdatePass', $time),
-        ];
+        try {
+            $time = time();
+            $options = [
+                'method'    => 'dlOrdereUpdatePass',
+                'order_id'  => $orderDatas['mayi_order_no'],
+                'account'   => $orderDatas['account'],
+                'gpassword' => $orderDatas['password'],
+                'appid'     => config('leveling.mayidailian.appid'),
+                'appsecret' => config('leveling.mayidailian.appsecret'),
+                'TimeStamp' => $time,
+                'Ver'       => config('leveling.mayidailian.Ver'),
+                'sign'      => static::getSign('dlOrdereUpdatePass', $time),
+            ];
 
-        static::normalRequest($options);
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            throw new DailianException($e->getMessage());
+        }
     }
 }
