@@ -432,56 +432,12 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return [type] [description]
      */
     public static function updateOrder($orderDatas) {
-    	// try {
-    	// 	$time = time();
-	    //     $gameName = Game::find($orderDatas['game_id']);
-	    //     $datas = [
-	    //     	'order_no' => $orderDatas['dd373_order_no'],
-	    //     	'game_name' => $gameName ? $gameName->name : '',
-	    //     	'game_region' => $orderDatas['region'],
-	    //     	'game_serve' => $orderDatas['serve'],
-	    //     	'game_account' => $orderDatas['account'],
-	    //     	'game_password' => $orderDatas['password'],
-	    //     	'game_leveling_type' => $orderDatas['game_leveling_type'],
-	    //     	'game_leveling_title' => $orderDatas['game_leveling_title'],
-	    //     	'game_leveling_price' => $orderDatas['amount'],
-	    //     	'game_leveling_day' => $orderDatas['game_leveling_day'],
-	    //     	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
-	    //     	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
-	    //     	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
-	    //     	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
-	    //     	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
-	    //     	'businessman_phone' => $orderDatas['user_phone'],
-	    //     	'businessman_qq' => $orderDatas['user_qq'],
-	    //     ]; 
-
-	    //     $datas = json_encode($datas);
-
-	    //     $client = new Client();
-     //        $response = $client->request('POST', config('leveling.dd373.url')['updateOrder'], [
-     //            'form_params' => [
-     //               'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
-     //            ]
-     //        ]);
-     //        $result = $response->getBody()->getContents();
-
-     //        // 记录日志
-	    //     myLog('dd373-all-logs', [
-	    //         '修改订单信息' => $datas ?? '',
-	    //         '地址' => config('leveling.dd373.url')['updateOrder'] ?? '',
-	    //         '时间' => Carbon::now()->toDateTimeString(),
-	    //         '结果' => $result ?? '',
-	    //     ]);
-     //    } catch (Exception $e) {
-     //        myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
-     //    }
-
-        try {
-	        $time = time();
+    	try {
+    		$time = time();
 	        $gameName = Game::find($orderDatas['game_id']);
 	        $datas = [
 	        	'order_no' => $orderDatas['dd373_order_no'],
-	        	'game_name' => $gameName,
+	        	'game_name' => $gameName ? $gameName->name : '',
 	        	'game_region' => $orderDatas['region'],
 	        	'game_serve' => $orderDatas['serve'],
 	        	'game_account' => $orderDatas['account'],
@@ -497,15 +453,59 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
 	        	'businessman_phone' => $orderDatas['user_phone'],
 	        	'businessman_qq' => $orderDatas['user_qq'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['updateOrder']);
-    	} catch (Exception $e) {
-    		myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
-    	}
+	        ]; 
+
+	        $datas = json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign');
+
+	        $client = new Client();
+            $response = $client->request('POST', config('leveling.dd373.url')['updateOrder'], [
+                'x-www-form-urlencoded' => [
+                   'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
+                ]
+            ]);
+            $result = $response->getBody()->getContents();
+
+            // 记录日志
+	        myLog('dd373-all-logs', [
+	            '修改订单信息' => $datas ?? '',
+	            '地址' => config('leveling.dd373.url')['updateOrder'] ?? '',
+	            '时间' => Carbon::now()->toDateTimeString(),
+	            '结果' => $result ?? '',
+	        ]);
+        } catch (Exception $e) {
+            myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
+        }
+
+     //    try {
+	    //     $time = time();
+	    //     $gameName = Game::find($orderDatas['game_id']);
+	    //     $datas = [
+	    //     	'order_no' => $orderDatas['dd373_order_no'],
+	    //     	'game_name' => $gameName,
+	    //     	'game_region' => $orderDatas['region'],
+	    //     	'game_serve' => $orderDatas['serve'],
+	    //     	'game_account' => $orderDatas['account'],
+	    //     	'game_password' => $orderDatas['password'],
+	    //     	'game_leveling_type' => $orderDatas['game_leveling_type'],
+	    //     	'game_leveling_title' => $orderDatas['game_leveling_title'],
+	    //     	'game_leveling_price' => $orderDatas['amount'],
+	    //     	'game_leveling_day' => $orderDatas['game_leveling_day'],
+	    //     	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
+	    //     	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
+	    //     	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
+	    //     	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
+	    //     	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
+	    //     	'businessman_phone' => $orderDatas['user_phone'],
+	    //     	'businessman_qq' => $orderDatas['user_qq'],
+	    //     	'timestamp' => $time,
+	    //     ];
+	    //     // 对参数进行加工
+	    //    	$options = static::handleOptions($datas);
+	    //    	// 发送
+	    //    	static::normalRequest($options, config('leveling.dd373.url')['updateOrder']);
+    	// } catch (Exception $e) {
+    	// 	myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
+    	// }
     }
 
     /**
