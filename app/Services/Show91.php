@@ -43,9 +43,10 @@ class Show91
         $result = curl_exec($curl);
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
-        } catch (Exception $exception) {
+        } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-            throw  new Exception('91接口异常');
+        } catch (Exception $exception) {
+            throw new DailianException('操作失败');
         }
         curl_close($curl);
         return $result;
@@ -81,9 +82,10 @@ class Show91
 
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
-        } catch (Exception $exception) {
+        } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-            throw  new Exception('91接口异常');
+        } catch (Exception $exception) {
+            throw new DailianException('操作失败');
         }
 
         return $result;
