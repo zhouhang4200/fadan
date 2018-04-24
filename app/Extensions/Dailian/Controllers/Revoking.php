@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderRevoking;
+use App\Exceptions\CustomException;
 use DB;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
@@ -135,6 +136,9 @@ class Revoking extends DailianAbstract implements DailianInterface
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (CustomException $exception) {
+                // 如果出现返回空值则写入报警。并标记为异常
+                throw new DailianException($exception->getMessage());
             }
 
         }

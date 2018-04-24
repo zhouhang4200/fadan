@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\CustomException;
 use DB;
 use Asset;
 use App\Services\Show91;
@@ -131,6 +132,9 @@ class Delete extends DailianAbstract implements DailianInterface
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (CustomException $exception) {
+                // 如果出现返回空值则写入报警。并标记为异常
+                throw new DailianException($exception->getMessage());
             }
         }
     }
