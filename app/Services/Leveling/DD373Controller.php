@@ -261,7 +261,23 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param  [type] $orderDatas [description]
      * @return [type]             [description]
      */
-    public static function refuseRevoke($orderDatas) {}
+    public static function refuseRevoke($orderDatas) {
+    	try {
+	        $time = time();
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        	'State' => 3,
+	        	'reason' => '空',
+	        	'timestamp' => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.dd373.url')['refuseRevoke']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
+    	}
+    }
 
     /**
      * 申请仲裁

@@ -94,6 +94,7 @@ return [
 			'getMessage' => 'http://125.42.146.110:9090/DLSdk.html?action=getMessages', //获取留言
 			'replyMessage' => 'http://125.42.146.110:9090/DLSdk.html?action=sendMessage', // 回复留言
 			'updateAccountAndPassword' => 'http://125.42.146.110:9090/DLSdk.html?action=changePwd', // 修改账号密码
+			'refuseRevoke' => 'http://125.42.146.110:9090/DLSdk.html?action=CancelAction', // 不同意撤销
 		],
 	],
 ];
