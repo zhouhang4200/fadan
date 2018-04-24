@@ -60,7 +60,7 @@ class Partner
                 $str .= $key . '=' . $value . '&';
             }
         }
-        $sign = md5(urlencode(rtrim($str,  '&') . $request->user->app_secret));
+        $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
 // dd($sign, urlencode(rtrim($str,  '&') . $request->user->app_secret));
         if ($sign != $request->sign) {
             return false;

@@ -44,6 +44,10 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        if (isset($result) && ! empty($result)) {
 	        	$arrResult = json_decode($result, true);
 
+	        	if (! isset($arrResult) || ! is_array($arrResult)) {
+	        		throw new DailianException('返回结果异常');
+	        	}
+
 	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
 	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
 	        			// 判断是否失败, 抛出错误
@@ -62,6 +66,10 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 		            '时间' => Carbon::now()->toDateTimeString(),
 		            '结果' => $result ? json_decode($result, true) : '',
 		        ]);
+	        	return $arrResult;
+    		} else {
+    			// 抛出错误
+        		throw new Exception($e->getMessage());
     		}
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -574,12 +582,13 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'timestamp' => $time,
+	        	'platformSign' => config('leveling.dd373.platform-sign'),
 	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	        $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+
+	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['orderDetail']);
+	       	return static::normalRequest($datas, config('leveling.dd373.url')['orderDetail']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
