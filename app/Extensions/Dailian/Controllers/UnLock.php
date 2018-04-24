@@ -66,7 +66,9 @@ class UnLock extends DailianAbstract implements DailianInterface
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
-            // 未知异常，报警异常
+            //  写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();

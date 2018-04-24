@@ -62,9 +62,10 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();

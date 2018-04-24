@@ -2,11 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-
 use DB;
 use Exception;
 use App\Services\Show91;
-use App\Models\OrderHistory;
 use App\Models\OrderDetail;
 use App\Exceptions\DailianException; 
 
@@ -64,7 +62,9 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     		DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
-            // 未知异常，报警异常
+            //  写入redis报警
+            $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();

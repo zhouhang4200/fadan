@@ -56,40 +56,13 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
-            // 我们平台操作失败，写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, 31);
-    		DB::rollBack();
+            DB::rollBack();
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
-            // 未知异常
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();
         return true;
-    }
-
-    public function after()
-    {
-        // 发单方没有取消异常操作，暂时屏蔽
-        if ($this->runAfter) {
-            // try {
-            //     $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            //     switch ($orderDetails['third']) {
-            //         case 1:
-            //             throw new DailianException('91平台没有此操作!');
-            //             break;
-            //         case 2:
-            //             // 代练妈妈取消异常
-            //             DailianMama::operationOrder($this->order, 20011);
-            //             break;
-            //         default:
-            //             throw new DailianException('第三方接单平台不存在!');
-            //             break;
-            //     }
-            // } catch (DailianException $e) {
-            //     throw new DailianException($e->getMessage());
-            // }
-        }
     }
 }

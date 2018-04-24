@@ -212,7 +212,7 @@ class Show91
             'order.account'        => $orderDetails['account'],// 游戏账号
             'order.account_pwd'    => $orderDetails['password'], //账号密码
             'order.role_name'      => $orderDetails['role'],//角色名字
-            'order.order_pwd'      => '',//订单密码
+            'order.order_pwd'      => $orderDetails['order_password'] ?? '',//订单密码
             'order.current_info'   => $orderDetails['game_leveling_instructions'],
             'initPic1'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'initPic2'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),

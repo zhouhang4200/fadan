@@ -299,7 +299,7 @@
                             content: result.message,
                             btn: ['继续发布', '订单列表', '待发订单'],
                             btn1: function(index, layero){
-                                location.reload();
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
@@ -313,7 +313,7 @@
                             content: result.message,
                             btn: ['继续发布', '订单列表', '待发订单'],
                             btn1: function(index, layero){
-                                location.reload();
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";

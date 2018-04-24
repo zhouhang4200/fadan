@@ -18,6 +18,7 @@ class AutomaticallyGrabGoods extends Model
       'remark',
       'seller_nick',
       'game_id',
+      'game_name',
     ];
 
     /**
