@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\CustomException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderHistory;
@@ -129,21 +130,9 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
                 /**
                  * 以下只适用于  91  和 代练妈妈
                  */
-
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {
@@ -164,6 +153,9 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (CustomException $exception) {
+                // 如果出现返回空值则写入报警。并标记为异常
+                throw new DailianException($exception->getMessage());
             }
         }
     }

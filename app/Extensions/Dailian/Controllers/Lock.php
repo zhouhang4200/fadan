@@ -89,21 +89,9 @@ class Lock extends DailianAbstract implements DailianInterface
                     }
                 }
 
-
-
-
-
-
-
-
-
-
-
-
                 /**
                  * 以下只适用于  91  和 代练妈妈
                  */
-
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 switch ($orderDetails['third']) {

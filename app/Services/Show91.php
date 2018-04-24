@@ -69,11 +69,15 @@ class Show91
 
         $options = array_merge($params, $options);
 
-        $client = new Client;
-        $response = $client->request($method, $url, [
-            'query' => $options,
-        ]);
-        $result = $response->getBody()->getContents();
+        try {
+            $client = new Client(['timeout' => 2]);
+            $response = $client->request($method, $url, [
+                'query' => $options,
+            ]);
+            $result = $response->getBody()->getContents();
+        } catch (\Exception $exception) {
+            throw  new CustomException(0, '订单状态异常');
+        }
 
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);

@@ -147,9 +147,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
                         break;
                 }
 
-
-
-
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);

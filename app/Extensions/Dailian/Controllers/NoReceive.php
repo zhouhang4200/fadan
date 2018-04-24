@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\CustomException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderDetail;
@@ -87,22 +88,9 @@ class NoReceive extends DailianAbstract implements DailianInterface
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
                 /**
                  * 以下只适用于  91  和 代练妈妈
                  */
-
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
                 // 上架91订单
@@ -115,6 +103,8 @@ class NoReceive extends DailianAbstract implements DailianInterface
                 }
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (CustomException $exception) {
+                // 将订单标记为异常
             }
         }
     }

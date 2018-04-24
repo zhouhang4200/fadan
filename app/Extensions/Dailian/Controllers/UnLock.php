@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\CustomException;
 use DB;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
@@ -93,12 +94,6 @@ class UnLock extends DailianAbstract implements DailianInterface
                 }
 
 
-
-
-
-
-
-
                 /**
                  * 以下 只 适用于 91  和 代练妈妈
                  * @var [type]
@@ -118,6 +113,9 @@ class UnLock extends DailianAbstract implements DailianInterface
                 return true;
             } catch (DailianException $e) {
                 throw new DailianException($e->getMessage());
+            } catch (CustomException $exception) {
+                // 如果出现返回空值则写入报警。并标记为异常
+                throw new DailianException($exception->getMessage());
             }
         }
     }
