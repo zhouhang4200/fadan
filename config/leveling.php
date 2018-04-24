@@ -9,20 +9,20 @@ use App\Services\Leveling\MayiDailianController;
 return [
 	// 第三方平台我们这边的账号ID对应的平台ID
 	'third' => [
-		// 8083 => 3,
-		// 8098 => 4,
+		8083 => 3,
+		8098 => 4,
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
 	'third_orders' => [
-		// 3 => 'mayi_order_no',
-		// 4 => 'dd373_order_no',
+		3 => 'mayi_order_no',
+		4 => 'dd373_order_no',
 	],
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [
-		// 3 => MayiDailianController::class,
-		// 4 => DD373Controller::class,
+		3 => MayiDailianController::class,
+		4 => DD373Controller::class,
 	],
 
 	// 调用第三方平台接口控制器中的方法名，下面的方法 key 与 value 相同，本来多此一举，便于查看
@@ -84,7 +84,7 @@ return [
 			'cancelArbitration' => 'http://125.42.146.110:9090/DLSdk.html?action=undoArbitrate', // 取消仲裁
 			'complete' => 'http://125.42.146.110:9090/DLSdk.html?action=confirmOrder', // 订单完成
 			'lock' => 'http://125.42.146.110:9090/DLSdk.html?action=lockAccount', // 锁定
-			'cancelLock' => 'http://125.42.146.110:9090/DLSdk.html?action=unlockaccount', // 取消锁定
+			'cancelLock' => 'http://125.42.146.110:9090/DLSdk.html?action=unlockAccount', // 取消锁定
 			'delete' => 'http://125.42.146.110:9090/DLSdk.html?action=deleteOrder', // 删除订单
 			'updateOrder' => 'http://125.42.146.110:9090/DLSdk.html?action=modifyOrder', // 修改订单
 			'addTime' => 'http://125.42.146.110:9090/DLSdk.html?action=addTime', // 加时

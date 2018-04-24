@@ -712,6 +712,19 @@ class IndexController extends Controller
     {
         try {
             $dataList = OrderAttachmentRepository::dataList($order_no);
+            // 其他通用平台
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order_no);
+               // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getScreenshot']], [$orderDatas]);
+                    }
+                }
+            }
         } catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
         }

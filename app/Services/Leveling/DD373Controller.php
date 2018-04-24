@@ -455,13 +455,15 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	'businessman_qq' => $orderDatas['user_qq'],
 	        ]; 
 
-	        $datas = json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign');
+	        $datas = json_encode($datas);
 
 	        $client = new Client();
             $response = $client->request('POST', config('leveling.dd373.url')['updateOrder'], [
-                'x-www-form-urlencoded' => [
-                   'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
-                ]
+            	'form_params' => [
+	            	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
+	            	"platformSign" => config('leveling.dd373.platform-sign'),
+            	],
+	            'body' => 'x-www-form-urlencoded',
             ]);
             $result = $response->getBody()->getContents();
 
@@ -475,37 +477,6 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
         } catch (Exception $e) {
             myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
         }
-
-     //    try {
-	    //     $time = time();
-	    //     $gameName = Game::find($orderDatas['game_id']);
-	    //     $datas = [
-	    //     	'order_no' => $orderDatas['dd373_order_no'],
-	    //     	'game_name' => $gameName,
-	    //     	'game_region' => $orderDatas['region'],
-	    //     	'game_serve' => $orderDatas['serve'],
-	    //     	'game_account' => $orderDatas['account'],
-	    //     	'game_password' => $orderDatas['password'],
-	    //     	'game_leveling_type' => $orderDatas['game_leveling_type'],
-	    //     	'game_leveling_title' => $orderDatas['game_leveling_title'],
-	    //     	'game_leveling_price' => $orderDatas['amount'],
-	    //     	'game_leveling_day' => $orderDatas['game_leveling_day'],
-	    //     	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
-	    //     	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
-	    //     	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
-	    //     	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
-	    //     	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
-	    //     	'businessman_phone' => $orderDatas['user_phone'],
-	    //     	'businessman_qq' => $orderDatas['user_qq'],
-	    //     	'timestamp' => $time,
-	    //     ];
-	    //     // 对参数进行加工
-	    //    	$options = static::handleOptions($datas);
-	    //    	// 发送
-	    //    	static::normalRequest($options, config('leveling.dd373.url')['updateOrder']);
-    	// } catch (Exception $e) {
-    	// 	myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
-    	// }
     }
 
     /**
@@ -581,12 +552,12 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'platformSign' => config('leveling.dd373.platform-sign'),
-	        	'timestamp' => $time,
 	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	        $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+
+	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['getScreenshot']);
+	       	return static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
     	}
