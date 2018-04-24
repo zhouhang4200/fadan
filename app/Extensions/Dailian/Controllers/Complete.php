@@ -9,6 +9,8 @@ use App\Exceptions\RequestTimeoutException;
 use App\Models\TaobaoTrade;
 use DB;
 use Asset;
+use TopClient;
+use Exception;
 use ErrorException;
 use App\Services\Show91;
 use App\Models\OrderDetail;
@@ -17,7 +19,6 @@ use App\Extensions\Asset\Income;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderDetailRepository;
 use LogisticsDummySendRequest;
-use TopClient;
 
 /**
  * 订单完成操作
@@ -83,9 +84,7 @@ class Complete extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+        } catch (Exception $exception) {
             throw new DailianException($exception->getMessage());
         }
         DB::commit();

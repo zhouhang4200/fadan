@@ -2,13 +2,13 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Events\OrderFinish;
 use App\Events\OrderReceiving;
 use App\Exceptions\AssetException;
 use App\Exceptions\CustomException;
 use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
+use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Services\Show91;
@@ -17,7 +17,7 @@ use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
-use Psy\Exception\ErrorException;
+
 
 /**
  * 接单操作
@@ -73,9 +73,7 @@ class Playing extends DailianAbstract implements DailianInterface
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            // 报警异常
-        } catch (CustomException $exception) {
+        } catch (Exception $exception) {
             // 未知异常，报警异常
             throw new DailianException($exception->getMessage());
         }

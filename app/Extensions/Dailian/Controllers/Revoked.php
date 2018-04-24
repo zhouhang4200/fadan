@@ -2,20 +2,18 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
 use DB;
 use Asset;
+use Exception;
 use App\Models\User;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Income;
 use App\Extensions\Asset\Expend;
 use App\Models\LevelingConsult;
-use App\Models\UserOrderDetail;
 use App\Services\DailianMama;
 use App\Exceptions\DailianException;
 use App\Exceptions\AssetException;
-use App\Exceptions\RequestTimeoutException;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
@@ -77,10 +75,7 @@ class Revoked extends DailianAbstract implements DailianInterface
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+        } catch (Exception $exception) {
             // 未知异常，报警异常
             throw new DailianException($exception->getMessage());
         }

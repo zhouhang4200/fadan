@@ -2,15 +2,12 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\AssetException;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
-use App\Services\Show91;
-use App\Models\OrderDetail;
+use Exception;
 use App\Services\DailianMama;
+use App\Exceptions\AssetException;
 use App\Exceptions\DailianException;
-use League\Flysystem\Exception;
+
 
 /**
  * 锁定操作
@@ -67,14 +64,11 @@ class Lock extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
-        } catch (RequestTimeoutException $exception) {
-            // 报警异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
-            // 报警异常
+        } catch (Exception $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }
-    	DB::commit();
+        DB::commit();
 
         return true;
     }

@@ -2,17 +2,15 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Events\OrderArbitrationing;
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
-use ErrorException;
 use Redis;
 use Image;
+use Exception;
 use App\Services\Show91;
 use App\Services\DailianMama;
 use App\Models\LevelingConsult;
-use App\Exceptions\DailianException; 
+use App\Events\OrderArbitrationing;
+use App\Exceptions\DailianException;
 
 /**
  * 申请仲裁操作
@@ -69,10 +67,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 20);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 如果出现返回空值则写入报警。并标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
+    	} catch (Exception $exception) {
             // 未知异常
             throw new DailianException($exception->getMessage());
         }
@@ -87,7 +82,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-
         // 调用事件
         try {
             event(new OrderArbitrationing($this->order));

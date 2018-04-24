@@ -5,13 +5,13 @@ namespace App\Extensions\Dailian\Controllers;
 use DB;
 use Asset;
 use Redis;
-use App\Models\User;
+use Exception;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use App\Models\LevelingConsult;
-use App\Exceptions\CustomException;
-use App\Exceptions\DailianException; 
+use App\Exceptions\AssetException;
+use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
@@ -72,7 +72,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 26);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (CustomException $exception) {
+    	} catch (AssetException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
             // 未知异常
             throw new DailianException($exception->getMessage());
         }

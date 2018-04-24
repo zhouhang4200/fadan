@@ -2,9 +2,8 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
-use App\Exceptions\RequestTimeoutException;
 use DB;
+use Exception;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
@@ -61,11 +60,8 @@ class NoReceive extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (RequestTimeoutException $exception) {
-            // 将订单标记为异常
-            throw new DailianException($exception->getMessage());
-        } catch (CustomException $exception) {
-            // 未知异常
+    	} catch (Exception $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();

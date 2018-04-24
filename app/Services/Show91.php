@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
-use App\Models\ThirdGame;
-use App\Models\ThirdArea;
-use App\Models\ThirdServer;
 use App\Models\OrderDetail;
 use App\Models\GoodsTemplate;
 use App\Exceptions\CustomException;
@@ -45,10 +43,9 @@ class Show91
         $result = curl_exec($curl);
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
-        } catch (\UnexpectedValueException $exception) {
+        } catch (Exception $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (\Exception $exception) {
-            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            throw  new Exception('91接口异常');
         }
         curl_close($curl);
         return $result;
@@ -78,17 +75,15 @@ class Show91
                 'query' => $options,
             ]);
             $result = $response->getBody()->getContents();
-        } catch (\Exception $exception) {
-            throw  new CustomException(0, '订单状态异常');
+        } catch (Exception $exception) {
+            throw  new Exception(0, '订单状态异常');
         }
 
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
-        } catch (\UnexpectedValueException $exception) {
+        } catch (Exception $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (\Exception $exception) {
-            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-            throw  new RequestTimeoutException('91接口异常');
+            throw  new Exception('91接口异常');
         }
 
         return $result;

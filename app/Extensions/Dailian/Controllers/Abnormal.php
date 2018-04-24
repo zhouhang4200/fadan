@@ -2,12 +2,10 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
-use App\Exceptions\CustomException;
 use DB;
 use Redis;
 use Exception;
-use App\Services\DailianMama;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
 
 /**
  * 异常操作
@@ -63,7 +61,7 @@ class Abnormal extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 30);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (CustomException $exception) {
+    	} catch (Exception $exception) {
             // 未知异常
             throw new DailianException($exception->getMessage());
         }
