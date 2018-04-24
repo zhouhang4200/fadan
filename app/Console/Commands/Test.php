@@ -37,6 +37,6 @@ class Test extends Command
      */
     public function handle()
     {
-        myLog('test', [time()]);
+        myLog('test', [date('Y-m-d')]);
     }
 }
