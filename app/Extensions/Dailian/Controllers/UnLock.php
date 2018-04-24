@@ -7,7 +7,9 @@ use DB;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
 use App\Models\OrderHistory;
-use App\Exceptions\DailianException; 
+use App\Exceptions\DailianException;
+use App\Exceptions\RequestTimeoutException;
+
 /**
  * 取消锁定操作
  */
@@ -18,15 +20,14 @@ class UnLock extends DailianAbstract implements DailianInterface
     protected $handledStatus;   // 操作后状态：
     protected $type             = 17; // 操作：17取消锁定
 
-	/**
+    /**
      * [run 取消锁定 -> 锁定前状态]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费]
+     * @internal param $ [type] $apiDeposit  [回传双金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -66,7 +67,13 @@ class UnLock extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 17);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常，报警异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
 
         return true;
@@ -79,51 +86,46 @@ class UnLock extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelLock']], [$orderDatas]);
-                        }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelLock']], [$orderDatas]);
                     }
                 }
-
-
-                /**
-                 * 以下 只 适用于 91  和 代练妈妈
-                 * @var [type]
-                 */
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91 取消锁定
-                        Show91::changeOrderBlock(['oid' => $orderDetails['show91_order_no']]);
-                        break;
-                    case 2:
-                        // 代练妈妈解除锁定接口
-                        DailianMama::operationOrder($this->order, 20010);
-                        break;
-                }
-                return true;
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 如果出现返回空值则写入报警。并标记为异常
-                throw new DailianException($exception->getMessage());
             }
+
+            /**
+             * 以下 只 适用于 91  和 代练妈妈
+             * @var [type]
+             */
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
+            switch ($orderDetails['third']) {
+                case 1:
+                    // 91 取消锁定
+                    Show91::changeOrderBlock(['oid' => $orderDetails['show91_order_no']]);
+                    break;
+                case 2:
+                    // 代练妈妈解除锁定接口
+                    DailianMama::operationOrder($this->order, 20010);
+                    break;
+            }
+            return true;
+
         }
     }
 
     /**
      * 获取订单前一个状态
-     * @param  [type] $orderNo [description]
-     * @return [type]          [description]
+     * @param $orderNo
+     * @throws DailianException
+     * @internal param $ [type] $orderNo [description]
      */
     public function getBeforeStatus($orderNo)
     {

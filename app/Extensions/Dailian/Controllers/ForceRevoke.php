@@ -2,6 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\AssetException;
+use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
 use App\Extensions\Asset\Income;
@@ -58,25 +61,46 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (AssetException $exception) {
+            // 资金异常
+            throw new DailianException($exception->getMessage());
+        } catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
         return true;
     }
 
     /**
      * [退代练费给发单，退双金给接单]
-     * @return [type] [description]
+     * @throws DailianException
      */
     public function updateAsset()
     {
-        DB::beginTransaction();
-        try {
-            $orderDetails = OrderDetail::where('order_no', $this->order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
 
-            // 发单 退回代练费
-            Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
+        $orderDetails = OrderDetail::where('order_no', $this->order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+
+        // 发单 退回代练费
+        Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
+
+        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+            throw new DailianException('流水记录写入失败');
+        }
+
+        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+            throw new DailianException('流水记录写入失败');
+        }
+
+        if ($orderDetails['security_deposit']) {
+            // 接单 退回安全保证金
+            Asset::handle(new Income($orderDetails['security_deposit'], 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new DailianException('流水记录写入失败');
@@ -85,38 +109,21 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
                 throw new DailianException('流水记录写入失败');
             }
-
-            if ($orderDetails['security_deposit']) {        
-                // 接单 退回安全保证金
-                Asset::handle(new Income($orderDetails['security_deposit'], 8, $this->order->no, '安全保证金退回', $this->order->gainer_primary_user_id));
-
-                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
-
-                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
-            }
-
-            if ($orderDetails['efficiency_deposit']) {        
-                // 接单 退效率保证金
-                Asset::handle(new Income($orderDetails['efficiency_deposit'], 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
-
-                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
-
-                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                    throw new DailianException('流水记录写入失败');
-                }
-            }
-            // 写入结算时间
-            OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
-        } catch (DailianException $e) {
-            DB::rollback();
-            throw new DailianException($e->getMessage());
         }
-        DB::commit();
+
+        if ($orderDetails['efficiency_deposit']) {
+            // 接单 退效率保证金
+            Asset::handle(new Income($orderDetails['efficiency_deposit'], 9, $this->order->no, '效率保证金退回', $this->order->gainer_primary_user_id));
+
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
+        }
+        // 写入结算时间
+        OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
     }
 }

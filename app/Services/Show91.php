@@ -13,6 +13,7 @@ use App\Exceptions\DailianException;
 use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderRegionCorrespondence;
+use App\Exceptions\RequestTimeoutException;
 
 /**
  * 91接口类
@@ -55,10 +56,12 @@ class Show91
 
     /**
      * 普通提交
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
+     * @param $url
+     * @param array $options
+     * @param string $method
+     * @return string
+     * @throws CustomException
+     * @throws RequestTimeoutException
      */
     public static function normalRequest($url, $options = [], $method = 'POST')
     {
@@ -85,6 +88,7 @@ class Show91
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         } catch (\Exception $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
+            throw  new RequestTimeoutException('91接口异常');
         }
 
         return $result;

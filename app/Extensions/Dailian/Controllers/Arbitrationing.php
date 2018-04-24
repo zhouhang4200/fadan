@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderArbitrationing;
 use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use ErrorException;
 use Redis;
@@ -68,7 +69,13 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 20);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
     	// 返回
         return true;
@@ -91,57 +98,49 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
         }
 
         if ($this->runAfter) {
-            try {
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                if (! $consult) {
-                    throw new DailianException('订单申诉或协商记录不存在!');
-                }
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+            $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91申请仲裁接口
-                        $options = [
-                            'oid' => $orderDetails['show91_order_no'],
-                            'appeal.title' => '申请仲裁',
-                            'appeal.content' => $consult->complain_message,
-                            'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                            'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                            'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                        ];
-                        Show91::addappeal($options);
-                        break;
-                    case 2:
-                        // 代练妈妈申请仲裁接口
-                        DailianMama::operationOrder($this->order, 20007);
-                        break;
-                }
-
-                if (config('leveling.third_orders')) {
-                     // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 如果没有撤销信息，抛出错误
-                    if (! $orderDatas['consult_order_no']) {
-                        throw new DailianException('撤销记录不存在');
-                    }
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['applyArbitration']], [$orderDatas]);
-                        }
-                    }
-                }
-
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 如果出现返回空值则写入报警。并标记为异常
-                throw new DailianException($exception->getMessage());
+            if (! $consult) {
+                throw new DailianException('订单申诉或协商记录不存在!');
             }
 
+            switch ($orderDetails['third']) {
+                case 1:
+                    // 91申请仲裁接口
+                    $options = [
+                        'oid' => $orderDetails['show91_order_no'],
+                        'appeal.title' => '申请仲裁',
+                        'appeal.content' => $consult->complain_message,
+                        'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                        'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                        'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+                    ];
+                    Show91::addappeal($options);
+                    break;
+                case 2:
+                    // 代练妈妈申请仲裁接口
+                    DailianMama::operationOrder($this->order, 20007);
+                    break;
+            }
+
+            if (config('leveling.third_orders')) {
+                 // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 如果没有撤销信息，抛出错误
+                if (! $orderDatas['consult_order_no']) {
+                    throw new DailianException('撤销记录不存在');
+                }
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['applyArbitration']], [$orderDatas]);
+                    }
+                }
+            }
         }
     }
 }

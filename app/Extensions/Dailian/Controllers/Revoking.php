@@ -4,6 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderRevoking;
 use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
@@ -22,15 +23,14 @@ class Revoking extends DailianAbstract implements DailianInterface
     protected $handledStatus    = 15; // 状态：15撤销中
     protected $type             = 18; // 操作：18撤销
 
-	/**
+    /**
      * [run 撤销 -> 撤销中]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @internal param $ [type] $orderNo     [订单号]
+     * @internal param $ [type] $userId      [操作人]
+     * @internal param $ [type] $apiAmount   [回传代练费]
+     * @internal param $ [type] $apiDeposit  [回传双金]
+     * @internal param $ [type] $apiService  [回传代练手续费]
+     * @internal param $ [type] $writeAmount [协商代练费]
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -67,14 +67,20 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 18);
             DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常，报警异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
         return true;
     }
 
-     /**
+    /**
      * 调用外部提交协商发接口
-     * @return [type] [description]
+     * @throws DailianException
      */
     public function after()
     {
@@ -88,8 +94,6 @@ class Revoking extends DailianAbstract implements DailianInterface
         }
 
         if ($this->runAfter) {
-
-            try {
 
                 $orderDetails = $this->checkThirdClientOrder($this->order);
 
@@ -134,13 +138,6 @@ class Revoking extends DailianAbstract implements DailianInterface
                         }
                     }
                 }
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
-            } catch (CustomException $exception) {
-                // 如果出现返回空值则写入报警。并标记为异常
-                throw new DailianException($exception->getMessage());
-            }
-
         }
     }
 }

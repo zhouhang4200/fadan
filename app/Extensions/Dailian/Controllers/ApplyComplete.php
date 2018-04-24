@@ -3,6 +3,8 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Events\OrderApplyComplete;
+use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use ErrorException;
 use Redis;
@@ -67,7 +69,13 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 28);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (RequestTimeoutException $exception) {
+            // 如果出现返回空值则写入报警。并标记为异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
     	// 返回
         return true;

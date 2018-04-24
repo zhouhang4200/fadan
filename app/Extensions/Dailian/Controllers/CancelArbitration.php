@@ -2,6 +2,9 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\AssetException;
+use App\Exceptions\CustomException;
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use App\Services\Show91;
 use App\Models\OrderHistory;
@@ -67,33 +70,26 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 21);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}
+    	} catch (AssetException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        } catch (RequestTimeoutException $exception) {
+            // 警报异常
+            throw new DailianException($exception->getMessage());
+        } catch (CustomException $exception) {
+            // 未知异常
+            throw new DailianException($exception->getMessage());
+        }
     	DB::commit();
         return true;
     }
 
+    /**
+     * @param $orderNo
+     * @throws DailianException
+     */
     public function getBeforeStatus($orderNo)
     {
-        // $beforeStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
-        // // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
-        // if (! $beforeStatus) {
-        //     throw new DailianException('订单操作记录不存在');
-        // }
-        // if ($beforeStatus == 16 || $beforeStatus == 18) {
-        //     $orderHistories = OrderHistory::where('order_no', $orderNo)->latest('id')->get();
-        //     $arr = [];
-        //     foreach ($orderHistories as $key => $orderHistory) {
-        //         $status = unserialize($orderHistory->before);
-
-        //         if (isset($status['status']) && !in_array($status['status'], [15, 16, 18])) {
-        //             $arr[$key] = $status['status'];
-        //         }
-        //     }
-        //     $this->handledStatus = current($arr);
-        // } else {
-        //     $this->handledStatus = $beforeStatus;
-        // }
-        // 
         $orderDetail = OrderDetail::where('order_no', $orderNo)
             ->where('field_name', 'order_previous_status')
             ->first();
@@ -113,7 +109,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
         } else {
             $this->handledStatus = $previousArr[0];
         }
-
     }
 
     public function changeConsultStatus()
@@ -128,43 +123,40 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-            try {
-                $orderDetails = $this->checkThirdClientOrder($this->order);
-                $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                if (! $consult) {
-                    throw new DailianException('订单申诉或协商记录不存在!');
-                }
-                    
-                switch ($orderDetails['third']) {
-                    case 1:
-                        // 91 取消申诉接口
-                        Show91::cancelAppeal(['aid' => $orderDetails['show91_order_no']]);
-                        break;
-                    case 2:
-                        // 代练妈妈取消申诉接口
-                        DailianMama::operationOrder($this->order, 20008);
-                        break;
-                }
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+            $consult = LevelingConsult::where('order_no', $this->order->no)->first();
 
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                    // 如果没有撤销信息，抛出错误
-                    if (! $orderDatas['consult_order_no']) {
-                        throw new DailianException('申诉记录不存在');
-                    }
-                   // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelArbitration']], [$orderDatas]);
-                        }
+            if (! $consult) {
+                throw new DailianException('订单申诉或协商记录不存在!');
+            }
+
+            switch ($orderDetails['third']) {
+                case 1:
+                    // 91 取消申诉接口
+                    Show91::cancelAppeal(['aid' => $orderDetails['show91_order_no']]);
+                    break;
+                case 2:
+                    // 代练妈妈取消申诉接口
+                    DailianMama::operationOrder($this->order, 20008);
+                    break;
+            }
+
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                // 如果没有撤销信息，抛出错误
+                if (! $orderDatas['consult_order_no']) {
+                    throw new DailianException('申诉记录不存在');
+                }
+               // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['cancelArbitration']], [$orderDatas]);
                     }
                 }
-            } catch (DailianException $e) {
-                throw new DailianException($e->getMessage());
             }
         }
     }
