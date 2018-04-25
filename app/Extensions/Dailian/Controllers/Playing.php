@@ -160,6 +160,14 @@ class Playing extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
+             /**
+             * 以下只适用于 91 和 代练妈妈
+             * @var [type]
+             */
+            $now = Carbon::now()->toDateTimeString();
+            // 订单详情
+            $orderDetails = $this->checkThirdClientOrder($this->order);
+
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
@@ -202,14 +210,6 @@ class Playing extends DailianAbstract implements DailianInterface
                 }
             }
 
-
-            /**
-             * 以下只适用于 91 和 代练妈妈
-             * @var [type]
-             */
-            $now = Carbon::now()->toDateTimeString();
-            // 订单详情
-            $orderDetails = $this->checkThirdClientOrder($this->order);
             // 更新接单时间
             OrderDetail::where('order_no', $this->order->no)
                 ->where('field_name', 'receiving_time')

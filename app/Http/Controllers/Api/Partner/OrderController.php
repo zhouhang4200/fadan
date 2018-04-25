@@ -138,7 +138,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             DB::rollback();
             myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
-            return response()->partner(0, $e->getMessage());
+            return response()->partner(0, '接口异常');
         } catch (Exception $e) {
             DB::rollback();
             myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
@@ -527,7 +527,7 @@ class OrderController extends Controller
                 ->where('field_name', config('leveling.third_orders')[$third])
                 ->update(['field_value' => $request->order_no]);
 
-            myLog('order.operate.mayi-callback', ['order_no' => $request->no, 'third_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
+            myLog('order.operate.callback', ['order_no' => $request->no, 'third_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
             return response()->partner(1, '成功');
         } catch (Exception $e) {
             return response()->partner(0, '接口异常');

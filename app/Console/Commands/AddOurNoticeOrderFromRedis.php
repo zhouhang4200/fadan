@@ -273,6 +273,7 @@ class AddOurNoticeOrderFromRedis extends Command
                     $orderDatas['dd373_order_no'] = $thirdOrderNo;
                     // 控制器-》方法-》参数 查找订单详情
                     $thirdOrder = call_user_func_array([config('leveling.controller')[4], config('leveling.action')['orderDetail']], [$orderDatas]);
+
                     if (isset($thirdOrder) && is_array($thirdOrder)) {
                         $this->thirdStatus = isset($thirdOrder['data']['orderStatus']) ? config('leveling.dd373.status')[$thirdOrder['data']['orderStatus']] : '';
                     } else {

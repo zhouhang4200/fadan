@@ -39,19 +39,19 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	            'form_params' => $options,
 	            'body' => 'x-www-form-urlencoded',
 	        ]);
-	        $result = $response->getBody()->getContents();
+	        $result =  $response->getBody()->getContents();
+
+	        if (! isset($result) || empty($result)) {
+                throw new DailianException('请求返回数据不存在');
+            }
 
 	        if (isset($result) && ! empty($result)) {
 	        	$arrResult = json_decode($result, true);
 
-	        	if (! isset($arrResult) || ! is_array($arrResult)) {
-	        		throw new DailianException('返回结果异常');
-	        	}
-
 	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
 	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
-	        			// 判断是否失败, 抛出错误
-	        			if ($arrResult['code'] !== 0) {
+	        			// 判断是否失败
+	        			if ($arrResult['code'] != 0) {
 	        				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
 	        				throw new DailianException($message);
 	        			}
@@ -59,21 +59,17 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		}
 	        	}
 		        // 记录日志
-		        myLog('dd373-all-logs', [
+		        myLog('dd373-request-logs', [
 		            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
 		            '地址' => $url ?? '',
-		            '签名' => $options['Sign'] ?? '',
-		            '时间' => Carbon::now()->toDateTimeString(),
 		            '结果' => $result ? json_decode($result, true) : '',
 		        ]);
-	        	return $arrResult;
-    		} else {
-    			// 抛出错误
-        		throw new Exception($e->getMessage());
     		}
+
+    		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
-        	// 抛出错误
+
         	throw new Exception($e->getMessage());
         }
     }
@@ -119,6 +115,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 		            '结果' => $result ? json_decode($result, true) : '',
 		        ]);
     		}
+
+    		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
