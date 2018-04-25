@@ -56,7 +56,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-            throw new RequestTimeoutException(111);
+
             $this->after();
             $this->orderCount();
             // 删除状态不是 申请验收 的 redis 订单

@@ -251,6 +251,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 'game_leveling_instructions' => $this->details['game_leveling_instructions'],
                 'businessman_phone' => $this->details['client_phone'],
                 'businessman_qq' => $this->details['user_qq'],
+                'order_password' => $this->details['order_password'],
             ];
             $redis = RedisConnect::order();
             $redis->lpush('order:send', json_encode($sendOrder));
