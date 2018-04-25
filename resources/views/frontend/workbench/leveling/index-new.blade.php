@@ -361,7 +361,7 @@
                                 <br/>
                                 @if(isset($detail['third']) && $detail['third'])
                                     {{ config('partner.platform')[(int)$detail['third']]['name'] }}：<a
-                                            style="color:#1f93ff"
+                                            style="color:#1f93ff" target="_blank"
                                             href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
                                 @endif
                             </div>
