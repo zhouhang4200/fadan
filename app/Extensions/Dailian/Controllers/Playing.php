@@ -71,8 +71,6 @@ class Playing extends DailianAbstract implements DailianInterface
             // 资金异常
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
-            //  写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, $this->type);
             DB::rollBack();
             throw new DailianException($exception->getMessage());
         }
