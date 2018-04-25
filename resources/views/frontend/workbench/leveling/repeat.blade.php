@@ -108,21 +108,14 @@
                                                         @endforeach
                                                     @else
 
-                                                        @if(count($item->user_values) > 0)
 
-                                                            @foreach($item->user_values as $v)
+
+                                                        @if(count($item->values) > 0)
+                                                            @foreach($item->values as $v)
                                                                 <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                             @endforeach
-
-                                                        @else
-
-                                                            @if(count($item->values) > 0)
-                                                                @foreach($item->values as $v)
-                                                                    <option value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
-                                                                @endforeach
-                                                            @endif
-
                                                         @endif
+
 
                                                     @endif
                                                 </select>

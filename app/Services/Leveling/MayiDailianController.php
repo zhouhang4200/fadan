@@ -35,6 +35,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         20112,
         20116,
         20119,
+        20058,
     ];
     /**
      * 调用接口时间
