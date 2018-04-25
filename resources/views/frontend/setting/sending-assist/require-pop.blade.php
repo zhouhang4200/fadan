@@ -65,7 +65,7 @@
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formDemo" style="height: 28px;line-height: 28px">确定</button>
-                        <button type="reset" class="layui-btn">重置</button>
+                        <button type="reset" class="layui-btn reset">重置</button>
                     </div>
                 </div>
             </form>
@@ -125,6 +125,10 @@
                 layer.close(index);
                 $('.layui-form')[0].reset()
             });
+        });
+
+        $('.pop').on('click', '.reset', function () {
+            $('input[name=id]').val(0);
         });
 
         function selectedGame(value) {

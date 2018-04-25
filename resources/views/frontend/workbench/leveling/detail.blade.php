@@ -492,22 +492,6 @@
                             <div class="layui-col-md8">{{ config('order.status_leveling')[$detail['status']] }}</div>
                         </div>
                         <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">支付金额：</div>
-                            <div class="layui-col-md8">{{ $detail['payment_amount']?? ''  }}</div>
-                        </div>
-                        <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">获得金额：</div>
-                            <div class="layui-col-md8">{{ $detail['get_amount']?? '' }}</div>
-                        </div>
-                        <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ $detail['poundage'] ?? '' }}</div>
-                        </div>
-                        <div class="layui-row form-group">
-                            <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
-                        </div>
-                        <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">接单平台：</div>
                             <div class="layui-col-md8">{{ config('order.third')[$detail['third']] ?? ''  }}</div>
                         </div>

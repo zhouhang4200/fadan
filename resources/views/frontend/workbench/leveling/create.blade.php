@@ -504,27 +504,32 @@
                 $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
                     var phoneTemplate = '<option value="">请选择</option>';
+                    var chose = 0;
                     $.each(result, function (index, value) {
                         if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
 
-                            if (value.status == 1 && value.game_id == 0) {
+                            if (value.status == 1 && value.game_id == 0 && chose == 0) {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
                             }
 
                         } else if (value.type == 2 && (value.game_id == 0 || gameId == value.game_id)) {
-                            if (value.status == 1 && value.game_id == 0) {
+
+                            if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
-                            } else if (gameId == value.game_id && value.status == 1) {
+                            } else if (value.status == 1 && value.game_id == 0 && chose == 0) {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
                             } else {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
                             }
                         }
                     });
+                    chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
                     layui.form.render();

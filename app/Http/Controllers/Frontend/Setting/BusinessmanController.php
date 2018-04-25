@@ -29,7 +29,8 @@ class BusinessmanController extends Controller
             ->get();
 
         if ($request->ajax()) {
-            $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
+            $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                ->orderBy('game_id')->get();
 
             return  $template;
         }
