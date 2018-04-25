@@ -12,6 +12,7 @@ use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderRegionCorrespondence;
 use App\Exceptions\RequestTimeoutException;
+use GuzzleHttp\Exception\ConnectException;
 
 /**
  * 91接口类
@@ -45,6 +46,8 @@ class Show91
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
             throw new DailianException('操作失败');
         }
@@ -84,6 +87,8 @@ class Show91
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
             throw new DailianException('操作失败');
         }

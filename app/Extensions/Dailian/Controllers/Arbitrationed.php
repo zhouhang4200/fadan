@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
 use Redis;
@@ -70,6 +71,9 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
+            DB::rollBack();
+            throw new DailianException($exception->getMessage());
+        } catch (RequestTimeoutException $exception) {
             DB::rollBack();
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {

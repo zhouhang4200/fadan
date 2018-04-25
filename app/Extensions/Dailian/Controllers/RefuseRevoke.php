@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Exception;
 use App\Services\Show91;
@@ -61,9 +62,12 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     	} catch (DailianException $e) {
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (Exception $exception) {
+    	} catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
+            DB::rollBack();
+            throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
             DB::rollBack();
             throw new DailianException($exception->getMessage());
         }

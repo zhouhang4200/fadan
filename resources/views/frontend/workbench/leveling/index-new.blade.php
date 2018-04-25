@@ -356,12 +356,12 @@
                     <tr>
                         <td>
                             <div class="table-cell" style="width: 228px">
-                                天猫：<a style="color:#1f93ff"
+                                天猫：<a style="color:#1f93ff" target="_blank"
                                       href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}">{{ $detail['source_order_no'] or $item->no  }}</a>
                                 <br/>
                                 @if(isset($detail['third']) && $detail['third'])
                                     {{ config('partner.platform')[(int)$detail['third']]['name'] }}：<a
-                                            style="color:#1f93ff"
+                                            style="color:#1f93ff" target="_blank"
                                             href="{{ route('frontend.workbench.leveling.detail') }}?no={{ $item['no'] }}"> {{ $detail['third_order_no'] }} </a>
                                 @endif
                             </div>

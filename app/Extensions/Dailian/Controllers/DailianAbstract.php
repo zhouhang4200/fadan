@@ -158,7 +158,9 @@ abstract class DailianAbstract
 
     /**
      * 我们平台触发的订单报警
-     * $operate: 我们对订单的操作
+     * @param $order object 订单
+     * @param $operate integer 我们的操作类型ID
+     * @return mixed
      */
     public function addOperateFailOrderToRedis($order, $operate)
     {
@@ -192,7 +194,6 @@ abstract class DailianAbstract
         myLog('our-order-notice', ['order_no' => $order->no, 'third_order_no' => $orderDetails['third_order_no'], 'message' => '我们的平台操作失败了，报警订单正在写入redis，写入结果：' . $message]);
 
         return $order;
-
     }
 
     /**
