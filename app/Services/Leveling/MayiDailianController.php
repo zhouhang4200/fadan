@@ -61,6 +61,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
+            return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -103,6 +104,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
+            return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -738,7 +740,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
                 throw new DailianException('蚂蚁订单号不存在');
             }
-            
+
             $time = time();
             $options = [
                 'method'    => 'dlOrdereUpdatePass',
