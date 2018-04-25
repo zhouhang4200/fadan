@@ -452,7 +452,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     代充平台数据
                                 </a>
                             </li>
-                            @endif;
+                            @endif
                             <li>
                                 <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
                                     代练平台统计
