@@ -47,6 +47,8 @@ class Show91
                 'multipart' => $datas,
             ]);
             $result = $response->getBody()->getContents();
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
             throw new Exception('订单状态异常', 0);
         }
@@ -55,9 +57,7 @@ class Show91
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (ConnectException $exception) {
-            throw new RequestTimeoutException('订单操作异常');
-        } catch (Exception $exception) {
+        }  catch (Exception $exception) {
             throw new DailianException('操作失败');
         }
 

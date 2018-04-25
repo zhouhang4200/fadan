@@ -10,14 +10,83 @@ use App\Models\Order;
 use App\Models\OrderNotice;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Backend\OrderRepository;
 use App\Exceptions\OrderNoticeException;
+use App\Repositories\Backend\GameRepository;
+use App\Repositories\Backend\ServiceRepository;
 
 /**
  * 订单报警
  */
 class LevelingController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * OrderController constructor.
+     * @param OrderRepository $orderRepository
+     */
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->order = $orderRepository;
+    }
+
+    /**
+     * @param Request $request
+     * @param ServiceRepository $serviceRepository
+     * @param GameRepository $gameRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index(Request $request, ServiceRepository $serviceRepository, GameRepository $gameRepository)
+    {
+        $startDate = $request->input('start_date', date('Y-m-d'));
+        $endDate = $request->input('end_date');
+        $source = $request->input('source');
+        $status = $request->input('status');
+        $serviceId = $request->input('service_id', 4);
+        $gameId = $request->input('game_id');
+        $creatorPrimaryUserId = $request->input('creator_primary_user_id');
+        $gainerPrimaryUserId = $request->input('gainer_primary_user_id');
+        $no = $request->input('no');
+        $foreignOrderNo = $request->input('foreign_order_no');
+        $export = $request->input('export', 0);
+
+        if ($request->gainer_primary_user_id) {
+            $gainerPrimaryUserId = User::where('nickname', $request->gainer_primary_user_id)->value('id') ?: $request->gainer_primary_user_id;
+        }
+
+        $filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
+            'gainerPrimaryUserId', 'no', 'foreignOrderNo');
+
+        // 订单导出
+        if ($export) {
+            return $this->order->export($filters);
+        }
+        // 订单列表
+        $orders = $this->order->dataList($filters);
+
+        return view('backend.order.leveling.index')->with([
+            'orders' => $orders,
+            'services' => $serviceRepository->available(),
+            'games' => $gameRepository->available(),
+
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'source' => $source,
+            'status' => $status,
+            'serviceId' => $serviceId,
+            'gameId' => $gameId,
+            'creatorPrimaryUserId' => $creatorPrimaryUserId,
+            'gainerPrimaryUserId' => $request->gainer_primary_user_id,
+            'no' => $no,
+            'foreignOrderNo' => $foreignOrderNo,
+            'fullUrl' => $request->fullUrl(),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|void
+     */
+    public function abnormal(Request $request)
     {
     	try {       
 	    	$startDate = $request->start_date;
@@ -57,7 +126,7 @@ class LevelingController extends Controller
                 'ourStatus' => $ourStatus,
             ])->render());
         }
-    	return view('backend.order.leveling.index', compact('startDate', 'endDate', 'fullUrl', 'third', 'ourStatus', 'paginateOrderNotices'));
+    	return view('backend.order.leveling.abnormal', compact('startDate', 'endDate', 'fullUrl', 'third', 'ourStatus', 'paginateOrderNotices'));
     }
 
     /**

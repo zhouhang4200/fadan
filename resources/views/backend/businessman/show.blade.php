@@ -57,6 +57,8 @@
                                             </div>
                                         </div>
 
+                                        @if(auth()->user()->name != '淘宝发单平台')
+
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">代充类型</label>
                                             <div class="layui-input-block">
@@ -64,6 +66,8 @@
                                                 <input type="radio" name="type" value="2" title="发单" @if($user->type == 2) checked @endif>
                                             </div>
                                         </div>
+                                        @endif
+
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">代练类型</label>
                                             <div class="layui-input-block">
