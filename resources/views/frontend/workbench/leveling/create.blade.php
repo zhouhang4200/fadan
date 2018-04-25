@@ -507,17 +507,16 @@
                     $.each(result, function (index, value) {
                         if (value.type == 1) {
 
-                            if (value.status == 1) {
+                            if (value.status == 1 && value.game_id == 0) {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else if (gameId == value.game_id && value.status == 1) {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
-
                             }
 
                         } else {
-                            if (value.status == 1) {
+                            if (value.status == 1 && value.game_id == 0) {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
                             } else if (gameId == value.game_id && value.status == 1) {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
