@@ -55,7 +55,7 @@ class OrderSend extends Command
                         ]);
 
                         $result = $response->getBody()->getContents();
-                        myLog('order-send-result', [$platform['name'], $result, $decrypt]);
+                        myLog('order-send-result', [$platform['name'], $result, $orderData, $decrypt]);
                     } catch (\Exception $exception) {
                         myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
                     }
