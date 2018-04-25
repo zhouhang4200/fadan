@@ -25,6 +25,7 @@ class TaobaoApi
                 $request->url(),
                 $_SERVER['QUERY_STRING'],
                 $request->data['Tid'],
+                $request->data['Num'],
                 $request->data['BuyerNick'],
                 $request->data['SellerNick'],
             ]);
