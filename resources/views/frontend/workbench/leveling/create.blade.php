@@ -504,8 +504,8 @@
                 $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
                     var phoneTemplate = '<option value="">请选择</option>';
+                    var chose = 0;
                     $.each(result, function (index, value) {
-                        var chose = 0;
                         if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
 
                             if (value.status == 1 && value.game_id == 0 && chose == 0) {
@@ -528,8 +528,8 @@
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
                             }
                         }
-                        chose = 0;
                     });
+                    chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
                     layui.form.render();
