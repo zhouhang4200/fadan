@@ -190,6 +190,16 @@ class Playing extends DailianAbstract implements DailianInterface
                             // 控制器-》方法-》参数
                             call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
                         }
+                        if ($orderDetails['dailianmama_order_no']) {                     
+                            // 代练妈妈删除订单
+                            DailianMama::deleteOrder($this->order);
+                        }
+                        if ($orderDetails['show91_order_no']) {
+                            // 撤单91平台订单
+                            $options = ['oid' => $orderDetails['show91_order_no']]; 
+                            // 91代练下单
+                            Show91::chedan($options);
+                        }
                     }
                 }
             }
@@ -226,6 +236,18 @@ class Playing extends DailianAbstract implements DailianInterface
                         // 代练妈妈删除订单
                         DailianMama::deleteOrder($this->order);
                     }
+
+                    if (config('leveling.third_orders')) {
+                        // 获取订单和订单详情以及仲裁协商信息
+                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                        // 遍历 平台 =》 平台订单名称
+                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                            if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                                // 控制器-》方法-》参数
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                            }
+                        }
+                    }
                     break;
                 case config('dailianmama.qs_user_id'):
                     // 更新第三方平台为 dailianmam
@@ -250,6 +272,18 @@ class Playing extends DailianAbstract implements DailianInterface
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'hatchet_man_name')
                         ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
+                        
+                    if (config('leveling.third_orders')) {
+                        // 获取订单和订单详情以及仲裁协商信息
+                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+                        // 遍历 平台 =》 平台订单名称
+                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                            if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                                // 控制器-》方法-》参数
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                            }
+                        }
+                    }
                     break;
             }
             // 调用事件
