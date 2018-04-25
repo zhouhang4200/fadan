@@ -22,6 +22,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.foreign.index',
                         'order.after-service.index',
                         'order.leveling.index',
+                        'order.leveling.abnormal',
                         'frontend.user.oriented.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
@@ -44,6 +45,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 @endif
                                 <li>
                                     <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
+                                        代练订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.leveling.abnormal') }}" @if($currentRouteName == 'order.leveling.abnormal') class="active" @endif>
                                         报警订单
                                     </a>
                                 </li>
