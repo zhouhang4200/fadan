@@ -416,7 +416,7 @@
                     });
                     setDefaultValueOption();
                     loadGameLevelingTemplate(id);
-                    loadBusinessmanContactTemplate();
+                    loadBusinessmanContactTemplate(id);
                     analysis()
                 }, 'json');
             }
@@ -501,7 +501,7 @@
             }
             // 加载代练要求模板
             function loadBusinessmanContactTemplate() {
-                $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:0}, function (result) {
+                $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
                     var phoneTemplate = '<option value="">请选择</option>';
                     $.each(result, function (index, value) {
