@@ -46,14 +46,16 @@ class OrderSend extends Command
                 // 获取所有待分配订单
                 $client = new Client();
                 foreach (config('partner.platform') as $platform) {
+                    $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
                     try {
                         $response = $client->request('POST', $platform['receive'], [
                             'form_params' => [
-                               'data' => base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv'])),
+                               'data' => $decrypt
                             ]
                         ]);
+
                         $result = $response->getBody()->getContents();
-                        myLog('order-send-result', [$platform['name'], $result, $orderData]);
+                        myLog('order-send-result', [$platform['name'], $result, $decrypt]);
                     } catch (\Exception $exception) {
                         myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
                     }
