@@ -37,23 +37,13 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         20119,
         20058,
     ];
-    /**
-     * 调用接口时间
-     * @var [type]
-     */
-    // protected static $time;
-
-    public function __construct()
-    {
-        // $time = time();
-    }
 
     /**
      * form-data 格式提交数据
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method [description]
-     * @return [type]          [description]
+     * @param array $options
+     * @param string $method
+     * @return mixed
+     * @throws Exception
      */
     public static function formDataRequest($options = [], $method = 'POST')
     {
@@ -93,10 +83,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 普通提交
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method [description]
-     * @return [type]          [description]
+     * @param array $options
+     * @param string $method
+     * @return mixed
+     * @throws Exception
      */
     public static function normalRequest($options = [], $method = 'POST')
     {
@@ -134,10 +124,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         }
     }
 
-    /**
+    /***
      * 获取签名
-     * @param  [type] $method [description]
-     * @return [type]         [description]
+     * @param $method
+     * @param $time
+     * @return string
+     * @throws DailianException
      */
     public static function getSign($method, $time)
     {
@@ -150,7 +142,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 上架
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function onSale($orderDatas)
     {
@@ -179,7 +172,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 下架
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function offSale($orderDatas)
     {
@@ -208,7 +202,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 接单
-     * @return [type] [description]
+     * @param $orderDatas
      */
     public static function receive($orderDatas)
     {
@@ -216,7 +210,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 申请撤销
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function applyRevoke($orderDatas)
     {
@@ -248,8 +243,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 取消撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function cancelRevoke($orderDatas)
     {
@@ -279,8 +274,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 同意撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function agreeRevoke($orderDatas)
     {
@@ -328,8 +323,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 申请仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function applyArbitration($orderDatas)
     {
@@ -359,8 +354,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 取消仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function cancelArbitration($orderDatas)
     {
@@ -417,8 +412,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 完成验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function complete($orderDatas)
     {
@@ -448,8 +443,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function lock($orderDatas)
     {
@@ -479,8 +474,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 取消锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function cancelLock($orderDatas)
     {
@@ -528,8 +523,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 撤单（删除)
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function delete($orderDatas)
     {
@@ -559,7 +554,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 修改订单(未接单时候的修改订单)
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function updateOrder($orderDatas)
     {
@@ -668,9 +664,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         }
     }
 
-    /**
+    /***
      * 获取订单详情
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function orderDetail($orderDatas)
     {
@@ -699,7 +696,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 获取订单截图
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function getScreenshot($orderDatas)
     {
@@ -728,7 +726,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 获取留言
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function getMessage($orderDatas)
     {
@@ -757,7 +756,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 回复留言
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function replyMessage($orderDatas)
     {
@@ -787,7 +787,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
     /**
      * 修改接单之后的游戏账号密码
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function updateAccountAndPassword($orderDatas)
     {

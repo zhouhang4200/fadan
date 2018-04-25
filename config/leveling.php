@@ -62,7 +62,7 @@ return [
 		'appid'     => '24dca31042361ae3',
 		'appsecret' => '889a68ce24dca31042361ae3fa423f56',
 		'Ver'       => '1.0',
-		'url'       => 'mytest.38sd.com:81/OpenApi/GateWay.html', // 蚂蚁代练的接口地址
+		'url'       => 'dailian.zuhaowan.com/OpenApi/GateWay.html', // 蚂蚁代练的接口地址
 		'password'  => '123456',
 		'aes_key'   => '45584685d8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
