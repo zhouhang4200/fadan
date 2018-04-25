@@ -231,8 +231,6 @@ class Playing extends DailianAbstract implements DailianInterface
                         ->update(['field_value' => $orderDetails['show91_order_no']]);
 
                     if ($orderDetails['dailianmama_order_no']) {                     
-                        // 下架其他代练平台订单
-                        DailianMama::closeOrder($this->order);
                         // 代练妈妈删除订单
                         DailianMama::deleteOrder($this->order);
                     }
@@ -272,7 +270,7 @@ class Playing extends DailianAbstract implements DailianInterface
                     OrderDetail::where('order_no', $this->order->no)
                         ->where('field_name', 'hatchet_man_name')
                         ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
-                        
+
                     if (config('leveling.third_orders')) {
                         // 获取订单和订单详情以及仲裁协商信息
                         $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);

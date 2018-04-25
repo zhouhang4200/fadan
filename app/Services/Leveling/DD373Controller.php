@@ -95,6 +95,10 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
+	        if (! isset($result) || empty($result)) {
+                throw new DailianException('请求返回数据不存在');
+            }
+
 	        if (isset($result) && ! empty($result)) {
 	        	$arrResult = json_decode($result, true);
 
@@ -109,11 +113,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		}
 	        	}
 		        // 记录日志
-		        myLog('dd373-all-logs', [
+		        myLog('dd373-request-logs', [
 		            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
 		            '地址' => $url ?? '',
-		            '签名' => $options['Sign'] ?? '',
-		            '时间' => Carbon::now()->toDateTimeString(),
 		            '结果' => $result ? json_decode($result, true) : '',
 		        ]);
     		}
@@ -147,7 +149,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     {
     	$string = "JsonData=".json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
 
-    	myLog('dd373.sign', ['string' => $string, 'sign' => md5($string)]);
+    	myLog('dd373-sign-log', ['string' => $string, 'sign' => md5($string)]);
 
         return md5($string);
     }

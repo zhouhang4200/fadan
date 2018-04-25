@@ -40,22 +40,24 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             ]);
             $result =  $response->getBody()->getContents();
 
+            if (! isset($result) || empty($result)) {
+                throw new DailianException('请求返回数据不存在');
+            }
+
             if (isset($result) && ! empty($result)) {
                 $arrResult = json_decode($result, true);
 
                 if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-                    if (isset($arrResult['status']) && $arrResult['status'] != 1) {
+                    if (isset($arrResult['status']) && $arrResult['status'] !== 1) {
                         // 判断是否失败
                         $message = $arrResult['message'] ?? 'dd373接口返回错误';
                         throw new DailianException($message);
                     }
                 }
                 // 记录日志
-                myLog('mayidailian-all-logs', [
+                myLog('mayidailian-request-logs', [
                     '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
                     '方法名' => $options['method'],
-                    '签名' => $options['sign'],
-                    '时间' => Carbon::now()->toDateTimeString(),
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
@@ -80,6 +82,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             ]);
             $result =  $response->getBody()->getContents();
 
+            if (! isset($result) || empty($result)) {
+                throw new DailianException('请求返回数据不存在');
+            }
+
             if (isset($result) && ! empty($result)) {
                 $arrResult = json_decode($result, true);
 
@@ -91,11 +97,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     }
                 }
                 // 记录日志
-                myLog('mayidailian-all-logs', [
+                myLog('mayidailian-request-logs', [
                     '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
                     '方法名' => $options['method'],
-                    '签名' => $options['sign'],
-                    '时间' => Carbon::now()->toDateTimeString(),
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
@@ -124,6 +128,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function onSale($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderGrounding',
@@ -137,6 +145,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -147,6 +156,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function offSale($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderUndercarriage',
@@ -160,6 +173,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -176,13 +190,17 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function applyRevoke($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'     => 'dlOrderTs',
                 'nid'        => $orderDatas['mayi_order_no'],
                 'bzmoney'    => $orderDatas['deposit'],
                 'needsMoney' => $orderDatas['amount'],
-                'tsContent'  => ! empty($orderDatas['revoke_message']) ?: '空',
+                'tsContent'  => $orderDatas['revoke_message'] ?? '空',
                 'appid'      => config('leveling.mayidailian.appid'),
                 'appsecret'  => config('leveling.mayidailian.appsecret'),
                 'TimeStamp'  => $time,
@@ -192,6 +210,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -203,6 +222,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function cancelRevoke($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderCancelTs',
@@ -216,6 +239,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
         
@@ -228,6 +252,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function agreeRevoke($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderAgreeTs',
@@ -241,6 +269,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
         
@@ -267,6 +296,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function applyArbitration($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrdertsPub',
@@ -276,11 +309,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 'TimeStamp'     => $time,
                 'Ver'           => config('leveling.mayidailian.Ver'),
                 'sign'          => static::getSign('dlOrdertsPub', $time),
-                'bz'		    => ! empty($orderDatas['complain_message']) ?: '空',
+                'bz'		    => $orderDatas['complain_message'] ?? '空',
             ];
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -292,6 +326,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function cancelArbitration($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'    => 'dlCancelOrdertsPub',
@@ -306,6 +344,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -338,6 +377,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function complete($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderAcceptance',
@@ -352,6 +395,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '完成验收', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -363,6 +407,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function lock($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderLock',
@@ -377,6 +425,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -388,6 +437,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function cancelLock($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderunLock',
@@ -402,6 +455,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '取消锁定', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -427,6 +481,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function delete($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderDel',
@@ -440,6 +498,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '撤单', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -455,6 +514,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function updateOrder($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $gameName = Game::find($orderDatas['game_id']);
             $options = [
@@ -489,6 +552,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -499,6 +563,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function addTime($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'       => 'dlOrdereUpdateSpec',
@@ -514,6 +582,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '加时', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -524,6 +593,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function addMoney($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'       => 'dlOrdereUpdatePaymoney',
@@ -538,6 +611,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '加款', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -548,6 +622,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function orderDetail($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderInfo',
@@ -561,6 +639,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -571,6 +650,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function getScreenshot($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderImageList',
@@ -584,6 +667,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -594,6 +678,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function getMessage($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'        => 'dlOrderMessageList',
@@ -607,6 +695,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '获取留言', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -617,6 +706,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function replyMessage($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
             $time = time();
             $options = [
                 'method'    => 'dlOrderMessageReply',
@@ -631,6 +724,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '回复留言', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -641,6 +735,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function updateAccountAndPassword($orderDatas) {
         try {
+            if (! isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+            
             $time = time();
             $options = [
                 'method'    => 'dlOrdereUpdatePass',
@@ -656,6 +754,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             static::normalRequest($options);
         } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '修改账号密码', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
