@@ -227,8 +227,8 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
 
                             <li>
-                                <a href="{{ route('finance.caution-money.index') }}" @if($currentRouteName == 'businessman.caution-money.index') class="active" @endif>
-                                    商户保证金列表
+                                <a href="{{ route('finance.deposit.index') }}" @if($currentRouteName == 'finance.deposit.index') class="active" @endif>
+                                    商户押金管理
                                 </a>
                             </li>
                         </ul>
