@@ -36,6 +36,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
         20116,
         20119,
         20058,
+        20063,
+        20122,
+        20089,
     ];
 
     /**
