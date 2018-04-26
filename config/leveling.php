@@ -63,12 +63,12 @@ return [
 
 	// 蚂蚁代练的信息
 	'mayidailian' => [
-		'appid'     => '24dca31042361ae3',
-		'appsecret' => '889a68ce24dca31042361ae3fa423f56',
+		'appid'     => 'yQS001rlkILRuQRUj0YRL4SKEiYnolhXJa8RrQPP1xffU8Sd4GXMqssncAig',
+		'appsecret' => '3AfxT4O6YdlxAJzL1PehkG0aiuvS04kJoScGDqBik23mP2BeikLcRZbgc6Ze',
 		'Ver'       => '1.0',
-		'url'       => 'dailian.zuhaowan.com/OpenApi/GateWay.html', // 蚂蚁代练的接口地址
+		'url'       => 'http://www.mayidailian.com/OpenApi/GateWay/index', // 蚂蚁代练的接口地址
 		'password'  => '123456',
-		'aes_key'   => '45584685d8e4f5e8e4e2685',
+		'aes_key'   => '4l5846ssd8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
 	],
 
