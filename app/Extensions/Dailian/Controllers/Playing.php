@@ -72,7 +72,7 @@ class Playing extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            throw new DailianException($exception->getMessage());
+            throw new DailianException('订单异常');
         }
     	DB::commit();
 
@@ -190,12 +190,6 @@ class Playing extends DailianAbstract implements DailianInterface
                                 ->where('field_name', 'third_order_no')
                                 ->update(['field_value' => $orderDatas[$thirdOrderNoName]]);
                         }
-                    // 其他平台订单撤单
-                    } else {
-                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
-                        }
                         if ($orderDetails['dailianmama_order_no']) {                     
                             // 代练妈妈删除订单
                             DailianMama::deleteOrder($this->order);
@@ -205,6 +199,12 @@ class Playing extends DailianAbstract implements DailianInterface
                             $options = ['oid' => $orderDetails['show91_order_no']]; 
                             // 91代练下单
                             Show91::chedan($options);
+                        }
+                    // 其他平台订单撤单
+                    } else {
+                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
                         }
                     }
                 }
