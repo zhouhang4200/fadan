@@ -68,8 +68,8 @@ return [
 		'Ver'       => '1.0',
 		'url'       => 'http://www.mayidailian.com/OpenApi/GateWay/index', // 蚂蚁代练的接口地址
 		'password'  => '123456',
-		'aes_key'   => '4l5846ssd8e4f5e8e4e2685',
-		'aes_iv'    => '1234567891111152',
+		'aes_key'   => '2f666a796ba36a6b',
+		'aes_iv'    => '66a225812f666a796ba36a6b6a151870',
 	],
 
 	'dd373' => [
