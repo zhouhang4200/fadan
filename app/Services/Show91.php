@@ -50,7 +50,7 @@ class Show91
         } catch (ConnectException $exception) {
             throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
-            throw new Exception('订单状态异常', 0);
+            throw new DailianException('订单状态异常', 0);
         }
 
         try {
@@ -58,7 +58,7 @@ class Show91
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }  catch (Exception $exception) {
-            throw new DailianException('操作失败');
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
 
         return $result;
@@ -88,18 +88,18 @@ class Show91
                 'query' => $options,
             ]);
             $result = $response->getBody()->getContents();
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
-            throw  new Exception('订单状态异常', 0);
+            throw new DailianException('操作失败');
         }
 
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (ConnectException $exception) {
-            throw new RequestTimeoutException('订单操作异常');
-        } catch (Exception $exception) {
-            throw new DailianException('操作失败');
+        }  catch (Exception $exception) {
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
 
         return $result;
