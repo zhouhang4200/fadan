@@ -89,7 +89,7 @@ class Complete extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            throw new DailianException($exception->getMessage());
+            throw new DailianException('订单异常');
         }
         DB::commit();
     	// 返回
