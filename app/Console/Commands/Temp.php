@@ -36,7 +36,7 @@ class Temp extends Command
      *
      * @var string
      */
-    protected $signature = 'Temp {no}';
+    protected $signature = 'Temp {no}{user}';
 
     /**
      * The console command description.
