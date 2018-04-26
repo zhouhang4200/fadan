@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Events\OrderApplyComplete;
 use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
+use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Extensions\Dailian\Controllers\Revoked;
 use App\Models\OrderDetail;
@@ -70,8 +71,9 @@ class Temp extends Command
     public function handle()
     {
         $status = $this->argument('no');
+        $user = $this->argument('user');
 
-        dd($this->show91OrderStatus());
+        dd($this->complete($status, $user));
 
         // 我们是待接单
         if ($status == 1) {
@@ -294,6 +296,16 @@ class Temp extends Command
     public function queryShow91Order($orderNO)
     {
         return Show91::orderDetail(['oid' => $orderNO]);
+    }
+
+    /**
+     * 完成订单
+     * @param $no
+     * @param $user
+     */
+    public function complete($no, $user)
+    {
+        (new Complete())->run($no, $user, 0);
     }
 
     public function addPrice()
