@@ -837,7 +837,7 @@ class IndexController extends Controller
             $orderDetailDisplayName = OrderDetail::where('order_no', $orderNo)->pluck('field_display_name', 'field_name');
 
             // 如果本次修改提交，游戏ID与原订单不同则删除原有订单详情，写入新的值
-            if ($requestData['game_id'] != $order->game_id) {
+            if ($requestData['game_id'] != $order->game_id && $order->status == 1) {
                 // 删除原订单详情
                 OrderDetail::where('order_no', $orderNo)->delete();
                 // 找到对应的游戏ID模版ID
@@ -885,6 +885,21 @@ class IndexController extends Controller
                 $order->amount = $requestData['game_leveling_amount'];
                 $order->save();
 
+                //**修改订单, 91和代练妈妈通用 **/
+                event(new AutoRequestInterface($order, 'addOrder', true));
+                /** 修改订单, 其他平台通用 **/
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDatas]);
+                        }
+                    }
+                }
             } else {
                 // 下架 没有接单 更新所有信息
                 if (in_array($order->status, [1, 23])) {
