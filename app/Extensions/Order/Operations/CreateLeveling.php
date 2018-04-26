@@ -232,7 +232,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     {
         if ($this->runAfter) {
 
-            if ($this->order->creator_primary_user_id == 8317) {
+            if ($this->order->creator_primary_user_id == 8317 || config('app.env') == 'local') {
                 // 下单到其它平台
                 $sendOrder = [
                     'order_no' => $this->order->no,
