@@ -223,12 +223,15 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 throw new DailianException('蚂蚁订单号不存在');
             }
 
+            if (! isset($orderDatas['pay_amount']) || ! isset($orderDatas['deposit'])) {
+                throw new DailianException('协商代练费或双金不存在');
+            }
             $time = time();
             $options = [
                 'method' => 'dlOrderTs',
                 'nid' => $orderDatas['mayi_order_no'],
                 'bzmoney' => $orderDatas['deposit'],
-                'needsMoney' => $orderDatas['amount'],
+                'needsMoney' => $orderDatas['pay_amount'],
                 'tsContent' => $orderDatas['revoke_message'] ?? '空',
                 'appid' => config('leveling.mayidailian.appid'),
                 'appsecret' => config('leveling.mayidailian.appsecret'),
