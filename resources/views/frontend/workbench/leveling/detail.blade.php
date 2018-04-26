@@ -862,6 +862,8 @@
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
             var upload = layui.upload;
 
+            var gameId = '{{ $detail['game_id'] }}';
+
             $('.cancel').click(function(){
                 layer.closeAll();
             });
@@ -1111,6 +1113,7 @@
             });
             // 切换游戏时加截新的模版
             form.on('select(game)', function (data) {
+                gameId = data.value;
                 loadTemplate(data.value)
             });
             // 加载模板
@@ -1149,8 +1152,9 @@
                             }
                         });
                     }
-
+                    loadBusinessmanContactTemplate();
                 }, 'json');
+
             }
 
             // 阻止默认事件
@@ -1257,6 +1261,43 @@
                     }
                 });
             }
+
+            function loadBusinessmanContactTemplate() {
+                $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
+                    var qqTemplate = '<option value="">请选择</option>';
+                    var phoneTemplate = '<option value="">请选择</option>';
+                    var chose = 0;
+                    $.each(result, function (index, value) {
+                        if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
+
+                            if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
+                            }
+
+                        } else if (value.type == 2 && (value.game_id == 0 || gameId == value.game_id)) {
+
+                            if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
+                        }
+                    });
+                    chose = 0;
+                    $('select[name=user_qq]').html(qqTemplate);
+                    $('select[name=user_phone]').html(phoneTemplate);
+                    layui.form.render();
+                }, 'json');
+            }
+
             // 加载更多留言
             $('#leave-message').dblclick('#loadMoreMessage', function () {
                 var id = $('#loadMoreMessage').attr('data-id');
@@ -1284,6 +1325,7 @@
                 }
             });
         }
+
 
         // 图片预览
         $('#leave-image').on('click', '.show-image', function () {
