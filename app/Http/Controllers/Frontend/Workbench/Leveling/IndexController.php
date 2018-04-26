@@ -843,6 +843,8 @@ class IndexController extends Controller
                 // 找到对应的游戏ID模版ID
                 $templateId = GoodsTemplate::where('game_id', $requestData['game_id'])->where('service_id', 4)->value('id');
                 // 按模填入订单详情数据
+                // 保留91订单号
+                $requestData['show91_order_no'] = $orderDetail['show91_order_no'];
                 OrderDetailRepository::create($templateId, $orderNo, $requestData);
                 // 本次修改与原单价不同则对进对应的资金操作
                 if ($order->price != $requestData['game_leveling_amount']) {
