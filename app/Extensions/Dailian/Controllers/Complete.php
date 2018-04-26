@@ -151,7 +151,7 @@ class Complete extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && $this->userId != 8456) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台

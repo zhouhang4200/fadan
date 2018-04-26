@@ -169,7 +169,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 订单详情
             $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && $this->userId != 8456) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历 平台 =》 平台订单名称
