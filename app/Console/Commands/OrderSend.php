@@ -44,6 +44,8 @@ class OrderSend extends Command
 
             if($orderData) {
                 // 获取所有待分配订单
+
+                // 检测平台是否开启，
                 $client = new Client();
                 foreach (config('partner.platform') as $platform) {
                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));

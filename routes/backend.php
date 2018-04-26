@@ -317,12 +317,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 用户加款列表
         Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');
 
-        // 商户保证金
-        Route::prefix('caution-money')->group(function(){
-            Route::get('/', 'CautionMoneyController@index')->name('finance.caution-money.index')->middleware('permission:finance.caution-money.index');
-            Route::post('refund', 'CautionMoneyController@refund')->name('finance.caution-money.refund')->middleware('permission:finance.caution-money.refund');
-            Route::post('deduction', 'CautionMoneyController@deduction')->name('finance.caution-money.deduction')->middleware('permission:finance.caution-money.deduction');
-        });
+        // 押金
+        Route::get('deposit', 'DepositController@index')->name('finance.deposit.index')->middleware('permission:finance.deposit.index');
+        Route::post('deposit/store', 'DepositController@store')->name('finance.deposit.store')->middleware('permission:finance.deposit.store');
+        Route::post('deposit/{id}/deduct-audit', 'DepositController@deductAudit')->name('finance.deposit.deduct-audit')->middleware('permission:finance.deposit.deduct-audit');
+        Route::post('deposit/{id}/refund', 'DepositController@refund')->name('finance.deposit.refund')->middleware('permission:finance.deposit.refund');
+        Route::post('deposit/{id}/refund-audit', 'DepositController@refundAudit')->name('finance.deposit.refund-audit')->middleware('permission:finance.deposit.refund-audit');
     });
 
     Route::prefix('template')->group(function () {
