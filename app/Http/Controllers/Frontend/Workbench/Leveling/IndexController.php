@@ -885,8 +885,11 @@ class IndexController extends Controller
                 $order->amount = $requestData['game_leveling_amount'];
                 $order->save();
 
+                // 手动触发调用外部接口时间
+                $newOrder = OrderModel::where('no', $order->no)->first();
+
                 //**修改订单, 91和代练妈妈通用 **/
-                event(new AutoRequestInterface($order, 'addOrder', true));
+                event(new AutoRequestInterface($newOrder, 'addOrder', true));
                 /** 修改订单, 其他平台通用 **/
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
