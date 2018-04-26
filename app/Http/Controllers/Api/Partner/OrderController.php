@@ -546,7 +546,7 @@ class OrderController extends Controller
 
             DailianFactory::choose('complete')->run($orderData->no, $request->user->id, false);
 
-            return response()->partner(1, '成功');
+            return response()->partner(1, '订单结算成功');
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
@@ -578,5 +578,4 @@ class OrderController extends Controller
         }
         return response()->partner(1, '接收成功');
     }
-
 }
