@@ -206,10 +206,14 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function applyRevoke($orderDatas) {
         try {
+        	if (! isset($orderDatas['pay_amount']) || ! isset($orderDatas['deposit'])) {
+                throw new DailianException('协商代练费或双金不存在');
+            }
+
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'payAmount' => $orderDatas['amount'],
+	        	'payAmount' => $orderDatas['pay_amount'],
 	        	'guarantyAQFee' => $orderDatas['deposit'],
 	        	'guarantyXLFee' => 0,
 	        	'PayUserType' => 1,
