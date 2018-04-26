@@ -96,6 +96,8 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                     FuluAppApi::sendOrderAndQq($this->order->gainer_primary_user_id, $this->order->foreign_order_no);
                 } catch(CustomException $exception) {
                     \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
+                } catch (\Exception $exception) {
+                    \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
                 }
             }
 
@@ -121,7 +123,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 
                 } catch(CustomException $exception) {
                     myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
-                } catch(\ErrorException $exception) {
+                } catch(\Exception $exception) {
                     myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
                 }
             }
