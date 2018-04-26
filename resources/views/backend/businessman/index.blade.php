@@ -84,13 +84,16 @@
                                         @endif
                                         </td>
                                         <td style="text-align: center;">
-                                            <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
-                                            <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
-                                            <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
+                                            @if(auth()->user()->name != '淘宝发单平台')
+                                                <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
+                                                <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
+                                                <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
 
-                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="recharge-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动加款</button>
-                                            <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="subtract-money-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动减款</button>
-
+                                                <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="recharge-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动加款</button>
+                                                <button  class="layui-btn layui-btn layui-btn-normal layui-btn-mini" lay-submit lay-filter="subtract-money-button" data-id="{{ $user->id }}" data-name="{{ $user->name }}">手动减款</button>
+                                            @else
+                                                <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

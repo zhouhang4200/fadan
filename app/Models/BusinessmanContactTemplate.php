@@ -8,6 +8,7 @@ class BusinessmanContactTemplate extends Model
 {
     public $fillable = [
       'user_id',
+      'game_id',
       'name',
       'content',
       'type',

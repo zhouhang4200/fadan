@@ -158,7 +158,9 @@ abstract class DailianAbstract
 
     /**
      * 我们平台触发的订单报警
-     * $operate: 我们对订单的操作
+     * @param $order object 订单
+     * @param $operate integer 我们的操作类型ID
+     * @return mixed
      */
     public function addOperateFailOrderToRedis($order, $operate)
     {
@@ -167,19 +169,19 @@ abstract class DailianAbstract
         // 订单属于哪个平台
         switch ($orderDetails['third']) {
             case 1: // show91
-                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                // 组合一段字符串 = 第三方平台号 + 我们平台的操作代号 + 我们平台的状态代号
                 $redisValue = '1-'.$operate.'-'.$order->status;
                 break;
             case 2: // 代练妈妈
-                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+                // 组合一段字符串 = 第三方平台号 + 我们平台的操作代号 + 我们平台的状态代号
                 $redisValue = '2-'.$operate.'-'.$order->status;
                 break;
-            case 3: // 代练妈妈
-                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+            case 3: // 蚂蚁代练
+                // 组合一段字符串 = 第三方平台号 + 我们平台的操作代号 + 我们平台的状态代号
                 $redisValue = '3-'.$operate.'-'.$order->status;
                 break;
-            case 4: // 代练妈妈
-                // 组合一段字符串 = 第三方平台号（1/2） + 我们平台的操作 + 我们平台的状态
+            case 4: // dd373
+                // 组合一段字符串 = 第三方平台号 + 我们平台的操作代号 + 我们平台的状态代号
                 $redisValue = '4-'.$operate.'-'.$order->status;
                 break;
         }
@@ -192,7 +194,6 @@ abstract class DailianAbstract
         myLog('our-order-notice', ['order_no' => $order->no, 'third_order_no' => $orderDetails['third_order_no'], 'message' => '我们的平台操作失败了，报警订单正在写入redis，写入结果：' . $message]);
 
         return $order;
-
     }
 
     /**
@@ -280,6 +281,10 @@ abstract class DailianAbstract
             LEFT JOIN leveling_consults c
             ON a.order_no = c.order_no
             WHERE a.order_no='$orderNo'");
+    
+        if (! isset($collectionArr) || ! is_array($collectionArr)) {
+            throw new DailianException('查询结果错误');
+        }
         
         $collection = is_array($collectionArr) ? $collectionArr[0] : '';
 

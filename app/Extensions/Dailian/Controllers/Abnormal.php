@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Redis;
 use Exception;
@@ -55,7 +56,10 @@ class Abnormal extends DailianAbstract implements DailianInterface
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
             throw new DailianException($e->getMessage());
-    	} catch (Exception $exception) {
+    	} catch (RequestTimeoutException $exception) {
+            DB::rollBack();
+            throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
             DB::rollBack();
             throw new DailianException($exception->getMessage());
         }

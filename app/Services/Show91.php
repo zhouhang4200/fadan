@@ -12,6 +12,7 @@ use App\Models\GoodsTemplateWidget;
 use App\Models\GoodsTemplateWidgetValue;
 use App\Models\OrderRegionCorrespondence;
 use App\Exceptions\RequestTimeoutException;
+use GuzzleHttp\Exception\ConnectException;
 
 /**
  * 91接口类
@@ -34,21 +35,32 @@ class Show91
 
         $options = array_merge($params, $options);
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
-        $result = curl_exec($curl);
+        $datas = [];
+        foreach ($options as $name => $value) {
+            $datas[$name]['name'] = $name;
+            $datas[$name]['contents'] = $value;
+        }
+
+        try {
+            $client = new Client(['timeout' => 2]);
+            $response = $client->request($method, $url, [
+                'multipart' => $datas,
+            ]);
+            $result = $response->getBody()->getContents();
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
+        } catch (Exception $exception) {
+            throw new DailianException('订单状态异常', 0);
+        }
+
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (Exception $exception) {
-            throw new DailianException('操作失败');
+        }  catch (Exception $exception) {
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
-        curl_close($curl);
+
         return $result;
     }
 
@@ -76,16 +88,18 @@ class Show91
                 'query' => $options,
             ]);
             $result = $response->getBody()->getContents();
+        } catch (ConnectException $exception) {
+            throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
-            throw  new Exception(0, '订单状态异常');
+            throw new DailianException('操作失败');
         }
 
         try {
             myLog('91-request', ['url' => $url, '请求参数' => $options, '结果' => $result]);
         } catch (\UnexpectedValueException $exception) {
             info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
-        } catch (Exception $exception) {
-            throw new DailianException('操作失败');
+        }  catch (Exception $exception) {
+            info('写日志异常', ['url' => $url, '写日志异常', $exception->getMessage()]);
         }
 
         return $result;
@@ -214,9 +228,9 @@ class Show91
             'order.role_name'      => $orderDetails['role'],//角色名字
             'order.order_pwd'      => $orderDetails['order_password'] ?? '',//订单密码
             'order.current_info'   => $orderDetails['game_leveling_instructions'],
-            'initPic1'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-            'initPic2'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-            'initPic3'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+            // 'initPic1'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+            // 'initPic2'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+            // 'initPic3'             => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
             'order.require_info'   => $orderDetails['game_leveling_requirements'] ?: 1, // 代练要求
             'order.remark'         => $orderDetails['customer_service_remark'] ?: '无',//订单备注
             'order.linkman'        => $order->creator_primary_user_id, // 联系人

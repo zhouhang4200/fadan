@@ -248,6 +248,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
     // 订单
     Route::namespace('Order')->prefix('order')->group(function () {
+
         // 平台订单
         Route::prefix('platform')->group(function () {
             // 订单列表
@@ -283,6 +284,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 代练订单报警
         Route::prefix('leveling')->group(function () {
             Route::get('/', 'LevelingController@index')->name('order.leveling.index');
+            Route::get('abnormal', 'LevelingController@abnormal')->name('order.leveling.abnormal');
             Route::delete('destroy', 'LevelingController@destroy')->name('order.leveling.destroy');
             Route::post('change/status', 'LevelingController@changeStatus')->name('order.leveling.change-status');
         });

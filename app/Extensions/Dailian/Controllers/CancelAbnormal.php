@@ -60,7 +60,7 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
             DB::rollBack();
-            throw new DailianException($exception->getMessage());
+            throw new DailianException('订单异常');
         }
     	DB::commit();
         return true;

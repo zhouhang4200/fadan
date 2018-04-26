@@ -231,29 +231,33 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     public function after()
     {
         if ($this->runAfter) {
-            // 下单到其它平台
-            $sendOrder = [
-                'order_no' => $this->order->no,
-                'game_name' => $this->order->game_name,
-                'game_region' => $this->details['region'],
-                'game_serve' => $this->details['serve'],
-                'game_role' => $this->details['role'],
-                'game_account' => $this->details['account'],
-                'game_password' => $this->details['password'],
-                'game_leveling_type' => $this->details['game_leveling_type'],
-                'game_leveling_title' => $this->details['game_leveling_title'],
-                'game_leveling_price' => $this->details['game_leveling_amount'],
-                'game_leveling_day' => $this->details['game_leveling_day'],
-                'game_leveling_hour' => $this->details['game_leveling_hour'],
-                'game_leveling_security_deposit' => $this->details['security_deposit'],
-                'game_leveling_efficiency_deposit' => $this->details['efficiency_deposit'],
-                'game_leveling_requirements' => $this->details['game_leveling_requirements'],
-                'game_leveling_instructions' => $this->details['game_leveling_instructions'],
-                'businessman_phone' => $this->details['client_phone'],
-                'businessman_qq' => $this->details['user_qq'],
-            ];
-            $redis = RedisConnect::order();
-            $redis->lpush('order:send', json_encode($sendOrder));
+
+            if ($this->order->creator_primary_user_id == 8317) {
+                // 下单到其它平台
+                $sendOrder = [
+                    'order_no' => $this->order->no,
+                    'game_name' => $this->order->game_name,
+                    'game_region' => $this->details['region'],
+                    'game_serve' => $this->details['serve'],
+                    'game_role' => $this->details['role'],
+                    'game_account' => $this->details['account'],
+                    'game_password' => $this->details['password'],
+                    'game_leveling_type' => $this->details['game_leveling_type'],
+                    'game_leveling_title' => $this->details['game_leveling_title'],
+                    'game_leveling_price' => $this->details['game_leveling_amount'],
+                    'game_leveling_day' => $this->details['game_leveling_day'],
+                    'game_leveling_hour' => $this->details['game_leveling_hour'],
+                    'game_leveling_security_deposit' => $this->details['security_deposit'],
+                    'game_leveling_efficiency_deposit' => $this->details['efficiency_deposit'],
+                    'game_leveling_requirements' => $this->details['game_leveling_requirements'],
+                    'game_leveling_instructions' => $this->details['game_leveling_instructions'],
+                    'businessman_phone' => $this->details['client_phone'],
+                    'businessman_qq' => $this->details['user_qq'],
+                    'order_password' => $this->details['order_password'],
+                ];
+                $redis = RedisConnect::order();
+                $redis->lpush('order:send', json_encode($sendOrder));
+            }
 
             // 给91下订单
             $show91Result = Show91::addOrder($this->order);

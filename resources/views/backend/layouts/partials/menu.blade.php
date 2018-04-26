@@ -22,6 +22,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.foreign.index',
                         'order.after-service.index',
                         'order.leveling.index',
+                        'order.leveling.abnormal',
                         'frontend.user.oriented.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
@@ -30,6 +31,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <i class="fa fa-chevron-circle-right drop-icon"></i>
                             </a>
                             <ul class="submenu">
+                                @if(auth()->user()->name != '淘宝发单平台')
                                 <li>
                                     <a href="{{ route('order.platform.index') }}" @if($currentRouteName == 'order.platform.index') class="active" @endif>
                                         平台订单
@@ -40,8 +42,14 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         外部订单
                                     </a>
                                 </li>
+                                @endif
                                 <li>
                                     <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
+                                        代练订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.leveling.abnormal') }}" @if($currentRouteName == 'order.leveling.abnormal') class="active" @endif>
                                         报警订单
                                     </a>
                                 </li>
@@ -64,7 +72,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         商户列表
                                     </a>
                                 </li>
-
+@if(auth()->user()->name != '淘宝发单平台')
 
                                 <li>
                                     <a href="{{ route('frontend.user.weight.index') }}" @if($currentRouteName == 'frontend.user.weight.index') class="active" @endif>
@@ -78,9 +86,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     游戏指定分配
                                 </a>
                             </li>
-
+@endif
                         </ul>
                     </li>
+
+                    @if(auth()->user()->name != '淘宝发单平台')
 
                     <li @if($currentOneLevelMenu == 'home') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
@@ -111,6 +121,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+
 
                     <li @if($currentOneLevelMenu == 'customer') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
@@ -426,6 +437,8 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
+                    @endif
+
                     <li @if($currentOneLevelMenu == 'datas' || $currentOneLevelMenu == 'statistic') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -433,11 +446,13 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
+                            @if(auth()->user()->name != '淘宝发单平台')
                             <li>
                                 <a href="{{ route('datas.index') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     代充平台数据
                                 </a>
                             </li>
+                            @endif
                             <li>
                                 <a href="{{ route('statistic.platform') }}" @if($currentRouteName == 'statistic.platform') class="active" @endif>
                                     代练平台统计

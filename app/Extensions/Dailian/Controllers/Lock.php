@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Exception;
 use App\Services\DailianMama;
@@ -61,11 +62,14 @@ class Lock extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
-        } catch (Exception $exception) {
+        } catch (RequestTimeoutException $exception) {
             //  redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
             DB::rollBack();
             throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new DailianException('订单异常');
         }
         DB::commit();
 

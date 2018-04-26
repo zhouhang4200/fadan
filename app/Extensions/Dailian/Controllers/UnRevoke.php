@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Exception;
 use App\Services\Show91;
@@ -67,15 +68,16 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
     	} catch (DailianException $e) {
-            // 我们平台操作失败，写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, 19);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	}  catch (Exception $exception) {
+    	}  catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
             DB::rollBack();
             throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new DailianException('订单异常');
         }
     	DB::commit();
     	// 返回

@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\RequestTimeoutException;
 use DB;
 use Exception;
 use App\Models\OrderDetail;
@@ -36,7 +37,6 @@ class UnLock extends DailianAbstract implements DailianInterface
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
             // 获取锁定前的状态
-            // $this->handledStatus = unserialize(OrderHistory::where('order_no', $orderNo)->latest('id')->value('before'))['status'];
             $this->getBeforeStatus($orderNo);
     		// 获取订单对象
 		    $this->getObject();
@@ -65,11 +65,14 @@ class UnLock extends DailianAbstract implements DailianInterface
             $this->addOperateFailOrderToRedis($this->order, 17);
     		DB::rollBack();
             throw new DailianException($e->getMessage());
-    	} catch (Exception $exception) {
+    	}  catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
             DB::rollBack();
             throw new DailianException($exception->getMessage());
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new DailianException('订单异常');
         }
     	DB::commit();
 
