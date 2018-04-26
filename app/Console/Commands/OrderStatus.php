@@ -85,6 +85,9 @@ class OrderStatus extends Command
                         '91订单号' => $show91OrderNO->field_value,
                         '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
                         '我们状态' => config('order.status_leveling')[$item->status],
+                        '91价格' => $orderDetail['data']['price'],
+                        '我们价格' => $item->price,
+                        '价格相等' => $orderDetail['data']['price'] == $item->price ? '是' : '否',
                     ]);
                 } else {
                     myLog('show-91-order-status', [
