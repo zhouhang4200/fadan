@@ -780,7 +780,7 @@
                         @{{#  } else { }}
                         @{{#  if(item.values.length > 0){ }}
                         @{{#  layui.each(item.values, function(i, v){ }}
-                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        <option  data-id="@{{ v.id }}" value="@{{ v.field_value }}">@{{ v.field_value }}</option>
                         @{{#  }); }}
                         @{{#  }  }}
                         @{{#  }  }}
