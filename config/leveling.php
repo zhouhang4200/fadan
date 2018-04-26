@@ -10,22 +10,22 @@ use App\Services\Leveling\MayiDailianController;
 return [
 	// 第三方平台我们这边的账号ID对应的平台ID
 	'third' => [
-		8083 => 3, // 蚂蚁
-		8098 => 4, // dd373
+		// 8083 => 3, // 蚂蚁
+		// 8098 => 4, // dd373
 		// 8393 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
 	'third_orders' => [
-		3 => 'mayi_order_no',
-		4 => 'dd373_order_no',
+		// 3 => 'mayi_order_no',
+		// 4 => 'dd373_order_no',
 		// 5 => 'wanzi_order_no',
 	],
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [
-		3 => MayiDailianController::class,
-		4 => DD373Controller::class,
+		// 3 => MayiDailianController::class,
+		// 4 => DD373Controller::class,
 		// 5 => WanziController::class,
 	],
 
