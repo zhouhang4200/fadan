@@ -73,7 +73,7 @@ class OrderStatus extends Command
 
             $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
 
-            if (isset($show91OrderNO->field_value)) {
+            if (isset($show91OrderNO->field_value) && !empty($show91OrderNO->field_value)) {
                 // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
                 $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
 
