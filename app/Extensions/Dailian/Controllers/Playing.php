@@ -72,7 +72,7 @@ class Playing extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            myLog('playing-ex', [$exception->getFile(), $exception->getMessage(), $exception->getLine()]);
+            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();

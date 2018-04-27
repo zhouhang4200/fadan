@@ -67,6 +67,7 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '申请验收', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();

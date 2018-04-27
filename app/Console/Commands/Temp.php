@@ -73,7 +73,7 @@ class Temp extends Command
         $status = $this->argument('no');
         $user = $this->argument('user');
 
-        dd($this->complete($status, $user));
+        dd($this->queryShow91Order($status));
 
         // 我们是待接单
         if ($status == 1) {

@@ -57,6 +57,7 @@ class CancelComplete extends DailianAbstract implements DailianInterface
             throw new DailianException($e->getMessage());
     	} catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '取消验收', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();

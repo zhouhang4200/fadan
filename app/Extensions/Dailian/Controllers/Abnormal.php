@@ -61,6 +61,7 @@ class Abnormal extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '异常', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
         }
     	DB::commit();
