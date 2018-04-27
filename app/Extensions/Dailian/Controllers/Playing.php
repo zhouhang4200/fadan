@@ -287,9 +287,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 调用事件
             try {
                 event(new OrderReceiving($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('receiving', [$errorException->getMessage()]);
-            } catch (\Exception $exception) {
+            }  catch (\Exception $exception) {
                 myLog('receiving', [$exception->getMessage()]);
             }
             // 写入留言获取
