@@ -50,6 +50,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      */
     public static function formDataRequest($options = [], $method = 'POST')
     {
+
         try {
             $client = new Client();
             $response = $client->request($method, config('leveling.mayidailian.url'), [
@@ -57,9 +58,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             ]);
             $result = $response->getBody()->getContents();
 
+            myLog('my-request-log', ['请求参数' => $options, '结果' => $result]);
+
             if (!isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
+
 
             if (isset($result) && !empty($result)) {
                 $arrResult = json_decode($result, true);
@@ -103,7 +107,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             if (!isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
-            myLog('my-request-result', [$result]);
+
+            myLog('my-request-log', ['请求参数' => $options, '结果' => $result]);
+
             if (isset($result) && !empty($result)) {
                 $arrResult = json_decode($result, true);
 
