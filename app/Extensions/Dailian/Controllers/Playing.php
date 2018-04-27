@@ -170,13 +170,13 @@ class Playing extends DailianAbstract implements DailianInterface
             // 订单详情
             $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            if (config('leveling.third_orders') && $this->userId != 8456) {
+            if (config('leveling.third_orders') && ! in_array($this->userId, [8456, 8556])) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历 平台 =》 平台订单名称
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果确定为某个第三方平台，则写入第三方平台号和订单号
-                    if (isset($orderDatas['third']) && $orderDatas['third'] == $third) {
+                    if (config('leveling.third')[$this->userId] == $third) {
                         if (! isset($orderDatas[$thirdOrderNoName]) || empty($orderDatas[$thirdOrderNoName])) {
                             throw new DailianException('订单号不存在，请联系淘宝代练平台配置关联订单号'); 
                         }
