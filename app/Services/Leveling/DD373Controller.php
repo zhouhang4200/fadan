@@ -41,6 +41,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
+            myLog('dd373-api-log', [$url, $options, $result]);
+
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
