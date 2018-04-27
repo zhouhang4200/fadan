@@ -13,672 +13,672 @@ use App\Exceptions\DailianException;
  */
 class WanziController extends LevelingAbstract implements LevelingInterface
 {
-	/**
-     * 调用接口时间
-     * @var [type]
-     */
-    // protected static $time;
+	// /**
+ //     * 调用接口时间
+ //     * @var [type]
+ //     */
+ //    // protected static $time;
 
-    public function __construct()
-    {
-        // $time = time();
-    }
+ //    public function __construct()
+ //    {
+ //        // $time = time();
+ //    }
 
-    /**
-     * form-data 格式提交数据
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
-     */
-    public static function formDataRequest($options = [], $url = '', $method = 'POST')
-    {
-    	try {
-    		$datas = [];
-	        foreach ($options as $name => $value) {
-	            $datas[$name]['name'] = $name;
-	            $datas[$name]['contents'] = $value;
-	        }
-	        $client = new Client();
-	        $response = $client->request($method, $url, [
-	            'multipart' => $datas,
-	        ]);
-	        $result =  $response->getBody()->getContents();
+ //    /**
+ //     * form-data 格式提交数据
+ //     * @param  [type] $url     [description]
+ //     * @param  [type] $options [description]
+ //     * @param  string $method  [description]
+ //     * @return [type]          [description]
+ //     */
+ //    public static function formDataRequest($options = [], $url = '', $method = 'POST')
+ //    {
+ //    	try {
+ //    		$datas = [];
+	//         foreach ($options as $name => $value) {
+	//             $datas[$name]['name'] = $name;
+	//             $datas[$name]['contents'] = $value;
+	//         }
+	//         $client = new Client();
+	//         $response = $client->request($method, $url, [
+	//             'multipart' => $datas,
+	//         ]);
+	//         $result =  $response->getBody()->getContents();
 
-	        if (! isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
-            }
+	//         if (! isset($result) || empty($result)) {
+ //                throw new DailianException('请求返回数据不存在');
+ //            }
 
-	        if (isset($result) && ! empty($result)) {
-	        	$arrResult = json_decode($result, true);
+	//         if (isset($result) && ! empty($result)) {
+	//         	$arrResult = json_decode($result, true);
 
-	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	        		// 失败
-	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
-	        			myLog('wanzi-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
-        				throw new DailianException($message);
-	        		}
-	        	}
-		        // 记录日志
-		        myLog('wanzi-return-logs', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
-    		}
-			myLog('wanzi-request-logs', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
-    		return json_decode($result, true);
-        } catch (Exception $e) {
-        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+	//         	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+	//         		// 失败
+	//         		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+ //        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
+	//         			myLog('wanzi-return-error', [
+	//         				'地址' => $url ?? '', 
+	//         				'失败错误码' => $arrResult['result'] ?? '', 
+	//         				'失败原因' => $arrResult['reason'] ?? '',
+	//         			]);
+ //        				throw new DailianException($message);
+	//         		}
+	//         	}
+	// 	        // 记录日志
+	// 	        myLog('wanzi-return-logs', [
+	// 	            '地址' => $url ?? '',
+	// 	            '信息' => $options ?? '',
+	// 	            '结果' => $result ? json_decode($result, true) : '',
+	// 	        ]);
+ //    		}
+	// 		myLog('wanzi-request-logs', [
+	//             '地址' => $url ?? '',
+	//             '参数' => $options ?? '',
+	//         ]);
+ //    		return json_decode($result, true);
+ //        } catch (Exception $e) {
+ //        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
-        	throw new Exception($e->getMessage());
-        }
-    }
+ //        	throw new Exception($e->getMessage());
+ //        }
+ //    }
 
-    /**
-     * 普通提交
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
-     */
-    public static function normalRequest($options = [], $url= '', $method = 'POST')
-    {
-    	try {
-	        $client = new Client();
-	        $response = $client->request($method, $url, [
-	            'form_params' => $options,
-	        ]);
-	        $result =  $response->getBody()->getContents();
+ //    /**
+ //     * 普通提交
+ //     * @param  [type] $url     [description]
+ //     * @param  [type] $options [description]
+ //     * @param  string $method  [description]
+ //     * @return [type]          [description]
+ //     */
+ //    public static function normalRequest($options = [], $url= '', $method = 'POST')
+ //    {
+ //    	try {
+	//         $client = new Client();
+	//         $response = $client->request($method, $url, [
+	//             'form_params' => $options,
+	//         ]);
+	//         $result =  $response->getBody()->getContents();
 
-	        if (! isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
-            }
+	//         if (! isset($result) || empty($result)) {
+ //                throw new DailianException('请求返回数据不存在');
+ //            }
 
-	        if (isset($result) && ! empty($result)) {
-	        	$arrResult = json_decode($result, true);
+	//         if (isset($result) && ! empty($result)) {
+	//         	$arrResult = json_decode($result, true);
 
-	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	        		// 失败
-	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
-	        			myLog('wanzi-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
-        				throw new DailianException($message);
-	        		}
-	        	}
-		        // 记录日志
-		        myLog('wanzi-return-logs', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
-    		}
-			myLog('wanzi-request-logs', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
-    		return json_decode($result, true);
-        } catch (Exception $e) {
-        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+	//         	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+	//         		// 失败
+	//         		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+ //        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
+	//         			myLog('wanzi-return-error', [
+	//         				'地址' => $url ?? '', 
+	//         				'失败错误码' => $arrResult['result'] ?? '', 
+	//         				'失败原因' => $arrResult['reason'] ?? '',
+	//         			]);
+ //        				throw new DailianException($message);
+	//         		}
+	//         	}
+	// 	        // 记录日志
+	// 	        myLog('wanzi-return-logs', [
+	// 	            '地址' => $url ?? '',
+	// 	            '信息' => $options ?? '',
+	// 	            '结果' => $result ? json_decode($result, true) : '',
+	// 	        ]);
+ //    		}
+	// 		myLog('wanzi-request-logs', [
+	//             '地址' => $url ?? '',
+	//             '参数' => $options ?? '',
+	//         ]);
+ //    		return json_decode($result, true);
+ //        } catch (Exception $e) {
+ //        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
-        	throw new Exception($e->getMessage());
-        }
-    }
+ //        	throw new Exception($e->getMessage());
+ //        }
+ //    }
 
-    /**
-     * 对参数进行加工
-     * @param  [type] $options [description]
-     * @return [type]          [description]
-     */
-    public static function handleOptions($datas)
-    {
+ //    /**
+ //     * 对参数进行加工
+ //     * @param  [type] $options [description]
+ //     * @return [type]          [description]
+ //     */
+ //    public static function handleOptions($datas)
+ //    {
     	
-    }
+ //    }
 
-    /**
-     * 获取签名
-     * @param  [type] $method [description]
-     * @return [type]         [description]
-     */
-    public static function getSign($datas)
-    {
+ //    /**
+ //     * 获取签名
+ //     * @param  [type] $method [description]
+ //     * @return [type]         [description]
+ //     */
+ //    public static function getSign($datas)
+ //    {
     	
-    }
+ //    }
 
-    /**
-     * 上架
-     * @return [type] [description]
-     */
-    public static function onSale($orderDatas) {
-    	try {
-	       	$options = [
-	            'account' => config('leveling.wanzi.account'),
-	            'sign' => config('leveling.wanzi.sign'),
-	        ];
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['onSale']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 上架
+ //     * @return [type] [description]
+ //     */
+ //    public static function onSale($orderDatas) {
+ //    	try {
+	//        	$options = [
+	//             'account' => config('leveling.wanzi.account'),
+	//             'sign' => config('leveling.wanzi.sign'),
+	//         ];
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['onSale']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 下架
-     * @return [type] [description]
-     */
-    public static function offSale($orderDatas) {
-        try {
-	       	$options = [
-	            'account' => config('leveling.wanzi.account'),
-	            'sign' => config('leveling.wanzi.sign'),
-	        ];
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['offSale']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 下架
+ //     * @return [type] [description]
+ //     */
+ //    public static function offSale($orderDatas) {
+ //        try {
+	//        	$options = [
+	//             'account' => config('leveling.wanzi.account'),
+	//             'sign' => config('leveling.wanzi.sign'),
+	//         ];
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['offSale']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 接单
-     * @return [type] [description]
-     */
-    public static function receive($orderDatas) {}
+ //    /**
+ //     * 接单
+ //     * @return [type] [description]
+ //     */
+ //    public static function receive($orderDatas) {}
 
-    /**
-     * 申请撤销
-     * @return [type] [description]
-     */
-    public static function applyRevoke($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'payAmount' => $orderDatas['amount'],
-	        	'guarantyAQFee' => $orderDatas['deposit'],
-	        	'guarantyXLFee' => 0,
-	        	'PayUserType' => 1,
-	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 申请撤销
+ //     * @return [type] [description]
+ //     */
+ //    public static function applyRevoke($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'payAmount' => $orderDatas['amount'],
+	//         	'guarantyAQFee' => $orderDatas['deposit'],
+	//         	'guarantyXLFee' => 0,
+	//         	'PayUserType' => 1,
+	//         	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 取消撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function cancelRevoke($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'State' => 2,
-	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelRevoke']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 取消撤销
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function cancelRevoke($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'State' => 2,
+	//         	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelRevoke']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 同意撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function agreeRevoke($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'State' => 1,
-	        	'reason' => '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 同意撤销
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function agreeRevoke($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'State' => 1,
+	//         	'reason' => '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 强制撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function forceRevoke($orderDatas) {}
+ //    /**
+ //     * 强制撤销
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function forceRevoke($orderDatas) {}
 
-    /**
-     * 不同意撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function refuseRevoke($orderDatas) {
-    	try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'State' => 3,
-	        	'reason' => '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 不同意撤销
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function refuseRevoke($orderDatas) {
+ //    	try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'State' => 3,
+	//         	'reason' => '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 申请仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function applyArbitration($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'reason' => ! empty($orderDatas['complain_message']) ?: '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['applyArbitration']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 申请仲裁
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function applyArbitration($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'reason' => ! empty($orderDatas['complain_message']) ?: '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['applyArbitration']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 取消仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function cancelArbitration($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'reason' => '空',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelArbitration']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 取消仲裁
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function cancelArbitration($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'reason' => '空',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelArbitration']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 强制仲裁（客服仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function customArbitration($orderDatas) {}
+ //    /**
+ //     * 强制仲裁（客服仲裁
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function customArbitration($orderDatas) {}
 
-    *
-     * 申请验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+ //    *
+ //     * 申请验收
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
      
-    public static function applyComplete($orderDatas) {}
+ //    public static function applyComplete($orderDatas) {}
 
-    /**
-     * 取消验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function cancelComplete($orderDatas) {}
+ //    *
+ //     * 取消验收
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+     
+ //    public static function cancelComplete($orderDatas) {}
 
-    /**
-     * 完成验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function complete($orderDatas) {
-       	try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['complete']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 完成验收
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function complete($orderDatas) {
+ //       	try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['complete']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function lock($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['lock']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 锁定
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function lock($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['lock']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 取消锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function cancelLock($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelLock']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 取消锁定
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function cancelLock($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelLock']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 异常
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function abnormal($orderDatas) {}
+ //    /**
+ //     * 异常
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function abnormal($orderDatas) {}
 
-    /**
-     * 取消异常
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function cancelAbnormal($orderDatas) {}
+ //    /**
+ //     * 取消异常
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function cancelAbnormal($orderDatas) {}
 
-    /**
-     * 撤单（删除)
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
-     */
-    public static function delete($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['delete']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 撤单（删除)
+ //     * @param  [type] $orderDatas [description]
+ //     * @return [type]             [description]
+ //     */
+ //    public static function delete($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['delete']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
 
-    /**
-     * 修改订单(未接单时候的修改订单)
-     * @return [type] [description]
-     */
-    public static function updateOrder($orderDatas) {
-    	try {
-    		$time = time();
-	        $gameName = Game::find($orderDatas['game_id']);
-	        $datas = [
-	        	'order_no' => $orderDatas['wanzi_order_no'],
-	        	'game_name' => $gameName ? $gameName->name : '',
-	        	'game_region' => $orderDatas['region'],
-	        	'game_serve' => $orderDatas['serve'],
-	        	'game_account' => $orderDatas['account'],
-	        	'game_password' => $orderDatas['password'],
-	        	'game_leveling_type' => $orderDatas['game_leveling_type'],
-	        	'game_leveling_title' => $orderDatas['game_leveling_title'],
-	        	'game_leveling_price' => $orderDatas['amount'],
-	        	'game_leveling_day' => $orderDatas['game_leveling_day'],
-	        	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
-	        	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
-	        	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
-	        	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
-	        	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
-	        	'businessman_phone' => $orderDatas['user_phone'],
-	        	'businessman_qq' => $orderDatas['user_qq'],
-	        ]; 
+ //    /**
+ //     * 修改订单(未接单时候的修改订单)
+ //     * @return [type] [description]
+ //     */
+ //    public static function updateOrder($orderDatas) {
+ //    	try {
+ //    		$time = time();
+	//         $gameName = Game::find($orderDatas['game_id']);
+	//         $datas = [
+	//         	'order_no' => $orderDatas['wanzi_order_no'],
+	//         	'game_name' => $gameName ? $gameName->name : '',
+	//         	'game_region' => $orderDatas['region'],
+	//         	'game_serve' => $orderDatas['serve'],
+	//         	'game_account' => $orderDatas['account'],
+	//         	'game_password' => $orderDatas['password'],
+	//         	'game_leveling_type' => $orderDatas['game_leveling_type'],
+	//         	'game_leveling_title' => $orderDatas['game_leveling_title'],
+	//         	'game_leveling_price' => $orderDatas['amount'],
+	//         	'game_leveling_day' => $orderDatas['game_leveling_day'],
+	//         	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
+	//         	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
+	//         	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
+	//         	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
+	//         	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
+	//         	'businessman_phone' => $orderDatas['user_phone'],
+	//         	'businessman_qq' => $orderDatas['user_qq'],
+	//         ]; 
 
-	        $datas = json_encode($datas);
+	//         $datas = json_encode($datas);
 
-	        $client = new Client();
-            $response = $client->request('POST', config('leveling.wanzi.url')['updateOrder'], [
-            	'form_params' => [
-	            	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv'))),
-	            	"platformSign" => config('leveling.wanzi.platform-sign'),
-            	],
-	            'body' => 'x-www-form-urlencoded',
-            ]);
-            $result = $response->getBody()->getContents();
+	//         $client = new Client();
+ //            $response = $client->request('POST', config('leveling.wanzi.url')['updateOrder'], [
+ //            	'form_params' => [
+	//             	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv'))),
+	//             	"platformSign" => config('leveling.wanzi.platform-sign'),
+ //            	],
+	//             'body' => 'x-www-form-urlencoded',
+ //            ]);
+ //            $result = $response->getBody()->getContents();
 
-            // 记录日志
-	        myLog('wanzi-all-logs', [
-	            '修改订单信息' => $datas ?? '',
-	            '地址' => config('leveling.wanzi.url')['updateOrder'] ?? '',
-	            '时间' => Carbon::now()->toDateTimeString(),
-	            '结果' => $result ?? '',
-	        ]);
-        } catch (Exception $e) {
-            myLog('wanzi-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
-            throw new DailianException($e->getMessage());
-        }
-    }
+ //            // 记录日志
+	//         myLog('wanzi-all-logs', [
+	//             '修改订单信息' => $datas ?? '',
+	//             '地址' => config('leveling.wanzi.url')['updateOrder'] ?? '',
+	//             '时间' => Carbon::now()->toDateTimeString(),
+	//             '结果' => $result ?? '',
+	//         ]);
+ //        } catch (Exception $e) {
+ //            myLog('wanzi-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
+ //            throw new DailianException($e->getMessage());
+ //        }
+ //    }
 
-    /**
-     * 订单加时
-     * 增加后的总时间
-     */
-    public static function addTime($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'days' => $orderDatas['game_leveling_day'],
-	        	'hours' => $orderDatas['game_leveling_hour'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['addTime']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 订单加时
+ //     * 增加后的总时间
+ //     */
+ //    public static function addTime($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'days' => $orderDatas['game_leveling_day'],
+	//         	'hours' => $orderDatas['game_leveling_hour'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['addTime']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 订单加款
-     * 增加后的总款
-     */
-    public static function addMoney($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'add_money' => $orderDatas['game_leveling_amount'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['addMoney']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 订单加款
+ //     * 增加后的总款
+ //     */
+ //    public static function addMoney($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'add_money' => $orderDatas['game_leveling_amount'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['addMoney']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 获取订单详情
-     * @return [type] [description]
-     */
-    public static function orderDetail($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'platformSign' => config('leveling.wanzi.platform-sign'),
-	        ];
-	        $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
+ //    /**
+ //     * 获取订单详情
+ //     * @return [type] [description]
+ //     */
+ //    public static function orderDetail($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'platformSign' => config('leveling.wanzi.platform-sign'),
+	//         ];
+	//         $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
 
-	        $datas['Sign'] = md5($str);
-	       	// 发送
-	       	return static::normalRequest($datas, config('leveling.wanzi.url')['orderDetail']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+	//         $datas['Sign'] = md5($str);
+	//        	// 发送
+	//        	return static::normalRequest($datas, config('leveling.wanzi.url')['orderDetail']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 获取订单截图
-     * @return [type] [description]
-     */
-    public static function getScreenshot($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'platformSign' => config('leveling.wanzi.platform-sign'),
-	        ];
-	        $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
+ //    /**
+ //     * 获取订单截图
+ //     * @return [type] [description]
+ //     */
+ //    public static function getScreenshot($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'platformSign' => config('leveling.wanzi.platform-sign'),
+	//         ];
+	//         $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
 
-	        $datas['Sign'] = md5($str);
-	       	// 发送
-	       	return static::normalRequest($datas, config('leveling.wanzi.url')['getScreenshot']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+	//         $datas['Sign'] = md5($str);
+	//        	// 发送
+	//        	return static::normalRequest($datas, config('leveling.wanzi.url')['getScreenshot']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 获取留言
-     * @return [type] [description]
-     */
-    public static function getMessage($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['getMessage']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 获取留言
+ //     * @return [type] [description]
+ //     */
+ //    public static function getMessage($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['getMessage']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 回复留言
-     * @return [type] [description]
-     */
-    public static function replyMessage($orderDatas) {
-        try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'content' => $orderDatas['message'] ?? '',
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 回复留言
+ //     * @return [type] [description]
+ //     */
+ //    public static function replyMessage($orderDatas) {
+ //        try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'content' => $orderDatas['message'] ?? '',
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 
-    /**
-     * 修改接单之后的游戏账号密码
-     * @return [type] [description]
-     */
-    public static function updateAccountAndPassword($orderDatas) {
-       try {
-	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['wanzi_order_no'],
-	        	'gameAccount' => $orderDatas['account'],
-	        	'gamePassWord' => $orderDatas['password'],
-	        	'timestamp' => $time,
-	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
-    }
+ //    /**
+ //     * 修改接单之后的游戏账号密码
+ //     * @return [type] [description]
+ //     */
+ //    public static function updateAccountAndPassword($orderDatas) {
+ //       try {
+	//         $time = time();
+	//         $datas = [
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'gameAccount' => $orderDatas['account'],
+	//         	'gamePassWord' => $orderDatas['password'],
+	//         	'timestamp' => $time,
+	//         ];
+	//         // 对参数进行加工
+	//        	$options = static::handleOptions($datas);
+	//        	// 发送
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword']);
+ //    	} catch (Exception $e) {
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		throw new DailianException($e->getMessage());
+ //    	}
+ //    }
 }
