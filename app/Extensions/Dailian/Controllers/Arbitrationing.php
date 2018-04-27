@@ -111,9 +111,9 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                         'oid' => $orderDetails['show91_order_no'],
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                        'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-                        'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+//                        'pic1' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+//                        'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
+//                        'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
                     ];
                     Show91::addappeal($options);
                     break;
