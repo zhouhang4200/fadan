@@ -57,9 +57,10 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             
             $this->checkIfNeedLock($orderNo, $userId);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '不同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);

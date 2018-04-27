@@ -62,9 +62,10 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             OrderDetailRepository::updateByOrderNo($this->orderNo, 'check_time', date('Y-m-d H:i:s'));
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-    	} catch (DailianException $e) {
+        } catch (DailianException $exception) {
             DB::rollBack();
-            throw new DailianException($e->getMessage());
+            myLog('opt-ex',  ['操作' => '申请验收', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (Exception $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '申请验收', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);

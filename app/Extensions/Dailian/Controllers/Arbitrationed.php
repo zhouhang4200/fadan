@@ -68,8 +68,10 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 			delRedisCompleteOrders($this->orderNo);
 			// 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-    	} catch (DailianException $e) {
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '仲裁', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             DB::rollBack();
             throw new DailianException($exception->getMessage());

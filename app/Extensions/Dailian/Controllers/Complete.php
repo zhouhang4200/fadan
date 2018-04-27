@@ -77,9 +77,10 @@ class Complete extends DailianAbstract implements DailianInterface
             levelingMessageDel($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-    	} catch (DailianException $e) {
+    	} catch (DailianException $exception) {
     		DB::rollBack();
-            throw new DailianException($e->getMessage());
+            myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
         }  catch (RequestTimeoutException $exception) {

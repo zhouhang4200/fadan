@@ -64,9 +64,10 @@ class Playing extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 从自动下架任务中删除
             autoUnShelveDel($this->orderNo);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());

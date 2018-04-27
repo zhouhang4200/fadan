@@ -68,11 +68,10 @@ class Revoked extends DailianAbstract implements DailianInterface
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
             // 从留言获取任务中删除
             levelingMessageDel($this->orderNo);
-        } catch (DailianException $e) {
-             // 我们平台操作失败，写入redis报警
-            $this->addOperateFailOrderToRedis($this->order, 24);
+        } catch (DailianException $exception) {
             DB::rollBack();
-            throw new DailianException($e->getMessage());
+            myLog('opt-ex',  ['操作' => '同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
