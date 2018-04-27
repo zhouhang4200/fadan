@@ -643,7 +643,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['getMessage']);
+	       	static::normalRequest($datas, config('leveling.dd373.url')['getMessage']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
