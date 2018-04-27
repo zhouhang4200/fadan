@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Show91;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -37,6 +38,12 @@ class Test extends Command
      */
     public function handle()
     {
-        myLog('test', [date('Y-m-d')]);
+        $options = [
+            'oid' => 'ORD180427132554429739',
+//            'appeal.title' => '申请仲裁',
+//            'appeal.content' => '申请仲裁',
+//            'pic1' => fopen(public_path('frontend/images/3.png'), 'r'),
+        ];
+        dd(fopen(public_path('frontend/images/3.png'), 'r'));
     }
 }
