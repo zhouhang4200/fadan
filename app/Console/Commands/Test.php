@@ -39,11 +39,11 @@ class Test extends Command
     public function handle()
     {
         $options = [
-            'oid' => 'ORD180427132554429739',
+            'aid' => 'ORD180427132554429739',
 //            'appeal.title' => '申请仲裁',
 //            'appeal.content' => '申请仲裁',
 //            'pic1' => fopen(public_path('frontend/images/3.png'), 'r'),
         ];
-        dd(fopen(public_path('frontend/images/3.png'), 'r'));
+        dd(Show91::cancelAppeal($options));
     }
 }

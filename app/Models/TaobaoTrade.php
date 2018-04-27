@@ -17,21 +17,20 @@ class TaobaoTrade extends Model
     {
         if (isset($filters['tid'])) {
             $query->where('tid', $filters['tid']);
-        }  else {
+        }
 
-            if ($filters['buyerNick']) {
-                $query->where('buyer_nick', $filters['buyerNick']);
-            }
+        if (isset($filters['buyerNick']) && !empty($filters['buyerNick'])) {
+            $query->where('buyer_nick', $filters['buyerNick']);
+        }
 
-            if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
-                $query->where('created', '>=', $filters['startDate']);
-            }
-            if (isset($filters['status'])  && $filters['status'] != 99) {
-                $query->where('handle_status', $filters['status']);
-            }
-            if (isset($filters['endDate']) && !empty($filters['endDate'])) {
-                $query->where('created', '<=', $filters['endDate']." 23:59:59");
-            }
+        if (isset($filters['startDate']) &&  !empty($filters['startDate'])) {
+            $query->where('created', '>=', $filters['startDate']);
+        }
+        if (isset($filters['status'])  && $filters['status'] != 99) {
+            $query->where('handle_status', $filters['status']);
+        }
+        if (isset($filters['endDate']) && !empty($filters['endDate'])) {
+            $query->where('created', '<=', $filters['endDate']." 23:59:59");
         }
     }
 
