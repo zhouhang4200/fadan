@@ -50,7 +50,8 @@ class Show91
         } catch (ConnectException $exception) {
             throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
-            throw new DailianException('订单状态异常', 0);
+            myLog('91-request-ex', [$exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage(), 0);
         }
 
         try {

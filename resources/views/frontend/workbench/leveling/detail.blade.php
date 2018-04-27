@@ -545,19 +545,19 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">支付金额：</div>
-                            <div class="layui-col-md8">{{ $paymentAmount ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['payment_amount']?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">获得金额：</div>
-                            <div class="layui-col-md8">{{ $getAmount  ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['get_amount']?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ $poundage ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['poundage'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $profit }}</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
 
                     </div>
