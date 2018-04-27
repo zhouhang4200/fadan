@@ -57,9 +57,10 @@ class Lock extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '锁定', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
         } catch (RequestTimeoutException $exception) {
@@ -69,6 +70,7 @@ class Lock extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '锁定', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
         DB::commit();
@@ -85,7 +87,7 @@ class Lock extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && $this->userId != 8456) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台

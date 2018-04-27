@@ -10,7 +10,7 @@ use App\Services\Leveling\MayiDailianController;
 return [
 	// 第三方平台我们这边的账号ID对应的平台ID
 	'third' => [
-		8083 => 3, // 蚂蚁
+		8737 => 3, // 蚂蚁
 		8098 => 4, // dd373
 		// 8393 => 5, // 丸子
 	],

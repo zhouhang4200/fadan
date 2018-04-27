@@ -57,9 +57,10 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             
             $this->checkIfNeedLock($orderNo, $userId);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '不同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
@@ -67,6 +68,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '不同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();
@@ -136,7 +138,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && $this->userId != 8456) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台

@@ -60,9 +60,10 @@ class Revoking extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-        } catch (DailianException $e) {
+        } catch (DailianException $exception) {
             DB::rollBack();
-            throw new DailianException($e->getMessage());
+            myLog('opt-ex',  ['操作' => '申请撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	}  catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
@@ -70,6 +71,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '申请撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();
@@ -117,7 +119,7 @@ class Revoking extends DailianAbstract implements DailianInterface
                         break;
                 }
 
-                if (config('leveling.third_orders')) {
+                if (config('leveling.third_orders') && $this->userId != 8456) {
                     // 获取订单和订单详情以及仲裁协商信息
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                     // 如果没有撤销信息，抛出错误

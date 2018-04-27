@@ -81,6 +81,8 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                 receivingUserDel($this->order->no);
             } catch (CustomException $exception) {
                 \Log::alert($exception->getMessage() . ' 删除接单队列');
+            } catch (\Exception $exception) {
+                \Log::alert($exception->getMessage() . ' 删除接单队列');
             }
 
             // 更新订单详情接单商户ID
@@ -88,6 +90,8 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                 OrderDetailRepository::updateGainerPrimaryUserIdBy($this->order->no, $this->order->gainer_primary_user_id);
             } catch (CustomException $exception) {
                 \Log::alert($exception->getMessage() . ' 更新接单人异常');
+            } catch (\Exception $exception) {
+                \Log::alert($exception->getMessage() . ' 删除接单队列');
             }
 
             // 如果是王者皮肤订单者并是APP订单则发送QQ号
@@ -95,6 +99,8 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
                 try {
                     FuluAppApi::sendOrderAndQq($this->order->gainer_primary_user_id, $this->order->foreign_order_no);
                 } catch(CustomException $exception) {
+                    \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
+                } catch (\Exception $exception) {
                     \Log::alert($exception->getMessage() . '给福禄APP发送QQ号异常，单号：' . $this->order->no);
                 }
             }
@@ -121,7 +127,7 @@ class Receiving extends \App\Extensions\Order\Operations\Base\Operation
 
                 } catch(CustomException $exception) {
                     myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
-                } catch(\ErrorException $exception) {
+                } catch(\Exception $exception) {
                     myLog('send-message', [$exception->getMessage() . '给用户发送QQ号异常，单号：' . $this->order->no]);
                 }
             }

@@ -140,5 +140,8 @@
 .layui-bg-blue {
     background-color: #ff7a00 !important;
 }
+.layui-disabled, .layui-disabled:hover {
+    color: #777474 !important;
+}
 body  .layui-layer-btn .layui-layer-btn0{background:#ff7a00;border-color:#ff7a00}
 body .layui-laydate .layui-this { background-color: #ff7a00 !important;; color: #fff !important;  }

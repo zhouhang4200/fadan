@@ -41,6 +41,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
+            myLog('dd373-request-log', ['请求参数' => $options, '结果' => $result]);
+
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -90,6 +92,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	            'body' => 'x-www-form-urlencoded',
 	        ]);
 	        $result =  $response->getBody()->getContents();
+
+            myLog('dd373-request-log', ['请求参数' => $options, '结果' => $result]);
 
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
