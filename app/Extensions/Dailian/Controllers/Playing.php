@@ -176,7 +176,7 @@ class Playing extends DailianAbstract implements DailianInterface
                 // 遍历 平台 =》 平台订单名称
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果确定为某个第三方平台，则写入第三方平台号和订单号
-                    if (config('leveling.third')[$this->userId] == $third) {
+                    if (isset($orderDatas['third']) && $orderDatas['third'] == $third) {
                         if (! isset($orderDatas[$thirdOrderNoName]) || empty($orderDatas[$thirdOrderNoName])) {
                             throw new DailianException('订单号不存在，请联系淘宝代练平台配置关联订单号'); 
                         }
