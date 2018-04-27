@@ -861,7 +861,7 @@
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
             var upload = layui.upload;
-
+            var delivery = 0;
             var gameId = '{{ $detail['game_id'] }}';
 
             $('.cancel').click(function(){
@@ -1005,10 +1005,13 @@
                         });
                     });
                 } else if(operation == 'complete') {
-                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
+                        title: '提示'
+                    }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
-                            keyWord:operation
+                            keyWord:operation,
+                            delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message,function () {
@@ -1302,6 +1305,12 @@
             $('#leave-message').dblclick('#loadMoreMessage', function () {
                 var id = $('#loadMoreMessage').attr('data-id');
                 loadMessage(id);
+            });
+
+            $('body').on('click', '#delivery', function () {
+                if ($(this).is(':checked')) {
+                    delivery = 1;
+                }
             });
         });
 
