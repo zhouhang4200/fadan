@@ -63,8 +63,8 @@ return [
 
 	// 蚂蚁代练的信息
 	'mayidailian' => [
-		'appid'     => 'yQS001rlkILRuQRUj0YRL4SKEiYnolhXJa8RrQPP1xffU8Sd4GXMqssncAig',
-		'appsecret' => '3AfxT4O6YdlxAJzL1PehkG0aiuvS04kJoScGDqBik23mP2BeikLcRZbgc6Ze',
+		'appid'     => '2f666a796ba36a6b',
+		'appsecret' => '66a225812f666a796ba36a6b6a151870',
 		'Ver'       => '1.0',
 		'url'       => 'http://www.mayidailian.com/OpenApi/GateWay/index', // 蚂蚁代练的接口地址
 		'password'  => '123456',
