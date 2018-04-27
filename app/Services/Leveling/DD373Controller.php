@@ -109,13 +109,16 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		}
 	        	}
 		        // 记录日志
-		        myLog('dd373-request-logs', [
+		        myLog('dd373-return-logs', [
 		            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
 		            '地址' => $url ?? '',
 		            '结果' => $result ? json_decode($result, true) : '',
 		        ]);
     		}
-
+			myLog('dd373-request-logs', [
+	            '地址' => $url ?? '',
+	            '参数' => $options ?? '',
+	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -630,10 +633,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'timestamp' => $time,
+	        	'platformSign' => config('leveling.dd373.platform-sign'),
 	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	        $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+
+	        $datas['Sign'] = md5($str);
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.dd373.url')['getMessage']);
     	} catch (Exception $e) {
