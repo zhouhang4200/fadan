@@ -145,6 +145,8 @@ return [
 		'appsecret' => '889a68ce24dca31042361ae3fa423f57',
 		'aes_key'   => '45584685d8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
+		'account'   => '51683C315D36488FB266904B6FD4BDFF',
+		'sign'		=> '64551beede02877e16e68852aeb90b41',
     	'url' 		=> [
 			'onSale'                   => 'http://www.show91.com/oauth/grounding', // 上架
 			'offSale'                  => 'http://www.show91.com/oauth/grounding', // 下架

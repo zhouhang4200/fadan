@@ -34,10 +34,14 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //    public static function formDataRequest($options = [], $url = '', $method = 'POST')
  //    {
  //    	try {
+ //    		$datas = [];
+	//         foreach ($options as $name => $value) {
+	//             $datas[$name]['name'] = $name;
+	//             $datas[$name]['contents'] = $value;
+	//         }
 	//         $client = new Client();
 	//         $response = $client->request($method, $url, [
-	//             'form_params' => $options,
-	//             'body' => 'x-www-form-urlencoded',
+	//             'multipart' => $datas,
 	//         ]);
 	//         $result =  $response->getBody()->getContents();
 
@@ -49,26 +53,31 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         	$arrResult = json_decode($result, true);
 
 	//         	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	//         		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
-	//         			// 判断是否失败
-	//         			if ($arrResult['code'] != 0) {
-	//         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
-	//         				throw new DailianException($message);
-	//         			}
-	//         			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	//         		// 失败
+	//         		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+ //        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
+	//         			myLog('wanzi-return-error', [
+	//         				'地址' => $url ?? '', 
+	//         				'失败错误码' => $arrResult['result'] ?? '', 
+	//         				'失败原因' => $arrResult['reason'] ?? '',
+	//         			]);
+ //        				throw new DailianException($message);
 	//         		}
 	//         	}
 	// 	        // 记录日志
-	// 	        myLog('dd373-request-logs', [
-	// 	            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+	// 	        myLog('wanzi-return-logs', [
 	// 	            '地址' => $url ?? '',
+	// 	            '信息' => $options ?? '',
 	// 	            '结果' => $result ? json_decode($result, true) : '',
 	// 	        ]);
  //    		}
-
+	// 		myLog('wanzi-request-logs', [
+	//             '地址' => $url ?? '',
+	//             '参数' => $options ?? '',
+	//         ]);
  //    		return json_decode($result, true);
  //        } catch (Exception $e) {
- //        	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+ //        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
  //        	throw new Exception($e->getMessage());
  //        }
@@ -87,7 +96,6 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         $client = new Client();
 	//         $response = $client->request($method, $url, [
 	//             'form_params' => $options,
-	//             'body' => 'x-www-form-urlencoded',
 	//         ]);
 	//         $result =  $response->getBody()->getContents();
 
@@ -99,26 +107,31 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         	$arrResult = json_decode($result, true);
 
 	//         	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	//         		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
-	//         			// 判断是否失败
-	//         			if ($arrResult['code'] != 0) {
-	//         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
-	//         				throw new DailianException($message);
-	//         			}
-	//         			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	//         		// 失败
+	//         		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+ //        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
+	//         			myLog('wanzi-return-error', [
+	//         				'地址' => $url ?? '', 
+	//         				'失败错误码' => $arrResult['result'] ?? '', 
+	//         				'失败原因' => $arrResult['reason'] ?? '',
+	//         			]);
+ //        				throw new DailianException($message);
 	//         		}
 	//         	}
 	// 	        // 记录日志
-	// 	        myLog('dd373-request-logs', [
-	// 	            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+	// 	        myLog('wanzi-return-logs', [
 	// 	            '地址' => $url ?? '',
+	// 	            '信息' => $options ?? '',
 	// 	            '结果' => $result ? json_decode($result, true) : '',
 	// 	        ]);
  //    		}
-
+	// 		myLog('wanzi-request-logs', [
+	//             '地址' => $url ?? '',
+	//             '参数' => $options ?? '',
+	//         ]);
  //    		return json_decode($result, true);
  //        } catch (Exception $e) {
- //        	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+ //        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
  //        	throw new Exception($e->getMessage());
  //        }
@@ -131,11 +144,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //     */
  //    public static function handleOptions($datas)
  //    {
- //    	return [
-	// 		'JsonData'     => json_encode($datas),
-	// 		'platformSign' => config('leveling.dd373.platform-sign'),
-	// 		'Sign'         => static::getSign($datas),
- //        ];
+    	
  //    }
 
  //    /**
@@ -145,11 +154,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //     */
  //    public static function getSign($datas)
  //    {
- //    	$string = "JsonData=".json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
-
- //    	myLog('dd373-sign-log', ['string' => $string, 'sign' => md5($string)]);
-
- //        return md5($string);
+    	
  //    }
 
  //    /**
@@ -158,17 +163,14 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //     */
  //    public static function onSale($orderDatas) {
  //    	try {
-	//         $time = time();
-	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	//         	'timestamp' => $time,
+	//        	$options = [
+	//             'account' => config('leveling.wanzi.account'),
+	//             'sign' => config('leveling.wanzi.sign'),
 	//         ];
-	//         // 对参数进行加工
-	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['onSale']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['onSale']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -181,15 +183,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['offSale']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['offSale']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -208,7 +210,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'payAmount' => $orderDatas['amount'],
 	//         	'guarantyAQFee' => $orderDatas['deposit'],
 	//         	'guarantyXLFee' => 0,
@@ -219,9 +221,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['applyRevoke']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -235,7 +237,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'State' => 2,
 	//         	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
 	//         	'timestamp' => $time,
@@ -243,9 +245,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['cancelRevoke']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelRevoke']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -259,7 +261,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'State' => 1,
 	//         	'reason' => '空',
 	//         	'timestamp' => $time,
@@ -267,9 +269,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	$result = static::normalRequest($options, config('leveling.dd373.url')['agreeRevoke']);
+	//        	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -290,7 +292,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //    	try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'State' => 3,
 	//         	'reason' => '空',
 	//         	'timestamp' => $time,
@@ -298,9 +300,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['refuseRevoke']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -314,16 +316,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'reason' => ! empty($orderDatas['complain_message']) ?: '空',
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['applyArbitration']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['applyArbitration']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -337,16 +339,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'reason' => '空',
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['cancelArbitration']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelArbitration']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -381,15 +383,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //       	try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['complete']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['complete']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -403,15 +405,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['lock']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['lock']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -425,15 +427,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['cancelLock']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['cancelLock']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -461,15 +463,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['delete']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['delete']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -484,7 +486,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //    		$time = time();
 	//         $gameName = Game::find($orderDatas['game_id']);
 	//         $datas = [
-	//         	'order_no' => $orderDatas['dd373_order_no'],
+	//         	'order_no' => $orderDatas['wanzi_order_no'],
 	//         	'game_name' => $gameName ? $gameName->name : '',
 	//         	'game_region' => $orderDatas['region'],
 	//         	'game_serve' => $orderDatas['serve'],
@@ -506,24 +508,24 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         $datas = json_encode($datas);
 
 	//         $client = new Client();
- //            $response = $client->request('POST', config('leveling.dd373.url')['updateOrder'], [
+ //            $response = $client->request('POST', config('leveling.wanzi.url')['updateOrder'], [
  //            	'form_params' => [
-	//             	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
-	//             	"platformSign" => config('leveling.dd373.platform-sign'),
+	//             	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv'))),
+	//             	"platformSign" => config('leveling.wanzi.platform-sign'),
  //            	],
 	//             'body' => 'x-www-form-urlencoded',
  //            ]);
  //            $result = $response->getBody()->getContents();
 
  //            // 记录日志
-	//         myLog('dd373-all-logs', [
+	//         myLog('wanzi-all-logs', [
 	//             '修改订单信息' => $datas ?? '',
-	//             '地址' => config('leveling.dd373.url')['updateOrder'] ?? '',
+	//             '地址' => config('leveling.wanzi.url')['updateOrder'] ?? '',
 	//             '时间' => Carbon::now()->toDateTimeString(),
 	//             '结果' => $result ?? '',
 	//         ]);
  //        } catch (Exception $e) {
- //            myLog('dd373-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
+ //            myLog('wanzi-local-error', ['方法' => '修改订单', '原因' => $e->getMessage()]);
  //            throw new DailianException($e->getMessage());
  //        }
  //    }
@@ -536,7 +538,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'days' => $orderDatas['game_leveling_day'],
 	//         	'hours' => $orderDatas['game_leveling_hour'],
 	//         	'timestamp' => $time,
@@ -544,9 +546,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['addTime']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['addTime']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -559,16 +561,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'add_money' => $orderDatas['game_leveling_amount'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['addMoney']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['addMoney']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -581,16 +583,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	//         	'platformSign' => config('leveling.dd373.platform-sign'),
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'platformSign' => config('leveling.wanzi.platform-sign'),
 	//         ];
-	//         $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+	//         $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
 
 	//         $datas['Sign'] = md5($str);
 	//        	// 发送
-	//        	return static::normalRequest($datas, config('leveling.dd373.url')['orderDetail']);
+	//        	return static::normalRequest($datas, config('leveling.wanzi.url')['orderDetail']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -603,16 +605,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	//         	'platformSign' => config('leveling.dd373.platform-sign'),
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
+	//         	'platformSign' => config('leveling.wanzi.platform-sign'),
 	//         ];
-	//         $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+	//         $str = "platformOrderNo=".$orderDatas['wanzi_order_no']."&platformSign=".config('leveling.wanzi.platform-sign').config('leveling.wanzi.key');
 
 	//         $datas['Sign'] = md5($str);
 	//        	// 发送
-	//        	return static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot']);
+	//        	return static::normalRequest($datas, config('leveling.wanzi.url')['getScreenshot']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -625,15 +627,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['getMessage']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['getMessage']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -646,16 +648,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //        try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'content' => $orderDatas['message'] ?? '',
 	//         	'timestamp' => $time,
 	//         ];
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['replyMessage']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }
@@ -668,7 +670,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //       try {
 	//         $time = time();
 	//         $datas = [
-	//         	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	//         	'platformOrderNo' => $orderDatas['wanzi_order_no'],
 	//         	'gameAccount' => $orderDatas['account'],
 	//         	'gamePassWord' => $orderDatas['password'],
 	//         	'timestamp' => $time,
@@ -676,9 +678,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         // 对参数进行加工
 	//        	$options = static::handleOptions($datas);
 	//        	// 发送
-	//        	static::normalRequest($options, config('leveling.dd373.url')['updateAccountAndPassword']);
+	//        	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword']);
  //    	} catch (Exception $e) {
- //    		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+ //    		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
  //    		throw new DailianException($e->getMessage());
  //    	}
  //    }

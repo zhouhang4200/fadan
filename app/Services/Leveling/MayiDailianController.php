@@ -58,8 +58,6 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             ]);
             $result = $response->getBody()->getContents();
 
-            myLog('my-request-log', ['请求参数' => $options, '结果' => $result]);
-
             if (!isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -76,12 +74,16 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     }
                 }
                 // 记录日志
-                myLog('mayidailian-request-logs', [
+                myLog('mayi-return-logs', [
                     '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-                    '方法名' => $options['method'],
+                    '方法名' => $options['method'] ?? '',
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
+            myLog('mayi-request-logs', [
+                '方法名' => $options['method'] ?? '',
+                '参数' => $options ?? '',
+            ]);
             return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -108,8 +110,6 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 throw new DailianException('请求返回数据不存在');
             }
 
-            myLog('my-request-log', ['请求参数' => $options, '结果' => $result]);
-
             if (isset($result) && !empty($result)) {
                 $arrResult = json_decode($result, true);
 
@@ -121,12 +121,16 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     }
                 }
                 // 记录日志
-                myLog('mayidailian-request-logs', [
+                myLog('mayi-return-logs', [
                     '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-                    '方法名' => $options['method'],
+                    '方法名' => $options['method'] ?? '',
                     '结果' => $result ? json_decode($result) : '',
                 ]);
             }
+            myLog('mayi-request-logs', [
+                '方法名' => $options['method'] ?? '',
+                '参数' => $options ?? '',
+            ]);
             return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
