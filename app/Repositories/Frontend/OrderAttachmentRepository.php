@@ -149,7 +149,7 @@ class OrderAttachmentRepository
             $orderDatas = static::getOrderAndOrderDetailAndLevelingConsult($orderNo);
             $orderDatas['description'] = $description ?? '';
             // $orderDatas['imgFlow'] = base64_encode(fread(fopen($filePath, 'r'), filesize($filePath))) ?? '';
-            $orderDatas['imgFlow'] = base64_encode(fread(fopen($filePath, 'rb'), filesize($filePath)));
+            $orderDatas['imgFlow'] = base64_encode(fread(fopen($filePath, 'r'), filesize($filePath)));
             $orderDatas['type'] = $mimeTypes ?? '';
 
            // 遍历代练平台
