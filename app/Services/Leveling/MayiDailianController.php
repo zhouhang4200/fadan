@@ -113,7 +113,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 throw new DailianException('请求返回数据不存在');
             }
 
-            myLog('dd373-api-log', [$options, $result]);
+            myLog('my-api-log', [$options, $result]);
 
             if (isset($result) && !empty($result)) {
                 $arrResult = json_decode($result, true);
