@@ -232,7 +232,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     {
         if ($this->runAfter) {
 
-            if ($this->order->creator_primary_user_id == 8317 || config('app.env') == 'local') {
+//            if ($this->order->creator_primary_user_id == 8317 || config('app.env') == 'local') {
                 // 下单到其它平台
                 $sendOrder = [
                     'order_no' => $this->order->no,
@@ -257,7 +257,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 ];
                 $redis = RedisConnect::order();
                 $redis->lpush('order:send', json_encode($sendOrder));
-            }
+//            }
 
             // 给91下订单
             $show91Result = Show91::addOrder($this->order);
