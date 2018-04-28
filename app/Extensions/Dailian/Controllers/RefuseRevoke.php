@@ -38,7 +38,8 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
-        	// 获取上一个操作状态
+            $this->checkIfNeedDo($orderNo);
+            // 获取上一个操作状态
             $this->getBeforeStatus($orderNo);
             // 创建操作前的订单日志详情
             $this->createLogObject();
@@ -76,6 +77,14 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
         return true;
     }
 
+    public function checkIfNeedDo($orderNo)
+    {
+        $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+
+        if (isset($datas) && isset($datas['third']) && in_array($datas['third'], [1, 4])) {
+            throw new DailianException('该接单平台没有此操作');
+        }
+    }
     /**
      * 检查是否需要进行锁定操作
      * @param  [type] $orderNo [description]

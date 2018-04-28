@@ -38,6 +38,7 @@ class Lock extends DailianAbstract implements DailianInterface
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
+            $this->checkIfNeedDo($orderNo);
         	$this->beforeHandleStatus = $this->getOrder()->status;
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
@@ -78,6 +79,14 @@ class Lock extends DailianAbstract implements DailianInterface
         return true;
     }
 
+    public function checkIfNeedDo($orderNo)
+    {
+        $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+
+        if (isset($datas) && isset($datas['third']) && in_array($datas['third'], [1, 4])) {
+            throw new DailianException('该接单平台没有此操作');
+        }
+    }
     /**
      * 调用外部锁定发接口
      * @return bool|void [type] [description]

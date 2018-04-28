@@ -1186,7 +1186,12 @@ class IndexController extends Controller
                     \DB::table('order_histories')->insert($history);
                 }
             }
-
+            // 提示哪些平台下单成功，哪些平台下单失败
+            $orderDetails = OrderDetail::where('order_no', $order->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+                    
+            $this->checkIfAutoMarkup($order, $orderDetails);
         } catch (CustomException $customException) {
             DB::rollBack();
             return response()->ajax(0, $customException->getMessage());
