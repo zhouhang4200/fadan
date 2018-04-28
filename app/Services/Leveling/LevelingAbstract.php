@@ -186,4 +186,6 @@ class LevelingAbstract extends Controller implements LevelingInterface
 	 * @return [type]             [description]
 	 */
 	public static function updateAccountAndPassword($orderDatas) {}
+	
+	public static function updateImage($orderDatas) {} // 发送截图
 }
