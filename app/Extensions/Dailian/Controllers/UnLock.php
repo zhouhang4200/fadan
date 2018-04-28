@@ -41,6 +41,7 @@ class UnLock extends DailianAbstract implements DailianInterface
             $this->getBeforeStatus($orderNo);
     		// 获取订单对象
 		    $this->getObject();
+            $this->checkIfNeedDo($orderNo);
 		    // 创建操作前的订单日志详情
 		    $this->createLogObject();
 		    // 设置订单属性
@@ -78,6 +79,15 @@ class UnLock extends DailianAbstract implements DailianInterface
     	DB::commit();
 
         return true;
+    }
+
+    public function checkIfNeedDo($orderNo)
+    {
+        $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+
+        if (isset($datas) && isset($datas['third']) && in_array($datas['third'], [1, 4])) {
+            throw new DailianException('该接单平台没有此操作');
+        }
     }
 
     /**
