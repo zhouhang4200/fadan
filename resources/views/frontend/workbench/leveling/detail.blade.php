@@ -323,7 +323,7 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
-                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'source_order_no_1', 'source_order_no_2', 'source_order_no_3']))
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" @if($item->field_required == 1) lay-verify="required"  @endif  value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
@@ -369,41 +369,47 @@
 
                                                     </select>
                                                 @elseif($item->field_type == 2)
-                                                    <select name="{{ $item->field_name }}"  lay-search="" @if ($item->field_required == 1) lay-verify="required" @endif class="layui-disabled" disabled>
-                                                        <option value=""></option>
+
+                                                    @if($detail['status'] != 1 && $item->field_name == 'user_qq')
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled"  value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
+                                                    @else
+
+                                                        <select name="{{ $item->field_name }}"  lay-search="" @if ($item->field_required == 1) lay-verify="required" @endif class="layui-disabled" disabled>
+                                                            <option value=""></option>
 
 
-                                                        @if($item->field_name == 'user_phone')
-                                                            @foreach($contact as $v)
-                                                                @if($v->type == 1)
-                                                                    <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        @elseif($item->field_name == 'user_qq')
-                                                            @foreach($contact as $v)
-                                                                @if($v->type == 2)
-                                                                    <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        @else
-
-                                                            @if(is_array($item->user_values) && count($item->user_values) > 0)
-
-                                                                @foreach($item->user_values as $v)
-                                                                    <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                            @if($item->field_name == 'user_phone')
+                                                                @foreach($contact as $v)
+                                                                    @if($v->type == 1)
+                                                                        <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                                    @endif
                                                                 @endforeach
-
+                                                            @elseif($item->field_name == 'user_qq')
+                                                                @foreach($contact as $v)
+                                                                    @if($v->type == 2)
+                                                                        <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                                    @endif
+                                                                @endforeach
                                                             @else
 
-                                                                @if(count($item->values) > 0)
-                                                                    @foreach($item->values as $v)
+                                                                @if(is_array($item->user_values) && count($item->user_values) > 0)
+
+                                                                    @foreach($item->user_values as $v)
                                                                         <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                                     @endforeach
-                                                                @endif
 
+                                                                @else
+
+                                                                    @if(count($item->values) > 0)
+                                                                        @foreach($item->values as $v)
+                                                                            <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                        @endforeach
+                                                                    @endif
+
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                    </select>
+                                                        </select>
+                                                    @endif
                                                 @endif
 
                                                 @if($item->field_type == 3 && in_array($detail['status'], [1, 22]))
