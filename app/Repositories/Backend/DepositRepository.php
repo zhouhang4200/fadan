@@ -97,8 +97,6 @@ class DepositRepository
             throw new Exception('申请失败');
         }
 
-        // Asset::handle(new Income(40.0928, Income::TRADE_SUBTYPE_ORDER_MARKET, '2017101' . rand(1000, 9999), '接单发货', Auth::user()->id, 888));
-
         DB::commit();
         return true;
     }
@@ -151,6 +149,45 @@ class DepositRepository
         if (!$model->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
             DB::rollback();
             throw new Exception('申请失败');
+        }
+
+        DB::commit();
+        return true;
+    }
+
+    // 取消扣款
+    public static function deductCancel($id)
+    {
+        DB::beginTransaction();
+
+        $model = self::find($id);
+        if ($model->status != 1) {
+            throw new CustomException('状态不正确');
+        }
+
+        if (!$model->delete()) {
+            throw new CustomException('删除失败');
+        }
+
+        DB::commit();
+        return true;
+    }
+
+    // 取消退款
+    public static function refundCancel($id)
+    {
+        DB::beginTransaction();
+
+        $model = self::find($id);
+        $model->deduct_audited_by = Auth::user()->id;
+        if ($model->status != 3) {
+            throw new CustomException('状态不正确');
+        }
+
+        $model->status = 2;
+        if (!$model->save()) {
+            DB::rollback();
+            throw new CustomException('操作失败');
         }
 
         DB::commit();

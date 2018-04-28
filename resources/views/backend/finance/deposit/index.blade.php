@@ -87,13 +87,15 @@
                             <td>
                                 @switch($data->status)
                                     @case(1)
-                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.deduct-audit', $data->id) }}">扣款审核</button>
+                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.deduct-audit', $data->id) }}">财务扣款审核</button>
+                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.deduct-cancel', $data->id) }}">取消扣款</button>
                                         @break
                                     @case(2)
-                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.refund', $data->id) }}">退押金</button>
+                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.refund', $data->id) }}">申请退押金</button>
                                         @break
                                     @case(3)
-                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.refund-audit', $data->id) }}">退款审核</button>
+                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.refund-audit', $data->id) }}">财务退款审核</button>
+                                        <button class="layui-btn layui-btn layui-btn-normal layui-btn-mini operate" lay-submit lay-filter="deduction" data-url="{{ route('finance.deposit.refund-cancel', $data->id) }}">取消退押金</button>
                                         @break
                                     @case(4)
                                         --
