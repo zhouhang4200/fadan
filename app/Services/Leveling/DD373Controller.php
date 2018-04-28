@@ -100,6 +100,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                 throw new DailianException('请求返回数据不存在');
             }
 
+            myLog('dd373-api-log', [$url, $options, $result]);
+
 	        if (isset($result) && ! empty($result)) {
 	        	$arrResult = json_decode($result, true);
 
@@ -646,7 +648,17 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	static::normalRequest($datas, config('leveling.dd373.url')['getMessage']);
+	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getMessage']);
+
+            $message = [];
+            foreach ($result['data'] as  $item) {
+                $message[] = [
+                    'sender' => $item['senderType'] == 1 ? '您': '打手',
+                    'send_content' => $item['content'],
+                    'send_time' => $item['sendTime'],
+                ];
+            }
+            return $message;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());

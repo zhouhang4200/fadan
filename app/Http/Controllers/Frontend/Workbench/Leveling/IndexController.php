@@ -681,6 +681,7 @@ class IndexController extends Controller
         $orderDetail = $order->detail->pluck('field_value', 'field_name');
 
         $messageArr = [];
+        $message = [];
         try {
             if ($orderDetail['third'] == 1) {
                 $messageArr = Show91::messageList(['oid' => $orderDetail['show91_order_no']]);
@@ -697,7 +698,7 @@ class IndexController extends Controller
                     // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                     if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
                         // 控制器-》方法-》参数
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getMessage']], [$orderDatas]);
+                        $message = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getMessage']], [$orderDatas]);
                     }
                 }
             }
@@ -713,6 +714,7 @@ class IndexController extends Controller
             'show91Uid' => $show91Uid,
             'dailianMamaUid' => $dailianUid,
             'messageArr' => $messageArr,
+            'message' => $message
         ]);
     }
 

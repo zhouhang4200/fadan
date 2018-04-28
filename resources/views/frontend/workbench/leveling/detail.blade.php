@@ -863,6 +863,21 @@
 
         @{{# }  }}
     </script>
+    <script id="message" type="text/html">
+        @{{#  layui.each(d.message, function(index, item){ }}
+        <div class="@{{ item.sender == '您' ? 'kf_message' : 'customer_message' }}">
+            <div class="message">
+                <div class="message_time">
+                    @{{ item.send_time }}
+                </div>
+                <div class="portrait">
+                    <img src="/frontend/images/@{{ item.sender == '您' ?  'service_avatar.jpg' : 'customer_avatar.jpg' }}" alt="">
+                </div>
+                <div class="content">@{{ item.send_content}}</div>
+            </div>
+        </div>
+        @{{# }); }}
+    </script>
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
@@ -1240,7 +1255,6 @@
                 $('textarea[name=contents]').val(data.value);
             });
 
-
             // 加载留言
             function loadMessage(bingId) {
                 var messageBingId = bingId ? bingId : 0;
@@ -1254,7 +1268,14 @@
                                 layui.form.render();
                             });
                             $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
-                        } else {
+                        } else if (result.content.third > 2) {
+                            var getTpl = message.innerHTML, view = $('.chat_window');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+                            $('.chat_window').scrollTop( $('.chat_window')[0].scrollHeight );
+                        }else {
                             var getTpl = messageDailianMama.innerHTML, view = $('.chat_window');
                             layTpl(getTpl).render(result.content, function(html){
                                 if (messageBingId == 0) {

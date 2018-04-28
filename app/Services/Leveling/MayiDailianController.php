@@ -18,6 +18,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
      * @var array
      */
     protected static $status = [
+        1,
         20003,
         20040,
         20046,
@@ -111,6 +112,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             if (!isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
+
+            myLog('dd373-api-log', [$options, $result]);
 
             if (isset($result) && !empty($result)) {
                 $arrResult = json_decode($result, true);
@@ -765,7 +768,17 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 'sign' => static::getSign('dlOrderMessageList', $time),
             ];
 
-            static::normalRequest($options);
+            $result  = static::normalRequest($options);
+
+            $message = [];
+            foreach ($result['data'] as  $item) {
+                $message[] = [
+                    'sender' => $item['sender'] == 'ceshi009' ? '您': ($item['sender'] == '系统' ? $item['sender'] : '打手'),
+                    'send_content' => $item['content'],
+                    'send_time' => $item['add_time'],
+                ];
+            }
+            return $message;
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '获取留言', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

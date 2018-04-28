@@ -73,10 +73,10 @@ class Temp extends Command
     {
         $status = $this->argument('no');
         $user = $this->argument('user');
-        $decrypt = base64_encode(openssl_encrypt('123', 'aes-128-cbc', 'c8a9229820ffa315bc6a17a9e43d01a9', true, '1234567891111152'));
+        $decrypt = base64_encode(openssl_encrypt('123', 'aes-128-cbc', '45584685d8e4f5e8e4e2685', true, '1234567891111153'));
 
 
-        dd($decrypt);
+        dd($decrypt, json_encode(['1' => 1]));
 
         // 我们是待接单
         if ($status == 1) {
