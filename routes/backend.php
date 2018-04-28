@@ -320,9 +320,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         // 押金
         Route::get('deposit', 'DepositController@index')->name('finance.deposit.index')->middleware('permission:finance.deposit.index');
         Route::post('deposit/store', 'DepositController@store')->name('finance.deposit.store')->middleware('permission:finance.deposit.store');
+        Route::post('deposit/{id}/deduct-cancel', 'DepositController@deductCancel')->name('finance.deposit.deduct-cancel')->middleware('permission:finance.deposit.deduct-cancel');
         Route::post('deposit/{id}/deduct-audit', 'DepositController@deductAudit')->name('finance.deposit.deduct-audit')->middleware('permission:finance.deposit.deduct-audit');
         Route::post('deposit/{id}/refund', 'DepositController@refund')->name('finance.deposit.refund')->middleware('permission:finance.deposit.refund');
         Route::post('deposit/{id}/refund-audit', 'DepositController@refundAudit')->name('finance.deposit.refund-audit')->middleware('permission:finance.deposit.refund-audit');
+        Route::post('deposit/{id}/refund-cancel', 'DepositController@refundCancel')->name('finance.deposit.refund-cancel')->middleware('permission:finance.deposit.refund-cancel');
     });
 
     Route::prefix('template')->group(function () {

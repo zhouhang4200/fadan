@@ -34,8 +34,7 @@ class DepositController extends Controller
 
         try {
             DepositRepository::store($request->user_id, $request->type, $request->amount, $request->remark);
-        }
-        catch (CustomException $e) {
+        } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
@@ -47,8 +46,7 @@ class DepositController extends Controller
     {
         try {
             DepositRepository::deductAudite($id);
-        }
-        catch(CustomException $e) {
+        } catch(CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
@@ -60,8 +58,7 @@ class DepositController extends Controller
     {
         try {
             DepositRepository::refund($id);
-        }
-        catch(CustomException $e) {
+        } catch(CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
@@ -73,8 +70,31 @@ class DepositController extends Controller
     {
         try {
             DepositRepository::refundAudit($id);
+        } catch(CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
         }
-        catch(CustomException $e) {
+
+        return response()->ajax(1);
+    }
+
+    // 取消扣款
+    public function deductCancel($id)
+    {
+        try {
+            DepositRepository::deductCancel($id);
+        } catch(CustomException $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
+    }
+
+    // 取消退款
+    public function refundCancel($id)
+    {
+        try {
+            DepositRepository::refundCancel($id);
+        } catch(CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
