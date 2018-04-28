@@ -323,7 +323,7 @@
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @elseif(in_array($detail['status'], [18]) && $item->field_name == 'password')
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
-                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour']))
+                                                    @elseif(in_array($item->field_name, ['order_source', 'source_order_no', 'source_price', 'client_name', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'source_order_no_1', 'source_order_no_2', 'source_order_no_3']))
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="@php if($item->field_required == 1){echo 'required|' . $item->verify_rule; }  @endphp"  value="{{ $detail[$item->field_name] ?? '' }}">
                                                     @else
                                                         <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled" @if($item->field_required == 1) lay-verify="required"  @endif  value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
@@ -369,41 +369,47 @@
 
                                                     </select>
                                                 @elseif($item->field_type == 2)
-                                                    <select name="{{ $item->field_name }}"  lay-search="" @if ($item->field_required == 1) lay-verify="required" @endif class="layui-disabled" disabled>
-                                                        <option value=""></option>
+
+                                                    @if($detail['status'] != 1 && $item->field_name == 'user_qq')
+                                                        <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input layui-disabled"  value="{{ $detail[$item->field_name] ?? '' }}"  readonly="readonly">
+                                                    @else
+
+                                                        <select name="{{ $item->field_name }}"  lay-search="" @if ($item->field_required == 1) lay-verify="required" @endif class="layui-disabled" disabled>
+                                                            <option value=""></option>
 
 
-                                                        @if($item->field_name == 'user_phone')
-                                                            @foreach($contact as $v)
-                                                                @if($v->type == 1)
-                                                                    <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        @elseif($item->field_name == 'user_qq')
-                                                            @foreach($contact as $v)
-                                                                @if($v->type == 2)
-                                                                    <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
-                                                                @endif
-                                                            @endforeach
-                                                        @else
-
-                                                            @if(is_array($item->user_values) && count($item->user_values) > 0)
-
-                                                                @foreach($item->user_values as $v)
-                                                                    <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                            @if($item->field_name == 'user_phone')
+                                                                @foreach($contact as $v)
+                                                                    @if($v->type == 1)
+                                                                        <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                                    @endif
                                                                 @endforeach
-
+                                                            @elseif($item->field_name == 'user_qq')
+                                                                @foreach($contact as $v)
+                                                                    @if($v->type == 2)
+                                                                        <option data-id="{{ $v->content  }}"  value="{{ $v->content }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->content) selected  @endif>{{ $v->name }}-{{ $v->content }}</option>
+                                                                    @endif
+                                                                @endforeach
                                                             @else
 
-                                                                @if(count($item->values) > 0)
-                                                                    @foreach($item->values as $v)
+                                                                @if(is_array($item->user_values) && count($item->user_values) > 0)
+
+                                                                    @foreach($item->user_values as $v)
                                                                         <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
                                                                     @endforeach
-                                                                @endif
 
+                                                                @else
+
+                                                                    @if(count($item->values) > 0)
+                                                                        @foreach($item->values as $v)
+                                                                            <option data-id="{{ $v->id  }}"  value="{{ $v->field_value }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] ==  $v->field_value) selected  @endif>{{ $v->field_value }}</option>
+                                                                        @endforeach
+                                                                    @endif
+
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                    </select>
+                                                        </select>
+                                                    @endif
                                                 @endif
 
                                                 @if($item->field_type == 3 && in_array($detail['status'], [1, 22]))
@@ -545,19 +551,19 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">支付金额：</div>
-                            <div class="layui-col-md8">{{ $paymentAmount ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['payment_amount']?? ''  }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">获得金额：</div>
-                            <div class="layui-col-md8">{{ $getAmount  ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['get_amount']?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">手续费：</div>
-                            <div class="layui-col-md8">{{ $poundage ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['poundage'] ?? '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">利润：</div>
-                            <div class="layui-col-md8">{{ $profit }}</div>
+                            <div class="layui-col-md8">{{ $detail['profit'] ?? ''  }}</div>
                         </div>
 
                     </div>
@@ -780,7 +786,7 @@
                         @{{#  } else { }}
                         @{{#  if(item.values.length > 0){ }}
                         @{{#  layui.each(item.values, function(i, v){ }}
-                        <option value="@{{ v.field_value }}">@{{ v.field_value }}</option>
+                        <option  data-id="@{{ v.id }}" value="@{{ v.field_value }}">@{{ v.field_value }}</option>
                         @{{#  }); }}
                         @{{#  }  }}
                         @{{#  }  }}
@@ -861,6 +867,8 @@
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'upload'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
             var upload = layui.upload;
+            var delivery = 0;
+            var gameId = '{{ $detail['game_id'] }}';
 
             $('.cancel').click(function(){
                 layer.closeAll();
@@ -1003,10 +1011,13 @@
                         });
                     });
                 } else if(operation == 'complete') {
-                    layer.confirm('确定完成订单？', {icon: 3, title:'提示'}, function(index){
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
+                        title: '提示'
+                    }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
-                            keyWord:operation
+                            keyWord:operation,
+                            delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.alert(result.message,function () {
@@ -1111,6 +1122,7 @@
             });
             // 切换游戏时加截新的模版
             form.on('select(game)', function (data) {
+                gameId = data.value;
                 loadTemplate(data.value)
             });
             // 加载模板
@@ -1149,8 +1161,9 @@
                             }
                         });
                     }
-
+                    loadBusinessmanContactTemplate();
                 }, 'json');
+
             }
 
             // 阻止默认事件
@@ -1257,10 +1270,53 @@
                     }
                 });
             }
+
+            function loadBusinessmanContactTemplate() {
+                $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
+                    var qqTemplate = '<option value="">请选择</option>';
+                    var phoneTemplate = '<option value="">请选择</option>';
+                    var chose = 0;
+                    $.each(result, function (index, value) {
+                        if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
+
+                            if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
+                            }
+
+                        } else if (value.type == 2 && (value.game_id == 0 || gameId == value.game_id)) {
+
+                            if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
+                        }
+                    });
+                    chose = 0;
+                    $('select[name=user_qq]').html(qqTemplate);
+                    $('select[name=user_phone]').html(phoneTemplate);
+                    layui.form.render();
+                }, 'json');
+            }
+
             // 加载更多留言
             $('#leave-message').dblclick('#loadMoreMessage', function () {
                 var id = $('#loadMoreMessage').attr('data-id');
                 loadMessage(id);
+            });
+
+            $('body').on('click', '#delivery', function () {
+                if ($(this).is(':checked')) {
+                    delivery = 1;
+                }
             });
         });
 
@@ -1284,6 +1340,7 @@
                 }
             });
         }
+
 
         // 图片预览
         $('#leave-image').on('click', '.show-image', function () {

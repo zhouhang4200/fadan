@@ -688,6 +688,19 @@ class IndexController extends Controller
                 // 代练妈妈 获取留言传入千手订单号
                 $messageArr = DailianMama::chatOldList($orderDetail['dailianmama_order_no'], $bingId);
             }
+             // 其他通用平台
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+               // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getMessage']], [$orderDatas]);
+                    }
+                }
+            }
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
@@ -831,18 +844,19 @@ class IndexController extends Controller
         $history = [];
         DB::beginTransaction();
         try {
-
             $order = OrderModel::where('no', $orderNo)->lockForUpdate()->first();
             $orderDetail = OrderDetail::where('order_no', $orderNo)->pluck('field_value', 'field_name');
             $orderDetailDisplayName = OrderDetail::where('order_no', $orderNo)->pluck('field_display_name', 'field_name');
 
             // 如果本次修改提交，游戏ID与原订单不同则删除原有订单详情，写入新的值
-            if ($requestData['game_id'] != $order->game_id) {
+            if ($requestData['game_id'] != $order->game_id && $order->status == 1) {
                 // 删除原订单详情
                 OrderDetail::where('order_no', $orderNo)->delete();
                 // 找到对应的游戏ID模版ID
                 $templateId = GoodsTemplate::where('game_id', $requestData['game_id'])->where('service_id', 4)->value('id');
                 // 按模填入订单详情数据
+                // 保留91订单号
+                $requestData['show91_order_no'] = $orderDetail['show91_order_no'];
                 OrderDetailRepository::create($templateId, $orderNo, $requestData);
                 // 本次修改与原单价不同则对进对应的资金操作
                 if ($order->price != $requestData['game_leveling_amount']) {
@@ -885,6 +899,24 @@ class IndexController extends Controller
                 $order->amount = $requestData['game_leveling_amount'];
                 $order->save();
 
+                // 手动触发调用外部接口时间
+                $newOrder = OrderModel::where('no', $order->no)->first();
+
+                //**修改订单, 91和代练妈妈通用 **/
+                event(new AutoRequestInterface($newOrder, 'addOrder', true));
+                /** 修改订单, 其他平台通用 **/
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDatas]);
+                        }
+                    }
+                }
             } else {
                 // 下架 没有接单 更新所有信息
                 if (in_array($order->status, [1, 23])) {
@@ -1032,28 +1064,6 @@ class IndexController extends Controller
                         }
                     }
 
-                    // 修改 游戏代练天
-                    // if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']) {
-                    //     // 接口增加天数
-                    //     $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
-                    //     // 更新值
-                    //     OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
-                    //         'field_value' => $requestData['game_leveling_day']
-                    //     ]);
-                    // } else if ($requestData['game_leveling_day'] != $orderDetail['game_leveling_day']) {
-                    //     return response()->ajax(0, '代练时间只可增加');
-                    // }
-
-                    // if ($requestData['game_leveling_hour'] != $orderDetail['game_leveling_hour'] && ($requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour']
-                    //         || ($requestData['game_leveling_hour'] < $orderDetail['game_leveling_hour'] && $requestData['game_leveling_day'] > $orderDetail['game_leveling_day']))
-                    // ) {
-                    //     $addHours = bcsub($request->data['game_leveling_hour'], $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'), 0);
-                    //     // 更新值
-                    //     OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
-                    //         'field_value' => $requestData['game_leveling_hour']
-                    //     ]);
-                    // }
-
                     if ($requestData['game_leveling_day'] > $orderDetail['game_leveling_day'] || ($requestData['game_leveling_day'] == $orderDetail['game_leveling_day'] && $requestData['game_leveling_hour'] > $orderDetail['game_leveling_hour'])) {
                          // 接口增加的天数
                         $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
@@ -1101,6 +1111,7 @@ class IndexController extends Controller
                 }
                 // 待验收 可加价格
                 if ($order->status == 14) {
+
                     if ($order->price < $requestData['game_leveling_amount']) {
                         $addAmount = bcsub($request->data['game_leveling_amount'], $order->amount, 2);
                         $amount = $requestData['game_leveling_amount'] - $order->price;
@@ -1129,12 +1140,12 @@ class IndexController extends Controller
                                 }
                             }
                         }
-                    } else {
-                        return response()->ajax(1, '代练价格只可增加');
                     }
                 }
+
                 // 状态锁定 可改密码
                 if ($order->status == 18) {
+
                     // 修改密码
                     if ($requestData['password'] != $orderDetail['password']) {
                         // 更新值
@@ -1143,12 +1154,10 @@ class IndexController extends Controller
                         ]);
                     }
                 }
-
                 // 其它信息只需改订单详情表
                 foreach ($requestData as $key => $value) {
 
                     if (isset($orderDetail[$key])) {
-//                        if ($orderDetail[$key] != $value && in_array($key, ['urgent_order', 'label', 'order_source', 'source_order_no', 'source_price', 'client_name', 'client_phone', 'client_qq', 'client_wang_wang', 'game_leveling_require_day', 'game_leveling_require_hour', 'customer_service_remark'])) {
                         if ($orderDetail[$key] != $value) {
                             // 更新值
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([

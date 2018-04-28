@@ -56,12 +56,11 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
             
-            if ($this->order->detail()->where('field_name', 'third')->value('field_value') != 1) {
-                (new Lock)->run($orderNo, $userId);
-            }
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+            $this->checkIfNeedLock($orderNo, $userId);
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '不同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (RequestTimeoutException $exception) {
             //  写入redis报警
             $this->addOperateFailOrderToRedis($this->order, $this->type);
@@ -69,11 +68,41 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '不同意撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();
 
         return true;
+    }
+
+    /**
+     * 检查是否需要进行锁定操作
+     * @param  [type] $orderNo [description]
+     * @param  [type] $userId  [description]
+     * @return [type]          [description]
+     */
+    public function checkIfNeedLock($orderNo, $userId)
+    {
+        $third = $this->order->detail()->where('field_name', 'third')->value('field_value');
+
+        $orderDetail = OrderDetail::where('order_no', $orderNo)
+            ->where('field_name', 'order_previous_status')
+            ->first();
+
+        if (! $orderDetail) {
+            throw new DailianException('订单前一个状态不存在');
+        }
+
+        $previousArr = explode('|', $orderDetail->field_value);
+
+        if (! is_array($previousArr)) {
+            throw new DailianException('订单前一个状态数据异常');
+        }
+
+        if ($third != 1 && ! in_array(18, $previousArr)) {
+            (new Lock)->run($orderNo, $userId);
+        }
     }
 
     /**
@@ -109,7 +138,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && $this->userId != 8456) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台

@@ -110,55 +110,6 @@ class AddOurNoticeOrderFromRedis extends Command
                 } else {
                     $this->thirdStatus = '';
                 }
-                // 大状态里面可能有消状态（协商，申诉)
-                // $thirdConsult = $datas['data']['inSelfCancel'] ? 13 : false;
-                // $thirdComplain = $datas['data']['inAppeal'] ? 14 : false;
-                // // 如果状态为代练中，需要详细区分到底是哪个状态
-                // if ($thirdComplain && empty($thirdConsult)) {
-                //     $thirdChildStatus = 14; // 申诉中
-                // } elseif ($thirdConsult && empty($thirdComplain)) {
-                //     $thirdChildStatus = 13; // 协商中
-                // } elseif ($thirdConsult && $thirdComplain) {
-                //     $thirdChildStatus = 15;
-                // } else {
-                //     $thirdChildStatus = 100; // 表示没有子状态
-                // }
-                // // 给子状态赋值
-                // $this->thirdChildStatus = $thirdChildStatus;
-                // 91要检查是否是真的报警，只有两个状态都对不上我们的状态才会记录报警，不然删除redis报警信息
-                // switch ($datas['data']['order_status']) {
-                //     // 代练中
-                //     case 1: 
-                //         // 91订单此时在代练中，我们也在代练中,则删除redis报警订单
-                //         if (! $thirdComplain && ! $thirdConsult && $order->status == 13) { 
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         // 91在申诉中，我们也在申诉中,则删除redis报警订单
-                //         } elseif ($thirdComplain && ! $thirdConsult && $order->status == 16) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         // 91在撤销中，我们也在撤销， 则删除redis报警订单
-                //         } elseif (! $thirdComplain && $thirdConsult && $order->status == 15) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $datas['data']['order_status'];
-                //         }
-                //         break;
-                //     // 待验收
-                //     case 2: 
-                //         if (! $thirdComplain && ! $thirdConsult && $order->status == 14) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } elseif ($thirdComplain && ! $thirdConsult && $order->status == 16) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } elseif (! $thirdComplain && $thirdConsult && $order->status == 15) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $datas['data']['order_status'];
-                //         }
-                //         break;
-                //     default:
-                //         return $this->thirdStatus = false;
-                // }
             break;
             // 代练妈妈
             case 2:
@@ -171,97 +122,20 @@ class AddOurNoticeOrderFromRedis extends Command
                 } else {
                     $this->thirdStatus = '';
                 }
-                // 代练妈妈订单目前状态
-                // $thirdStatus = $datas['data']['info']['orderstatusname'];
-                // // 第三方订单名称
-                // switch ($thirdStatus) {
-                //     case '代练中': // 如果代练妈妈状态在 撤销 中，看我们前一个状态
-                //         if ($order->status == 13) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '待验收': 
-                //         if ($order->status == 14) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '已结算': 
-                //         if ($order->status == 20) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '撤销中': 
-                //         if ($order->status == 15) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '已撤销': 
-                //         if ($order->status == 19) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '仲裁中': 
-                //         if ($order->status == 16) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '已仲裁': 
-                //         if ($order->status == 21) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '异常': 
-                //         if ($order->status == 17) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     case '已锁定': 
-                //         if ($order->status == 18) {
-                //             $this->deleteOperateFailOrderFromRedis($order->no);
-                //         } else {
-                //             // 91订单的大状态
-                //             $this->thirdStatus = $thirdStatus;
-                //         }
-                //         break;
-                //     default:
-                //         $this->thirdStatus = false;
-                //         break;
-                // }
             break;
             case 3: // 蚂蚁
                 // 其他代练平台, 订单必须在接单后，有对应的第三方平台
                 if (config('leveling.third_orders')) {
-                    $orderDatas['mayi_order_no'] = $thirdOrderNo;
-                    // 控制器-》方法-》参数 查找订单详情
-                    $thirdOrder = call_user_func_array([config('leveling.controller')[3], config('leveling.action')['orderDetail']], [$orderDatas]);
-                    if (isset($thirdOrder) && is_array($thirdOrder)) {
-                        $this->thirdStatus = $thirdOrder['data']['status_type'] ?? '';
-                    } else {
-                        $this->thirdStatus = '';
+                    if (isset($orderDatas['mayi_order_no'])) {
+                        $orderDatas['mayi_order_no'] = $thirdOrderNo;
+                        // 控制器-》方法-》参数 查找订单详情
+                        $thirdOrder = call_user_func_array([config('leveling.controller')[3], config('leveling.action')['orderDetail']], [$orderDatas]);
+
+                        if (isset($thirdOrder) && is_array($thirdOrder)) {
+                            $this->thirdStatus = $thirdOrder['data']['status_type'] ?? '';
+                        } else {
+                            $this->thirdStatus = '';
+                        }
                     }
                 } else {
                     $this->thirdStatus = '';
@@ -270,14 +144,16 @@ class AddOurNoticeOrderFromRedis extends Command
             case 4: // dd373
                 // 其他代练平台, 订单必须在接单后，有对应的第三方平台
                 if (config('leveling.third_orders')) {
-                    $orderDatas['dd373_order_no'] = $thirdOrderNo;
-                    // 控制器-》方法-》参数 查找订单详情
-                    $thirdOrder = call_user_func_array([config('leveling.controller')[4], config('leveling.action')['orderDetail']], [$orderDatas]);
+                    if (isset($orderDatas['dd373_order_no'])) {
+                        $orderDatas['dd373_order_no'] = $thirdOrderNo;
+                        // 控制器-》方法-》参数 查找订单详情
+                        $thirdOrder = call_user_func_array([config('leveling.controller')[4], config('leveling.action')['orderDetail']], [$orderDatas]);
 
-                    if (isset($thirdOrder) && is_array($thirdOrder)) {
-                        $this->thirdStatus = isset($thirdOrder['data']['orderStatus']) ? config('leveling.dd373.status')[$thirdOrder['data']['orderStatus']] : '';
-                    } else {
-                        $this->thirdStatus = '';
+                        if (isset($thirdOrder) && is_array($thirdOrder)) {
+                            $this->thirdStatus = isset($thirdOrder['data']['orderStatus']) ? config('leveling.dd373.status')[$thirdOrder['data']['orderStatus']] : '';
+                        } else {
+                            $this->thirdStatus = '';
+                        }
                     }
                 } else {
                     $this->thirdStatus = '';

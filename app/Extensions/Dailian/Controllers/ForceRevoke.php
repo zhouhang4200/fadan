@@ -57,15 +57,17 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 从留言获取任务中删除
             levelingMessageDel($this->orderNo);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '强制撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
             DB::rollBack();
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '强制撤销', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();

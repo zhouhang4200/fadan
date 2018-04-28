@@ -64,14 +64,16 @@ class Playing extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 从自动下架任务中删除
             autoUnShelveDel($this->orderNo);
-    	} catch (DailianException $e) {
-    		DB::rollBack();
-            throw new DailianException($e->getMessage());
+        } catch (DailianException $exception) {
+            DB::rollBack();
+            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();
@@ -168,7 +170,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 订单详情
             $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            if (config('leveling.third_orders')) {
+            if (config('leveling.third_orders') && ! in_array($this->userId, [8456, 8556])) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历 平台 =》 平台订单名称
@@ -285,9 +287,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 调用事件
             try {
                 event(new OrderReceiving($this->order));
-            } catch (ErrorException $errorException) {
-                myLog('receiving', [$errorException->getMessage()]);
-            } catch (\Exception $exception) {
+            }  catch (\Exception $exception) {
                 myLog('receiving', [$exception->getMessage()]);
             }
             // 写入留言获取

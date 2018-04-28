@@ -41,6 +41,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
+            myLog('dd373-api-log', [$url, $options, $result]);
+
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -49,21 +51,24 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	$arrResult = json_decode($result, true);
 
 	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
-	        			// 判断是否失败
-	        			if ($arrResult['code'] != 0) {
-	        				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
-	        				throw new DailianException($message);
-	        			}
-	        			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	        		// 失败
+	        		if (isset($arrResult['code']) && $arrResult['code'] != 0) {
+        				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
+
+	        			myLog('dd373-return-error', [
+	        				'地址' => $url ?? '', 
+	        				'失败原因' => $arrResult['msg'] ?? '', 
+	        				'失败数据' => $arrResult['data'] ?? '',
+	        			]);
+        				throw new DailianException($message);
 	        		}
+			        // 记录日志
+			        myLog('dd373-request-logs', [
+			            '地址' => $url ?? '',
+			            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+			            '结果' => $result ? json_decode($result, true) : '',
+			        ]);
 	        	}
-		        // 记录日志
-		        myLog('dd373-request-logs', [
-		            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
-		            '地址' => $url ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
     		}
 
     		return json_decode($result, true);
@@ -99,23 +104,28 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	$arrResult = json_decode($result, true);
 
 	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	        		if (isset($arrResult['code']) && $arrResult['code'] > 0) {
-	        			// 判断是否失败
-	        			if ($arrResult['code'] != 0) {
-	        				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
-	        				throw new DailianException($message);
-	        			}
-	        			myLog('dd373-return-error', ['地址' => $url, '失败原因' => $arrResult['msg'], '失败数据' => $arrResult['data']]);
+	        		// 失败
+	        		if (isset($arrResult['code']) && $arrResult['code'] != 0) {
+        				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
+	        			myLog('dd373-return-error', [
+	        				'地址' => $url ?? '', 
+	        				'失败原因' => $arrResult['msg'] ?? '', 
+	        				'失败数据' => $arrResult['data'] ?? '',
+	        			]);
+        				throw new DailianException($message);
 	        		}
+			        // 记录日志
+			        myLog('dd373-return-logs', [
+			            '地址' => $url ?? '',
+			            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
+			            '结果' => $result ? json_decode($result, true) : '',
+			        ]);
 	        	}
-		        // 记录日志
-		        myLog('dd373-request-logs', [
-		            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
-		            '地址' => $url ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
     		}
-
+			myLog('dd373-request-logs', [
+	            '地址' => $url ?? '',
+	            '参数' => $options ?? '',
+	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -630,12 +640,13 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
-	        	'timestamp' => $time,
+	        	'platformSign' => config('leveling.dd373.platform-sign'),
 	        ];
-	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	        $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+
+	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['getMessage']);
+	       	static::normalRequest($datas, config('leveling.dd373.url')['getMessage']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());

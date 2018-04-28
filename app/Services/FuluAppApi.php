@@ -29,18 +29,22 @@ class FuluAppApi extends Controller
             $sign = md5($str . $data);
             $reqData = base64_encode($data);
 
-            $url = 'https://secapi.fulugou.com/callback/handGameNotify?reqData=' . $reqData. '&sign='. $sign;
+            try {
+                $url = 'https://secapi.fulugou.com/callback/handGameNotify?reqData=' . $reqData. '&sign='. $sign;
 
-            $client = new Client();
-            $response = $client->request('GET', $url);
-            $result = json_decode(base64_decode($response->getBody()->getContents()));
+                $client = new Client();
+                $response = $client->request('GET', $url);
+                $result = json_decode(base64_decode($response->getBody()->getContents()));
 
-            if ($result->code != 10000) {
-                return false;
+                if ($result->code != 10000) {
+                    return false;
+                }
+            } catch (\Exception $exception) {
+                myLog('app-skin', ['卖家没有设置QQ号，订单号：' =>  $orderId]);
             }
             return true;
         } else {
-            \Log::alert('卖家没有设置QQ号，订单号：' . $orderId);
+            myLog('app-skin', ['卖家没有设置QQ号，订单号：' =>  $orderId]);
         }
 
     }

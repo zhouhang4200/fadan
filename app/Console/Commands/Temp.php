@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Events\OrderApplyComplete;
 use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
+use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\DailianFactory;
+use App\Extensions\Dailian\Controllers\Delete;
 use App\Extensions\Dailian\Controllers\Revoked;
 use App\Models\OrderDetail;
 use App\Models\TaobaoTrade;
@@ -35,7 +37,7 @@ class Temp extends Command
      *
      * @var string
      */
-    protected $signature = 'Temp {no}';
+    protected $signature = 'Temp {no}{user}';
 
     /**
      * The console command description.
@@ -70,8 +72,10 @@ class Temp extends Command
     public function handle()
     {
         $status = $this->argument('no');
+        $user = $this->argument('user');
 
-        dd($this->show91OrderStatus());
+
+        dd($this->delete($status, $user));
 
         // 我们是待接单
         if ($status == 1) {
@@ -294,6 +298,26 @@ class Temp extends Command
     public function queryShow91Order($orderNO)
     {
         return Show91::orderDetail(['oid' => $orderNO]);
+    }
+
+    /**
+     * 完成订单
+     * @param $no
+     * @param $user
+     */
+    public function complete($no, $user)
+    {
+        (new Complete())->run($no, $user, 0);
+    }
+
+    /**
+     * 完成订单
+     * @param $no
+     * @param $user
+     */
+    public function delete($no, $user)
+    {
+        (new Delete())->run($no, $user, 0);
     }
 
     public function addPrice()

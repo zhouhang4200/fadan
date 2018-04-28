@@ -55,11 +55,13 @@ class CancelAbnormal extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
-    	} catch (DailianException $e) {
+        } catch (DailianException $exception) {
             DB::rollBack();
-            throw new DailianException($e->getMessage());
+            myLog('opt-ex',  ['操作' => '取消异常', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            throw new DailianException($exception->getMessage());
     	} catch (Exception $exception) {
             DB::rollBack();
+            myLog('opt-ex',  ['操作' => '取消异常', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();

@@ -10,22 +10,22 @@ use App\Services\Leveling\MayiDailianController;
 return [
 	// 第三方平台我们这边的账号ID对应的平台ID
 	'third' => [
-		// 8083 => 3, // 蚂蚁
-		// 8098 => 4, // dd373
+		8737 => 3, // 蚂蚁
+		8739 => 4, // dd373
 		// 8393 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
 	'third_orders' => [
-		// 3 => 'mayi_order_no',
-		// 4 => 'dd373_order_no',
+		3 => 'mayi_order_no',
+		4 => 'dd373_order_no',
 		// 5 => 'wanzi_order_no',
 	],
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [
-		// 3 => MayiDailianController::class,
-		// 4 => DD373Controller::class,
+		3 => MayiDailianController::class,
+		4 => DD373Controller::class,
 		// 5 => WanziController::class,
 	],
 
@@ -63,12 +63,12 @@ return [
 
 	// 蚂蚁代练的信息
 	'mayidailian' => [
-		'appid'     => '24dca31042361ae3',
-		'appsecret' => '889a68ce24dca31042361ae3fa423f56',
+		'appid'     => '2f666a796ba36a6b',
+		'appsecret' => '66a225812f666a796ba36a6b6a151870',
 		'Ver'       => '1.0',
-		'url'       => 'dailian.zuhaowan.com/OpenApi/GateWay.html', // 蚂蚁代练的接口地址
+		'url'       => 'http://www.mayidailian.com/OpenApi/GateWay/index', // 蚂蚁代练的接口地址
 		'password'  => '123456',
-		'aes_key'   => '45584685d8e4f5e8e4e2685',
+		'aes_key'   => '4l5846ssd8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
 	],
 
@@ -145,6 +145,8 @@ return [
 		'appsecret' => '889a68ce24dca31042361ae3fa423f57',
 		'aes_key'   => '45584685d8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
+		'account'   => '51683C315D36488FB266904B6FD4BDFF',
+		'sign'		=> '64551beede02877e16e68852aeb90b41',
     	'url' 		=> [
 			'onSale'                   => 'http://www.show91.com/oauth/grounding', // 上架
 			'offSale'                  => 'http://www.show91.com/oauth/grounding', // 下架
