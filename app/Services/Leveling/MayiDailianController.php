@@ -741,12 +741,23 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             $result =  static::normalRequest($options);
             $images = [];
             foreach ($result['data'] as $item) {
-                $images[] = [
-                    'username' => '',
-                    'description' => $item['explain'],
-                    'url' => $item['img_url'],
-                    'created_at' => $item['add_time'],
-                ];
+                if (count($item['img_url']) > 1) {
+                    foreach ($item['img_url'] as $i) {
+                        $images[] = [
+                            'username' => '',
+                            'description' => $item['explain'],
+                            'url' => $i,
+                            'created_at' => $item['add_time'],
+                        ];
+                    }
+                } else {
+                    $images[] = [
+                        'username' => '',
+                        'description' => $item['explain'],
+                        'url' => $item['img_url'][0],
+                        'created_at' => $item['add_time'],
+                    ];
+                }
             }
             return $images;
         } catch (Exception $e) {
