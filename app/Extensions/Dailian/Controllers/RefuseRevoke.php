@@ -100,7 +100,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             throw new DailianException('订单前一个状态数据异常');
         }
 
-        if ($third != 1 && ! in_array(18, $previousArr)) {
+        if ($third == 2 && ! in_array(18, $previousArr)) {
             (new Lock)->run($orderNo, $userId);
         }
     }
