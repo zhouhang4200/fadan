@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Extensions\Session\FlashHandler;
+use Encore\RedisManager\RedisManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        RedisManager::auth(function($request){
+            if (in_array(auth()->user()->id, [1, 17, 18])) {
+                return true;
+            }
+            return false;
+        });
     }
 
     /**

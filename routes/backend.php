@@ -1,6 +1,7 @@
 <?php
 
 Route::namespace('Backend\Auth')->group(function () {
+
     // 登录
     Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'LoginController@login')->name('admin.post.login');
