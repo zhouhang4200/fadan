@@ -59,6 +59,7 @@ return [
 		'getMessage'               => 'getMessage', // 获取留言
 		'replyMessage'             => 'replyMessage', // 回复留言
 		'updateAccountAndPassword' => 'updateAccountAndPassword', // 修改游戏账号密码
+		'updateImage'			   => 'updateImage', // 上传截图
 	],
 
 	// 蚂蚁代练的信息
@@ -100,6 +101,7 @@ return [
 			'replyMessage'             => 'http://sdk.dd373.com/DLSdk.html?action=sendMessage', // 回复留言
 			'updateAccountAndPassword' => 'http://sdk.dd373.com/DLSdk.html?action=changePwd', // 修改账号密码
 			'refuseRevoke'             => 'http://sdk.dd373.com/DLSdk.html?action=CancelAction', // 不同意撤销
+			'updateImage'			   => 'http://sdk.dd373.com/DLSdk.html?action=uploadImage', //上传截图
 		],
 		'status' => [
 			'1'  => '未接单',

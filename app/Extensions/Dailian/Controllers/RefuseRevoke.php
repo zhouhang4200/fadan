@@ -81,7 +81,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
     {
         $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
 
-        if (isset($datas) && isset($datas['third']) && in_array($datas['third'], [1, 4])) {
+        if (isset($datas) && isset($datas['third']) && in_array($datas['third'], [3])) {
             throw new DailianException('该接单平台没有此操作');
         }
     }

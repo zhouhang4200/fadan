@@ -34,10 +34,16 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     public static function formDataRequest($options = [], $url = '', $method = 'POST')
     {
     	try {
+    		$datas = [];
+	        foreach ($options as $name => $value) {
+	            $datas[$name]['name'] = $name;
+	            $datas[$name]['contents'] = $value;
+	        }
+	        $options = $datas;
+
 	        $client = new Client();
 	        $response = $client->request($method, $url, [
-	            'form_params' => $options,
-	            'body' => 'x-www-form-urlencoded',
+	            'multipart' => $options,
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
@@ -692,7 +698,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return [type] [description]
      */
     public static function updateAccountAndPassword($orderDatas) {
-       try {
+       	try {
 	        $time = time();
 	        $datas = [
 	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
@@ -706,6 +712,32 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.dd373.url')['updateAccountAndPassword']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
+    		throw new DailianException($e->getMessage());
+    	}
+    }
+
+    /**
+     * 发送截图
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function updateImage($orderDatas)
+    {
+    	try {
+	        $time = time();
+	        $datas = [
+				'platformOrderNo' => $orderDatas['dd373_order_no'],
+				'description'     => $orderDatas['description'],
+				'imgFlow'         => $orderDatas['imgFlow'],
+				'suffix'          => $orderDatas['type'],
+				'timestamp'       => $time,
+	        ];
+	        // 对参数进行加工
+	       	$options = static::handleOptions($datas);
+	       	// 发送
+	       	static::formDataRequest($options, config('leveling.dd373.url')['updateImage']);
+    	} catch (Exception $e) {
+    		myLog('dd373-local-error', ['方法' => '发送截图', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
     	}
     }
