@@ -771,11 +771,11 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             $result  = static::normalRequest($options);
 
             $message = [];
-            foreach ($result['data'] as  $item) {
+            for ($i = count($result['data']) - 1; $i > 0; $i--) {
                 $message[] = [
-                    'sender' => $item['sender'] == 'ceshi009' ? '您': ($item['sender'] == '系统' ? $item['sender'] : '打手'),
-                    'send_content' => $item['content'],
-                    'send_time' => $item['add_time'],
+                    'sender' => $result['data'][$i]['sender'] == 'ceshi009' ? '您': ($result['data'][$i]['sender'] == '系统' ? $result['data'][$i]['sender'] : '打手'),
+                    'send_content' => $result['data'][$i]['content'],
+                    'send_time' => $result['data'][$i]['add_time'],
                 ];
             }
             return $message;
