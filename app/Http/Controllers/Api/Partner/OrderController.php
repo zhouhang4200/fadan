@@ -564,16 +564,35 @@ class OrderController extends Controller
             $contents = $request->message;
             $date = $request->date;
 
-            LevelingMessage::create([
-                'user_id' => 1, // 第三方平台在我们平台的ID
-                'third' => 1,
-                'third_order_no' => $thirdOrderNo, // 第三方平台单号
-                'foreign_order_no' => 1, // 天猫单号
-                'order_no' => 1, // 我们平台单号
-                'date' => $date, // 第三方平台单号留言时间
-                'contents' => $contents, // 第三方平台单号留言内容
-            ]);
+            // 查找外部订单号
+            $detail = OrderDetail::where('field_name', 'third_order_no')->whre('field_value', $thirdOrderNo)->first();
+            $third = OrderDetail::where('field_name', 'third')->whre('field_value', $thirdOrderNo)->first();
+
+            $thirdId = 0;
+            if (isset(config('leveling.third')[$request->user->id])) {
+                $thirdId = config('leveling.third')[$request->user->id];
+
+                // 查淘寶單號
+                $taobaoNo = OrderDetail::where('field_name', 'source_order_no')->whre('field_value', $thirdOrderNo)->first();
+
+                if ($thirdId == $third) {
+                    if ($detail) {
+                        LevelingMessage::create([
+                            'user_id' => $detail->creator_primary_user_id, // 发单用户ID
+                            'third' => $thirdId,
+                            'third_order_no' => $thirdOrderNo, // 第三方平台单号
+                            'foreign_order_no' => $taobaoNo->field_value, // 天猫单号
+                            'order_no' => $detail->order_no, // 我们平台单号
+                            'date' => $date, // 第三方平台单号留言时间
+                            'contents' => $contents, // 第三方平台单号留言内容
+                        ]);
+
+                        levelingMessageCount($detail->creator_primary_user_id, 1, 1);
+                    }
+                }
+            }
         } catch (\Exception $exception) {
+            myLog('message-ex', [$exception->getMessage(), $exception->getLine()]);
             return response()->partner(0, '接收失败');
         }
         return response()->partner(1, '接收成功');
