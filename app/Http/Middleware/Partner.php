@@ -25,7 +25,7 @@ class Partner
      */
     public function handle($request, Closure $next)
     {
-        myLog('request.in', ['参数' => $request->all()]);
+        myLog('request.in', [$request->url(), $request->all()]);
         // 判断请求是否为重复使用
 //        if (time() - $request->timestamp > 20) {
 //            return response()->partner(0, '无效请求');

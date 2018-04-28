@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\WriteUserOrderDetails',
         'App\Console\Commands\WriteUserOrderMoney',
         'App\Console\Commands\Temp',
+        'App\Console\Commands\Test',
         'App\Console\Commands\UserWeightUpdate',
         'App\Console\Commands\OrderConfirm',
         'App\Console\Commands\WriteDataEveryDay', // 订单集市等每天的数据
