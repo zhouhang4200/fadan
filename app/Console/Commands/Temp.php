@@ -14,6 +14,7 @@ use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\DailianMama;
+use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Show91;
 use App\Services\SmSApi;
@@ -76,7 +77,7 @@ class Temp extends Command
         $user = $this->argument('user');
         $decrypt = base64_encode(openssl_encrypt('123', 'aes-128-cbc', '45584685d8e4f5e8e4e2685', true, '1234567891111153'));
 
-        dd(MayiDailianController::getScreenshot(['mayi_order_no' => 163946]));
+        dd(DD373Controller::getScreenshot(['dd373_order_no' => 'XQ20180428234305-64494']));
 
         dd($decrypt, json_encode(['1' => 1]));
 

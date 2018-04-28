@@ -632,7 +632,18 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	return static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot']);
+	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot']);
+
+            $images = [];
+            foreach ($result['data'] as $item) {
+                $images[] = [
+                    'username' => $item['uploadUserName'],
+                    'description' => $item['description'],
+                    'url' => 'http://' . ltrim($item['imageUrl'], '//'),
+                    'created_at' => $item['uploadTime'],
+                ];
+            }
+            return $images;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
