@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Partner;
 
 
+use App\Repositories\Frontend\OrderRepository;
 use Carbon\Carbon;
 use App\Models\LevelingMessage;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -97,8 +98,57 @@ class OrderController extends Controller
      * 查询订单信息
      * @param Request $request
      */
-    public function query(Request $request)
+    public function query(Request $request, OrderRepository $orderRepository)
     {
+        $orderNO = $request->order_no;
+        
+        if ($orderNO) {
+
+            // 获取平台编号
+            $third = config('leveling.third')[$request->user->id];
+
+            if ($third) {
+                $thirdOrder = OrderDetail::where('field_name', config('leveling.third_orders')[$third])
+                    ->where('field_value', $orderNO)->first();
+
+                if ($thirdOrder) {
+                    $detail = $orderRepository->levelingDetail($thirdOrder->order_no);
+                    $orderInfo = [
+                        'order_no' => $detail['no'],
+                        'status' => $detail['status'],
+                        'status_explain' => config('order.status_leveling')[$detail['status']],
+                        'game_name' => $detail['game_name'],
+                        'game_region' => $detail['region'] ?? '',
+                        'game_serve' => $detail['serve'] ?? '',
+                        'game_role' => $detail['role'] ?? '',
+                        'game_account' => $detail['account'] ?? '',
+                        'game_password' => $detail['password'] ?? '',
+                        'game_leveling_type' => $detail['game_leveling_type'] ?? '',
+                        'game_leveling_title' => $detail['game_leveling_title'] ?? '',
+                        'game_leveling_price' => $detail['game_leveling_amount'] ?? '',
+                        'game_leveling_day' => $detail['game_leveling_day'] ?? '',
+                        'game_leveling_hour' => $detail['game_leveling_hour'] ?? '',
+                        'game_leveling_security_deposit' => $detail['security_deposit'] ?? '',
+                        'game_leveling_efficiency_deposit' => $detail['efficiency_deposit'] ?? '',
+                        'game_leveling_requirements' => $detail['game_leveling_requirements'] ?? '',
+                        'game_leveling_instructions' => $detail['game_leveling_instructions'] ?? '',
+                        'businessman_phone' => $detail['client_phone'] ?? '',
+                        'businessman_qq' => $detail['user_qq'] ?? '',
+                        'order_password' => $detail['order_password'] ?? '',
+                    ];
+                    return response()->ajax(1, '查询成功', [
+                        'order_info' => base64_encode(openssl_encrypt(json_encode($orderInfo),
+                            'aes-128-cbc', config('partner.platform')[$third]['aes_key'],
+                            true, config('partner.platform')[$third]['aes_iv'])),
+                    ]);
+                } else {
+                    return response()->ajax(0, '没有查到相关订单信息');
+                }
+            }
+        } else {
+            return response()->ajax(0, '请传入订单号');
+        }
+
     }
 
     /**接单

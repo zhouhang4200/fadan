@@ -53,7 +53,7 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
     // 订单相关接口
     Route::prefix('order')->group(function () {
         // 订单查询
-        Route::post('query', 'OrderController@receiving');
+        Route::post('query', 'OrderController@query');
         // 接单
         Route::post('receive', 'OrderController@receive');
         // 申请验收

@@ -33,7 +33,7 @@ class Partner
 
         // 检测appId
         $request->user = User::where('app_id', $request->app_id)->first();
-        if ( ! $request->user) {
+        if (! isset($request->app_id) || ! $request->user) {
             return response()->partner(0, 'app_id错误');
         }
 
