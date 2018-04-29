@@ -40,6 +40,9 @@ class Test extends Command
      */
     public function handle()
     {
+        $e = 'Xn8huQEpMjdaS5AOVEKM8WdwBqJvdlt3qhbsHjTWaPlpfGUlPrRkqjkYFhIvu2NGz8venJkorE29fb8K2rD48XyzoBw4NphX8n5a3i99jvqol5SU+9cqCl5LwzW13fb7Py3GCSNFDFYj1G+8z+0wj/aY26fx8ntHbwHxDHT1Ncg+sP+8NlfE7x9ojm3UYpG5jKs0SEMBizCZz7s9YI7puixZHu8Qr2QVNE561fDJUqOdyCt7womkWpG1bouRfKVIBUHPfr93YZKxGHCPnHGrzIqtbUidOi8ufzShMq38ZkN960UiTD67SFhVrjzEQB+FQzatx9A+wD97mFz9wfSnSPzOyK8LoJ3RGVbaKMC97BW2PhqHxfT0WwhN05uTscG3CbGDKcNBTf20Qfy+Ej3MbXWY9Vg9Ei3Y/NPUpugIQTzZBhKcKzSUjlJ0er8suUiAAQcq2yfnjlIQHjlaaWk+0nYx0Z4EyxqdfGffAKs+96olTwZMxn/5EPq+s3n1RH4004qwC8YRVII7Onb4i3i78ryyVRZ+ZzkmnseCWY0RATyJWtxrCjtAwzwv5XTEX4fzyy1vMCJFnwpghm0yFM0Aga3N4xhVJTx+2IfPbU1oX0emQTw4ejUvftYVRoTzsk4+lo4QOK/vFelTstSSwp6vbdKxBXG0YlBGUNZA06UgDcKYXu6aenJVbsoEWnmRQwqPRI0iBFdr9DXIFJuZE/1efjH/kChRNqJDZkYYZ/YO4rAQdLsziOmlHxcZjTQKr30zMnZPgQ9a43wSOH79PCeiQQ==';
+
+        dd(openssl_decrypt(base64_decode($e), 'aes-128-cbc', config('partner.platform')[4]['aes_key'], true, config('partner.platform')[4]['aes_iv']));
         $options = [
             'oid' => 'ORD180427213653468705',
 //            'appeal.title' => '申请仲裁',

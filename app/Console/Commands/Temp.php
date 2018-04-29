@@ -75,12 +75,10 @@ class Temp extends Command
     {
         $status = $this->argument('no');
         $user = $this->argument('user');
-        $decrypt = base64_encode(openssl_encrypt('123', 'aes-128-cbc', '45584685d8e4f5e8e4e2685', true, '1234567891111153'));
 
-        dd(DD373Controller::getScreenshot(['dd373_order_no' => 'XQ20180428234305-64494']));
+        $this->e();
 
-        dd($decrypt, json_encode(['1' => 1]));
-
+        die;
         // 我们是待接单
         if ($status == 1) {
             // 获取所有没有接单的单
@@ -315,7 +313,7 @@ class Temp extends Command
     }
 
     /**
-     * 完成订单
+     * 删除
      * @param $no
      * @param $user
      */
@@ -346,9 +344,14 @@ class Temp extends Command
        dd($response->getBody()->getContents());
     }
 
+    /**
+     * 同步91己验收但集市没有验收的单
+     */
     public function e()
     {
-       $allOrder =  \App\Models\Order::where('service_id', 4)->whereIn('status', [1,13,14,16,20])->get();
+       $allOrder =  \App\Models\Order::where('service_id', 4)
+           ->where('status', '14')
+           ->get();
 
         foreach ($allOrder as $item) {
             $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
@@ -357,27 +360,28 @@ class Temp extends Command
 
                 if ($detail->field_value) {
                     $show91 = $this->queryShow91Order($detail->field_value);
-
-                    myLog('price', [
-                        'no'=> $item->no,
-                        '91no' => $detail->field_value,
-                        '我们价格' => $item->amount,
-                        '91' => $show91['data']['price'],
-                        '是否相关' => $show91['data']['price'] == $item->amount ? '是' : '否',
-                    ]);
-                } else {
-                    myLog('price', [
-                        'no'=> $item->no,
-                        '我们价格' => $item->amount,
-                        '错误' => '没有91单号',
-                    ]);
+                    if ($show91['data']['order_status'] == 4) {
+                        myLog('show-91-14-1', [
+                            'no'=> $item->no,
+                            '91no' => $detail->field_value,
+                            '91状态' => $this->show91Status[$show91['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '我们价格' => $item->amount,
+                            '91' => $show91['data']['price'],
+                            '是否相关' => $show91['data']['price'] == $item->amount ? '是' : '否',
+                        ]);
+                    } else {
+                        myLog('show-91-14-2', [
+                            'no'=> $item->no,
+                            '91no' => $detail->field_value,
+                            '91状态' => $this->show91Status[$show91['data']['order_status']],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '我们价格' => $item->amount,
+                            '91' => $show91['data']['price'],
+                            '是否相关' => $show91['data']['price'] == $item->amount ? '是' : '否',
+                        ]);
+                    }
                 }
-            } else {
-                myLog('price', [
-                    'no'=> $item->no,
-                    '我们价格' => $item->amount,
-                    '错误' => '没有详情',
-                ]);
             }
         }
     }

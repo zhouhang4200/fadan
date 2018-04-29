@@ -136,6 +136,7 @@ class OrderController extends Controller
                         'businessman_qq' => $detail['user_qq'] ?? '',
                         'order_password' => $detail['order_password'] ?? '',
                     ];
+                    myLog('query', [$third]);
                     return response()->ajax(1, '查询成功', [
                         'order_info' => base64_encode(openssl_encrypt(json_encode($orderInfo),
                             'aes-128-cbc', config('partner.platform')[$third]['aes_key'],
