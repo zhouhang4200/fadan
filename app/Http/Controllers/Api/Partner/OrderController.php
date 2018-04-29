@@ -616,15 +616,15 @@ class OrderController extends Controller
             $date = $request->date;
 
             // 查找外部订单号
-            $detail = OrderDetail::where('field_name', 'third_order_no')->whre('field_value', $thirdOrderNo)->first();
-            $third = OrderDetail::where('field_name', 'third')->whre('field_value', $thirdOrderNo)->first();
+            $detail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $thirdOrderNo)->first();
+            $third = OrderDetail::where('field_name', 'third')->where('field_value', $thirdOrderNo)->first();
 
             $thirdId = 0;
             if (isset(config('leveling.third')[$request->user->id])) {
                 $thirdId = config('leveling.third')[$request->user->id];
 
                 // 查淘寶單號
-                $taobaoNo = OrderDetail::where('field_name', 'source_order_no')->whre('field_value', $thirdOrderNo)->first();
+                $taobaoNo = OrderDetail::where('field_name', 'source_order_no')->where('field_value', $thirdOrderNo)->first();
 
                 if ($thirdId == $third) {
                     if ($detail) {
