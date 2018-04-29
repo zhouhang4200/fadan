@@ -370,7 +370,11 @@ class Temp extends Command
                             '91' => $show91['data']['price'],
                             '是否相关' => $show91['data']['price'] == $item->amount ? '是' : '否',
                         ]);
-                        $this->complete($item->no, $item->creator_primary_user_id);
+                        try {
+                            $this->complete($item->no, $item->creator_primary_user_id);
+                        } catch (\Exception $exception) {
+                            myLog('show-91-14-3', ['no'=> $item->no]);
+                        }
                     } else {
                         myLog('show-91-14-2', [
                             'no'=> $item->no,
