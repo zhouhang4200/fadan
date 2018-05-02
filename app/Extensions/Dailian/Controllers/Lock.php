@@ -60,7 +60,7 @@ class Lock extends DailianAbstract implements DailianInterface
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
         } catch (DailianException $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '锁定', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '锁定', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             throw new DailianException($exception->getMessage());
@@ -71,7 +71,7 @@ class Lock extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '锁定', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '锁定', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
         DB::commit();

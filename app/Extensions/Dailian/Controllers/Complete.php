@@ -82,6 +82,7 @@ class Complete extends DailianAbstract implements DailianInterface
             myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
+            DB::rollBack();
             throw new DailianException($exception->getMessage());
         }  catch (RequestTimeoutException $exception) {
             // 我们平台操作失败，写入redis报警
