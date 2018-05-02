@@ -3,6 +3,7 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\RequestTimeoutException;
+use App\Models\RefundsRecord;
 use DB;
 use Asset;
 use Exception;
@@ -96,6 +97,17 @@ class Delete extends DailianAbstract implements DailianInterface
 
         if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
             throw new DailianException('流水记录写入失败');
+        }
+
+        // 创建退款单
+        try {
+            RefundsRecord::create([
+                'order_no' => $this->order->no,
+                'amount' => $this->order->amount,
+                'auditor' => 1,
+            ]);
+        } catch (\Exception $exception) {
+
         }
     }
 

@@ -2,6 +2,7 @@
 namespace App\Extensions\Order\Operations;
 
 use App\Events\NotificationEvent;
+use App\Models\RefundsRecord;
 use App\Models\SiteInfo;
 use App\Services\KamenOrderApi;
 use Asset;
@@ -61,6 +62,16 @@ class Cancel extends \App\Extensions\Order\Operations\Base\Operation
             $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
             if ($this->order->foreignOrder && $has) {
                 KamenOrderApi::share()->fail($this->order->foreignOrder->kamen_order_no);
+            }
+            // 创建退款单
+            try {
+                RefundsRecord::create([
+                   'order_no' => $this->order->no,
+                   'amount' => $this->order->amount,
+                   'auditor' => 1,
+                ]);
+            } catch (\Exception $exception) {
+
             }
         }
     }
