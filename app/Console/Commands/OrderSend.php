@@ -57,8 +57,21 @@ class OrderSend extends Command
                         ]);
 
                         $result = $response->getBody()->getContents();
-                        myLog('order-send-result', [$platform['name'], $result, $orderData, $decrypt]);
+//                        OrderSend::insert([
+//                            'platform_name' => $platform['name'],
+//                            'status' => 1,
+//                            'send_result' => $result,
+//                            'send_data' => $orderData,
+//                        ]);
+                        myLog('order-send-result-des', [$platform['name'], $result]);
+                        myLog('order-send-result', [$platform['name'], $result, $orderData]);
                     } catch (\Exception $exception) {
+//                        OrderSend::insert([
+//                            'platform_name' => $platform['name'],
+//                            'status' => 0,
+//                            'send_result' => $result,
+//                            'send_data' => $orderData,
+//                        ]);
                         myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
                     }
                 }
