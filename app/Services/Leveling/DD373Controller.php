@@ -220,7 +220,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 申请撤销
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function applyRevoke($orderDatas) {
         try {
@@ -652,7 +653,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 获取留言
-     * @return [type] [description]
+     * @param $orderDatas
+     * @return array
+     * @throws DailianException
      */
     public static function getMessage($orderDatas) {
         try {
@@ -684,7 +687,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 回复留言
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function replyMessage($orderDatas) {
         try {

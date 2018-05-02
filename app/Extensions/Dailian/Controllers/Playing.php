@@ -66,14 +66,14 @@ class Playing extends DailianAbstract implements DailianInterface
             autoUnShelveDel($this->orderNo);
         } catch (DailianException $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '接单', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             // 资金异常
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '接单', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '接单', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
     	DB::commit();
