@@ -14,4 +14,7 @@
     @if(Auth::user()->could('staff-management.index'))
         <li class="{{ in_array(Route::currentRouteName(), ['staff-management.index', 'staff-management.edit', 'staff-management.create']) ? 'current' : '' }}"><a href="{{ route('staff-management.index') }}"> 员工管理 </a><div class="arrow"></div></li>
     @endif
+    @if(Auth::user()->could('hatchet-man-blacklist.index'))
+        <li class="{{ in_array(Route::currentRouteName(), ['hatchet-man-blacklist.index', 'hatchet-man-blacklist.edit', 'hatchet-man-blacklist.create']) ? 'current' : '' }}"><a href="{{ route('hatchet-man-blacklist.index') }}"> 打手黑名单 </a><div class="arrow"></div></li>
+    @endif
 </ul>

@@ -73,6 +73,17 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('update', 'StationController@update')->name('station.update');
         Route::post('destroy', 'StationController@destroy')->name('station.destroy');
     });
+
+    Route::namespace('Account')->group(function () {
+        Route::prefix('hatchet-man-blacklist')->group(function () {
+            Route::get('/', 'HatchetManBlacklistController@index')->name('hatchet-man-blacklist.index')->middleware('new.permission:hatchet-man-blacklist.index');
+            Route::get('create', 'HatchetManBlacklistController@create')->name('hatchet-man-blacklist.create');
+            Route::post('/', 'HatchetManBlacklistController@store')->name('hatchet-man-blacklist.store');
+            Route::get('edit/{id}', 'HatchetManBlacklistController@edit')->name('hatchet-man-blacklist.edit');
+            Route::post('update', 'HatchetManBlacklistController@update')->name('hatchet-man-blacklist.update');
+            Route::post('delete', 'HatchetManBlacklistController@delete')->name('hatchet-man-blacklist.delete');
+        });
+    });
     // 统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
         // 员工数据统计

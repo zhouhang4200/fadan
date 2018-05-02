@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
-
+use App\Models\HatchetManBlacklist;
 use App\Repositories\Frontend\OrderRepository;
 use Carbon\Carbon;
 use App\Models\LevelingMessage;
@@ -167,6 +167,26 @@ class OrderController extends Controller
             if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
                 return response()->partner(0, '打手信息缺失');
             }
+
+            // 获取该商户下面的黑名单打手
+            $hatchetManBlacklist = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+                ->first();
+
+            if (isset($hatchetManBlacklist) && ! empty($hatchetManBlacklist)) {
+                $blacklistQqs = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+                    ->pluck('hatchet_man_qq')->toArray();
+
+                $blacklistPhones = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+                    ->pluck('hatchet_man_phone')->toArray();
+
+                if (isset($blacklistQqs) && in_array($request->hatchet_man_qq, $blacklistQqs)) {
+                    return response()->partner(0, '打手已被拉入商户黑名单');
+                }
+                if (isset($blacklistPhones) && in_array($request->hatchet_man_phone, $blacklistPhones)) {
+                    return response()->partner(0, '打手已被拉入商户黑名单');
+                }
+            }
+
             if ($orderData) {
                 // 外部平台调用我们的接单操作
                 DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
