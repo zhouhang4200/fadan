@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Order;
 
+use App\Models\User;
 use DB;
 use Log;
 use Excel;
