@@ -38,6 +38,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\GetMessageDailianmama', // 订单自动加价
 //        'App\Console\Commands\OrderSend', //推送下单信息
         'App\Console\Commands\AutoMarkupOrderEveryHour', // 每小时加价一次
+        'App\Console\Commands\TestOrder',
     ];
 
     /**
