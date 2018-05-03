@@ -330,8 +330,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 申请仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function applyArbitration($orderDatas) {
         try {

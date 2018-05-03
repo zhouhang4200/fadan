@@ -14,7 +14,7 @@
   cursor: pointer;
   filter: alpha(opacity=0);
   opacity: 0;
-
+  border: 1px solid #ddd;
   direction: ltr;
 }
 .fileinput {
@@ -81,22 +81,22 @@
 .fileinput-new .input-group .btn-file.btn-lg {
   border-radius: 0 6px 6px 0;
 }
-.form-group.has-warning .fileinput .fileinput-preview {
+.fileinput-group.has-warning .fileinput .fileinput-preview {
   color: #8a6d3b;
 }
-.form-group.has-warning .fileinput .thumbnail {
+.fileinput-group.has-warning .fileinput .thumbnail {
   border-color: #faebcc;
 }
-.form-group.has-error .fileinput .fileinput-preview {
+.fileinput-group.has-error .fileinput .fileinput-preview {
   color: #a94442;
 }
-.form-group.has-error .fileinput .thumbnail {
+.fileinput-group.has-error .fileinput .thumbnail {
   border-color: #ebccd1;
 }
-.form-group.has-success .fileinput .fileinput-preview {
+.fileinput-group.has-success .fileinput .fileinput-preview {
   color: #3c763d;
 }
-.form-group.has-success .fileinput .thumbnail {
+.fileinput-group.has-success .fileinput .thumbnail {
   border-color: #d6e9c6;
 }
 .input-group-addon:not(:first-child) {
@@ -110,7 +110,7 @@
   background-color: #E3E3E3;
 }
 
-.form-group {
+.fileinput-group {
   position: relative;
   margin-bottom: 0;
 }
@@ -125,7 +125,7 @@
   height: 100%;
 }
 
-.form-group {
+.fileinput-group {
   float: left;
   margin-right: 10px;
 }
