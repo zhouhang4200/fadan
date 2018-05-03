@@ -1041,4 +1041,23 @@ fgMCzgxMM0hmL1eC3kSxtd4z5gUAHLUxwuzrG+JroHpk
     }
 }
 
+if (!function_exists('base64ToBlob')) {
+
+    /**
+     * base64 转流
+     * @param $base64Str
+     * @return resource
+     */
+    function base64ToBlob($base64Str)
+    {
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64Str, $result)) {
+            $imgPath = tempnam(sys_get_temp_dir(), 'pic');
+            rename($imgPath, $imgPath .= '.png');
+            if (file_put_contents($imgPath, base64_decode(str_replace($result[1], '', $base64Str)))) {
+                return fopen($imgPath, 'r');
+            }
+        }
+    }
+}
+
 

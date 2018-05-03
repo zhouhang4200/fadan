@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
@@ -1237,9 +1238,9 @@ class IndexController extends Controller
                     ->update(['field_value' => $keyWord == 'urgent' ? 1 : 0]);
                 // 写操作记录
                 $bool = true;
-            } else if ($keyWord == 'complete') {
+            } else if ($keyWord == 'complete') { // 订单完成操作
                 (new Complete())->run($orderNo, auth()->user()->id, 1, (int)$delivery);
-            } else {
+            }  else {
                 $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
         } catch (DailianException $e) {
@@ -1313,6 +1314,13 @@ class IndexController extends Controller
             $data['user_id'] = Auth::id();
             $data['order_no'] = $request->orderNo;
             $data['complain_message'] = $request->data['complain_message'];
+            $pic1 = $request->pic1;
+            $pic2 = $request->pic2;
+            $pic3 = $request->pic3;
+
+            if (empty($pic1) && empty($pic2) && empty($pic3)) {
+                return response()->ajax(0, '请至少传入一张图片!');
+            }
 
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
@@ -1326,7 +1334,8 @@ class IndexController extends Controller
 
             LevelingConsult::where('order_no', $data['order_no'])->updateOrCreate(['order_no' => $data['order_no']], $data);
             // 改状态
-            DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
+            (new Arbitrationing())->run($data['order_no'], $userId, 1, ['pic1' => $pic1, 'pic2' => $pic2, 'pic3' => $pic3]);
+//            DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());

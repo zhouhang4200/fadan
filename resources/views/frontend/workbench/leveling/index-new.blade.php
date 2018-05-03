@@ -4,18 +4,18 @@
 
 @section('css')
     <link rel="stylesheet" href="/frontend/css/fixed-table.css">
+    <link rel="stylesheet" href="/frontend/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
         ::-webkit-scrollbar {
             width: 10px;
             height: 10px;
         }
-
         ::-webkit-scrollbar-track:vertical::-webkit-scrollbar-track:horizontal {
             background-color: #fff;
             -webkit-background-clip: padding-box;
             background-clip: padding-box;
         }
-
         ::-webkit-scrollbar-thumb {
             min-height: 28px;
             padding-top: 100;
@@ -25,32 +25,25 @@
             border-radius: 5px;
             -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
         }
-
         .layui-laypage-em {
             background-color: #ff7a00 !important;
         }
-
         .layui-form-select .layui-input {
             padding-right: 0 !important;
         }
-
         .layui-table-fixed-r .layui-table-cell {
             overflow: inherit;
         }
-
         .layui-form-item .layui-inline {
             margin-bottom: 5px;
             margin-right: 5px;
         }
-
         .layui-form-mid {
             margin-right: 4px;
         }
-
         .layui-tab-title li {
             min-width: 42px;
         }
-
         .w-150 {
             width: 150px;
         }
@@ -58,23 +51,26 @@
         .w-100 {
             width: 100px;
         }
-
-
         .opt-btn {
             color: #1f93ff;
             padding: 0 2px;
             border: none;
             cursor:pointer;
         }
-
-        .layui-form-item {
+        #search > .layui-form-item {
             margin-bottom: 0
         }
-
         .pagination > .active span {
             color: #fff;
             background: #ff7a00;
             border: 1px solid #ff7a00;
+        }
+        /* 重写申诉弹窗样式*/
+        .complain .layui-form-label {
+            width: auto !important;
+        }
+        .complain .layui-input-block {
+            margin-left: 86px !important;
         }
     </style>
 @endsection
@@ -653,7 +649,6 @@
             'allStatusCount' => $allStatusCount,
         ])->render() !!}
 
-
     <div class="consult" style="display: none; padding:  0 20px">
         <div class="layui-tab-content">
             <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
@@ -715,35 +710,89 @@
         </div>
     </div>
 
-    <div class="complain" style="display: none; padding: 10px 10px 0 10px">
-        <div class="layui-tab-content">
-            <form class="layui-form">
-                <input type="hidden" id="order_no" name="order_no">
-                <div>
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin:0px">
-                            <textarea placeholder="请输入申请仲裁理由" name="complain_message" lay-verify="required"
-                                      class="layui-textarea"
-                                      style="width:90%;margin:auto;height:150px !important;"></textarea>
+    <div class="complain" style="display: none; padding: 20px">
+        <form class="layui-form" action="">
+            <input type="hidden" id="order_no" name="order_no">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">证据截图</label>
+                <div class="layui-input-block">
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-1" style="width: 100px;height: 100px;"></div>
+                            <div style="height: 0;">
+                                <span class=" btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-
-                        <div class="layui-input-block" style="margin: 0 auto;text-align: center;">
-                            <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
-                            </button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-2" style="width: 100px;height: 100px;"></div>
+                            <div>
+                                <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-3" style="width: 100px;height: 100px;"></div>
+                            <div>
+                               <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                               </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">仲裁理由</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入申请仲裁理由" name="complain_message"  class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                    </button>
+                    <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                </div>
+            </div>
+        </form>
     </div>
 @endsection
 
 <!--START 底部-->
 @section('js')
     <script src="/frontend/js/fixed-table.js"></script>
+    <script src="/frontend/js/bootstrap-fileinput.js"></script>
     <script>
 
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
@@ -769,7 +818,6 @@
             });
 
             var userId = "{{ Auth::id() }}";
-
 
             // 对订单操作
             $('.content').on('click', '.opt-btn', function () {
@@ -861,23 +909,35 @@
                         type: 1,
                         shade: 0.2,
                         title: '申请仲裁',
-                        area: ['500px', '280px'],
+                        area: ['600px', '380px'],
                         content: $('.complain')
                     });
                     $('#order_no').val(orderNo);
                     form.on('submit(complain)', function (data) {
-                        $.post("{{ route('frontend.workbench.leveling.complain') }}", {
-                            orderNo: orderNo,
-                            data: data.field
-                        }, function (result) {
-                            if (result.status == 1) {
-                                layer.alert(result.message);
-                            } else {
-                                layer.alert(result.message);
-                            }
-                            reload();
-                        });
-                        layer.closeAll();
+
+                        var pic1 = $('.pic-1 img').attr('src');
+                        var pic2 = $('.pic-2 img').attr('src');
+                        var pic3 = $('.pic-3 img').attr('src');
+
+                        if (pic1 == undefined && pic2 == undefined && pic3 == undefined) {
+                            layer.alert('请至少上传一张图片');
+                        } else {
+                            $.post("{{ route('frontend.workbench.leveling.complain') }}", {
+                                orderNo: orderNo,
+                                data: data.field,
+                                pic1: pic1,
+                                pic2: pic2,
+                                pic3: pic3
+                            }, function (result) {
+                                if (result.status == 1) {
+                                    layer.alert(result.message);
+                                    reload();
+                                    layer.closeAll();
+                                } else {
+                                    layer.alert(result.message);
+                                }
+                            });
+                        }
                         return false;
                     });
 
@@ -1011,7 +1071,7 @@
             function reload() {
                 setTimeout(function () {
                     location.reload();
-                }, 800);
+                }, 900);
             }
         });
 

@@ -22,18 +22,19 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:15撤销中
     protected $handledStatus = 16; // 操作之后状态：16仲裁中
     protected $type          = 20; // 操作：20申请仲裁
-    
-	/**
+
+    protected $img = [];
+
+    /**
      * [仲裁中：写日志，写流水]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+     * @param string $orderNo  订单号
+     * @param integer $userId  操作用户ID
+     * @param int $runAfter 是否调用外部接口
+     * @param array $pic 申请仲裁图片
+     * @return bool
+     * @throws DailianException
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId, $runAfter = 1, $pic = [])
     {	
     	DB::beginTransaction();
     	try {
@@ -41,6 +42,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
             $this->runAfter = $runAfter;
+            $this->pic = $pic;
             // 获取订单对象
             $this->getObject();
             $this->beforeHandleStatus = $this->getOrder()->status;
@@ -84,7 +86,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 
     /**
      * 调用外部提交申诉接口
-     * @return [type] [description]
+     * @throws DailianException
      */
     public function after()
     {
@@ -106,16 +108,19 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
 
             switch ($orderDetails['third']) {
                 case 1:
+                    // 处理图片将前端的base64转为流
+                    $img['pic1'] = !empty($img['pic1']) ? base64ToBlob($img['pic1']) : '';
+                    $img['pic2'] = !empty($img['pic2']) ? base64ToBlob($img['pic2']) : '';
+                    $img['pic3'] = !empty($img['pic3']) ? base64ToBlob($img['pic3']) : '';
+                    // 过滤空的数组
+                    $finalPic = array_filter($img);
                     // 91申请仲裁接口
                     $options = [
                         'oid' => $orderDetails['show91_order_no'],
                         'appeal.title' => '申请仲裁',
                         'appeal.content' => $consult->complain_message,
-                        'pic1' => fopen(public_path('frontend/images/3.png'), 'r'),
-//                        'pic2' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
-//                        'pic3' => new \CURLFile(public_path('frontend/images/123.png'), 'image/png'),
                     ];
-                    Show91::addappeal($options);
+                    Show91::addappeal(array_merge($options, $finalPic));
                     break;
                 case 2:
                     // 代练妈妈申请仲裁接口
