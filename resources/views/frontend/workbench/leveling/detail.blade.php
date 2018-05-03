@@ -723,7 +723,7 @@
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">证据截图</label>
                 <div class="layui-input-block">
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
@@ -741,7 +741,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
@@ -759,7 +759,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
@@ -1049,7 +1049,7 @@
                         type: 1,
                         shade: 0.2,
                         title: '申请仲裁',
-                        area: ['500px', '280px'],
+                        area: ['600px', '380px'],
                         content: $('.complain')
                     });
 

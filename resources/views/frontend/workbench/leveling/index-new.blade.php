@@ -710,12 +710,12 @@
     </div>
 
     <div class="complain" style="display: none; padding: 20px">
-        <form class="layui-form" action="">
+        <form class="layui-form">
             <input type="hidden" id="order_no" name="order_no">
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">证据截图</label>
                 <div class="layui-input-block">
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
@@ -733,7 +733,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
@@ -751,7 +751,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="fileinput-group">
                         <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
                             <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
                                 <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
