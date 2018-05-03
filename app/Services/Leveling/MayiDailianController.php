@@ -571,7 +571,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             myLog('mayi-local-error', ['方法' => '撤单', '原因' => $e->getMessage()]);
 
             OrderDetail::where('order_no', $orderDatas['order_no'])
-                ->where('field_value', $orderDatas['mayi_order_no'])
+                ->where('field_name', 'mayi_order_no')
                 ->update(['field_value' => '']);
 
             throw new DailianException($e->getMessage());
