@@ -118,7 +118,7 @@ layui.use(['laydate', 'form'], function () {
 });
 
 $('#export').click(function () {
-    var url = "{{ route('frontend.finance.amount-flow.export') }}?" + $('#search-form').serialize();
+    var url = "{{ route('frontend.finance.amount-flow.export') }}?" + $('#search').serialize();
     window.location.href = url;
 });
 </script>
