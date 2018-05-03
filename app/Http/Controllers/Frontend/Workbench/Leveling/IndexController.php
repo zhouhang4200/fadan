@@ -1558,5 +1558,29 @@ class IndexController extends Controller
             Redis::hSet($name, $key, $value);
         }
     }
+
+    /**
+     * 自动计算来源价格
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function sourcePrice(Request $request)
+    {
+         // 获取订单详情里面的来源订单号和补款订单号
+        if (isset($request->source_no) && ! empty($request->source_no) && isset($request->source_name) && ! empty($request->source_name) && isset($request->no) && ! empty($request->no)) {
+            $orderDetail = OrderDetail::where('order_no', $request->no)
+                ->where('field_name', $request->source_name)
+                ->update(['field_value' => $request->source_no]);
+
+            $sourceOrders = OrderDetail::where('order_no', $request->no)
+                ->where('field_name_alias', 'source_order_no')
+                ->where('field_value', '!=', '')
+                ->pluck('field_value', 'field_name')
+                ->unique()
+                ->toArray();
+
+            return TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+        }
+    }
 }
 
