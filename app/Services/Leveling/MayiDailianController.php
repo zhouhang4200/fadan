@@ -572,7 +572,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             OrderDetail::where('order_no', $orderDatas['order_no'])
                 ->where('field_value', $orderDatas['mayi_order_no'])
-                ->update(['field_value', '']);
+                ->update(['field_value' => '']);
 
             throw new DailianException($e->getMessage());
         }
