@@ -44,9 +44,9 @@ class HandleAsset extends Command
     {
         DB::beginTransaction();
         try {
-            Asset::handle(new Income($this->argument('money'), 11, $this->argument('no'), '效率保证金收入', $this->argument('creator_primary_user_id')));
-
             Asset::handle(new Expend($this->argument('money'), 5, $this->argument('no'), '效率保证金支出', $this->argument('gainer_primary_user_id')));
+            
+            Asset::handle(new Income($this->argument('money'), 11, $this->argument('no'), '效率保证金收入', $this->argument('creator_primary_user_id')));
         } catch (Exception $e) {
             DB::rollback();
         }
