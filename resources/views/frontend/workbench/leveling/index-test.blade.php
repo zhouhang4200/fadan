@@ -246,7 +246,7 @@
 
         // 订单号
         $no = '天猫：<a style="color:#1f93ff" href="' . route('frontend.workbench.leveling.detail', ['no' => $item->no]) . '">' . $item->no . "</a> <br/>";
-        if (isset($detail['third']) && $detail['third']) {
+        if (isset($detail['third']) && $detail['third'] && isset(config('partner.platform')[(int)$detail['third']])) {
             $no .= config('partner.platform')[(int)$detail['third']]['name'] . '：<a style="color:#1f93ff"  href="' . route('frontend.workbench.leveling.detail', ['no' => $item->no]) . '">' . $item->no . '</a>';
         }
         // 玩家旺旺与店名
@@ -277,7 +277,7 @@
                 } else {
                     $amount = $item->leveling_consult->amount;
                 }
-            } catch (ErrorException $exception) {
+            } catch (Exception $exception) {
 
             }
 
