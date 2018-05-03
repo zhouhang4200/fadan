@@ -23,7 +23,7 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
     protected $handledStatus = 16; // 操作之后状态：16仲裁中
     protected $type          = 20; // 操作：20申请仲裁
 
-    protected $img = [];
+    protected $pic = [];
 
     /**
      * [仲裁中：写日志，写流水]
@@ -109,9 +109,9 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             switch ($orderDetails['third']) {
                 case 1:
                     // 处理图片将前端的base64转为流
-                    $img['pic1'] = !empty($img['pic1']) ? base64ToBlob($img['pic1']) : '';
-                    $img['pic2'] = !empty($img['pic2']) ? base64ToBlob($img['pic2']) : '';
-                    $img['pic3'] = !empty($img['pic3']) ? base64ToBlob($img['pic3']) : '';
+                    $img['pic1'] = !empty($this->pic['pic1']) ? base64ToBlob($this->pic['pic1']) : '';
+                    $img['pic2'] = !empty($this->pic['pic2']) ? base64ToBlob($this->pic['pic2']) : '';
+                    $img['pic3'] = !empty($this->pic['pic3']) ? base64ToBlob($this->pic['pic3']) : '';
                     // 过滤空的数组
                     $finalPic = array_filter($img);
                     // 91申请仲裁接口
