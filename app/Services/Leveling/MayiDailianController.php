@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Game;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException;
 
 /**
@@ -568,6 +569,11 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             static::normalRequest($options);
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '撤单', '原因' => $e->getMessage()]);
+
+            OrderDetail::where('order_no', $orderDatas['order_no'])
+                ->where('filed_value', $orderDatas['mayi_order_no'])
+                ->update(['field_value', '']);
+
             throw new DailianException($e->getMessage());
         }
     }
