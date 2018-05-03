@@ -304,28 +304,55 @@
 
         // 下单
         form.on('submit(order)', function (data) {
-            $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+            layer.confirm('用哪一个客服身份重发？', {
+            btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
+            }, function(index, layero){
+                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: '0'}, function (result) {
 
-                if (result.status == 1) {
-                    layer.open({
-                        content: '发布成功!',
-                        btn: ['继续发布', '订单列表', '待发订单'],
-                        btn1: function(index, layero){
-                            location.reload();
-                        },
-                        btn2: function(index, layero){
-                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                        },
-                        btn3: function(index, layero){
-                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                        }
-                    });
-                } else {
-                    layer.msg(result.message);
-                }
+                    if (result.status == 1) {
+                        layer.open({
+                            content: '发布成功!',
+                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn1: function(index, layero){
+                                location.reload();
+                            },
+                            btn2: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            },
+                            btn3: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            }
+                        });
+                    } else {
+                        layer.msg(result.message);
+                    }
 
-            }, 'json');
-            return false;
+                }, 'json');
+                return false;
+            }, function(index){
+                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+
+                    if (result.status == 1) {
+                        layer.open({
+                            content: '发布成功!',
+                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn1: function(index, layero){
+                                location.reload();
+                            },
+                            btn2: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            },
+                            btn3: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            }
+                        });
+                    } else {
+                        layer.msg(result.message);
+                    }
+
+                }, 'json');
+                return false;
+            });
         });
 
     });
