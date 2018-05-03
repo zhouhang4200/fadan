@@ -357,6 +357,16 @@ class IndexController extends Controller
 
             // 获取当前下单人名字
             $orderData['customer_service_name'] = Auth::user()->username;
+
+            if (isset($request->value)) {
+                UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('option', 'sending_control')
+                ->update(['value' => 0]);
+            } else {
+                UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('option', 'sending_control')
+                ->update(['value' => 1]);
+            }
             // 用户是否启用发单设置
             $userSetting = UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
                 ->where('option', 'sending_control')
