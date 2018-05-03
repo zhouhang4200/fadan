@@ -484,6 +484,21 @@ class IndexController extends Controller
      */
     public function detail(Request $request, OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
+        // 获取订单详情里面的来源订单号和补款订单号
+        $sourceOrders = OrderDetail::where('order_no', $request->no)
+            ->where('field_name_alias', 'source_order_no')
+            ->where('field_value', '!=', '')
+            ->pluck('field_value', 'field_name')
+            ->unique()
+            ->toArray();
+        
+        if (isset($sourceOrders) && is_array($sourceOrders) && count($sourceOrders) > 0) {
+            $sourcePrice = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+            $orderDetail = OrderDetail::where('order_no', $request->no)
+                ->where('field_name', 'source_price')
+                ->update(['field_value' => $sourcePrice]);
+        }
+        // 获取商户的联系方式模版信息
         // 获取可用游戏
         $game = $this->game;
         // 获取订单数据
@@ -492,7 +507,6 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
-        // 获取商户的联系方式模版信息
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
