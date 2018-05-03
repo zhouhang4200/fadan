@@ -1331,11 +1331,9 @@ class IndexController extends Controller
             } else {
                 return response()->ajax(0, '操作失败!');
             }
-
             LevelingConsult::where('order_no', $data['order_no'])->updateOrCreate(['order_no' => $data['order_no']], $data);
             // 改状态
             (new Arbitrationing())->run($data['order_no'], $userId, 1, ['pic1' => $pic1, 'pic2' => $pic2, 'pic3' => $pic3]);
-//            DailianFactory::choose('applyArbitration')->run($data['order_no'], $userId);
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());

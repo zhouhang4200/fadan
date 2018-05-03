@@ -4,7 +4,6 @@
 
 @section('css')
     <link rel="stylesheet" href="/frontend/css/fixed-table.css">
-    <link rel="stylesheet" href="/frontend/css/bootstrap.min.css">
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
         ::-webkit-scrollbar {
