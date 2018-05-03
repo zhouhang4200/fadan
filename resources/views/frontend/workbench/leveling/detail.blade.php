@@ -1456,8 +1456,10 @@
             var source_name = 'source_order_no';
 
             $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
-                $('input[name=source_price]').val(result);
-                $('input[name=source_price]').html(result);
+                if (result.status == 1) {
+                    $('input[name=source_price]').val(result.message);
+                    $('input[name=source_price]').html(result.message);
+                }
                 layui.form.render();
             }, 'json');
         });
@@ -1466,8 +1468,10 @@
             var source_no= $('input[name=source_order_no_1]').val();
             var source_name = 'source_order_no_1';
             $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
-                $('input[name=source_price]').val(result);
-                $('input[name=source_price]').html(result);
+                if (result.status == 1) {
+                    $('input[name=source_price]').val(result.message);
+                    $('input[name=source_price]').html(result.message);
+                }
                 layui.form.render();
             }, 'json');
         });
@@ -1476,8 +1480,10 @@
             var source_no= $('input[name=source_order_no_2]').val();
             var source_name = 'source_order_no_2';
             $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
-                $('input[name=source_price]').val(result);
-                $('input[name=source_price]').html(result);
+                if (result.status == 1) {
+                    $('input[name=source_price]').val(result.message);
+                    $('input[name=source_price]').html(result.message);
+                }
                 layui.form.render();
             }, 'json');
         });

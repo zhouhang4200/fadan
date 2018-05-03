@@ -1579,8 +1579,11 @@ class IndexController extends Controller
                 ->unique()
                 ->toArray();
 
-            return TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+            $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+
+            return response()->ajax(1, $value);
         }
+        return response()->ajax(0, $value);
     }
 }
 
