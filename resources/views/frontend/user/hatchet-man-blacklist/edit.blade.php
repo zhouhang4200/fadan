@@ -36,19 +36,6 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">*打手平台</label>
-            <div class="layui-input-block">
-                <select name="third" lay-verify="" lay-search="">
-                    <option value="">输入或选择</option>
-                    @forelse($thirds as $third => $name)
-                        <option value="{{ $third }}" @if($hatchetManBlacklist->third == $third) selected @endif>{{ $name }}</option>
-                    @empty
-                    @endforelse
-                </select>
-                
-            </div>
-        </div>
-        <div class="layui-form-item">
             <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
                 <textarea placeholder="" name="content" class="layui-textarea">{{ $hatchetManBlacklist->content }}</textarea>

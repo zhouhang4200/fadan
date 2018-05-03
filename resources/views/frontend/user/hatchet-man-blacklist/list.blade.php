@@ -3,7 +3,6 @@
         <thead>
         <tr>
             <th>打手昵称</th>
-            <th>所属平台</th>
             <th>电话</th>
             <th>QQ</th>
             <th>备注</th>
@@ -14,7 +13,6 @@
             @forelse($hatchetManBlacklists as $hatchetManBlacklist)
                 <tr>
                     <td>{{ $hatchetManBlacklist->hatchet_man_name }}</td>
-                    <td>{{ config('order.third')[$hatchetManBlacklist->third] }}</td>
                     <td>{{ $hatchetManBlacklist->hatchet_man_phone }}</td>
                     <td>{{ $hatchetManBlacklist->hatchet_man_qq }}</td>
                     <td>{{ $hatchetManBlacklist->content }}</td>

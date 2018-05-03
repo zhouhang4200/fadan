@@ -180,10 +180,10 @@ class OrderController extends Controller
                     ->pluck('hatchet_man_phone')->toArray();
 
                 if (isset($blacklistQqs) && in_array($request->hatchet_man_qq, $blacklistQqs)) {
-                    return response()->partner(0, '打手已被拉入商户黑名单');
+                    return response()->partner(0, '打手已被商户拉入黑名单');
                 }
                 if (isset($blacklistPhones) && in_array($request->hatchet_man_phone, $blacklistPhones)) {
-                    return response()->partner(0, '打手已被拉入商户黑名单');
+                    return response()->partner(0, '打手已被商户拉入黑名单');
                 }
             }
 

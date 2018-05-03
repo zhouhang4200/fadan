@@ -36,20 +36,18 @@ class HatchetManBlacklistController extends Controller
 
  	public function create(Request $request)
  	{
- 		$thirds = config('order.third');
- 		return view('frontend.user.hatchet-man-blacklist.create', compact('thirds'));
+ 		return view('frontend.user.hatchet-man-blacklist.create');
  	}
 
  	public function store(Request $request)
  	{
- 		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone']) || ! isset($request->data['third'])) {
+ 		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone'])) {
  			return response()->ajax(0, '带*为必填内容');
  		}
  		$data['user_id'] = Auth::user()->getPrimaryUserId();
  		$data['hatchet_man_name'] = $request->data['hatchet_man_name'];
  		$data['hatchet_man_phone'] = $request->data['hatchet_man_phone'];
  		$data['hatchet_man_qq'] = $request->data['hatchet_man_qq'];
- 		$data['third'] = $request->data['third'];
  		$data['content'] = $request->data['content'] ?? '';
 
  		$res = HatchetManBlacklist::create($data);
@@ -64,14 +62,12 @@ class HatchetManBlacklistController extends Controller
  	{
  		$hatchetManBlacklist = HatchetManBlacklist::find($request->id);
 
- 		$thirds = config('order.third');
-
- 		return view('frontend.user.hatchet-man-blacklist.edit', compact('hatchetManBlacklist', 'thirds'));
+ 		return view('frontend.user.hatchet-man-blacklist.edit', compact('hatchetManBlacklist'));
  	}
 
  	public function update(Request $request)
  	{
- 		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone']) || ! isset($request->data['third'])) {
+ 		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone'])) {
  			return response()->ajax(0, '带*为必填内容');
  		}
  		
@@ -84,7 +80,6 @@ class HatchetManBlacklistController extends Controller
  		$hatchetManBlacklist->hatchet_man_name = $request->data['hatchet_man_name'];
  		$hatchetManBlacklist->hatchet_man_phone = $request->data['hatchet_man_phone'];
  		$hatchetManBlacklist->hatchet_man_qq = $request->data['hatchet_man_qq'];
- 		$hatchetManBlacklist->third = $request->data['third'];
  		$hatchetManBlacklist->content = $request->data['content'] ?? '';
 
  		$res = $hatchetManBlacklist->save();

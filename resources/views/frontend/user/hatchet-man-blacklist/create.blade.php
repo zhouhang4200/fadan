@@ -26,26 +26,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label">*打手电话</label>
             <div class="layui-input-block">
-                <input type="text" name="hatchet_man_phone" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="hatchet_man_phone" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">*打手QQ</label>
             <div class="layui-input-block">
-                <input type="text" name="hatchet_man_qq" value="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">*打手平台</label>
-            <div class="layui-input-block">
-                <select name="third" lay-verify="" lay-search="">
-                    <option value="">输入或选择</option>
-                    @forelse($thirds as $third => $name)
-                        <option value="{{ $third }}" >{{ $name }}</option>
-                    @empty
-                    @endforelse
-                </select>
-                
+                <input type="text" name="hatchet_man_qq" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -69,6 +56,12 @@
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
             var layer = layui.layer;
 
+            form.verify({
+                number: [
+                    /^[0-9]+$/
+                    ,'填写格式不正确，必须为数字'
+                  ]
+            });  
             // 取消按钮
             $('.cancel').click(function () {
                 window.location.href="{{ route('hatchet-man-blacklist.index') }}";

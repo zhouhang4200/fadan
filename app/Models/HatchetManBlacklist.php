@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HatchetManBlacklist extends Model
 {
-    protected $fillable = ['user_id', 'hatchet_man_name', 'hatchet_man_qq', 'hatchet_man_phone', 'third', 'content'];
+    protected $fillable = ['user_id', 'hatchet_man_name', 'hatchet_man_qq', 'hatchet_man_phone', 'content'];
 
     public static function scopeFilter($query, $filters = [])
     {
