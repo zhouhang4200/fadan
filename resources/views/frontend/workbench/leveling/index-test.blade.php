@@ -250,10 +250,10 @@
             $no .= config('partner.platform')[(int)$detail['third']]['name'] . '：<a style="color:#1f93ff"  href="' . route('frontend.workbench.leveling.detail', ['no' => $item->no]) . '">' . $item->no . '</a>';
         }
         // 玩家旺旺与店名
-        $sellerNick = '';
+        $sellerNick = isset($detail['seller_nick']) ? $detail['seller_nick'] : '';
         if (isset($detail['client_wang_wang'])) {
                 $sellerNick = '<a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=' . $detail['client_wang_wang']  . '&siteid=cntaobao&status=1&charset=utf-8"
-                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px">'  .$detail['client_wang_wang']. '</a><br/> ' . isset($detail['seller_nick']) ? $detail['seller_nick'] : '';
+                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px">'  .$detail['client_wang_wang']. '</a><br/> ' . $sellerNick;
         }
 
         $paymentAmount = ''; // 支付金额
