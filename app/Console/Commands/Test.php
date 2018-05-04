@@ -65,11 +65,12 @@ class Test extends Command
                 // 91 是待验收
                 if ($orderDetail['data']) {
                     myLog('91-show-order-query', [
-                        '类型' => '要修改',
                         '我们订单号' => $item->no,
                         '91订单号' => $show91OrderNO->field_value,
                         '91状态' => $this->show91Status[$orderDetail['data']['order_status']],
                         '我们状态' => config('order.status_leveling')[$item->status],
+                        '91从格' => $orderDetail['data']['price'],
+                        '我们价格' => $item->amount,
                         '价格' => $item->amount == $orderDetail['data']['price'] ? '是' : '否'
                     ]);
                 }
