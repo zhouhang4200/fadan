@@ -69,7 +69,14 @@ class Test extends Command
      */
     public function handle()
     {
+       $this->my();
+    }
 
+    /**
+     * dd373订单查询
+     */
+    public function dd373()
+    {
         $allOrder = \App\Models\Order::where('service_id', 4)->where('gainer_primary_user_id', 8739)->get();
 
         foreach ($allOrder as $item) {
@@ -98,4 +105,58 @@ class Test extends Command
         }
     }
 
+    public function shos91()
+    {
+        $allOrder = \App\Models\Order::where('service_id', 4)->where('gainer_primary_user_id', 8456)->get();
+
+        foreach ($allOrder as $item) {
+            $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
+            if (isset($show91OrderNO->field_value) && !empty($show91OrderNO->field_value)) {
+                // 如果91订单状态是接单，调我们自己接单接口，如果不是记录一下他们状态
+                $orderDetail = Show91::orderDetail(['oid' => $show91OrderNO->field_value]);
+                // 91 是待验收
+                if ($orderDetail['data']) {
+                    myLog('91-show-order-query', [
+                        '我们订单号' => $item->no,
+                        '91订单号' => $show91OrderNO->field_value,
+                        '91状态' => isset($this->show91Status[$orderDetail['data']['order_status']]) ? $this->show91Status[$orderDetail['data']['order_status']] : '',
+                        '我们状态' => config('order.status_leveling')[$item->status],
+                        '91从格' => $orderDetail['data']['price'],
+                        '我们价格' => $item->amount,
+                        '价格' => $item->amount == $orderDetail['data']['price'] ? '是' : '否'
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function my()
+    {
+        $allOrder = \App\Models\Order::where('service_id', 4)->where('gainer_primary_user_id', 8737)->get();
+
+        foreach ($allOrder as $item) {
+            $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'mayi_order_no')->first();
+            if (isset($show91OrderNO->field_value) && !empty($show91OrderNO->field_value)) {
+                // 按接单方取订单详情
+                try {
+                    $orderDetail = MayiDailianController::orderDetail(['mayi_order_no' => $show91OrderNO->field_value]);
+                    if ($orderDetail['data']) {
+                        myLog('my-show-order-query', [
+                            '第三方' => $item->no,
+                            '我们订单号' => $item->no,
+                            '第三方订单号' => $show91OrderNO->field_value,
+                            '第三方状态' => $orderDetail['data']['status_type'],
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '第三方价格' => $orderDetail['data']['paymoney'],
+                            '我们价格' => $item->amount,
+                            '价格' => $item->amount == $orderDetail['data']['paymoney'] ? '是' : '否'
+                        ]);
+                    }
+                } catch (\Exception $exception) {
+                    myLog('my-show-order-query-err', [$item->no]);
+                }
+
+            }
+        }
+    }
 }
