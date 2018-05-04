@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('platform:statistic')->daily();
         $schedule->command('order:notice')->everyMinute();
         $schedule->command('add:notice')->everyMinute();
-        $schedule->command('order:markup')->everyMinute();
+        // $schedule->command('order:markup')->everyMinute();
         $schedule->command('command:getMessageDailianmama')->everyMinute();
         $schedule->command('markup-order:one-hour')->everyMinute();
     }

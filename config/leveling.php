@@ -12,7 +12,7 @@ return [
 	'third' => [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
-		// 8393 => 5, // 丸子
+		// 84567 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
@@ -143,9 +143,9 @@ return [
 
     // 丸子平台
     'wanzi' => [
-    	'appid'     => '24dca31042361ae1',
-		'appsecret' => '889a68ce24dca31042361ae3fa423f57',
-		'aes_key'   => '45584685d8e4f5e8e4e2685',
+    	'appid'     => 'HISxsdbyXgL17rlLzI858zN9IQiJnwz7f3POcv4dFuanMu3G00uNdBZTiYrW',
+		'appsecret' => 'jhJABPd2MDZIg635QY4ImNp3dDNfqognwwMGOotAuTaoWicDhIMuMQpHOqnG',
+		'aes_key'   => '45584655d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
 		'account'   => '51683C315D36488FB266904B6FD4BDFF',
 		'sign'		=> '64551beede02877e16e68852aeb90b41',

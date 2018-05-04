@@ -43,7 +43,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         $response = $client->request($method, $url, [
 	//             'multipart' => $datas,
 	//         ]);
-	//         $result =  $response->getBody()->getContents();
+	//         $result = $response->getBody()->getContents();
 
 	//         if (! isset($result) || empty($result)) {
  //                throw new DailianException('请求返回数据不存在');
@@ -109,7 +109,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	//         	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
 	//         		// 失败
 	//         		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
- //        				$message = $arrResult['reason'] ?? 'wanzi接口返回错误';
+ //        				$message = $arrResult['reason'] ?? '丸子接口返回错误';
 	//         			myLog('wanzi-return-error', [
 	//         				'地址' => $url ?? '', 
 	//         				'失败错误码' => $arrResult['result'] ?? '', 
@@ -357,10 +357,11 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //     */
  //    public static function customArbitration($orderDatas) {}
 
- //    *
+ //    /*
  //     * 申请验收
  //     * @param  [type] $orderDatas [description]
  //     * @return [type]             [description]
+ //     */
      
  //    public static function applyComplete($orderDatas) {}
 
@@ -368,6 +369,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
  //     * 取消验收
  //     * @param  [type] $orderDatas [description]
  //     * @return [type]             [description]
+     
      
  //    public static function cancelComplete($orderDatas) {}
 

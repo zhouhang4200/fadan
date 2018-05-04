@@ -61,7 +61,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             $result = $response->getBody()->getContents();
 
             if (!isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
+                if ($options['method'] != 'dlOrderDel') {
+                    throw new DailianException('请求返回数据不存在');
+                }
             }
 
             myLog('my-api-log', [$options, $result]);
@@ -74,7 +76,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     if (isset($arrResult['status']) && ! in_array($arrResult['status'], self::$status)) {
                         // 判断是否失败
                         $message = $arrResult['message'] ?? 'dd373接口返回错误';
-                        throw new DailianException($message);
+                        if ($options['method'] != 'dlOrderDel') {
+                            throw new DailianException($message);
+                        }
                     }
                 }
                 // 记录日志
@@ -111,7 +115,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             $result = $response->getBody()->getContents();
 
             if (!isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
+                if ($options['method'] != 'dlOrderDel') {
+                    throw new DailianException('请求返回数据不存在');
+                }
             }
 
             myLog('my-api-log', [$options, $result]);
@@ -123,7 +129,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     if (isset($arrResult['status']) && ! in_array($arrResult['status'], self::$status)) {
                         // 判断是否失败
                         $message = $arrResult['message'] ?? 'dd373接口返回错误';
-                        throw new DailianException($message);
+                        if ($options['method'] != 'dlOrderDel') {
+                            throw new DailianException($message);
+                        }
                     }
                 }
                 // 记录日志

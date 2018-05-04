@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use DB;
 use Redis;
 use Asset;
+use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
@@ -77,6 +78,7 @@ class AutoMarkupOrderEveryHour extends Command
                     }
                     // 检查redis里面存的订单当前代练费是否等于数据库的代练费
                     $this->checkRedisAmountEqualOrderAmount($datas, $order);
+      
                     // 检查是否到了加价时间
                     $isBegin = $this->checkTimeToAddPrice($datas, $order, $orderDetails);
 
@@ -89,6 +91,9 @@ class AutoMarkupOrderEveryHour extends Command
                     if (! $bool) {
                         continue;
                     }
+
+                    // 掉外面的订单同步价格接口
+                    $this->thirdAddPrice($datas, $order);
                     // Redis的值增加
                     $this->increase($datas, $order, $orderDetails);
                 } catch (Exception $e) {
@@ -199,14 +204,70 @@ class AutoMarkupOrderEveryHour extends Command
      */
     public function checkRedisAmountEqualOrderAmount($datas, $order)
     {
-        if ($datas['add_amount'] != $order->amount) {
-            $key = $order->no;
-            $name = "order:automarkup-every-hour";
-            $value = $datas['add_number'].'@'.$order->amount."@".$datas['add_time'];
-            Redis::hSet($name, $key, $value);
+        // 始终同步redis 的加价为订单金额
+        $key = $order->no;
+        $name = "order:automarkup-every-hour";
+        $value = $datas['add_number'].'@'.$order->amount."@".$datas['add_time'];
+        Redis::hSet($name, $key, $value);
 
-            $datas['add_amount'] = $order->amount;
+        $datas['add_amount'] = $order->amount;
+
+        $orderDetails = $this->getOrderDatas($order);     
+        try {
+            // 如果存在91的单,并且9单和我们的单价格不一样,修改91的单位我们的订单价格
+            if (isset($orderDetails['show91_order_no']) && ! empty($orderDetails['show91_order_no'])) {
+                // 调91的修改订单接口
+                $res = Show91::addOrder($order, true);
+                if (isset($res['status']) && empty($res['status'])) {
+                    // 91下架接口
+                    Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+                    // 删除91在我们平台的订单
+                    OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+                    myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
+                }
+            }
+        } catch (Exception $e) {
+            // 91下架接口
+            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+            // 删除91在我们平台的订单
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
+        } catch (DailianException $e) {
+            // 91下架接口
+            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+            // 删除91在我们平台的订单
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
         }
+        // 加价 其他平台通用
+        if (config('leveling.third_orders')) {
+           // 遍历代练平台
+            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+                    try {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetails]);
+                    } catch (DailianException $e) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+                        myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);    
+                    } catch (Exception $e) {
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+                        myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);     
+                    }
+                }
+            }
+        }
+    }
+
+    public function getOrderDatas($order) 
+    {
+        $orderArr = $order->toArray();
+
+        $orderDetails = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+
+        return array_merge($orderDetails, $orderArr);
     }
 
     /**
@@ -260,9 +321,6 @@ class AutoMarkupOrderEveryHour extends Command
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
-            // 调外面加价接口
-            $orderDetails = $this->getOrderDetails($order->no);
-            $this->addPriceToThirdClient($datas, $order, $orderDetails);
         } catch (Exception $e) {
             DB::rollback();
             myLog('markup-hour-local-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败', '原因' => $e->getMessage()]);
@@ -281,42 +339,25 @@ class AutoMarkupOrderEveryHour extends Command
     }
 
     public function addPriceToThirdClient($datas, $order, $orderDetails)
-    {
-         //如果上限 - 代练金额  小于  加价幅度 但是又大于0
-        if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
-            // 加价金额
-            $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount'], 2);
-            // 加价后的订单金额
-            $afterAddAmount = $orderDetails['markup_top_limit'];
-        } else {
-            // 加价金额
-            $rangeMoney = bcadd($orderDetails['markup_range'], 0, 2);
-            // 加价后的订单金额
-            $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
-        }
-
-        if ($orderDetails['show91_order_no']) {
-            try {
-                $name = 'addPrice';
-                $order->addAmount = $rangeMoney;
-                call_user_func_array([Show91::class, $name], [$order, false]);
-                myLog('order.automarkup.every.hour', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '结果' => '成功']);
-            } catch (DailianException $e) {
-                // 91下架接口
-                Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
-                myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
+    {     
+        try {
+            // 如果存在91的单,并且9单和我们的单价格不一样,修改91的单位我们的订单价格
+            if (isset($orderDetails['show91_order_no'])) {
+                // 调91的修改订单接口
+                Show91::addOrder($order, true);
             }
-        }
-
-        if ($orderDetails['dailianmama_order_no']) {
-            try {
-                $name = 'releaseOrder';
-                $order->amount = bcadd($datas['add_amount'], $rangeMoney, 2);
-                call_user_func_array([DailianMama::class, $name], [$order, true]);
-            } catch (DailianException $e) {
-                DailianMama::deleteOrder($order);
-                myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
-            }
+        } catch (Exception $e) {
+            // 91下架接口
+            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+            // 删除91在我们平台的订单
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
+        } catch (DailianException $e) {
+            // 91下架接口
+            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+            // 删除91在我们平台的订单
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
         }
 
         // 加价 其他平台通用
@@ -327,18 +368,86 @@ class AutoMarkupOrderEveryHour extends Command
                 if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
                     try {
                         // 控制器-》方法-》参数
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDetails]);
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetails]);
                     } catch (DailianException $e) {
                         // 控制器-》方法-》参数
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
-                        myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
+                        myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);    
                     } catch (Exception $e) {
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
-                        myLog('markup-hour-local-error', ['订单号' => isset($order) ? $order->no : '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);     
+                        myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);     
                     }
                 }
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+        //  //如果上限 - 代练金额  小于  加价幅度 但是又大于0
+        // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+        //     // 加价金额
+        //     $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount'], 2);
+        //     // 加价后的订单金额
+        //     $afterAddAmount = $orderDetails['markup_top_limit'];
+        // } else {
+        //     // 加价金额
+        //     $rangeMoney = bcadd($orderDetails['markup_range'], 0, 2);
+        //     // 加价后的订单金额
+        //     $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+        // }
+
+        // if ($orderDetails['show91_order_no']) {
+        //     try {
+        //         $name = 'addPrice';
+        //         $order->addAmount = $rangeMoney;
+        //         call_user_func_array([Show91::class, $name], [$order, false]);
+        //         myLog('order.automarkup.every.hour', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '结果' => '成功']);
+        //     } catch (DailianException $e) {
+        //         // 91下架接口
+        //         Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+        //         myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
+        //     }
+        // }
+
+        // if ($orderDetails['dailianmama_order_no']) {
+        //     try {
+        //         $name = 'releaseOrder';
+        //         $order->amount = bcadd($datas['add_amount'], $rangeMoney, 2);
+        //         call_user_func_array([DailianMama::class, $name], [$order, true]);
+        //     } catch (DailianException $e) {
+        //         DailianMama::deleteOrder($order);
+        //         myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '当前金额' => $datas['add_amount'] ?? '', '增加的金额' => $rangeMoney ?? '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);
+        //     }
+        // }
+
+        // // 加价 其他平台通用
+        // if (config('leveling.third_orders')) {
+        //    // 遍历代练平台
+        //     foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+        //         // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+        //         if (isset($orderDetails[$thirdOrderNoName]) && ! empty($orderDetails[$thirdOrderNoName])) {
+        //             try {
+        //                 // 控制器-》方法-》参数
+        //                 call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDetails]);
+        //             } catch (DailianException $e) {
+        //                 // 控制器-》方法-》参数
+        //                 call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+        //                 myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);    
+        //             } catch (Exception $e) {
+        //                 call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
+        //                 myLog('markup-hour-local-error', ['订单号' => isset($order) ? $order->no : '', '原因' => $e->getMessage(), '结果' => '自动加价失败!']);     
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     /**
@@ -349,6 +458,7 @@ class AutoMarkupOrderEveryHour extends Command
      */
     public function increase($datas, $order, $orderDetails)
     {
+        $order = Order::where('no', $order->no)->first();
         //如果上限 - 代练金额  小于  加价幅度 但是又大于0
         if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
             // 加价金额
@@ -364,7 +474,7 @@ class AutoMarkupOrderEveryHour extends Command
 
         $number = $datas['add_number'] + 1;
         $amount = bcadd($datas['add_amount'], $rangeMoney, 2);
-        $time = Carbon::parse($datas['add_time'])->addHours(1)->toDateTimeString();
+        $time = Carbon::parse($datas['add_time'])->addMinutes(1)->toDateTimeString();
 
         $key = $order->no;
         $name = "order:automarkup-every-hour";
@@ -381,7 +491,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         // 时间是否到了加价的点
         $now = Carbon::now();
-        $addTime = Carbon::parse($datas['add_time'])->addHours(1);
+        $addTime = Carbon::parse($datas['add_time'])->addMinutes(1);
         // 加价金额是否到了上限
         $isOverAmount = bcsub($datas['add_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
 
@@ -395,5 +505,15 @@ class AutoMarkupOrderEveryHour extends Command
             return false;
         }
         return $now->diffInMinutes($addTime, false) < 0 ? true : false;
+    }
+
+    public function thirdAddPrice($datas, $order)
+    {
+        // 调外面加价接口
+        $orderDetails = $this->getOrderDatas($order);
+        // 平台加价后的金额
+        $order = Order::where('no', $order->no)->first();
+
+        $this->addPriceToThirdClient($datas, $order, $orderDetails);
     }
 }

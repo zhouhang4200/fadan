@@ -1529,11 +1529,15 @@ class IndexController extends Controller
      */
     public function checkIfAutoMarkup($order, $orderDetails)
     {
+        if (! isset($orderDetails['markup_range']) || empty($orderDetails['markup_range']) || ! isset($orderDetails['markup_top_limit']) || empty($orderDetails['markup_top_limit'])) {
+            Redis::hDel('order:automarkup-every-hour', $order->no);
+        }
         // 如果这笔订单存在加价幅度和加价上限，
         if (isset($orderDetails['markup_range']) && ! empty($orderDetails['markup_range']) && isset($orderDetails['markup_top_limit']) && ! empty($orderDetails['markup_top_limit'])) {
             $bool = bcsub($orderDetails['game_leveling_amount'], $orderDetails['markup_top_limit']) < 0 ? true : false;
 
             if (! $bool) {
+                Redis::hDel('order:automarkup-every-hour', $order->no);
                 return false;
             }
             // 将此订单存入哈希

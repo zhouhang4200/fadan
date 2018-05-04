@@ -50,7 +50,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
             myLog('dd373-api-log', [$url, $options, $result]);
 
 	        if (! isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
+                if ($url != config('leveling.dd373.url')['delete']) {
+                    throw new DailianException('请求返回数据不存在');
+                }
             }
 
 	        if (isset($result) && ! empty($result)) {
@@ -66,7 +68,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        				'失败原因' => $arrResult['msg'] ?? '', 
 	        				'失败数据' => $arrResult['data'] ?? '',
 	        			]);
-        				throw new DailianException($message);
+                        if ($url != config('leveling.dd373.url')['delete']) {
+        				    throw new DailianException($message);
+                        }
 	        		}
 			        // 记录日志
 			        myLog('dd373-request-logs', [
@@ -103,7 +107,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $result =  $response->getBody()->getContents();
 
 	        if (! isset($result) || empty($result)) {
-                throw new DailianException('请求返回数据不存在');
+                if ($url != config('leveling.dd373.url')['delete']) {
+                    throw new DailianException('请求返回数据不存在');
+                }
             }
 
             myLog('dd373-api-log', [$url, $options, $result]);
@@ -120,7 +126,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        				'失败原因' => $arrResult['msg'] ?? '', 
 	        				'失败数据' => $arrResult['data'] ?? '',
 	        			]);
-        				throw new DailianException($message);
+                        if ($url != config('leveling.dd373.url')['delete']) {
+        				    throw new DailianException($message);
+                        }
 	        		}
 			        // 记录日志
 			        myLog('dd373-return-logs', [
@@ -493,7 +501,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.dd373.url')['delete']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
+    		// throw new DailianException($e->getMessage());
     	}
     }
 

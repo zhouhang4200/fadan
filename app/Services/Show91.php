@@ -251,7 +251,8 @@ class Show91
         // 默认是下单, 如果存在则为修改订单
         if ($bool) {
             if (! $orderDetails['show91_order_no']) {
-                throw new DailianException('91代练平台:91平台订单号不存在，修改失败!');
+                return ['status' => 0, 'message' => '91代练平台:91平台订单号不存在，修改失败!'];
+                // throw new DailianException('91代练平台:91平台订单号不存在，修改失败!');
             }
             $options['order.order_id'] = $orderDetails['show91_order_no'];
         }
@@ -463,7 +464,16 @@ class Show91
     {
     	$res = static::normalRequest(config('show91.url.chedan'), $options);
 
-        return static::returnErrorMessage($res);
+        $res = json_decode($res, true);
+
+        if (! isset($res)) {
+            return ['status' => 0, 'message' => '91撤单失败'];
+        }
+
+        if (isset($res) && isset($res['result']) && ! empty($res['result'])) {
+            return ['status' => 0, 'message' => '91撤单失败'];
+        }
+        return $res;
     }
 
     /**
