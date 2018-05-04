@@ -29,10 +29,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                 $data[$name]['name'] = $name;
                 $data[$name]['contents'] = $value;
 	        }
+	        $options = $data;
 
 	        $client = new Client();
 	        $response = $client->request($method, $url, [
-	            'multipart' => $data,
+	            'multipart' => $options,
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
@@ -324,7 +325,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param $orderDatas
      * @throws DailianException
      */
-    public static function applyArbitration($orderDatas) {
+    public static function applyArbitration($orderDatas)
+    {
         try {
 	        $time = time();
 	        $datas = [
