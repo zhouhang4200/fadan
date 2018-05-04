@@ -76,19 +76,24 @@ class Test extends Command
             $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'dd373_order_no')->first();
             if (isset($show91OrderNO->field_value) && !empty($show91OrderNO->field_value)) {
                 // 按接单方取订单详情
-                $orderDetail = DD373Controller::orderDetail(['dd373_order_no' => $show91OrderNO->field_value]);
-                if ($orderDetail['data']) {
-                    myLog('dd373-show-order-query', [
-                        '第三方' => $item->no,
-                        '我们订单号' => $item->no,
-                        '第三方订单号' => $show91OrderNO->field_value,
-                        '第三方状态' => isset($this->dd373[$orderDetail['data']['orderStatus']]) ? $this->dd373[$orderDetail['data']['orderStatus']] : '',
-                        '我们状态' => config('order.status_leveling')[$item->status],
-                        '第三方价格' => $orderDetail['data']['price'],
-                        '我们价格' => $item->amount,
-                        '价格' => $item->amount == $orderDetail['data']['price'] ? '是' : '否'
-                    ]);
+                try {
+                    $orderDetail = DD373Controller::orderDetail(['dd373_order_no' => $show91OrderNO->field_value]);
+                    if ($orderDetail['data']) {
+                        myLog('dd373-show-order-query', [
+                            '第三方' => $item->no,
+                            '我们订单号' => $item->no,
+                            '第三方订单号' => $show91OrderNO->field_value,
+                            '第三方状态' => isset($this->dd373[$orderDetail['data']['orderStatus']]) ? $this->dd373[$orderDetail['data']['orderStatus']] : '',
+                            '我们状态' => config('order.status_leveling')[$item->status],
+                            '第三方价格' => $orderDetail['data']['price'],
+                            '我们价格' => $item->amount,
+                            '价格' => $item->amount == $orderDetail['data']['price'] ? '是' : '否'
+                        ]);
+                    }
+                } catch (\Exception $exception) {
+                    myLog('dd373-show-order-query-err', [$item->no]);
                 }
+
             }
         }
     }
