@@ -198,7 +198,7 @@ class OrderController extends Controller
                        'oid' => $orderDataArr['show91_order_no']
                     ]);
                     // 对比价格是否一样
-                    if ($show91Detail['data']['price'] != $orderData['game_leveling_amount']) {
+                    if ($show91Detail['data']['price'] != $orderDataArr['game_leveling_amount']) {
                         // 同步价格
                         $order = \App\Models\Order::where('no', $orderData->no)->frist();
                         Show91::addOrder($order, true);
@@ -211,7 +211,7 @@ class OrderController extends Controller
                     // 询用查询接口
                     $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDataArr]);
                     // 对比价格是否一样
-                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderData['game_leveling_amount']) {
+                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDataArr['game_leveling_amount']) {
                         // 同步价格
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDataArr]);
                         AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
