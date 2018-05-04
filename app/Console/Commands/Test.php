@@ -55,7 +55,7 @@ class Test extends Command
      */
     public function handle()
     {
-        $allOrder = \App\Models\Order::where('service_id', 4)->where('status', 13)->get();
+        $allOrder = \App\Models\Order::where('service_id', 4)->get();
 
         foreach ($allOrder as $item) {
             $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'show91_order_no')->first();
