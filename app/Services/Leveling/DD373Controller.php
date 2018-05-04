@@ -13,37 +13,26 @@ use App\Exceptions\DailianException;
  */
 class DD373Controller extends LevelingAbstract implements LevelingInterface
 {
-	/**
-     * 调用接口时间
-     * @var [type]
-     */
-    // protected static $time;
-
-    public function __construct()
-    {
-        // $time = time();
-    }
-
     /**
      * form-data 格式提交数据
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
+     * @param array $options
+     * @param string $url
+     * @param string $method
+     * @return mixed
+     * @throws Exception
      */
     public static function formDataRequest($options = [], $url = '', $method = 'POST')
     {
     	try {
-    		$datas = [];
+    		$data = [];
 	        foreach ($options as $name => $value) {
-	            $datas[$name]['name'] = $name;
-	            $datas[$name]['contents'] = $value;
+                $data[$name]['name'] = $name;
+                $data[$name]['contents'] = $value;
 	        }
-	        $options = $datas;
 
 	        $client = new Client();
 	        $response = $client->request($method, $url, [
-	            'multipart' => $options,
+	            'multipart' => $data,
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
@@ -87,10 +76,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 普通提交
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
+     * @param array $options
+     * @param string $url
+     * @param string $method
+     * @return mixed
+     * @throws Exception
      */
     public static function normalRequest($options = [], $url= '', $method = 'POST')
     {
@@ -144,26 +134,26 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 对参数进行加工
-     * @param  [type] $options [description]
-     * @return [type]          [description]
+     * @param $data
+     * @return array
      */
-    public static function handleOptions($datas)
+    public static function handleOptions($data)
     {
-    	return [
-			'JsonData'     => json_encode($datas),
+        return [
+			'JsonData'     => json_encode($data),
 			'platformSign' => config('leveling.dd373.platform-sign'),
-			'Sign'         => static::getSign($datas),
+			'Sign'         => static::getSign($data),
         ];
     }
 
     /**
      * 获取签名
-     * @param  [type] $method [description]
-     * @return [type]         [description]
+     * @param $data
+     * @return string
      */
-    public static function getSign($datas)
+    public static function getSign($data)
     {
-    	$string = "JsonData=".json_encode($datas)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+    	$string = "JsonData=".json_encode($data)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
 
     	myLog('dd373-sign-log', ['string' => $string, 'sign' => md5($string)]);
 
@@ -172,17 +162,18 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 上架
-     * @return [type] [description]
+     * @param $orderData
+     * @throws DailianException
      */
-    public static function onSale($orderDatas) {
+    public static function onSale($orderData) {
     	try {
 	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        $data = [
+	        	'platformOrderNo' => $orderData['dd373_order_no'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	       	$options = static::handleOptions($data);
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.dd373.url')['onSale']);
     	} catch (Exception $e) {
@@ -193,17 +184,18 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 下架
-     * @return [type] [description]
+     * @param $orderData
+     * @throws DailianException
      */
-    public static function offSale($orderDatas) {
+    public static function offSale($orderData) {
         try {
 	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+            $data = [
+	        	'platformOrderNo' => $orderData['dd373_order_no'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	       	$options = static::handleOptions($data);
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.dd373.url')['offSale']);
     	} catch (Exception $e) {
@@ -214,9 +206,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 接单
-     * @return [type] [description]
+     * @param $orderData
      */
-    public static function receive($orderDatas) {}
+    public static function receive($orderData) {}
 
     /**
      * 申请撤销
@@ -251,20 +243,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 取消撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderData
+     * @throws DailianException
      */
-    public static function cancelRevoke($orderDatas) {
+    public static function cancelRevoke($orderData) {
         try {
 	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+            $data = [
+	        	'platformOrderNo' => $orderData['dd373_order_no'],
 	        	'State' => 2,
-	        	'reason' => ! empty($orderDatas['revoke_message']) ?: '空',
+	        	'reason' => ! empty($orderData['revoke_message']) ?: '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	       	$options = static::handleOptions($data);
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.dd373.url')['cancelRevoke']);
     	} catch (Exception $e) {
@@ -275,20 +267,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 同意撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderData
+     * @throws DailianException
      */
-    public static function agreeRevoke($orderDatas) {
+    public static function agreeRevoke($orderData) {
         try {
 	        $time = time();
-	        $datas = [
-	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
+	        $data = [
+	        	'platformOrderNo' => $orderData['dd373_order_no'],
 	        	'State' => 1,
 	        	'reason' => '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($datas);
+	       	$options = static::handleOptions($data);
 	       	// 发送
 	       	$result = static::normalRequest($options, config('leveling.dd373.url')['agreeRevoke']);
     	} catch (Exception $e) {
@@ -299,15 +291,14 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 强制撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderData
      */
-    public static function forceRevoke($orderDatas) {}
+    public static function forceRevoke($orderData) {}
 
     /**
      * 不同意撤销
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function refuseRevoke($orderDatas) {
     	try {
@@ -341,10 +332,14 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	'reason' => ! empty($orderDatas['complain_message']) ? $orderDatas['complain_message'] : '空',
 	        	'timestamp' => $time,
 	        ];
+            // 对图片进行处理
+            $finalPic['fileBase1'] = $orderDatas['pic1'];
+            $finalPic['fileBase2'] = $orderDatas['pic1'];
+            $finalPic['fileBase3'] = $orderDatas['pic1'];
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['applyArbitration']);
+	       	static::formDataRequest(array_merge($options, array_filter($finalPic)), config('leveling.dd373.url')['applyArbitration']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -353,8 +348,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 取消仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function cancelArbitration($orderDatas) {
         try {
@@ -376,29 +371,26 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 强制仲裁（客服仲裁
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
      */
     public static function customArbitration($orderDatas) {}
 
     /**
      * 申请验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
      */
     public static function applyComplete($orderDatas) {}
 
     /**
      * 取消验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
      */
     public static function cancelComplete($orderDatas) {}
 
     /**
      * 完成验收
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function complete($orderDatas) {
        	try {
@@ -419,8 +411,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function lock($orderDatas) {
         try {
@@ -441,8 +433,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 取消锁定
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function cancelLock($orderDatas) {
         try {
@@ -463,22 +455,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 异常
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
      */
     public static function abnormal($orderDatas) {}
 
     /**
      * 取消异常
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
      */
     public static function cancelAbnormal($orderDatas) {}
 
     /**
      * 撤单（删除)
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function delete($orderDatas) {
         try {
@@ -500,7 +490,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 修改订单(未接单时候的修改订单)
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function updateOrder($orderDatas) {
     	try {
@@ -598,7 +589,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 获取订单详情
-     * @return [type] [description]
+     * @param $orderDatas
+     * @return mixed
+     * @throws DailianException
      */
     public static function orderDetail($orderDatas) {
         try {
@@ -620,7 +613,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 获取订单截图
-     * @return [type] [description]
+     * @param $orderDatas
+     * @return array
+     * @throws DailianException
      */
     public static function getScreenshot($orderDatas) {
         try {
@@ -710,7 +705,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 修改接单之后的游戏账号密码
-     * @return [type] [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function updateAccountAndPassword($orderDatas) {
        	try {
@@ -733,8 +729,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 发送截图
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @throws DailianException
      */
     public static function updateImage($orderDatas)
     {
@@ -743,17 +739,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $datas = [
 				'platformOrderNo' => $orderDatas['dd373_order_no'],
 				'description'     => $orderDatas['description'],
-				'imgFlow'         => $orderDatas['imgFlow'],
-				'suffix'          => $orderDatas['type'],
 				'timestamp'       => $time,
 	        ];
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::formDataRequest($options, config('leveling.dd373.url')['updateImage']);
+	       	static::formDataRequest(array_merge($options, ['fileBase' => $orderDatas['file']]), config('leveling.dd373.url')['updateImage']);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '发送截图', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
     	}
+    }
+
+    public static function getArbitrateImages()
+    {
+
     }
 }

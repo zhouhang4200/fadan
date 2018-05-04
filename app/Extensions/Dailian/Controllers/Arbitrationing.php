@@ -105,13 +105,13 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
             if (! $consult) {
                 throw new DailianException('订单申诉或协商记录不存在!');
             }
+            // 处理图片将前端的base64转为流
+            $img['pic1'] = !empty($this->pic['pic1']) ? base64ToBlob($this->pic['pic1']) : '';
+            $img['pic2'] = !empty($this->pic['pic2']) ? base64ToBlob($this->pic['pic2']) : '';
+            $img['pic3'] = !empty($this->pic['pic3']) ? base64ToBlob($this->pic['pic3']) : '';
 
             switch ($orderDetails['third']) {
                 case 1:
-                    // 处理图片将前端的base64转为流
-                    $img['pic1'] = !empty($this->pic['pic1']) ? base64ToBlob($this->pic['pic1']) : '';
-                    $img['pic2'] = !empty($this->pic['pic2']) ? base64ToBlob($this->pic['pic2']) : '';
-                    $img['pic3'] = !empty($this->pic['pic3']) ? base64ToBlob($this->pic['pic3']) : '';
                     // 过滤空的数组
                     $finalPic = array_filter($img);
                     // 91申请仲裁接口
@@ -135,6 +135,10 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
                 if (! $orderDatas['consult_order_no']) {
                     throw new DailianException('撤销记录不存在');
                 }
+                $orderDatas['pic1'] = !empty($this->pic['pic1']) ? base64ToBlob($this->pic['pic1']) : '';
+                $orderDatas['pic2'] = !empty($this->pic['pic2']) ? base64ToBlob($this->pic['pic2']) : '';
+                $orderDatas['pic3'] = !empty($this->pic['pic3']) ? base64ToBlob($this->pic['pic3']) : '';
+
                 // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果订单详情里面存在某个代练平台的订单号

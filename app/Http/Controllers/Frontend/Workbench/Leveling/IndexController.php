@@ -764,7 +764,6 @@ class IndexController extends Controller
         } catch (DailianException $e) {
             return response()->ajax(0, $e->getMessage());
         }
-
         return response()->ajax(1);
     }
 

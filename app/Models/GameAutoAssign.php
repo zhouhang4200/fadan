@@ -44,7 +44,7 @@ class GameAutoAssign extends Model
 	 */
 	public static function checkGainerPrimaryIdById($gainer_primary_user_id)
 	{
-		$user = User::where(['id' => $gainer_primary_user_id])->first();
+		$user = User::where(['id' => $gainer_primary_user_id, 'parent_id' => 0])->first();
 		if ($user) {
 			return true;
 		}

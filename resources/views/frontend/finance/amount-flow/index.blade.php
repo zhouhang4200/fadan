@@ -61,7 +61,6 @@
             <button class="layui-btn layui-btn-normal" type="button" id="export">导出</button>
         </div>
     </div>
-
 </form>
 
 <table class="layui-table" lay-size="sm">

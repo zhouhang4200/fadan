@@ -40,6 +40,9 @@
 <!--END 底部-->
 
 <!--START 脚本-->
+<script>
+//    $('.right').height($(window).height() - 80);
+</script>
 @yield('js')
 <!--END 脚本-->
 </body>

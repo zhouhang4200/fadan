@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.layouts.app-new')
 
 @section('title', '工作台 - 代练')
 
@@ -79,6 +79,10 @@
         th  .layui-table-cell {
             height: 30px !important;
             line-height: 30px !important;
+        }
+
+        .main .right {
+            /*min-height: 100px;*/
         }
     </style>
 @endsection
@@ -531,7 +535,6 @@
 <!--START 底部-->
 @section('js')
     <script>
-        $('.right').height($(window).height() - 80);
         layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
             var form = layui.form, layer = layui.layer, element = layui.element, laydate = layui.laydate, table = layui.table;
 
@@ -580,10 +583,13 @@
                     {field: 'customer_service_name', title: '发单客服', width: 100},
                     {field: 'button', title: '操作', width: 140, sort: true, fixed: 'right'}
                 ]],
-                height: 'full-480',
+                height: 'full-335',
                 data: <?= $jsonOrderList ?>,
 //                even: true,
                 size: 'sm' //小尺寸的表格
+            });
+            $(window).resize(function() {
+                location.reload();
             });
         });
     </script>

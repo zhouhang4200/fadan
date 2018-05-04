@@ -4,6 +4,7 @@ namespace App\Repositories\Frontend;
 use App\Models\OrderAttachment;
 use App\Exceptions\CustomException;
 use App\Services\DailianMama;
+use App\Services\Leveling\DD373Controller;
 use App\Services\Show91;
 use OSS\OssClient;
 use Storage;
@@ -148,9 +149,7 @@ class OrderAttachmentRepository
             // 获取订单和订单详情以及仲裁协商信息
             $orderDatas = static::getOrderAndOrderDetailAndLevelingConsult($orderNo);
             $orderDatas['description'] = $description ?? '';
-            // $orderDatas['imgFlow'] = base64_encode(fread(fopen($filePath, 'r'), filesize($filePath))) ?? '';
-            $orderDatas['imgFlow'] = base64_encode(fread(fopen($filePath, 'r'), filesize($filePath)));
-            $orderDatas['type'] = $mimeTypes ?? '';
+            $orderDatas['file'] = fopen($filePath, 'r');
 
            // 遍历代练平台
             foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
