@@ -70,7 +70,7 @@ class Test extends Command
     public function handle()
     {
 
-        $allOrder = \App\Models\Order::where('service_id', 4)>where('gainer_primary_user_id', 8739)->get();
+        $allOrder = \App\Models\Order::where('service_id', 4)->where('gainer_primary_user_id', 8739)->get();
 
         foreach ($allOrder as $item) {
             $show91OrderNO = OrderDetail::where('order_no', $item->no)->where('field_name', 'dd373_order_no')->first();
