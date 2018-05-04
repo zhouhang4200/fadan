@@ -574,7 +574,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 ->where('field_name', 'mayi_order_no')
                 ->update(['field_value' => '']);
 
-            throw new DailianException($e->getMessage());
+            if ($e->getMessage() != '操作失败，订单状态已改变，请刷新页面重试') {
+                throw new DailianException($e->getMessage());
+            }
         }
     }
 
