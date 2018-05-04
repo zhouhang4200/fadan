@@ -226,13 +226,13 @@ class AutoMarkupOrderEveryHour extends Command
                     myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
                 }
             }
-        } catch (Exception $e) {
+        } catch (DailianException $e) {
             // 91下架接口
             Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
             // 删除91在我们平台的订单
             OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
             myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
-        } catch (DailianException $e) {
+        } catch (Exception $e) {
             // 91下架接口
             Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
             // 删除91在我们平台的订单
@@ -321,10 +321,6 @@ class AutoMarkupOrderEveryHour extends Command
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
-        } catch (Exception $e) {
-            DB::rollback();
-            myLog('markup-hour-local-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败', '原因' => $e->getMessage()]);
-            return false;
         } catch (DailianException $e) {
             DB::rollback();
             myLog('markup-hour-dailian-errors', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败', '原因' => $e->getMessage()]);
@@ -332,6 +328,10 @@ class AutoMarkupOrderEveryHour extends Command
         } catch (AssetException $e) {
             DB::rollback();
             myLog('markup-hour-aesset-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败', '原因' => $e->getMessage()]);
+            return false;
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('markup-hour-local-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败', '原因' => $e->getMessage()]);
             return false;
         }
         DB::commit();
@@ -346,13 +346,13 @@ class AutoMarkupOrderEveryHour extends Command
                 // 调91的修改订单接口
                 Show91::addOrder($order, true);
             }
-        } catch (Exception $e) {
+        }  catch (DailianException $e) {
             // 91下架接口
             Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
             // 删除91在我们平台的订单
             OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
             myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
-        } catch (DailianException $e) {
+        } catch (Exception $e) {
             // 91下架接口
             Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
             // 删除91在我们平台的订单
@@ -380,16 +380,6 @@ class AutoMarkupOrderEveryHour extends Command
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
 
         //  //如果上限 - 代练金额  小于  加价幅度 但是又大于0
         // if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
