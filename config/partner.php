@@ -5,8 +5,8 @@ return [
       1 => [
           'name' => '91代练', // 平台名称
           'user_id' => 123, // 千手用户ID
-          'receive' => '-http://www.show91.com/oauth/qs/receiveOrder', // 接收订单地址
-          'aes_key' => '45584685d8e4f5e8zz',
+          'receive' => '', // 接收订单地址
+          'aes_key' => '45584685d8e4f5e8',
           'aes_iv' => '1234567891111152',
       ],
       3 => [

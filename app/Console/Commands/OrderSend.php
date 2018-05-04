@@ -72,7 +72,7 @@ class OrderSend extends Command
 //                            'send_result' => $result,
 //                            'send_data' => $orderData,
 //                        ]);
-                        myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
+                        myLog('order-send-ex', [$platform['name'], $exception->getMessage(), $decrypt]);
                     }
                 }
             }

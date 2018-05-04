@@ -40,7 +40,6 @@ class Show91
             $datas[$name]['name'] = $name;
             $datas[$name]['contents'] = $value;
         }
-
         try {
             $client = new Client(['timeout' => 2]);
             $response = $client->request($method, $url, [

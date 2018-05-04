@@ -48,6 +48,11 @@ class GameAutoAssignController extends Controller
 	public function store(Request $request)
 	{
 		try {
+
+			if (!GameAutoAssign::checkGainerPrimaryIdById($request->gainer_primary_user_id)) {
+				return response()->ajax(0, '主接单人Id不存在');
+			}
+
 			if (GameAutoAssign::checkGame($request->game_id, $request->creator_primary_user_id, $request->gainer_primary_user_id)) {
 				return response()->ajax(0, '该游戏主发单人，主接单人已经存在，请不要重复添加');
 			};

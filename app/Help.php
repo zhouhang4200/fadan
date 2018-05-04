@@ -1046,7 +1046,7 @@ if (!function_exists('base64ToBlob')) {
     /**
      * base64 转流
      * @param $base64Str
-     * @return resource
+     * @return resource|string
      */
     function base64ToBlob($base64Str)
     {
