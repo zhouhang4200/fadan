@@ -1487,5 +1487,17 @@
                 layui.form.render();
             }, 'json');
         });
+        $("body").on('blur', 'input[name=source_price]', function(){
+            var no = document.getElementById('order_detail').getAttribute('lay-no');
+            var source_price= $('input[name=source_price]').val();
+            var source_name = 'source_price';
+            $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_price:source_price, source_name:source_name}, function (result) {
+                if (result.status == 1) {
+                    $('input[name=source_price]').val(result.message);
+                    $('input[name=source_price]').html(result.message);
+                }
+                layui.form.render();
+            }, 'json');
+        });
     </script>
 @endsection
