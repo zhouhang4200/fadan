@@ -311,6 +311,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('send-sms', 'IndexController@sendSms')->name('frontend.workbench.leveling.send-sms');
             // 获取代练模版 
             Route::post('game-leveling-template', 'IndexController@getGameLevelingTemplate')->name('frontend.workbench.leveling.game-leveling-template');
+            // 获取来源价格
+            Route::post('source-price', 'IndexController@sourcePrice')->name('frontend.workbench.leveling.source-price');
          });
 
         // 获取用户所有前台可显示的商品

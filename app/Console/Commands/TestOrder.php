@@ -41,6 +41,10 @@ class TestOrder extends Command
      */
     public function handle()
     {
+        OrderDetail::where('order_no', '2018042815571700000014')
+                ->where('field_name', 'mayi_order_no')
+                ->update(['field_value' => '']);
+
         $orderNo = '2018042815571700000014';
 
         $order = Order::where('no', $orderNo)->first();

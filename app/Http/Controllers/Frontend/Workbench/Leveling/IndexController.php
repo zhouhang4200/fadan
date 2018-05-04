@@ -484,6 +484,7 @@ class IndexController extends Controller
      */
     public function detail(Request $request, OrderRepository $orderRepository, GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository)
     {
+        // 获取商户的联系方式模版信息
         // 获取可用游戏
         $game = $this->game;
         // 获取订单数据
@@ -492,7 +493,6 @@ class IndexController extends Controller
         $orderDetails = OrderDetail::where('order_no', $detail['no'])
             ->pluck('field_value', 'field_name')
             ->toArray();
-        // 获取商户的联系方式模版信息
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
@@ -510,30 +510,6 @@ class IndexController extends Controller
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
-        if (isset($orderDetails['hatchet_man_qq']) && isset($orderDetails['hatchet_man_phone']) && ! $orderDetails['hatchet_man_qq'] && ! $orderDetails['hatchet_man_phone'] && $orderDetails['third'] == 1) {
-           try {
-               // 获取91平台的打手电话和QQ更新到订单详情表
-               $orderInfo = Show91::orderDetail(['oid' => $orderDetails['show91_order_no']]);
-
-               OrderDetail::where('order_no', $detail['no'])
-                   ->where('field_name', 'hatchet_man_phone')
-                   ->update(['field_value' => $orderInfo['data']['taker_phone']]);
-
-               OrderDetail::where('order_no', $detail['no'])
-                   ->where('field_name', 'hatchet_man_qq')
-                   ->update(['field_value' => $orderInfo['data']['taker_qq']]);
-
-               OrderDetail::where('order_no', $detail['no'])
-                   ->where('field_name', 'hatchet_man_name')
-                   ->update(['field_value' => $orderInfo['data']['takerNickname']]);
-
-               $detail['hatchet_man_qq'] = $orderInfo['data']['taker_qq'];
-               $detail['hatchet_man_phone'] = $orderInfo['data']['taker_phone'];
-               $detail['hatchet_man_name'] = $orderInfo['data']['takerNickname'];
-           } catch (\Exception $exception) {
-
-           }
-        }
         // 获取订单对应模版ID
         $templateId = GoodsTemplate::getTemplateId(4, $detail['game_id']);
         // 获取对应的模版组件
@@ -1567,6 +1543,84 @@ class IndexController extends Controller
 
             Redis::hSet($name, $key, $value);
         }
+    }
+
+    /**
+     * 自动计算来源价格
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function sourcePrice(Request $request)
+    {
+        try {
+            if (isset($request->source_price) && ! empty($request->source_price) && is_numeric($request->source_price)) {
+                $sourceOrders = OrderDetail::where('order_no', $request->no)
+                    ->where('field_name_alias', 'source_order_no')
+                    ->where('field_value', '!=', '')
+                    ->pluck('field_value', 'field_name')
+                    ->unique()
+                    ->toArray();
+
+                $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+
+                if (empty($value)) {
+                    $value = 0;
+                }
+
+                if (isset($value) && ! empty($value) && is_numeric($request->source_price)) {
+                    if ($request->source_price > $value) {
+                        $orderDetail = OrderDetail::where('order_no', $request->no)
+                            ->where('field_name', 'source_price')
+                            ->update(['field_value' => $request->source_price]);
+
+                        if ($orderDetail) {
+                            return response()->ajax(1, $request->source_price);
+                        }
+                    } else {
+                        return response()->ajax(1, $value);
+                    }
+                }
+
+                return response()->ajax(0, 0);
+            }
+             // 获取订单详情里面的来源订单号和补款订单号
+            if (isset($request->source_no) && ! empty($request->source_no) && isset($request->source_name) && ! empty($request->source_name) && isset($request->no) && ! empty($request->no)) {
+                $orderDetailSourcePrice = OrderDetail::where('order_no', $request->no)
+                    ->where('field_name', 'source_price')
+                    ->value('field_value');
+
+                if (! isset($orderDetailSourcePrice) || empty($orderDetailSourcePrice)) {
+                    $orderDetailSourcePrice = 0;
+                }
+
+                $orderDetail = OrderDetail::where('order_no', $request->no)
+                    ->where('field_name', $request->source_name)
+                    ->update(['field_value' => $request->source_no]);
+
+                $sourceOrders = OrderDetail::where('order_no', $request->no)
+                    ->where('field_name_alias', 'source_order_no')
+                    ->where('field_value', '!=', '')
+                    ->pluck('field_value', 'field_name')
+                    ->unique()
+                    ->toArray();
+
+                $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
+
+                if (! isset($value) || empty($value)) {
+                    $value = 0;
+                }
+
+                if ($value > $orderDetailSourcePrice) {
+                    OrderDetail::where('order_no', $request->no)
+                        ->where('field_name', 'source_price')
+                        ->update(['field_value' => $value]);
+                    return response()->ajax(1, $value);
+                }
+            }
+        } catch (Exception $e) {
+            return response()->ajax(0, 0);
+        }
+        return response()->ajax(0, 0);
     }
 }
 

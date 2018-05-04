@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use DB;
 use Redis;
+use Exception;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Models\OrderNotice;
 use App\Services\Show91;
 use App\Models\LevelingConsult;
+use App\Models\HatchetManBlacklist;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Exceptions\OrderNoticeException;
@@ -104,14 +106,55 @@ class LevelingController
     {
         $order = null;
     	try {
+            if (! isset($request->orderNo)) {
+                return response()->partner(0, '订单参数缺失');
+            }
+
+            if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
+                return response()->partner(0, '打手信息缺失');
+            }
+
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
+            // 获取该商户下面的黑名单打手
+            $hatchetManBlacklist = HatchetManBlacklist::where('user_id', $order->creator_primary_user_id)
+                ->first();
+
+            if (isset($hatchetManBlacklist) && ! empty($hatchetManBlacklist)) {
+                $blacklistQqs = HatchetManBlacklist::where('user_id', $order->creator_primary_user_id)
+                    ->pluck('hatchet_man_qq')->toArray();
+
+                $blacklistPhones = HatchetManBlacklist::where('user_id', $order->creator_primary_user_id)
+                    ->pluck('hatchet_man_phone')->toArray();
+
+                if (isset($blacklistQqs) && in_array($request->hatchet_man_qq, $blacklistQqs)) {
+                    return response()->partner(0, '打手已被商户拉入黑名单');
+                }
+                if (isset($blacklistPhones) && in_array($request->hatchet_man_phone, $blacklistPhones)) {
+                    return response()->partner(0, '打手已被商户拉入黑名单');
+                }
+            }
+
+            // 写入打手信息(QQ, 电话， 昵称)
+            OrderDetail::where('order_no', $order->no)
+                ->where('field_name', 'hatchet_man_qq')
+                ->update(['field_value' => $request->hatchet_man_qq]);
+
+            OrderDetail::where('order_no', $order->no)
+                ->where('field_name', 'hatchet_man_phone')
+                ->update(['field_value' => $request->hatchet_man_phone]);
+
+            OrderDetail::where('order_no', $order->no)
+                    ->where('field_name', 'hatchet_man_name')
+                    ->update(['field_value' => $request->hatchet_man_name]);
 
 			DailianFactory::choose('receive')->run($order->no, $this->userId, true);
 
 			return $this->success('接单成功', $order);
     	} catch (DailianException $e) {
             return $this->fail($e->getMessage(), $order);
-    	}
+    	} catch (Exception $e) {
+            return response()->partner(0, '订单异常');
+        }
     }
 
     /**
