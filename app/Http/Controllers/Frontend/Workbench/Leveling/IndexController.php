@@ -1611,6 +1611,9 @@ class IndexController extends Controller
                 }
 
                 if ($value > $orderDetailSourcePrice) {
+                    OrderDetail::where('order_no', $request->no)
+                        ->where('field_name', 'source_price')
+                        ->update(['field_value' => $value]);
                     return response()->ajax(1, $value);
                 }
             }
