@@ -21,6 +21,17 @@ return [
 		4 => 'dd373_order_no',
 		// 5 => 'wanzi_order_no',
 	],
+    // 外部平台价格字段
+    'third_orders_price' => [
+        3 => [
+            'data' => 'data',
+            'price' => 'paymoney',
+        ],
+        4 => [
+            'data' => 'data',
+            'price' => 'price',
+        ],
+    ],
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [

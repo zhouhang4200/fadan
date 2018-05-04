@@ -603,7 +603,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return mixed
      * @throws DailianException
      */
-    public static function orderDetail($orderDatas) {
+    public static function orderDetail($orderDatas)
+    {
         try {
 	        $time = time();
 	        $datas = [

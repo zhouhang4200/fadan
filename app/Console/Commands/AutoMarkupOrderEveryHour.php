@@ -189,7 +189,7 @@ class AutoMarkupOrderEveryHour extends Command
      * @param  [type] $key  [description]
      * @return [type]       [description]
      */
-    public function deleteRedisHashKey($orderNo)
+    public static  function deleteRedisHashKey($orderNo)
     {
         $key = $orderNo;
         $name = "order:automarkup-every-hour";

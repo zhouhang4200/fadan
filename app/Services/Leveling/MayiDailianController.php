@@ -724,7 +724,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 'sign' => static::getSign('dlOrderInfo', $time),
             ];
 
-            static::normalRequest($options);
+            return static::normalRequest($options);
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

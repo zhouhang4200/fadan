@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Console\Commands\AutoMarkupOrderEveryHour;
 use App\Models\HatchetManBlacklist;
 use App\Repositories\Frontend\OrderRepository;
+use App\Services\Show91;
 use Carbon\Carbon;
 use App\Models\LevelingMessage;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -188,6 +190,34 @@ class OrderController extends Controller
             }
 
             if ($orderData) {
+                $orderDataArr = (array)$orderData;
+
+                // 91平台
+                if ($request->user->id == 8456) {
+                    $show91Detail = Show91::orderDetail([
+                       'oid' => $orderDataArr['show91_order_no']
+                    ]);
+                    // 对比价格是否一样
+                    if ($show91Detail['data']['price'] != $orderData['game_leveling_amount']) {
+                        // 同步价格
+                        $order = \App\Models\Order::where('no', $orderData->no)->frist();
+                        Show91::addOrder($order, true);
+                        AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
+                        return response()->partner(0, '接单失败, 订单价格不一致,请重试');
+                    }
+                } else {
+                    // 获取平台编号
+                    $third  = config('leveling.third')[$request->user->id];
+                    // 询用查询接口
+                    $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDataArr]);
+                    // 对比价格是否一样
+                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderData['game_leveling_amount']) {
+                        // 同步价格
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDataArr]);
+                        AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
+                        return response()->partner(0, '接单失败, 订单价格不一致,请重试');
+                    }
+                }
                 // 外部平台调用我们的接单操作
                 DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
                 // 写入打手信息(QQ, 电话， 昵称)
