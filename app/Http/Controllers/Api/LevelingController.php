@@ -115,6 +115,16 @@ class LevelingController
             }
 
             $order = $this->checkSignAndOrderNo($request->sign, $request->orderNo);
+            // 查询91订单价格
+            $orderDetail = Show91::orderDetail(['oid' => $request->orderNo]);
+            if (isset($orderDetail) && isset($orderDetail['data']) && isset($orderDetail['data']['price'])) {
+                if ($order->amount != $orderDetail['data']['price']) {
+                    Show91::addOrder($order, true);
+                    return response()->partner(0, '订单价格不一致');
+                }
+            } else {
+                return response()->partner(0, '订单详情查询异常');
+            }
             // 获取该商户下面的黑名单打手
             $hatchetManBlacklist = HatchetManBlacklist::where('user_id', $order->creator_primary_user_id)
                 ->first();
