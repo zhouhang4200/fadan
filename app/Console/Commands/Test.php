@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\OrderDetail;
+use App\Repositories\Frontend\OrderRepository;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Show91;
@@ -17,6 +18,7 @@ class Test extends Command
      */
     protected $signature = 'Test  {type}';
 
+    protected $orderRepository;
     /**
      * The console command description.
      *
@@ -29,8 +31,9 @@ class Test extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(OrderRepository $orderRepository)
     {
+        $this->orderRepository = $orderRepository;
         parent::__construct();
     }
 
@@ -77,12 +80,7 @@ class Test extends Command
         } elseif ($type == 3) {
             $this->my();
         } else {
-            dd(Show91::orderDetail([
-                'oid' => 'ORD180505235357199793',
-            ]));
-           dd(DD373Controller::orderDetail([
-                'dd373_order_no' => 'XQ20180505235357-84404'
-           ]));
+            $this->syncDD373();
         }
 
     }
@@ -172,6 +170,15 @@ class Test extends Command
                 }
 
             }
+        }
+    }
+
+    public function syncDD373()
+    {
+        $allOrder = \App\Models\Order::where('service_id', 4)->where('status', 1)->get();
+        foreach ($allOrder as $item) {
+            $detail = $this->orderRepository->levelingDetail($item->no);
+            DD373Controller::updateOrder($detail);
         }
     }
 }
