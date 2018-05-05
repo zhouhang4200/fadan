@@ -178,7 +178,11 @@ class Test extends Command
         $allOrder = \App\Models\Order::where('service_id', 4)->where('status', 1)->get();
         foreach ($allOrder as $item) {
             $detail = $this->orderRepository->levelingDetail($item->no);
-            DD373Controller::updateOrder($detail);
+            if(isset($detail['dd373_order_no'])) {
+                DD373Controller::updateOrder($detail);
+            } else {
+                myLog('sync', [$item->no]);
+            }
         }
     }
 }
