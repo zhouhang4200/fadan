@@ -502,9 +502,10 @@ class AutoMarkupOrderEveryHour extends Command
     public function thirdAddPrice($datas, $order)
     {
         // 调外面加价接口
-        $orderDetails = $this->getOrderDatas($order);
         // 平台加价后的金额
         $order = Order::where('no', $order->no)->first();
+
+        $orderDetails = $this->getOrderDatas($order);
 
         $this->addPriceToThirdClient($datas, $order, $orderDetails);
     }
