@@ -345,6 +345,7 @@ class AutoMarkupOrderEveryHour extends Command
             if (isset($orderDetails['show91_order_no'])) {
                 // 调91的修改订单接口
                 Show91::addOrder($order, true);
+                myLog('markup-hour-success', ['订单号' => isset($order) ? $order->no : '', '结果' => '91加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
             }
         }  catch (DailianException $e) {
             // 91下架接口
@@ -369,6 +370,7 @@ class AutoMarkupOrderEveryHour extends Command
                     try {
                         // 控制器-》方法-》参数
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetails]);
+                        myLog('markup-hour-success', ['订单号' => isset($order) ? $order->no : '', '结果' => '平台'.$third.'加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
                     } catch (DailianException $e) {
                         // 控制器-》方法-》参数
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDetails]);
