@@ -344,8 +344,8 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        ];
             // 对图片进行处理
             $finalPic['fileBase1'] = $orderDatas['pic1'];
-            $finalPic['fileBase2'] = $orderDatas['pic1'];
-            $finalPic['fileBase3'] = $orderDatas['pic1'];
+            $finalPic['fileBase2'] = $orderDatas['pic2'];
+            $finalPic['fileBase3'] = $orderDatas['pic3'];
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
