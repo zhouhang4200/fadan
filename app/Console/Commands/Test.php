@@ -95,7 +95,7 @@ class Test extends Command
                     $orderDetail = DD373Controller::orderDetail(['dd373_order_no' => $show91OrderNO->field_value]);
                     if ($orderDetail['data']) {
                         myLog('dd373-show-order-query', [
-                            '第三方' => $item->no,
+                            '第三方' => $orderDetail['data']['platformOrderNo'],
                             '我们订单号' => $item->no,
                             '第三方订单号' => $show91OrderNO->field_value,
                             '第三方状态' => isset($this->dd373[$orderDetail['data']['orderStatus']]) ? $this->dd373[$orderDetail['data']['orderStatus']] : '',
@@ -106,7 +106,7 @@ class Test extends Command
                         ]);
                     }
                 } catch (\Exception $exception) {
-                    myLog('dd373-show-order-query-err', [$item->no]);
+                    myLog('dd373-show-order-query-err', [$item->no, '平台' => $show91OrderNO->field_value, '状态' => config('order.status_leveling')[$item->status]]);
                 }
 
             }
