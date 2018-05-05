@@ -307,7 +307,7 @@
             layer.confirm('用哪一个客服身份重发？', {
             btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
             }, function(index, layero){
-                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: '0'}, function (result) {
+                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: '1'}, function (result) {
 
                     if (result.status == 1) {
                         layer.open({

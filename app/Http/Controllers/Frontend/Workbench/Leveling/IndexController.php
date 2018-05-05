@@ -358,26 +358,34 @@ class IndexController extends Controller
             // 获取当前下单人名字
             $orderData['customer_service_name'] = Auth::user()->username;
 
-            if (isset($request->value)) {
+            if (isset($request->value) && ! empty($request->value)) {
                 UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('option', 'sending_control')
-                ->update(['value' => 0]);
+                    ->where('option', 'sending_control')
+                    ->update(['value' => 0]);
+                // 原始发单人
+                if (isset($orderData['creator_user_id'])) {
+                    $orderData['customer_service_name'] = User::where('id', $orderData['creator_user_id'])->value('username');
+                } else {
+                    $orderData['customer_service_name'] = '';
+                }
             } else {
                 UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('option', 'sending_control')
-                ->update(['value' => 1]);
+                    ->where('option', 'sending_control')
+                    ->update(['value' => 1]);
+                // 获取当前下单人名字
+                $orderData['customer_service_name'] = Auth::user()->username;
             }
-            // 用户是否启用发单设置
-            $userSetting = UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('option', 'sending_control')
-                ->first();
+            // // 用户是否启用发单设置
+            // $userSetting = UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
+            //     ->where('option', 'sending_control')
+            //     ->first();
 
-            // 默认是发当前子账号， 1 = 当前发单客服， 0是发原始的
-            if (isset($orderData['creator_user_id']) && $userSetting && $userSetting->value == 0) {
-                $userId = $orderData['creator_user_id'];
-                // 获取原始的发单人昵称,将此昵称写到orderdetails里面
-                $orderData['customer_service_name'] = User::where('id', $userId)->value('username');
-            }
+            // // 默认是发当前子账号， 1 = 当前发单客服， 0是发原始的
+            // if (isset($orderData['creator_user_id']) && $userSetting && $userSetting->value == 0) {
+            //     $userId = $orderData['creator_user_id'];
+            //     // 获取原始的发单人昵称,将此昵称写到orderdetails里面
+            //     $orderData['customer_service_name'] = User::where('id', $userId)->value('username');
+            // }
 
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
