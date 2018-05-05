@@ -929,16 +929,17 @@
                                 pic2: pic2,
                                 pic3: pic3
                             }, function (result) {
+                                layer.close(complainLoad);
                                 if (result.status == 1) {
-                                    layer.alert(result.message);
-                                    reload();
-                                    layer.closeAll();
+                                    layer.alert(result.message, function (index) {
+                                        window.location.reload()
+                                    });
                                 } else {
                                     layer.alert(result.message);
                                 }
                             });
                         }
-                        layer.close(complainLoad);
+
                         return false;
                     });
 

@@ -1070,6 +1070,7 @@
                                 pic2: pic2,
                                 pic3: pic3
                             }, function (result) {
+                                layer.close(complainLoad);
                                 if (result.status == 1) {
                                     layer.alert(result.message, function (index) {
                                         window.location.reload()
@@ -1081,7 +1082,6 @@
                                 }
                             });
                         }
-                        layer.close(complainLoad);
                         return false;
                     });
 
