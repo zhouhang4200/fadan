@@ -160,7 +160,7 @@ class OrderController extends Controller
     /**接单
      * @param Request $request
      */
-    public function receive(Request $request)
+    public function receive(Request $request, OrderRepository $orderRepository)
     {
         DB::beginTransaction();
         try {
@@ -211,12 +211,19 @@ class OrderController extends Controller
                 } else {
                     // 获取平台编号
                     $third  = config('leveling.third')[$request->user->id];
+
+                    $no = OrderDetail::where('field_value', $request->order_no)
+                        ->where('field_name', config('leveling.third_orders')[$third])
+                        ->first();
+
+                    $orderDetail = $orderRepository->levelingDetail($no->order_no);
+//                    $orderDetail = OrderDetail::where('order_no', $no->order_no)->pluck('field_value', 'field_name');;
                     // 询用查询接口
-                    $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDataArr]);
+                    $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDetail]);
                     // 对比价格是否一样
-                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDataArr['game_leveling_amount']) {
+                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
                         // 同步价格
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDataArr]);
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetail]);
                         AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
                         return response()->partner(0, '接单失败, 订单价格不一致,请重试');
                     }
