@@ -76,6 +76,10 @@ class Test extends Command
             $this->dd373();
         } elseif ($type == 3) {
             $this->my();
+        } else {
+           dd(DD373Controller::orderDetail([
+                'dd373_order_no' => 'XQ20180505152607-88760'
+           ]));
         }
 
     }
