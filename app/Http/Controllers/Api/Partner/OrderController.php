@@ -223,6 +223,7 @@ class OrderController extends Controller
                     // 对比价格是否一样
                     if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
                         // 同步价格
+                        myLog('detail', [$orderDetail]);
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetail]);
                         AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
                         return response()->partner(0, '接单失败, 订单价格不一致,请重试');
@@ -248,7 +249,7 @@ class OrderController extends Controller
             }
         } catch (DailianException $e) {
             DB::rollback();
-            myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
