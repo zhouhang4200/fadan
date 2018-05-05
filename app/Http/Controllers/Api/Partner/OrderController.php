@@ -44,7 +44,7 @@ class OrderController extends Controller
                 MAX(CASE WHEN a.field_name='region' THEN a.field_value ELSE '' END) AS region,
                 MAX(CASE WHEN a.field_name='serve' THEN a.field_value ELSE '' END) AS serve,
                 MAX(CASE WHEN a.field_name='account' THEN a.field_value ELSE '' END) AS account,
-                MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS PASSWORD,
+                MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS password,
                 MAX(CASE WHEN a.field_name='role' THEN a.field_value ELSE '' END) AS role,
                 MAX(CASE WHEN a.field_name='game_leveling_title' THEN a.field_value ELSE '' END) AS game_leveling_title,
                 MAX(CASE WHEN a.field_name='game_leveling_instructions' THEN a.field_value ELSE '' END) AS game_leveling_instructions,

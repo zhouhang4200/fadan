@@ -77,8 +77,11 @@ class Test extends Command
         } elseif ($type == 3) {
             $this->my();
         } else {
+            dd(Show91::orderDetail([
+                'oid' => 'ORD180505235357199793',
+            ]));
            dd(DD373Controller::orderDetail([
-                'dd373_order_no' => 'XQ20180505152607-88760'
+                'dd373_order_no' => 'XQ20180505235357-84404'
            ]));
         }
 
