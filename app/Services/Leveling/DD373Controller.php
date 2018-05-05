@@ -30,6 +30,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                 $data[$name]['contents'] = $value;
 	        }
 	        $options = $data;
+            myLog('dd373-api-log', ['begin']);
 
 	        $client = new Client();
 	        $response = $client->request($method, $url, [

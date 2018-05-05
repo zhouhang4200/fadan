@@ -914,6 +914,7 @@
                     $('#order_no').val(orderNo);
                     form.on('submit(complain)', function (data) {
 
+                        var complainLoad = layer.load();
                         var pic1 = $('.pic-1 img').attr('src');
                         var pic2 = $('.pic-2 img').attr('src');
                         var pic3 = $('.pic-3 img').attr('src');
@@ -937,6 +938,7 @@
                                 }
                             });
                         }
+                        layer.close(complainLoad);
                         return false;
                     });
 

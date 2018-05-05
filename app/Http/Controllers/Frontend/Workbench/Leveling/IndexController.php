@@ -26,6 +26,7 @@ use App\Repositories\Frontend\OrderRepository;
 use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
 use App\Services\DailianMama;
+use App\Services\Leveling\DD373Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -1314,7 +1315,12 @@ class IndexController extends Controller
             if (empty($pic1) && empty($pic2) && empty($pic3)) {
                 return response()->ajax(0, '请至少传入一张图片!');
             }
-
+//            $orderDatas['dd373_order_no'] = 'XQ20180505152607-88760';
+//            $orderDatas['pic1'] = !empty($pic1) ? base64ToBlob($pic1) : '';
+//            $orderDatas['pic2'] = !empty($pic2) ? base64ToBlob($pic2) : '';
+//            $orderDatas['pic3'] = !empty($pic3) ? base64ToBlob($pic3) : '';
+//            $result = DD373Controller::cancelArbitration($orderDatas);
+//            dd($result);
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
             if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
