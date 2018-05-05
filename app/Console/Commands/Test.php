@@ -15,7 +15,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'Test';
+    protected $signature = 'Test  {type}';
 
     /**
      * The console command description.
@@ -69,7 +69,15 @@ class Test extends Command
      */
     public function handle()
     {
-       $this->my();
+        $type = $this->argument('type');
+        if ($type == 1) {
+            $this->shos91();
+        } elseif ($type == 2) {
+            $this->dd373();
+        } elseif ($type == 3) {
+            $this->my();
+        }
+
     }
 
     /**
