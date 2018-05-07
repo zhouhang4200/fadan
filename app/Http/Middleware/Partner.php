@@ -56,7 +56,7 @@ class Partner
         ksort($par);
         $str = '';
         foreach ($par  as $key => $value) {
-            if ($key != 'sign') {
+            if ($key != 'sign' || !empty($value)) {
                 $str .= $key . '=' . $value . '&';
             }
         }
