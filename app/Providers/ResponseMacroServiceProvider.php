@@ -54,7 +54,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
             try {
                 myLog('partner-response', [$data, request('app_id')]);
             } catch (\Exception $exception) {
-
+                myLog('partner-response', [$exception->getMessage()]);
             }
             return response()->json($data);
         });
