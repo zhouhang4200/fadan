@@ -269,124 +269,114 @@ class OrderRepository
             ->filter($filters)
             ->where('status', '!=', 24)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
-            ->with(['gainerUser', 'detail', 'history', 'foreignOrder', 'levelingConsult']);
+            ->with(['gainerUser', 'detail',  'levelingConsult']);
 
-        return Excel::create('代练订单', function ($excel) use($order) {
+        export([
+            '订单号',
+            '订单来源',
+            '客服备注',
+            '代练标题',
+            '游戏',
+            '区',
+            '服',
+            '代练类型',
+            '账号',
+            '密码',
+            '角色名称',
+            '订单状态',
+            '来源价格',
+            '代练价格',
+            '安全保证金',
+            '效率保证金',
+            '支付金额',
+            '获得金额',
+            '手续费',
+            '利润',
+            '代练时间',
+            '剩余时间',
+            '发单时间',
+            '接单时间',
+        ], '订单导出', $order, function ($order, $out){
+            $order->chunk(1000, function ($items) use ($out) {
+                foreach ($items as $item) {
+                    $orderInfo = $item->toArray();
 
-            $excel->sheet('Sheet1', function ($sheet) use ($order) {
-                $sheet->setAutoSize(true);
-                $sheet->row(1, array(
-                    '订单号',
-                    '订单来源',
-                    '标签',
-                    '客服备注',
-                    '代练标题',
-                    '游戏',
-                    '区',
-                    '服',
-                    '代练类型',
-                    '账号',
-                    '密码',
-                    '角色名称',
-                    '订单状态',
-                    '来源价格',
-                    '代练价格',
-                    '安全保证金',
-                    '效率保证金',
-                    '支付金额',
-                    '获得金额',
-                    '手续费',
-                    '利润',
-                    '代练时间',
-                    '剩余时间',
-                    '发单时间',
-                    '接单时间',
-                ));
-                $order->chunk(1000, function ($items) use ($sheet) {
-                    $data = [];
-                    foreach ($items as $item) {
-                        $orderInfo = $item->toArray();
+                    // 删掉无用的数据
+                    unset($orderInfo['detail']);
 
-                        // 删掉无用的数据
-                        unset($orderInfo['detail']);
+                    $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
+                    $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
+                    $orderInfo['consult'] = $orderInfo['leveling_consult']['consult'] ?? '';
+                    $orderInfo['complain'] = $orderInfo['leveling_consult']['complain'] ?? '';
 
-                        $orderInfo['status_text'] = config('order.status_leveling')[$orderInfo['status']] ?? '';
-                        $orderInfo['master'] = $orderInfo['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
-                        $orderInfo['consult'] = $orderInfo['leveling_consult']['consult'] ?? '';
-                        $orderInfo['complain'] = $orderInfo['leveling_consult']['complain'] ?? '';
+                    // 当前订单数据
+                    $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
 
-                        // 当前订单数据
-                        $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
-
-                        if (!in_array($orderInfo['status'], [19, 20, 21])) {
-                            $orderCurrent['payment_amount'] = '';
-                            $orderCurrent['get_amount'] = '';
-                            $orderCurrent['poundage'] = '';
-                            $orderCurrent['profit'] = '';
+                    if (!in_array($orderInfo['status'], [19, 20, 21])) {
+                        $orderCurrent['payment_amount'] = '';
+                        $orderCurrent['get_amount'] = '';
+                        $orderCurrent['poundage'] = '';
+                        $orderCurrent['profit'] = '';
+                    } else {
+                        // 支付金额
+                        if ($orderInfo['status'] == 21) {
+                            $amount = $orderInfo['leveling_consult']['api_amount'];
                         } else {
-                            // 支付金额
-                            if ($orderInfo['status'] == 21) {
-                                $amount = $orderInfo['leveling_consult']['api_amount'];
-                            } else {
-                                $amount = $orderInfo['leveling_consult']['amount'];
-                            }
-                            // 支付金额
-                            $orderCurrent['payment_amount'] = $amount != 0 ? $amount + 0 : $orderInfo['amount'] + 0;
-
-                            $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'] + 0;
-                            $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'] + 0;
-                            $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
-                            // 利润
-                            $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
+                            $amount = $orderInfo['leveling_consult']['amount'];
                         }
+                        // 支付金额
+                        $orderCurrent['payment_amount'] = $amount != 0 ? $amount + 0 : $orderInfo['amount'] + 0;
 
-                        $days = $orderCurrent['game_leveling_day'] ?? 0;
-                        $hours = $orderCurrent['game_leveling_hour'] ?? 0;
-                        $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
-
-                        // 如果存在接单时间
-                        if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
-                            // 计算到期的时间戳
-                            $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
-                            // 计算剩余时间
-                            $leftSecond = $expirationTimestamp - time();
-                            $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
-                        } else {
-                            $orderCurrent['left_time'] = '';
-                        }
-
-
-                        $data[] = [
-                            $orderCurrent['no'],
-                            $orderCurrent['order_source'],
-                            $orderCurrent['label'],
-                            $orderCurrent['customer_service_remark'] ?? "",
-                            $orderCurrent['game_leveling_title'],
-                            $orderCurrent['game_name'],
-                            $orderCurrent['region'],
-                            $orderCurrent['serve'],
-                            $orderCurrent['game_leveling_type'],
-                            $orderCurrent['account'],
-                            $orderCurrent['password'],
-                            $orderCurrent['role'],
-                            $orderCurrent['status_text'],
-                            $orderCurrent['source_price'],
-                            $orderCurrent['amount'],
-                            $orderCurrent['security_deposit'],
-                            $orderCurrent['efficiency_deposit'],
-                            (string)$orderCurrent['payment_amount'],
-                            (string)$orderCurrent['get_amount'],
-                            (string)$orderCurrent['poundage'],
-                            (string)$orderCurrent['profit'],
-                            $orderCurrent['leveling_time'],
-                            $orderCurrent['left_time'],
-                            $orderCurrent['created_at'] ?? '',
-                            $orderCurrent['receiving_time'] ?? '',
-                        ];
+                        $orderCurrent['payment_amount'] = (float)$orderCurrent['payment_amount'] + 0;
+                        $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'] + 0;
+                        $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
+                        // 利润
+                        $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
                     }
-                    $sheet->fromArray($data, null, 'A2', false, false);
-                });
+
+                    $days = $orderCurrent['game_leveling_day'] ?? 0;
+                    $hours = $orderCurrent['game_leveling_hour'] ?? 0;
+                    $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+
+                    // 如果存在接单时间
+                    if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
+                        // 计算到期的时间戳
+                        $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
+                        // 计算剩余时间
+                        $leftSecond = $expirationTimestamp - time();
+                        $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
+                    } else {
+                        $orderCurrent['left_time'] = '';
+                    }
+                    $data = [
+                        $orderCurrent['no'] . "\t",
+                        $orderCurrent['order_source'] . "\t",
+                        $orderCurrent['customer_service_remark'] ?? "",
+                        $orderCurrent['game_leveling_title'],
+                        $orderCurrent['game_name'],
+                        $orderCurrent['region'],
+                        $orderCurrent['serve'],
+                        $orderCurrent['game_leveling_type'],
+                        $orderCurrent['account'],
+                        $orderCurrent['password'],
+                        $orderCurrent['role'],
+                        $orderCurrent['status_text'],
+                        $orderCurrent['source_price'],
+                        $orderCurrent['amount'],
+                        $orderCurrent['security_deposit'],
+                        $orderCurrent['efficiency_deposit'],
+                        (string)$orderCurrent['payment_amount'],
+                        (string)$orderCurrent['get_amount'],
+                        (string)$orderCurrent['poundage'],
+                        (string)$orderCurrent['profit'],
+                        $orderCurrent['leveling_time'],
+                        $orderCurrent['left_time'],
+                        $orderCurrent['created_at'] ?? '',
+                        $orderCurrent['receiving_time'] ?? '',
+                    ];
+                    fputcsv($out, $data);
+                }
             });
-        })->export('xls');
+        });
     }
 }
