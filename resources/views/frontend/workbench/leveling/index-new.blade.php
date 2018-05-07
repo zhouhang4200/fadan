@@ -152,7 +152,7 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
-                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button>
+                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?')===false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal " type="button" function="query">导出</a>
             </div>
         </div>
     </form>
@@ -1023,7 +1023,7 @@
             form.on('submit(export)', function (data) {
                 var fields = data.field;
                 var datas = '?no=' + fields.no + '&source_order_no=' + fields.source_order_no + '&gameId=' + fields.game_id + '&wangWang=' + fields.wang_wang + '&startDate=' + fields.start_date + '&endDate=' + fields.end_date + '&status=' + status + '&urgentOrder=' + urgentOrder;
-                window.location.href = "{{ route('frontend.workbench.leveling.excel') }}" + datas;
+                window.location.href = "{{ Request::fullUrl() }}" + datas;
             });
 
             var hasData = "{{ session('message') }}";

@@ -102,9 +102,9 @@ class IndexController extends Controller
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
         $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
 
+        // 导出订单
         if ($request->export) {
-            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
-            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+            $orderRepository->levelingExport(compact('serviceId', 'status', 'no', 'foreignOrderNo', 'gameId', 'wangWang', 'urgentOrder', 'startDate', 'endDate'));
         }
 
         // 获取订单
@@ -135,6 +135,7 @@ class IndexController extends Controller
             'endDate' => $endDate,
             'statusCount' => $statusCount,
             'allStatusCount' => $allStatusCount,
+            'fullUrl' => $request->fullUrl(),
         ]);
     }
 
@@ -1372,26 +1373,6 @@ class IndexController extends Controller
             }
         }
         return response()->ajax(0, '发送失败');
-    }
-
-    /**
-     * @param Request $request
-     * @param OrderRepository $orderRepository
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function excel(Request $request, OrderRepository $orderRepository)
-    {
-        $no = $request->no ?? 0;
-        $foreignOrderNo = $request->foreignOrderNo ?? 0;
-        $gameId = $request->gameId ?? 0;
-        $wangWang = $request->wangWang ?? 0;
-        $startDate = $request->startDate ?? 0;
-        $endDate = $request->endDate ?? 0;
-        $status = $request->status ?? 0;
-        $urgentOrder = $request->urgentOrder ?? 0;
-        $serviceId = 4;
-
-        $orderRepository->levelingExport(compact('serviceId', 'status', 'no', 'foreignOrderNo', 'gameId', 'wangWang', 'urgentOrder', 'startDate', 'endDate'));
     }
 
     /**
