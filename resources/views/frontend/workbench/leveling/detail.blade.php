@@ -229,14 +229,14 @@
                             @if ($detail['consult'] == 1 && $detail['status'] == 15)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                             @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
-                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                             @endif
                         @else
                             @if ($detail['consult'] == 2 && $detail['status'] == 15)
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                             @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
-                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">同意撤销</button>
+                                <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                 <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                             @endif
                         @endif
@@ -983,6 +983,11 @@
                 var orderAmount = this.getAttribute("data-amount");
                 var orderSafe = this.getAttribute("data-safe");
                 var orderEffect = this.getAttribute("data-effect");
+                var apiAmount = $(this).attr("api_amount");
+                var apiDeposit = $(this).attr("api_deposit");
+                var apiService = $(this).attr("api_service");
+                var who=$(this).attr("who");
+                var reason=$(this).attr("reason");
 
                 if (!orderAmount) {
                     orderAmount = 0;
@@ -1124,7 +1129,12 @@
                         layer.close(index);
                     });
                 } else if (operation == 'agreeRevoke') {
-                    layer.confirm('确定同意撤销吗？', {icon: 3, title:'提示'}, function(index){
+                    if (who == 1) {
+                        var message = "对方进行操作【撤销】 我支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                    } else {
+                        var message = "对方进行操作【撤销】 对方支付代练费"+apiAmount+"元，我支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                    }
+                    layer.confirm(message, {icon: 3, title:'提示'}, function(index){
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
                             keyWord:operation

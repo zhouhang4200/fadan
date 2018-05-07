@@ -520,19 +520,18 @@
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->leveling_consult->consult== 2 && ($item->status == 15))
-                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}" >同意撤销</a>
+                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}" api_amount="{{ $item->leveling_consult->api_amount }}" api_deposit="{{ $item->leveling_consult->api_deposit }}" api_service="{{ $item->leveling_consult->api_service }}" who="2" reason="{{ $item->leveling_consult->revoke_message ?? '' }}">同意撤销</a>
                                             <a data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
-                                    @elseif(isset($item->leveling_consult->consult))
 
                                         @if($item->leveling_consult->consult== 2 && $item->status == 15)
                                             <a data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->leveling_consult->consult== 1 && $item->status == 15)
-                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}">同意撤销</a>
+                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->leveling_consult->api_amount }}" api_deposit="{{ $item->leveling_consult->api_deposit }}" api_service="{{ $item->leveling_consult->api_service }}" who="1" reason="{{ $item->leveling_consult->revoke_message ?? '' }}">同意撤销</a>
                                             <a data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
@@ -826,6 +825,11 @@
                 var orderAmount = $(this).attr("data-amount");
                 var orderSafe = $(this).attr("data-safe");
                 var orderEffect = $(this).attr("data-effect");
+                var apiAmount = $(this).attr("api_amount");
+                var apiDeposit = $(this).attr("api_deposit");
+                var apiService = $(this).attr("api_service");
+                var who=$(this).attr("who");
+                var reason=$(this).attr("reason");
 
                 if (!orderAmount) {
                     orderAmount = 0;
@@ -980,7 +984,12 @@
                         layer.close(index);
                     });
                 } else if (opt == 'agreeRevoke') {
-                    layer.confirm('确定同意撤销吗？', {icon: 3, title: '提示'}, function (index) {
+                    if (who == 1) {
+                        var message = "对方进行操作【撤销】 我支付代练费"+api_amount+"元，对方支付保证金"+api_deposit+"元，原因："+reason+"，确定同意撤销？";
+                    } else {
+                        var message = "对方进行操作【撤销】 对方支付代练费"+api_amount+"元，我支付保证金"+api_deposit+"元，原因："+reason+"，确定同意撤销？";
+                    }
+                    layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo: orderNo,
                             userId: userId,
