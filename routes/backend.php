@@ -156,6 +156,12 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 			Route::post('store', 'GameAutoAssignController@store')->name('frontend.user.oriented.store');
 			Route::post('delete', 'GameAutoAssignController@delete')->name('frontend.user.oriented.delete');
 		});
+
+        Route::prefix('complaint')->group(function(){
+            Route::get('/', 'ComplaintController@index')->name('frontend.user.complaint.index');
+            Route::get('create', 'ComplaintController@create')->name('frontend.user.complaint.create');
+            Route::post('/', 'ComplaintController@store')->name('frontend.user.complaint.store');
+        });
     });
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {

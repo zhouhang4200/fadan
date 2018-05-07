@@ -61,7 +61,7 @@ class Partner
             }
         }
         $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
-// dd($sign, urlencode(rtrim($str,  '&') . $request->user->app_secret));
+
         if ($sign != $request->sign) {
             return false;
         }
