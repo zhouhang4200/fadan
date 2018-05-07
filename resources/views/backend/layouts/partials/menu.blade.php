@@ -79,6 +79,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         商户权重列表
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('frontend.user.complaint.index') }}" @if($currentRouteName == 'frontend.user.complaint.index') class="active" @endif>
+                                        商户投诉
+                                    </a>
+                                </li>
 
 
                             <li>
