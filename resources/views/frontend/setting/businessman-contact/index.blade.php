@@ -95,7 +95,7 @@
                 layer.msg(result.message);
             },'json');
             setTimeout(function () {
-                location.reload();//当前页面
+//                location.reload();//当前页面
             }, 500);
             return false;
         });

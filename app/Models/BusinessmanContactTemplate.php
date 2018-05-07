@@ -12,5 +12,6 @@ class BusinessmanContactTemplate extends Model
       'name',
       'content',
       'type',
+      'status',
     ];
 }
