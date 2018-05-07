@@ -48,16 +48,17 @@
 
                 <div class="layui-tab-item layui-show col-lg-5">
                     <form class="layui-form" action="{{ route('frontend.user.complaint.store') }}" method="post">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">*被投诉商户ID</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="be_complaint_primary_user_id" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ old('be_complaint_primary_user_id') }}">
-                            </div>
-                        </div>
+
                         <div class="layui-form-item">
                             <label class="layui-form-label">*投诉商户ID</label>
                             <div class="layui-input-block">
                                 <input type="text" name="complaint_primary_user_id" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ old('complaint_primary_user_id')}}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">*被投诉商户ID</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="be_complaint_primary_user_id" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ old('be_complaint_primary_user_id') }}">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -91,8 +92,6 @@
             </div>
     </div>
 </div>
-
-
 
 @endsection
 @section('js')
