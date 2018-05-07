@@ -152,8 +152,7 @@
                     <input type="text" name="end_date" autocomplete="off" class="layui-input fsDate" id="end-date" value="{{ $endDate }}">
                 </div>
                 <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">查询</button>
-                <button class="layui-btn layui-btn-normal " type="submit" function="query" lay-submit="">导出</button>
-
+                <button class="layui-btn layui-btn-normal " type="button" function="query" lay-submit="" lay-filter="export">导出</button>
             </div>
         </div>
     </form>
