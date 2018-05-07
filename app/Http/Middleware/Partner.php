@@ -56,12 +56,12 @@ class Partner
         ksort($par);
         $str = '';
         foreach ($par  as $key => $value) {
-            if ($key != 'sign') {
+            if ($key != 'sign' && !empty($value)) {
                 $str .= $key . '=' . $value . '&';
             }
         }
         $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
-// dd($sign, urlencode(rtrim($str,  '&') . $request->user->app_secret));
+
         if ($sign != $request->sign) {
             return false;
         }
