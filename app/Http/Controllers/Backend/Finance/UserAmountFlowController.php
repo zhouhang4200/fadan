@@ -18,6 +18,10 @@ class UserAmountFlowController extends Controller
         $timeEnd      = $request->time_end;
         $timeEndDate  = !empty($timeEnd) ? $timeEnd . ' 23:59:59' : '';
 
+		if ($request->export == 1) {
+			$userAmountFlowRepository->export($userId, $tradeNo, $tradeType, $tradeSubtype, $timeStart, $timeEndDate);
+		}
+
         $dataList = $userAmountFlowRepository->getList($userId, $tradeNo, $tradeType, $tradeSubtype, $timeStart, $timeEndDate);
 
         return view('backend.finance.user-amount-flow.index', compact(

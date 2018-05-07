@@ -83,7 +83,7 @@ class UserWithdrawOrderRepository
                     config('withdraw.type')[$v->type],
                     config('withdraw.status')[$v->status],
                     $v->created_at,
-                    $v->uddate_at,
+                    $v->updated_at,
                 ]);
             }
             fclose($out);
