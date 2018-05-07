@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Backend\Businessman;
 
-use App\Exceptions\AssetException;
-use Auth, Asset;
+use Auth, Asset, DB;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessmanComplaint;
+use App\Exceptions\AssetException;
 use \Exception;
 
 /**
@@ -42,6 +42,7 @@ class ComplaintController extends Controller
 
     /**
      * @param Request $request
+     * @return $this
      */
     public function store(Request $request)
     {
@@ -64,6 +65,7 @@ class ComplaintController extends Controller
             'remark' => '备注',
         ]);
 
+        DB::beginTransaction();
         try {
             // 扣被商户投诉钱
             Asset::handle(new Expend($amount, 9, $orderNo, '订单投诉支出', $beComplaintPrimaryUserId));
@@ -72,9 +74,15 @@ class ComplaintController extends Controller
             // 创建记录
             BusinessmanComplaint::create($request->all());
         } catch (AssetException $exception)  {
+            DB::rollBack();
             return redirect()->back()->withInput()->withErrors($exception->getMessage());
         } catch (Exception $exception)  {
+            DB::rollBack();
             return redirect()->back()->withInput()->withErrors($exception->getMessage());
         }
+        DB::commit();
+        return redirect(route('frontend.user.complaint.index'))->withInput()->with([
+            'message' => '添加成功'
+        ]);
     }
 }
