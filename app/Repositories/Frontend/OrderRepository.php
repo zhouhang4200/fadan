@@ -269,7 +269,7 @@ class OrderRepository
             ->filter($filters)
             ->where('status', '!=', 24)
             ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
-            ->with(['gainerUser', 'detail', 'history', 'foreignOrder', 'levelingConsult']);
+            ->with(['gainerUser', 'detail',  'levelingConsult']);
 
         export([
             '订单号',
@@ -349,8 +349,8 @@ class OrderRepository
                         $orderCurrent['left_time'] = '';
                     }
                     $data = [
-                        $orderCurrent['no'],
-                        $orderCurrent['order_source'],
+                        $orderCurrent['no'] . "\t",
+                        $orderCurrent['order_source'] . "\t",
                         $orderCurrent['customer_service_remark'] ?? "",
                         $orderCurrent['game_leveling_title'],
                         $orderCurrent['game_name'],
