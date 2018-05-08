@@ -313,9 +313,9 @@
                             try {
                                // 支付金额
                                 if ($item->status == 21) {
-                                    $amount = $item->leveling_consult->api_amount;
+                                    $amount = $item->levelingConsult->api_amount;
                                 } else {
-                                    $amount = $item->leveling_consult->amount;
+                                    $amount = $item->levelingConsult->amount;
                                 }
                             } catch (ErrorException $exception) {
                                 myLog('ex', [$exception->getMessage()]);
@@ -494,13 +494,13 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && (in_array($item->status, [14, 15, 16, 17, 18, 19, 20, 21, 23])  ))
+                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && (in_array($item->status, [19, 20, 21, 23])  ))
                                         <a class="opt-btn" data-opt="repeat" data-no="{{ $item->no }}">重发</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13 || $item->status == 14 || $item->status == 17))
+                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 17)
                                         <a class="opt-btn" data-opt="lock" data-no="{{ $item->no }}">锁定</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
@@ -513,56 +513,58 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(isset($item->leveling_consult->consult) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        @if($item->leveling_consult->consult == 1 && $item->status == 15)
-                                            <a data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</a>
+                                    @if(isset($item->levelingConsult->consult) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 15)
+                                        @if($item->levelingConsult->consult == 1)
+                                            <a class="opt-btn" data-opt="cancelRevoke" data-no="{{ $item->no }}" >取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
-                                        @elseif($item->leveling_consult->consult== 2 && ($item->status == 15))
-                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}" api_amount="{{ $item->leveling_consult->api_amount }}" api_deposit="{{ $item->leveling_consult->api_deposit }}" api_service="{{ $item->leveling_consult->api_service }}" who="2" reason="{{ $item->leveling_consult->revoke_message ?? '' }}">同意撤销</a>
-                                            <a data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
+                                        @elseif($item->levelingConsult->consult == 2)
+                                            <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}" api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="2" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
+                                            <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
-
-                                        @if($item->leveling_consult->consult== 2 && $item->status == 15)
-                                            <a data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</a>
+                                    @elseif(isset($item->levelingConsult->consult) && auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id && $item->status == 15)
+                                        @if($item->levelingConsult->consult == 2)
+                                            <a class="opt-btn" data-opt="cancelRevoke" data-no="{{ $item->no }}"  data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">取消撤销</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
-                                        @elseif($item->leveling_consult->consult== 1 && $item->status == 15)
-                                            <a data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->leveling_consult->api_amount }}" api_deposit="{{ $item->leveling_consult->api_deposit }}" api_service="{{ $item->leveling_consult->api_service }}" who="1" reason="{{ $item->leveling_consult->revoke_message ?? '' }}">同意撤销</a>
-                                            <a data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
+                                        @elseif($item->levelingConsult->consult == 1)
+                                            <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="1" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
+                                            <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
-                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">协商撤销</a>
+                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">申请撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 15)
                                         <a class="opt-btn" data-opt="applyArbitration" data-no="{{ $item->no }}">
-                                            仲裁
+                                            申请仲裁
                                         </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(isset($item->leveling_consult->complain) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
-                                        @if($item->leveling_consult->complain == 1 && $item->status == 16)
-                                        <a data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
+                                    @if(isset($item->levelingConsult->complain) && auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 16 && $item->levelingConsult->complain == 1)
+                                        <a class="opt-btn" data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
+                                        @if($item->levelingConsult->consult == 2)
+                                            <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="1" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
+                                        @endif
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
+                                    @elseif(isset($item->levelingConsult->complain)  && auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id && $item->status == 16 && $item->levelingConsult->complain == 2)
+                                        @if($item->levelingConsult == 1)
+                                            <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="1" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
                                         @endif
-                                    @elseif(isset($item->leveling_consult->complain))
-                                        @if($item->leveling_consult->complain == 2 && $item->status == 16)
-                                        <a data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
+                                        <a class="opt-btn" data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
-                                        @endif
                                     @endif
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
@@ -572,11 +574,11 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
+                                    <!-- @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
                                         <a class="opt-btn" data-opt="message" data-no="{{ $item->no }}">留言</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
-                                    @endif
+                                    @endif -->
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 1 || $item->status == 22))
                                         <a class="opt-btn" data-opt="delete" data-no="{{ $item->no }}">撤单</a>
