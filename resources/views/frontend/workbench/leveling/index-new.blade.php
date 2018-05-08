@@ -484,7 +484,6 @@
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 17)
                                         <a class="opt-btn" data-opt="lock" data-no="{{ $item->no }}">锁定</a>
-                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">申请撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
@@ -584,12 +583,12 @@
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
-                                    @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
+  <!--                                   @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 13))
                                         <a class="opt-btn" data-opt="abnormal" data-no="{{ $item->no }}">异常
                                         </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
-                                    @endif
+                                    @endif -->
                                     @if(!auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && ($item->status == 17))
                                         <a class="opt-btn" data-opt="cancelAbnormal" data-no="{{ $item->no }}">
                                             取消异常
