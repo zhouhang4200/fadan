@@ -215,7 +215,6 @@ class OrderRepository
             $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
             return $query->whereIn('no', $orderNo);
         });
-
         $query->when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);
         });
@@ -231,6 +230,69 @@ class OrderRepository
         return $data;
     }
 
+    public function levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate)
+    {
+        $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+        $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
+
+        $query = Order::select(\DB::raw('id,no, foreign_order_no, source,status,goods_id,goods_name,service_id,
+            service_name, game_id,game_name,original_price,price,quantity,original_amount,amount,remark,
+            creator_user_id,creator_primary_user_id,gainer_user_id,gainer_primary_user_id,created_at, status, count(1) as count'));
+
+        if ($status != 1) {
+            if ($type == 1) {
+                $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+            } else {
+                $query->where('creator_primary_user_id', $primaryUserId); // 发单
+            }
+        } else {
+            $query->where('creator_primary_user_id', $primaryUserId); // 发单
+        }
+
+
+        $query->when(!empty($no), function ($query) use ($no, $type) {
+            $thirdOrder = OrderDetail::findOrdersBy('third_order_no', $no, $type);
+            $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
+
+            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder));
+        });
+        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus, $type) {
+            $foreignOrder = OrderDetail::findOrdersBy('taobao_status', $taobaoStatus, $type);
+
+            return $query->whereIn('no', $foreignOrder);
+        });
+        $query->when($gameId  != 0, function ($query) use ($gameId) {
+            return $query->where('game_id', $gameId);
+        });
+        $query->when($platform != 0, function ($query) use ($platform, $type) {
+            $orderNoArr = [];
+            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
+            if ($orderNo) {
+                $orderNoArr = $orderNo;
+            } else {
+                $orderNoArr = [999];
+            }
+            return $query->whereIn('no', $orderNoArr);
+        });
+        $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
+            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName, $type) {
+            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
+            return $query->whereIn('no', $orderNo);
+        });
+        $query->when(!empty($startDate), function ($query) use ($startDate) {
+            return $query->where('created_at', '>=', $startDate);
+        });
+        $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
+            return $query->where('created_at', '<=', $endDate. " 23:59:59");
+        });
+        $query->where('status', '!=', 24);
+        $query->where('service_id', 4)->with(['detail']);
+        $query->groupBy('status');
+        return $query->pluck('count', 'status');
+    }
     /**
      * 代练订单详情
      * @param $orderNo

@@ -106,15 +106,11 @@ class IndexController extends Controller
         if ($request->export) {
             $orderRepository->levelingExport(compact('serviceId', 'status', 'no', 'foreignOrderNo', 'gameId', 'wangWang', 'urgentOrder', 'startDate', 'endDate'));
         }
-
         // 获取订单
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
         // 查询各状态订单数
-        $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
-            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
-            ->groupBy('status')
-            ->pluck('count', 'status');
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
@@ -178,7 +174,7 @@ class IndexController extends Controller
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
-        return view('frontend.workbench.leveling.index-test')->with([
+        return view('frontend.v1.workbench.leveling.index-test')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
@@ -201,12 +197,11 @@ class IndexController extends Controller
      * 旧的订单列表暂时不删除
      * @param Request $request
      * @param OrderRepository $orderRepository
-     * @return \Illuminate\Http\JsonResponse
+     * @return array|\Illuminate\Http\RedirectResponse
      */
     public function orderList(Request $request, OrderRepository $orderRepository)
     {
         $no = $request->input('no', 0);
-        $sourceOrderNo = $request->input('source_order_no', 0);
         $customerServiceName = $request->input('customer_service_name', 0);
         $gameId = $request->input('game_id', 0);
         $status = $request->input('status', 0);
@@ -214,8 +209,10 @@ class IndexController extends Controller
         $urgentOrder = $request->input('urgent_order', 0);
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $label = $request->input('label');
-        $pageSize = $request->input('limit', 10);
+        $pageSize = $request->input('limit', 50);
+
+        $taobaoStatus = $request->input('taobao_status', 0);
+        $platform = $request->input('platform', 0);
 
         if ($request->export) {
 
@@ -224,7 +221,7 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no, $sourceOrderNo, $gameId, $wangWang, $urgentOrder, $startDate, $endDate, $label, $pageSize, $customerServiceName);
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize);
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {

@@ -137,7 +137,7 @@
                     <select name="platform">
                         <option value="">全部</option>
                         @foreach (config('partner.platform') as $key => $value)
-                            <option data-opt="{{ $key }}"
+                            <option data-opt="{{ $key }}" value="{{ $key }}"
                                     @if($key == $platform)  selected @endif>{{ $value['name'] }}</option>
                         @endforeach
                     </select>
