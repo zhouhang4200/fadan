@@ -555,7 +555,9 @@
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">仲裁说明：</div>
-                            <div class="layui-col-md8">{{ $detail['complain_desc'] ?? '' }}</div>
+                            <div class="layui-col-md8">{{ $detail['complain_desc'] ?? '无' }}<br>
+                            <span style="color:red">提示：客服将根据订单留言和截图的情况进行仲裁，仲裁中有新的情况和证据，请提交留言和截图。</span>
+                            </div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md4 text_right">支付金额：</div>
