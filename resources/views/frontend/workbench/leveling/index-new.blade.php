@@ -238,10 +238,7 @@
                         <div class="table-cell w-150" style="line-height: 26px;width: 60px">代练价格</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">效率保证金</div>
-                    </th>
-                    <th>
-                        <div class="table-cell w-150" style="line-height: 26px;width: 60px">安全保证金</div>
+                        <div class="table-cell w-150" style="line-height: 26px">效率/安全保证金</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">发单时间</div>
@@ -397,10 +394,7 @@
                             <div class="table-cell w-150" style="width: 60px">{{ $item->amount }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150" style="width: 60px">{{ $detail['efficiency_deposit'] or '' }}</div>
-                        </td>
-                        <td>
-                            <div class="table-cell w-150" style="width: 60px">{{ $detail['security_deposit'] or '' }}</div>
+                            <div class="table-cell w-150">{{ $detail['efficiency_deposit'] or '' }}/{{ $detail['security_deposit'] or '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $item->created_at  }}</div>
