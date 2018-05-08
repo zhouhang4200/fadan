@@ -67,9 +67,9 @@
                         <td>{{ $data->username ?? '--' }}</td>
                         <td>{{ $data->name }}</td>
                         <td>{{ $data->all_count }}</td>
-                        <td>{{ $data->all_original_price }}</td>
-                        <td>{{ $data->all_price }}</td>
-                        <td>{{ $data->subtract_price }}</td>
+                        <td>{{ number_format($data->all_original_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($data->all_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($data->subtract_price, 2) ?? '--' }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
@@ -82,9 +82,9 @@
                         <td>总计</td>
                         <td>{{ $totalData->total_user_id_count ?? '--' }}</td>
                         <td>{{ $totalData->all_count }}</td>
-                        <td>{{ $totalData->all_original_price }}</td>
-                        <td>{{ $totalData->all_price }}</td>
-                        <td>{{ $totalData->subtract_price }}</td>
+                        <td>{{ number_format($totalData->all_original_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalData->all_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalData->subtract_price, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_complete_order_count ?? '' }}</td>
                         <td>{{ number_format($totalData->total_complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>
