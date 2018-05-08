@@ -62,7 +62,11 @@ class StatisticController extends Controller
                 sum(employee_statistics.revoke_order_count) as revoke_order_count, 
                 sum(employee_statistics.arbitrate_order_count) as arbitrate_order_count, 
                 sum(employee_statistics.profit) as profit, 
-                sum(employee_statistics.complete_order_amount) as complete_order_amount
+                sum(employee_statistics.complete_order_amount) as complete_order_amount,
+                sum(all_count) as all_count,
+                sum(all_original_price) as all_original_price,
+                sum(all_price) as all_price,
+                sum(subtract_price) as subtract_price
             '))
             ->leftJoin('users', 'users.id', '=', 'employee_statistics.user_id')
             ->groupBy('employee_statistics.user_id');
@@ -78,7 +82,11 @@ class StatisticController extends Controller
                 sum(arbitrate_order_count) as total_arbitrate_order_count, 
                 sum(profit) as total_profit, 
                 sum(complete_order_amount) as total_complete_order_amount, 
-                count(distinct(user_id)) as total_user_id_count
+                count(distinct(user_id)) as total_user_id_count,
+                sum(all_count) as all_count,
+                sum(all_original_price) as all_original_price,
+                sum(all_price) as all_price,
+                sum(subtract_price) as subtract_price
             '))
 			->first();
 
