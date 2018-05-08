@@ -45,10 +45,10 @@
 		</li>
 	@endif
 
-	<!-- @if(Auth::user()->could('frontend.setting.sending-assist.auto-markup'))
+	@if(Auth::user()->could('frontend.setting.sending-assist.auto-markup'))
 		<li class="{{  substr(Route::currentRouteName(), 0, 31)  == 'frontend.setting.sending-assist' ? 'current' : '' }}">
 			<a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">代练发单辅助</a>
 			<div class="arrow"></div>
 		</li>
-	@endif -->
+	@endif
 </ul>
