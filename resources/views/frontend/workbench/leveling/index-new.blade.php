@@ -520,7 +520,7 @@
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->levelingConsult->consult == 2)
                                             <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}" api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="2" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
-                                            <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a>
+                                            <!-- <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}" >不同意撤销</a> -->
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
@@ -531,7 +531,7 @@
                                                 @if($btnCount == 3)<br/> @endif
                                         @elseif($item->levelingConsult->consult == 1)
                                             <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="1" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
-                                            <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a>
+                                            <!-- <a class="opt-btn" data-opt="refuseRevoke" data-no="{{ $item->no }}">不同意撤销</a> -->
                                                 @php $btnCount = $btnCount + 2;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                         @endif
