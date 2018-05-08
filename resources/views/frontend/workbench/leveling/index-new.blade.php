@@ -484,6 +484,7 @@
 
                                     @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 17)
                                         <a class="opt-btn" data-opt="lock" data-no="{{ $item->no }}">锁定</a>
+                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">申请撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
@@ -549,12 +550,12 @@
                                                 @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
+                                    <!-- @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && $item->status == 14)
                                         <a class="opt-btn" data-opt="complete" data-no="{{ $item->no }}">完成
                                         </a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
-                                    @endif
+                                    @endif -->
 
                                     <!-- @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id)
                                         <a class="opt-btn" data-opt="message" data-no="{{ $item->no }}">留言</a>
