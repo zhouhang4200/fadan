@@ -241,10 +241,7 @@
                         <div class="table-cell w-150" style="line-height: 26px">效率/安全保证金</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">发单时间</div>
-                    </th>
-                    <th>
-                        <div class="table-cell w-150" style="line-height: 26px">接单时间</div>
+                        <div class="table-cell w-150" style="line-height: 26px">发单/接单时间</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">代练时间</div>
@@ -253,10 +250,7 @@
                         <div class="table-cell w-150" style="line-height: 26px">剩余时间</div>
                     </th>
                     <th>
-                        <div class="table-cell w-150" style="line-height: 26px">打手QQ</div>
-                    </th>
-                    <th>
-                        <div class="table-cell w-150" style="line-height: 26px">打手电话</div>
+                        <div class="table-cell w-150" style="line-height: 26px">打手QQ/电话</div>
                     </th>
                     <th>
                         <div class="table-cell w-150" style="line-height: 26px">号主电话</div>
@@ -397,10 +391,7 @@
                             <div class="table-cell w-150">{{ $detail['efficiency_deposit'] or '' }}/{{ $detail['security_deposit'] or '' }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $item->created_at  }}</div>
-                        </td>
-                        <td>
-                            <div class="table-cell w-150">{{ $detail['receiving_time'] or '' }}</div>
+                            <div class="table-cell w-150">{{ $item->created_at }}<br>{{ $detail['receiving_time'] or '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $levelingTime }}</div>
@@ -409,10 +400,7 @@
                             <div class="table-cell w-150">{{ $leftTime }}</div>
                         </td>
                         <td>
-                            <div class="table-cell w-150">{{ $detail['hatchet_man_qq']   or '' }}</div>
-                        </td>
-                        <td>
-                            <div class="table-cell w-150">{{ $detail['hatchet_man_phone']   or '' }}</div>
+                            <div class="table-cell w-150">{{ $detail['hatchet_man_qq']   or '' }}<br>{{ $detail['hatchet_man_phone']   or '' }}</div>
                         </td>
                         <td>
                             <div class="table-cell w-150">{{ $detail['client_phone']   or '' }}</div>
