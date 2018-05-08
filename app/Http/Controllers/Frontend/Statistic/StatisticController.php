@@ -319,52 +319,52 @@ class StatisticController extends Controller
      * 员工每日数据详情
      * @return [type] [description]
      */
-    public function todayEmployeeData(Request $request)
-    {
-        $userId = $request->user_id ?? false;
+    // public function todayEmployeeData(Request $request)
+    // {
+    //     $userId = $request->user_id ?? false;
 
-        $data = DB::raw("
-            SELECT 
-                m.*,
-                CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
-                CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS complete_order_profit,
-                CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END
-                + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS today_profit
-            FROM
-                (
-                SELECT 
-                    c.date,
-                    c.no,
-                    c.status,
-                    c.price,
-                    c.creator_user_id,
-                    c.creator_primary_user_id,
-                    c.name,
-                    c.username,
-                    c.game_id,
-                    c.game_name,
-                    c.original_price,
-                    SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
-                    SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
-                    SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
-                    SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
-                  FROM 
-                    (SELECT a.no, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
-                    b.name, b.username, a.original_price, e.name AS game_name
-                    FROM orders a
-                    LEFT JOIN users b
-                    ON a.creator_user_id = b.id
-                    LEFT JOIN games e
-                    ON a.game_id = e.id
-                    WHERE a.service_id = 4 AND a.created_at >= '2018-05-08' AND a.created_at < '2018-05-09') c
-                    LEFT JOIN 
-                    user_amount_flows d 
-                    ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
-                    WHERE d.trade_no IS NOT NULL
-                    GROUP BY d.trade_no
-                ) m
-        ");
-    }
+    //     $data = DB::raw("
+    //         SELECT 
+    //             m.*,
+    //             CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
+    //             CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS complete_order_profit,
+    //             CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END
+    //             + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS today_profit
+    //         FROM
+    //             (
+    //             SELECT 
+    //                 c.date,
+    //                 c.no,
+    //                 c.status,
+    //                 c.price,
+    //                 c.creator_user_id,
+    //                 c.creator_primary_user_id,
+    //                 c.name,
+    //                 c.username,
+    //                 c.game_id,
+    //                 c.game_name,
+    //                 c.original_price,
+    //                 SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
+    //                 SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
+    //                 SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
+    //                 SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
+    //               FROM 
+    //                 (SELECT a.no, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
+    //                 b.name, b.username, a.original_price, e.name AS game_name
+    //                 FROM orders a
+    //                 LEFT JOIN users b
+    //                 ON a.creator_user_id = b.id
+    //                 LEFT JOIN games e
+    //                 ON a.game_id = e.id
+    //                 WHERE a.service_id = 4 AND a.created_at >= '2018-05-08' AND a.created_at < '2018-05-09') c
+    //                 LEFT JOIN 
+    //                 user_amount_flows d 
+    //                 ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
+    //                 WHERE d.trade_no IS NOT NULL
+    //                 GROUP BY d.trade_no
+    //             ) m
+    //     ");
+    // }
 }
 
 
