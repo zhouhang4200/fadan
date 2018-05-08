@@ -96,6 +96,7 @@
                         <label class="layui-form-label"  style="text-align: left;padding: 9px 0">发单客服</label>
                         <div class="layui-input-block" style="margin-left: 90px;">
                             <select name="customer_service_name" lay-search="">
+                                <option value="">请选择</option>
                                 @forelse($employee as $item)
                                     <option value="{{ $item->username }}">{{ $item->username }}</option>
                                 @empty

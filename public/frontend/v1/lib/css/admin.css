@@ -353,7 +353,7 @@ html {
 
 .layadmin-side-shrink .layui-layout-admin .layui-logo {
     width: 60px;
-    background-image: url(res/logo.png);
+    background-image: url(/frontend/v1/images/logo.png);
 }
 
 .layadmin-side-shrink .layui-layout-admin .layui-logo span {
