@@ -498,24 +498,31 @@ class Show91
     	$res = static::normalRequest(config('show91.url.messageList'), $options);
         $res = json_decode($res, true);
 
-        if ($res['result'] != 0) {
+        if (! isset($res)) {
+            throw new CustomException('结果不存在');
+        }
+
+        if (isset($res['result']) && $res['result'] != 0 && isset($res['reason'])) {
             throw new CustomException($res['reason'], $res['result']);
         }
 
-        $sortField = [];
-        $messageArr = [];
-        foreach ($res['data'] as $item) {
-            if (isset($item['id'])) {
-                $sortField[] = $item['created_on'];
-            } else {
-                $sortField[] = 0;
+        if (isset($res['result']) && $res['result'] != 0 && isset($res['data'])) {
+            $sortField = [];
+            $messageArr = [];
+            foreach ($res['data'] as $item) {
+                if (isset($item['id'])) {
+                    $sortField[] = $item['created_on'];
+                } else {
+                    $sortField[] = 0;
+                }
+                $messageArr[] = $item;
             }
-            $messageArr[] = $item;
-        }
-        // 用ID倒序
-        array_multisort($sortField, SORT_ASC, $messageArr);
+            // 用ID倒序
+            array_multisort($sortField, SORT_ASC, $messageArr);
 
-        return $messageArr;
+            return $messageArr;
+        }
+        return '';
     }
 
     /**

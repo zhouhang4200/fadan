@@ -50,6 +50,10 @@
             <tr>
                 <th>员工姓名</th>
                 <th>账号</th>
+                <th>发单数量</th>
+                <th>来源价格</th>
+                <th>发布价格</th>
+                <th>来源/发布差价</th>
                 <th>已结算单数</th>
                 <th>已结算单发单金额</th>
                 <th>已撤销单数</th>
@@ -62,6 +66,10 @@
                     <tr>
                         <td>{{ $data->username ?? '--' }}</td>
                         <td>{{ $data->name }}</td>
+                        <td>{{ $data->all_count }}</td>
+                        <td>{{ number_format($data->all_original_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($data->all_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($data->subtract_price, 2) ?? '--' }}</td>
                         <td>{{ $data->complete_order_count ?? '--' }}</td>
                         <td>{{ number_format($data->complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $data->revoke_order_count ?? '--' }}</td>
@@ -73,6 +81,10 @@
                     <tr style="color:red">
                         <td>总计</td>
                         <td>{{ $totalData->total_user_id_count ?? '--' }}</td>
+                        <td>{{ $totalData->all_count }}</td>
+                        <td>{{ number_format($totalData->all_original_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalData->all_price, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalData->subtract_price, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_complete_order_count ?? '' }}</td>
                         <td>{{ number_format($totalData->total_complete_order_amount, 2) ?? '--' }}</td>
                         <td>{{ $totalData->total_revoke_order_count ?? '--' }}</td>

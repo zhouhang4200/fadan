@@ -7,6 +7,7 @@ use DB;
 use Exception;
 use App\Services\Show91;
 use App\Models\OrderDetail;
+use App\Models\LevelingConsult;
 use App\Exceptions\DailianException; 
 
 /**
@@ -53,6 +54,7 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
             $this->setDescription();
             // 保存操作日志
             $this->saveLog();
+            $this->changeConsultStatus();
             $this->after();
             $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
@@ -136,6 +138,11 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
         }
 
         $this->handledStatus = $previousArr[0];
+    }
+
+    public function changeConsultStatus()
+    {
+        LevelingConsult::where('order_no', $this->orderNo)->update(['consult' => 0]);
     }
 
     /**

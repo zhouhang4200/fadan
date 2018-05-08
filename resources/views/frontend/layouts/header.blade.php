@@ -59,6 +59,7 @@
                     'frontend.setting.sms.index',
                     'frontend.setting.tb-auth.store',
                     'frontend.setting.sending-assist.require',
+                    'frontend.setting.automatically-grab.goods',
                 ]))
                     <li class="{{ substr(Route::currentRouteName(), 0, 16) == 'frontend.setting' ? 'current' : '' }}"><a href="{{ route($route) }}">设置</a><div class="arrow"></div></li>
                 @endif

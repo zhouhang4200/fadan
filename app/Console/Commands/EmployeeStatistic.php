@@ -63,7 +63,11 @@ class EmployeeStatistic extends Command
                     DATE_FORMAT(m.created_at, '%Y-%m-%d') AS date, 
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS created_at, 
                     DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS updated_at,
-                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income+m.poundage AS profit
+                    m.three_status_original_amount-m.complete_order_amount-m.two_status_payment+m.two_status_income+m.poundage AS profit,
+                    m.count as all_count,
+                    m.all_original_price,
+                    m.all_price,
+                    m.subtract_price
                 FROM 
                     (
                         SELECT 
@@ -78,7 +82,11 @@ class EmployeeStatistic extends Command
                             SUM(CASE WHEN d.STATUS = 20 THEN d.amount ELSE 0 END) AS complete_order_amount,
                             SUM(c.two_status_payment) AS two_status_payment,
                             SUM(c.two_status_income) AS two_status_income,
-                            SUM(c.poundage) AS poundage
+                            SUM(c.poundage) AS poundage,
+                            count(c.no) as count,
+                            sum(c.original_price) as all_original_price,
+                            sum(c.price) as all_price,
+                            sum(c.original_price)-sum(c.price) as subtract_price
                         FROM    
                             (SELECT 
                                 a.no, 
@@ -86,6 +94,8 @@ class EmployeeStatistic extends Command
                                 a.status, 
                                 a.created_at,
                                 a.creator_primary_user_id, 
+                                a.original_price,
+                                a.price,
                                 SUM(CASE WHEN b.trade_subtype = 87 THEN (a.amount-b.fee) ELSE 0 END) AS two_status_payment,
                                 SUM(CASE WHEN b.trade_subtype IN (810, 811) THEN b.fee ELSE 0 END) AS two_status_income,
                                 SUM(CASE WHEN b.trade_subtype = 73 THEN b.fee ELSE 0 END) AS poundage
@@ -118,15 +128,14 @@ class EmployeeStatistic extends Command
                 }
                 EmployeeStatisticModel::insert($userDatas);
 
-                echo '写入成功!';
             } else {
-                echo '数据库无数据!';
+                myLog('employee-statistic', ['写入失败！数据库无数据！']);
             }
         } catch (Exception $e) {
             DB::rollback();
-            echo '写入失败:'.$e->getMessage();
+            myLog('employee-statistic', ['结果' => '写入失败', '原因' => $e->getMessage()]);
         }
         DB::commit();
-        echo '运行完毕!';
+        myLog('employee-statistic', ['写入成功']);
     }
 }
