@@ -520,7 +520,7 @@
                                     @endif
 
                                     @if($item->status == 13 || $item->status == 14 || $item->status == 17 || $item->status == 18)
-                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">申请撤销</a>
+                                        <a class="opt-btn" data-opt="revoke" data-no="{{ $item->no }}" data-safe="{{ $detail['security_deposit'] or '' }}" data-effect="{{ $detail['efficiency_deposit'] or '' }}" data-amount="{{ $item->amount }}">协商撤销</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
@@ -870,7 +870,7 @@
                     layer.open({
                         type: 1,
                         shade: 0.2,
-                        title: '申请撤销',
+                        title: '协商撤销',
                         area: ['650px', '550px'],
                         content: $('.consult')
                     });
