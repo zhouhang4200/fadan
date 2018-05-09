@@ -19,14 +19,14 @@ class ChangeCompleteOrderStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'change:status';
+    protected $signature = 'auto:complete';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '24H到期直接改申请完成订单为已完成订单';
+    protected $description = '72H到期后改申请完成中的订单为已完成订单';
 
     /**
      * Create a new command instance.
@@ -52,7 +52,7 @@ class ChangeCompleteOrderStatus extends Command
             $orders = Redis::hGetAll('complete_orders');
 
             foreach ($orders as $orderNo => $time) {
-                $overTime = $carbon->parse($carbon->parse($time)->addDays(1)->toDateTimeString());
+                $overTime = $carbon->parse($carbon->parse($time)->addDays(3)->toDateTimeString());
                 // $overTime = $carbon->parse($carbon->parse($time)->addMinutes(1)->toDateTimeString());
                 $readyOnTime = $carbon->diffInSeconds($overTime, false);
   

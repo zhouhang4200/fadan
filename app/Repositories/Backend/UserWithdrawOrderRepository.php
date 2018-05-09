@@ -62,6 +62,7 @@ class UserWithdrawOrderRepository
             $out = fopen('php://output', 'w');
             fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
             fputcsv($out, [
+                '提现单号',
                 '主账号ID',
                 '姓名',
                 '开户行',
@@ -75,6 +76,7 @@ class UserWithdrawOrderRepository
 
             foreach ($order as $k => $v) {
                 fputcsv($out, [
+                    $v->no,
                     $v->creator_primary_user_id,
                     $v->user->realNameIdent->name ?? '',
                     $v->user->realNameIdent->bank_name ?? '',

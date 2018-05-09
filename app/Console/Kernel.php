@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\WriteDataEveryDay', // 订单集市等每天的数据
         'App\Console\Commands\EmployeeStatistic', // 代练平台员工统计
         'App\Console\Commands\OrderStatistic', // 代练平台订单统计
-        'App\Console\Commands\ChangeCompleteOrderStatus', // 24小时自动更新待验收为完成
+        'App\Console\Commands\ChangeCompleteOrderStatus', // 72小时自动更新待验收为完成
         'App\Console\Commands\PlatformStatistic', // 平台订单统计
         'App\Console\Commands\AddNoticeOrderFromRedis',
         'App\Console\Commands\Task\RoomCardRecharge',
@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('Order:Confirm')->everyFiveMinutes();
         $schedule->command('employee:statistic')->daily();
         $schedule->command('order:statistic')->daily();
-        $schedule->command('change:status')->everyMinute();
+        $schedule->command('auto:complete')->daily();
         $schedule->command('platform:statistic')->daily();
         $schedule->command('order:notice')->everyMinute();
         $schedule->command('add:notice')->everyMinute();

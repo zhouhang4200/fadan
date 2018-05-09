@@ -52,7 +52,6 @@
                         Route::currentRouteName() == 'login.history' ? 'current' : '' 
                     }}"><a href="{{ route('home-accounts.index') }}">账号</a><div class="arrow"></div></li>
                 @if($route = Auth::user()->could([
-                    'frontend.setting.sending-control.index',
                     'frontend.setting.receiving-control.index',
                     'frontend.setting.api-risk-management.index',
                     'frontend.setting.skin.index',
