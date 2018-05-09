@@ -15,28 +15,16 @@
         .layui-layout-admin .layui-body {
             top: 50px;
         }
-        .layui-layout-admin .layui-footer {
-            height: 52px;
-        }
-        .main {
-            padding: 20px;
-        }
-
-        .layui-footer {
-            z-index: 999;
-        }
-
         .layui-card-header {
             height: auto;
         }
-
     </style>
+    @yield('css')
 </head>
 
 <body class="layui-layout-body">
 
-<div id="LAY_app">
-    <div class="layui-layout layui-layout-admin">
+<div class="layui-layout layui-layout-admin">
         <div class="layui-header">
             <!-- 头部区域 -->
             <ul class="layui-nav layui-layout-left">
@@ -160,7 +148,6 @@
         <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
 
-</div>
 <style>
     .layui-side-menu,
     .layadmin-pagetabs .layui-tab-title li:after,
@@ -176,7 +163,6 @@
     .layui-nav-tree .layui-nav-child dd.layui-this a {
         background-color: #F78400 !important;
     }
-
     .layui-layout-admin .layui-logo {
         background-color: #F78400 !important;
     }
@@ -228,5 +214,4 @@
 </script>
 @yield('js')
 </body>
-
 </html>
