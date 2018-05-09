@@ -78,7 +78,7 @@ return [
 		'appid'     => '2f666a796ba36a6b',
 		'appsecret' => '66a225812f666a796ba36a6b6a151870',
 		'Ver'       => '1.0',
-		'url'       => env('MAYI_API_URL') ?? 'http://www.mayidailian.com/OpenApi/GateWay/index', // 蚂蚁代练的接口地址
+		'url'       => env('MAYI_API_URL', 'http://www.mayidailian.com/OpenApi/GateWay/index'), // 蚂蚁代练的接口地址
 		'password'  => '123456',
 		'aes_key'   => '4l5846ssd8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
@@ -92,27 +92,27 @@ return [
 		'aes_key'       => '45xd46a5d8e4f5e8e4e268x',
 		'aes_iv'        => '1234567891111152',
 		'url' => [
-			'onSale'                   => env('DD373_API_URL').'?action=UpOrder', // 上架
-			'offSale'                  => env('DD373_API_URL').'?action=DownOrder', // 下架
-			'applyRevoke'              => env('DD373_API_URL').'?action=applyCancel', // 申请撤销
-			'cancelRevoke'             => env('DD373_API_URL').'?action=CancelAction', // 取消撤销
-			'agreeRevoke'              => env('DD373_API_URL').'?action=CancelAction', // 同意撤销
-			'applyArbitration'         => env('DD373_API_URL').'?action=applyArbitrate', // 申请仲裁
-			'cancelArbitration'        => env('DD373_API_URL').'?action=undoArbitrate', // 取消仲裁
-			'complete'                 => env('DD373_API_URL').'?action=confirmOrder', // 订单完成
-			'lock'                     => env('DD373_API_URL').'?action=lockAccount', // 锁定
-			'cancelLock'               => env('DD373_API_URL').'?action=unlockAccount', // 取消锁定
-			'delete'                   => env('DD373_API_URL').'?action=deleteOrder', // 删除订单
-			'updateOrder'              => env('DD373_API_URL').'?action=modifyOrder', // 修改订单
-			'addTime'                  => env('DD373_API_URL').'?action=addTime', // 加时
-			'addMoney'                 => env('DD373_API_URL').'?action=addPrice', // 加款
-			'orderDetail'              => env('DD373_API_URL').'?action=getDetails', // 订单详情
-			'getScreenshot'            => env('DD373_API_URL').'?action=getImages', // 订单截图
-			'getMessage'               => env('DD373_API_URL').'?action=getMessages', //获取留言
-			'replyMessage'             => env('DD373_API_URL').'?action=sendMessage', // 回复留言
-			'updateAccountAndPassword' => env('DD373_API_URL').'?action=changePwd', // 修改账号密码
-			'refuseRevoke'             => env('DD373_API_URL').'?action=CancelAction', // 不同意撤销
-			'updateImage'			   => env('DD373_API_URL').'?action=uploadImage', //上传截图
+			'onSale'                   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=UpOrder', // 上架
+			'offSale'                  => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=DownOrder', // 下架
+			'applyRevoke'              => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=applyCancel', // 申请撤销
+			'cancelRevoke'             => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=CancelAction', // 取消撤销
+			'agreeRevoke'              => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=CancelAction', // 同意撤销
+			'applyArbitration'         => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=applyArbitrate', // 申请仲裁
+			'cancelArbitration'        => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=undoArbitrate', // 取消仲裁
+			'complete'                 => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=confirmOrder', // 订单完成
+			'lock'                     => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=lockAccount', // 锁定
+			'cancelLock'               => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=unlockAccount', // 取消锁定
+			'delete'                   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=deleteOrder', // 删除订单
+			'updateOrder'              => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=modifyOrder', // 修改订单
+			'addTime'                  => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=addTime', // 加时
+			'addMoney'                 => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=addPrice', // 加款
+			'orderDetail'              => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getDetails', // 订单详情
+			'getScreenshot'            => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getImages', // 订单截图
+			'getMessage'               => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getMessages', //获取留言
+			'replyMessage'             => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=sendMessage', // 回复留言
+			'updateAccountAndPassword' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=changePwd', // 修改账号密码
+			'refuseRevoke'             => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=CancelAction', // 不同意撤销
+			'updateImage'			   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=uploadImage', //上传截图
 		],
 		'status' => [
 			'1'  => '未接单',
