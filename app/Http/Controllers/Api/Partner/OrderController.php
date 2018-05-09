@@ -275,6 +275,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         } 
     }
@@ -294,6 +295,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         } 
     }
@@ -357,6 +359,7 @@ class OrderController extends Controller
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollBack();
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
         DB::commit();
@@ -376,6 +379,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         } 
         return response()->partner(1, '成功');
@@ -394,6 +398,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
         return response()->partner(1, '成功');
@@ -437,6 +442,7 @@ class OrderController extends Controller
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollBack();
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
         DB::commit();
@@ -458,6 +464,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -487,6 +494,7 @@ class OrderController extends Controller
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollBack();
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
         DB::commit();
@@ -508,6 +516,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -553,6 +562,7 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
         DB::commit();
@@ -574,6 +584,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -593,6 +604,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -642,6 +654,7 @@ class OrderController extends Controller
             myLog('order.operate.callback', ['order_no' => $request->no, 'third_order_no' => $request->order_no, 'time' => Carbon::now()->toDateTimeString()]);
             return response()->partner(1, '成功');
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -662,6 +675,7 @@ class OrderController extends Controller
         } catch (DailianException $e) {
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         }
     }
@@ -703,8 +717,8 @@ class OrderController extends Controller
                     }
                 }
             }
-        } catch (\Exception $exception) {
-            myLog('message-ex', [$exception->getMessage(), $exception->getLine()]);
+        } catch (Exception $e) {
+            myLog('order-local-error', ['third_order_no' => $request->order_no ?? '', '原因' => $e->getMessage()]);
             return response()->partner(0, '接收失败');
         }
         return response()->partner(1, '接收成功');
