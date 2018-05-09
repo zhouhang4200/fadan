@@ -21,7 +21,6 @@ use App\Exceptions\DailianException;
 use App\Services\DailianMama;
 use App\Exceptions\Show91Exception;
 use App\Exceptions\DailianMamaException;
-
 /**
  * 创建代练订单
  * Class CreateLeveling
@@ -253,7 +252,8 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                     'game_leveling_instructions' => $this->details['game_leveling_instructions'],
                     'businessman_phone' => $this->details['client_phone'],
                     'businessman_qq' => $this->details['user_qq'],
-                    'order_password' => $this->details['order_password'],
+                    'order_password' => $this->details['order_password'] ?? '',
+                    'creator_username' => User::find($this->order->creator_primary_user_id)->username ?? '',
                 ];
                 $redis = RedisConnect::order();
                 $redis->lpush('order:send', json_encode($sendOrder));

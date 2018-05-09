@@ -65,7 +65,7 @@
                             <div class="layui-input-inline">
                                 <input type="text" name="markup_amount" lay-verify="required|number|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                                 <a href="#" class="tooltip">
-                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <i class="iconfont icon-wenhao" id="recharge"></i>
                                     <span>填写值必须为大于0的正整数</span>
                                 </a>
                             </div>
@@ -81,7 +81,7 @@
                             <div class="layui-input-inline">
                                 <input type="text" name="minutes" lay-verify="required|minute|integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                                 <a href="#" class="tooltip">
-                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <i class="iconfont icon-wenhao" id="recharge"></i>
                                     <span>订单上架后第1次加价的时间，填写值必须为正整数，可以为0</span>
                                 </a>
                             </div>
@@ -95,7 +95,7 @@
                                     <option value="1">百分比</option>
                                 </select>
                                 <a href="#" class="tooltip">
-                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <i class="iconfont icon-wenhao" id="recharge"></i>
                                     <span>选择“绝对值”，则“增加值”中填写的值为增加的金额；选择“百分比”，则“增加值”中填写的值（百分数）乘以订单代练价格为增加的金额，所填写的值均为正整数或带2位小数</span>
                                 </a>
                             </div>
@@ -117,7 +117,7 @@
                             <div class="layui-input-inline">
                                 <input type="text" name="markup_number" lay-verify="integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                                 <a href="#" class="tooltip">
-                                    <i class="iconfont icon-wenhao" id=""></i>
+                                    <i class="iconfont icon-wenhao" id="recharge"></i>
                                     <span>不填则为无次数限制</span>
                                 </a>
                             </div>

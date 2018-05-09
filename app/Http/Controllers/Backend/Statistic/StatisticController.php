@@ -17,7 +17,7 @@ class StatisticController extends Controller
     public function index(Request $request)
     {
     	$userId    = $request->user_id;
-		$third     = $request->thrid;
+		$third     = $request->third;
 		$gameId    = $request->game_id;
 		$startDate = $request->start_date;
 		$endDate   = $request->end_date;

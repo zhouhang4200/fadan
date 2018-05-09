@@ -1,10 +1,10 @@
 <ul class="seller_center_left_menu">
-	@if(Auth::user()->could('frontend.setting.sending-control.index'))
+	<!-- @if(Auth::user()->could('frontend.setting.sending-control.index'))
 	    <li class="{{ substr(Route::currentRouteName(), 0, 32) == 'frontend.setting.sending-control' ? 'current' : '' }}">
 	        <a href="{{ route('frontend.setting.sending-control.index') }}">发单设置</a>
 	        <div class="arrow"></div>
 	    </li>
-	@endif
+	@endif -->
 	@if(Auth::user()->could('frontend.setting.receiving-control.index'))
 	    <li class="{{ substr(Route::currentRouteName(), 0, 34) == 'frontend.setting.receiving-control' ? 'current' : '' }}">
 	        <a href="{{ route('frontend.setting.receiving-control.index') }}">接单设置</a>

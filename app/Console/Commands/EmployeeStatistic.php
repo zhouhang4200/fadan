@@ -123,7 +123,7 @@ class EmployeeStatistic extends Command
                     $has = EmployeeStatisticModel::where('date', $date)->first();
 
                     if ($has) {
-                        throw new Exception('数据已存在!');
+                        throw new Exception('数据已存在');
                     }
                 }
                 EmployeeStatisticModel::insert($userDatas);
@@ -131,11 +131,11 @@ class EmployeeStatistic extends Command
             } else {
                 myLog('employee-statistic', ['写入失败！数据库无数据！']);
             }
+            myLog('employee-statistic', ['写入成功']);
         } catch (Exception $e) {
             DB::rollback();
             myLog('employee-statistic', ['结果' => '写入失败', '原因' => $e->getMessage()]);
         }
         DB::commit();
-        myLog('employee-statistic', ['写入成功']);
     }
 }

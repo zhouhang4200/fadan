@@ -43,9 +43,11 @@
                                 </div>
                                 <label class="layui-form-label">第三方平台</label>
                                 <div class="form-group col-xs-1">
-                                    <select name="third" lay-filter="">                
-                                        <option value="1" selected>91平台</option>
-                                        <option value="2" selected>代练妈妈平台</option>
+                                    <select name="third" lay-filter="">    
+                                        <option>请选择</option>            
+                                        <option value="1" {{ $third == 1 ? 'selected' : ''}}>91代练</option>
+                                        <option value="3"  {{ $third == 3 ? 'selected' : ''}}>蚂蚁代练</option>
+                                        <option value="4"  {{ $third == 4 ? 'selected' : ''}}>DD373代练</option>
                                     </select>
                                 </div>
                                 <label class="layui-form-label">游戏名称</label>

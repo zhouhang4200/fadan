@@ -1538,7 +1538,7 @@ class IndexController extends Controller
             // 将此订单存入哈希
             $key = $order->no;
             $name = "order:automarkup-every-hour";
-            $value = "0@".$orderDetails['game_leveling_amount']."@".$order->created_at;
+            $value = "0@".$orderDetails['game_leveling_amount']."@".$order->updated_at;
 
             Redis::hSet($name, $key, $value);
         }
