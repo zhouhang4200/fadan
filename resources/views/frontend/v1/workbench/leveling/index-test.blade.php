@@ -8,7 +8,7 @@
         td .laytable-cell-1-button{
             display: block;
             height: 50px;
-            line-height: 25px;
+            line-height: 50px;
             word-break: break-all;
             white-space: nowrap;
             overflow: hidden;
@@ -17,6 +17,16 @@
         }
         .layui-card .layui-tab-brief .layui-tab-title li {
             margin: 0;
+        }
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {
+            background-color: #ff8500;
+        }
+        /*重写button 样式*/
+        .qs-btn {
+            height: 30px;
+            line-height: 30px;
+            width: 80px;
+            padding: 0;
         }
     </style>
 @endsection
@@ -150,15 +160,68 @@
             </ul>
             <div style="height: 10px"></div>
         </div>
-        <div id="order-list" lay-filter="test1">
+        <div id="order-list" lay-filter="order-list">
         </div>
     </div>
 @endsection
 
 <!--START 底部-->
 @section('js')
+    <script type="text/html" id="operation">
+
+        @{{# if (d.master) {  }}
+
+            @{{# if (d.status == 1) {  }}
+                <button class="qs-btn" value="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>
+                <button class="qs-btn" value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+            @{{# } else if (d.status == 13) {  }}
+                <button class="qs-btn" value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn" value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+            @{{# } else if (d.status == 14) {  }}
+                <button class="qs-btn" value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn" value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+            @{{# } else if (d.status == 15) {  }}
+
+                @{{# if (d.consult == 1) {  }}
+                    <button class="qs-btn" value="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
+                @{{# } else if (d.consult == 2) {  }}
+                    <button value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
+                @{{# } }}
+
+                <button class="qs-btn" value="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+
+            @{{# } else if (d.status == 16) {  }}
+
+                @{{# if (d.complain == 1) {  }}
+                    <button class="qs-btn" value="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</button>
+                @{{# } }}
+
+                @{{# if (d.consult == 2) {  }}
+                    <button value="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
+                @{{# }   }}
+
+            @{{# } else if (d.status == 17) {  }}
+                <button class="qs-btn" value="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</button>
+                <button class="qs-btn" value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+            @{{# } else if (d.status == 18) {  }}
+                <button class="qs-btn" value="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</button>
+                <button class="qs-btn" value="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+            @{{# } else if (d.status == 19 || d.status == 20 || d.status == 21) {  }}
+                <button class="qs-btn" value="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+            @{{# } else if (d.status == 22) {  }}
+                <button class="qs-btn" value="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</button>
+                <button class="qs-btn" value="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+            @{{# } else if (d.status == 23) {  }}
+                <button class="qs-btn" value="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+            @{{# }  }}
+
+        @{{# } else {  }}
+
+
+        @{{# }  }}
+    </script>
     <script type="text/html" id="noTemplate">
-        天猫：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{ d.source_order_no }}</a> <br/>
+        天猫：<a style="color:#1f93ff"  href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{ d.source_order_no }}</a> <br/>
         @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{  d.third_order_no }} </a>  @{{#  } }}
     </script>
     <script type="text/html" id="wwTemplate">
@@ -194,12 +257,15 @@
             td .laytable-cell-@{{ d  }}-button{
                 display: block;
                 height: 50px;
-                line-height: 25px;
+                line-height: 50px;
                 word-break: break-all;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 padding-left: 15px;
+            }
+            .layui-laypage .layui-laypage-curr .layui-laypage-em {
+                background-color: #ff8500;
             }
         </style>
     </script>
@@ -259,7 +325,13 @@
                     view.append(html);
                 });
             }
-
+            // 备注编辑
+            table.on('edit(order-list)', function(obj){
+                var value = obj.value //得到修改后的值
+                        ,data = obj.data //得到所在行所有键值
+                        ,field = obj.field; //得到字段
+                layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+            });
             // 加载数据
             table.render({
                 elem: '#order-list',
@@ -269,7 +341,7 @@
                     {field: 'no', title: '订单号', width: 270, templet: '#noTemplate', style:"height: 50px;line-height: 25px;"},
                     {field: 'status_text', title: '订单状态', width: 80, style:"height: 50px;line-height: 50px;"},
                     {field: 'seller_nick', title: '玩家旺旺', minWidth: 150},
-                    {field: 'customer_service_remark', title: '客服备注', minWidth: 160},
+                    {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
                     {field: 'game_leveling_title', title: '代练标题', width: 80},
                     {field: 'game_name', title: '游戏/区/服', width: 100},
                     {field: 'account_password', title: '账号/密码', width: 100},
@@ -290,7 +362,7 @@
                     {field: 'poundage', title: '手续费', width: 100},
                     {field: 'city', title: '利润', width: 100},
                     {field: 'customer_service_name', title: '发单客服', width: 100},
-                    {field: 'button', title: '操作', width: 270, fixed: 'right',style:"height: 50px;line-height: 50px;"}
+                    {field: 'button', title: '操作', width: 200, fixed: 'right', style:"height: 50px;line-height: 50px;", toolbar: '#operation'}
                 ]],
                 height: 'full-420',
                 page: {
