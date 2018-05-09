@@ -85,6 +85,7 @@
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
                     <li data-name="home" class="layui-nav-item">
+
                         <a href="javascript:;" lay-tips="主页" lay-direction="2">
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>工作台</cite>
@@ -97,8 +98,10 @@
                                 <a lay-href="">代练订单</a>
                             </dd>
                         </dl>
+
                     </li>
                     <li data-name="component" class="layui-nav-item">
+
                         <a href="javascript:;" lay-tips="组件" lay-direction="2">
                             <i class="layui-icon layui-icon-component"></i>
                             <cite>组件</cite>
@@ -108,6 +111,7 @@
                                 <a lay-href="">按钮</a>
                             </dd>
                         </dl>
+
                     </li>
 
                 </ul>
@@ -117,21 +121,7 @@
         <div class="layui-body">
             <div class="layadmin-tabsbody-item layui-show">
                 <div class="layui-card layadmin-header">
-                    <div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
-                        <a lay-href="">主页</a>
-                        <span lay-separator="">/</span>
-                        <a>
-                            <cite>组件</cite>
-                        </a>
-                        <span lay-separator="">/</span>
-                        <a>
-                            <cite>数据表格</cite>
-                        </a>
-                        <span lay-separator="">/</span>
-                        <a>
-                            <cite>开启复选框</cite>
-                        </a>
-                    </div>
+                    @yield('breadcrumb')
                 </div>
                 <div class="layui-fluid">
                     <div class="layui-row layui-col-space15">

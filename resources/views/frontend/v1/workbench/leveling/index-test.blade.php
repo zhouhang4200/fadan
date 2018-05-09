@@ -1,7 +1,16 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '工作台 - 代练')
-
+@section('breadcrumb')
+<div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
+    <a>
+        <cite>工作台</cite>
+    </a>
+    <span lay-separator="">/</span>
+    <a>
+        <cite>代练订单</cite>
+    </a>
+</div>
+@endsection
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>

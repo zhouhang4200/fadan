@@ -30,7 +30,5 @@
 		<a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
 		<div class="arrow"></div>
 	</li>
-	@endif	
-
-
+	@endif
 </ul>
