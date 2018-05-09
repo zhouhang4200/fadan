@@ -201,8 +201,6 @@
                 });
             }
         });
-
-
     });
 </script>
 <script>
@@ -213,5 +211,6 @@
     }).use('index');
 </script>
 @yield('js')
+@yield('pop')
 </body>
 </html>
