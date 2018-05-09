@@ -250,7 +250,15 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::get('admin-idents', 'AdminIdentController@index')->name('admin-idents.index')->middleware('permission:admin-idents.index');
         // 实名认证详情
         Route::get('admin-idents/{id}', 'AdminIdentController@show')->name('admin-idents.show')->middleware('permission:admin-idents.show');
-
+        // 黑名单
+        Route::prefix('leveling-blacklist')->group(function () {
+            Route::get('/', 'LevelingBlacklist@index')->name('admin.leveling-blacklist.index');
+            Route::get('create', 'LevelingBlacklist@create')->name('admin.leveling-blacklist.create');
+            Route::post('/', 'LevelingBlacklist@store')->name('admin.leveling-blacklist.store');
+            Route::get('edit/{id}', 'LevelingBlacklist@edit')->name('admin.leveling-blacklist.edit');
+            Route::post('update', 'LevelingBlacklist@update')->name('admin.leveling-blacklist.update');
+            Route::post('delete', 'LevelingBlacklist@delete')->name('admin.leveling-blacklist.delete');
+        });
     });
 
     // 订单

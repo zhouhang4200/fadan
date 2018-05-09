@@ -251,7 +251,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     </li>
 
 
-                    <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'login-record' || $currentOneLevelMenu == 'admin-idents' || $currentOneLevelMenu == 'admin.leveling-blacklist.index') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>账号管理</span>
@@ -269,7 +269,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     实名认证
                                 </a>
                             </li>
-
+                            <li>
+                                <a href="{{ route('admin.leveling-blacklist.index') }}" @if($currentRouteName == 'admin.leveling-blacklist.index') class="active" @endif>
+                                    黑名单
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))
