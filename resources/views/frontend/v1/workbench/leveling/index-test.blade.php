@@ -1,11 +1,23 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '工作台 - 代练')
-
+@section('breadcrumb')
+<div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
+    <a>
+        <cite>工作台</cite>
+    </a>
+    <span lay-separator="">/</span>
+    <a>
+        <cite>代练订单</cite>
+    </a>
+</div>
+@endsection
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
         td .laytable-cell-1-no,
+        td .laytable-cell-1-game_name,
+        td .laytable-cell-1-seller_nick,
+        td .laytable-cell-1-account_password,
         td .laytable-cell-1-button{
             display: block;
             height: 50px;
@@ -23,7 +35,7 @@
             background-color: #ff8500;
         }
         /*重写button 样式*/
-        .qs-btn {
+        .layui-table .qs-btn {
             height: 30px;
             line-height: 30px;
             width: 80px;
@@ -38,8 +50,8 @@
             <form class="layui-form" action="">
                 <div class="layui-col-md3">
                     <div class="layui-form-item">
-                        <label class="layui-form-label" style="text-align: left;padding: 9px 0">订单单号</label>
-                        <div class="layui-input-block" style="margin-left: 90px;">
+                        <label class="layui-form-label" style="">订单单号</label>
+                        <div class="layui-input-block" style="">
                             <input type="text" name="no" lay-verify="title" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                         </div>
                     </div>
@@ -49,19 +61,6 @@
                         <label class="layui-form-label">玩家旺旺</label>
                         <div class="layui-input-block">
                             <input type="text" name="wang_wang" lay-verify="title" autocomplete="off" placeholder="请输入玩家旺旺" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">天猫状态</label>
-                        <div class="layui-input-block">
-                            <select name="taobao_status" lay-search="">
-                                <option value="">请选择</option>
-                                <option value="1">买家付完款</option>
-                                <option value="2">交易成功</option>
-                                <option value="3">买家发起退款</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -80,8 +79,8 @@
                 </div>
                 <div class="layui-col-md3">
                     <div class="layui-form-item">
-                        <label class="layui-form-label"  style="text-align: left;padding: 9px 0">发单客服</label>
-                        <div class="layui-input-block" style="margin-left: 90px;">
+                        <label class="layui-form-label"  style="">发单客服</label>
+                        <div class="layui-input-block" style="">
                             <select name="customer_service_name" lay-search="">
                                 <option value="">请选择</option>
                                 @forelse($employee as $item)
@@ -155,22 +154,17 @@
                     <span class="qs-badge quantity-18 layui-hide"></span>
                 </li>
                 <li class="" lay-id="19">已撤销
-                    <span class="qs-badge quantity-19 layui-hide"></span>
                 </li>
                 <li class="" lay-id="20">已结算
-                    <span class="qs-badge quantity-20 layui-hide"></span>
                 </li>
                 <li class="" lay-id="21">已仲裁
-                    <span class="qs-badge quantity-21 layui-hide"></span>
                 </li>
                 <li class="" lay-id="22">已下架
-                    <span class="qs-badge quantity-22 layui-hide"></span>
                 </li>
-                <li class="" lay-id="23">强制撤销
-                    <span class="qs-badge quantity-23 layui-hide"></span>
-                </li>
+                {{--<li class="" lay-id="23">强制撤销--}}
+                    {{--<span class="qs-badge quantity-23 layui-hide"></span>--}}
+                {{--</li>--}}
                 <li class="" lay-id="24">已撤单
-                    <span class="qs-badge quantity-24 layui-hide"></span>
                 </li>
             </ul>
             <div style="height: 10px"></div>
@@ -381,12 +375,13 @@
     </script>
     <script type="text/html" id="wwTemplate">
         @{{# if(d.third_name) { }}
-        <a  style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=@{{ d.client_wang_wang }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="@{{ d.client_wang_wang }}"> @{{ d.client_wang_wang }}</a><img
-                src="/frontend/images/ww.png">
+        <a  style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=@{{ d.client_wang_wang }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="@{{ d.client_wang_wang }}">
+            <img src="/frontend/images/ww.gif" width="20px">@{{ d.client_wang_wang }}</a><br>
+        <div>@{{ d.seller_nick }}</div>
         @{{#  } }}
     </script>
     <script type="text/html" id="gameTemplate">
-        @{{ d.game_name }} <br/>
+        @{{ d.game_name }} <br>
         @{{ d.region }} / @{{ d.serve }}
     </script>
     <script type="text/html" id="accountPasswordTemplate">
@@ -399,15 +394,12 @@
     </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
-            td .laytable-cell-@{{ d  }}-no {
-                display: block;
+            td .laytable-cell-@{{ d  }}-no ,
+            td .laytable-cell-@{{ d  }}-game_name ,
+            td .laytable-cell-@{{ d  }}-account_password ,
+            td .laytable-cell-@{{ d  }}-seller_nick {
                 height: 50px;
                 line-height: 25px;
-                word-break: break-all;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding-left: 15px;
             }
             td .laytable-cell-@{{ d  }}-button{
                 display: block;
@@ -457,7 +449,7 @@
                 //执行重载
                 table.reload('order-list', {
                     where: condition,
-                    height: 'full-420',
+                    height: 'full-340',
                     page: {
                         curr: 1
                     },
@@ -503,12 +495,12 @@
                 method: 'post',
                 cols: [[
                     {field: 'no', title: '订单号', width: 270, templet: '#noTemplate', style:"height: 50px;line-height: 25px;"},
-                    {field: 'status_text', title: '订单状态', width: 80, style:"height: 50px;line-height: 50px;"},
-                    {field: 'seller_nick', title: '玩家旺旺', minWidth: 150},
+                    {field: 'status_text', title: '状态', width: 80, style:"height: 50px;line-height: 50px;"},
+                    {field: 'seller_nick', title: '玩家旺旺',  width: 150, templet:'#wwTemplate', style:"height: 50px;line-height: 20px;"},
                     {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
-                    {field: 'game_leveling_title', title: '代练标题', width: 80},
-                    {field: 'game_name', title: '游戏/区/服', width: 100},
-                    {field: 'account_password', title: '账号/密码', width: 100},
+                    {field: 'game_leveling_title', title: '代练标题', width: 250},
+                    {field: 'game_name', title: '游戏/区/服', width: 180, templet:'#gameTemplate'},
+                    {field: 'account_password', title: '账号/密码', width: 170, templet:'#accountPasswordTemplate'},
                     {field: 'role', title: '角色名称', width: 100},
                     {field: 'amount', title: '代练价格', width: 100},
                     {field: 'efficiency_deposit', title: '效率保证金', width: 100},
@@ -528,7 +520,7 @@
                     {field: 'customer_service_name', title: '发单客服', width: 100},
                     {field: 'button', title: '操作', width: 200, fixed: 'right', style:"height: 50px;line-height: 50px;", toolbar: '#operation'}
                 ]],
-                height: 'full-420',
+                height: 'full-340',
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
@@ -536,6 +528,7 @@
                     next: '下一页'
                 },
                 done: function(res, curr, count){
+                    changeStyle(layui.table.index);
                     setStatusNumber(res.status_count);
                 }
             });

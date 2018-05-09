@@ -541,7 +541,7 @@
                                                 @php $btnCount++;  @endphp
                                                 @if($btnCount == 3)<br/> @endif
                                     @elseif(isset($item->levelingConsult->complain)  && auth()->user()->getPrimaryUserId() != $item->creator_primary_user_id && $item->status == 16 && $item->levelingConsult->complain == 2)
-                                        @if($item->levelingConsult == 1)
+                                        @if($item->levelingConsult->complain == 1)
                                             <a class="opt-btn" data-opt="agreeRevoke" data-no="{{ $item->no }}"  api_amount="{{ $item->levelingConsult->api_amount }}" api_deposit="{{ $item->levelingConsult->api_deposit }}" api_service="{{ $item->levelingConsult->api_service }}" who="1" reason="{{ $item->levelingConsult->revoke_message ?? '' }}">同意撤销</a>
                                         @endif
                                         <a class="opt-btn" data-opt="cancelArbitration" data-no="{{ $item->no }}">取消仲裁</a>
