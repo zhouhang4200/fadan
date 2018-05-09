@@ -174,14 +174,14 @@ class OrderController extends Controller
             }
 
             // 获取该商户下面的黑名单打手
-            $hatchetManBlacklist = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+            $hatchetManBlacklist = HatchetManBlacklist::whereIn('user_id', [$orderData->creator_primary_user_id, 0])
                 ->first();
 
             if (isset($hatchetManBlacklist) && ! empty($hatchetManBlacklist)) {
-                $blacklistQqs = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+                $blacklistQqs = HatchetManBlacklist::whereIn('user_id', [$orderData->creator_primary_user_id, 0])
                     ->pluck('hatchet_man_qq')->toArray();
 
-                $blacklistPhones = HatchetManBlacklist::where('user_id', $orderData->creator_primary_user_id)
+                $blacklistPhones = HatchetManBlacklist::whereIn('user_id', [$orderData->creator_primary_user_id, 0])
                     ->pluck('hatchet_man_phone')->toArray();
 
                 if (isset($blacklistQqs) && in_array($request->hatchet_man_qq, $blacklistQqs)) {
