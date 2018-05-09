@@ -279,7 +279,11 @@ class IndexController extends Controller
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
-//                $orderCurrent['third_name'] = isset(config('partner.platform')[$orderCurrent['third']]) ? config('partner.platform')[$orderCurrent['third']]['name'] : '';
+
+                $orderCurrent['third_name'] = '';
+                if (isset($orderCurrent['third']) && isset(config('partner.platform')[(int)$orderCurrent['third']])) {
+                    $orderCurrent['third_name'] = config('partner.platform')[$orderCurrent['third']]['name'];
+                }
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
