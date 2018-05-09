@@ -166,10 +166,7 @@ class IndexController extends Controller
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
         // 查询各状态订单数
-        $statusCount = OrderModel::select(\DB::raw('status, count(1) as count'))
-            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
-            ->groupBy('status')
-            ->pluck('count', 'status');
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
@@ -222,6 +219,9 @@ class IndexController extends Controller
         }
 
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize);
+
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+
 
         if ($request->ajax()) {
             if (!in_array($status, array_flip(config('order.status_leveling')))) {
@@ -301,6 +301,7 @@ class IndexController extends Controller
                 'msg' => '',
                 'count' => $orders->total(),
                 'data' =>  $orderArr,
+                'status_count' => $statusCount
             ];
         }
     }
