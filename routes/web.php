@@ -146,10 +146,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('control-mode', 'ReceivingControlController@controlMode')->name('frontend.setting.receiving-control.control-mode');
         });
         // 设置 - 发单设置
-        Route::prefix('sending-control')->group(function () {
-            Route::get('/', 'SendingController@index')->name('frontend.setting.sending-control.index')->middleware('new.permission:frontend.setting.sending-control.index');
-            Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change');
-        });
+        // Route::prefix('sending-control')->group(function () {
+        //     Route::get('/', 'SendingController@index')->name('frontend.setting.sending-control.index')->middleware('new.permission:frontend.setting.sending-control.index');
+        //     Route::post('change', 'SendingController@change')->name('frontend.setting.sending-control.change');
+        // });
         // 设置-发单辅助设置
         Route::prefix('sending-assist')->group(function () {
             // 代练要求模板
