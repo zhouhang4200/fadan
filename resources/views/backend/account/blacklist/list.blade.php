@@ -17,7 +17,7 @@
                     <td>{{ $hatchetManBlacklist->hatchet_man_qq }}</td>
                     <td>{{ $hatchetManBlacklist->content }}</td>
                     <td>
-                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('hatchet-man-blacklist.edit', ['id' => $hatchetManBlacklist->id]) }}">编辑</a>
+                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('admin.leveling-blacklist.edit', ['id' => $hatchetManBlacklist->id]) }}">编辑</a>
                     <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $hatchetManBlacklist->id }}">删除</button>
                     </td>
                 </tr>

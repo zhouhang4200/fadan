@@ -41,7 +41,7 @@ class LevelingBlacklist extends Controller
  		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone'])) {
  			return response()->ajax(0, '带*为必填内容');
  		}
- 		$data['user_id'] = Auth::user()->getPrimaryUserId();
+ 		$data['user_id'] = 0;
  		$data['hatchet_man_name'] = $request->data['hatchet_man_name'];
  		$data['hatchet_man_phone'] = $request->data['hatchet_man_phone'];
  		$data['hatchet_man_qq'] = $request->data['hatchet_man_qq'];
@@ -73,7 +73,7 @@ class LevelingBlacklist extends Controller
  		}
  		$hatchetManBlacklist = HatchetManBlacklist::find($request->id);
 
- 		$hatchetManBlacklist->user_id = Auth::user()->getPrimaryUserId();
+ 		$hatchetManBlacklist->user_id = 0;
  		$hatchetManBlacklist->hatchet_man_name = $request->data['hatchet_man_name'];
  		$hatchetManBlacklist->hatchet_man_phone = $request->data['hatchet_man_phone'];
  		$hatchetManBlacklist->hatchet_man_qq = $request->data['hatchet_man_qq'];
