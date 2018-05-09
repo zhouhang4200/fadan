@@ -76,7 +76,7 @@ class UserWithdrawOrderRepository
 
             foreach ($order as $k => $v) {
                 fputcsv($out, [
-                    $v->no,
+					$v->no . "\t",
                     $v->creator_primary_user_id,
                     $v->user->realNameIdent->name ?? '',
                     $v->user->realNameIdent->bank_name ?? '',
