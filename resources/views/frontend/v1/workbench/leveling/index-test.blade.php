@@ -1,5 +1,7 @@
 @extends('frontend.v1.layouts.app')
 
+@section('title', '工作台-代练订单')
+
 @section('breadcrumb')
 <div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
     <a>
@@ -11,6 +13,7 @@
     </a>
 </div>
 @endsection
+
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
@@ -361,6 +364,8 @@
                 <button class="qs-btn" data-opt="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</button>
                 <button class="qs-btn" data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
             @{{# } else if (d.status == 23) {  }}
+                <button class="qs-btn" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+            @{{# } else if (d.status == 24) {  }}
                 <button class="qs-btn" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
             @{{# }  }}
 

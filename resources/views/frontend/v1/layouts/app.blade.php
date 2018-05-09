@@ -1,8 +1,11 @@
+<?php
+$userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>@yield('title')<</title>
+    <title>@yield('title')</title>
     <meta name="renderer" content="webkit">
     <meta name="_token" content="{{ csrf_token() }}" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -84,22 +87,43 @@
                 </div>
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-                    <li data-name="home" class="layui-nav-item">
+                    @if(count(array_intersect([
+                               'frontend.workbench.index',
+                               'frontend.workbench.leveling.wait',
+                               'frontend.workbench.leveling.create',
+                               'frontend.workbench.leveling.index',
+                       ], $userPermissions)))
 
+                    <li data-name="home" class="layui-nav-item">
                         <a href="javascript:;" lay-tips="主页" lay-direction="2">
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>工作台</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd data-name="console" class="">
-                                <a lay-href="">待发订单</a>
-                            </dd>
-                            <dd data-name="console" class="">
-                                <a lay-href="">代练订单</a>
-                            </dd>
+                            @if(Auth::user()->could('frontend.workbench.index'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.index') }}">代充订单</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.wait'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.create'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.index'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
+                                </dd>
+                            @endif
                         </dl>
-
                     </li>
+
+                    @endif
                     <li data-name="component" class="layui-nav-item">
 
                         <a href="javascript:;" lay-tips="组件" lay-direction="2">
@@ -111,9 +135,7 @@
                                 <a lay-href="">按钮</a>
                             </dd>
                         </dl>
-
                     </li>
-
                 </ul>
             </div>
         </div>
