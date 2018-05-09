@@ -157,6 +157,7 @@
                 <li class="" lay-id="21">已仲裁</li>
                 <li class="" lay-id="22">已下架</li>
                 <li class="" lay-id="23">强制撤销</li>
+                <li class="" lay-id="24">已撤单</li>
             </ul>
             <div style="height: 10px"></div>
         </div>
