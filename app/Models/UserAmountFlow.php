@@ -17,12 +17,4 @@ class UserAmountFlow extends Model
     {
         return $this->morphTo();
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function orderDetail()
-    {
-        return $this->belongsTo(OrderDetail::class, 'trade_no', 'order_no');
-    }
 }

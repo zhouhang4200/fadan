@@ -87,7 +87,7 @@
                 <td>{{ config('tradetype.user')[$data->trade_type] }}</td>
                 <td>{{ $data->fee + 0 }}</td>
                 <td>{{ $data->balance + 0 }}</td>
-                <td>{{ $data->orderDetail->field_value }}</td>
+                <td>{{ $data->trade_no }}</td>
                 <td>{{ $data->created_at }}</td>
             </tr>
         @empty

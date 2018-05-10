@@ -12,11 +12,6 @@ class UserAmountFlowRepository
     public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 20)
     {
         $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
-            ->with([
-                'orderDetail' => function($query){
-                    $query->where('field_name', 'source_order_no_hide');
-                }
-            ])
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
                 return $query->where('trade_no', $tradeNo);
             })
