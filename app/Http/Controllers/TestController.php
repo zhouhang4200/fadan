@@ -213,6 +213,7 @@ class TestController extends Controller
 
     public function index()
     {
+        $this->testReceiveOrder();
         return $this->addPrice();
         return $this->getDailianmamaInfo();
         return $this->testSwitch('hang', 10);
@@ -255,6 +256,36 @@ dd(1);
 
         event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
         exit("1234");
+    }
+
+    public function testReceiveOrder() 
+    {
+        $request = new HttpRequest();
+        $request->setUrl('http://www.test.com/api/partner/order/receive');
+        $request->setMethod(HTTP_METH_POST);
+
+        $request->setQueryData(array(
+          'sign' => 'd3e8dfceb794d8dbd771ee4db6573cf7',
+          'order_no' => 'XQ20180503002810-13107',
+          'app_id' => 'fPHUSGXWN461NRb5VGeFp0xoYYaGOAc0rXIqnMxRwAvCpYcQKR0xhFIJdSTI',
+          'timestamp' => '2136127316',
+          'hatchet_man_qq' => '',
+          'hatchet_man_phone' => '13343450907111',
+          'hatchet_man_name' => 'DD373打手'
+        ));
+
+        $request->setHeaders(array(
+          'postman-token' => '11e65c70-58c6-e396-fdae-333bfc74253b',
+          'cache-control' => 'no-cache'
+        ));
+
+        try {
+          $response = $request->send();
+
+          echo $response->getBody();
+        } catch (HttpException $ex) {
+          echo $ex;
+        }
     }
 
     public function testAsset()
