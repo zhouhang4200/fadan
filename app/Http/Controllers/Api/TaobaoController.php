@@ -8,7 +8,7 @@ use App\Exceptions\CustomException as Exception;
 
 /**
  * 接收已授权店铺的淘宝订单
- * trade_status 1.买家付完款 2.交易成功 3.买家发起退款 4.卖家发货 5.卖家同意退款 6.卖家拒绝退款 7.退款成功 8.退款关闭
+ * trade_status 1.等待卖家发货 2.交易成功 3.买家已经申请退款 4.卖家已发货 5.卖家已经同意退款 6.卖家拒绝退款 7.退款成功 8.退款关闭
  * Class TaobaoController
  * @package App\Http\Controllers\Api
  */
