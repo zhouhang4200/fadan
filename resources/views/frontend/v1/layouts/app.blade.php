@@ -1,10 +1,13 @@
+<?php
+$userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>@yield('title')<</title>
-    <meta name="renderer" content="webkit">
+    <title>@yield('title')</title>
     <meta name="_token" content="{{ csrf_token() }}" >
+    <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/frontend/v1/lib/js/layui/css/layui.css" media="all">
@@ -15,8 +18,52 @@
         .layui-layout-admin .layui-body {
             top: 50px;
         }
+
+        .layui-layout-admin .layui-footer {
+            height: 52px;
+        }
+
+        .footer {
+            height: 72px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .main {
+            padding: 20px;
+        }
+
+        .layui-footer {
+            z-index: 999;
+        }
+
         .layui-card-header {
             height: auto;
+        }
+
+        .iconfont {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            margin-top: -19px;
+        }
+
+        .layui-card .layui-tab {
+            margin: 10px 0;
+        }
+        .layui-form-item {
+            margin-bottom: 12px;
+        }
+        .layui-tab-title li{
+            min-width: 50px;
+        }
+        .qsdate{
+            display: inline-block;
+            width: 44%;
+        }
+        .layui-card-header{
+            padding: 15px;
         }
     </style>
     @yield('css')
@@ -84,22 +131,43 @@
                 </div>
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-                    <li data-name="home" class="layui-nav-item">
+                    @if(count(array_intersect([
+                               'frontend.workbench.index',
+                               'frontend.workbench.leveling.wait',
+                               'frontend.workbench.leveling.create',
+                               'frontend.workbench.leveling.index',
+                       ], $userPermissions)))
 
+                    <li data-name="home" class="layui-nav-item">
                         <a href="javascript:;" lay-tips="主页" lay-direction="2">
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>工作台</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd data-name="console" class="">
-                                <a lay-href="">待发订单</a>
-                            </dd>
-                            <dd data-name="console" class="">
-                                <a lay-href="">代练订单</a>
-                            </dd>
+                            @if(Auth::user()->could('frontend.workbench.index'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.index') }}">代充订单</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.wait'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.create'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
+                                </dd>
+                            @endif
+                            @if(Auth::user()->could('frontend.workbench.leveling.index'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
+                                </dd>
+                            @endif
                         </dl>
-
                     </li>
+
+                    @endif
                     <li data-name="component" class="layui-nav-item">
 
                         <a href="javascript:;" lay-tips="组件" lay-direction="2">
@@ -111,9 +179,7 @@
                                 <a lay-href="">按钮</a>
                             </dd>
                         </dl>
-
                     </li>
-
                 </ul>
             </div>
         </div>

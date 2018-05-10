@@ -476,7 +476,7 @@
                                         @if($btnCount == 3)<br/> @endif
                                     @endif
 
-                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && (in_array($item->status, [19, 20, 21, 23])  ))
+                                    @if(auth()->user()->getPrimaryUserId() == $item->creator_primary_user_id && (in_array($item->status, [19, 20, 21, 23, 24])  ))
                                         <a class="opt-btn" data-opt="repeat" data-no="{{ $item->no }}">重发</a>
                                         @php $btnCount++;  @endphp
                                         @if($btnCount == 3)<br/> @endif
