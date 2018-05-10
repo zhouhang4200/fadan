@@ -186,9 +186,6 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
         <!-- 主体内容 -->
         <div class="layui-body">
             <div class="layadmin-tabsbody-item layui-show">
-                <div class="layui-card layadmin-header">
-                    @yield('breadcrumb')
-                </div>
                 <div class="layui-fluid">
                     <div class="layui-row layui-col-space15">
                         <div class="layui-col-md12">

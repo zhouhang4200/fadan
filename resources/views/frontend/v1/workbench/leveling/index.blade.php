@@ -2,17 +2,6 @@
 
 @section('title', '工作台-代练订单')
 
-@section('breadcrumb')
-<div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
-    <a>
-        <cite>工作台</cite>
-    </a>
-    <span lay-separator="">/</span>
-    <a>
-        <cite>代练订单</cite>
-    </a>
-</div>
-@endsection
 
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
@@ -34,6 +23,10 @@
         .layui-laypage .layui-laypage-curr .layui-laypage-em {
             background-color: #ff8500;
         }
+        .layui-tab {
+            padding: 0;
+        }
+
     </style>
 @endsection
 
@@ -440,7 +433,7 @@
                 //执行重载
                 table.reload('order-list', {
                     where: condition,
-                    height: 'full-370',
+                    height: 'full-315',
                     page: {
                         curr: 1
                     },
@@ -511,7 +504,7 @@
                     {field: 'customer_service_name', title: '发单客服', width: 100},
                     {field: 'button', title: '操作', width: 200, fixed: 'right', style:"height: 50px;line-height: 50px;", toolbar: '#operation'}
                 ]],
-                height: 'full-370',
+                height: 'full-315',
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,

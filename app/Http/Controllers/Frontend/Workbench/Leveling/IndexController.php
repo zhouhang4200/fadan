@@ -171,7 +171,7 @@ class IndexController extends Controller
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
-        return view('frontend.v1.workbench.leveling.index-test')->with([
+        return view('frontend.v1.workbench.leveling.index')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
@@ -338,7 +338,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
+        return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
     }
 
     /**
