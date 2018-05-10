@@ -370,7 +370,7 @@ class IndexController extends Controller
                 if (isset($orderData['creator_user_id'])) {
                     $oldOrder = User::where('id', $orderData['creator_user_id'])->first();
                     $orderData['customer_service_name'] = $oldOrder->username;
-                    $userId = $userId->id;
+                    $userId = $oldOrder->id;
                 } else {
                     $orderData['customer_service_name'] = '';
                 }
