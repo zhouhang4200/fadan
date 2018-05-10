@@ -338,7 +338,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
     }
 
     /**
