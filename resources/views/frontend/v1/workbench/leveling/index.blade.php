@@ -2,7 +2,6 @@
 
 @section('title', '工作台-代练订单')
 
-
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
@@ -31,127 +30,131 @@
 @endsection
 
 @section('main')
-    <div class="layui-card-header" style="padding-top: 20px;">
-        <div class="layui-row layui-col-space5">
-            <form class="layui-form" action="">
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label" style="">订单单号</label>
-                        <div class="layui-input-block" style="">
-                            <input type="text" name="no" lay-verify="title" autocomplete="off" placeholder="请输入订单号" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">玩家旺旺</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="wang_wang" lay-verify="title" autocomplete="off" placeholder="请输入玩家旺旺" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">代练游戏</label>
-                        <div class="layui-input-block">
-                            <select name="game_id" lay-search="">
-                                <option value="">请选择游戏</option>
-                                @foreach($game as  $key => $value)
-                                    <option value="{{ $key }}">{{ $value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"  style="">发单客服</label>
-                        <div class="layui-input-block" style="">
-                            <select name="customer_service_name" lay-search="">
-                                <option value="">请选择</option>
-                                @forelse($employee as $item)
-                                    <option value="{{ $item->username }}">{{ $item->username }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">代练平台</label>
-                        <div class="layui-input-block">
-                            <select name="platform">
-                                <option value="">全部</option>
-                                @foreach (config('partner.platform') as $key => $value)
-                                    <option value="{{ $key }}">{{ $value['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md4">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">发布时间</label>
-                        <div class="layui-input-block">
-                            <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
-                            <div class="layui-form-mid" style="float:none;display: inline-block;width: 8%;text-align: center;margin:0;">
-                                -
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header" style="padding-top: 20px;">
+                <div class="layui-row layui-col-space5">
+                    <form class="layui-form" action="">
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="">订单单号</label>
+                                <div class="layui-input-block" style="">
+                                    <input type="text" name="no" lay-verify="title" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+                                </div>
                             </div>
-                            <input type="text" class="layui-input qsdate" id="test-laydate-end" placeholder="结束日期">
                         </div>
-                    </div>
-                </div>
-                <div class="layui-col-md2">
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin-left: 40px;">
-                            <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">玩家旺旺</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="wang_wang" lay-verify="title" autocomplete="off" placeholder="请输入玩家旺旺" class="layui-input">
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">代练游戏</label>
+                                <div class="layui-input-block">
+                                    <select name="game_id" lay-search="">
+                                        <option value="">请选择游戏</option>
+                                        @foreach($game as  $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"  style="">发单客服</label>
+                                <div class="layui-input-block" style="">
+                                    <select name="customer_service_name" lay-search="">
+                                        <option value="">请选择</option>
+                                        @forelse($employee as $item)
+                                            <option value="{{ $item->username }}">{{ $item->username }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">代练平台</label>
+                                <div class="layui-input-block">
+                                    <select name="platform">
+                                        <option value="">全部</option>
+                                        @foreach (config('partner.platform') as $key => $value)
+                                            <option value="{{ $key }}">{{ $value['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">发布时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
+                                    <div class="layui-form-mid" style="float:none;display: inline-block;width: 8%;text-align: center;margin:0;">
+                                        -
+                                    </div>
+                                    <input type="text" class="layui-input qsdate" id="test-laydate-end" placeholder="结束日期">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md2">
+                            <div class="layui-form-item">
+                                <div class="layui-input-block" style="margin-left: 40px;">
+                                    <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
-    </div>
-    <div class="layui-card-body">
-        <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
-            <ul class="layui-tab-title">
-                <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
-                <li class="" lay-id="1">未接单</li>
-                <li class="" lay-id="13">代练中
-                    <span class="qs-badge quantity-13 layui-hide"></span>
-                </li>
-                <li class="" lay-id="14">待验收
-                    <span class="qs-badge quantity-14 layui-hide"></span>
-                </li>
-                <li class="" lay-id="15">撤销中
-                    <span class="qs-badge quantity-15 layui-hide"></span>
-                </li>
-                <li class="" lay-id="16">仲裁中
-                    <span class="qs-badge quantity-16 layui-hide"></span>
-                </li>
-                <li class="" lay-id="17">异常
-                    <span class="qs-badge quantity-17 layui-hide"></span>
-                </li>
-                <li class="" lay-id="18">锁定
-                    <span class="qs-badge quantity-18 layui-hide"></span>
-                </li>
-                <li class="" lay-id="19">已撤销
-                </li>
-                <li class="" lay-id="20">已结算
-                </li>
-                <li class="" lay-id="21">已仲裁
-                </li>
-                <li class="" lay-id="22">已下架
-                </li>
-                {{--<li class="" lay-id="23">强制撤销--}}
-                    {{--<span class="qs-badge quantity-23 layui-hide"></span>--}}
-                {{--</li>--}}
-                <li class="" lay-id="24">已撤单
-                </li>
-            </ul>
-            <div style="height: 10px"></div>
-        </div>
-        <div id="order-list" lay-filter="order-list">
+            </div>
+            <div class="layui-card-body">
+                <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+                        <li class="" lay-id="1">未接单</li>
+                        <li class="" lay-id="13">代练中
+                            <span class="qs-badge quantity-13 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="14">待验收
+                            <span class="qs-badge quantity-14 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="15">撤销中
+                            <span class="qs-badge quantity-15 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="16">仲裁中
+                            <span class="qs-badge quantity-16 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="17">异常
+                            <span class="qs-badge quantity-17 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="18">锁定
+                            <span class="qs-badge quantity-18 layui-hide"></span>
+                        </li>
+                        <li class="" lay-id="19">已撤销
+                        </li>
+                        <li class="" lay-id="20">已结算
+                        </li>
+                        <li class="" lay-id="21">已仲裁
+                        </li>
+                        <li class="" lay-id="22">已下架
+                        </li>
+                        {{--<li class="" lay-id="23">强制撤销--}}
+                            {{--<span class="qs-badge quantity-23 layui-hide"></span>--}}
+                        {{--</li>--}}
+                        <li class="" lay-id="24">已撤单
+                        </li>
+                    </ul>
+                    <div style="height: 10px"></div>
+                </div>
+                <div id="order-list" lay-filter="order-list">
+                </div>
+            </div>
         </div>
     </div>
 @endsection

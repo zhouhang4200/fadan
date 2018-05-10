@@ -303,6 +303,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
             // 待发单列表
             Route::get('wait', 'IndexController@wait')->name('frontend.workbench.leveling.wait')->middleware('new.permission:frontend.workbench.leveling.wait');
+            // 待发单数据
+            Route::post('wait-order-list', 'IndexController@waitOrderList')->name('frontend.workbench.leveling.wait-order-list');
             // 待接单数据更新
             Route::post('wait-update', 'IndexController@waitUpdate')->name('frontend.workbench.leveling.wait-update');
             // 重发

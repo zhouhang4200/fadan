@@ -62,9 +62,6 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
             display: inline-block;
             width: 44%;
         }
-        .layui-card-header{
-            padding: 15px;
-        }
     </style>
     @yield('css')
 </head>
@@ -188,11 +185,7 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
             <div class="layadmin-tabsbody-item layui-show">
                 <div class="layui-fluid">
                     <div class="layui-row layui-col-space15">
-                        <div class="layui-col-md12">
-                            <div class="layui-card">
-                                @yield('main')
-                            </div>
-                        </div>
+                        @yield('main')
                     </div>
                 </div>
             </div>

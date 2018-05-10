@@ -3,132 +3,335 @@
 @section('title', '工作台 - 代练 - 订单发布')
 
 @section('css')
-    <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
-    <style>
-        .layui-input-block{
-            margin-left: 50px;
-        }
-        .form-group {
-            margin-bottom: 7px;
-            position: relative;
-        }
-        .layui-form-mid {
-            text-align: right;
-        }
-        .site-title {
-            margin: 10px 0 20px;
-        }
-        .site-title fieldset {
-            border: none;
-            padding: 0;
-            border-top: 1px solid #eee;
-        }
-        .site-title fieldset legend {
-            font-size: 17px;
-            font-weight: 300;
-        }
-        .layui-form-checkbox[lay-skin=primary] {
-            height: 6px !important;
-        }
-        .layui-layer-btn .layui-layer-btn0,.layui-layer-btn .layui-layer-btn1,.layui-layer-btn .layui-layer-btn2   {
-            border-color: #1E9FFF;
-            background-color: #1E9FFF;
-            color:#ffffff;
-        }
-        .layui-layer-dialog .layui-layer-content {
-            text-align: center;
-        }
-    </style>
 @endsection
 
 @section('main')
-    <div class="layui-row  layui-col-space20">
-        <div class="layui-col-md7">
-            <div class="site-title">
-                <fieldset><legend><a name="hr">订单信息</a></legend></fieldset>
+    <div class="layui-col-md8">
+        <div class="layui-card qs-text">
+            <div class="layui-card-header">
+                <!-- <span style="float: left">订单信息</span> -->
+                <div class="order-operation">
+                    <button class="order-btn"><i class="iconfont icon-image-text"></i> </button>
+                    <button class="order-btn"><i class="iconfont icon-image"></i></button>
+                    <button class="order-btn"><i class="iconfont icon-duihua"></i></button>
+                </div>
             </div>
-            <form class="layui-form" action="" id="form-order">
-                <div class="layui-row form-group">
-                    <div class="layui-col-md6">
-                        <div class="layui-col-md3 layui-form-mid">*游戏</div>
-                        <div class="layui-col-md8">
-                            <select name="game_id" lay-verify="required" lay-search="" show-name="x" display-name="游戏" lay-filter="game">
-                                @foreach($game as $key => $value)
-                                    <option value="{{ $key }}" @if($gameId == $key) selected  @endif>{{ $value }}</option>
-                                @endforeach
+            <div class="layui-card-body" style="padding: 15px;">
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">游戏</label>
+                        <div class="layui-input-block">
+                            <select name="game" lay-filter="aihao">
+                                <option value=""></option>
+                                <option value="0">王者荣耀</option>
+                                <option value="1">地下城与勇士</option>
+                                <option value="2">毒奶粉</option>
+                                <option value="3">阿修罗换不锈钢脸盆</option>
                             </select>
                         </div>
                     </div>
-                </div>
-                <div id="template">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">区</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="qu" value="IOS微信" title="IOS微信" checked="">
+                            <input type="radio" name="qu" value="IOSQQ" title="IOSQQ">
+                            <input type="radio" name="qu" value="安卓微信" title="安卓微信">
+                            <input type="radio" name="qu" value="安卓QQ" title="安卓QQ" checked="">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服</label>
+                        <div class="layui-input-block">
+                            <select name="game" lay-filter="aihao">
+                                <option value=""></option>
+                                <option value="0">1</option>
+                                <option value="1">2</option>
+                                <option value="2">3</option>
+                                <option value="3">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">角色名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-block">
+                                <select name="type" lay-verify="required" lay-filter="aihao">
+                                    <option value=""></option>
+                                    <option value="0">前端工程师</option>
+                                    <option value="1">Node.js工程师</option>
+                                    <option value="2">PHP工程师</option>
+                                    <option value="3">Java工程师</option>
+                                    <option value="4">运维</option>
+                                    <option value="4">视觉设计师</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代练类型</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="like[write]" title="陪玩">
+                            <input type="checkbox" name="like[read]" title="排位" checked="">
+                            <input type="checkbox" name="like[game]" title="金币">
+                            <input type="checkbox" name="like[game]" title="成就">
+                        </div>
+                    </div>
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
 
-                </div>
-                <div class="layui-col-md-offset2">
-                    <div class="layui-btn layui-btn-normal  layui-col-md2" lay-submit="" lay-filter="order">确定</div>
-                </div>
-            </form>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练模板</label>
+                            <div class="layui-input-block">
+                                <select name="type" lay-verify="required" lay-filter="aihao">
+                                    <option value=""></option>
+                                    <option value="0">通用模板1</option>
+                                    <option value="1">通用模板2</option>
+                                    <option value="2">通用模板3</option>
+                                    <option value="3">通用模板4</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">代练说明</label>
+                                <div class="layui-input-block">
+                                    <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">代练说明</label>
+                                <div class="layui-input-block">
+                                    <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练价格</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">接单密码</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代练时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">安全保证金</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">效率保证金</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">安全保证金</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">效率保证金</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <div class="layui-footer" style="left: 0;">
+                                <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
+                                <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
+                                <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
+                                <button type="reset" class="qs-btn qs-btn-primary">重发</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md4">
+        <div class="layui-card">
+            <div class="layui-card-header">淘宝数据</div>
+            <div class="layui-card-body qs-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="100">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>店铺名</td>
+                        <td>
+                            斗奇网游专营店
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>买家旺旺</td>
+                        <td>
+                            <a href="#" style="color: #1aa6de">skai丶孤独终老</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>天猫单号</td>
+                        <td>149141802641700214</td>
+                    </tr>
+                    <tr>
+                        <td>订单状态</td>
+                        <td>
+                            买家发起退款
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>购买单价</td>
+                        <td>
+                            20.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>购买数量</td>
+                        <td>
+                            5
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>实付金额</td>
+                        <td>
+                            100.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>下单时间</td>
+                        <td>
+                            2018-5-10 14:52:55
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="layui-col-md3">
-            <div class="site-title">
-                <fieldset><legend><a name="hr">发单模版</a></legend></fieldset>
+        <div class="layui-card">
+            <div class="layui-card-header">平台数据</div>
+            <div class="layui-card-body qs-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="100">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>平台单号</td>
+                        <td>
+                            XQ20180505152607-88760
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>订单状态</td>
+                        <td>
+                            已仲裁
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>接单平台</td>
+                        <td>DD373</td>
+                    </tr>
+                    <tr>
+                        <td>打手名称</td>
+                        <td>
+                            DD373打手
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>打手电话</td>
+                        <td>
+                            17538323063
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>打手QQ</td>
+                        <td>
+                            297544973
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>剩余时间</td>
+                        <td>
+                            0天 0小时 0分
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>发布时间</td>
+                        <td>
+                            2018-5-10 14:52:55
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>接单时间</td>
+                        <td>
+                            2018-5-10 14:52:55
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>结算时间</td>
+                        <td>
+                            2018-5-10 14:52:55
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>仲裁说明</td>
+                        <td>
+                            你进行仲裁操作。原因：测试订单，撤单
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="layui-row " style="margin-bottom: 15px">
-                <div class="layui-col-md4">
-                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="analysis-template" id="parse">解析模版</div>
-                </div>
-                <div class="layui-col-md4 layui-col-md-offset4">
-                    <div class="layui-btn layui-btn-normal layui-col-md12" lay-submit="" lay-filter="instructions">使用说明</div>
-                </div>
-            </div>
-            <div class="">
-                <div class="layui-row form-group">
-                    <textarea name="desc" class="layui-textarea" style="min-height: 800px" id="user-template"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-col-md2">
-            <div class="site-title">
-                <fieldset><legend><a name="hr">订单来源</a></legend></fieldset>
-            </div>
-
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">店铺名：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->seller_nick or '' }}</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">天猫单号：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->tid or '' }}</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">买家旺旺：</div>
-                <div class="layui-col-md7">
-                    @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
-                        <a style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
-                           class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
-                        </a>
-                    @else
-                    @endif
-                </div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">购买单价：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->price or '' }}</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">购买数量：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->num or '' }}</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">实付金额：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->payment or '' }}</div>
-            </div>
-            <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">下单时间：</div>
-                <div class="layui-col-md7">{{ $taobaoTrade->created or '' }}</div>
-            </div>
-
         </div>
     </div>
 @endsection

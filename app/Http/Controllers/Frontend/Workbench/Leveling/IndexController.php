@@ -368,7 +368,9 @@ class IndexController extends Controller
                     ->update(['value' => 0]);
                 // 原始发单人
                 if (isset($orderData['creator_user_id'])) {
-                    $orderData['customer_service_name'] = User::where('id', $orderData['creator_user_id'])->value('username');
+                    $oldOrder = User::where('id', $orderData['creator_user_id'])->first();
+                    $orderData['customer_service_name'] = $oldOrder->username;
+                    $userId = $userId->id;
                 } else {
                     $orderData['customer_service_name'] = '';
                 }
@@ -1418,6 +1420,47 @@ class IndexController extends Controller
                 'hideCount' => $hideCount,
             ]
         );
+    }
+
+    /**
+     * 获取订单数据
+     * @param Request $request
+     */
+    public function waitOrderList(Request $request)
+    {
+        $tid = $request->tid;
+        $status = $request->input('status', 0);
+        $buyerNick = $request->buyer_nick;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('service_id', 4)
+            ->where('trade_status', '!=', 2)
+            ->orderBy('id', 'desc')
+            ->paginate(30);
+
+        $orderCount =  TaobaoTrade::select(\DB::raw('handle_status, count(1) as count'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('trade_status', '!=', 2)->groupBy('handle_status')->pluck('count', 'handle_status');
+        
+        $a1 = [0 => 0, 1=> 0, 2 => 0];
+        $a2 = $orderCount->toArray();
+
+        foreach ($a1 as $key => $item) {
+            if (!isset($a2[$key])) {
+                $a2[$key] = 0;
+            }
+        }
+
+        return [
+            'code' => 0,
+            'msg' => '',
+            'count' => $orders->total(),
+            'data' =>  $orders->items(),
+            'status_count' =>  $a2
+        ];
     }
 
     /**
