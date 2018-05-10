@@ -115,18 +115,18 @@ class UnLock extends DailianAbstract implements DailianInterface
              * 以下 只 适用于 91  和 代练妈妈
              * @var [type]
              */
-            $orderDetails = $this->checkThirdClientOrder($this->order);
+            // $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            switch ($orderDetails['third']) {
-                case 1:
-                    // 91 取消锁定
-                    Show91::changeOrderBlock(['oid' => $orderDetails['show91_order_no']]);
-                    break;
-                case 2:
-                    // 代练妈妈解除锁定接口
-                    DailianMama::operationOrder($this->order, 20010);
-                    break;
-            }
+            // switch ($orderDetails['third']) {
+            //     case 1:
+            //         // 91 取消锁定
+            //         Show91::changeOrderBlock(['oid' => $orderDetails['show91_order_no']]);
+            //         break;
+            //     case 2:
+            //         // 代练妈妈解除锁定接口
+            //         DailianMama::operationOrder($this->order, 20010);
+            //         break;
+            // }
             return true;
 
         }
