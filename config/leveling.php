@@ -5,6 +5,7 @@ use App\Services\DailianMama;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 // use App\Services\Leveling\WanziController;
+use App\Services\Leveling\Show91Controller;
 
 // 代练平台操作自动匹配第三方平台
 return [
@@ -12,6 +13,7 @@ return [
 	'third' => [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
+		8456 => 1, // 91
 		// 84567 => 5, // 丸子
 	],
 
@@ -19,6 +21,7 @@ return [
 	'third_orders' => [
 		3 => 'mayi_order_no',
 		4 => 'dd373_order_no',
+		1 => 'show91_order_no',
 		// 5 => 'wanzi_order_no',
 	],
     // 外部平台价格字段
@@ -37,6 +40,7 @@ return [
 	'controller' => [
 		4 => DD373Controller::class,
 		3 => MayiDailianController::class,
+		1 => Show91Controller::class,
 		// 5 => WanziController::class,
 	],
 
@@ -133,10 +137,13 @@ return [
 
 	// 91平台
     'show91' => [
-    	'appid'     => 'bXxE7ElApTbaqaX',
+		'appid'     => 'bXxE7ElApTbaqaX',
 		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
-		'aes_key' => '45584685d8e4f5e8e4e2685',
-        'aes_iv' => '1234567891111152',
+		'aes_key'   => '45584685d8e4f5e8e4e2685',
+		'aes_iv'    => '1234567891111152',
+		'account'   => 'AF0C36557C664C6B976248917B2BCC39',
+		'sign'      => '7a1e292cad738113e99d1bd3f41bed90',
+		'password'  => 111,
     	'status' => [
 	        0  => '已发布',
 	        1  => '代练中',
@@ -150,37 +157,73 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
+    	'url' 		=> [
+			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
+			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
+			'applyRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addCancelOrder', // 申请撤销
+			'cancelRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelSc', // 取消撤销
+			'agreeRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 同意撤销
+			'applyArbitration'         => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addappeal', // 申请仲裁
+			'cancelArbitration'        => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelAppeal', // 取消仲裁
+			'complete'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/accept', // 订单完成
+			'lock'                     => '', // 锁定
+			'cancelLock'               => '', // 取消锁定
+			'delete'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/chedan', // 删除订单
+			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addOrder', // 修改订单
+			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime3', // 加时
+			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice2', // 加款
+			'orderDetail'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/orderDetail', // 订单详情
+			'getScreenshot'            => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/topic', // 订单截图
+			'getMessage'               => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/messageList', //获取留言
+			'replyMessage'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addMess', // 回复留言addMess
+			'updateAccountAndPassword' => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/editOrderAccPwd', // 修改账号密码
+			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
+			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
+    	],
     ],
 
     // 丸子平台
     'wanzi' => [
-    	'appid'     => 'HISxsdbyXgL17rlLzI858zN9IQiJnwz7f3POcv4dFuanMu3G00uNdBZTiYrW',
-		'appsecret' => 'jhJABPd2MDZIg635QY4ImNp3dDNfqognwwMGOotAuTaoWicDhIMuMQpHOqnG',
-		'aes_key'   => '45584655d8e4f5e8',
+    	'appid'     => 'bXxE7ElApTbaqaX',
+		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
+		'aes_key'   => '45584685d8e4f5e8e4e2685',
 		'aes_iv'    => '1234567891111152',
 		'account'   => '51683C315D36488FB266904B6FD4BDFF',
 		'sign'		=> '64551beede02877e16e68852aeb90b41',
+		'status' => [
+	        0  => '已发布',
+	        1  => '代练中',
+	        2  => '待验收',
+	        3  => '待结算',
+	        4  => '已结算',
+	        5  => '已挂起',
+	        6  => '已撤单',
+	        7  => '已取消',
+	        10 => '等待工作室接单',
+	        11 => '等待玩家付款',
+	        12 => '玩家超时未付款',
+    	],
     	'url' 		=> [
-			'onSale'                   => 'http://www.show91.com/oauth/grounding', // 上架
-			'offSale'                  => 'http://www.show91.com/oauth/grounding', // 下架
-			'applyRevoke'              => 'http://www.show91.com/oauth/addCancelOrder', // 申请撤销
-			'cancelRevoke'             => 'http://www.show91.com/oauth/cancelSc', // 取消撤销
-			'agreeRevoke'              => 'http://www.show91.com/oauth/confirmSc', // 同意撤销
-			'applyArbitration'         => 'http://www.show91.com/oauth/addappeal', // 申请仲裁
-			'cancelArbitration'        => 'http://www.show91.com/oauth/cancelAppeal', // 取消仲裁
-			'complete'                 => 'http://www.show91.com/oauth/accept', // 订单完成
+			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
+			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
+			'applyRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addCancelOrder', // 申请撤销
+			'cancelRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelSc', // 取消撤销
+			'agreeRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 同意撤销
+			'applyArbitration'         => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addappeal', // 申请仲裁
+			'cancelArbitration'        => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelAppeal', // 取消仲裁
+			'complete'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/accept', // 订单完成
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
-			'delete'                   => 'http://www.show91.com/oauth/chedan', // 删除订单
-			'updateOrder'              => 'http://www.show91.com/oauth/addOrder', // 修改订单
-			'addTime'                  => 'http://www.show91.com/oauth/addLimitTime', // 加时
-			'addMoney'                 => 'http://www.show91.com/oauth/addPrice', // 加款
-			'orderDetail'              => 'http://www.show91.com/oauth/orderDetail', // 订单详情
-			'getScreenshot'            => 'http://www.show91.com/oauth/topic', // 订单截图
-			'getMessage'               => 'http://www.show91.com/oauth/messageList', //获取留言
+			'delete'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/chedan', // 删除订单
+			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addOrder', // 修改订单
+			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime', // 加时
+			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice', // 加款
+			'orderDetail'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/orderDetail', // 订单详情
+			'getScreenshot'            => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/topic', // 订单截图
+			'getMessage'               => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/messageList', //获取留言
 			'replyMessage'             => '', // 回复留言
-			'updateAccountAndPassword' => 'http://www.show91.com/oauth/editOrderAccPwd', // 修改账号密码
-			'refuseRevoke'             => 'http://www.show91.com/oauth/confirmSc', // 不同意撤销
+			'updateAccountAndPassword' => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/editOrderAccPwd', // 修改账号密码
+			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
     	],
     ],
 ];

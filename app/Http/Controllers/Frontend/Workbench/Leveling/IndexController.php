@@ -725,7 +725,7 @@ class IndexController extends Controller
     public function leaveImage($order_no)
     {
         try {
-            $dataList = OrderAttachmentRepository::dataList($order_no);
+            // $dataList = OrderAttachmentRepository::dataList($order_no);
             // 其他通用平台
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
@@ -805,11 +805,11 @@ class IndexController extends Controller
         $thirdOrderNo = $orderDetail['third'] == 1 ? $orderDetail['show91_order_no'] : $orderDetail['dailianmama_order_no'];
 
         try {
-            if ($orderDetail['third'] == 1) {
-                $res = Show91::addMess(['oid' => $thirdOrderNo, 'mess' => $message]);
-            } else if ($orderDetail['third'] == 2) {
-                $res = DailianMama::addChat($thirdOrderNo, $message);
-            }
+            // if ($orderDetail['third'] == 1) {
+            //     $res = Show91::addMess(['oid' => $thirdOrderNo, 'mess' => $message]);
+            // } else if ($orderDetail['third'] == 2) {
+            //     $res = DailianMama::addChat($thirdOrderNo, $message);
+            // }
             // 其他平台
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
@@ -905,7 +905,7 @@ class IndexController extends Controller
                 $newOrder = OrderModel::where('no', $order->no)->first();
 
                 //**修改订单, 91和代练妈妈通用 **/
-                event(new AutoRequestInterface($newOrder, 'addOrder', true));
+                // event(new AutoRequestInterface($newOrder, 'addOrder', true));
                 /** 修改订单, 其他平台通用 **/
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
@@ -970,7 +970,7 @@ class IndexController extends Controller
 
                     /**修改订单**/
                     //**修改订单, 91和代练妈妈通用 **/
-                    event(new AutoRequestInterface($order, 'addOrder', true));
+                    // event(new AutoRequestInterface($order, 'addOrder', true));
                     /** 修改订单, 其他平台通用 **/
                     if (config('leveling.third_orders')) {
                         // 获取订单和订单详情以及仲裁协商信息
@@ -1002,10 +1002,10 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        $order->addAmount = $addAmount;
-                        
+                        // $order->addAmount = $addAmount;
+
                         // 加价 91 和 代练妈妈通用
-                        event(new AutoRequestInterface($order, 'addPrice'));
+                        // event(new AutoRequestInterface($order, 'addPrice'));
                         // 加价 其他平台通用
                         if (config('leveling.third_orders')) {
                             // 获取订单和订单详情以及仲裁协商信息
@@ -1029,7 +1029,7 @@ class IndexController extends Controller
                             'field_value' => $requestData['password']
                         ]);
                         // 账号密码修改，91和代练妈妈通用
-                        event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+                        // event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
                         // 其他平台通用
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
@@ -1050,7 +1050,7 @@ class IndexController extends Controller
                             'field_value' => $requestData['password']
                         ]);
                         // 账号密码修改，91和代练妈妈通用
-                        event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+                        // event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
                         // 其他平台通用
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
@@ -1079,21 +1079,22 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                             'field_value' => $requestData['game_leveling_hour']
                         ]);
+ 
                         // 91和代练妈妈接口加时
-                        if (isset($addDays) && !isset($addHours)) {
-                            $order->addDays = $addDays;
-                            $order->addHours = 0;
+                        // if (isset($addDays) && !isset($addHours)) {
+                        //     $order->addDays = $addDays;
+                        //     $order->addHours = 0;
                             // 仅限 91 和 代练妈妈
-                            event(new AutoRequestInterface($order, 'addLimitTime'));
-                        } elseif (!isset($addDays) && isset($addHours)) {
-                            $order->addDays = 0;
-                            $order->addHours = $addHours;
-                            event(new AutoRequestInterface($order, 'addLimitTime'));
-                        } elseif (isset($addDays) && isset($addHours)) {
-                            $order->addDays = $addDays;
-                            $order->addHours = $addHours;
-                            event(new AutoRequestInterface($order, 'addLimitTime'));
-                        }
+                            // event(new AutoRequestInterface($order, 'addLimitTime'));
+                        // } elseif (!isset($addDays) && isset($addHours)) {
+                        //     $order->addDays = 0;
+                        //     $order->addHours = $addHours;
+                            // event(new AutoRequestInterface($order, 'addLimitTime'));
+                        // } elseif (isset($addDays) && isset($addHours)) {
+                        //     $order->addDays = $addDays;
+                        //     $order->addHours = $addHours;
+                            // event(new AutoRequestInterface($order, 'addLimitTime'));
+                        // }
                          // 其他平台通用加时
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
@@ -1127,8 +1128,8 @@ class IndexController extends Controller
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
                         // 接口加价
-                        $order->addAmount = $addAmount;
-                        event(new AutoRequestInterface($order, 'addPrice'));
+                        // $order->addAmount = $addAmount;
+                        // event(new AutoRequestInterface($order, 'addPrice'));
                         // 加价 其他平台通用
                         if (config('leveling.third_orders')) {
                             // 获取订单和订单详情以及仲裁协商信息
@@ -1481,6 +1482,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='dailianmama_order_no' THEN a.field_value ELSE '' END) AS dailianmama_order_no,
                 MAX(CASE WHEN a.field_name='hatchet_man_qq' THEN a.field_value ELSE '' END) AS hatchet_man_qq,
                 MAX(CASE WHEN a.field_name='hatchet_man_phone' THEN a.field_value ELSE '' END) AS hatchet_man_phone,
+                MAX(CASE WHEN a.field_name='order_password' THEN a.field_value ELSE '' END) AS order_password,
                 MAX(CASE WHEN a.field_name='game_leveling_requirements_template' THEN a.field_value ELSE '' END) AS game_leveling_requirements_template,
                 b.no,
                 b.amount,

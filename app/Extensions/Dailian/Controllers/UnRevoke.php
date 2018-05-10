@@ -127,7 +127,7 @@ class UnRevoke extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders') && $this->userId != 8456) {
+            if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台
@@ -143,18 +143,18 @@ class UnRevoke extends DailianAbstract implements DailianInterface
             /**
              * 以下只适用于 91  和 代练妈妈
              */
-            $orderDetails = $this->checkThirdClientOrder($this->order);
+            // $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            switch ($orderDetails['third']) {
-                case 1:
-                    // 91 取消撤销
-                    Show91::cancelSc(['oid' => $orderDetails['show91_order_no']]);
-                    break;
-                case 2:
-                    // 代练妈妈取消协商接口
-                    DailianMama::operationOrder($this->order, 20012);
-                    break;
-            }
+            // switch ($orderDetails['third']) {
+            //     case 1:
+            //         // 91 取消撤销
+            //         Show91::cancelSc(['oid' => $orderDetails['show91_order_no']]);
+            //         break;
+            //     case 2:
+            //         // 代练妈妈取消协商接口
+            //         DailianMama::operationOrder($this->order, 20012);
+            //         break;
+            // }
             return true;
         }
     }

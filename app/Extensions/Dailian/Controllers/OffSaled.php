@@ -85,7 +85,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders') && $this->userId != 8456) {
+            if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历代练平台
@@ -101,17 +101,17 @@ class OffSaled extends DailianAbstract implements DailianInterface
             /**
              * 以下只适用于  91  和 代练妈妈
              */
-            $orderDetails = $this->checkThirdClientOrder($this->order);
+            // $orderDetails = $this->checkThirdClientOrder($this->order);
 
             // 下架91订单
-            if ($orderDetails['show91_order_no']) {
-                Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-            }
+            // if ($orderDetails['show91_order_no']) {
+            //     Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
+            // }
 
              // 代练妈妈下架接口
-            if ($orderDetails['dailianmama_order_no']) {
-                DailianMama::closeOrder($this->order);
-            }
+            // if ($orderDetails['dailianmama_order_no']) {
+            //     DailianMama::closeOrder($this->order);
+            // }
         }
     }
 }

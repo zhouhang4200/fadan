@@ -381,7 +381,7 @@ class Revoked extends DailianAbstract implements DailianInterface
     {
         if ($this->runAfter) {
 
-            if (config('leveling.third_orders') && $this->userId != 8456) {
+            if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                // 遍历代练平台
@@ -396,23 +396,23 @@ class Revoked extends DailianAbstract implements DailianInterface
 
             /**
              * 以下只 适用于 91  和 代练妈妈
-             */
-            $orderDetails = $this->checkThirdClientOrder($this->order);
+            //  */
+            // $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            switch ($orderDetails['third']) {
-                case 1:
-                    // 91 同意撤销接口
-                    $options = [
-                        'oid' => $orderDetails['show91_order_no'],
-                        'v' => 1,
-                        'p' => config('show91.password'),
-                    ];
-                    Show91::confirmSc($options);
-                    break;
-                case 2:
-                    DailianMama::operationOrder($this->order, 20009);
-                    break;
-            }
+            // switch ($orderDetails['third']) {
+            //     case 1:
+            //         // 91 同意撤销接口
+            //         $options = [
+            //             'oid' => $orderDetails['show91_order_no'],
+            //             'v' => 1,
+            //             'p' => config('show91.password'),
+            //         ];
+            //         Show91::confirmSc($options);
+            //         break;
+            //     case 2:
+            //         DailianMama::operationOrder($this->order, 20009);
+            //         break;
+            // }
             return true;
         }
     }

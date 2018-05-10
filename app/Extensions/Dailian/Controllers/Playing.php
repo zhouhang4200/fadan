@@ -170,7 +170,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 订单详情
             $orderDetails = $this->checkThirdClientOrder($this->order);
 
-            if (config('leveling.third_orders') && ! in_array($this->userId, [8456, 8556])) {
+            if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
                 // 遍历 平台 =》 平台订单名称
@@ -192,16 +192,16 @@ class Playing extends DailianAbstract implements DailianInterface
                                 ->where('field_name', 'third_order_no')
                                 ->update(['field_value' => $orderDatas[$thirdOrderNoName]]);
                         }
-                        if ($orderDetails['dailianmama_order_no']) {                     
-                            // 代练妈妈删除订单
-                            DailianMama::deleteOrder($this->order);
-                        }
-                        if ($orderDetails['show91_order_no']) {
-                            // 撤单91平台订单
-                            $options = ['oid' => $orderDetails['show91_order_no']]; 
-                            // 91代练下单
-                            Show91::chedan($options);
-                        }
+                        // if ($orderDetails['dailianmama_order_no']) {                     
+                        //     // 代练妈妈删除订单
+                        //     DailianMama::deleteOrder($this->order);
+                        // }
+                        // if ($orderDetails['show91_order_no']) {
+                        //     // 撤单91平台订单
+                        //     $options = ['oid' => $orderDetails['show91_order_no']]; 
+                        //     // 91代练下单
+                        //     Show91::chedan($options);
+                        // }
                     // 其他平台订单撤单
                     } else {
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
@@ -218,72 +218,72 @@ class Playing extends DailianAbstract implements DailianInterface
                 ->update(['field_value' => $now]);
 
             // 根据userid, 判断是哪个平台接单
-            switch ($this->userId) {
-                case 8456: 
-                    // 更新第三方平台为 show91
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'third')
-                        ->update(['field_value' => 1]);
+            // switch ($this->userId) {
+            //     case 8456: 
+            //         // 更新第三方平台为 show91
+            //         OrderDetail::where('order_no', $this->order->no)
+            //             ->where('field_name', 'third')
+            //             ->update(['field_value' => 1]);
 
-                    // 更新 third_order_no 为对应平台的订单号
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'third_order_no')
-                        ->update(['field_value' => $orderDetails['show91_order_no']]);
+            //         // 更新 third_order_no 为对应平台的订单号
+            //         OrderDetail::where('order_no', $this->order->no)
+            //             ->where('field_name', 'third_order_no')
+            //             ->update(['field_value' => $orderDetails['show91_order_no']]);
 
-                    if ($orderDetails['dailianmama_order_no']) {                     
-                        // 代练妈妈删除订单
-                        DailianMama::deleteOrder($this->order);
-                    }
+            //         if ($orderDetails['dailianmama_order_no']) {                     
+            //             // 代练妈妈删除订单
+            //             DailianMama::deleteOrder($this->order);
+            //         }
 
-                    if (config('leveling.third_orders')) {
-                        // 获取订单和订单详情以及仲裁协商信息
-                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                        // 遍历 平台 =》 平台订单名称
-                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                            if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                                // 控制器-》方法-》参数
-                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
-                            }
-                        }
-                    }
-                    break;
-                case config('dailianmama.qs_user_id'):
-                    // 更新第三方平台为 dailianmam
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'third')
-                        ->update(['field_value' => 2]);
+            //         if (config('leveling.third_orders')) {
+            //             // 获取订单和订单详情以及仲裁协商信息
+            //             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+            //             // 遍历 平台 =》 平台订单名称
+            //             foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+            //                 if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+            //                     // 控制器-》方法-》参数
+            //                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+            //                 }
+            //             }
+            //         }
+            //         break;
+            //     case config('dailianmama.qs_user_id'):
+            //         // 更新第三方平台为 dailianmam
+            //         OrderDetail::where('order_no', $this->order->no)
+            //             ->where('field_name', 'third')
+            //             ->update(['field_value' => 2]);
 
-                    // 更新 third_order_no 为对应平台的订单号
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'third_order_no')
-                        ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
+            //         // 更新 third_order_no 为对应平台的订单号
+            //         OrderDetail::where('order_no', $this->order->no)
+            //             ->where('field_name', 'third_order_no')
+            //             ->update(['field_value' => $orderDetails['dailianmama_order_no']]);
 
-                    if ($orderDetails['show91_order_no']) {
-                        // 撤单91平台订单
-                        $options = ['oid' => $orderDetails['show91_order_no']]; 
-                        // 91代练下单
-                        Show91::chedan($options);
-                    }
-                    // 获取代练妈妈平台接单打手名称
-                    $orderInfo = DailianMama::orderinfo($this->order);
+            //         if ($orderDetails['show91_order_no']) {
+            //             // 撤单91平台订单
+            //             $options = ['oid' => $orderDetails['show91_order_no']]; 
+            //             // 91代练下单
+            //             Show91::chedan($options);
+            //         }
+            //         // 获取代练妈妈平台接单打手名称
+            //         $orderInfo = DailianMama::orderinfo($this->order);
 
-                    OrderDetail::where('order_no', $this->order->no)
-                        ->where('field_name', 'hatchet_man_name')
-                        ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
+            //         OrderDetail::where('order_no', $this->order->no)
+            //             ->where('field_name', 'hatchet_man_name')
+            //             ->update(['field_value' => $orderInfo['data']['userinfo']['nickname']]);
 
-                    if (config('leveling.third_orders')) {
-                        // 获取订单和订单详情以及仲裁协商信息
-                        $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
-                        // 遍历 平台 =》 平台订单名称
-                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                            if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                                // 控制器-》方法-》参数
-                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
-                            }
-                        }
-                    }
-                    break;
-            }
+            //         if (config('leveling.third_orders')) {
+            //             // 获取订单和订单详情以及仲裁协商信息
+            //             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
+            //             // 遍历 平台 =》 平台订单名称
+            //             foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+            //                 if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
+            //                     // 控制器-》方法-》参数
+            //                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+            //                 }
+            //             }
+            //         }
+            //         break;
+            // }
             // 调用事件
             try {
                 event(new OrderReceiving($this->order));
