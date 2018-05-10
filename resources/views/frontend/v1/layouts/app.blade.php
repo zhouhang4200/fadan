@@ -6,8 +6,8 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
 <head>
     <meta charset="utf-8">
     <title>@yield('title')</title>
-    <meta name="renderer" content="webkit">
     <meta name="_token" content="{{ csrf_token() }}" >
+    <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/frontend/v1/lib/js/layui/css/layui.css" media="all">
@@ -18,8 +18,52 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
         .layui-layout-admin .layui-body {
             top: 50px;
         }
+
+        .layui-layout-admin .layui-footer {
+            height: 52px;
+        }
+
+        .footer {
+            height: 72px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .main {
+            padding: 20px;
+        }
+
+        .layui-footer {
+            z-index: 999;
+        }
+
         .layui-card-header {
             height: auto;
+        }
+
+        .iconfont {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            margin-top: -19px;
+        }
+
+        .layui-card .layui-tab {
+            margin: 10px 0;
+        }
+        .layui-form-item {
+            margin-bottom: 12px;
+        }
+        .layui-tab-title li{
+            min-width: 50px;
+        }
+        .qsdate{
+            display: inline-block;
+            width: 44%;
+        }
+        .layui-card-header{
+            padding: 15px;
         }
     </style>
     @yield('css')
