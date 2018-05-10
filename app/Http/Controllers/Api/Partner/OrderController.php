@@ -169,10 +169,13 @@ class OrderController extends Controller
             }
             $orderData = $this->getOrderAndOrderDetails($request->order_no);
 
-            if (! isset($request->hatchet_man_qq) || ! isset($request->hatchet_man_phone) || ! isset($request->hatchet_man_name)) {
-                return response()->partner(0, '打手信息缺失');
+            if (! isset($request->hatchet_man_qq) && ! isset($request->hatchet_man_phone)) {
+                return response()->partner(0, '打手QQ和电话必须有一个');
             }
 
+            $hatchetManQq = $request->hatchet_man_qq ?? '';
+            $hatchetManPhone = $request->hatchet_man_phone ?? '';
+            $hatchetManName = $request->hatchet_man_name ?? '';
             // 获取该商户下面的黑名单打手
             $hatchetManBlacklist = HatchetManBlacklist::whereIn('user_id', [$orderData->creator_primary_user_id, 0])
                 ->first();
@@ -184,10 +187,10 @@ class OrderController extends Controller
                 $blacklistPhones = HatchetManBlacklist::whereIn('user_id', [$orderData->creator_primary_user_id, 0])
                     ->pluck('hatchet_man_phone')->toArray();
 
-                if (isset($blacklistQqs) && in_array($request->hatchet_man_qq, $blacklistQqs)) {
+                if (isset($blacklistQqs) && in_array($hatchetManQq, $blacklistQqs)) {
                     return response()->partner(0, '打手已被商户拉入黑名单');
                 }
-                if (isset($blacklistPhones) && in_array($request->hatchet_man_phone, $blacklistPhones)) {
+                if (isset($blacklistPhones) && in_array($hatchetManPhone, $blacklistPhones)) {
                     return response()->partner(0, '打手已被商户拉入黑名单');
                 }
             }
@@ -229,20 +232,21 @@ class OrderController extends Controller
                         return response()->partner(0, '接单失败, 订单价格不一致,请重试');
                     }
                 }
+        
                 // 外部平台调用我们的接单操作
                 DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);
                 // 写入打手信息(QQ, 电话， 昵称)
                 OrderDetail::where('order_no', $orderData->no)
                     ->where('field_name', 'hatchet_man_qq')
-                    ->update(['field_value' => $request->hatchet_man_qq]);
+                    ->update(['field_value' => $hatchetManQq]);
 
                 OrderDetail::where('order_no', $orderData->no)
                     ->where('field_name', 'hatchet_man_phone')
-                    ->update(['field_value' => $request->hatchet_man_phone]);
+                    ->update(['field_value' => $hatchetManPhone]);
 
                 OrderDetail::where('order_no', $orderData->no)
                     ->where('field_name', 'hatchet_man_name')
-                    ->update(['field_value' => $request->hatchet_man_name]);
+                    ->update(['field_value' => $hatchetManName]);
 
             } else {
                 return response()->partner(0, '订单不存在');
