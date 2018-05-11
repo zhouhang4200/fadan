@@ -157,7 +157,7 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
-    	'url' 		=> [
+    	'url' => [
 			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
 			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
 			'applyRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addCancelOrder', // 申请撤销
@@ -204,7 +204,7 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
-    	'url' 		=> [
+    	'url' => [
 			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
 			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
 			'applyRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addCancelOrder', // 申请撤销
