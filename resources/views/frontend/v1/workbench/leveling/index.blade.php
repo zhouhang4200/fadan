@@ -5,19 +5,103 @@
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
+        .layui-layout-admin .layui-body {
+            top: 50px;
+        }
 
+        .layui-layout-admin .layui-footer {
+            height: 52px;
+        }
+
+        .footer {
+            height: 72px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .main {
+            padding: 20px;
+        }
+
+        .layui-footer {
+            z-index: 999;
+        }
+
+        .layui-card-header {
+            height: auto;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .iconfont {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            margin-top: -19px;
+        }
+
+        .layui-card .layui-tab {
+            margin-top: 3px;
+            margin-bottom: 12px;
+        }
+        .layui-form-item {
+            margin-bottom: 12px;
+        }
+        .last-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            display: block;
+            height: 40px;
+            line-height: 20px;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 15px;
+        }
+        .layui-tab-title li{
+            min-width: 50px;
+            font-size: 12px;
+        }
+        .qsdate{
+            float: left;
+            width: 40% !important;
+        }
+        .layui-card-header{
+            padding: 15px 15px 0 15px;;
+
+        }
+        .layui-card-body{
+            padding-top: 0;
+        }
+        .layui-card .layui-tab-brief .layui-tab-content {
+            padding: 0px;
+        }
+        /* 修改同意字体为12px */
+        @media screen and (max-width: 990px){
+            .layui-col-md12 .layui-card .layui-card-header .layui-row .layui-form .first .layui-form-label{
+                width: 80px;
+                padding: 5px 10px;
+                text-align: right;
+            }
+            .layui-col-md12 .first .layui-input-block{
+                margin-left: 110px;
+            }
+        }
     </style>
 @endsection
 
 @section('main')
     <div class="layui-col-md12">
         <div class="layui-card">
-            <div class="layui-card-header" style="padding-top: 20px;">
+            <div class="layui-card-header">
                 <div class="layui-row layui-col-space5">
                     <form class="layui-form" action="">
-                        <div class="layui-col-md3">
+                        <div class="layui-col-md3 first">
                             <div class="layui-form-item">
-                                <label class="layui-form-label" style="">订单单号</label>
+                                <label class="layui-form-label" >订单单号</label>
                                 <div class="layui-input-block" style="">
                                     <input type="text" name="no" lay-verify="title" autocomplete="off" placeholder="请输入订单号" class="layui-input">
                                 </div>
@@ -45,7 +129,7 @@
                             </div>
                         </div>
                         <div class="layui-col-md3">
-                            <div class="layui-form-item">
+                            <div class="layui-form-item ">
                                 <label class="layui-form-label"  style="">发单客服</label>
                                 <div class="layui-input-block" style="">
                                     <select name="customer_service_name" lay-search="">
@@ -58,7 +142,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-col-md3">
+                        <div class="layui-col-md3 first">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">代练平台</label>
                                 <div class="layui-input-block">
@@ -76,7 +160,7 @@
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="layui-input-block">
                                     <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
-                                    <div class="layui-form-mid" style="float:none;display: inline-block;width: 8%;text-align: center;margin:0;">
+                                    <div class="layui-form-mid">
                                         -
                                     </div>
                                     <input type="text" class="layui-input qsdate" id="test-laydate-end" placeholder="结束日期">
@@ -130,7 +214,6 @@
                         <li class="" lay-id="24">已撤单
                         </li>
                     </ul>
-                    <div style="height: 10px"></div>
                 </div>
                 <div id="order-list" lay-filter="order-list">
                 </div>
@@ -330,7 +413,6 @@
             @{{# } else if (d.status == 24) {  }}
                 <button class="qs-btn qs-btn-sm" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
             @{{# }  }}
-
         @{{# } else {  }}
 
 
@@ -368,20 +450,33 @@
         @{{ d.account }} <br/>
         @{{ d.password }}
     </script>
+    <script type="text/html" id="efficiencyAndSecurityDeposit">
+        @{{ d.efficiency_deposit }}/@{{ d.security_deposit }}
+    </script>
+    <script type="text/html" id="createdAtAndReceiving">
+        @{{ d.created_at }}<br/>
+        @{{ d.receiving_time }}
+    </script>
+    <script type="text/html" id="hatchetManQQAndPhone">
+        @{{ d.hatchet_man_qq }}<br/>
+        @{{ d.hatchet_man_phone }}
+    </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-no,
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-status_text,
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-game_name,
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-account_password,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-receiving_time,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-hatchet_man_qq,
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-seller_nick {
-                height: 50px;
-                line-height: 25px;
+                height: 40px;
+                line-height: 20px;
             }
             .layui-table-view .layui-table[lay-size=sm] td  .laytable-cell-@{{ d  }}-button{
                 display: block;
-                height: 50px;
-                line-height: 50px;
+                height: 40px;
+                line-height: 40px;
                 word-break: break-all;
                 white-space: nowrap;
                 overflow: hidden;
@@ -426,7 +521,7 @@
                 //执行重载
                 table.reload('order-list', {
                     where: condition,
-                    height: 'full-315',
+                    height: 'full-260',
                     page: {
                         curr: 1
                     },
@@ -470,23 +565,20 @@
                 url: '{{ route('frontend.workbench.leveling.order-list') }}',
                 method: 'post',
                 cols: [[
-                    {field: 'no', title: '订单号', width: 260, templet: '#noTemplate', style:"height: 50px;line-height: 25px;"},
-                    {field: 'status_text', title: '订单状态', width: 110, style:"height: 50px;line-height: 25;", templet:'#statusTemplate' },
-                    {field: 'seller_nick', title: '玩家旺旺',  width: 150, templet:'#wwTemplate', style:"height: 50px;line-height: 20px;"},
+                    {field: 'no', title: '订单号', width: 260, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},
+                    {field: 'status_text', title: '订单状态', width: 110, style:"height: 40px;line-height: 20;", templet:'#statusTemplate' },
+                    {field: 'seller_nick', title: '玩家旺旺',  width: 150, templet:'#wwTemplate', style:"height: 40px;line-height: 20px;"},
                     {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
                     {field: 'game_leveling_title', title: '代练标题', width: 250},
                     {field: 'game_name', title: '游戏/区/服', width: 180, templet:'#gameTemplate'},
                     {field: 'account_password', title: '账号/密码', width: 170, templet:'#accountPasswordTemplate'},
                     {field: 'role', title: '角色名称', width: 100},
                     {field: 'amount', title: '代练价格', width: 100},
-                    {field: 'efficiency_deposit', title: '效率保证金', width: 100},
-                    {field: 'security_deposit', title: '安全保证金', width: 100},
-                    {field: 'created_at', title: '发单时间', width: 100},
-                    {field: 'receiving_time', title: '接单时间', width: 100},
+                    {field: 'efficiency_deposit', title: '效率/安全保证金', width: 120, templet:'#efficiencyAndSecurityDeposit'},
+                    {field: 'receiving_time', title: '发单/接单时间', width: 160, templet:'#createdAtAndReceiving'},
                     {field: 'leveling_time', title: '代练时间', width: 100},
                     {field: 'left_time', title: '剩余时间', width: 100},
-                    {field: 'hatchet_man_qq', title: '打手QQ', width: 100},
-                    {field: 'hatchet_man_phone', title: '打手电话', width: 100},
+                    {field: 'hatchet_man_qq', title: '打手QQ电话', width: 113, templet:'#hatchetManQQAndPhone'},
                     {field: 'city', title: '号主电话', width: 100},
                     {field: 'source_price', title: '来源价格', width: 100},
                     {field: 'payment_amount', title: '支付金额', width: 100},
@@ -494,15 +586,16 @@
                     {field: 'poundage', title: '手续费', width: 100},
                     {field: 'city', title: '利润', width: 100},
                     {field: 'customer_service_name', title: '发单客服', width: 100},
-                    {field: 'button', title: '操作', width: 200, fixed: 'right', style:"height: 50px;line-height: 50px;", toolbar: '#operation'}
+                    {field: 'button', title: '操作',width:180, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
                 ]],
-                height: 'full-315',
+                height: 'full-260',
                 size: 'sm', //小尺寸的表格
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
                     prev: '上一页',
-                    next: '下一页'
+                    next: '下一页',
+                    limit:50
                 },
                 done: function(res, curr, count){
                     changeStyle(layui.table.index);

@@ -1,4 +1,4 @@
-body{font-family: "PingFang SC";font-size: 14px;color: #303133}
+body{font-family: "PingFang SC";font-size: 12px !important;color: #303133}
 
 /* 按钮的icon */
 
@@ -83,14 +83,14 @@ body{font-family: "PingFang SC";font-size: 14px;color: #303133}
 /* qs统一按钮样式 */
 .qs-btn {
     display: inline-block;
-    height: 40px;
-    line-height: 40px;
+    height: 32px;
+    line-height: 32px;
     padding: 0 18px;
     background-color: #ff8500;
     color: #fff;
     white-space: nowrap;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     border: none;
     border-radius: 3px;
     cursor: pointer;
@@ -136,9 +136,11 @@ body{font-family: "PingFang SC";font-size: 14px;color: #303133}
     color: #fff;
     white-space: nowrap;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     border: none;
     cursor: pointer;
+    position: relative;
+    text-indent: 15px;
 }
 .icon-edit{
     font-size: 25px;
@@ -148,7 +150,7 @@ body{font-family: "PingFang SC";font-size: 14px;color: #303133}
 }
 /* qs input 和btn统一高度 */
 .layui-input, .layui-select, .layui-textarea{
-    height: 40px;
+    height: 32px;
     border-radius: 3px;
 }
 .layadmin-side-shrink .layui-layout-admin .layui-side-menu .layui-side-scroll .layui-logo img {
@@ -184,6 +186,67 @@ body .layui-laydate .layui-this {
 }
 .qs-text{
     line-height: 22px;
-    font-size: 14px;
+    font-size: 12px;
     color: #606266;
+}
+/* 改写侧边栏样式 */
+.layui-layout-admin .layui-side{
+    width: 200px;
+}
+.layui-layout-admin .layui-logo{
+    width: 200px;
+}
+.layui-side-menu .layui-side-scroll{
+    width: 200px;
+} 
+ .layui-side-menu .layui-nav{
+    width: 200px;
+}
+.layui-layout-admin .layui-body,.layui-layout-admin .layui-footer{
+    left: 200px;
+}
+@media screen and (max-width: 992px) {
+.layadmin-pagetabs, .layui-layout-admin .layui-body, .layui-layout-admin .layui-footer, .layui-layout-admin .layui-layout-left {
+    left: 0;
+}
+}
+/* 清除浮动 */
+.clearfix {
+    overflow: auto;
+    zoom: 1;
+  }
+  /* 改写同意风格 input h32px  font-size 12px*/
+  .layui-card-header{
+    font-size: 12px;
+}
+.layui-input, .layui-select{
+    height: 32px;
+}
+.layui-form-label{
+    width: 80px;
+    padding: 6px 10px;
+}
+.layui-form-mid{
+    padding: 5px 3px !important;
+}
+.layui-input-block{
+    min-height: 32px;
+    max-height: 32px;
+}
+.layui-form-text .layui-input-block{
+    min-height:none;
+    max-height: none;
+}
+.first .layui-form-label{
+    width: 60px;
+    text-align: center;
+}
+.first .layui-input-block{
+    margin-left: 90px;
+}
+.layui-form-radio *{
+    font-size: 12px;
+}
+.layui-table td, .layui-table th {
+    font-size: 12px;
 }
