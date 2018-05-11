@@ -216,15 +216,17 @@ return [
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
 			'delete'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/chedan', // 删除订单
-			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addOrder', // 修改订单
-			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime', // 加时
-			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice', // 加款
+			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/qs/updateOrder', // 修改订单
+			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime3', // 加时
+			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice2', // 加款
 			'orderDetail'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/orderDetail', // 订单详情
 			'getScreenshot'            => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/topic', // 订单截图
 			'getMessage'               => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/messageList', //获取留言
-			'replyMessage'             => '', // 回复留言
+			'replyMessage'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addMess', // 回复留言addMess
 			'updateAccountAndPassword' => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/editOrderAccPwd', // 修改账号密码
 			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
+			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
+			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
     	],
     ],
 ];
