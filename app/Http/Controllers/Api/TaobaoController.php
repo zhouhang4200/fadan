@@ -25,6 +25,14 @@ class TaobaoController extends Controller
     {
         try {
             $data = TaobaoTradeRepository::getParams($request->data);
+
+            try {
+                if($data['trade']['num_iid'] == '563493487291' && $data['trade']['payment'] <= 10) {
+                    $data['trade']['handle_status'] = 1;
+                }
+            } catch (\Exception $exception) {
+
+            }
             TaobaoTradeRepository::create($data['trade'], $data['order']);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
