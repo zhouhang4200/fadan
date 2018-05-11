@@ -679,15 +679,15 @@ class IndexController extends Controller
         // 取订单详情
         $orderDetail = $order->detail->pluck('field_value', 'field_name');
 
-        // $messageArr = [];
+        $messageArr = [];
         $message = [];
         try {
-            // if ($orderDetail['third'] == 1) {
-            //     $messageArr = Show91::messageList(['oid' => $orderDetail['show91_order_no']]);
-            // } elseif ($orderDetail['third'] == 2) {
-            //     // 代练妈妈 获取留言传入千手订单号
-            //     $messageArr = DailianMama::chatOldList($orderDetail['dailianmama_order_no'], $bingId);
-            // }
+            if ($orderDetail['third'] == 1) {
+                $messageArr = Show91::messageList(['oid' => $orderDetail['show91_order_no']]);
+            } elseif ($orderDetail['third'] == 2) {
+                // 代练妈妈 获取留言传入千手订单号
+                $messageArr = DailianMama::chatOldList($orderDetail['dailianmama_order_no'], $bingId);
+            }
              // 其他通用平台
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
@@ -706,13 +706,13 @@ class IndexController extends Controller
         }
 
         $show91Uid = config('show91.uid');
-        // $dailianUid = config('dailianmama.uid');
+        $dailianUid = config('dailianmama.uid');
 
         return response()->ajax(1, 'success', [
             'third' => $orderDetail['third'],
             'show91Uid' => $show91Uid,
-            // 'dailianMamaUid' => $dailianUid,
-            // 'messageArr' => $messageArr,
+            'dailianMamaUid' => $dailianUid,
+            'messageArr' => $messageArr,
             'message' => $message
         ]);
     }

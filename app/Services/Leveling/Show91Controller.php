@@ -477,7 +477,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        ]; 
 
 	        $datas = json_encode($datas);
-dd(base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.show91.aes_key'), true, config('leveling.show91.aes_iv'))));
+// dd(base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.show91.aes_key'), true, config('leveling.show91.aes_iv'))));
 	        $client = new Client();
             $response = $client->request('POST', config('leveling.show91.url')['updateOrder'], [
             	'form_params' => [
@@ -792,5 +792,26 @@ dd(base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.show91.
             return '';
         }
         return $res['plays'];
+    }
+
+    /**
+     * 91独有的置顶功能
+     * @param [type] $orderDatas [description]
+     */
+    public function setTop($orderDatas)
+    {
+    	try {
+	        $options = [
+	        	'account' => config('leveling.show91.account'),
+	            'sign' => config('leveling.show91.sign'),
+	            'oid' => $orderDatas['show91_order_no'],
+	            'isTop' => 1,
+	        ];
+	       	// 发送
+	       	static::normalRequest($options, config('leveling.show91.url')['setTop']);
+    	} catch (Exception $e) {
+    		myLog('show91-local-error', ['方法' => '订单置顶', '原因' => $e->getMessage()]);
+    		throw new DailianException($e->getMessage());
+    	}
     }
 }
