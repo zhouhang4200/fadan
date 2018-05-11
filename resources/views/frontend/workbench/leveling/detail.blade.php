@@ -651,23 +651,23 @@
                         </div>
 
                     </div>
-                    <div class="information">
-                        <div class="layui-form" action="">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">上传截图</label>
-                                <div class="layui-input-inline">
-                                    <button type="button" class="layui-btn" id="upload-image">
-                                        <i class="layui-icon">&#xe67c;</i>上传图片
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">截图说明</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="image_description" placeholder="请输入简短文字" class="layui-input" style="width: 828px">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="information" style="">
+                        {{--<div class="layui-form" action="">--}}
+                            {{--<div class="layui-form-item">--}}
+                                {{--<label class="layui-form-label">上传截图</label>--}}
+                                {{--<div class="layui-input-inline">--}}
+                                    {{--<button type="button" class="layui-btn" id="upload-image">--}}
+                                        {{--<i class="layui-icon">&#xe67c;</i>上传图片--}}
+                                    {{--</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{--<div class="layui-form-item">--}}
+                                {{--<label class="layui-form-label">截图说明</label>--}}
+                                {{--<div class="layui-input-inline">--}}
+                                    {{--<input type="text" name="image_description" placeholder="请输入简短文字" class="layui-input" style="width: 828px">--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
 
                         <div style="margin-left: 20px; overflow-y: scroll;height: 713px" id="leave-image"></div>
                     </div>

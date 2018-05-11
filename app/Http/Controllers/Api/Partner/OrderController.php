@@ -696,14 +696,16 @@ class OrderController extends Controller
 
             // 查找外部订单号
             $detail = OrderDetail::where('field_name', 'third_order_no')->where('field_value', $thirdOrderNo)->first();
-            $third = OrderDetail::where('field_name', 'third')->where('field_value', $thirdOrderNo)->first();
+            $third = OrderDetail::where('order_no', $detail->order_no)
+                ->where('field_name', 'third')
+                ->value('field_value');
 
             $thirdId = 0;
             if (isset(config('leveling.third')[$request->user->id])) {
                 $thirdId = config('leveling.third')[$request->user->id];
 
                 // 查淘寶單號
-                $taobaoNo = OrderDetail::where('field_name', 'source_order_no')->where('field_value', $thirdOrderNo)->first();
+                $taobaoNo = OrderDetail::where('field_name', 'source_order_no')->where('order_no', $detail->order_no)->first();
 
                 if ($thirdId == $third) {
                     if ($detail) {
@@ -716,7 +718,6 @@ class OrderController extends Controller
                             'date' => $date, // 第三方平台单号留言时间
                             'contents' => $contents, // 第三方平台单号留言内容
                         ]);
-
                         levelingMessageCount($detail->creator_primary_user_id, 1, 1);
                     }
                 }

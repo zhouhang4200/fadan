@@ -11,3 +11,18 @@ function getQueryString(url, variable) {
         }
     }
 }
+function getByteLen(val) {
+    var len = 0;
+    for (var i = 0; i < val.length; i++) {
+        var length = val.charCodeAt(i);
+        if(length>=0&&length<=128)
+        {
+            len += 1;
+        }
+        else
+        {
+            len += 2;
+        }
+    }
+    return len;
+}

@@ -299,6 +299,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('complain', 'IndexController@complain')->name('frontend.workbench.leveling.complain');
             // 跳转到新页面导出 excel
             Route::get('excel', 'IndexController@excel')->name('frontend.workbench.leveling.excel');
+            // 修改订单备注
+            Route::post('remark', 'IndexController@remark')->name('frontend.workbench.leveling.remark');
             // 订单操作记录
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
             // 待发单列表

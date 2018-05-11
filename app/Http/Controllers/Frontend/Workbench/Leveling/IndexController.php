@@ -195,7 +195,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 旧的订单列表暂时不删除
+     * ajax 获取订单数据
      * @param Request $request
      * @param OrderRepository $orderRepository
      * @return array|\Illuminate\Http\RedirectResponse
@@ -274,16 +274,27 @@ class IndexController extends Controller
                 $orderCurrent['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
 
                 // 如果存在接单时间
+                $orderCurrent['time_out'] = 0;
                 if (isset($orderCurrent['receiving_time']) && !empty($orderCurrent['receiving_time'])) {
                     // 计算到期的时间戳
                     $expirationTimestamp = strtotime($orderCurrent['receiving_time']) + $days * 86400 + $hours * 3600;
                     // 计算剩余时间
                     $leftSecond = $expirationTimestamp - time();
-                    $orderCurrent['left_time'] = Sec2Time($leftSecond); // 剩余时间
+                    $orderCurrent['left_time'] = sec2Time($leftSecond); // 剩余时间
+                    if ($leftSecond < 0) {
+                        $orderCurrent['timeout'] = 1;
+                        $orderCurrent['timeout_time'] = sec2Time(abs($leftSecond)); // 超时时间
+                    }
                 } else {
                     $orderCurrent['left_time'] = '';
                 }
+                // 按状态显示不同时间文案
+                $orderCurrent['status_time'] = '结束';
+                if ($orderInfo['status'] == 1) {
+                    $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderInfo['created_at']));
+                }
 
+                // 接单平台名字
                 $orderCurrent['third_name'] = '';
                 if (isset($orderCurrent['third']) && isset(config('partner.platform')[(int)$orderCurrent['third']])) {
                     $orderCurrent['third_name'] = config('partner.platform')[$orderCurrent['third']]['name'];
@@ -637,6 +648,19 @@ class IndexController extends Controller
         return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game', 'contact'));
     }
 
+    /**
+     * 给订单增加备注
+     * @param Request $request
+     */
+    public function remark(Request $request)
+    {
+        OrderDetail::where('order_no', $request->no)
+            ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->where('field_name', 'customer_service_remark')
+            ->update([
+                'field_value' => $request->value,
+            ]);
+    }
     /**
      * 操作记录
      * @param $order_no

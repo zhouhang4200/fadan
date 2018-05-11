@@ -617,7 +617,12 @@ if (!function_exists('sec2Time')) {
             if ($value['years'] > 0) {
                 $t .= $value['years'] .'年 ';
             }
-            $t .= $value['days'] . '天 ' . $value['hours'] . '小时 ' . $value['minutes'] . '分 ';
+            if ($value['days'] > 0) {
+                $t .= $value['days'] . '天' . $value['hours'] . '小时 ';
+            } else {
+                $t .=  $value['hours'] . '小时' . $value['minutes'] . '分';
+            }
+
 
             if ($showSeconds) {
               $t .= $value['seconds'] . '秒';

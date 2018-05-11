@@ -139,6 +139,7 @@
 
 <!--START 底部-->
 @section('js')
+    <script src="/frontend/js/helper.js"></script>
     <script id="goodsTemplate" type="text/html">
         <input type="hidden" name="id" value="@{{ d.id }}">
         <input type="hidden" name="seller_nick" value="">
@@ -254,12 +255,11 @@
                         }
                     }
                 },
-                gt5:function (value) { // 大于5
-                    if (value < 5) {
-                        return '输入金额需大于或等于5元';
+                titleLen:function (value) { // 字数限制
+                    if (value.length > 60) {
+                        return '代练标题不可大于60个字';
                     }
                 }
-
             });
             // 模板使用说明
             form.on('submit(instructions)', function () {
