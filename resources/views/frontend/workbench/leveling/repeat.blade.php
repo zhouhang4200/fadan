@@ -312,14 +312,11 @@
                     if (result.status == 1) {
                         layer.open({
                             content: '发布成功!',
-                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn: ['继续发布', '订单列表'],
                             btn1: function(index, layero){
-                                location.reload();
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            },
-                            btn3: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });
@@ -335,14 +332,11 @@
                     if (result.status == 1) {
                         layer.open({
                             content: '发布成功!',
-                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn: ['继续发布', '订单列表'],
                             btn1: function(index, layero){
-                                location.reload();
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            },
-                            btn3: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });

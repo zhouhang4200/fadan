@@ -303,8 +303,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
             // 待发单列表
             Route::get('wait', 'IndexController@wait')->name('frontend.workbench.leveling.wait')->middleware('new.permission:frontend.workbench.leveling.wait');
+            // 待发单数据
+            Route::post('wait-order-list', 'IndexController@waitOrderList')->name('frontend.workbench.leveling.wait-order-list');
             // 待接单数据更新
             Route::post('wait-update', 'IndexController@waitUpdate')->name('frontend.workbench.leveling.wait-update');
+            // 待接单备注修改
+            Route::post('wait-remark', 'IndexController@waitRemark')->name('frontend.workbench.leveling.wait-remark');
             // 重发
             Route::get('repeat/{id?}', 'IndexController@repeat')->name('frontend.workbench.leveling.repeat');
             // 发送短信

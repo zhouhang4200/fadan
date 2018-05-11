@@ -76,7 +76,7 @@ class Temp extends Command
         $status = $this->argument('no');
         $user = $this->argument('user');
 
-        $this->e();
+        $this->complete($status, $user);
 
         die;
         // 我们是待接单

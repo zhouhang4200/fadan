@@ -104,9 +104,22 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
 });
 // 淘宝抓取订单
 Route::middleware('taobao.api')->group(function () {
+    // 买家下单并付款
     Route::post('taobao/store', 'TaobaoController@store');
+    // 交易成功
     Route::post('taobao/trade-success', 'TaobaoController@tradeSuccess');
+    // 买家发起退款
     Route::post('taobao/refund-created', 'TaobaoController@refundCreated');
+    // 卖家发货
+    Route::post('taobao/trade-ship', 'TaobaoController@tradeShip');
+    // 卖家同意退款
+    Route::post('taobao/refund-agree', 'TaobaoController@refundAgree');
+    // 卖家拒绝退款
+    Route::post('taobao/refund-refuse', 'TaobaoController@refundRefuse');
+    // 退款成功
+    Route::post('taobao/refund-success', 'TaobaoController@refundSuccess');
+    // 退款关闭
+    Route::post('taobao/refund-closed', 'TaobaoController@refundClosed');
 });
 
 /* App 接口 */

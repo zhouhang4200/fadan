@@ -54,6 +54,9 @@ use App\Models\OrderAutoMarkup;
  */
 class IndexController extends Controller
 {
+    /**
+     * @var mixed
+     */
     protected $game;
 
     /**
@@ -62,6 +65,7 @@ class IndexController extends Controller
      */
     public function __construct(GameRepository $gameRepository)
     {
+        parent::__construct();
         $this->game = $gameRepository->availableByServiceId(4);
     }
 
@@ -171,7 +175,7 @@ class IndexController extends Controller
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
-        return view('frontend.v1.workbench.leveling.index-test')->with([
+        return view('frontend.v1.workbench.leveling.index')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
@@ -307,6 +311,7 @@ class IndexController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -368,7 +373,9 @@ class IndexController extends Controller
                     ->update(['value' => 0]);
                 // 原始发单人
                 if (isset($orderData['creator_user_id'])) {
-                    $orderData['customer_service_name'] = User::where('id', $orderData['creator_user_id'])->value('username');
+                    $oldOrder = User::where('id', $orderData['creator_user_id'])->first();
+                    $orderData['customer_service_name'] = $oldOrder->username;
+                    $userId = $oldOrder->id;
                 } else {
                     $orderData['customer_service_name'] = '';
                 }
@@ -379,17 +386,6 @@ class IndexController extends Controller
                 // 获取当前下单人名字
                 $orderData['customer_service_name'] = Auth::user()->username;
             }
-            // // 用户是否启用发单设置
-            // $userSetting = UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-            //     ->where('option', 'sending_control')
-            //     ->first();
-
-            // // 默认是发当前子账号， 1 = 当前发单客服， 0是发原始的
-            // if (isset($orderData['creator_user_id']) && $userSetting && $userSetting->value == 0) {
-            //     $userId = $orderData['creator_user_id'];
-            //     // 获取原始的发单人昵称,将此昵称写到orderdetails里面
-            //     $orderData['customer_service_name'] = User::where('id', $userId)->value('username');
-            // }
 
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
@@ -410,14 +406,6 @@ class IndexController extends Controller
                 $orderDetails = OrderDetail::where('order_no', $order->no)
                     ->pluck('field_value', 'field_name')
                     ->toArray();
-
-                // if ($orderDetails['dailianmama_order_no'] && $orderDetails['show91_order_no']) {
-                //     return response()->ajax(1, '下单成功！');
-                // } elseif (! $orderDetails['dailianmama_order_no'] && $orderDetails['show91_order_no']) {
-                //     return response()->ajax(1, '部分平台下单成功！请联系客服查询未发布成功的平台及原因！');
-                // } elseif ($orderDetails['dailianmama_order_no'] && ! $orderDetails['show91_order_no']) {
-                //     return response()->ajax(1, '部分平台下单成功！请联系客服查询未发布成功的平台及原因！');
-                // }
 
                 // 下单成功之后，查看此订单是否设置了每小时自动加价
                 $this->checkIfAutoMarkup($order, $orderDetails);
@@ -1319,12 +1307,7 @@ class IndexController extends Controller
             if (empty($pic1) && empty($pic2) && empty($pic3)) {
                 return response()->ajax(0, '请至少传入一张图片!');
             }
-//            $orderDatas['dd373_order_no'] = 'XQ20180505152607-88760';
-//            $orderDatas['pic1'] = !empty($pic1) ? base64ToBlob($pic1) : '';
-//            $orderDatas['pic2'] = !empty($pic2) ? base64ToBlob($pic2) : '';
-//            $orderDatas['pic3'] = !empty($pic3) ? base64ToBlob($pic3) : '';
-//            $result = DD373Controller::cancelArbitration($orderDatas);
-//            dd($result);
+
             $order = OrderModel::where('no', $data['order_no'])->first();
             // 操作人是发单还是接单
             if (Auth::user()->getPrimaryUserId() == $order->creator_primary_user_id) {
@@ -1380,7 +1363,8 @@ class IndexController extends Controller
 
     /**
      * 待发单
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return $this
      */
     public function wait(Request $request)
     {
@@ -1422,6 +1406,48 @@ class IndexController extends Controller
     }
 
     /**
+     * 获取订单数据
+     * @param Request $request
+     * @return array
+     */
+    public function waitOrderList(Request $request)
+    {
+        $tid = $request->tid;
+        $status = $request->input('status', 0);
+        $buyerNick = $request->buyer_nick;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('service_id', 4)
+            ->where('trade_status', '!=', 2)
+            ->orderBy('id', 'desc')
+            ->paginate(30);
+
+        $orderCount =  TaobaoTrade::select(\DB::raw('handle_status, count(1) as count'))
+            ->where('user_id', auth()->user()->getPrimaryUserId())
+            ->where('trade_status', '!=', 2)->groupBy('handle_status')->pluck('count', 'handle_status');
+        
+        $a1 = [0 => 0, 1=> 0, 2 => 0];
+        $a2 = $orderCount->toArray();
+
+        foreach ($a1 as $key => $item) {
+            if (!isset($a2[$key])) {
+                $a2[$key] = 0;
+            }
+        }
+
+        return [
+            'code' => 0,
+            'msg' => '',
+            'count' => $orders->total(),
+            'data' =>  $orders->items(),
+            'status_count' =>  $a2
+        ];
+    }
+
+    /**
      * @param Request $request
      */
     public function waitUpdate(Request $request)
@@ -1435,10 +1461,26 @@ class IndexController extends Controller
         }
     }
 
-        /**
+    /**
+     * 备注修改
+     * @param Request $request
+     */
+    public function waitRemark(Request $request)
+    {
+        try {
+            TaobaoTrade::where('id', $request->id)
+                ->where('user_id', auth()->user()->getPrimaryUserId())
+                ->update(['remark' => $request->value]);
+        } catch (\Exception $exception) {
+
+        }
+    }
+
+    /**
      * 获取订单，订单详情，协商仲裁的所有信息
-     * @param  [type] $orderNo [description]
-     * @return [type]          [description]
+     * @param $orderNo
+     * @return array
+     * @throws DailianException
      */
     public function getOrderAndOrderDetailAndLevelingConsult($orderNo)
     {
@@ -1520,10 +1562,11 @@ class IndexController extends Controller
         return (array) $collection;
     }
 
-     /**
+    /**
      * 检查是否设置了每小时自动加价
-     * @param  [type] $orderDetails [description]
-     * @return [type]               [description]
+     * @param $order
+     * @param $orderDetails
+     * @return bool
      */
     public function checkIfAutoMarkup($order, $orderDetails)
     {
