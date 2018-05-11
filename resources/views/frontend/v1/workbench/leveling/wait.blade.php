@@ -147,7 +147,6 @@
                 }
                 $.each(parameter, function(key, val) {
                     var name = 'quantity-'  +  key;
-                    console.log(val);
                     if ($('span').hasClass(name) && val > 0) {
                         $('.' + name).html(val).removeClass('layui-hide');
                     } else {
@@ -157,10 +156,9 @@
             }
             // 备注编辑
             table.on('edit(order-list)', function(obj){
-                var value = obj.value //得到修改后的值
-                        ,data = obj.data //得到所在行所有键值
-                        ,field = obj.field; //得到字段
-                layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+                var value = obj.value, field = obj.field; // 修改后的值, 修改的字段
+                $.post('{{ route("frontend.workbench.leveling.wait-remark") }}', {id:obj.data.id, field:field, value:value}, function (result) {
+                }, 'json');
             });
             // 加载数据
             table.render({
@@ -171,12 +169,12 @@
                     {field: 'seller_nick', title: '店铺', width: 100},
                     {field: 'tid', title: '订单号', width: 200},
                     {field: 'game_name', title: '绑定游戏'},
-                    {field: 'buyer_nick', title: '买家旺旺', templet: '#wwTemplate'},
+                    {field: 'buyer_nick', title: '买家旺旺', templet: '#wwTemplate',width: 150},
                     {field: 'price', title: '购买单价'},
                     {field: 'num', title: '购买数量'},
                     {field: 'payment', title: '实付金额'},
-                    {field: 'created', title: '下单时间',width: 200 },
-                    {field: 'remark', title: '备注', edit:'text'},
+                    {field: 'created', title: '下单时间',width: 180 },
+                    {field: 'remark', title: '备注', edit:'text',width: 200 },
                     {field: 'button', title: '操作', width: 200,  toolbar: '#operation'}
                 ]],
                 height: 'full-250',
