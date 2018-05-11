@@ -58,7 +58,9 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        				'失败错误码' => $arrResult['result'] ?? '', 
 	        				'失败原因' => $arrResult['reason'] ?? '',
 	        			]);
-        				throw new DailianException($message);
+        				if ($url != config('leveling.show91.url')['delete']) {
+                            throw new DailianException($message);
+                        }
 	        		}
 	        	}
 		        // 记录日志
@@ -106,13 +108,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-        				$message = $arrResult['reason'] ?? '丸子接口返回错误';
+        				$message = $arrResult['reason'] ?? '91接口返回错误';
 	        			myLog('show91-return-error', [
 	        				'地址' => $url ?? '', 
 	        				'失败错误码' => $arrResult['result'] ?? '', 
 	        				'失败原因' => $arrResult['reason'] ?? '',
 	        			]);
-        				throw new DailianException($message);
+        				if ($url != config('leveling.show91.url')['delete']) {
+                            throw new DailianException($message);
+                        }
 	        		}
 	        	}
 		        // 记录日志
