@@ -178,6 +178,7 @@
                     {field: 'button', title: '操作', width: 200,  toolbar: '#operation'}
                 ]],
                 height: 'full-250',
+                size: 'sm', //小尺寸的表格
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,

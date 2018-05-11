@@ -5,26 +5,6 @@
 @section('css')
     <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
     <style>
-        td .laytable-cell-1-no,
-        td .laytable-cell-1-game_name,
-        td .laytable-cell-1-seller_nick,
-        td .laytable-cell-1-account_password,
-        td .laytable-cell-1-button{
-            display: block;
-            height: 50px;
-            line-height: 50px;
-            word-break: break-all;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-left: 15px;
-        }
-        .layui-laypage .layui-laypage-curr .layui-laypage-em {
-            background-color: #ff8500;
-        }
-        .layui-tab {
-            padding: 0;
-        }
 
     </style>
 @endsection
@@ -367,6 +347,15 @@
         <div>@{{ d.seller_nick }}</div>
         @{{#  } }}
     </script>
+    <script type="text/html" id="statusTemplate">
+        @{{ d.status_text }}  <br>
+        @{{# if(d.timeout == 1)  { }}
+            <span style="color:#ff8500"> @{{ d.timeout_time }}</span>
+        @{{# } else { }}
+            @{{ d.status_time }}
+        @{{# }  }}
+
+    </script>
     <script type="text/html" id="gameTemplate">
         @{{ d.game_name }} <br>
         @{{ d.region }} / @{{ d.serve }}
@@ -381,14 +370,15 @@
     </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
-            td .laytable-cell-@{{ d  }}-no ,
-            td .laytable-cell-@{{ d  }}-game_name ,
-            td .laytable-cell-@{{ d  }}-account_password ,
-            td .laytable-cell-@{{ d  }}-seller_nick {
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-no,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-status_text,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-game_name,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-account_password,
+            .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-seller_nick {
                 height: 50px;
                 line-height: 25px;
             }
-            td .laytable-cell-@{{ d  }}-button{
+            .layui-table-view .layui-table[lay-size=sm] td  .laytable-cell-@{{ d  }}-button{
                 display: block;
                 height: 50px;
                 line-height: 50px;
@@ -470,10 +460,9 @@
             }
             // 备注编辑
             table.on('edit(order-list)', function(obj){
-                var value = obj.value //得到修改后的值
-                        ,data = obj.data //得到所在行所有键值
-                        ,field = obj.field; //得到字段
-                layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+                var value = obj.value, field = obj.field; // 修改后的值, 修改的字段
+                $.post('{{ route("frontend.workbench.leveling.remark") }}', {no:obj.data.no, field:field, value:value}, function (result) {
+                }, 'json');
             });
             // 加载数据
             table.render({
@@ -481,8 +470,8 @@
                 url: '{{ route('frontend.workbench.leveling.order-list') }}',
                 method: 'post',
                 cols: [[
-                    {field: 'no', title: '订单号', width: 270, templet: '#noTemplate', style:"height: 50px;line-height: 25px;"},
-                    {field: 'status_text', title: '状态', width: 80, style:"height: 50px;line-height: 50px;"},
+                    {field: 'no', title: '订单号', width: 260, templet: '#noTemplate', style:"height: 50px;line-height: 25px;"},
+                    {field: 'status_text', title: '订单状态', width: 110, style:"height: 50px;line-height: 25;", templet:'#statusTemplate' },
                     {field: 'seller_nick', title: '玩家旺旺',  width: 150, templet:'#wwTemplate', style:"height: 50px;line-height: 20px;"},
                     {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
                     {field: 'game_leveling_title', title: '代练标题', width: 250},
@@ -508,6 +497,7 @@
                     {field: 'button', title: '操作', width: 200, fixed: 'right', style:"height: 50px;line-height: 50px;", toolbar: '#operation'}
                 ]],
                 height: 'full-315',
+                size: 'sm', //小尺寸的表格
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
