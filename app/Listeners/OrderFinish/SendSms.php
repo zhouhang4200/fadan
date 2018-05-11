@@ -38,6 +38,7 @@ class SendSms
                     } else {
                         $smsContent = $template->contents;
                     }
+                    myLog('send_sms',[isset($detail['seller_nick']) && !empty($detail['seller_nick']),$smsContent]);
 
                     // 发送短信
                     sendSms($event->order->creator_primary_user_id,

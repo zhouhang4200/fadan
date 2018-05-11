@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderReceiving;
 use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Services\KamenOrderApi;
 use App\Services\SmSApi;
@@ -66,9 +67,11 @@ class TestController extends Controller
 {
     public function insertLOL()
     {
+        event(new OrderReceiving(Order::where('no', '2018041821030200000926')->first()));
         $options = [
             'aid' => 1,
         ];
+        die;
         
         $res = Show91::getServer($options);
 
@@ -213,6 +216,7 @@ class TestController extends Controller
 
     public function index()
     {
+        event(new OrderReceiving(Order::where('no', '2018041821030200000926')->first()));;die;
         $this->testReceiveOrder();
         return $this->addPrice();
         return $this->getDailianmamaInfo();
