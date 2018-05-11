@@ -35,11 +35,10 @@ class SendSms
                 if (isset($detail['client_phone']) && $detail['client_phone']) {
                     $smsContent = '';
                     if (isset($detail['seller_nick']) && !empty($detail['seller_nick'])) {
-                        $smsContent = $detail['seller_nick'] . '提醒您,' . $template->contents;
+                        $smsContent = '[' . $detail['seller_nick'] . '] 提醒您,' .  $template->contents;
                     } else {
                         $smsContent = $template->contents;
                     }
-                    myLog('send_sms',[isset($detail['seller_nick']) && !empty($detail['seller_nick']),$smsContent]);
                     // 发送短信
                     sendSms($event->order->creator_primary_user_id,
                         $event->order->no,
