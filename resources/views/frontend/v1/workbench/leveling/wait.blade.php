@@ -91,7 +91,7 @@
 @section('js')
     <script type="text/html" id="operation">
         @{{# if (d.handle_status == 0) {  }}
-        <a  class="qs-btn qs-btn-sm " data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.id }}&game_id=@{{ d.game_id }}">发布</a>
+        <a  class="qs-btn qs-btn-sm " data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}">发布</a>
         <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=2">隐藏</button>
         @{{# } else if (d.handle_status == 2) {  }}
         <button  class="qs-btn qs-btn-sm" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=0">显示</button>

@@ -1389,7 +1389,7 @@ class IndexController extends Controller
         $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
             ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
 
-        return view('frontend.v1.workbench.leveling.wait')->with([
+        return view('frontend.workbench.leveling.wait')->with([
                 'tid' => $tid,
                 'status' => $status,
                 'orders' => $orders,
