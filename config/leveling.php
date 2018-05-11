@@ -169,7 +169,7 @@ return [
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
 			'delete'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/chedan', // 删除订单
-			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addOrder', // 修改订单
+			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/qs/updateOrder', // 修改订单
 			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime3', // 加时
 			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice2', // 加款
 			'orderDetail'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/orderDetail', // 订单详情
