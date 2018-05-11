@@ -564,9 +564,9 @@ class IndexController extends Controller
                 $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
 
                 if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
-                    $text = '你进行撤销操作。';
+                    $text = '你发起协商撤销。';
                 } else {
-                    $text = '对方进行撤销操作。';
+                    $text = '对方发起协商撤销。';
                 }
 
                 if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
@@ -585,9 +585,9 @@ class IndexController extends Controller
                 //发起人的主ID 与 当前主ID一样则仲裁发起人
                 $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
                 if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
-                    $text = '你进行仲裁操作。原因：' . $detail['leveling_consult']['complain_message'];
+                    $text = '你发起申请仲裁。原因：' . $detail['leveling_consult']['complain_message'];
                 } else {
-                    $text = '对方进行仲裁操作。 原因：' . $detail['leveling_consult']['complain_message'];
+                    $text = '对方发起申请仲裁。 原因：' . $detail['leveling_consult']['complain_message'];
                 }
                 $detail['complain_desc'] = $text;
             }
