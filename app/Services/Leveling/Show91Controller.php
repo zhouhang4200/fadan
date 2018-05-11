@@ -455,6 +455,61 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function updateOrder($orderDatas) {
     	try {
+    		$gameName = Game::find($orderDatas['game_id']);
+	        $datas = [
+				'order_no'                         => $orderDatas['show91_order_no'],
+				'game_name'                        => $gameName ? $gameName->name : '',
+				'game_region'                      => $orderDatas['region'],
+				'game_serve'                       => $orderDatas['serve'],
+				'game_account'                     => $orderDatas['account'],
+				'game_password'                    => $orderDatas['password'],
+				'game_leveling_type'               => $orderDatas['game_leveling_type'],
+				'game_leveling_title'              => $orderDatas['game_leveling_title'],
+				'game_leveling_price'              => $orderDatas['amount'],
+				'game_leveling_day'                => $orderDatas['game_leveling_day'],
+				'game_leveling_hour'               => $orderDatas['game_leveling_hour'],
+				'game_leveling_security_deposit'   => $orderDatas['security_deposit'],
+				'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
+				'game_leveling_requirements'       => $orderDatas['game_leveling_requirements'],
+				'game_leveling_instructions'       => $orderDatas['game_leveling_instructions'],
+				'businessman_phone'                => $orderDatas['user_phone'],
+				'businessman_qq'                   => $orderDatas['user_qq'],
+	        ]; 
+
+	        $datas = json_encode($datas);
+dd(base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.show91.aes_key'), true, config('leveling.show91.aes_iv'))));
+	        $client = new Client();
+            $response = $client->request('POST', config('leveling.show91.url')['updateOrder'], [
+            	'form_params' => [
+	            	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.show91.aes_key'), true, config('leveling.show91.aes_iv'))),
+	            	"platformSign" => config('leveling.show91.platform-sign'),
+            	],
+	            'body' => 'x-www-form-urlencoded',
+            ]);
+            $result = $response->getBody()->getContents();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	        $gameName = Game::find($orderDatas['game_id']);
 
 	        $templateId =  GoodsTemplate::where('game_id', $orderDatas['game_id'])->where('service_id', 4)->value('id'); //模板id
@@ -551,9 +606,8 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        	'account' => config('leveling.show91.account'),
 	            'sign' => config('leveling.show91.sign'),
 	            'oid' => $orderDatas['show91_order_no'],
-	            'orderAddTime.days' => $orderDatas['game_leveling_day'],
-	            'orderAddTime.hours' => $orderDatas['game_leveling_hour'],
-	            'orderAddTime.msg' => '',
+	            'day' => $orderDatas['game_leveling_day'],
+	            'hour' => $orderDatas['game_leveling_hour'],
 	        ];
 
 	       	// 发送
@@ -619,17 +673,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	       	$dataList = static::normalRequest($options, config('leveling.show91.url')['getScreenshot']);
 
 	       	if (isset($dataList) && $dataList['result'] ==0 && !empty($dataList['data'])) {
-		       	foreach ($dataList as $key => $value) {
-	                $imgKey = basename($value->url);
-	                $dataList[$key]->description = $description[$imgKey] ?? '无';
+		       	foreach ($dataList['data'] as $key => $value) {
 	                $imageList[] = [
-	                    'url' => $value->url,
-	                    'username' => $value->userName,
-	                    'created_at' => $value->created_on,
+	                    'url' => $value['url'],
+	                    'username' => $value['userName'],
+	                    'created_at' => $value['created_on'],
 	                    'description' => '',
 	                ];
 		        }
-	     		return imageList;
+	     		return $imageList;
 	       	} else {
 	       		return [];
 	       	}
@@ -651,7 +703,25 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        	'oid' => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	return static::normalRequest($options, config('leveling.show91.url')['getMessage']);
+	       	$message = static::normalRequest($options, config('leveling.show91.url')['getMessage']);
+
+	       	if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
+	       		$sortField = [];
+	            $messageArr = [];
+	            foreach ($message['data'] as $item) {
+	                if (isset($item['id'])) {
+	                    $sortField[] = $item['created_on'];
+	                } else {
+	                    $sortField[] = 0;
+	                }
+	                $messageArr[] = $item;
+	            }
+	            // 用ID倒序
+	            array_multisort($sortField, SORT_ASC, $messageArr);
+
+	            return $messageArr;
+	       	}
+	       	return '';
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());

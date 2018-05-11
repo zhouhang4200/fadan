@@ -139,7 +139,7 @@ return [
     'show91' => [
 		'appid'     => 'bXxE7ElApTbaqaX',
 		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
-		'aes_key'   => '45584685d8e4f5e8e4e2685',
+		'aes_key'   => '45584685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
 		'account'   => 'AF0C36557C664C6B976248917B2BCC39',
 		'sign'      => '7a1e292cad738113e99d1bd3f41bed90',
