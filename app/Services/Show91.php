@@ -506,7 +506,7 @@ class Show91
             throw new CustomException($res['reason'], $res['result']);
         }
 
-        if (isset($res['result']) && $res['result'] != 0 && isset($res['data'])) {
+        if (isset($res['result']) && $res['result'] == 0 && isset($res['data'])) {
             $sortField = [];
             $messageArr = [];
             foreach ($res['data'] as $item) {

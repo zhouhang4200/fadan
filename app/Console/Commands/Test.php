@@ -73,6 +73,9 @@ class Test extends Command
     public function handle()
     {
         $type = $this->argument('type');
+      dd(  Show91::messageList([
+          'oid' => 'ORD180503155001150771'
+      ]));
         if ($type == 1) {
             $this->shos91();
         } elseif ($type == 2) {

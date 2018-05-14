@@ -362,7 +362,7 @@ html {
 
 .layadmin-side-shrink .layui-side {
     left: 0;
-    width: 60px
+    width: 60px!important;
 }
 
 .layadmin-side-shrink .layadmin-pagetabs,
