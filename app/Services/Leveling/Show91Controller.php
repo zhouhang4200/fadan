@@ -214,7 +214,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'                  => $orderDatas['show91_order_no'],
 				'selfCancel.pay_price' => $orderDatas['pay_amount'],
 				'selfCancel.pay_bond'  => $orderDatas['deposit'],
-				'selfCancel.content'   => ! empty($orderDatas['revoke_message']) ?: '空',
+				'selfCancel.content'   => $orderDatas['revoke_message'] ?? '空',
 	        ];
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.show91.url')['applyRevoke']);
