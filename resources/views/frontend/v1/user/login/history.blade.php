@@ -1,17 +1,15 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
-@section('title', '账号 - 登录记录')
+@section('title', '账号 - 登录记录1')
 
 @section('css')
     <style>
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="">
             <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
@@ -80,7 +78,8 @@
             'endDate' => $endDate,
         ])->render() !!}
     @endif
-
+</div>
+</div>
 @endsection
 
 @section('js')

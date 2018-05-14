@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 实名认证')
 
@@ -72,11 +72,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form type">
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -296,6 +294,8 @@
             </div>
         </form>
     </div>
+</div>
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

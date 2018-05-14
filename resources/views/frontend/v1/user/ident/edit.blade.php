@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 实名认证')
 
@@ -71,11 +71,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     @if($ident->type == 2)
         <div class='other'>
             <form class="layui-form" method="POST" action="{{ route('idents.update', ['id' => $ident->id]) }}"
@@ -280,6 +278,8 @@
             </form>
         </div>
     @endif
+</div>
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

@@ -57,7 +57,7 @@ class ReceivingControlController extends Controller
         $receivingControl = isset(Auth::user()->getUserSetting()['receiving_control']) ?
             Auth::user()->getUserSetting()['receiving_control'] : 0;
 
-        return view('frontend.setting.receiving-control.index', compact('services', 'games', 'goods',
+        return view('frontend.v1.setting.receiving-control.index', compact('services', 'games', 'goods',
             'gameId', 'serviceId', 'otherUserId', 'userWitheList', 'userBlacklist', 'receivingControl'));
     }
 
@@ -157,7 +157,7 @@ class ReceivingControlController extends Controller
             if (!in_array($type, [1 , 2])) {
                 return response()->ajax(0, '添加失败');
             }
-            return response()->json(\View::make('frontend.setting.receiving-control.control-user-list', [
+            return response()->json(\View::make('frontend.v1.setting.receiving-control.control-user-list', [
                 'controlUserList' => $controlUserList,
                 'type' => $type,
                 'otherUserId' => $otherUserId
@@ -186,7 +186,7 @@ class ReceivingControlController extends Controller
             if (!in_array($type, [1 , 2])) {
                 return response()->ajax(0, '不存在的类型');
             }
-            return response()->json(\View::make('frontend.setting.receiving-control.control-category-list', [
+            return response()->json(\View::make('frontend.v1.setting.receiving-control.control-category-list', [
                 'controlCategoryList' => $controlCategoryList,
                 'type' => $type,
                 'gameId' => $gameId,
@@ -217,7 +217,7 @@ class ReceivingControlController extends Controller
             if (!in_array($type, [1 , 2])) {
                 return response()->ajax(0, '不存在的类型');
             }
-            return response()->json(\View::make('frontend.setting.receiving-control.control-goods-list', [
+            return response()->json(\View::make('frontend.v1.setting.receiving-control.control-goods-list', [
                 'controlCategoryList' => $controlCategoryList,
                 'type' => $type,
                 'goodsId' => $goodsId,

@@ -1,129 +1,123 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '工作台-代练订单')
-
-@section('breadcrumb')
-    <div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
-        <a>
-            <cite>财务</cite>
-        </a>
-        <span lay-separator="">/</span>
-        <a>
-            <cite>资金流水</cite>
-        </a>
-    </div>
-@endsection
+@section('title', '财务 - 资金流水')
 
 @section('css')
-
+    <style>
+        .layui-form-item .layui-inline {
+            margin-bottom: 5px;
+            margin-right: 5px;
+        }
+        .layui-form-mid {
+            margin-right: 4px;
+        }
+    </style>
 @endsection
 
 @section('main')
-    <div class="layui-card-header" style="padding-top: 20px;">
-        <div class="layui-row layui-col-space5">
-            <form class="layui-form" action="">
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label" style="">订单单号</label>
-                        <div class="layui-input-block" style="">
-                            <input type="text" name="no" lay-verify="title" autocomplete="off" placeholder="请输入订单号" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">玩家旺旺</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="wang_wang" lay-verify="title" autocomplete="off" placeholder="请输入玩家旺旺" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">代练游戏</label>
-                        <div class="layui-input-block">
-                            <select name="game_id" lay-search="">
-                                <option value="">请选择游戏</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"  style="">发单客服</label>
-                        <div class="layui-input-block" style="">
-                            <select name="customer_service_name" lay-search="">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md3">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">代练平台</label>
-                        <div class="layui-input-block">
-                            <select name="platform">
-                                <option value="">全部</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md4">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">发布时间</label>
-                        <div class="layui-input-block">
-                            <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
-                            <div class="layui-form-mid" style="float:none;display: inline-block;width: 8%;text-align: center;margin:0;">
-                                -
-                            </div>
-                            <input type="text" class="layui-input qsdate" id="test-laydate-end" placeholder="结束日期">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-md2">
-                    <div class="layui-form-item">
-                        <div class="layui-input-block" style="margin-left: 40px;">
-                            <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+<div class="layui-card qs-text">
+<div class="layui-card-body">
+<form class="layui-form" id="search">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-mid">说明：</label>
+            <div class="layui-input-inline">
+                <select name="trade_sub_type" lay-search="">
+                    <option value="">请选择</option>
+                    @foreach (config('tradetype.user_sub') as $key => $value)
+                        <option value="{{ $key }}" {{ $key == $tradeSubType ? 'selected' : '' }}> {{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-mid">类型：</label>
+            <div class="layui-input-inline">
+                <select name="trade_type" lay-search="">
+                    <option value="">所有类型</option>
+                    @foreach (config('tradetype.user_display') as $key => $value)
+                        <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}> {{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-mid">相关单号：</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" name="trade_no" placeholder="相关单号" value="{{ $tradeNo }}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-mid">时间：</label>
+            <div class="layui-input-inline" style="">
+                <input type="text" class="layui-input" id="time-start" name="time_start" value="{{ $timeStart }}" placeholder="开始时间">
+            </div>
+            <div class="layui-input-inline" style="">
+                <input type="text" class="layui-input" id="time-end" name="time_end" value="{{ $timeEnd }}" placeholder="结束时间">
+            </div>
+            <button class="layui-btn layui-btn-normal" type="submit">查询</button>
+            <button class="layui-btn layui-btn-normal" type="button" id="export">导出</button>
         </div>
     </div>
-    <div class="layui-card-body">
-        <table class="layui-table">
-            <colgroup>
-                <col width="150">
-                <col width="200">
-                <col>
-            </colgroup>
-            <thead>
+</form>
+
+<table class="layui-table" lay-size="sm">
+    <colgroup>
+        <col width="150">
+        <col>
+    </colgroup>
+    <thead>
+        <tr>
+            <th>流水号</th>
+            <th>说明</th>
+            <th>类型</th>
+            <th>变动金额</th>
+            <th>账户余额</th>
+            <th>相关单号</th>
+            <th>时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse($dataList as $data)
             <tr>
-                <th>昵称</th>
-                <th>加入时间</th>
-                <th>签名</th>
+                <td>{{ $data->id }}</td>
+                <td>{{ config('tradetype.user_sub')[$data->trade_subtype] }}</td>
+                <td>{{ config('tradetype.user')[$data->trade_type] }}</td>
+                <td>{{ $data->fee + 0 }}</td>
+                <td>{{ $data->balance + 0 }}</td>
+                <td>{{ $data->trade_no }}</td>
+                <td>{{ $data->created_at }}</td>
             </tr>
-            </thead>
-            <tbody>
+        @empty
             <tr>
-                <td>贤心</td>
-                <td>2016-11-29</td>
-                <td>人生就像是一场修行</td>
+                <td colspan="999">暂时没有数据</td>
             </tr>
-            <tr>
-                <td>许闲心</td>
-                <td>2016-11-28</td>
-                <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        @endforelse
+    </tbody>
+</table>
+
+{{ $dataList->appends([
+    'trade_no' => $tradeNo,
+    'trade_type' => $tradeType,
+    'trade_sub_type' => $tradeSubType,
+    'time_start' => $timeStart,
+    'time_end' => $timeEnd,
+    ])->links() }}
 @endsection
-
-@section('pop')
-
-@endsection
-
+</div>
+</div>
 @section('js')
+<script>
+layui.use(['laydate', 'form'], function () {
+    var laydate = layui.laydate;
 
+    laydate.render({elem: '#time-start'});
+    laydate.render({elem: '#time-end'});
+});
+
+$('#export').click(function () {
+    var url = "{{ route('frontend.finance.amount-flow.export') }}?" + $('#search').serialize();
+    window.location.href = url;
+});
+</script>
 @endsection

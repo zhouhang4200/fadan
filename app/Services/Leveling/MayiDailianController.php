@@ -109,9 +109,11 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     {
         try {
             $client = new Client();
+            // myLog('mayi', ['options' => $options]);
             $response = $client->request($method, config('leveling.mayidailian.url'), [
                 'form_params' => $options,
             ]);
+
             $result = $response->getBody()->getContents();
 
             if (!isset($result) || empty($result)) {

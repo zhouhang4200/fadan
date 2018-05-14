@@ -37,14 +37,14 @@ class LoginController extends Controller
 
                 $histories = LoginHistory::childFilter($filters)->paginate(config('frontend.page'));
 
-                return view('frontend.user.login.history', compact('user', 'histories', 'users', 'name', 'startDate', 'endDate'));
+                return view('frontend.v1.user.login.history', compact('user', 'histories', 'users', 'name', 'startDate', 'endDate'));
             } else {
 
                 $filters = compact('startDate', 'endDate');
 
                 $histories = LoginHistory::filter($filters)->where('user_id', $user->id)->paginate(config('frontend.page'));
 
-                return view('frontend.user.login.history', compact('user', 'name', 'histories', 'users', 'startDate', 'endDate'));
+                return view('frontend.v1.user.login.history', compact('user', 'name', 'histories', 'users', 'startDate', 'endDate'));
             }
         }
 
@@ -52,6 +52,6 @@ class LoginController extends Controller
 
         $histories = LoginHistory::filter($filters)->where('user_id', $user->id)->paginate(config('frontend.page'));
 
-        return view('frontend.user.login.history', compact('user', 'histories', 'startDate', 'endDate'));
+        return view('frontend.v1.user.login.history', compact('user', 'histories', 'startDate', 'endDate'));
     }
 }

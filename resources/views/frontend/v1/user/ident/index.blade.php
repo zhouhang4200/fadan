@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 实名认证')
 
@@ -16,11 +16,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <div class="layui-tab-item layui-show">
         <table class="layui-table"  lay-size="sm">
             @if (! empty($ident) && $ident->type == 1)
@@ -102,6 +100,8 @@
             @endif
         </table>
     </div>
+</div>
+</div>
 @endsection
 
 @section('js')

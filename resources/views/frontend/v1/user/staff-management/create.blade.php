@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 员工管理 - 员工添加')
 
@@ -10,11 +10,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="">
         {!! csrf_field() !!}
         <div class="layui-form-item">
@@ -82,6 +80,8 @@
         </div>
         </div>
     </form>
+</div>
+</div>
 @endsection
 
 @section('js')

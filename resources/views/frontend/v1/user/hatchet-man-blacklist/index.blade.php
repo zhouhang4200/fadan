@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 打手黑名单')
 
@@ -11,11 +11,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="" >
             <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
@@ -54,8 +52,8 @@
             'hatchetManQq' => $hatchetManQq,
         ])->render() !!}
     </div>
-
-
+</div>
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

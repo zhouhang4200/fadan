@@ -28,7 +28,7 @@ class SendingAssistController extends Controller
             ])->render());
         }
 
-    	return view('frontend.setting.sending-assist.require', compact('orderTemplates'));
+    	return view('frontend.v1.setting.sending-assist.require', compact('orderTemplates'));
     }
 
     /**
@@ -38,7 +38,7 @@ class SendingAssistController extends Controller
     public function requireCreate(GameRepository $gameRepository)
     {
         $game = $gameRepository->availableByServiceId(4);
-    	return view('frontend.setting.sending-assist.require-create', compact('game'));
+    	return view('frontend.v1.setting.sending-assist.require-create', compact('game'));
     }
 
     /**
@@ -73,7 +73,7 @@ class SendingAssistController extends Controller
         $template = GameLevelingRequirementsTemplate::where('user_id', auth()->user()->getPrimaryUserId())
             ->get();
 
-        return view('frontend.setting.sending-assist.require-pop')->with([
+        return view('frontend.v1.setting.sending-assist.require-pop')->with([
             'template' => $template,
             'game' => $game,
         ]);
@@ -164,7 +164,7 @@ class SendingAssistController extends Controller
     	$orderTemplate = GameLevelingRequirementsTemplate::find($id);
         $game = $gameRepository->availableByServiceId(4);
 
-    	return view('frontend.setting.sending-assist.require-edit', compact('orderTemplate', 'game'));
+    	return view('frontend.v1.setting.sending-assist.require-edit', compact('orderTemplate', 'game'));
     }
 
     /**
@@ -214,7 +214,7 @@ class SendingAssistController extends Controller
             ])->render());
         }
 
-        return view('frontend.setting.sending-assist.auto-markup', compact('orderAutoMarkups'));
+        return view('frontend.v1.setting.sending-assist.auto-markup', compact('orderAutoMarkups'));
     }
 
     /**
@@ -223,7 +223,7 @@ class SendingAssistController extends Controller
      */
     public function autoMarkupCreate()
     {
-        return view('frontend.setting.sending-assist.auto-markup-create');
+        return view('frontend.v1.setting.sending-assist.auto-markup-create');
     }
 
     /**
@@ -288,7 +288,7 @@ class SendingAssistController extends Controller
     {
         $orderAutoMarkup = OrderAutoMarkup::find($request->id);
 
-        return view('frontend.setting.sending-assist.auto-markup-edit', compact('orderAutoMarkup'));
+        return view('frontend.v1.setting.sending-assist.auto-markup-edit', compact('orderAutoMarkup'));
     }
 
     /**

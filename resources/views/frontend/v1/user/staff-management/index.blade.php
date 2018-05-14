@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 员工管理')
 
@@ -11,11 +11,9 @@
     </style>
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="" >
             <div class="layui-inline" style="float:left">
             <div class="layui-form-item">
@@ -61,8 +59,8 @@
             'station' => $station,
         ])->render() !!}
     </div>
-
-
+</div>
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

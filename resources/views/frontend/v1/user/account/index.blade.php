@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 我的账号')
 
@@ -6,12 +6,9 @@
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
-    <div class="layui-tab-item layui-show" lay-size="sm">
+<div class="layui-card qs-text">
+    <div class="layui-card-body">
         <table class="layui-table" lay-size="sm">
             <colgroup>
                 <col width="150">
@@ -40,7 +37,7 @@
             </tbody>
         </table>
     </div>
-
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

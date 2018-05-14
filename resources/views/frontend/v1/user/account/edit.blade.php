@@ -1,13 +1,11 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 修改密码')
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
-    <form class="layui-form" method="" action="">
+<div class="layui-card qs-text">
+<div class="layui-card-body">
+    <form class="layui-tab layui-tab-brief layui-form" method="" action="">
         {!! csrf_field() !!}
         <input type="hidden" name="_method" value="PUT">
             <div class="layui-form-item">
@@ -46,6 +44,8 @@
             </div>
         </div>
     </form>
+</div>
+</div>
 @endsection
 
 @section('js')

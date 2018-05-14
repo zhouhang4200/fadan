@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 系统日志')
 
@@ -6,11 +6,9 @@
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
 @endsection
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="">
         <div class="layui-inline" style="float:left">
         <div class="layui-form-item">
@@ -63,7 +61,8 @@
         'startDate' => $startDate,
         'endDate' => $endDate,
     ])->render() !!}
-
+</div>
+</div>
 @endsection
 <!--START 底部-->
 @section('js')

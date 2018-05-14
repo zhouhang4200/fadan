@@ -1,12 +1,10 @@
-@extends('frontend.layouts.app')
+@extends('frontend.v1.layouts.app')
 
 @section('title', '账号 - 员工管理 - 员工编辑')
 
-@section('submenu')
-    @include('frontend.user.submenu')
-@endsection
-
 @section('main')
+<div class="layui-card qs-text">
+<div class="layui-card-body">
     <form class="layui-form" method="" action="">
         {!! csrf_field() !!}
         <input type="hidden" name="_method" value="PUT">
@@ -69,6 +67,8 @@
         </div>
         </div>
     </form>
+</div>
+</div>
 @endsection
 
 @section('js')

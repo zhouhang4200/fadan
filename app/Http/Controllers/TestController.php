@@ -216,6 +216,14 @@ class TestController extends Controller
 
     public function index()
     {
+
+        $orderDetail = OrderDetail::where('order_no', '2018051418371000000004')
+        ->pluck('field_value', 'field_name')
+            ->toArray();
+
+        $detail = call_user_func_array([config('leveling.controller')[3], config('leveling.action')['orderDetail']], [$orderDetail]);
+dd($detail);
+
         event(new OrderReceiving(Order::where('no', '2018041821030200000926')->first()));;die;
         $this->testReceiveOrder();
         return $this->addPrice();

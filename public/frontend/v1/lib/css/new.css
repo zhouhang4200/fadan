@@ -149,7 +149,7 @@ body{font-family: "PingFang SC";font-size: 12px !important;color: #303133}
     font-size: 25px;
 }
 /* qs input 和btn统一高度 */
-.layui-input, .layui-select, .layui-textarea{
+.layui-input, .layui-select{
     height: 32px;
     border-radius: 3px;
 }
@@ -231,7 +231,6 @@ body .layui-laydate .layui-this {
 }
 .layui-input-block{
     min-height: 32px;
-    max-height: 32px;
 }
 .layui-form-text .layui-input-block{
     min-height:none;
