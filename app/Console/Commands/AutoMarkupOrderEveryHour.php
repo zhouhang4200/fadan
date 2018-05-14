@@ -340,26 +340,26 @@ class AutoMarkupOrderEveryHour extends Command
 
     public function addPriceToThirdClient($datas, $order, $orderDetails)
     {     
-        try {
-            // 如果存在91的单,并且9单和我们的单价格不一样,修改91的单位我们的订单价格
-            if (isset($orderDetails['show91_order_no'])) {
-                // 调91的修改订单接口
-                Show91::addOrder($order, true);
-                myLog('markup-hour-success', ['订单号' => isset($order) ? $order->no : '', '结果' => '91加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
-            }
-        }  catch (DailianException $e) {
-            // 91下架接口
-            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
-            // 删除91在我们平台的订单
-            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
-            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
-        } catch (Exception $e) {
-            // 91下架接口
-            Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
-            // 删除91在我们平台的订单
-            OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
-            myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
-        }
+        // try {
+        //     // 如果存在91的单,并且9单和我们的单价格不一样,修改91的单位我们的订单价格
+        //     if (isset($orderDetails['show91_order_no'])) {
+        //         // 调91的修改订单接口
+        //         Show91::addOrder($order, true);
+        //         myLog('markup-hour-success', ['订单号' => isset($order) ? $order->no : '', '结果' => '91加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
+        //     }
+        // }  catch (DailianException $e) {
+        //     // 91下架接口
+        //     Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+        //     // 删除91在我们平台的订单
+        //     OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+        //     myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
+        // } catch (Exception $e) {
+        //     // 91下架接口
+        //     Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
+        //     // 删除91在我们平台的订单
+        //     OrderDetail::where('order_no', $order->no)->where('field_name', 'show91_order_no')->update(['field_value' => '']);
+        //     myLog('markup-hour-dailian-error', ['订单号' => isset($order) ? $order->no : '', '结果' => '失败,已调用91撤单，已删除本地91订单', '原因' => $e->getMessage()]);
+        // }
 
         // 加价 其他平台通用
         if (config('leveling.third_orders')) {
