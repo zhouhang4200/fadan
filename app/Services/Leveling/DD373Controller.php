@@ -238,7 +238,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	'guarantyAQFee' => $orderDatas['deposit'],
 	        	'guarantyXLFee' => 0,
 	        	'PayUserType' => 1,
-	        	'reason' => ! empty($orderDatas['revoke_message']) ? $orderDatas['revoke_message'] : '空',
+	        	'reason' => $orderDatas['revoke_message'] ?? '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
