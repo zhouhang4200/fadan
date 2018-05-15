@@ -28,55 +28,55 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <form class="layui-form" method="" action="">
-        {!! csrf_field() !!}
-        <div style="width: 100%">
-            <div class="layui-form-item">
-                <label class="layui-form-label">岗位名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">拥有权限</label>
+    <div class="layui-card-body">
+        <form class="layui-form" method="" action="">
+            {!! csrf_field() !!}
+            <div style="width: 100%">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">岗位名称</label>
                     <div class="layui-input-block">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th class="col-md-1 text-center" style="width: 1%">模块</th>
-                            <th class="col-md-1 text-center">权限</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @forelse($modulePermissions as $modulePermission)
-                            <tr>
-                                <td><input type="checkbox" name="new_module_id" lay-skin="primary" title="{{ $modulePermission->name }}" lay-filter="module" value="{{ $modulePermission->id }}"></td>
-                                <td>
-                                    @forelse($modulePermission->newPermissions as $permission)
-                                    <div class="layui-input-inline" style="width:240px">
-                                        <input type="checkbox" name="permissions" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
-                                    </div>
-                                    @empty
-                                    @endforelse
-                                </td>
-                            </tr>
-                        @empty
-                        @endforelse
-                        </tbody>
-                    </table>
+                        <input type="text" name="name" lay-verify="required" value="{{ old('name') }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                    </div>
                 </div>
-            </div>
 
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="confirm">立即提交</button>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">拥有权限</label>
+                        <div class="layui-input-block">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="col-md-1 text-center" style="width: 1%">模块</th>
+                                <th class="col-md-1 text-center">权限</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @forelse($modulePermissions as $modulePermission)
+                                <tr>
+                                    <td><input type="checkbox" name="new_module_id" lay-skin="primary" title="{{ $modulePermission->name }}" lay-filter="module" value="{{ $modulePermission->id }}"></td>
+                                    <td>
+                                        @forelse($modulePermission->newPermissions as $permission)
+                                        <div class="layui-input-inline" style="width:240px">
+                                            <input type="checkbox" name="permissions" lay-skin="primary" title="{{ $permission->alias }}" value="{{ $permission->id }}">
+                                        </div>
+                                        @empty
+                                        @endforelse
+                                    </td>
+                                </tr>
+                            @empty
+                            @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="confirm">立即提交</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 @endsection
 <!--START 底部-->

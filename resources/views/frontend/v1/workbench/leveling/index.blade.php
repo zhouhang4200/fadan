@@ -275,8 +275,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label"></label>
                         <div class="layui-input-block">
-                            <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
-                            <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                            <button class="qs-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                            <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
                         </div>
                     </div>
                 </div>
@@ -353,9 +353,9 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                    <button class="qs-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
                     </button>
-                    <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                    <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
                 </div>
             </div>
         </form>

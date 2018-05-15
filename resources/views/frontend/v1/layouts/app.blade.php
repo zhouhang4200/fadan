@@ -349,7 +349,24 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
                         </li>
                     @endif
 
+                    @if(count(array_intersect([
+                        'frontend.goods.index',
+                    ], $userPermissions)))
 
+                    <li data-name="home" class="layui-nav-item">
+                        <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <cite>商品列表</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            @if(Auth::user()->could('frontend.goods.index'))
+                                <dd data-name="console" class="">
+                                    <a href="{{ route('frontend.goods.index') }}">代充订单</a>
+                                </dd>
+                            @endif
+                        </dl>
+                    </li>
+                    @endif
 
 
                     <li data-name="component" class="layui-nav-item">

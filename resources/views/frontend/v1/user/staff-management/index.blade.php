@@ -13,53 +13,53 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <form class="layui-form" method="" action="" >
-            <div class="layui-inline" style="float:left">
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
-                <div class="layui-input-inline">               
-                    <select name="username" lay-verify="" lay-search="">
-                        <option value="">请输入员工姓名</option>
-                        @forelse($children as $child)
-                            <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->username }}</option>
-                        @empty
-                        @endforelse
-                    </select>
-                </div>
-                <label class="layui-form-label" style="width: 45px; padding-left: 0px;">账号</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $name ?? '' }}" name="name" placeholder="员工账号">
-                </div>
-                <label class="layui-form-label" style="width: 45px; padding-left: 0px;">岗位</label>
-                <div class="layui-input-inline">
-                    <select name="station" lay-filter="">                
-                        <option value="">请输入岗位名称</option>
-                        @forelse($userRoles as $userRole)
-                            <option value="{{ $userRole->id }}" {{ $userRole->id == $station ? 'selected' : '' }} >{{ $userRole->name }}</option>
-                        @empty
-                        @endforelse
-                    </select>
+    <div class="layui-card-body">
+        <form class="layui-form" method="" action="" >
+                <div class="layui-inline" style="float:left">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
+                    <div class="layui-input-inline">               
+                        <select name="username" lay-verify="" lay-search="">
+                            <option value="">请输入员工姓名</option>
+                            @forelse($children as $child)
+                                <option value="{{ $child->id }}" {{ $child->id == $userName ? 'selected' : '' }}>{{ $child->username }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
+                    <label class="layui-form-label" style="width: 45px; padding-left: 0px;">账号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="{{ $name ?? '' }}" name="name" placeholder="员工账号">
+                    </div>
+                    <label class="layui-form-label" style="width: 45px; padding-left: 0px;">岗位</label>
+                    <div class="layui-input-inline">
+                        <select name="station" lay-filter="">                
+                            <option value="">请输入岗位名称</option>
+                            @forelse($userRoles as $userRole)
+                                <option value="{{ $userRole->id }}" {{ $userRole->id == $station ? 'selected' : '' }} >{{ $userRole->name }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div style="float: left">
-            <div class="layui-inline" >
-                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
-                <a href="{{ route('staff-management.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
-            </div>
-        </div>                     
-    </form>
+            <div style="float: left">
+                <div class="layui-inline" >
+                    <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
+                    <a href="{{ route('staff-management.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                </div>
+            </div>                     
+        </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm" id="staff">
-    @include('frontend.user.staff-management.list')
-        {!! $users->appends([
-            'name' => $name,
-            'userName' => $userName,
-            'station' => $station,
-        ])->render() !!}
+        <div class="layui-tab-item layui-show" lay-size="sm" id="staff">
+        @include('frontend.user.staff-management.list')
+            {!! $users->appends([
+                'name' => $name,
+                'userName' => $userName,
+                'station' => $station,
+            ])->render() !!}
+        </div>
     </div>
-</div>
 </div>
 @endsection
 <!--START 底部-->

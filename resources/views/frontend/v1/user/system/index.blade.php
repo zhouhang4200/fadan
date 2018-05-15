@@ -8,60 +8,60 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <form class="layui-form" method="" action="">
-        <div class="layui-inline" style="float:left">
-        <div class="layui-form-item">
-              <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
-              </div>
-      
-              <div class="layui-input-inline">
-                    <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束时间">
-              </div>
+    <div class="layui-card-body">
+        <form class="layui-form" method="" action="">
+            <div class="layui-inline" style="float:left">
+            <div class="layui-form-item">
+                  <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="startDate" id="test1" placeholder="开始时间">
+                  </div>
+          
+                  <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="endDate" id="test2" placeholder="结束时间">
+                  </div>
+                </div>
             </div>
+            <div style="float: left">
+                <div class="layui-inline" >
+                    <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
+                    <a href="{{ route('home-system-logs.index') }}" style="color:#fff" class="qs-btn layui-btn-normal layui-btn-small">返回</a>
+                </div>
+            </div>                     
+        </form>
+
+        <div class="layui-tab-item layui-show" lay-size="sm">
+
+            <table class="layui-table" lay-size="sm" style="text-align:center;">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>创建时间</th>
+                    <th>详情</th>
+                    <th>字段</th>
+                    <th>变更前</th>
+                    <th>变更后</th>
+                </tr>
+                </thead>
+                <tbody>
+                     @foreach($systemLogs as $systemLog)
+                        <tr>
+                            <td>{{ $systemLog->id }}</td>
+                            <td>{{ $systemLog->created_at }}</td>
+                            <td>账号：{{  \App\Models\User::find($systemLog->user_id)->name }}</td>
+                            <td>{{ $systemLog->key }}</td>
+                            <td>{{ $systemLog->old_value }}</td>
+                            <td>{{ $systemLog->new_value }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-        <div style="float: left">
-            <div class="layui-inline" >
-                <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查找</button>
-                <a href="{{ route('home-system-logs.index') }}" style="color:#fff" class="layui-btn layui-btn-normal layui-btn-small">返回</a>
-            </div>
-        </div>                     
-    </form>
 
-    <div class="layui-tab-item layui-show" lay-size="sm">
-
-        <table class="layui-table" lay-size="sm" style="text-align:center;">
-            <thead>
-            <tr>
-                <th>序号</th>
-                <th>创建时间</th>
-                <th>详情</th>
-                <th>字段</th>
-                <th>变更前</th>
-                <th>变更后</th>
-            </tr>
-            </thead>
-            <tbody>
-                 @foreach($systemLogs as $systemLog)
-                    <tr>
-                        <td>{{ $systemLog->id }}</td>
-                        <td>{{ $systemLog->created_at }}</td>
-                        <td>账号：{{  \App\Models\User::find($systemLog->user_id)->name }}</td>
-                        <td>{{ $systemLog->key }}</td>
-                        <td>{{ $systemLog->old_value }}</td>
-                        <td>{{ $systemLog->new_value }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        {!! $systemLogs->appends([
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ])->render() !!}
     </div>
-
-    {!! $systemLogs->appends([
-        'startDate' => $startDate,
-        'endDate' => $endDate,
-    ])->render() !!}
-</div>
 </div>
 @endsection
 <!--START 底部-->

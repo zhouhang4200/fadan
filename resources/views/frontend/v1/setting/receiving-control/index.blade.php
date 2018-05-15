@@ -8,135 +8,135 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <div class="explanation">
-        <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-        <ul>
-            <li>该功能可以控制，平台用户对您的订单的接单权限。</li>
-            <li>控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)</li>
-        </ul>
-    </div>
-    <form class="layui-form layui-form-pane" action="">
-        <div class="layui-form-item" pane>
-            <label class="layui-form-label">控制方式</label>
-            <div class="layui-input-block"  >
-                <input type="radio" name="control" value="0" title="不开启"  lay-filter="control" @if($receivingControl == 0) checked @endif>
-                <input type="radio" name="control" value="1" title="白名单" lay-filter="control" @if($receivingControl == 1) checked @endif>
-                <input type="radio" name="control" value="2" title="黑名单"lay-filter="control" @if($receivingControl == 2) checked  @endif>
-            </div>
+    <div class="layui-card-body">
+        <div class="explanation">
+            <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
+            <ul>
+                <li>该功能可以控制，平台用户对您的订单的接单权限。</li>
+                <li>控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)</li>
+            </ul>
         </div>
-    </form>
-
-    <div class="layui-tab  @if($receivingControl != 1) layui-hide  @endif" lay-filter="whitelist" id="whitelist">
-        <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="1">用户接单白名单</li>
-            <li lay-id="2">游戏接单白名单</li>
-            <li lay-id="3">商品接单白名单</li>
-        </ul>
-        <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show">
-                <div class="whitelist-user-box"></div>
-            </div>
-            <div class="layui-tab-item">
-                <div class="whitelist-category-box"></div>
-            </div>
-            <div class="layui-tab-item">
-                <div class="whitelist-goods-box"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="layui-tab @if($receivingControl != 2)  layui-hide  @endif" lay-filter="blacklist" id="blacklist">
-        <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="1">用户接单黑名单</li>
-            <li lay-id="2">商品接单黑名单</li>
-        </ul>
-        <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show">
-                <div class="blacklist-user-box"></div>
-            </div>
-            <div class="layui-tab-item">
-                <div class="blacklist-category-box"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="user-add" style="display: none;padding: 20px">
-        <form class="layui-form"   id="user-add-form">
-            <input type="hidden" name="type" value="">
-            <div class="layui-form-item">
-                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-            </div>
-            <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="user-add-save">确定添加</button>
-                <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
+        <form class="layui-form layui-form-pane" action="">
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">控制方式</label>
+                <div class="layui-input-block"  >
+                    <input type="radio" name="control" value="0" title="不开启"  lay-filter="control" @if($receivingControl == 0) checked @endif>
+                    <input type="radio" name="control" value="1" title="白名单" lay-filter="control" @if($receivingControl == 1) checked @endif>
+                    <input type="radio" name="control" value="2" title="黑名单"lay-filter="control" @if($receivingControl == 2) checked  @endif>
+                </div>
             </div>
         </form>
-    </div>
 
-    <div id="category-add" style="display: none;padding: 20px">
-        <form class="layui-form" action="" id="category-add-form">
-            <input type="hidden" name="type" value="">
-            <div class="layui-form-item">
-                <select name="service_id" lay-verify="required">
-                    @foreach ($services as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
+        <div class="layui-tab  @if($receivingControl != 1) layui-hide  @endif" lay-filter="whitelist" id="whitelist">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1">用户接单白名单</li>
+                <li lay-id="2">游戏接单白名单</li>
+                <li lay-id="3">商品接单白名单</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="whitelist-user-box"></div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="whitelist-category-box"></div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="whitelist-goods-box"></div>
+                </div>
             </div>
-            <div class="layui-form-item">
-                <select name="game_id" lay-verify="required">
-                    @foreach ($games as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="layui-form-item">
-                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-            </div>
-            <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="category-add-save">确定添加</button>
-                <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
-            </div>
-        </form>
-    </div>
+        </div>
 
-    <div id="goods-add" style="display: none;padding: 20px">
-        <form class="layui-form" action="" id="goods-add-form">
-            <input type="hidden" name="type" value="">
-            <div class="layui-form-item">
-                <select name="service_id" lay-verify="required">
-                    @foreach ($services as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
+        <div class="layui-tab @if($receivingControl != 2)  layui-hide  @endif" lay-filter="blacklist" id="blacklist">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1">用户接单黑名单</li>
+                <li lay-id="2">商品接单黑名单</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="blacklist-user-box"></div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="blacklist-category-box"></div>
+                </div>
             </div>
-            <div class="layui-form-item">
-                <select name="goods_id" lay-verify="required">
-                    @foreach ($goods as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="layui-form-item">
-                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-            </div>
-            <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
-                <button  type="button" class="layui-btn layui-btn-danger cancel">取消添加</button>
-            </div>
-        </form>
+        </div>
+
+        <div id="user-add" style="display: none;padding: 20px">
+            <form class="layui-form"   id="user-add-form">
+                <input type="hidden" name="type" value="">
+                <div class="layui-form-item">
+                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+                </div>
+                <div class="layui-form-item">
+                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="user-add-save">确定添加</button>
+                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="category-add" style="display: none;padding: 20px">
+            <form class="layui-form" action="" id="category-add-form">
+                <input type="hidden" name="type" value="">
+                <div class="layui-form-item">
+                    <select name="service_id" lay-verify="required">
+                        @foreach ($services as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="layui-form-item">
+                    <select name="game_id" lay-verify="required">
+                        @foreach ($games as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="layui-form-item">
+                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+                </div>
+                <div class="layui-form-item">
+                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="category-add-save">确定添加</button>
+                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="goods-add" style="display: none;padding: 20px">
+            <form class="layui-form" action="" id="goods-add-form">
+                <input type="hidden" name="type" value="">
+                <div class="layui-form-item">
+                    <select name="service_id" lay-verify="required">
+                        @foreach ($services as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="layui-form-item">
+                    <select name="goods_id" lay-verify="required">
+                        @foreach ($goods as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="layui-form-item">
+                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+                </div>
+                <div class="layui-form-item">
+                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
+                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 </div>
 @endsection
 

@@ -18,89 +18,89 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <div class="layui-tab-item layui-show">
-        <table class="layui-table"  lay-size="sm">
-            @if (! empty($ident) && $ident->type == 1)
-            <thead>
-            <tr>
-                <th>用户名</th>
-                <th>姓名</th>
-                <th>电话</th>
-                <th>身份证号</th>
-                <th>开户银行</th>
-                <th>银行卡号</th>
-                <th>申请认证时间</th>
-                <th>审核状态</th>
-                @if($ident->status == 2)
-                    <th>原因</th>
-                @endif
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
+    <div class="layui-card-body">
+        <div class="layui-tab-item layui-show">
+            <table class="layui-table"  lay-size="sm">
+                @if (! empty($ident) && $ident->type == 1)
+                <thead>
                 <tr>
-                    <td>{{ $ident->user ? $ident->user->name : '' }}</td>
-                    <td>{{ $ident->name }}</td>
-                    <td>{{ $ident->phone_number }}</td>
-                    <td>{{ $ident->identity_card }}</td>
-                    <td>{{ $ident->bank_name }}</td>
-                    <td>{{ $ident->bank_number }}</td>
-                    <td>{{ $ident->created_at }}</td>
-                    <td>{{ config('frontend.status')[$ident->status] }}</td>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>电话</th>
+                    <th>身份证号</th>
+                    <th>开户银行</th>
+                    <th>银行卡号</th>
+                    <th>申请认证时间</th>
+                    <th>审核状态</th>
                     @if($ident->status == 2)
-                        <th>{{ $ident->message }}</th>
+                        <th>原因</th>
                     @endif
-                    @if ($ident->status == 1)
-                        <td>完成</td>
-                    @else
-                        <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="layui-btn layui-btn-normal layui-btn-small">编缉</a></td>
-                    @endif
+                    <th>操作</th>
                 </tr>
-            </tbody>
-            @elseif (! empty($ident) && $ident->type == 2)
-            <thead>
-            <tr>
-                <th>用户名</th>
-                <th>姓名</th>
-                <th>电话</th>
-                <th>开户银行</th>
-                <th>银行卡号</th>
-                <th>法人</th>
-                <th>营业执照号</th>
-                <th>申请认证时间</th>
-                <th>审核状态</th>
-                @if($ident->status == 2)
-                    <th>原因</th>
-                @endif
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $ident->user ? $ident->user->name : '' }}</td>
+                        <td>{{ $ident->name }}</td>
+                        <td>{{ $ident->phone_number }}</td>
+                        <td>{{ $ident->identity_card }}</td>
+                        <td>{{ $ident->bank_name }}</td>
+                        <td>{{ $ident->bank_number }}</td>
+                        <td>{{ $ident->created_at }}</td>
+                        <td>{{ config('frontend.status')[$ident->status] }}</td>
+                        @if($ident->status == 2)
+                            <th>{{ $ident->message }}</th>
+                        @endif
+                        @if ($ident->status == 1)
+                            <td>完成</td>
+                        @else
+                            <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="qs-btn layui-btn-normal layui-btn-small">编缉</a></td>
+                        @endif
+                    </tr>
+                </tbody>
+                @elseif (! empty($ident) && $ident->type == 2)
+                <thead>
                 <tr>
-                    <td>{{ $ident->user->name }}</td>
-                    <td>{{ $ident->name }}</td>
-                    <td>{{ $ident->phone_number }}</td>
-                    <td>{{ $ident->bank_name }}</td>
-                    <td>{{ $ident->bank_number }}</td>
-                    <td>{{ $ident->corporation }}</td>
-                    <td>{{ $ident->license_number }}</td>
-                    <td>{{ $ident->created_at }}</td>
-                    <td>{{ config('frontend.status')[$ident->status] }}</td>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>电话</th>
+                    <th>开户银行</th>
+                    <th>银行卡号</th>
+                    <th>法人</th>
+                    <th>营业执照号</th>
+                    <th>申请认证时间</th>
+                    <th>审核状态</th>
                     @if($ident->status == 2)
-                        <th>{{ $ident->message }}</th>
+                        <th>原因</th>
                     @endif
-                    @if ($ident->status == 1)
-                        <td>完成</td>
-                    @else
-                        <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编缉</a></td>
-                    @endif
+                    <th>操作</th>
                 </tr>
-            </tbody>
-            @endif
-        </table>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $ident->user->name }}</td>
+                        <td>{{ $ident->name }}</td>
+                        <td>{{ $ident->phone_number }}</td>
+                        <td>{{ $ident->bank_name }}</td>
+                        <td>{{ $ident->bank_number }}</td>
+                        <td>{{ $ident->corporation }}</td>
+                        <td>{{ $ident->license_number }}</td>
+                        <td>{{ $ident->created_at }}</td>
+                        <td>{{ config('frontend.status')[$ident->status] }}</td>
+                        @if($ident->status == 2)
+                            <th>{{ $ident->message }}</th>
+                        @endif
+                        @if ($ident->status == 1)
+                            <td>完成</td>
+                        @else
+                            <td style="text-align: center"><a href="{{ route('idents.edit', ['id' => $ident->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini">编缉</a></td>
+                        @endif
+                    </tr>
+                </tbody>
+                @endif
+            </table>
+        </div>
     </div>
-</div>
 </div>
 @endsection
 

@@ -8,60 +8,60 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <form class="layui-form" id="search">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-mid">订单号：</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="order_no" autocomplete="off" class="layui-input" value="{{ $orderNo }}">
+    <div class="layui-card-body">
+        <form class="layui-form" id="search">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-mid">订单号：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="order_no" autocomplete="off" class="layui-input" value="{{ $orderNo }}">
+                    </div>
                 </div>
-            </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-mid">发送手机：</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="client_phone" autocomplete="off" class="layui-input" value="{{ $clientPhone }}">
+                <div class="layui-inline">
+                    <label class="layui-form-mid">发送手机：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="client_phone" autocomplete="off" class="layui-input" value="{{ $clientPhone }}">
+                    </div>
                 </div>
+                <button class="qs-btn layui-btn-normal" type="submit">查询</button>
+                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="qs-btn layui-btn-normal layui-btn-small" >导出</a>
             </div>
-            <button class="layui-btn layui-btn-normal" type="submit">查询</button>
-            <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal layui-btn-small" >导出</a>
-        </div>
-    </form>
-
-    <div class="layui-tab-item layui-show" lay-size="sm">
-        <form class="layui-form" action="">
-            <table class="layui-table" lay-size="sm" style="">
-                <thead>
-                <tr>
-                    <th>订单号</th>
-                    <th>发送手机</th>
-                    <th>发送内容</th>
-                    <th>发送时间</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse($recordDetail as $item)
-                    <tr>
-                        <td width="20%">天猫：{{ $item->foreign_order_no }} <br/> @if($item->third) {{  config('partner.platform')[$item->third]['name']  }}：{{ $item->third_order_no }} @endif</td>
-                        <td width="13%">{{ $item->client_phone }}</td>
-                        <td>{{ $item->contents }}</td>
-                        <td width="10%">{{ $item->created_at }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="10">暂时没有数据</td>
-                    </tr>
-                @endforelse
-                </tbody>
-            </table>
         </form>
+
+        <div class="layui-tab-item layui-show" lay-size="sm">
+            <form class="layui-form" action="">
+                <table class="layui-table" lay-size="sm" style="">
+                    <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>发送手机</th>
+                        <th>发送内容</th>
+                        <th>发送时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($recordDetail as $item)
+                        <tr>
+                            <td width="20%">天猫：{{ $item->foreign_order_no }} <br/> @if($item->third) {{  config('partner.platform')[$item->third]['name']  }}：{{ $item->third_order_no }} @endif</td>
+                            <td width="13%">{{ $item->client_phone }}</td>
+                            <td>{{ $item->contents }}</td>
+                            <td width="10%">{{ $item->created_at }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10">暂时没有数据</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        {!! $recordDetail->appends([
+            'client_phone' => $clientPhone,
+            'order_no' => $orderNo,
+        ])->render() !!}
     </div>
-    {!! $recordDetail->appends([
-        'client_phone' => $clientPhone,
-        'order_no' => $orderNo,
-    ])->render() !!}
-</div>
 </div>
 @endsection
 <!--START 底部-->

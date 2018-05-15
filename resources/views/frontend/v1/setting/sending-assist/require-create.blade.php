@@ -12,56 +12,56 @@
 
 @section('main')
 <div class="layui-card qs-text"> 
-<div class="layui-card-body">
-    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-        <ul class="layui-tab-title">
-            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
-            <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
-        </ul>
-        <div class="layui-tab-content" style="height: 100px;">
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-              <legend>添加</legend>
-            </fieldset>
-            <div class="layui-tab-item layui-show">
-                <form class="layui-form" method="POST" action="">
-                    {!! csrf_field() !!}
-                    <div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">模板名称:</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入名称" class="layui-input">
+    <div class="layui-card-body">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
+                <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
+            </ul>
+            <div class="layui-tab-content" style="height: 100px;">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                  <legend>添加</legend>
+                </fieldset>
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form" method="POST" action="">
+                        {!! csrf_field() !!}
+                        <div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">模板名称:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                                </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">关联游戏:</label>
-                            <div class="layui-input-inline">
-                                <select name="game_id" lay-verify="required" lay-search>
-                                    <option value="0"></option>
-                                    @foreach($game as $index => $value)
-                                    <option value="{{ $index }}">{{ $value }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">关联游戏:</label>
+                                <div class="layui-input-inline">
+                                    <select name="game_id" lay-verify="required" lay-search>
+                                        <option value="0"></option>
+                                        @foreach($game as $index => $value)
+                                        <option value="{{ $index }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">模板内容:</label>
-                            <div class="layui-input-block">
-                              <textarea placeholder="请输入内容" lay-verify="required" name="content" class="layui-textarea"></textarea>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">模板内容:</label>
+                                <div class="layui-input-block">
+                                  <textarea placeholder="请输入内容" lay-verify="required" name="content" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="submit">确认</button>
+                                    <a class="qs-btn layui-btn-normal" onclick="cancel()">取消</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="submit">确认</button>
-                                <a class="layui-btn layui-btn-normal" onclick="cancel()">取消</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-    </div> 
-</div>
+        </div> 
+    </div>
 </div>
 @endsection
 
