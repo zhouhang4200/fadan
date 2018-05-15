@@ -284,7 +284,7 @@
             loadTemplate(data.value)
         });
         // 加载默认模板
-        loadTemplate(1);
+        loadTemplate({{ $detail['game_id'] }});
         // 加载模板
         function loadTemplate(id) {
             var getTpl = goodsTemplate.innerHTML, view = $('#template');
