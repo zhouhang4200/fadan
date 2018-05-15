@@ -914,8 +914,6 @@ class IndexController extends Controller
                 // 手动触发调用外部接口时间
                 $newOrder = OrderModel::where('no', $order->no)->first();
 
-                //**修改订单, 91和代练妈妈通用 **/
-                // event(new AutoRequestInterface($newOrder, 'addOrder', true));
                 /** 修改订单, 其他平台通用 **/
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
@@ -978,9 +976,6 @@ class IndexController extends Controller
                     // 手动触发调用外部接口时间
                     $order = OrderModel::where('no', $order->no)->first();
 
-                    /**修改订单**/
-                    //**修改订单, 91和代练妈妈通用 **/
-                    // event(new AutoRequestInterface($order, 'addOrder', true));
                     /** 修改订单, 其他平台通用 **/
                     if (config('leveling.third_orders')) {
                         // 获取订单和订单详情以及仲裁协商信息
@@ -1012,10 +1007,6 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        // $order->addAmount = $addAmount;
-
-                        // 加价 91 和 代练妈妈通用
-                        // event(new AutoRequestInterface($order, 'addPrice'));
                         // 加价 其他平台通用
                         if (config('leveling.third_orders')) {
                             // 获取订单和订单详情以及仲裁协商信息
@@ -1038,8 +1029,6 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
                             'field_value' => $requestData['password']
                         ]);
-                        // 账号密码修改，91和代练妈妈通用
-                        // event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
                         // 其他平台通用
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
@@ -1089,22 +1078,7 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
                             'field_value' => $requestData['game_leveling_hour']
                         ]);
- 
-                        // 91和代练妈妈接口加时
-                        // if (isset($addDays) && !isset($addHours)) {
-                        //     $order->addDays = $addDays;
-                        //     $order->addHours = 0;
-                            // 仅限 91 和 代练妈妈
-                            // event(new AutoRequestInterface($order, 'addLimitTime'));
-                        // } elseif (!isset($addDays) && isset($addHours)) {
-                        //     $order->addDays = 0;
-                        //     $order->addHours = $addHours;
-                            // event(new AutoRequestInterface($order, 'addLimitTime'));
-                        // } elseif (isset($addDays) && isset($addHours)) {
-                        //     $order->addDays = $addDays;
-                        //     $order->addHours = $addHours;
-                            // event(new AutoRequestInterface($order, 'addLimitTime'));
-                        // }
+
                          // 其他平台通用加时
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
@@ -1720,10 +1694,44 @@ class IndexController extends Controller
             '八' => 8,
             '九' => 9,
         ];
-        $serveNum =  str_replace(array_keys($num), array_values($num), $noProvince);
+        $serveNum =  str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
+
+        $serve = '';
+        if ($province == '北京' && in_array($serveNum, [2, 4])) {
+            $serve = '北京2/4区';
+        } else if($province == '江苏' && in_array($serveNum, [5, 7])) {
+            $serve = '江苏5/7区';
+        } else if($province == '广西' && in_array($serveNum, [2, 4])) {
+            $serve = '广西2/4区';
+        }  else if($province == '东北' && in_array($serveNum, [4, 5, 6])) {
+            $serve = '东北4/5/6区';
+        } else if($province == '东北' && in_array($serveNum, [3, 7])) {
+            $serve = '东北3/7区';
+        } else if($province == '山东' && in_array($serveNum, [2, 7])) {
+            $serve = '山东2/7区';
+        } else if($province == '浙江' && in_array($serveNum, [4, 5])) {
+            $serve = '浙江4/5区';
+        } else if($province == '上海' && in_array($serveNum, [4, 5])) {
+            $serve = '上海4/5区';
+        } else if($province == '河北' && in_array($serveNum, [2, 3])) {
+            $serve = '河北2/3区';
+        } else if($province == '福建' && in_array($serveNum, [3, 4])) {
+            $serve = '福建3/4区';
+        } else if($province == '黑龙江' && in_array($serveNum, [2, 3])) {
+            $serve = '黑龙江2/3区';
+        } else if($province == '西北' && in_array($serveNum, [2, 3])) {
+            $serve = '西北2/3区';
+        } else if($province == '陕西' && in_array($serveNum, [2, 3])) {
+            $serve = '陕西2/3区';
+        } else if($province == '黑龙江' && in_array($serveNum, [1, 2])) {
+            $serve = '吉林1/2区';
+        } else {
+            $serve = $province . $serveNum  . '区';
+        }
+
         // 固定的订单信息
         $fixedInfo['region'] = ['type' => 2, 'value' => $province . '区'];
-        $fixedInfo['serve'] = ['type' => 2, 'value' => $province . str_replace('区', '', $serveNum)  . '区'];
+        $fixedInfo['serve'] = ['type' => 2, 'value' => $serve];
         $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
