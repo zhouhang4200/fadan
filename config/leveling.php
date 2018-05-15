@@ -141,13 +141,13 @@ return [
 
 	// 91平台
     'show91' => [
-		'appid'     => 'bXxE7ElApTbaqaX',
-		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
+		'appid'     => 'RbO1SPEINbjU79DYrTpLxXAmJQxO6TYzVZ6awzyclvXejAQSMM98WBKxSRzm',
+		'appsecret' => 'EsPKc2m5NjymkAd95SQFVI5hDHI3IHUOwVmeNTVbKU7xFdkxZODkOwma92BB',
 		'aes_key'   => '45584685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
-		'account'   => 'AF0C36557C664C6B976248917B2BCC39',
-		'sign'      => '7a1e292cad738113e99d1bd3f41bed90',
-		'password'  => 111,
+		'account'   => env('SHOW91_ACCOUNT', '558ED3FCAA3E4722A8F8FEFB741AE40D'),
+		'sign'      => env('SHOW91_SIGN','f1ba344cc00d3063ba6a8c14e7d0fc4c'),
+		'password'  => env('SHOW91_PAY_PASSWORD', 'qqq111'),
     	'status' => [
 	        0  => '已发布',
 	        1  => '代练中',
@@ -157,6 +157,7 @@ return [
 	        5  => '已挂起',
 	        6  => '已撤单',
 	        7  => '已取消',
+	        8  => '已锁定',
 	        10 => '等待工作室接单',
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
