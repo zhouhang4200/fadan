@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
+use App\Models\AutomaticallyGrabGoods;
 use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\UserSetting;
@@ -335,7 +336,6 @@ class IndexController extends Controller
 
         // 有淘宝订单则更新淘宝订单卖家备注
         $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
-
         if ($taobaoTrade && empty($taobaoTrade->seller_memo)) {
             // 获取备注并更新
             $client = new TopClient;
@@ -353,8 +353,18 @@ class IndexController extends Controller
                 $taobaoTrade->save();
             }
         }
+        // 从收货地址中拆分区服角色信息
+        $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
+        // 获取抓取商品配置
+        $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo'));
+        $fixedInfo = [];
+        // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
+        if ($goodsConfig->game_id == 1 && $goodsConfig->type == 1) {
+            $fixedInfo = $this->dnfFixedInfo($receiverAddress);
+        }
+
+        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
     }
 
     /**
@@ -400,18 +410,6 @@ class IndexController extends Controller
 
             try {
                 $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
-
-                // 发单主用户是否配置了自动加价
-                // 查找主账号下面设置爱的自动加价模板
-                // $orderAutoMarkup = OrderAutoMarkup::where('user_id', $order->creator_primary_user_id)
-                //     ->where('markup_amount', '>=', $order->amount)
-                //     ->oldest('markup_amount')
-                //     ->first();
-
-                // if ($orderAutoMarkup) {
-                //     // 下单成功之后，向redis存订单号和下单时间，自动加价用,0表示加价次数0此
-                //     $res = Redis::hSet('order:autoMarkups', $order->no, '0@'.$order->amount.'@'.$order->created_at);
-                // }
 
                 // 提示哪些平台下单成功，哪些平台下单失败
                 $orderDetails = OrderDetail::where('order_no', $order->no)
@@ -1690,6 +1688,53 @@ class IndexController extends Controller
             return response()->ajax(0, 0);
         }
         return response()->ajax(0, 0);
+    }
+
+    /**
+     * DNF推荐号固定信息
+     * @param $receiverAddress
+     * @return mixed
+     */
+    protected function dnfFixedInfo($receiverAddress)
+    {
+        $region = explode(':', $receiverAddress[0]);
+        $role = explode(':', $receiverAddress[1]);
+
+        // 取省份名字
+        if (strpos($region[1], '黑龙') !== false) {
+            $province = mb_substr($region[1],0 ,3);
+        } else {
+            $province = mb_substr($region[1],0 ,2);
+        }
+        // 去除省份
+        $noProvince = str_replace($province, '', $region[1]);
+        // 将汉字转为阿拉伯数字
+        $num = [
+            '一' => 1,
+            '二' => 2,
+            '三' => 3,
+            '四' => 4,
+            '五' => 5,
+            '六' => 6,
+            '七' => 7,
+            '八' => 8,
+            '九' => 9,
+        ];
+        $serveNum =  str_replace(array_keys($num), array_values($num), $noProvince);
+        // 固定的订单信息
+        $fixedInfo['region'] = ['type' => 2, 'value' => $province . '区'];
+        $fixedInfo['serve'] = ['type' => 2, 'value' => $province . str_replace('区', '', $serveNum)  . '区'];
+        $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
+        $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
+        $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
+        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号N区N次'];
+        $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号N区N次'];
+        $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
+        $fixedInfo['efficiency_deposit'] = ['type' => 1, 'value' => 1];
+        $fixedInfo['game_leveling_day'] = ['type' => 2, 'value' => 0];
+        $fixedInfo['game_leveling_hour'] = ['type' => 2, 'value' => 6];
+
+        return $fixedInfo;
     }
 }
 
