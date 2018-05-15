@@ -86,7 +86,7 @@
 
                                             <!--订单状态为 没有接单 已下架时可以编辑该属性-->
                                             @if($item->field_type == 1)
-                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif|{{ $item->verify_rule }}" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="<?php if($item->field_required == 1){ echo 'required|'; }  echo $item->verify_rule;  ?>" value="{{ $detail[$item->field_name] ?? '' }}">
                                             @endif
 
                                             @if($item->field_type == 2)
