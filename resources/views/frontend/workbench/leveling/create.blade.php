@@ -256,8 +256,8 @@
                     }
                 },
                 gt5:function (value) { // 大于5
-                    if (value < 5) {
-                        return '输入金额需大于或等于5元';
+                    if (value < 1) {
+                        return '输入金额需大于或等于1元';
                     }
                 }
             });
