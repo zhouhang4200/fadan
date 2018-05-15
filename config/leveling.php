@@ -14,7 +14,7 @@ return [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
 		8456 => 1, // 91
-		// 84567 => 5, // 丸子
+		84568 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
@@ -22,7 +22,7 @@ return [
 		3 => 'mayi_order_no',
 		4 => 'dd373_order_no',
 		1 => 'show91_order_no',
-		// 5 => 'wanzi_order_no',
+		5 => 'wanzi_order_no',
 	],
     // 外部平台价格字段
     'third_orders_price' => [
@@ -38,6 +38,10 @@ return [
             'data' => 'data',
             'price' => 'price',
         ],
+        5 => [
+            'data' => 'data',
+            'price' => 'price',
+        ],
     ],
 
 	// 调用第三方平台接口的控制器名称
@@ -45,7 +49,7 @@ return [
 		4 => DD373Controller::class,
 		3 => MayiDailianController::class,
 		1 => Show91Controller::class,
-		// 5 => WanziController::class,
+		5 => WanziController::class,
 	],
 
 	// 调用第三方平台接口控制器中的方法名，下面的方法 key 与 value 相同，本来多此一举，便于查看
@@ -190,8 +194,8 @@ return [
 
     // 丸子平台
     'wanzi' => [
-    	'appid'     => 'bXxE7ElApTbaqaX',
-		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
+    	'appid'     => '8FK2tEkFoHcB1UJu6TkSzLAwkh9e2WIwunbEA2lyFnJhpupzRelEuxjG34YX',
+		'appsecret' => '8mCSr0H3EbTIatauflbqzUIkKdZAQiFsAAF3Nu4Jp2nMCGZSBA6mSyF7E5J1',
 		'aes_key'   => '4158d685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
 		'account'   => env('SHOW91_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
@@ -206,6 +210,7 @@ return [
 	        5  => '已挂起',
 	        6  => '已撤单',
 	        7  => '已取消',
+	        8  => '已锁定',
 	        10 => '等待工作室接单',
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
