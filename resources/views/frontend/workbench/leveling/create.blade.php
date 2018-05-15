@@ -255,9 +255,9 @@
                         }
                     }
                 },
-                titleLen:function (value) { // 字数限制
-                    if (value.length > 60) {
-                        return '代练标题不可大于60个字';
+                gt5:function (value) { // 大于5
+                    if (value < 1) {
+                        return '输入金额需大于或等于1元';
                     }
                 }
             });

@@ -20,21 +20,19 @@ use App\Repositories\Frontend\OrderDetailRepository;
  */
 class Arbitrationed extends DailianAbstract implements DailianInterface
 {
-    protected $acceptableStatus = [16]; // 状态：16仲裁中
+    protected $acceptableStatus = [16]; // 允许操作的状态：16仲裁中
 	protected $beforeHandleStatus = 16; // 操作之前的状态:16仲裁中
-    protected $handledStatus    = 21; // 状态：21已仲裁
+    protected $handledStatus    = 21; // 操作后状态：21 已仲裁
     protected $type             = 26; // 操作：26 客服仲裁
-    
-	/**
-	 * [客服仲裁 -》 已仲裁]
-	 * @param  [type] $orderNo     [订单号]
-	 * @param  [type] $userId      [操作人]
-	 * @param  [type] $apiAmount   [回传代练费]
-	 * @param  [type] $apiDeposit  [回传双金]
-	 * @param  [type] $apiService  [回传代练手续费]
-	 * @param  [type] $writeAmount [协商代练费]
-	 * @return [type]              [true or exception]
-	 */
+
+    /**
+     * [客服仲裁 -》 已仲裁]
+     * @param $orderNo
+     * @param $userId
+     * @param int $runAfter
+     * @return bool
+     * @throws DailianException
+     */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
     	DB::beginTransaction();
@@ -90,10 +88,7 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 
     /**
      * 流水
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit [回传双金]
-     * @param  [type] $apiService [回传手续费]
-     * @return [type]             [流水记录]
+     * @throws DailianException
      */
 	public function updateAsset()
 	{

@@ -49,6 +49,22 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderApplyComplete' => [
             'App\Listeners\OrderApplyComplete\SendSms',
         ],
+        // 订单仲裁后事件
+        'App\Events\OrderArbitrationed' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        // 订单撤销后事件
+        'App\Events\OrderRevoked' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        // 订单撤单后事件
+        'App\Events\OrderDelete' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        // 订单强制撤销后事件
+        'App\Events\OrderForceRevoke' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
     ];
 
     /**

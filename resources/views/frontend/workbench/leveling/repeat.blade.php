@@ -86,7 +86,7 @@
 
                                             <!--订单状态为 没有接单 已下架时可以编辑该属性-->
                                             @if($item->field_type == 1)
-                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input" lay-verify="<?php if($item->field_required == 1){ echo 'required|'; }  echo $item->verify_rule;  ?>" value="{{ $detail[$item->field_name] ?? '' }}">
                                             @endif
 
                                             @if($item->field_type == 2)
@@ -128,7 +128,7 @@
                                             @endif
 
                                             @if($item->field_type == 5)
-                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
+                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif|{{ $item->verify_rule }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
                                             @endif
 
                                         </div>
@@ -242,6 +242,31 @@
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
 
+        //自定义验证规则
+        form.verify({
+            zero: function(value){
+                if(value <= 0){
+                    return '该数值需大于0';
+                }
+            },
+            money:function (value) {
+                if (value.indexOf(".") > -1) {
+                    var temp  = value.split(".");
+                    if (temp.length > 2) {
+                        return '请输入合法的金额';
+                    }
+                    if (temp[1].length > 2) {
+                        return '输入的小数请不要大于两位';
+                    }
+                }
+            },
+            gt5:function (value) { // 大于5
+                if (value < 1) {
+                    return '输入金额需大于或等于1元';
+                }
+            }
+        });
+
         $('.cancel').click(function(){
             layer.closeAll();
         });
@@ -284,7 +309,7 @@
             loadTemplate(data.value)
         });
         // 加载默认模板
-        loadTemplate(1);
+        loadTemplate({{ $detail['game_id'] }});
         // 加载模板
         function loadTemplate(id) {
             var getTpl = goodsTemplate.innerHTML, view = $('#template');
@@ -304,6 +329,7 @@
 
         // 下单
         form.on('submit(order)', function (data) {
+
             layer.confirm('用哪一个客服身份重发？', {
             btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
             }, function(index, layero){

@@ -175,7 +175,7 @@ class IndexController extends Controller
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
-        return view('frontend.workbench.leveling.index')->with([
+        return view('frontend.v1.workbench.leveling.index')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
