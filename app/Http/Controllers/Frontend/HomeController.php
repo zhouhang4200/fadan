@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         $ident = RealNameIdent::where('user_id', $masterId)->first();
 
-        return view('frontend.v1.index', compact('user', 'loginHistoryTime', 'ident', 'parentUser', 'transferInfo'));
+        return view('frontend.index', compact('user', 'loginHistoryTime', 'ident', 'parentUser', 'transferInfo'));
     }
 
 }

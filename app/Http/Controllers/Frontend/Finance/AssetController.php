@@ -18,6 +18,6 @@ class AssetController extends Controller
     public function index()
     {
         $asset = Auth::user()->userAsset;
-        return view('frontend.v1.finance.asset.index', compact('asset'));
+        return view('frontend.finance.asset.index', compact('asset'));
     }
 }

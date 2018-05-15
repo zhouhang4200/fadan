@@ -39,7 +39,7 @@ class TbAuthController extends Controller
                 $bindResult = 2;
             }
         }
-        return view('frontend.v1.setting.tb-auth.index', compact('bindResult'));
+        return view('frontend.setting.tb-auth.index', compact('bindResult'));
     }
 
     /**
@@ -75,7 +75,7 @@ class TbAuthController extends Controller
                 $bindResult = 1;
             }
         }
-        return view('frontend.v1.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
+        return view('frontend.setting.tb-auth.store', compact('bindResult', 'taobaoShopAuth'));
     }
 
     /**

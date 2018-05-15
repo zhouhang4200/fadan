@@ -22,7 +22,7 @@ class IdentController extends Controller
     {
         $ident = RealNameIdent::where('user_id', Auth::id())->first();
 
-        return view('frontend.v1.user.ident.index', compact('ident'));
+        return view('frontend.user.ident.index', compact('ident'));
     }
 
     /**
@@ -41,7 +41,7 @@ class IdentController extends Controller
             return back()->with('hasError', '您已经填写过实名认证， 请勿重复填写!');
         }
 
-        return view('frontend.v1.user.ident.create');
+        return view('frontend.user.ident.create');
     }
 
     /**
@@ -53,7 +53,7 @@ class IdentController extends Controller
     {
         $ident = RealNameIdent::where('user_id', Auth::id())->first();
 
-        return view('frontend.v1.user.ident.edit', compact('ident'));
+        return view('frontend.user.ident.edit', compact('ident'));
     }
 
     /**

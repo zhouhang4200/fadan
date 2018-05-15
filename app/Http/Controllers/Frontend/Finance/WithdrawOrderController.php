@@ -19,7 +19,7 @@ class WithdrawOrderController extends Controller
 
         $dataList = $repository->getList($timeStart, $timeEnd, $status);
 
-        return view('frontend.v1.finance.withdraw.index', compact('dataList', 'timeStart', 'timeEnd', 'status'));
+        return view('frontend.finance.withdraw.index', compact('dataList', 'timeStart', 'timeEnd', 'status'));
     }
 
     public function store(Request $request, UserWithdrawOrderRepository $repository)

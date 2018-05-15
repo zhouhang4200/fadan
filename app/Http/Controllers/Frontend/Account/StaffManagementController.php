@@ -42,7 +42,7 @@ class StaffManagementController extends Controller
             ])->render());
         }
 
-    	return view('frontend.v1.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'userRoles', 'children'));
+    	return view('frontend.user.staff-management.index', compact('name', 'station', 'userName', 'users', 'userRoles', 'children'));
     }
 
     /**
@@ -56,7 +56,7 @@ class StaffManagementController extends Controller
         // 主账号编辑的岗位
         $userRoles = NewRole::where('user_id', Auth::user()->getPrimaryUserId())->get();
 
-    	return view('frontend.v1.user.staff-management.edit', compact('userRoles', 'user'));
+    	return view('frontend.user.staff-management.edit', compact('userRoles', 'user'));
     }
 
     /**
@@ -142,7 +142,7 @@ class StaffManagementController extends Controller
         //获取主账号设置的所有角色
         $userRoles = NewRole::where('user_id', Auth::user()->getPrimaryUserId())->get(); 
 
-    	return view('frontend.v1.user.staff-management.create', compact('userRoles'));
+    	return view('frontend.user.staff-management.create', compact('userRoles'));
     }
 
     /**

@@ -16,6 +16,6 @@ class AssetDailyController extends Controller
 
         $dataList = $userAmountFlowRepository->getList($dateStart, $dateEnd);
 
-        return view('frontend.v1.finance.asset-daily.index', compact('dataList', 'dateStart', 'dateEnd'));
+        return view('frontend.finance.asset-daily.index', compact('dataList', 'dateStart', 'dateEnd'));
     }
 }

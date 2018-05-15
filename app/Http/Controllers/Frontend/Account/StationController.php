@@ -30,7 +30,7 @@ class StationController extends Controller
             ])->render());
     	}
 
-        return view('frontend.v1.user.station.index', compact('userRoles'));
+        return view('frontend.user.station.index', compact('userRoles'));
     }
 
     /**
@@ -55,7 +55,7 @@ class StationController extends Controller
             }])            
             ->get();      
 
-        return view('frontend.v1.user.station.create', compact('modulePermissions'));
+        return view('frontend.user.station.create', compact('modulePermissions'));
     }
 
     /**
@@ -119,7 +119,7 @@ class StationController extends Controller
             }
         }      
                        
-        return view('frontend.v1.user.station.edit', compact('userRole', 'modulePermissions'));
+        return view('frontend.user.station.edit', compact('userRole', 'modulePermissions'));
     }
 
     /**
