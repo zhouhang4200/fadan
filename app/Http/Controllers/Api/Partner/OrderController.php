@@ -198,40 +198,24 @@ class OrderController extends Controller
             if ($orderData) {
                 $orderDataArr = (array)$orderData;
 
-                // 91平台
-                if ($request->user->id == 8456) {
-                    $show91Detail = Show91::orderDetail([
-                       'oid' => $orderDataArr['show91_order_no']
-                    ]);
-                    // 对比价格是否一样
-                    if ($show91Detail['data']['price'] != $orderDataArr['game_leveling_amount']) {
-                        // 同步价格
-                        $order = \App\Models\Order::where('no', $orderData->no)->frist();
-                        Show91::addOrder($order, true);
-                        AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
-                        return response()->partner(0, '接单失败, 订单价格不一致,请重试');
-                    }
-                } else {
-                    // 获取平台编号
-                    $third  = config('leveling.third')[$request->user->id];
+                // 获取平台编号
+                $third  = config('leveling.third')[$request->user->id];
 
-                    $no = OrderDetail::where('field_value', $request->order_no)
-                        ->where('field_name', config('leveling.third_orders')[$third])
-                        ->first();
+                $no = OrderDetail::where('field_value', $request->order_no)
+                    ->where('field_name', config('leveling.third_orders')[$third])
+                    ->first();
 
-                    $orderDetail = $orderRepository->levelingDetail($no->order_no);
-//                    $orderDetail = OrderDetail::where('order_no', $no->order_no)->pluck('field_value', 'field_name');;
-                    // 询用查询接口
-                    $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDetail]);
-                    // 对比价格是否一样
-                    if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
-                        // 同步价格
-                        myLog('detail', [$orderDetail]);
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDetail]);
-                        AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
-                        return response()->partner(0, '接单失败, 订单价格不一致,请重试');
-                    }
+                $orderDetail = $orderRepository->levelingDetail($no->order_no);
+                // 询用查询接口
+                $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDetail]);
+                // 对比价格是否一样
+                if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
+                    // 同步价格
+                    myLog('detail', [$orderDetail]);
+                    AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
+                    return response()->partner(0, '接单失败, 订单价格不一致');
                 }
+
         
                 // 外部平台调用我们的接单操作
                 DailianFactory::choose('receive')->run($orderData->no, $request->user->id, true);

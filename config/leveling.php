@@ -34,6 +34,10 @@ return [
             'data' => 'data',
             'price' => 'price',
         ],
+        1 => [
+            'data' => 'data',
+            'price' => 'price',
+        ],
     ],
 
 	// 调用第三方平台接口的控制器名称
