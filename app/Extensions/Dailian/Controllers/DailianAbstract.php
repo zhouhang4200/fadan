@@ -329,4 +329,12 @@ abstract class DailianAbstract
             }
         }
     }
+
+    /**
+     * 执行事件
+     */
+    public function runEvent()
+    {
+        myLog('run-event', [get_class($this)]);
+    }
 }

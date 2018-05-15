@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Extensions\Dailian\Controllers\Arbitrationed;
+use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderRepository;
 use App\Services\Leveling\DD373Controller;
@@ -73,7 +75,7 @@ class Test extends Command
     public function handle()
     {
         $type = $this->argument('type');
-      dd(  Show91::messageList([
+      dd(  Show91::orderDetail([
           'oid' => 'ORD180503155001150771'
       ]));
         if ($type == 1) {

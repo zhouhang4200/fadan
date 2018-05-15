@@ -80,6 +80,9 @@
             padding: 0px;
         }
         /* 修改同意字体为12px */
+        .last-item .last-item-btn {
+            margin-left: 0;
+        }
         @media screen and (max-width: 990px){
             .layui-col-md12 .layui-card .layui-card-header .layui-row .layui-form .first .layui-form-label{
                 width: 80px;
@@ -88,6 +91,9 @@
             }
             .layui-col-md12 .first .layui-input-block{
                 margin-left: 110px;
+            }
+            .last-item .last-item-btn {
+                margin-left: 40px;
             }
         }
     </style>
@@ -143,7 +149,7 @@
                             </div>
                         </div>
                         <div class="layui-col-md3 first">
-                            <div class="layui-form-item">
+                            <div class="layui-form-item last-item">
                                 <label class="layui-form-label">代练平台</label>
                                 <div class="layui-input-block">
                                     <select name="platform">
@@ -156,7 +162,7 @@
                             </div>
                         </div>
                         <div class="layui-col-md4">
-                            <div class="layui-form-item">
+                            <div class="layui-form-item last-item">
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="layui-input-block">
                                     <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
@@ -168,9 +174,9 @@
                             </div>
                         </div>
                         <div class="layui-col-md2">
-                            <div class="layui-form-item">
-                                <div class="layui-input-block" style="margin-left: 40px;">
-                                    <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
+                            <div class="layui-form-item last-item">
+                                <div class="layui-input-block last-item-btn">
+                                    <button class="qs-btn" lay-submit="" lay-filter="search" style="height: 30px;line-height: 30px;float: left;font-size: 12px;">搜索</button>
                                 </div>
                             </div>
                         </div>
