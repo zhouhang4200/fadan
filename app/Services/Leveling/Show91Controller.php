@@ -42,6 +42,12 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result = $response->getBody()->getContents();
 
+            myLog('show91-request-log', [
+                '地址' => $url,
+                '信息' => $options,
+                '结果' => $result,
+            ]);
+
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -53,27 +59,24 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '91接口返回错误';
-	        			myLog('show91-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
+//	        			myLog('show91-return-error', [
+//	        				'地址' => $url ?? '',
+//	        				'失败错误码' => $arrResult['result'] ?? '',
+//	        				'失败原因' => $arrResult['reason'] ?? '',
+//	        			]);
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
                         }
 	        		}
 	        	}
 		        // 记录日志
-		        myLog('show91-return-log', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
+//		        myLog('show91-return-log', [
+//		            '地址' => $url ?? '',
+//		            '信息' => $options ?? '',
+//		            '结果' => $result ? json_decode($result, true) : '',
+//		        ]);
     		}
-			myLog('show91-request-log', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
+
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('show91-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -98,6 +101,12 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result =  $response->getBody()->getContents();
 
+            myLog('show91-request-log', [
+                '地址' => $url,
+                '信息' => $options,
+                '结果' => $result,
+            ]);
+
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -109,31 +118,30 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '91接口返回错误';
-	        			myLog('show91-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
+//	        			myLog('show91-return-error', [
+//	        				'地址' => $url ?? '',
+//	        				'失败错误码' => $arrResult['result'] ?? '',
+//	        				'失败原因' => $arrResult['reason'] ?? '',
+//	        			]);
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
                         }
 	        		}
 	        	}
 		        // 记录日志
-		        myLog('show91-return-log', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
+//		        myLog('show91-return-log', [
+//		            '地址' => $url ?? '',
+//		            '信息' => $options ?? '',
+//		            '结果' => $result ? json_decode($result, true) : '',
+//		        ]);
     		}
-			myLog('show91-request-log', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
+//			myLog('show91-request-log', [
+//	            '地址' => $url ?? '',
+//	            '参数' => $options ?? '',
+//	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('show91-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
-
         	throw new Exception($e->getMessage());
         }
     }
