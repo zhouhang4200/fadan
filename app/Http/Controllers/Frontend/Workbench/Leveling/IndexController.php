@@ -1701,7 +1701,7 @@ class IndexController extends Controller
         $role = explode(':', $receiverAddress[1]);
 
         // 取省份名字
-        if (strpos($region[1], '黑龙') !== false) {
+        if (strpos($region[1], '黑龙') !== false || strpos($region[1], '内蒙') !== false) {
             $province = mb_substr($region[1],0 ,3);
         } else {
             $province = mb_substr($region[1],0 ,2);
@@ -1730,9 +1730,11 @@ class IndexController extends Controller
         $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号N区N次'];
         $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号N区N次'];
         $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
+        $fixedInfo['game_leveling_type'] = ['type' => 2, 'value' => '推荐号'];
         $fixedInfo['efficiency_deposit'] = ['type' => 1, 'value' => 1];
         $fixedInfo['game_leveling_day'] = ['type' => 2, 'value' => 0];
         $fixedInfo['game_leveling_hour'] = ['type' => 2, 'value' => 6];
+        $fixedInfo['client_phone'] = ['type' => 1, 'value' => '13800138000'];
 
         return $fixedInfo;
     }
