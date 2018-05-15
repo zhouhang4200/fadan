@@ -86,7 +86,7 @@
 
                                             <!--订单状态为 没有接单 已下架时可以编辑该属性-->
                                             @if($item->field_type == 1)
-                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif" value="{{ $detail[$item->field_name] ?? '' }}">
+                                                <input type="text" name="{{ $item->field_name }}"  autocomplete="off" class="layui-input  " lay-verify="@if ($item->field_required == 1) required @endif|{{ $item->verify_rule }}" value="{{ $detail[$item->field_name] ?? '' }}">
                                             @endif
 
                                             @if($item->field_type == 2)
@@ -128,7 +128,7 @@
                                             @endif
 
                                             @if($item->field_type == 5)
-                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
+                                                <input type="checkbox" name="{{ $item->field_name }}" lay-skin="primary"  lay-verify="@if($item->field_required == 1) require @endif|{{ $item->verify_rule }}" @if(isset($detail[$item->field_name]) && $detail[$item->field_name] == 1) checked @endif>
                                             @endif
 
                                         </div>
