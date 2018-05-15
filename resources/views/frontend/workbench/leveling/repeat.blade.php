@@ -242,6 +242,31 @@
     layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
         var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
 
+        //自定义验证规则
+        form.verify({
+            zero: function(value){
+                if(value <= 0){
+                    return '该数值需大于0';
+                }
+            },
+            money:function (value) {
+                if (value.indexOf(".") > -1) {
+                    var temp  = value.split(".");
+                    if (temp.length > 2) {
+                        return '请输入合法的金额';
+                    }
+                    if (temp[1].length > 2) {
+                        return '输入的小数请不要大于两位';
+                    }
+                }
+            },
+            gt5:function (value) { // 大于5
+                if (value < 1) {
+                    return '输入金额需大于或等于1元';
+                }
+            }
+        });
+
         $('.cancel').click(function(){
             layer.closeAll();
         });
@@ -304,31 +329,6 @@
 
         // 下单
         form.on('submit(order)', function (data) {
-
-            //自定义验证规则
-            form.verify({
-                zero: function(value){
-                    if(value <= 0){
-                        return '该数值需大于0';
-                    }
-                },
-                money:function (value) {
-                    if (value.indexOf(".") > -1) {
-                        var temp  = value.split(".");
-                        if (temp.length > 2) {
-                            return '请输入合法的金额';
-                        }
-                        if (temp[1].length > 2) {
-                            return '输入的小数请不要大于两位';
-                        }
-                    }
-                },
-                gt5:function (value) { // 大于5
-                    if (value < 1) {
-                        return '输入金额需大于或等于1元';
-                    }
-                }
-            });
 
             layer.confirm('用哪一个客服身份重发？', {
             btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
