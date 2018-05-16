@@ -95,6 +95,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('/', 'SmsController@index')->name('frontend.statistic.sms')->middleware('new.permission:frontend.statistic.sms');
             Route::get('show/{date}', 'SmsController@show')->name('frontend.statistic.show');
         });
+        // 当日
+        Route::get('today', 'StatisticController@todayData')->name('frontend.statistic.today');
     });
 
     // 商品
