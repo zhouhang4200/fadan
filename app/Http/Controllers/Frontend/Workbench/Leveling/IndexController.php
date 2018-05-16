@@ -362,7 +362,7 @@ class IndexController extends Controller
 
             // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
             if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
-                $fixedInfo = $this->dnfFixedInfo($receiverAddress);
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress, $taobaoTrade);
             }
         }
 
@@ -1669,9 +1669,10 @@ class IndexController extends Controller
     /**
      * DNF推荐号固定信息
      * @param $receiverAddress
+     * @param $taobaoTrade
      * @return mixed
      */
-    protected function dnfFixedInfo($receiverAddress)
+    protected function dnfFixedInfo($receiverAddress, $taobaoTrade)
     {
         $region = explode(':', $receiverAddress[0]);
         $role = explode(':', $receiverAddress[1]);
@@ -1745,7 +1746,7 @@ class IndexController extends Controller
         $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
-        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号N区N次'];
+        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号' . $serve . $taobaoTrade->num . '次'];
         $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号N区N次'];
         $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
         $fixedInfo['game_leveling_type'] = ['type' => 2, 'value' => '推荐号'];
