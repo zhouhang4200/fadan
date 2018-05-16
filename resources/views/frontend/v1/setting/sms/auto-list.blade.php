@@ -19,7 +19,7 @@
             </td>
 
             <td  width="5%">
-                <button class="qs-btn layui-bg-blue layui-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
+                <button class="qs-btn layui-bg-blue qs-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
             </td>
         </tr>
     @empty
