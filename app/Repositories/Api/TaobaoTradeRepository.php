@@ -88,6 +88,8 @@ class TaobaoTradeRepository
             'buyer_area'             => $data['BuyerArea'],
             'buyer_email'            => $data['BuyerEmail'],
             'buyer_flag'             => $data['BuyerFlag'],
+            'buyer_memo'             => $data['BuyerMemo'],
+            'buyer_message'          => $data['BuyerMessage'],
             'buyer_ip'               => ip2long($data['BuyerIp']),
             'buyer_nick'             => $data['BuyerNick'],
             'buyer_obtain_point_fee' => $data['BuyerObtainPointFee'],
