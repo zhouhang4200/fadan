@@ -106,6 +106,10 @@
                 <div class="layui-col-md7">{{ $taobaoTrade->tid or '' }}</div>
             </div>
             <div class="layui-row form-group">
+                <div class="layui-col-md3 text_right">订单状态：</div>
+                <div class="layui-col-md8">{{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}</div>
+            </div>
+            <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">买家旺旺：</div>
                 <div class="layui-col-md7">
                     @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
@@ -141,8 +145,8 @@
                 <div class="layui-col-md7">{{ $taobaoTrade->buyer_message or '' }}</div>
             </div>
             <div class="layui-row form-group">
-                <div class="layui-col-md5 text_right">完成时间：</div>
-                <div class="layui-col-md7"></div>
+                <div class="layui-col-md5 text_right">下单时间：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->created or '' }}</div>
             </div>
         </div>
     </div>
