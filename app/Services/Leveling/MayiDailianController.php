@@ -80,12 +80,10 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 $arrResult = json_decode($result, true);
 
                 if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-                    // 失败
-                    if (isset($arrResult['code']) && $arrResult['code'] != 0) {
-                        $message = $arrResult['msg'] ?? 'mayi接口返回错误';
-
+                    if (isset($arrResult['status']) && ! in_array($arrResult['status'], self::$status)) {
+                        $message = $arrResult['message'] ?? 'mayi接口返回错误';
                         if ($options['method'] != 'dlOrderDel') {
-                            throw new DailianException('请求返回数据不存在');
+                            throw new DailianException($message);
                         }
                     }
                 }
@@ -110,7 +108,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     {
         try {
             myLog('mayi-api-log', ['begin']);
-            
+
             $client = new Client();
             $response = $client->request($method, config('leveling.mayidailian.url'), [
                 'form_params' => $options,
@@ -132,7 +130,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
                     if (isset($arrResult['status']) && ! in_array($arrResult['status'], self::$status)) {
                         // 判断是否失败
-                        $message = $arrResult['message'] ?? 'dd373接口返回错误';
+                        $message = $arrResult['message'] ?? 'mayi接口返回错误';
                         if ($options['method'] != 'dlOrderDel') {
                             throw new DailianException($message);
                         }

@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', '统计 - 当日统计')
+@section('title', '统计 - 员工统计')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -16,12 +16,16 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 50px; padding-left: 0px;">员工姓名</label>
                 <div class="layui-input-inline">               
-                    <select name="username" lay-verify="" lay-search="">
-                        <option value="">请输入员工姓名</option>
+                    <select name="user_id" lay-verify="" lay-search="">
+                        <option value="">请输入</option>
+                        @if(auth()->user()->parent_id == 0)
+                            <option value="{{ auth()->user()->id }}" {{ auth()->user()->id == $userId ? 'selected' : '' }}>{{ auth()->user()->username }}</option>
+                        @endif
                         @forelse($children as $child)
                             <option value="{{ $child->id }}" {{ $child->id == $userId ? 'selected' : '' }}>{{ $child->username }}</option>
                         @empty
                         @endforelse
+                        <option value="0" {{ 0 == $userId ? 'selected' : '' }}>所有</option>
                     </select>
                 </div>
                 <label class="layui-form-label" >发布时间</label>
@@ -46,6 +50,7 @@
             <tr>
                 <th>发布日期</th>
                 <th>订单号</th>
+                <th>发布时间</th>
                 <th>订单状态</th>
                 <th>发单客服</th>
                 <th>游戏名称</th>
@@ -65,7 +70,8 @@
                     <tr>
                         <td>{{ $data->date }}</td>
                         <td>{{ $data->no }}</td>
-                        <td>{{ $data->status }}</td>
+                        <td>{{ $data->created_at }}</td>
+                        <td>{{ config('order.status_leveling')[$data->status] ?? '无' }}</td>
                         <td>{{ $data->username }}</td>
                         <td>{{ $data->game_name }}</td>
                         <td>{{ number_format($data->price, 2) }}</td>

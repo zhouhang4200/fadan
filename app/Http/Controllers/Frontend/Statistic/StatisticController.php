@@ -322,44 +322,25 @@ class StatisticController extends Controller
      */
     public function todayData(Request $request)
     {
-//         // 默认为当前登录人id
-//         $userIds = Auth::id();
-//         // 如果当前获取到的是
-//         if (isset($request->user_id) && $request->user_id == 0) {
-//             if (Auth::user()->parent_id == 0) {
-//                 $parent = Auth::user();
-//                 $userIds = Auth::user()->children()->withTrashed()->pluck('id')->merge(Auth::id());
-//             } else {
-//                 $parent = Auth::user()->parent;
-//                 $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
-//             }
-//         } elseif (isset($request->user_id) && $request->user_id != 0) {
-//             $userIds = $request->user_id;
-//         }
+//         $userId = $request->user_id ?? Auth::id();
 //         $startDate = $request->start_date ?? Carbon::now()->toDateString();
 //         $endDate = $request->end_date ?? Carbon::now()->addDays(1)->toDateString();
 //         $fullUrl = $request->fullUrl();
-//         // $filters = compact('userName', 'startDate', 'endDate');
-
-//         // if (Auth::user()->parent_id == 0) {
-//         //     $parent = Auth::user();
-//         //     $userIds = Auth::user()->children()->withTrashed()->pluck('id')->merge(Auth::id());
-//         // } else {
-//         //     $parent = Auth::user()->parent;
-//         //     $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
-//         // }
-
 //         $children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
 
-//         if (Auth::user()->parent_id == 0) {
-//             $parent = Auth::user();
-//             $userIds = Auth::user()->children()->withTrashed()->pluck('id')->merge(Auth::id());
-//         } else {
-//             $parent = Auth::user()->parent;
-//             $userIds = Auth::user()->parent->children()->withTrashed()->pluck('id')->merge(Auth::user()->parent->id);
+//         if (isset($request->user_id) && $request->user_id == 0) {
+//             if (Auth::user()->parent_id == 0) {
+//                 $parent = Auth::user();
+//                 $userIds = Auth::user()->children()->pluck('id')->merge(Auth::id())->toArray();
+//                 $userIds = implode(',', $userIds);
+//             } else {
+//                 $parent = Auth::user()->parent;
+//                 $userIds = Auth::user()->parent->children()->pluck('id')->merge(Auth::user()->parent->id)->toArray();
+//                 $userIds = implode(',', $userIds);
+//             }
 //         }
 
-//         $datas = DB::select("
+//         $queryStart = "
 //             SELECT 
 //                 m.*,
 //                 CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
@@ -380,27 +361,41 @@ class StatisticController extends Controller
 //                     c.game_id,
 //                     c.game_name,
 //                     c.original_price,
+//                     c.created_at,
 //                     SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
 //                     SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
 //                     SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
 //                     SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
 //                   FROM 
-//                     (SELECT a.no, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
+//                     (SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
 //                     b.name, b.username, a.original_price, e.name AS game_name
 //                     FROM orders a
 //                     LEFT JOIN users b
 //                     ON a.creator_user_id = b.id
 //                     LEFT JOIN games e
-//                     ON a.game_id = e.id
-//                     WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate') c 
+//                     ON a.game_id = e.id 
+//                     WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' ";
+
+//         if (isset($userIds) && ! empty($userIds)) {
+//             $queryMiddle = "and a.creator_user_id in ($userIds)";
+//         } else {
+//             $queryMiddle = "and a.creator_user_id = '$userId'";
+//         }
+                    
+//         $queryEnd = ") c 
 //                     LEFT JOIN 
 //                     user_amount_flows d 
 //                     ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
 //                     WHERE d.trade_no IS NOT NULL
 //                     GROUP BY d.trade_no
 //                 ) m
-//         ");
-// // dd($datas);
+//         ";
+
+//         $datas = DB::select($queryStart.$queryMiddle.$queryEnd);
+
+//         // 总计
+  
+// // dd($queryMiddle, $datas);
 //         return view('frontend.finance.statistic.today', compact('datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId'));
     }
 }
