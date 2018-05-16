@@ -63,15 +63,15 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             myLog('mayi-api-log', ['begin']);
 
             $client = new Client();
-            $response = $client->request($method, $url, [
+            $response = $client->request($method, config('leveling.mayidailian.url'), [
                 'multipart' => $options,
             ]);
             $result =  $response->getBody()->getContents();
 
-            myLog('mayi-api-log', [$url, $options, $result]);
+            myLog('mayi-api-log', [config('leveling.mayidailian.url'), $options, $result]);
 
             if (! isset($result) || empty($result)) {
-                if ($url != config('leveling.mayi.url')['delete']) {
+                if ($options['method'] != 'dlOrderDel') {
                     throw new DailianException('请求返回数据不存在');
                 }
             }
@@ -84,8 +84,8 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                     if (isset($arrResult['code']) && $arrResult['code'] != 0) {
                         $message = $arrResult['msg'] ?? 'mayi接口返回错误';
 
-                        if ($url != config('leveling.mayi.url')['delete']) {
-                            throw new DailianException($message);
+                        if ($options['method'] != 'dlOrderDel') {
+                            throw new DailianException('请求返回数据不存在');
                         }
                     }
                 }
@@ -109,8 +109,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     public static function normalRequest($options = [], $method = 'POST')
     {
         try {
+            myLog('mayi-api-log', ['begin']);
+            
             $client = new Client();
-            // myLog('mayi', ['options' => $options]);
             $response = $client->request($method, config('leveling.mayidailian.url'), [
                 'form_params' => $options,
             ]);
@@ -137,17 +138,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         }
                     }
                 }
-                // 记录日志
-                myLog('mayi-return-logs', [
-                    '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-                    '方法名' => $options['method'] ?? '',
-                    '结果' => $result ? json_decode($result) : '',
-                ]);
             }
-            myLog('mayi-request-logs', [
-                '方法名' => $options['method'] ?? '',
-                '参数' => $options ?? '',
-            ]);
             return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
