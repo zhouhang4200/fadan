@@ -401,7 +401,7 @@ class StatisticController extends Controller
 //                 ) m
 //         ");
 // // dd($datas);
-//         return view('frontend.finance.statistic.today', compact('datas', 'startDate', 'endDate', 'fullUrl'));
+//         return view('frontend.finance.statistic.today', compact('datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId'));
     }
 }
 
