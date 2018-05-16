@@ -65,7 +65,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('order:markup')->everyMinute();
         $schedule->command('command:getMessageDailianmama')->everyMinute();
         $schedule->command('markup-order:one-hour')->everyMinute();
-        $schedule->command('new-markup-order:one-hour')->everyMinute();
     }
 
     /**
