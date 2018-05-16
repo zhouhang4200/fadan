@@ -359,6 +359,7 @@ class IndexController extends Controller
             $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
             // 获取抓取商品配置
             $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
             // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
             if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
                 $fixedInfo = $this->dnfFixedInfo($receiverAddress);
@@ -1695,8 +1696,16 @@ class IndexController extends Controller
             '八' => 8,
             '九' => 9,
         ];
-        $serveNum =  str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
+        $serveNum = str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
 
+        // 区
+        if ($province == '云南' || $province == '贵州' || $province == '云贵') {
+            $region = '云贵区';
+        } else {
+            $region = $province . '区';
+        }
+
+        // 服
         $serve = '';
         if ($province == '北京' && in_array($serveNum, [2, 4])) {
             $serve = '北京2/4区';
@@ -1731,7 +1740,7 @@ class IndexController extends Controller
         }
 
         // 固定的订单信息
-        $fixedInfo['region'] = ['type' => 2, 'value' => $province . '区'];
+        $fixedInfo['region'] = ['type' => 2, 'value' => $region];
         $fixedInfo['serve'] = ['type' => 2, 'value' => $serve];
         $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];

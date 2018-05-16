@@ -191,7 +191,7 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
                                'hatchet-man-blacklist.index',
                        ], $userPermissions)))
                         <li data-name="home" class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                            <a href="javascript:;" lay-tips="账号" lay-direction="2">
                                 <i class="layui-icon layui-icon-home"></i>
                                 <cite>账号</cite>
                             </a>
@@ -244,7 +244,7 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
                                'frontend.statistic.sms',
                        ], $userPermissions)))
                         <li data-name="home" class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                            <a href="javascript:;" lay-tips="财务" lay-direction="2">
                                 <i class="layui-icon layui-icon-home"></i>
                                 <cite>财务</cite>
                             </a>
@@ -298,7 +298,7 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
                                'frontend.setting.sending-assist.auto-markup',
                        ], $userPermissions)))
                         <li data-name="home" class="layui-nav-item">
-                            <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                            <a href="javascript:;" lay-tips="设置" lay-direction="2">
                                 <i class="layui-icon layui-icon-home"></i>
                                 <cite>设置</cite>
                             </a>
@@ -341,22 +341,6 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
                             </dl>
                         </li>
                     @endif
-
-
-
-
-                    <li data-name="component" class="layui-nav-item">
-
-                        <a href="javascript:;" lay-tips="组件" lay-direction="2">
-                            <i class="layui-icon layui-icon-component"></i>
-                            <cite>组件</cite>
-                        </a>
-                        <dl class="layui-nav-child">
-                            <dd data-name="button">
-                                <a lay-href="">按钮</a>
-                            </dd>
-                        </dl>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -373,7 +357,6 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
         <!-- 辅助元素，一般用于移动设备下遮罩 -->
         <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
-
 <style>
     .layui-side-menu,
     .layadmin-pagetabs .layui-tab-title li:after,
