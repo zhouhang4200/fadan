@@ -176,7 +176,7 @@ class IndexController extends Controller
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
 
-        return view('frontend.workbench.leveling.index')->with([
+        return view('frontend.v1.workbench.leveling.index')->with([
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
@@ -359,9 +359,10 @@ class IndexController extends Controller
             $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
             // 获取抓取商品配置
             $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
             // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
             if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
-                $fixedInfo = $this->dnfFixedInfo($receiverAddress);
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress, $taobaoTrade);
             }
         }
 
@@ -1668,9 +1669,10 @@ class IndexController extends Controller
     /**
      * DNF推荐号固定信息
      * @param $receiverAddress
+     * @param $taobaoTrade
      * @return mixed
      */
-    protected function dnfFixedInfo($receiverAddress)
+    protected function dnfFixedInfo($receiverAddress, $taobaoTrade)
     {
         $region = explode(':', $receiverAddress[0]);
         $role = explode(':', $receiverAddress[1]);
@@ -1695,8 +1697,16 @@ class IndexController extends Controller
             '八' => 8,
             '九' => 9,
         ];
-        $serveNum =  str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
+        $serveNum = str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
 
+        // 区
+        if ($province == '云南' || $province == '贵州' || $province == '云贵') {
+            $region = '云贵区';
+        } else {
+            $region = $province . '区';
+        }
+
+        // 服
         $serve = '';
         if ($province == '北京' && in_array($serveNum, [2, 4])) {
             $serve = '北京2/4区';
@@ -1731,13 +1741,13 @@ class IndexController extends Controller
         }
 
         // 固定的订单信息
-        $fixedInfo['region'] = ['type' => 2, 'value' => $province . '区'];
+        $fixedInfo['region'] = ['type' => 2, 'value' => $region];
         $fixedInfo['serve'] = ['type' => 2, 'value' => $serve];
         $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
         $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
-        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号N区N次'];
-        $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号N区N次'];
+        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号' . $serve . $taobaoTrade->num . '次'];
+        $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号' . $serve . $taobaoTrade->num . '次'];
         $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
         $fixedInfo['game_leveling_type'] = ['type' => 2, 'value' => '推荐号'];
         $fixedInfo['efficiency_deposit'] = ['type' => 1, 'value' => 1];

@@ -3,17 +3,190 @@
 @section('title', '工作台 - 代练 - 订单发布')
 
 @section('css')
+    <style>
+        .layui-layout-admin .layui-body {
+            top: 50px;
+        }
+
+        .layui-layout-admin .layui-footer {
+            height: 52px;
+        }
+
+        .footer {
+            height: 72px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .main {
+            padding: 20px;
+        }
+
+        .layui-footer {
+            z-index: 999;
+        }
+
+        .iconfont {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            margin-top: 0;
+        }
+
+        .layui-card .layui-tab {
+            margin: 10px 0;
+        }
+
+        .layui-form-item {
+            margin-bottom: 20px;
+        }
+
+        .layui-table-cell {
+            display: block;
+            height: 40px;
+            line-height: 20px;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 15px;
+        }
+
+        .layui-tab-title li {
+            min-width: 50px;
+        }
+
+        .laytable-cell-1-button {
+            width: 280px !important;
+        }
+
+        .layui-card-header {
+            color: #303133;
+            font-size: 14px;
+        }
+
+        .order-operation {
+            float: right;
+            padding-top: 5px;
+        }
+
+        .order-btn .iconfont {
+            position: absolute;
+            top: 50%;
+            left: -8px;
+            font-size: 22px;
+        }
+
+        .layui-footer .qs-btn {
+            margin: 5px 3px 0 5px;
+        }
+
+        .template {
+            float: right;
+        }
+
+        .template .qs-btn {
+            height: 32px;
+            line-height: 32px;
+
+        }
+
+        /* 改写header高度 */
+
+        .layui-card-header {
+            height: 56px;
+            line-height: 56px;
+        }
+        /* 改写dl-type 下面的radio样式 */
+        #dl-type .layui-form-radio{
+            position: relative;
+            height: 30px;
+            line-height: 28px;
+            margin-right: 10px;
+            padding-right: 30px;
+            border: 1px solid #d2d2d2;
+            cursor: pointer;
+            font-size: 0;
+            border-radius: 2px;
+            -webkit-transition: .1s linear;
+            transition: .1s linear;
+            box-sizing: border-box;
+        }
+        #dl-type .layui-form-radio div{
+            padding: 0 10px;
+            height: 100%;
+            font-size: 12px;
+            background-color: #d2d2d2;
+            color: #fff;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        #dl-type .layui-form-radio i{
+            position: absolute;
+            right: 0;
+            width: 30px;
+            color: #fff;
+            font-size: 20px;
+            text-align: center;
+            margin-right: 0;
+        }
+
+
+
+        #dl-type .layui-form-checked i,
+        #dl-type .layui-form-checked:hover i {
+            color: #5FB878
+        }
+        #dl-type .layui-form-radio:hover i {
+            border-color: #5FB878;
+            color: #d2d2d2
+        }
+        #dl-type .layui-form-radioed:hover i {
+            border-color: #5FB878;
+            color: #5FB878;
+        }
+        #dl-type .layui-form-radioed i{
+            color: #5FB878;
+            border-color: #5FB878;
+        }
+        #dl-type  .layui-form-radioed div{
+            color: #fff;
+            background-color: #5FB878;
+        }
+        .tips-box input{
+            width: 85%;
+        }
+        .tips{
+            position: absolute;
+            width: 10%;
+            height: 30px;
+            right: 0%;
+            top: 0px;
+            text-align: center
+
+        }
+        .tips .iconfont{
+            left: 0px;
+            font-size: 25px;
+        }
+    </style>
 @endsection
 
 @section('main')
     <div class="layui-col-md8">
         <div class="layui-card qs-text">
             <div class="layui-card-header">
-                <!-- <span style="float: left">订单信息</span> -->
+                订单信息
                 <div class="order-operation">
-                    <button class="order-btn"><i class="iconfont icon-image-text"></i> </button>
-                    <button class="order-btn"><i class="iconfont icon-image"></i></button>
-                    <button class="order-btn"><i class="iconfont icon-duihua"></i></button>
+                    <button class="order-btn">
+                        <i class="iconfont icon-image-text"></i>操作记录</button>
+                    <button class="order-btn">
+                        <i class="iconfont icon-image"></i>查看图片</button>
+                    <button class="order-btn">
+                        <i class="iconfont icon-duihua"></i>留言</button>
                 </div>
             </div>
             <div class="layui-card-body" style="padding: 15px;">
@@ -21,12 +194,12 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">游戏</label>
                         <div class="layui-input-block">
-                            <select name="game" lay-filter="aihao">
+                            <select name="game" lay-filter="game">
                                 <option value=""></option>
-                                <option value="0">王者荣耀</option>
-                                <option value="1">地下城与勇士</option>
-                                <option value="2">毒奶粉</option>
-                                <option value="3">阿修罗换不锈钢脸盆</option>
+                                @forelse($game as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @empty
+                                @endforelse
                             </select>
                         </div>
                     </div>
@@ -36,7 +209,7 @@
                             <input type="radio" name="qu" value="IOS微信" title="IOS微信" checked="">
                             <input type="radio" name="qu" value="IOSQQ" title="IOSQQ">
                             <input type="radio" name="qu" value="安卓微信" title="安卓微信">
-                            <input type="radio" name="qu" value="安卓QQ" title="安卓QQ" checked="">
+                            <input type="radio" name="qu" value="安卓QQ" title="安卓QQ" >
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -57,13 +230,19 @@
                             <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-row layui-col-space10 layui-form-item">
+                    <div class="layui-row layui-col-space10 layui-form-item ">
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">账号</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-block tips-box">
+
                                 <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <div class="tips" lay-tips="输入账号啊">
+                                    <i class="iconfont icon-exclamatory-mark-r"></i>
+                                </div>
+
                             </div>
                         </div>
+
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">密码</label>
                             <div class="layui-input-block">
@@ -79,22 +258,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item dl-type" id="dl-type" >
                         <label class="layui-form-label">代练类型</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="like[write]" title="陪玩">
-                            <input type="checkbox" name="like[read]" title="排位" checked="">
-                            <input type="checkbox" name="like[game]" title="金币">
-                            <input type="checkbox" name="like[game]" title="成就">
+                        <div class="layui-input-block tips-box">
+                            <input type="radio" name="dl-type" lay-filter="dl-tyle" title="陪玩" value="陪玩" checked>
+                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="排位" value="排位">
+                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="金币" value="金币">
+                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="成就" value="成就">
+
                         </div>
                     </div>
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练标题</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-block tips-box">
                                 <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <div class="tips" lay-tips="输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊">
+                                    <i class="iconfont icon-exclamatory-mark-r"></i>
+                                </div>
                             </div>
-
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练模板</label>
@@ -107,28 +289,19 @@
                                     <option value="3">通用模板4</option>
                                 </select>
                             </div>
-
                         </div>
                     </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <div class="layui-form-item layui-form-text">
-                                <label class="layui-form-label">代练说明</label>
-                                <div class="layui-input-block">
-                                    <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
-                                </div>
-                            </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">代练说明</label>
+                        <div class="layui-input-block">
+                            <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
-                        <div class="layui-col-lg6">
-                            <div class="layui-form-item layui-form-text">
-                                <label class="layui-form-label">代练说明</label>
-                                <div class="layui-input-block">
-                                    <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">代练说明</label>
+                        <div class="layui-input-block">
+                            <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
-
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
@@ -166,28 +339,14 @@
                                 <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">安全保证金</label>
+                        <div class="layui-form-item layui-layout-admin">
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">效率保证金</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item layui-layout-admin">
-                        <div class="layui-input-block">
-                            <div class="layui-footer" style="left: 0;">
-                                <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
-                                <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
-                                <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
-                                <button type="reset" class="qs-btn qs-btn-primary">重发</button>
+                                <div class="layui-footer" style="left: 0;">
+                                    <button class="qs-btn" style="width: 92px;margin-left: 535px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
+                                    <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
+                                    <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
+                                    <button type="reset" class="qs-btn qs-btn-primary" style="width: 92px;">重发</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -255,8 +414,21 @@
                 </table>
             </div>
         </div>
-
         <div class="layui-card">
+            <div class="layui-card-header">发单模板
+                <div class="template">
+                    <button class="qs-btn">解析模板</button>
+                    <button class="qs-btn qs-btn-primary">使用说明</button>
+                </div>
+            </div>
+            <div class="layui-card-body qs-text">
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                                                <textarea name="text" class="layui-textarea" style="height: 800px;">
+                                                </textarea>
+                </form>
+            </div>
+        </div>
+        <div class="layui-card" style="margin-bottom: 72px;">
             <div class="layui-card-header">平台数据</div>
             <div class="layui-card-body qs-text">
                 <table class="layui-table">
@@ -333,6 +505,7 @@
                 </table>
             </div>
         </div>
+
     </div>
 @endsection
 
@@ -460,6 +633,12 @@
                 }
 
             });
+
+            // 按游戏加载区\代练类型\代练模版\商户QQ
+            function loadGameInfo() {
+
+            }
+
             // 模板使用说明
             form.on('submit(instructions)', function () {
                 layer.open({
