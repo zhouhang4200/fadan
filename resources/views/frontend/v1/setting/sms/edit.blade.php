@@ -10,9 +10,9 @@
             <textarea name="contents" placeholder="短信内容" class="layui-textarea">{{ $template->contents }}</textarea>
         </div>
         <div class="layui-form-item">
-            <button class="layui-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="template-edit-save">保存修改
+            <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="template-edit-save">保存修改
             </button>
-            <button type="button" class="layui-btn layui-btn-danger cancel">取消编辑</button>
+            <button type="button" class="qs-btn layui-btn-danger cancel">取消编辑</button>
         </div>
     </form>
 </div>

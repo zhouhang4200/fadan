@@ -84,9 +84,9 @@
     <div class="layui-card-body">
 <div class="user-info" style="height: 200px;">
     <div alt="" id="user-img" class="info-img fl" style="float:left;width:80px;height:80px;background-image:url('{{ $user->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;" >
-        <button class="layui-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
+        <button class="qs-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
         @if(Auth::user()->parent_id == 0)
-            <button class="layui-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:5px;margin-left:0px; padding:0">修改资料</button>
+            <button class="qs-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:5px;margin-left:0px; padding:0">修改资料</button>
         @endif
     </div>
     <div class="info-left">
@@ -192,7 +192,7 @@
             {{ $user->userAsset->frozen + 0 }}
          </div>
 
-        <button class="layui-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
+        <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
         @inject('withdraw', 'App\Services\Views\WithdrawService')
         {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
     </div>
@@ -277,7 +277,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-inline">
-                    <button type="hidden" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update-persional" style="margin-left: 180px">提交</button>
+                    <button type="hidden" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="update-persional" style="margin-left: 180px">提交</button>
                 </div>
             </div>
         </div>
@@ -286,7 +286,7 @@
 <div id="voucher" style="display: none; padding: 10px">
     <form class="layui-form" method="" action="">
         <div class="layui-upload">
-            <button type="button" class="layui-btn layui-btn-normal" id="test1">上传图片</button>
+            <button type="button" class="qs-btn layui-btn-normal" id="test1">上传图片</button>
             <div class="layui-upload-list">
             <img class="layui-upload-img" id="demo1" style="width:200px;height:200px">
                 <p id="demoText"></p>
@@ -295,7 +295,7 @@
         <input type="hidden" name="voucher" id="voucher-img" value="">
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <button type="hidden" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update-voucher">提交</button>
+                <button type="hidden" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="update-voucher">提交</button>
             </div>
         </div>
     </form>

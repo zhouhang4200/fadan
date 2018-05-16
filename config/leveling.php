@@ -14,7 +14,7 @@ return [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
 		8456 => 1, // 91
-		// 84567 => 5, // 丸子
+		// 84568 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
@@ -38,6 +38,10 @@ return [
             'data' => 'data',
             'price' => 'price',
         ],
+        // 5 => [
+        //     'data' => 'data',
+        //     'price' => 'price',
+        // ],
     ],
 
 	// 调用第三方平台接口的控制器名称
@@ -190,12 +194,13 @@ return [
 
     // 丸子平台
     'wanzi' => [
-    	'appid'     => 'bXxE7ElApTbaqaX',
-		'appsecret' => 'OJq18DavoMk4YkF9ZKZpS',
-		'aes_key'   => '45584685d8e4f5e8e4e2685',
+    	'appid'     => '8FK2tEkFoHcB1UJu6TkSzLAwkh9e2WIwunbEA2lyFnJhpupzRelEuxjG34YX',
+		'appsecret' => '8mCSr0H3EbTIatauflbqzUIkKdZAQiFsAAF3Nu4Jp2nMCGZSBA6mSyF7E5J1',
+		'aes_key'   => '4158d685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
-		'account'   => '51683C315D36488FB266904B6FD4BDFF',
-		'sign'		=> '64551beede02877e16e68852aeb90b41',
+		'account'   => env('SHOW91_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
+		'sign'      => env('SHOW91_SIGN','64551beede02877e16e68852aeb90b41'),
+		'password'  => env('SHOW91_PAY_PASSWORD', 'qqq111'),
 		'status' => [
 	        0  => '已发布',
 	        1  => '代练中',
@@ -205,33 +210,34 @@ return [
 	        5  => '已挂起',
 	        6  => '已撤单',
 	        7  => '已取消',
+	        8  => '已锁定',
 	        10 => '等待工作室接单',
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
     	'url' => [
-			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
-			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
-			'applyRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addCancelOrder', // 申请撤销
-			'cancelRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelSc', // 取消撤销
-			'agreeRevoke'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 同意撤销
-			'applyArbitration'         => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addappeal', // 申请仲裁
-			'cancelArbitration'        => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/cancelAppeal', // 取消仲裁
-			'complete'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/accept', // 订单完成
+			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/grounding', // 上架
+			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/grounding', // 下架
+			'applyRevoke'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addCancelOrder', // 申请撤销
+			'cancelRevoke'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/cancelSc', // 取消撤销
+			'agreeRevoke'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/confirmSc', // 同意撤销
+			'applyArbitration'         => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addappeal', // 申请仲裁
+			'cancelArbitration'        => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/cancelAppeal', // 取消仲裁
+			'complete'                 => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/accept', // 订单完成
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
-			'delete'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/chedan', // 删除订单
-			'updateOrder'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/qs/updateOrder', // 修改订单
-			'addTime'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addLimitTime3', // 加时
-			'addMoney'                 => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addPrice2', // 加款
-			'orderDetail'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/orderDetail', // 订单详情
-			'getScreenshot'            => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/topic', // 订单截图
-			'getMessage'               => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/messageList', //获取留言
-			'replyMessage'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addMess', // 回复留言addMess
-			'updateAccountAndPassword' => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/editOrderAccPwd', // 修改账号密码
-			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
-			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
-			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
+			'delete'                   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/chedan', // 删除订单
+			'updateOrder'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/qs/updateOrder', // 修改订单
+			'addTime'                  => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addLimitTime3', // 加时
+			'addMoney'                 => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addPrice2', // 加款
+			'orderDetail'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/orderDetail', // 订单详情
+			'getScreenshot'            => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/topic', // 订单截图
+			'getMessage'               => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/messageList', //获取留言
+			'replyMessage'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addMess', // 回复留言addMess
+			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/editOrderAccPwd', // 修改账号密码
+			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/confirmSc', // 不同意撤销
+			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/getPlays', // 获取代练类型
+			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/setTop', // 获取代练类型
     	],
     ],
 ];

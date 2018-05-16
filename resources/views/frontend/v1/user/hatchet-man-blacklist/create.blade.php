@@ -12,41 +12,41 @@
 
 @section('main')
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <form class="layui-form" method="" action="">
-        {!! csrf_field() !!}
-        <div class="layui-form-item">
-            <label class="layui-form-label">*打手昵称</label>
-            <div class="layui-input-block">
-                <input type="text" name="hatchet_man_name" lay-verify="required" value="" autocomplete="off" placeholder="" class="layui-input">
+    <div class="layui-card-body">
+        <form class="layui-form" method="" action="">
+            {!! csrf_field() !!}
+            <div class="layui-form-item">
+                <label class="layui-form-label">*打手昵称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="hatchet_man_name" lay-verify="required" value="" autocomplete="off" placeholder="" class="layui-input">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">*打手电话</label>
-            <div class="layui-input-block">
-                <input type="text" name="hatchet_man_phone" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">*打手电话</label>
+                <div class="layui-input-block">
+                    <input type="text" name="hatchet_man_phone" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">*打手QQ</label>
-            <div class="layui-input-block">
-                <input type="text" name="hatchet_man_qq" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">*打手QQ</label>
+                <div class="layui-input-block">
+                    <input type="text" name="hatchet_man_qq" value="" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea placeholder="" name="content" class="layui-textarea"></textarea>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="" name="content" class="layui-textarea"></textarea>
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="store">确认</button>
-            <button type="button" class="layui-btn layui-btn-normal cancel" >取消</button>
-        </div>
-        </div>
-    </form>
-</div>
+            <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="store">确认</button>
+                <button type="button" class="qs-btn layui-btn-normal cancel" >取消</button>
+            </div>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
 

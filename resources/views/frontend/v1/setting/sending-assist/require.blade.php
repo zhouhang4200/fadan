@@ -15,30 +15,30 @@
 
 @section('main') 
 <div class="layui-card qs-text">
-<div class="layui-card-body">
-    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-        <ul class="layui-tab-title">
-            {{--<li  class="layui-hide"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
-            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
-        </ul>
-        <div class="layui-tab-content" style="height: 100px;">
-            <div class="layui-tab-item layui-show" id="require-show">
-                <div style="padding-bottom:40px;">
-                <form class="layui-form" method="" action="">
-                    <div style="float: left">
-                        <div class="layui-inline" >
-                            <a href="{{ route('frontend.setting.sending-assist.require.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
-                        </div>
-                    </div>                     
-                </form>
-                </div>
-                <div id="require-index">
-                @include('frontend.setting.sending-assist.require-form')
+    <div class="layui-card-body">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                {{--<li  class="layui-hide"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
+                <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
+            </ul>
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show" id="require-show">
+                    <div style="padding-bottom:40px;">
+                    <form class="layui-form" method="" action="">
+                        <div style="float: left">
+                            <div class="layui-inline" >
+                                <a href="{{ route('frontend.setting.sending-assist.require.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                            </div>
+                        </div>                     
+                    </form>
+                    </div>
+                    <div id="require-index">
+                    @include('frontend.setting.sending-assist.require-form')
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div> 
+    </div> 
 </div>
 @endsection
 

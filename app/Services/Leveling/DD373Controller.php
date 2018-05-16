@@ -524,7 +524,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
 	        	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
 	        	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
-	        	'businessman_phone' => $orderDatas['user_phone'],
+	        	'businessman_phone' => $orderDatas['client_phone'],
 	        	'businessman_qq' => $orderDatas['user_qq'],
 	        ]; 
 

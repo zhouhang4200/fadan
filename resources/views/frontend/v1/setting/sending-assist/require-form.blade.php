@@ -24,8 +24,8 @@
                 </td>
                 <td>
                     <div style="text-align: center">
-                    <a href="{{ route('frontend.setting.sending-assist.require.edit', ['id' => $orderTemplate->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
-                    <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-del-id="{{ $orderTemplate->id }}" lay-filter="delete">删除</button>
+                    <a href="{{ route('frontend.setting.sending-assist.require.edit', ['id' => $orderTemplate->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini">编辑</a>
+                    <button class="qs-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-del-id="{{ $orderTemplate->id }}" lay-filter="delete">删除</button>
                     </div>
                 </td>
             </tr>

@@ -31,7 +31,7 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->created_at }}</td>
                     <td>
-                        <a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" class="layui-btn layui-btn-normal layui-btn-mini edit">修改账号信息</a>
+                        <a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini edit">修改账号信息</a>
                     </td>
                 </tr>
             </tbody>

@@ -24,10 +24,10 @@
                 <div class="layui-input-inline">
                     <input type="text" name="qq" autocomplete="off" class="layui-input" value="{{ Auth::user()->wang_wang }}">
                 </div>
-                <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">修改绑定</a>
+                <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="save">修改绑定</a>
             </div>
         @else
-            <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">现在绑定</a>
+            <a  href="http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack={{ urlencode($callBack) }}" target="_blank" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="save">现在绑定</a>
         @endif
 
     </form>

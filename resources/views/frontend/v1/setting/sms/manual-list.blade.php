@@ -13,8 +13,8 @@
             <td width="10%">{{ $item->name }}</td>
             <td>{{ $item->contents }}</td>
             <td  width="12%">
-                <button class="layui-btn layui-bg-blue layui-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
-                <button class="layui-btn layui-bg-blue layui-btn-mini " data-id="{{ $item->id }}" lay-submit="" lay-filter="template-delete">删除</button>
+                <button class="qs-btn layui-bg-blue layui-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
+                <button class="qs-btn layui-bg-blue layui-btn-mini " data-id="{{ $item->id }}" lay-submit="" lay-filter="template-delete">删除</button>
             </td>
         </tr>
     @empty

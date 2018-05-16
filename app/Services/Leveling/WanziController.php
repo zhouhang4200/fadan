@@ -42,6 +42,12 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	        ]);
 	        $result = $response->getBody()->getContents();
 
+            myLog('wanzi-request-log', [
+                '地址' => $url,
+                '信息' => $options,
+                '结果' => $result,
+            ]);
+            
 	        if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
@@ -53,27 +59,13 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '丸子接口返回错误';
-	        			myLog('wanzi-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
+
         				if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
                         }
 	        		}
 	        	}
-		        // 记录日志
-		        myLog('wanzi-return-log', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
     		}
-			myLog('wanzi-request-log', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -92,49 +84,40 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     public static function normalRequest($options = [], $url= '', $method = 'POST')
     {
     	try {
-	        $client = new Client();
-	        $response = $client->request($method, $url, [
-	            'form_params' => $options,
-	        ]);
-	        $result =  $response->getBody()->getContents();
+            $client = new Client();
+            $response = $client->request($method, $url, [
+                'form_params' => $options,
+            ]);
+            $result =  $response->getBody()->getContents();
 
-	        if (! isset($result) || empty($result)) {
+            myLog('wanzi-request-log', [
+                '地址' => $url,
+                '信息' => $options,
+                '结果' => $result,
+            ]);
+
+            if (! isset($result) || empty($result)) {
                 throw new DailianException('请求返回数据不存在');
             }
 
-	        if (isset($result) && ! empty($result)) {
-	        	$arrResult = json_decode($result, true);
+            if (isset($result) && ! empty($result)) {
+                $arrResult = json_decode($result, true);
 
-	        	if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-	        		// 失败
-	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-        				$message = $arrResult['reason'] ?? '91接口返回错误';
-	        			myLog('wanzi-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败错误码' => $arrResult['result'] ?? '', 
-	        				'失败原因' => $arrResult['reason'] ?? '',
-	        			]);
-        				if ($url != config('leveling.wanzi.url')['delete']) {
+                if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+                    // 失败
+                    if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+                        $message = $arrResult['reason'] ?? '91接口返回错误';
+
+                        if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
                         }
-	        		}
-	        	}
-		        // 记录日志
-		        myLog('wanzi-return-log', [
-		            '地址' => $url ?? '',
-		            '信息' => $options ?? '',
-		            '结果' => $result ? json_decode($result, true) : '',
-		        ]);
-    		}
-			myLog('wanzi-request-log', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
-    		return json_decode($result, true);
+                    }
+                }
+            }
+            return json_decode($result, true);
         } catch (Exception $e) {
-        	myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
-
-        	throw new Exception($e->getMessage());
+            myLog('wanzi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -214,7 +197,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'                  => $orderDatas['wanzi_order_no'],
 				'selfCancel.pay_price' => $orderDatas['pay_amount'],
 				'selfCancel.pay_bond'  => $orderDatas['deposit'],
-				'selfCancel.content'   => ! empty($orderDatas['revoke_message']) ?: '空',
+				'selfCancel.content'   => $orderDatas['revoke_message'] ?? '空',
 	        ];
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke']);
@@ -472,7 +455,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
 				'game_leveling_requirements'       => $orderDatas['game_leveling_requirements'],
 				'game_leveling_instructions'       => $orderDatas['game_leveling_instructions'],
-				'businessman_phone'                => $orderDatas['user_phone'],
+				'businessman_phone'                => $orderDatas['client_phone'],
 				'businessman_qq'                   => $orderDatas['user_qq'],
 				'order_password' 				   => $orderDatas['order_password'],
 				'game_role'						   => $orderDatas['role'],

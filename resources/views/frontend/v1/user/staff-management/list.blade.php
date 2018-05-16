@@ -33,8 +33,8 @@
                     <td><input type="checkbox" name="open" lay-data="{{ $user->id }}" {{ $user->status == 0 ? 'checked' : '' }} lay-skin="switch" lay-filter="open" lay-text="启用|禁用"></td>
                     <td>
                     @if(! $user->deleted_at)
-                        <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
-                        <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $user->id }}">删除</button>
+                        <a class="qs-btn layui-btn-normal layui-btn-mini" href="{{ route('staff-management.edit', ['id' => $user->id]) }}">编辑</a>
+                        <button class="qs-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $user->id }}">删除</button>
                     @else
                         --
                     @endif
