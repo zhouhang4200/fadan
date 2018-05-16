@@ -42,13 +42,6 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
             height: auto;
         }
 
-        .iconfont {
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            margin-top: -19px;
-        }
-
         .layui-card .layui-tab {
             margin: 10px 0;
         }

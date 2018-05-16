@@ -87,13 +87,20 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">绑定游戏</label>
                 <div class="layui-input-block">
-                <select name="game_id" lay-verify="required" lay-search>
+                <select name="game_id" lay-verify="required" lay-search lay-filter="game">
                     <option value=""></option>
                     @forelse($game as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @empty
                     @endforelse
                 </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide dnf">
+                <label class="layui-form-label">订单类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="type" value="0" title="普通订单">
+                    <input type="radio" name="type" value="1" title="推荐号" checked>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -129,10 +136,17 @@
                     type: 1,
                     shade: 0.2,
                     title: '添加商品',
-                    area: ['500px'],
+                    area: ['500px', '435px'],
                     content: $('#goods-add')
                 });
                 return false;
+            });
+            form.on('select(game)', function(data){
+                if(data.value == 86){
+                    $('.dnf').removeClass('layui-hide')
+                } else {
+                    $('.dnf').addClass('layui-hide')
+                }
             });
 
             $('.content').on('blur', 'input[name=foreign_goods_id]', function () {
@@ -166,7 +180,8 @@
                     game_id:data.field.game_id,
                     seller_nick:data.field.seller_nick,
                     foreign_goods_id:data.field.foreign_goods_id,
-                    remark:data.field.remark
+                    remark:data.field.remark,
+                    type:data.field.type
                 }, function (result) {
                     layer.closeAll();
                     layer.msg(result.message);
@@ -188,7 +203,7 @@
                             type: 1,
                             shade: 0.2,
                             title: '修改',
-                            area: ['500px', '400px'],
+                            area: ['500px', '435px'],
                             content: result,
                             success: function(layero, index){
                                 form.render();
@@ -205,7 +220,8 @@
                     foreign_goods_id: data.field.foreign_goods_id,
                     remark: data.field.remark,
                     game_id: data.field.game_id,
-                    seller_nick: data.field.seller_nick
+                    seller_nick: data.field.seller_nick,
+                    type: data.field.type
                 }, function (result) {
                     layer.closeAll();
                     layer.msg(result.message);

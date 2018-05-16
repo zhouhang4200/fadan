@@ -225,6 +225,5 @@ class OrderOperationController extends Controller
             return response()->ajax(0, $exception->getMessage());
         }
     }
-
 }
 

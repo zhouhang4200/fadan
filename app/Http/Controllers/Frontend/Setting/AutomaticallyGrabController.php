@@ -87,6 +87,7 @@ class AutomaticallyGrabController extends Controller
                 $automaticallyGrabGoods->game_id = $request->game_id;
                 $automaticallyGrabGoods->game_name = Game::where('id', $request->game_id)->value('name');
                 $automaticallyGrabGoods->seller_nick = $request->seller_nick;
+                $automaticallyGrabGoods->type = $request->type;
                 $automaticallyGrabGoods->save();
             }
             return response()->ajax(1, '修改成功');
@@ -105,6 +106,7 @@ class AutomaticallyGrabController extends Controller
         $serviceId = $request->service_id;
         $gameId = $request->game_id;
         $sellerNick= $request->seller_nick;
+        $type = $request->type;
 
         if (!is_numeric($goodsId)) {
             return response()->ajax(0, '商品ID不合法');
@@ -129,6 +131,7 @@ class AutomaticallyGrabController extends Controller
                 'game_id' => $gameId,
                 'game_name' => Game::where('id', $gameId)->value('name'),
                 'seller_nick' => $sellerNick,
+                'type' => $type,
                 'remark' => $request->remark,
             ]);
             return response()->ajax(1, '添加成功');

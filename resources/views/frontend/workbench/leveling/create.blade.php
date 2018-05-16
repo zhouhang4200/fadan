@@ -409,6 +409,7 @@
                         layui.form.render();
                     });
                     setDefaultValueOption();
+                    setFixedInfo();
                     loadGameLevelingTemplate(id);
                     loadBusinessmanContactTemplate(id);
                     analysis()
@@ -475,6 +476,22 @@
                     $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                     $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
                 @endif
+                layui.form.render();
+            }
+            // 设置固定的订单信息
+            function setFixedInfo() {
+                @forelse($fixedInfo as $name => $item)
+                    @if($item['type'] == 1)
+                        $('input[name={{ $name }}]').val('{{ $item['value'] }}');
+                    @elseif($item['type'] == 2)
+                        $("select[name={{ $name }}]").val('{{  $item['value']  }}');
+                    @elseif($item['type'] == 3)
+
+                    @elseif($item['type']== 4)
+                        $('textarea[name="{{ $name }}"]').val('{{ $item['value'] }}');
+                    @endif
+                @empty
+                @endforelse
                 layui.form.render();
             }
             // 加载代练要求模板
