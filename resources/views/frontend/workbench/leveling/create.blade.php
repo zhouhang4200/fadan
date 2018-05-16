@@ -137,6 +137,10 @@
                 <div class="layui-col-md7">{{ $fixedInfo['role']['value'] or '' }}</div>
             </div>
             <div class="layui-row form-group">
+                <div class="layui-col-md5 text_right">买家留言：</div>
+                <div class="layui-col-md7">{{ $taobaoTrade->buyer_message or '' }}</div>
+            </div>
+            <div class="layui-row form-group">
                 <div class="layui-col-md5 text_right">完成时间：</div>
                 <div class="layui-col-md7"></div>
             </div>
