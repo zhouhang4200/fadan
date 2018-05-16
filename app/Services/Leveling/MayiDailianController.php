@@ -109,8 +109,9 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     public static function normalRequest($options = [], $method = 'POST')
     {
         try {
+            myLog('mayi-api-log', ['begin']);
+            
             $client = new Client();
-            // myLog('mayi', ['options' => $options]);
             $response = $client->request($method, config('leveling.mayidailian.url'), [
                 'form_params' => $options,
             ]);
@@ -137,17 +138,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         }
                     }
                 }
-                // 记录日志
-                myLog('mayi-return-logs', [
-                    '蚂蚁单号' => $options['nid'] ?? ($options['order_no'] ?? ''),
-                    '方法名' => $options['method'] ?? '',
-                    '结果' => $result ? json_decode($result) : '',
-                ]);
             }
-            myLog('mayi-request-logs', [
-                '方法名' => $options['method'] ?? '',
-                '参数' => $options ?? '',
-            ]);
             return json_decode($result, true);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
