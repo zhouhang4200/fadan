@@ -413,9 +413,10 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
 <script src="/frontend/v1/lib/js/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script>
-    layui.use(['element', 'form', 'laydate'], function () {
+    layui.use(['element', 'form', 'laydate', 'layer'], function () {
         var element = layui.element,
                 form = layui.form,
+                layer = layui.layer,
                 laydate = layui.laydate;
         var insStart = laydate.render({
             elem: '#test-laydate-start',
@@ -445,12 +446,10 @@ $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
             }
         });
     });
-</script>
-<script>
     layui.config({
-        base: '/' //静态资源所在路径
+        base: '/frontend/v1/' //静态资源所在路径
     }).extend({
-        index: 'frontend/v1/lib/js/index' //主入口模块
+        index: 'lib/js/index' //主入口模块
     }).use('index');
 </script>
 @yield('js')
