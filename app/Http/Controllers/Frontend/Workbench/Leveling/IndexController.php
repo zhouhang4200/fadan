@@ -7,6 +7,7 @@ use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\AutomaticallyGrabGoods;
 use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
+use App\Models\GoodsTemplateWidget;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
@@ -435,12 +436,23 @@ class IndexController extends Controller
     }
 
     /**
-     * 获取游戏信息 区\代练类型\代练模版\商户QQ
+     * 获取游戏 区\代练类型
      * @param Request $request
      */
-    public function getGameInfo(Request $request)
+    public function getRegionType(Request $request)
     {
+        // 获取模版ID
+        $templateId = GoodsTemplate::where('game_id', $request->game_id)->where('service_id', 4)->value('id');
+        // 获取代练区 获取代练类型ID
+        $regionTypeId = GoodsTemplateWidget::where('goods_template_id', $templateId)
+            ->whereIn('field_name', ['region', 'game_leveling_type'])
+            ->pluck('id');
 
+        // 获取代练区 获取代练类型选项值
+        $regionType = GoodsTemplateWidgetValue::select(['field_name', 'field_value', 'id'])->whereIn('goods_template_widget_id', $regionTypeId)
+            ->get()->toArray();
+
+        return response()->ajax(1, 'success', $regionType);
     }
 
     /**
@@ -685,6 +697,7 @@ class IndexController extends Controller
                 'field_value' => $request->value,
             ]);
     }
+
     /**
      * 操作记录
      * @param $order_no
@@ -1484,7 +1497,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 备注修改
+     * 待发单备注修改
      * @param Request $request
      */
     public function waitRemark(Request $request)
