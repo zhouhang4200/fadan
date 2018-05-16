@@ -435,6 +435,15 @@ class IndexController extends Controller
     }
 
     /**
+     * 获取游戏信息 区\代练类型\代练模版\商户QQ
+     * @param Request $request
+     */
+    public function getGameInfo(Request $request)
+    {
+
+    }
+
+    /**
      * 获取游戏模版
      * @param Request $request
      * @param GoodsTemplateWidgetRepository $goodsTemplateWidgetRepository
@@ -507,6 +516,21 @@ class IndexController extends Controller
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
         // 获取淘宝订单数据
         $taobaoTrade = TaobaoTrade::where('tid', $orderDetails['source_order_no'])->first();
+
+        // 有淘宝订单则更新淘宝订单卖家备注
+        $fixedInfo = [];
+        if ($taobaoTrade) {
+            // 从收货地址中拆分区服角色信息
+            $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
+            // 获取抓取商品配置
+            $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
+            // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
+            if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress, $taobaoTrade);
+            }
+        }
+
         // 写订单日志
         OrderHistory::create([
             'order_no' => $detail['no'],
@@ -616,7 +640,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact'));
+        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
     }
 
     /**

@@ -32,4 +32,5 @@
     @if(Auth::user()->could('frontend.statistic.sms'))
         <li class="{{ in_array(Route::currentRouteName() , ['frontend.statistic.sms', 'frontend.statistic.show']) ? 'current' : '' }}"><a href="{{ route('frontend.statistic.sms') }}">短信统计</a><div class="arrow"></div></li>
     @endif
+    <!-- <li class="{{ in_array(Route::currentRouteName() , ['frontend.statistic.today']) ? 'current' : '' }}"><a href="{{ route('frontend.statistic.today') }}">商家统计</a><div class="arrow"></div></li> -->
 </ul>

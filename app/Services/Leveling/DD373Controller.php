@@ -54,21 +54,10 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		if (isset($arrResult['code']) && $arrResult['code'] != 0) {
         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
 
-	        			myLog('dd373-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败原因' => $arrResult['msg'] ?? '', 
-	        				'失败数据' => $arrResult['data'] ?? '',
-	        			]);
                         if ($url != config('leveling.dd373.url')['delete']) {
         				    throw new DailianException($message);
                         }
 	        		}
-			        // 记录日志
-			        myLog('dd373-request-logs', [
-			            '地址' => $url ?? '',
-			            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
-			            '结果' => $result ? json_decode($result, true) : '',
-			        ]);
 	        	}
     		}
 

@@ -611,17 +611,29 @@
                                 @endif
                             </div>
                         </div>
-                        {{--<div class="layui-row form-group">--}}
-                            {{--<div class="layui-col-md3 text_right">购买单价：</div>--}}
-                            {{--<div class="layui-col-md8">{{ $taobaoTrade->price or '' }}</div>--}}
-                        {{--</div>--}}
-                        {{--<div class="layui-row form-group">--}}
-                            {{--<div class="layui-col-md3 text_right">购买数量：</div>--}}
-                            {{--<div class="layui-col-md8">{{ $taobaoTrade->num or '' }}</div>--}}
-                        {{--</div>--}}
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">购买单价：</div>
+                            <div class="layui-col-md8">{{ $taobaoTrade->price or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">购买数量：</div>
+                            <div class="layui-col-md8">{{ $taobaoTrade->num or '' }}</div>
+                        </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">实付金额：</div>
                             <div class="layui-col-md8">{{ $taobaoTrade->payment or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">所在区/服：</div>
+                            <div class="layui-col-md8">{{ $fixedInfo['serve']['value'] or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">角色名称：</div>
+                            <div class="layui-col-md8">{{ $fixedInfo['role']['value'] or '' }}</div>
+                        </div>
+                        <div class="layui-row form-group">
+                            <div class="layui-col-md3 text_right">买家留言：</div>
+                            <div class="layui-col-md8">{{ $taobaoTrade->buyer_message or '' }}</div>
                         </div>
                         <div class="layui-row form-group">
                             <div class="layui-col-md3 text_right">下单时间：</div>

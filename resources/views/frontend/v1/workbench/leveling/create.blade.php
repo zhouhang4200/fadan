@@ -194,52 +194,51 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">游戏</label>
                         <div class="layui-input-block">
-                            <select name="game" lay-filter="aihao">
+                            <select name="game" lay-filter="game">
                                 <option value=""></option>
-                                <option value="0">王者荣耀</option>
-                                <option value="1">地下城与勇士</option>
-                                <option value="2">毒奶粉</option>
-                                <option value="3">阿修罗换不锈钢脸盆</option>
+                                @forelse($game as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @empty
+                                @endforelse
                             </select>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">区</label>
-                        <div class="layui-input-block">
-                            <input type="radio" name="qu" value="IOS微信" title="IOS微信" checked="">
-                            <input type="radio" name="qu" value="IOSQQ" title="IOSQQ">
-                            <input type="radio" name="qu" value="安卓微信" title="安卓微信">
-                            <input type="radio" name="qu" value="安卓QQ" title="安卓QQ" >
+                        <div class="layui-input-block region">
+                            <input type="radio" name="region" value="IOS微信" title="IOS微信" checked="">
+                            <input type="radio" name="region" value="IOSQQ" title="IOSQQ">
+                            <input type="radio" name="region" value="安卓微信" title="安卓微信">
+                            <input type="radio" name="region" value="安卓QQ" title="安卓QQ" >
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">服</label>
-                        <div class="layui-input-block">
-                            <select name="game" lay-filter="aihao">
-                                <option value=""></option>
-                                <option value="0">1</option>
-                                <option value="1">2</option>
-                                <option value="2">3</option>
-                                <option value="3">4</option>
-                            </select>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">服</label>
+                            <div class="layui-input-block">
+                                <select name="server" lay-filter="aihao">
+                                    <option value=""></option>
+                                    <option value="0">1</option>
+                                    <option value="1">2</option>
+                                    <option value="2">3</option>
+                                    <option value="3">4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">角色名称</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
+
                     <div class="layui-row layui-col-space10 layui-form-item ">
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">账号</label>
-                            <div class="layui-input-block tips-box">
-
+                            <div class="layui-input-block">
                                 <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                <div class="tips" lay-tips="输入账号啊">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-
                             </div>
                         </div>
 
@@ -261,10 +260,10 @@
                     <div class="layui-form-item dl-type" id="dl-type" >
                         <label class="layui-form-label">代练类型</label>
                         <div class="layui-input-block tips-box">
-                            <input type="radio" name="dl-type" lay-filter="dl-tyle" title="陪玩" value="陪玩" checked>
-                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="排位" value="排位">
-                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="金币" value="金币">
-                            <input type="radio" name="dl-type"  lay-filter="dl-tyle" title="成就" value="成就">
+                            <input type="radio" name="game_leveling_type" lay-filter="dl-tyle" title="陪玩" value="陪玩" checked>
+                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="排位" value="排位">
+                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="金币" value="金币">
+                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="成就" value="成就">
 
                         </div>
                     </div>
@@ -272,57 +271,79 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练标题</label>
                             <div class="layui-input-block tips-box">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                <div class="tips" lay-tips="输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊输入账号啊">
+                                <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练模板</label>
-                            <div class="layui-input-block">
-                                <select name="type" lay-verify="required" lay-filter="aihao">
+                            <label class="layui-form-label">代练要求模板</label>
+                            <div class="layui-input-block tips-box">
+                                <select name="game_leveling_requirements_template" lay-verify="required" lay-filter="aihao">
                                     <option value=""></option>
                                     <option value="0">通用模板1</option>
                                     <option value="1">通用模板2</option>
                                     <option value="2">通用模板3</option>
                                     <option value="3">通用模板4</option>
                                 </select>
+                                <div class="tips" lay-tips="输入账号啊">
+                                    <i class="iconfont icon-exclamatory-mark-r"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">代练说明</label>
-                        <div class="layui-input-block">
-                            <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练说明</label>
+                            <div class="layui-input-block">
+                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">代练说明</label>
-                        <div class="layui-input-block">
-                            <textarea name="text" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练要求</label>
+                            <div class="layui-input-block">
+                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
                         </div>
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练天数</label>
+                            <div class="layui-input-block">
+                                <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="">
+                                    <option value=""></option>
+                                    @for($i=0; $i<=30; $i++)
+                                        <option value="{{ $i }}">{{ $i }}天</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练小时</label>
+                            <div class="layui-input-block">
+                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao">
+                                    <option value=""></option>
+                                    @for($i=0; $i<=24; $i++)
+                                        <option value="{{ $i }}">{{ $i }}小时</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
                             <label class="layui-form-label">代练价格</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="game_leveling_amount" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">接单密码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-
+                                <input type="text" name="order_password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">代练时间</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
@@ -330,23 +351,106 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">安全保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="security_deposit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">效率保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="efficiency_deposit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-form-item layui-layout-admin">
+
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">玩家电话</label>
                             <div class="layui-input-block">
-                                <div class="layui-footer" style="left: 0;">
-                                    <button class="qs-btn" style="width: 92px;margin-left: 535px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
-                                    <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
-                                    <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
-                                    <button type="reset" class="qs-btn qs-btn-primary" style="width: 92px;">重发</button>
-                                </div>
+                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">商户QQ</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="user_qq" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item dl-type" id="dl-type" >
+                        <label class="layui-form-label">订单来源</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="order_source" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">来源单号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="source_order_no" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">来源价格</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="source_price" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">来源单号1</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="source_order_no_1" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">来源单号2</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="source_order_no_2" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item dl-type" id="dl-type" >
+                        <label class="layui-form-label">玩家旺旺</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="client_wang_wang" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item dl-type" id="dl-type" >
+                        <label class="layui-form-label">客服备注</label>
+                        <div class="layui-input-block">
+                            <textarea name="customer_service_remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">加价幅度</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="markup_range" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">加价上限</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="markup_top_limit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <div class="layui-footer" style="left: 0;">
+                                <button class="qs-btn" style="width: 92px;margin-left: 535px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
+                                <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
+                                <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
+                                <button type="reset" class="qs-btn qs-btn-primary" style="width: 92px;">重发</button>
                             </div>
                         </div>
                     </div>
@@ -608,7 +712,8 @@
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
             var gameId = '{{ $gameId }}';
-            //自定义验证规则
+
+            // 验证规则
             form.verify({
                 zero: function(value){
                     if(value <= 0){
@@ -626,13 +731,19 @@
                         }
                     }
                 },
-                gt5:function (value) { // 大于5
-                    if (value < 5) {
-                        return '输入金额需大于或等于5元';
+                gt5:function (value) { // 大于1
+                    if (value < 1) {
+                        return '输入金额需大于或等于1元';
                     }
                 }
 
             });
+
+            // 按游戏加载区\代练类型\代练模版\商户QQ
+            function loadGameInfo() {
+                $('.region').html(1);
+            }
+
             // 模板使用说明
             form.on('submit(instructions)', function () {
                 layer.open({

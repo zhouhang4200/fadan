@@ -28,6 +28,7 @@ class TaobaoApi
                 $request->data['NumIid'],
                 $request->data['BuyerNick'],
                 $request->data['SellerNick'],
+                $request->data
             ]);
         } else {
             return response()->tb(0, '请求格式错误');
