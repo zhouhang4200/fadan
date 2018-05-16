@@ -335,33 +335,34 @@ class IndexController extends Controller
         $businessmanInfo = auth()->user()->getPrimaryInfo();
 
         // 有淘宝订单则更新淘宝订单卖家备注
-        $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
-        if ($taobaoTrade && empty($taobaoTrade->seller_memo)) {
-            // 获取备注并更新
-            $client = new TopClient;
-            $client->format = 'json';
-            $client->appkey = '12141884';
-            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
-
-            $req = new TradeFullinfoGetRequest;
-            $req->setFields("tid, type, status, payment, orders, seller_memo");
-            $req->setTid($tid);
-            $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
-
-            if (!empty($resp->trade->seller_memo)) {
-                $taobaoTrade->seller_memo = $resp->trade->seller_memo;
-                $taobaoTrade->save();
-            }
-        }
-        // 从收货地址中拆分区服角色信息
-        $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
-        // 获取抓取商品配置
-        $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
-
         $fixedInfo = [];
-        // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
-        if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
-            $fixedInfo = $this->dnfFixedInfo($receiverAddress);
+        $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
+        if ($taobaoTrade) {
+            if (empty($taobaoTrade->seller_memo)) {
+                // 获取备注并更新
+                $client = new TopClient;
+                $client->format = 'json';
+                $client->appkey = '12141884';
+                $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+
+                $req = new TradeFullinfoGetRequest;
+                $req->setFields("tid, type, status, payment, orders, seller_memo");
+                $req->setTid($tid);
+                $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
+
+                if (!empty($resp->trade->seller_memo)) {
+                    $taobaoTrade->seller_memo = $resp->trade->seller_memo;
+                    $taobaoTrade->save();
+                }
+            }
+            // 从收货地址中拆分区服角色信息
+            $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
+            // 获取抓取商品配置
+            $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+            // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
+            if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress);
+            }
         }
 
         return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
