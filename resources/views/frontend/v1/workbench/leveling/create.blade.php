@@ -194,12 +194,12 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">游戏</label>
                         <div class="layui-input-block">
-                            <select name="game" lay-filter="aihao">
+                            <select name="game" lay-filter="game">
                                 <option value=""></option>
-                                <option value="0">王者荣耀</option>
-                                <option value="1">地下城与勇士</option>
-                                <option value="2">毒奶粉</option>
-                                <option value="3">阿修罗换不锈钢脸盆</option>
+                                @forelse($game as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @empty
+                                @endforelse
                             </select>
                         </div>
                     </div>
@@ -633,6 +633,12 @@
                 }
 
             });
+
+            // 按游戏加载区\代练类型\代练模版\商户QQ
+            function loadGameInfo() {
+
+            }
+
             // 模板使用说明
             form.on('submit(instructions)', function () {
                 layer.open({
