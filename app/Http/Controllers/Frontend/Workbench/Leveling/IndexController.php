@@ -360,7 +360,7 @@ class IndexController extends Controller
 
         $fixedInfo = [];
         // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
-        if ($goodsConfig->game_id == 86) { //  && $goodsConfig->type == 1
+        if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
             $fixedInfo = $this->dnfFixedInfo($receiverAddress);
         }
 
