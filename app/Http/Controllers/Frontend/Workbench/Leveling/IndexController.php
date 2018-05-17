@@ -377,38 +377,25 @@ class IndexController extends Controller
     public function order(Request $request)
     {
         try {
-            // 原始订单数据
-            $orderData = $request->data;
-            $userId = Auth::user()->id; // 下单用户
-            $gameId = $orderData['game_id']; // 模版ID
+            $orderData = $request->data; // 表单所有数据
+            $gameId = $orderData['game_id']; // 游戏ID
             $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
             $originalPrice = $orderData['source_price']; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
-            $source = $orderData['order_source']; // 代练价格
             $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
             $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
 
-            // 获取当前下单人名字
-            $orderData['customer_service_name'] = Auth::user()->username;
+            $userId = Auth::user()->id; // 下单用户ID
+            $orderData['customer_service_name'] = Auth::user()->username; // 下单人名字
+            $orderData['order_source'] = '天猫'; // 订单来源
 
             if (isset($request->value) && ! empty($request->value)) {
-                UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-                    ->where('option', 'sending_control')
-                    ->update(['value' => 0]);
                 // 原始发单人
                 if (isset($orderData['creator_user_id'])) {
-                    $oldOrder = User::where('id', $orderData['creator_user_id'])->first();
-                    $orderData['customer_service_name'] = $oldOrder->username;
-                    $userId = $oldOrder->id;
-                } else {
-                    $orderData['customer_service_name'] = '';
+                    $originalUser = User::where('id', $orderData['creator_user_id'])->first();
+                    $orderData['customer_service_name'] = $originalUser->username;
+                    $userId = $originalUser->id;
                 }
-            } else {
-                UserSetting::where('user_id', Auth::user()->getPrimaryUserId())
-                    ->where('option', 'sending_control')
-                    ->update(['value' => 1]);
-                // 获取当前下单人名字
-                $orderData['customer_service_name'] = Auth::user()->username;
             }
 
             try {
