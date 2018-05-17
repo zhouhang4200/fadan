@@ -321,6 +321,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('game-leveling-template', 'IndexController@getGameLevelingTemplate')->name('frontend.workbench.leveling.game-leveling-template');
             // 获取来源价格
             Route::post('source-price', 'IndexController@sourcePrice')->name('frontend.workbench.leveling.source-price');
+            // 获取区服
+            Route::post('get-region-type', 'IndexController@getRegionType')->name('frontend.workbench.leveling.get-region-type');
          });
 
         // 获取用户所有前台可显示的商品

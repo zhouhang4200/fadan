@@ -179,7 +179,6 @@
 
                     @{{# if(item.field_type == 2) {  }}
 
-
                         <select name="@{{ item.field_name }}"  lay-search="" lay-verify="@{{# if (item.field_required == 1) { }}required@{{# } }}"  display-name="@{{item.field_display_name}}"  lay-filter="change-select" data-id="@{{ item.id }}" id="select-parent-@{{ item.field_parent_id }}">
                             <option value=""></option>
                             @{{#  if(item.user_values.length > 0){ }}

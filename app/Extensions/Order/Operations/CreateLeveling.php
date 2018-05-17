@@ -231,66 +231,32 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     {
         if ($this->runAfter) {
 
-//            if ($this->order->creator_primary_user_id == 8317 || config('app.env') == 'local') {
-                // 下单到其它平台
-                $sendOrder = [
-                    'order_no' => $this->order->no,
-                    'game_name' => $this->order->game_name,
-                    'game_region' => $this->details['region'],
-                    'game_serve' => $this->details['serve'],
-                    'game_role' => $this->details['role'],
-                    'game_account' => $this->details['account'],
-                    'game_password' => $this->details['password'],
-                    'game_leveling_type' => $this->details['game_leveling_type'],
-                    'game_leveling_title' => $this->details['game_leveling_title'],
-                    'game_leveling_price' => $this->details['game_leveling_amount'],
-                    'game_leveling_day' => $this->details['game_leveling_day'],
-                    'game_leveling_hour' => $this->details['game_leveling_hour'],
-                    'game_leveling_security_deposit' => $this->details['security_deposit'],
-                    'game_leveling_efficiency_deposit' => $this->details['efficiency_deposit'],
-                    'game_leveling_requirements' => $this->details['game_leveling_requirements'],
-                    'game_leveling_instructions' => $this->details['game_leveling_instructions'],
-                    'businessman_phone' => $this->details['client_phone'],
-                    'businessman_qq' => $this->details['user_qq'],
-                    'order_password' => $this->details['order_password'] ?? '',
-                    'creator_username' => User::find($this->order->creator_primary_user_id)->username ?? '',
-                ];
-                $redis = RedisConnect::order();
-                $redis->lpush('order:send', json_encode($sendOrder));
-//            }
+            $sendOrder = [
+                'order_no' => $this->order->no,
+                'game_name' => $this->order->game_name,
+                'game_region' => $this->details['region'],
+                'game_serve' => $this->details['serve'],
+                'game_role' => $this->details['role'],
+                'game_account' => $this->details['account'],
+                'game_password' => $this->details['password'],
+                'game_leveling_type' => $this->details['game_leveling_type'],
+                'game_leveling_title' => $this->details['game_leveling_title'],
+                'game_leveling_price' => $this->details['game_leveling_amount'],
+                'game_leveling_day' => $this->details['game_leveling_day'],
+                'game_leveling_hour' => $this->details['game_leveling_hour'],
+                'game_leveling_security_deposit' => $this->details['security_deposit'],
+                'game_leveling_efficiency_deposit' => $this->details['efficiency_deposit'],
+                'game_leveling_requirements' => $this->details['game_leveling_requirements'],
+                'game_leveling_instructions' => $this->details['game_leveling_instructions'],
+                'businessman_phone' => $this->details['client_phone'],
+                'businessman_qq' => $this->details['user_qq'],
+                'order_password' => $this->details['order_password'] ?? '',
+                'creator_username' => User::find($this->order->creator_primary_user_id)->username ?? '',
+            ];
+            $redis = RedisConnect::order();
+            $redis->lpush('order:send', json_encode($sendOrder));
 
-            // 给91下订单
-            // $show91Result = Show91::addOrder($this->order);
-             // 给代练妈妈下订单
-            // $dailianMamaResult = DailianMama::releaseOrder($this->order);
-
-            // myLog('order', [$this->order->no, $show91Result, $dailianMamaResult]);
-            // 判断各个平台下单成功情况
-            // if ($show91Result['status'] && $dailianMamaResult['status']) {
-            //     // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-            //     OrderDetail::where('order_no', $this->order->no)
-            //         ->where('field_name', 'show91_order_no')
-            //         ->update(['field_value' => $show91Result['order_no']]);
-
-            //     // 如果成功，将订单写入订单详情表
-            //     OrderDetail::where('order_no', $this->order->no)
-            //         ->where('field_name', 'dailianmama_order_no')
-            //         ->update(['field_value' => $dailianMamaResult['order_no'],]);
-            // } elseif ($show91Result['status'] && ! $dailianMamaResult['status']) {
-            //     // 以上屏蔽的额逻辑要改，改为存一个91第三方订单号和一个代练妈妈的第三方订单号，同时存在
-            //     OrderDetail::where('order_no', $this->order->no)
-            //         ->where('field_name', 'show91_order_no')
-            //         ->update(['field_value' => $show91Result['order_no'],]);
-            // } elseif (! $show91Result['status'] && $dailianMamaResult['status']) {
-            //     // 如果成功，将订单写入订单详情表
-            //     OrderDetail::where('order_no', $this->order->no)
-            //         ->where('field_name', 'dailianmama_order_no')
-            //         ->update(['field_value' => $dailianMamaResult['order_no'],]);
-            // } elseif (! $show91Result['status'] && ! $dailianMamaResult['status']) {
-            //     // throw new DailianException('所有平台下单均失败! '.$show91Result['message'].'; '.$dailianMamaResult['message']);
-            // }
-
-            return $this->order;      
+            return $this->order;
         }
     }
 }

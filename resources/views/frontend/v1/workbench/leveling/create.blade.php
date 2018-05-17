@@ -39,10 +39,6 @@
             margin: 10px 0;
         }
 
-        .layui-form-item {
-            margin-bottom: 20px;
-        }
-
         .layui-table-cell {
             display: block;
             height: 40px;
@@ -56,10 +52,6 @@
 
         .layui-tab-title li {
             min-width: 50px;
-        }
-
-        .laytable-cell-1-button {
-            width: 280px !important;
         }
 
         .layui-card-header {
@@ -94,7 +86,6 @@
         }
 
         /* 改写header高度 */
-
         .layui-card-header {
             height: 56px;
             line-height: 56px;
@@ -133,8 +124,6 @@
             text-align: center;
             margin-right: 0;
         }
-
-
 
         #dl-type .layui-form-checked i,
         #dl-type .layui-form-checked:hover i {
@@ -191,33 +180,54 @@
             </div>
             <div class="layui-card-body" style="padding: 15px;">
                 <form class="layui-form" action="" lay-filter="component-form-group">
+                    <input type="hidden" name="source_order_no">
+                    <input type="hidden" name="client_wang_wang">
                     <div class="layui-form-item">
                         <label class="layui-form-label">游戏</label>
                         <div class="layui-input-block">
-                            <select name="game" lay-filter="game">
+                            <select name="game_id" lay-filter="game_id" lay-verify="required">
                                 <option value=""></option>
                                 @forelse($game as $id => $name)
-                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    <option value="{{ $id }}" @if($id == $gameId) selected @endif>{{ $name }}</option>
                                 @empty
                                 @endforelse
                             </select>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">区</label>
-                        <div class="layui-input-block region">
-                            <input type="radio" name="region" value="IOS微信" title="IOS微信" checked="">
-                            <input type="radio" name="region" value="IOSQQ" title="IOSQQ">
-                            <input type="radio" name="region" value="安卓微信" title="安卓微信">
-                            <input type="radio" name="region" value="安卓QQ" title="安卓QQ" >
-                        </div>
-                    </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
+                            <label class="layui-form-label">区</label>
+                            <div class="layui-input-block ">
+                                <select name="region" lay-verify="required" lay-filter="change-select" class="region">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg6">
                             <label class="layui-form-label">服</label>
                             <div class="layui-input-block">
-                                <select name="server" lay-filter="aihao">
+                                <select name="serve" lay-filter="serve" class="serve">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layui-row layui-col-space10 layui-form-item">
+
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">代练类型</label>
+                            <div class="layui-input-block">
+                                <select name="game_leveling_type" lay-filter="game_leveling_type">
                                     <option value=""></option>
                                     <option value="0">1</option>
                                     <option value="1">2</option>
@@ -226,47 +236,24 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">角色名称</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="username" placeholder="" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item ">
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">账号</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fullname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">密码</label>
                             <div class="layui-input-block">
-                                <select name="type" lay-verify="required" lay-filter="aihao">
-                                    <option value=""></option>
-                                    <option value="0">前端工程师</option>
-                                    <option value="1">Node.js工程师</option>
-                                    <option value="2">PHP工程师</option>
-                                    <option value="3">Java工程师</option>
-                                    <option value="4">运维</option>
-                                    <option value="4">视觉设计师</option>
-                                </select>
+                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item dl-type" id="dl-type" >
-                        <label class="layui-form-label">代练类型</label>
-                        <div class="layui-input-block tips-box">
-                            <input type="radio" name="game_leveling_type" lay-filter="dl-tyle" title="陪玩" value="陪玩" checked>
-                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="排位" value="排位">
-                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="金币" value="金币">
-                            <input type="radio" name="game_leveling_type"  lay-filter="dl-tyle" title="成就" value="成就">
 
-                        </div>
-                    </div>
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练标题</label>
@@ -279,17 +266,15 @@
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练要求模板</label>
-                            <div class="layui-input-block tips-box">
-                                <select name="game_leveling_requirements_template" lay-verify="required" lay-filter="aihao">
+                            <div class="layui-input-block">
+                                <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao">
                                     <option value=""></option>
                                     <option value="0">通用模板1</option>
                                     <option value="1">通用模板2</option>
                                     <option value="2">通用模板3</option>
                                     <option value="3">通用模板4</option>
                                 </select>
-                                <div class="tips" lay-tips="输入账号啊">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -336,13 +321,13 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练价格</label>
                             <div class="layui-input-block">
-                                <input type="text" name="game_leveling_amount" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">接单密码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="order_password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                     </div>
@@ -351,16 +336,15 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">安全保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="security_deposit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">效率保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="efficiency_deposit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
@@ -373,30 +357,17 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">商户QQ</label>
                             <div class="layui-input-block">
-                                <input type="text" name="user_qq" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <select name="user_qq" lay-verify="required" lay-filter="aihao">
+                                    <option value=""></option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
-                    <div class="layui-form-item dl-type" id="dl-type" >
-                        <label class="layui-form-label">订单来源</label>
+                    <div class="layui-form-item dl-type" id="dl-type">
+                        <label class="layui-form-label">来源价格</label>
                         <div class="layui-input-block">
-                            <input type="text" name="order_source" placeholder="" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源单号</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="source_order_no" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源价格</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="source_price" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                            </div>
+                            <input type="text" name="source_price" placeholder="" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
@@ -404,28 +375,21 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">来源单号1</label>
                             <div class="layui-input-block">
-                                <input type="text" name="source_order_no_1" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">来源单号2</label>
                             <div class="layui-input-block">
-                                <input type="text" name="source_order_no_2" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item dl-type" id="dl-type" >
-                        <label class="layui-form-label">玩家旺旺</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="client_wang_wang" placeholder="" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item dl-type" id="dl-type" >
                         <label class="layui-form-label">客服备注</label>
                         <div class="layui-input-block">
-                            <textarea name="customer_service_remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            <input name="customer_service_remark" placeholder="请输入内容" class="layui-input">
                         </div>
                     </div>
 
@@ -433,13 +397,13 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价幅度</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_range" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价上限</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_top_limit" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                     </div>
@@ -447,7 +411,7 @@
                     <div class="layui-form-item layui-layout-admin">
                         <div class="layui-input-block">
                             <div class="layui-footer" style="left: 0;">
-                                <button class="qs-btn" style="width: 92px;margin-left: 535px;" lay-submit="" lay-filter="component-form-demo1">确定</button>
+                                <button class="qs-btn" style="width: 92px;margin-left: 535px;" lay-submit="" lay-filter="order">确定</button>
                                 <button type="reset" class="qs-btn" style="background-color: #ff5822;">申请仲裁</button>
                                 <button type="reset" class="qs-btn qs-btn-primary qs-btn-table">取消仲裁</button>
                                 <button type="reset" class="qs-btn qs-btn-primary" style="width: 92px;">重发</button>
@@ -527,12 +491,12 @@
             </div>
             <div class="layui-card-body qs-text">
                 <form class="layui-form" action="" lay-filter="component-form-group">
-                                                <textarea name="text" class="layui-textarea" style="height: 800px;">
-                                                </textarea>
+                    <textarea name="template" class="layui-textarea" style="min-height: 350px">
+                    </textarea>
                 </form>
             </div>
         </div>
-        <div class="layui-card" style="margin-bottom: 72px;">
+        <div class="layui-card" style="margin-bottom: 72px;display: none">
             <div class="layui-card-header">平台数据</div>
             <div class="layui-card-body qs-text">
                 <table class="layui-table">
@@ -609,7 +573,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 @endsection
 
@@ -740,10 +703,17 @@
             });
 
             // 按游戏加载区\代练类型\代练模版\商户QQ
+            loadGameInfo();
+            // 加载下单必要的信息
             function loadGameInfo() {
-                $('.region').html(1);
+                loadRegionType();
+                loadGameLevelingTemplate();
+                loadBusinessmanContactTemplate();
+                setDefaultValueOption();
+                loadDefaultTemplate();
+//                analysis()
+                $('.serve').html('');
             }
-
             // 模板使用说明
             form.on('submit(instructions)', function () {
                 layer.open({
@@ -760,155 +730,69 @@
             });
             // 下单
             form.on('submit(order)', function (data) {
-
                 if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
                     layer.msg('代练时间不能都为0');
                     return false;
                 }
-
                 if(data.field.game_leveling_hour > 24) {
                     layer.msg('代练小时不能大于24小时');
                     return false;
                 }
-
                 var load = layer.load(0, {
                     shade: [0.2, '#000000']
                 });
 
                 $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
-
                     if (result.status == 1) {
                         layer.open({
                             content: result.message,
-                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn: ['继续发布', '订单列表'],
                             btn1: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            },
-                            btn3: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });
                     } else {
                         layer.open({
                             content: result.message,
-                            btn: ['继续发布', '订单列表', '待发订单'],
+                            btn: ['继续发布', '订单列表'],
                             btn1: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
                             btn2: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            },
-                            btn3: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });
-                        // layer.msg(result.message);
                     }
                     layer.close(load);
-
                 }, 'json');
                 return false;
             });
             // 切换游戏时加截新的模版
-            form.on('select(game)', function (data) {
+            form.on('select(game_id)', function (data) {
                 gameId = data.value;
-                loadTemplate(gameId)
+                loadGameInfo()
             });
-            // 模版预览 下拉框值
+            // 选择区后获取对应的服
             form.on('select(change-select)', function(data){
-                var subordinate = "#select-parent-" + data.elem.getAttribute('data-id');
                 var choseId = $(data.elem).find("option:selected").attr("data-id");
-                if($(subordinate).length > 0){
-                    $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
-                        $(subordinate).html(result);
-                        $(result).each(function (index, value) {
-                            $(subordinate).append('<option value="' + value.field_value + '">' + value.field_value + '</option>');
-                        });
-                        layui.form.render();
-                    }, 'json');
-                }
+                $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
+                    $('.serve').html(result);
+                    $(result).each(function (index, value) {
+                        $('.serve').append('<option value="' + value.field_value + '">' + value.field_value + '</option>');
+                    });
+                    layui.form.render();
+                }, 'json');
                 return false;
             });
-            // 加载默认模板
-            loadTemplate(gameId);
-            // 加载模板
-            function loadTemplate(id) {
-                var getTpl = goodsTemplate.innerHTML, view = $('#template');
-                $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:id, tid:'{{ $tid  }}'}, function (result) {
-                    var template;
-                    if (result.content.sellerMemo) {
-
-                        var temp  = result.content.sellerMemo  + '\r\n';
-                        // 替换所有半角除号为全角
-                        template = temp.replace(/:/g, '：');
-                        template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
-                        template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
-                        @if(isset($taobaoTrade->tid))
-
-                                try {
-                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
-                            template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '天猫');
-                        } catch(err){
-                            $('input[name=source_order_no]').val({{ $taobaoTrade->tid }});
-                            $('input[name=order_source]').val('天猫');
-                            $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
-                            $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
-                        }
-                        if (template.indexOf('订单来源') == -1) {
-                            template += '订单来源：天猫'  + '\r\n';
-                        }
-                        if (template.indexOf('来源订单号') == -1) {
-                            template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
-                        }
-                        if (template.indexOf('来源价格') == -1) {
-                            template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
-                        }
-                        if (template.indexOf('号主旺旺') == -1) {
-                            template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
-                        }
-                        @endif
-                        $('#user-template').val(template);
-                    } else {
-                        template = '游戏：\r\n';
-                        $.each(result.content.template, function(index,element){
-                            if (element.field_display_name != '商户电话' || element.field_display_name != '商户QQ') {
-                                template += element.field_display_name + '：\r\n'
-                            }
-                        });
-                        @if(isset($taobaoTrade->tid))
-
-                                try {
-                            $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
-                            $('input[name=order_source]').val('天猫');
-                            $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
-                            $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
-                        } catch(err){
-
-                        }
-                        @endif
-                        $('#user-template').val(template);
-                    }
-                    layTpl(getTpl).render(result.content, function(html){
-                        view.html(html);
-                        layui.form.render();
-                    });
-                    setDefaultValueOption();
-                    loadGameLevelingTemplate(id);
-                    loadBusinessmanContactTemplate(id);
-                    analysis()
-                }, 'json');
-            }
-            // 解析模板
+            // 点击解析
             $('#parse').click(function () {
                 analysis();
             });
+            // 解析模板方法
             function analysis() {
-
                 var fieldArrs = $('[name="desc"]').val().split('\n');
 
                 for (var i = fieldArrs.length - 1; i >= 0; i--) {
@@ -952,6 +836,23 @@
                 }
                 layui.form.render();
             }
+            // 加载区代练类型
+            function loadRegionType() {
+                $.post('{{ route("frontend.workbench.leveling.get-region-type") }}', {game_id:gameId}, function (result) {
+                    var region = '<option value="">请选择</option>';
+                    var type = '';
+                    $.each(result.content, function (index, value) {
+                        if (value.field_name  == 'game_leveling_type') {
+                            type += '<input type="radio" name="game_leveling_type" lay-filter="dl-tyle" title="' + value.field_value +  ' " value="' + value.field_value +  ' ">';
+                        } else {
+                            region += '<option value="'  + value.field_value + '" data-content="' + value.field_value +  ' " data-id=' + value.id  +'> ' + value.field_value  + '</option>';
+                        }
+                    });
+                    $('.dl-type-box').html(type);
+                    $('.region').html(region);
+                    layui.form.render();
+                }, 'json');
+            }
             // 设置默认选中填充的值
             function setDefaultValueOption() {
                 $("select[name=game_leveling_type]").val('排位');
@@ -959,15 +860,15 @@
                 $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 @if(isset($taobaoTrade->tid))
                     $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
-                $('input[name=order_source]').val('天猫');
-                $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
-                $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
-                $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
+                    $('input[name=order_source]').val('天猫');
+                    $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                    $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
+                    $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
                 @endif
                 layui.form.render();
             }
             // 加载代练要求模板
-            function loadGameLevelingTemplate(gameId) {
+            function loadGameLevelingTemplate() {
                 $.post('{{ route("frontend.workbench.leveling.game-leveling-template") }}', {game_id:gameId}, function (result) {
                     var optionsHtml = '<option value="">请选择模板</option>';
                     $.each(result, function (index, value) {
@@ -982,7 +883,7 @@
                     layui.form.render();
                 }, 'json');
             }
-            // 加载代练要求模板
+            // 商户联系方式
             function loadBusinessmanContactTemplate() {
                 $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
@@ -1018,7 +919,84 @@
                     layui.form.render();
                 }, 'json');
             }
+            // 生成代练模版
+            function loadLevelingTemplate() {
+                if (result.content.sellerMemo) {
 
+                    var temp  = result.content.sellerMemo  + '\r\n';
+                    // 替换所有半角除号为全角
+                    template = temp.replace(/:/g, '：');
+                    template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
+                    template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
+                    @if(isset($taobaoTrade->tid))
+
+                            try {
+                        template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
+                        template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
+                        template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
+                        template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '天猫');
+                    } catch(err){
+                        $('input[name=source_order_no]').val({{ $taobaoTrade->tid }});
+                        $('input[name=order_source]').val('天猫');
+                        $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                        $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
+                    }
+                    if (template.indexOf('订单来源') == -1) {
+                        template += '订单来源：天猫'  + '\r\n';
+                    }
+                    if (template.indexOf('来源订单号') == -1) {
+                        template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
+                    }
+                    if (template.indexOf('来源价格') == -1) {
+                        template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
+                    }
+                    if (template.indexOf('号主旺旺') == -1) {
+                        template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
+                    }
+                    @endif
+                    $('#user-template').val(template);
+                } else {
+                    template = '游戏：\r\n';
+                    $.each(result.content.template, function(index,element){
+                        if (element.field_display_name != '商户电话' || element.field_display_name != '商户QQ') {
+                            template += element.field_display_name + '：\r\n'
+                        }
+                    });
+                    @if(isset($taobaoTrade->tid))
+                            try {
+                        $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
+                        $('input[name=order_source]').val('天猫');
+                        $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
+                        $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
+                    } catch(err){
+
+                    }
+                    @endif
+                    $('#user-template').val(template);
+                }
+            }
+            // 设置固定的订单信息
+            function setFixedInfo() {
+                @forelse($fixedInfo as $name => $item)
+                    @if($item['type'] == 1)
+                        $('input[name={{ $name }}]').val('{{ $item['value'] }}');
+                    @elseif($item['type'] == 2)
+                        $("select[name={{ $name }}]").val('{{  $item['value']  }}');
+                    @elseif($item['type'] == 3)
+
+                    @elseif($item['type']== 4)
+                        $('textarea[name="{{ $name }}"]').val('{{ $item['value'] }}');
+                    @endif
+                @empty
+                @endforelse
+                layui.form.render();
+            }
+            // 加载默认模板
+            function loadDefaultTemplate() {
+                var template = '游戏：\r\n区：\r\n服：\r\n角色名称：\r\n代练类型：\r\n账号：\r\n密码：\r\n代练标题：\r\n代练价格：\r\n代练时间(天)：\r\n代练时间(小时)：\r\n安全保证金：\r\n效率保证金：\r\n玩家电话：\r\n商户QQ：\r\n来源价格：';
+                $('[name="template"]').val(template);
+            }
+            // 选择要求模版后加载内容到代练说明框中
             form.on('select', function(data){
                 var fieldName = $(data.elem).attr("name"); //得到被选中的值
                 // 选择要求模后自动填充模板内容
