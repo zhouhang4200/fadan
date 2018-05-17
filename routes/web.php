@@ -87,7 +87,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 统计
     Route::prefix('statistic')->namespace('Statistic')->group(function () {
         // 员工数据统计
-        Route::get('employee', 'StatisticController@employee')->name('frontend.statistic.employee')->middleware('new.permission:frontend.statistic.employee');
+        Route::get('employee', 'StatisticController@todayData')->name('frontend.statistic.employee')->middleware('new.permission:frontend.statistic.employee');
         // 订单统计
         Route::get('order', 'StatisticController@order')->name('frontend.statistic.order')->middleware('new.permission:frontend.statistic.order');
         // 短信

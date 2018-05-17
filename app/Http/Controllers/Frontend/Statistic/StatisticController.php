@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Models\OrderStatistic;
 use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 /**
  * 代练平台统计 员工和订单统计
@@ -322,81 +324,185 @@ class StatisticController extends Controller
      */
     public function todayData(Request $request)
     {
-//         $userId = $request->user_id ?? Auth::id();
-//         $startDate = $request->start_date ?? Carbon::now()->toDateString();
-//         $endDate = $request->end_date ?? Carbon::now()->addDays(1)->toDateString();
-//         $fullUrl = $request->fullUrl();
-//         $children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+        $limit = $request->limit ?? 10;
+        $start = $request->page ? ($request->page-1)*$limit : 0;
+        $page = $request->page;
 
-//         if (isset($request->user_id) && $request->user_id == 0) {
-//             if (Auth::user()->parent_id == 0) {
-//                 $parent = Auth::user();
-//                 $userIds = Auth::user()->children()->pluck('id')->merge(Auth::id())->toArray();
-//                 $userIds = implode(',', $userIds);
-//             } else {
-//                 $parent = Auth::user()->parent;
-//                 $userIds = Auth::user()->parent->children()->pluck('id')->merge(Auth::user()->parent->id)->toArray();
-//                 $userIds = implode(',', $userIds);
-//             }
-//         }
+        $userId = $request->user_id ?? Auth::id();
+        $startDate = $request->start_date ?? Carbon::now()->toDateString();
+        $endDate = $request->end_date ?? Carbon::now()->addDays(1)->toDateString();
+        $fullUrl = $request->fullUrl();
+        $children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
 
-//         $queryStart = "
-//             SELECT 
-//                 m.*,
-//                 CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
-//                 CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS complete_order_profit,
-//                 CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END
-//                 + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS today_profit
-//             FROM
-//                 (
-//                 SELECT 
-//                     c.date,
-//                     c.no,
-//                     c.status,
-//                     c.price,
-//                     c.creator_user_id,
-//                     c.creator_primary_user_id,
-//                     c.name,
-//                     c.username,
-//                     c.game_id,
-//                     c.game_name,
-//                     c.original_price,
-//                     c.created_at,
-//                     SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
-//                     SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
-//                     SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
-//                     SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
-//                   FROM 
-//                     (SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
-//                     b.name, b.username, a.original_price, e.name AS game_name
-//                     FROM orders a
-//                     LEFT JOIN users b
-//                     ON a.creator_user_id = b.id
-//                     LEFT JOIN games e
-//                     ON a.game_id = e.id 
-//                     WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' ";
+        $status = $request->status;
+        $statuses = config('order.status_leveling');
+        unset($statuses[0]);
 
-//         if (isset($userIds) && ! empty($userIds)) {
-//             $queryMiddle = "and a.creator_user_id in ($userIds)";
-//         } else {
-//             $queryMiddle = "and a.creator_user_id = '$userId'";
-//         }
-                    
-//         $queryEnd = ") c 
-//                     LEFT JOIN 
-//                     user_amount_flows d 
-//                     ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
-//                     WHERE d.trade_no IS NOT NULL
-//                     GROUP BY d.trade_no
-//                 ) m
-//         ";
+        // if (isset($request->user_id) && $request->user_id == 0) {
+            if (Auth::user()->parent_id == 0) {
+                $parent = Auth::user();
+                $userIds = Auth::user()->children()->pluck('id')->merge(Auth::id())->toArray();
+                $userIds = implode(',', $userIds);
+            } else {
+                $parent = Auth::user()->parent;
+                $userIds = Auth::user()->parent->children()->pluck('id')->merge(Auth::user()->parent->id)->toArray();
+                $userIds = implode(',', $userIds);
+            }
+        // }
 
-//         $datas = DB::select($queryStart.$queryMiddle.$queryEnd);
+        $queryStart = "
+            SELECT 
+                m.*,
+                CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
+                CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS complete_order_profit,
+                CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END
+                + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS today_profit
+            FROM
+                (
+                SELECT 
+                    c.date,
+                    c.no,
+                    c.status,
+                    c.price,
+                    c.creator_user_id,
+                    c.creator_primary_user_id,
+                    c.name,
+                    c.username,
+                    c.game_id,
+                    c.game_name,
+                    c.original_price,
+                    c.created_at,
+                    sum(case when c.status = 20 then 1 else 0 end) as complete_count,
+                    sum(case when c.status = 20 then c.price else 0 end) as complete_price,
+                    sum(case when c.status = 19 then 1 else 0 end) as revoked_count,
+                    sum(case when c.status = 21 then 1 else 0 end) as arbitrationed_count,
+                    sum(c.original_price-c.price) as diff_price,
+                    SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
+                    SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
+                    SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
+                    SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
+                  FROM 
+                    (SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
+                    b.name, b.username, a.original_price, e.name AS game_name
+                    FROM orders a
+                    LEFT JOIN users b
+                    ON a.creator_user_id = b.id
+                    LEFT JOIN games e
+                    ON a.game_id = e.id 
+                    WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' ";
 
-//         // 总计
-  
-// // dd($queryMiddle, $datas);
-//         return view('frontend.finance.statistic.today', compact('datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId'));
+        // if (isset($userIds) && ! empty($userIds) && ! isset($status) && empty($status)) {
+        //     $queryMiddle = "and a.creator_user_id in ($userIds)";
+        // } elseif (isset($status) && ! empty($status) && ! isset($userIds) && empty($userIds)) {
+        //     $queryMiddle = "and a.status = '$status' and a.creator_user_id = '$userId'";
+        // } elseif (isset($userIds) && ! empty($userIds) && isset($status) && ! empty($status)) {
+        //     $queryMiddle = "and a.status = '$status' and a.creator_user_id in ($userIds)";
+        // } else {
+        //     $queryMiddle = "and a.creator_user_id = '$userId'";
+        // }
+
+        $queryMiddle = "and a.creator_user_id in ($userIds)";       
+        $queryEnd = ") c 
+            LEFT JOIN 
+                user_amount_flows d 
+                ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
+                WHERE d.trade_no IS NOT NULL
+                GROUP BY d.trade_no
+                limit $start, $limit
+            ) m
+        ";
+
+        $queryTotalEnd = ") c 
+            LEFT JOIN 
+                user_amount_flows d 
+                ON c.no = d.trade_no AND c.creator_primary_user_id = d.user_id
+                WHERE d.trade_no IS NOT NULL
+                GROUP BY d.trade_no
+            ) m
+        ";
+
+        $datas = DB::select($queryStart.$queryMiddle.$queryEnd);
+
+        if (! isset($datas) || ! is_array($datas) || count($datas) < 1) {
+            $datas = [];
+        }
+
+        // 总计
+        $totals = DB::select("SELECT 
+                g.creator_user_id,
+                g.username,
+                COUNT(no) AS count,
+                SUM(price) AS price,
+                SUM(complete_price) AS complete_price,
+                SUM(original_price) AS original_price,
+                SUM(diff_price) AS diff_price,
+                SUM(complete_count) AS complete_count,
+                SUM(revoked_count) AS revoked_count,
+                SUM(arbitrationed_count) AS arbitrationed_count,
+                SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
+                SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
+                SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
+                SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
+                SUM(complete_order_profit) AS complete_order_profit,
+                SUM(today_profit) AS today_profit
+            FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
+            GROUP BY g.creator_user_id
+        ");
+
+        if (! isset($totals) || ! is_array($totals) || empty($totals)) {
+            $totals = [];
+        }
+
+        $final = DB::select("
+            SELECT 
+                count(k.creator_user_id) as creator_count,
+                SUM(count) AS count,
+                SUM(price) AS price,
+                SUM(complete_price) AS complete_price,
+                SUM(original_price) AS original_price,
+                SUM(diff_price) AS diff_price,
+                SUM(complete_count) AS complete_count,
+                SUM(revoked_count) AS revoked_count,
+                SUM(arbitrationed_count) AS arbitrationed_count,
+                SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
+                SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
+                SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
+                SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
+                SUM(complete_order_profit) AS complete_order_profit,
+                SUM(today_profit) AS today_profit
+            FROM
+            (SELECT 
+                g.creator_user_id,
+                g.username,
+                COUNT(no) AS count,
+                SUM(price) AS price,
+                SUM(complete_price) AS complete_price,
+                SUM(original_price) AS original_price,
+                SUM(diff_price) AS diff_price,
+                SUM(complete_count) AS complete_count,
+                SUM(revoked_count) AS revoked_count,
+                SUM(arbitrationed_count) AS arbitrationed_count,
+                SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
+                SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
+                SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
+                SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
+                SUM(complete_order_profit) AS complete_order_profit,
+                SUM(today_profit) AS today_profit
+            FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
+            GROUP BY g.creator_user_id) k
+        ");
+
+        if (! isset($final) || ! is_array($final) || empty($final)) {
+            $final = [];
+        }
+
+        if (isset($final) && ! empty($final) && is_array($final)) {
+            $final = $final[0];
+        }
+        return view('frontend.finance.statistic.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final'));
     }
 }
 

@@ -14,7 +14,7 @@ return [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
 		8456 => 1, // 91
-		// 84568 => 5, // 丸子
+		84568 => 5, // 丸子
 	],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
@@ -22,7 +22,7 @@ return [
 		3 => 'mayi_order_no',
 		4 => 'dd373_order_no',
 		1 => 'show91_order_no',
-		// 5 => 'wanzi_order_no',
+		5 => 'wanzi_order_no',
 	],
     // 外部平台价格字段
     'third_orders_price' => [
@@ -38,10 +38,10 @@ return [
             'data' => 'data',
             'price' => 'price',
         ],
-        // 5 => [
-        //     'data' => 'data',
-        //     'price' => 'price',
-        // ],
+        5 => [
+            'data' => 'data',
+            'price' => 'price',
+        ],
     ],
 
 	// 调用第三方平台接口的控制器名称
@@ -49,7 +49,7 @@ return [
 		4 => DD373Controller::class,
 		3 => MayiDailianController::class,
 		1 => Show91Controller::class,
-		// 5 => WanziController::class,
+		5 => WanziController::class,
 	],
 
 	// 调用第三方平台接口控制器中的方法名，下面的方法 key 与 value 相同，本来多此一举，便于查看
