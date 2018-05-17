@@ -8,19 +8,35 @@ use App\Models\User;
 
 class TaobaoShopAuthorizationRepository
 {
-    public static function getList()
+    public static function getList($userId, $wangWang)
     {
-        $dataList = TaobaoShopAuthorization::paginate(20);
+        $dataList = TaobaoShopAuthorization::orderBy('id', 'desc')
+            ->when($userId, function ($query) use ($userId) {
+                return $query->where('user_id', $userId);
+            })
+            ->when($wangWang, function ($query) use ($wangWang) {
+                return $query->whereIn('wang_wang', $wangWang);
+            })
+            ->paginate(10);
         return $dataList;
     }
 
     public static function getShops()
     {
-        $dataList = TaobaoShopAuthorization::distinct()->select('id', 'wang_wang as name', DB::raw('0 as pid'))->get();
+        $names = TaobaoShopAuthorization::distinct()->pluck('wang_wang');
+
+        foreach ($names as $name) {
+            $dataList[] = [
+                'id'   => $name,
+                'name' => $name,
+                'pid'  => 0,
+            ];
+        }
+
         return $dataList;
     }
 
-    public static function store($userId, $ids)
+    public static function store($userId, $wangWang)
     {
         $user = User::find($userId);
         if (empty($user)) {
@@ -28,8 +44,6 @@ class TaobaoShopAuthorizationRepository
         }
 
         // 查询需要添加的店铺
-        $wangWang = TaobaoShopAuthorization::whereIn('id', $ids)->pluck('wang_wang');
-
         DB::beginTransaction();
         foreach ($wangWang as $v) {
             $model = TaobaoShopAuthorization::where('user_id', $userId)->where('wang_wang', $v)->first();
