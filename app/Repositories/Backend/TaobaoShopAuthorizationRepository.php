@@ -17,7 +17,7 @@ class TaobaoShopAuthorizationRepository
             ->when($wangWang, function ($query) use ($wangWang) {
                 return $query->whereIn('wang_wang', $wangWang);
             })
-            ->paginate(10);
+            ->paginate(20);
         return $dataList;
     }
 
