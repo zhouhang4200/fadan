@@ -27,7 +27,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">商户ID</label>
                             <div class="layui-input-block">
-                                <input type="text" name="user_id" required  lay-verify="required" placeholder="整数" autocomplete="off" class="layui-input">
+                                <input type="text" name="user_id" placeholder="整数" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -37,6 +37,7 @@
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <button class="layui-btn layui-btn-normal" lay-submit lay-filter="create-form">授权</button>
+                                <button class="layui-btn layui-btn-normal" lay-submit>查询</button>
                             </div>
                         </div>
                     </form>
@@ -143,7 +144,7 @@ layui.config({
         elem: '#shop-select'
         ,selected: []
         ,data: shopsJson
-        ,name: 'ids'
+        ,name: 'wang_wang'
         ,max: 10
     });
 });

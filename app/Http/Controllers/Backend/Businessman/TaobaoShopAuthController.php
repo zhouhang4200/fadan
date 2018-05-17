@@ -11,7 +11,9 @@ class TaobaoShopAuthController extends Controller
 {
     public function index(Request $request)
     {
-        $dataList = TaobaoShopAuthorizationRepository::getList();
+        $wangWang = $request->wang_wang ? explode(',', $request->wang_wang) : null;
+        $dataList = TaobaoShopAuthorizationRepository::getList($request->user_id, $wangWang);
+
         // 不重复的选项
         $shops = TaobaoShopAuthorizationRepository::getShops();
         $shopsJson = json_encode($shops);
@@ -22,17 +24,17 @@ class TaobaoShopAuthController extends Controller
     public function store(Request $request)
     {
         $userId = $request->user_id;
-        $ids = $request->ids;
+        $wangWang = $request->wang_wang;
         if (empty($userId)) {
             return response()->ajax(0, '商户ID不正确');
         }
-        if (empty($ids)) {
+        if (empty($wangWang)) {
             return response()->ajax(0, '请选择店铺');
         }
-        $ids = explode(',', $ids);
+        $wangWang = explode(',', $wangWang);
 
         try {
-            TaobaoShopAuthorizationRepository::store($userId, $ids);
+            TaobaoShopAuthorizationRepository::store($userId, $wangWang);
         } catch (CustomException $e) {
             return response()->ajax(0, $e->getMessage());
         }
