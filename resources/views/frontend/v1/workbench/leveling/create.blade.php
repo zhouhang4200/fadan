@@ -20,10 +20,7 @@
         .layui-tab-title li {
             min-width: 50px;
         }
-        .layui-card-header {
-            color: #303133;
-            font-size: 14px;
-        }
+
         .order-operation {
             float: right;
             padding-top: 5px;
@@ -48,11 +45,6 @@
             line-height: 32px;
         }
 
-        /* 改写header高度 */
-        .layui-card-header {
-            height: 56px;
-            line-height: 56px;
-        }
 
         /* 改写dl-type 下面的radio样式 */
         #dl-type .layui-form-radio {

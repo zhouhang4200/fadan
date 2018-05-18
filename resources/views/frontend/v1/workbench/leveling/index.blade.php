@@ -207,9 +207,9 @@
                         </li>
                         <li class="" lay-id="22">已下架
                         </li>
-                        {{--<li class="" lay-id="23">强制撤销--}}
-                            {{--<span class="qs-badge quantity-23 layui-hide"></span>--}}
-                        {{--</li>--}}
+                        <li class="" lay-id="100">淘宝退款中
+                            <span class="qs-badge quantity-100 layui-hide"></span>
+                        </li>
                         <li class="" lay-id="24">已撤单
                         </li>
                     </ul>
@@ -360,7 +360,7 @@
         </form>
     </div>
 @endsection
-<!--START 底部-->
+
 @section('js')
     <script src="/frontend/js/bootstrap-fileinput.js"></script>
     <script type="text/html" id="operation">
@@ -368,52 +368,51 @@
         @{{# if (d.master) {  }}
 
             @{{# if (d.status == 1) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+                {{--<button class="qs-btn qs-btn-sm" style="width: 80px;" data-opt="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>--}}
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+                <button class="qs-btn qs-btn-sm qs-btn-primary"  style="width: 80px;" data-opt="top" data-no="@{{ d.no }}">置顶</button>
             @{{# } else if (d.status == 13) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
             @{{# } else if (d.status == 14) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
             @{{# } else if (d.status == 15) {  }}
 
                 @{{# if (d.consult == 1) {  }}
-                    <button class="qs-btn qs-btn-sm" data-opt="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
                 @{{# } else if (d.consult == 2) {  }}
-                    <button class="qs-btn qs-btn-sm"  data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;"   data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
                 @{{# } }}
 
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
 
             @{{# } else if (d.status == 16) {  }}
 
                 @{{# if (d.complain == 1) {  }}
-                    <button class="qs-btn qs-btn-sm"  data-opt="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</button>
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;"   data-opt="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</button>
                 @{{# } }}
 
                 @{{# if (d.consult == 2) {  }}
-                    <button class="qs-btn qs-btn-sm" data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">同意撤销</button>
                 @{{# }   }}
 
             @{{# } else if (d.status == 17) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="lock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">锁定</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
             @{{# } else if (d.status == 18) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelLock" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消锁定</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
             @{{# } else if (d.status == 19 || d.status == 20 || d.status == 21) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+                <button class="qs-btn qs-btn-sm" data-opt="repeat" style="width: 80px;"  data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
             @{{# } else if (d.status == 22) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="onSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">上架</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
             @{{# } else if (d.status == 23) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
             @{{# } else if (d.status == 24) {  }}
-                <button class="qs-btn qs-btn-sm" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">重发</button>
             @{{# }  }}
-        <button class="qs-btn qs-btn-sm qs-btn-primary" style="min-width: 30px;position: relative" data-opt="repeat" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}"><i class="iconfont icon-top"></i></button>
-
         @{{# } else {  }}
 
 
