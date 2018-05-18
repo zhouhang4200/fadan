@@ -9,13 +9,11 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-        <div class="explanation">
-            <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-            <ul>
-                <li>该功能可以控制，平台用户对您的订单的接单权限。</li>
-                <li>控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)</li>
-            </ul>
-        </div>
+        <blockquote class="layui-elem-quote">
+            操作提示<br/>
+            该功能可以控制，平台用户对您的订单的接单权限<br/>
+            控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)
+        </blockquote>
         <form class="layui-form layui-form-pane" action="">
             <div class="layui-form-item" pane>
                 <label class="layui-form-label">控制方式</label>
