@@ -25,7 +25,7 @@
             <div class="layui-input-inline" style="width: 200px;">
                 <button class="qs-btn layui-btn-normal" type="submit">查询</button>
             </div>
-
+        
             @inject('withdraw', 'App\Services\Views\WithdrawService')
             {{ $withdraw->button('提现', 'qs-btn qs-btn-normal', 'float:right;') }}
         </div>

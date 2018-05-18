@@ -1,5 +1,5 @@
 <button id="withdraw" class="{{ $domClass }}" type="button" style="{{ $domStyle }}">{{ $bottomText }}</button>
-
+@section('pop')
 <div id="withdraw-box" style="display: none;padding: 20px 60px 20px 0;">
     <div class="layui-form-item" style="margin-bottom: 15px;">
         <label class="layui-form-label">提现金额</label>
@@ -17,11 +17,12 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button id="withdraw-submit" class="layui-btn layui-bg-blue" type="button">提交</button>
+            <button id="withdraw-submit" class="qs-btn qs-bg-blue" type="button">提交</button>
         </div>
     </div>
+@endsection
 </div>
-
+@section('js')
 <script>
 
 layui.use(['layer'], function () {
@@ -69,3 +70,4 @@ $('#withdraw-submit').click(function () {
     });
 });
 </script>
+@endsection
