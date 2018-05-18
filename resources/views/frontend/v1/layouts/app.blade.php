@@ -1,6 +1,11 @@
 <?php
 $userPermissions = Auth::user()->getUserPermissions()->pluck('name')->toArray();
 
+$homeRoute = [
+    'home-punishes.index',
+    'frontend.index',
+];
+
 $workbenchRoute = [
    'frontend.workbench.index',
    'frontend.workbench.leveling.wait',
@@ -11,6 +16,7 @@ $workbenchRoute = [
 $accountRoute = [
     'station.index',
     'home-accounts.index',
+    'login.history',
     'idents.index',
     'idents.create',
     'idents.edit',
@@ -171,10 +177,8 @@ $goodsRoute = [
                 </div>
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-                    @if(count(array_intersect([
-                               'home-punishes.index',
-                       ], $userPermissions)))
-                    <li data-name="home" class="layui-nav-item">
+                    @if(count(array_intersect($homeRoute, $userPermissions)))
+                    <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $homeRoute)) layui-nav-itemed @endif">
                         <a href="javascript:;" lay-tips="主页" lay-direction="2">
                             <i class="layui-icon layui-icon-home"></i>
                             <cite>首页</cite>

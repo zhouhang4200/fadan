@@ -13,7 +13,7 @@
         .layui-input-inline input {
             width: 85%;
         }
-     .tips {
+        .tips {
             position: absolute;
             width: 10%;
             height: 30px;
