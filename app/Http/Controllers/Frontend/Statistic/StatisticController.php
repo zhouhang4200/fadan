@@ -372,6 +372,7 @@ class StatisticController extends Controller
                     c.game_name,
                     c.original_price,
                     c.created_at,
+                    c.field_value,
                     sum(case when c.status = 20 then 1 else 0 end) as complete_count,
                     sum(case when c.status = 20 then c.price else 0 end) as complete_price,
                     sum(case when c.status = 19 then 1 else 0 end) as revoked_count,
@@ -383,12 +384,16 @@ class StatisticController extends Controller
                     SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
                   FROM 
                     (SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
-                    b.name, b.username, a.original_price, e.name AS game_name
+                    b.name, b.username, a.original_price, e.name AS game_name, oc.field_value
                     FROM orders a
                     LEFT JOIN users b
                     ON a.creator_user_id = b.id
                     LEFT JOIN games e
                     ON a.game_id = e.id 
+                    left join (
+                        select order_no, field_value from order_details od where od.field_name='is_repeat'
+                    ) oc
+                    on oc.order_no = a.no
                     WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' ";
 
         // if (isset($userIds) && ! empty($userIds) && ! isset($status) && empty($status)) {
@@ -447,6 +452,7 @@ class StatisticController extends Controller
                 SUM(complete_order_profit) AS complete_order_profit,
                 SUM(today_profit) AS today_profit
             FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
+            where g.field_value != 0
             GROUP BY g.creator_user_id
         ");
 
