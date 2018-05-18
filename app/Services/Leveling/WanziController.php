@@ -556,7 +556,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	       	// 发送
 	       	$dataList = static::normalRequest($options, config('leveling.wanzi.url')['getScreenshot']);
 
-	       	if (isset($dataList) && $dataList['result'] ==0 && !empty($dataList['data'])) {
+	       	if (isset($dataList) && $dataList['result'] == 0 && !empty($dataList['data'])) {
 		       	foreach ($dataList['data'] as $key => $value) {
 	                $imageList[] = [
 	                    'url' => $value['url'],

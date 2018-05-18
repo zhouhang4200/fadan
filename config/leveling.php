@@ -4,7 +4,7 @@ use App\Services\Show91;
 use App\Services\DailianMama;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
-// use App\Services\Leveling\WanziController;
+use App\Services\Leveling\WanziController;
 use App\Services\Leveling\Show91Controller;
 
 // 代练平台操作自动匹配第三方平台
@@ -198,9 +198,9 @@ return [
 		'appsecret' => '8mCSr0H3EbTIatauflbqzUIkKdZAQiFsAAF3Nu4Jp2nMCGZSBA6mSyF7E5J1',
 		'aes_key'   => '4158d685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
-		'account'   => env('SHOW91_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
-		'sign'      => env('SHOW91_SIGN','64551beede02877e16e68852aeb90b41'),
-		'password'  => env('SHOW91_PAY_PASSWORD', 'qqq111'),
+		'account'   => env('WANZI_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
+		'sign'      => env('WANZI_SIGN','8469245010c0515a5c451bd20cd59cab'),
+		'password'  => env('WANZI_PAY_PASSWORD', 'qqq111'),
 		'status' => [
 	        0  => '已发布',
 	        1  => '代练中',
@@ -216,28 +216,28 @@ return [
 	        12 => '玩家超时未付款',
     	],
     	'url' => [
-			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/grounding', // 上架
-			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/grounding', // 下架
-			'applyRevoke'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addCancelOrder', // 申请撤销
-			'cancelRevoke'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/cancelSc', // 取消撤销
-			'agreeRevoke'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/confirmSc', // 同意撤销
-			'applyArbitration'         => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addappeal', // 申请仲裁
-			'cancelArbitration'        => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/cancelAppeal', // 取消仲裁
-			'complete'                 => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/accept', // 订单完成
+			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 上架
+			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 下架
+			'applyRevoke'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addCancelOrder', // 申请撤销
+			'cancelRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/cancelSc', // 取消撤销
+			'agreeRevoke'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 同意撤销
+			'applyArbitration'         => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addappeal', // 申请仲裁
+			'cancelArbitration'        => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/cancelAppeal', // 取消仲裁
+			'complete'                 => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/accept', // 订单完成
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
-			'delete'                   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/chedan', // 删除订单
-			'updateOrder'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/qs/updateOrder', // 修改订单
-			'addTime'                  => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addLimitTime3', // 加时
-			'addMoney'                 => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addPrice2', // 加款
-			'orderDetail'              => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/orderDetail', // 订单详情
-			'getScreenshot'            => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/topic', // 订单截图
-			'getMessage'               => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/messageList', //获取留言
-			'replyMessage'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/addMess', // 回复留言addMess
-			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/editOrderAccPwd', // 修改账号密码
-			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/confirmSc', // 不同意撤销
-			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/getPlays', // 获取代练类型
-			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.151:8080').'/oauth/setTop', // 获取代练类型
+			'delete'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/chedan', // 删除订单
+			'updateOrder'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/qs/updateOrder', // 修改订单
+			'addTime'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addLimitTime3', // 加时
+			'addMoney'                 => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addPrice2', // 加款
+			'orderDetail'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/orderDetail', // 订单详情
+			'getScreenshot'            => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/topic', // 订单截图
+			'getMessage'               => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/messageList', //获取留言
+			'replyMessage'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addMess', // 回复留言addMess
+			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/editOrderAccPwd', // 修改账号密码
+			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 不同意撤销
+			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/getPlays', // 获取代练类型
+			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/setTop', // 获取代练类型
     	],
     ],
 ];

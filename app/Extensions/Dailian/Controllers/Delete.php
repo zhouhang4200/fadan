@@ -37,9 +37,9 @@ class Delete extends DailianAbstract implements DailianInterface
     {	
     	DB::beginTransaction();
     	try {
-    		// 赋值
-    		$this->orderNo = $orderNo;
-        	$this->userId  = $userId;
+            // 赋值
+            $this->orderNo = $orderNo;
+            $this->userId  = $userId;
             $this->runAfter = $runAfter;
             // 获取订单对象
             $this->getObject();
@@ -125,29 +125,12 @@ class Delete extends DailianAbstract implements DailianInterface
                 // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                    // if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
                     if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
                         // 控制器-》方法-》参数
                         call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
                     }
                 }
             }
-
-            /**
-             * 以下只适用于  91  和 代练妈妈
-             */
-            // 获取订单和订单详情
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // if ($orderDetails['show91_order_no']) {
-            //     // 91下架接口
-            //     Show91::chedan(['oid' => $orderDetails['show91_order_no']]);
-            // }
-
-            // if ($orderDetails['dailianmama_order_no']) {
-            //     // 代练妈妈下架接口
-            //     DailianMama::deleteOrder($this->order);
-            // }
             return true;
         }
     }
