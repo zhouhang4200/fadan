@@ -21,7 +21,7 @@
             <a href="{{ route('station.create') }}" style="color:#fff"><button class="qs-btn layui-btn-normal layui-btn-small">添加岗位</button></a>
         </div>
         <form class="layui-form" method="" action="" id="role">
-            @include('frontend.user.station.list', ['userRoles' => $userRoles])
+            @include('frontend.v1.user.station.list', ['userRoles' => $userRoles])
         </form>
         {!! $userRoles->render() !!}
     </div>
