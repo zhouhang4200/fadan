@@ -30,7 +30,7 @@ class UserController extends Controller
 
             $users = User::filter($filters)->where('parent_id', $user->id)->paginate(config('frontend.page'));
 
-            return view('frontend.user.index', compact('name', 'children', 'startDate', 'endDate', 'users'));
+            return view('frontend.v1.user.index', compact('name', 'children', 'startDate', 'endDate', 'users'));
         }
     }
 
@@ -41,7 +41,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('frontend.user.create');
+        return view('frontend.v1.user.create');
     }
 
     /**
@@ -97,7 +97,7 @@ class UserController extends Controller
             $user = User::find($id);
             $groups = RbacGroup::where('user_id', $id)->get();
 
-            return view('frontend.user.edit', compact('user', 'groups'));
+            return view('frontend.v1.user.edit', compact('user', 'groups'));
         }
     }
 

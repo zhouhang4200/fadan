@@ -31,12 +31,12 @@ class HatchetManBlacklistController extends Controller
             ])->render());
         }
 
-    	return view('frontend.user.hatchet-man-blacklist.index', compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq', 'hatchetManBlacklists', 'hatchetMans'));
+    	return view('frontend.v1.user.hatchet-man-blacklist.index', compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq', 'hatchetManBlacklists', 'hatchetMans'));
  	}
 
  	public function create(Request $request)
  	{
- 		return view('frontend.user.hatchet-man-blacklist.create');
+ 		return view('frontend.v1.user.hatchet-man-blacklist.create');
  	}
 
  	public function store(Request $request)
@@ -62,7 +62,7 @@ class HatchetManBlacklistController extends Controller
  	{
  		$hatchetManBlacklist = HatchetManBlacklist::find($request->id);
 
- 		return view('frontend.user.hatchet-man-blacklist.edit', compact('hatchetManBlacklist'));
+ 		return view('frontend.v1.user.hatchet-man-blacklist.edit', compact('hatchetManBlacklist'));
  	}
 
  	public function update(Request $request)

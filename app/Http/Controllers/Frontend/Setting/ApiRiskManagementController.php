@@ -23,7 +23,7 @@ class ApiRiskManagementController extends Controller
         $riskRate = isset(Auth::user()->getUserSetting()['api_risk_rate']) ?
             Auth::user()->getUserSetting()['api_risk_rate'] : config('order.apiRiskRate');
 
-        return view('frontend.setting.api-risk-management.index', compact('riskRate'));
+        return view('frontend.v1.setting.api-risk-management.index', compact('riskRate'));
     }
 
     /**

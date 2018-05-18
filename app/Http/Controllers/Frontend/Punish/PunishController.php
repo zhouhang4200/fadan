@@ -38,7 +38,7 @@ class PunishController extends Controller
         $punishType = config('punish.type');
         $punishStatus = config('punish.status');
 
-    	return view('frontend.punish.index', compact('startDate', 'endDate', 'punishes', 'type', 'status', 'punishType', 'punishStatus'));
+    	return view('frontend.v1.punish.index', compact('startDate', 'endDate', 'punishes', 'type', 'status', 'punishType', 'punishStatus'));
     }
 
     /**

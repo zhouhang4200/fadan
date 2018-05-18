@@ -220,7 +220,7 @@ class DataController extends Controller
 			    		->get();	    		
 	    	}
 
-	    	return view('frontend.data.index', compact('startDate', 'endDate', 'datas', 'mostGame', 'sourceDatas', 'resourceGame', 'receiveDatas', 'receiveGame', 'sendDatas', 'sendGame', 'moneyDatas', 'sourceMoneyDatas', 'receiveMoneyDatas', 'sendMoneyDatas'));
+	    	return view('frontend.v1.data.index', compact('startDate', 'endDate', 'datas', 'mostGame', 'sourceDatas', 'resourceGame', 'receiveDatas', 'receiveGame', 'sendDatas', 'sendGame', 'moneyDatas', 'sourceMoneyDatas', 'receiveMoneyDatas', 'sendMoneyDatas'));
 
 	    } catch (Exception $e) {
 
@@ -228,7 +228,7 @@ class DataController extends Controller
 		}
     }
 
-    public function show()
+    public function show(Request $request)
     {
     	$startDate = $request->startDate;
     	$endDate = $request->endDate;
@@ -363,7 +363,7 @@ class DataController extends Controller
 
 			$sendGame = DB::select("select source, game_id, game_name, max(count) as max from (select count(*) as count, game_name, game_id, source from orders where creator_primary_user_id = '$masterUser' and created_at between '$start' and '$end' group by source,game_id order by source, count desc, game_id) a group by source");
     	}
-    	return view('frontend.data.index', compact('datas', 'startDate', 'endDate', 'alls', 'game', 'allReceives', 'dataReceives', 'allSends', 'dataSends', 'resourceGame', 'receiveGame', 'sendGame'));
+    	return view('frontend.v1.data.index', compact('datas', 'startDate', 'endDate', 'alls', 'game', 'allReceives', 'dataReceives', 'allSends', 'dataSends', 'resourceGame', 'receiveGame', 'sendGame'));
     }
 
     public function money(Request $request)
@@ -418,6 +418,6 @@ class DataController extends Controller
 				->get();
 			dd($statusMoney);
     	}
-    	return view('frontend.data.show', compact('datas', 'startDate', 'endDate'));
+    	return view('frontend.v1.data.show', compact('datas', 'startDate', 'endDate'));
     }
 }

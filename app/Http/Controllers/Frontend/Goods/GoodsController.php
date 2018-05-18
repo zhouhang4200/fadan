@@ -36,7 +36,7 @@ class GoodsController extends Controller
         $games  = $gameRepository->available();
         $goods  = $userGoodsRepository->getList($serviceId, $gameId, $foreignGoodsId, $name);
 
-        return view('frontend.goods.index', compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId', 'name'));
+        return view('frontend.v1.goods.index', compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId', 'name'));
     }
 
     /**
@@ -49,7 +49,7 @@ class GoodsController extends Controller
         $services = $serviceRepository->available();
         $games = $gameRepository->available();
 
-        return view('frontend.goods.create', compact('services', 'games'));
+        return view('frontend.v1.goods.create', compact('services', 'games'));
     }
 
     /**
@@ -82,7 +82,7 @@ class GoodsController extends Controller
         $games = $gameRepository->available();
         $services = $serviceRepository->available();
 
-        return view('frontend.goods.edit', compact('services', 'games', 'goods'));
+        return view('frontend.v1.goods.edit', compact('services', 'games', 'goods'));
     }
 
     public function update(Request $request)
@@ -103,7 +103,8 @@ class GoodsController extends Controller
     }
 
     /**
-     *
+     * @param Request $request
+     * @return mixed
      */
     public function destroy(Request $request)
     {

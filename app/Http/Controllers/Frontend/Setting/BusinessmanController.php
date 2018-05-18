@@ -35,7 +35,7 @@ class BusinessmanController extends Controller
             return  $template;
         }
 
-        return view('frontend.setting.businessman-contact.index')->with([
+        return view('frontend.v1.setting.businessman-contact.index')->with([
             'template' => $template,
             'type' => $request->type,
             'game' => $game,

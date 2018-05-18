@@ -92,6 +92,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
 @endif
+                            <li>
+                                <a href="{{ route('businessman.taobao-shop-auth.index') }}" @if($currentRouteName == 'businessman.taobao-shop-auth.index') class="active" @endif>
+                                    店铺授权管理
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

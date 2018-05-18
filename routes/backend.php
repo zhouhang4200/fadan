@@ -162,6 +162,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('create', 'ComplaintController@create')->name('frontend.user.complaint.create');
             Route::post('/', 'ComplaintController@store')->name('frontend.user.complaint.store');
         });
+
+        // 店铺授权管理
+        Route::get('taobao-shop-auth', 'TaobaoShopAuthController@index')->name('businessman.taobao-shop-auth.index')->middleware('permission:businessman.taobao-shop-auth.index');
+        Route::post('taobao-shop-auth', 'TaobaoShopAuthController@store')->name('businessman.taobao-shop-auth.store')->middleware('permission:businessman.taobao-shop-auth.store');
+        Route::delete('taobao-shop-auth/{id}', 'TaobaoShopAuthController@destroy')->name('businessman.taobao-shop-auth.destroy')->middleware('permission:businessman.taobao-shop-auth.destroy');
     });
 
     Route::namespace('Rbac')->prefix('rbac')->group(function () {
