@@ -242,7 +242,6 @@ body .layui-laydate .layui-this {
 }
 .layui-input-block{
     min-height: 32px;
-    max-height: 32px;
 }
 .layui-form-text .layui-input-block{
     min-height:none;

@@ -96,12 +96,12 @@ $goodsRoute = [
         }
         .qsdate{
             display: inline-block;
-            width: 44%;
+            width: 42%;
         }
         /* 改写header高度 */
         .layui-card-header {
             height: 56px;
-            line-height: 56px;
+            line-height: 32px;
             color: #303133;
             font-size: 14px;
         }

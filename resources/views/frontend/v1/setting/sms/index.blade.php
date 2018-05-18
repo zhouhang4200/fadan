@@ -18,13 +18,10 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-        <div class="explanation">
-        <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-        <ul>
-        <li>用途：编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。编辑手动发送短信模板，可在订单“发短信”功能中，直接选择已编辑好的模板内容进行发送。</li>
-
-        </ul>
-        </div>
+        <blockquote class="layui-elem-quote">
+            操作提示<br/>
+            用途：编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。编辑手动发送短信模板，可在订单“发短信”功能中，直接选择已编辑好的模板内容进行发送。
+        </blockquote>
         <fieldset>
             <legend><a name="hr">自动发送</a></legend>
         </fieldset>
@@ -40,7 +37,7 @@
         {{--<button class="qs-btn layui-bg-blue layui-btn-mini" id="template-add" style="margin-top: 15px">添加</button>--}}
 
         {{--<div id="manual-list">--}}
-            {{--@include('frontend.setting.sms.manual-list')--}}
+            {{--@include('frontend.v1.setting.sms.manual-list')--}}
         {{--</div>--}}
 
         <div id="template-add-popup" style="display: none;padding: 20px">

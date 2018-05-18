@@ -9,13 +9,11 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-        <div class="explanation">
-            <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-            <ul>
-                <li>该参数的意义是：当您的终端销售价低于您在本平台配置的商品价格时，则下单价不取配置的商品价格，而是取的(风控值 X 终端销售)得出最终下单价格，保证您的利益</li>
-                <li>平台默认值：0.98</li>
-            </ul>
-        </div>
+        <blockquote class="layui-elem-quote">
+            操作提示<br/>
+            该参数的意义是：当您的终端销售价低于您在本平台配置的商品价格时，则下单价不取配置的商品价格，而是取的(风控值 X 终端销售)得出最终下单价格，保证您的利益<br>
+            平台默认值：0.98
+        </blockquote>
         <form class="layui-form layui-form-pane" action="">
             <div class="layui-inline">
                 <label class="layui-form-label">风控值</label>

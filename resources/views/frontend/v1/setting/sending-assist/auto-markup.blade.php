@@ -16,36 +16,27 @@
 @section('main') 
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-            <ul class="layui-tab-title">
-                {{--<li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
-                <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
-            </ul>
-            <div class="explanation" style="margin-top:15px;margin-bottom:-5px;">
-                <div class="ex_tit" style="line-height: 35px;"><i class="sc_icon"></i><h4>操作提示</h4>
-                    <span id="explanationZoom" title="收起提示" class=""></span>
+        <div class='layui-card-header'>自动加价配置</div>
+        <blockquote class="layui-elem-quote">
+            操作提示<br/>
+            用途：“自动加价”功能可以自动给“未接单”状态的订单增加代练费。
+        </blockquote>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show" id="auto-markup-show">
+                <div style="padding-bottom:40px;">
+                <form class="layui-form" method="" action="">
+                    <div style="float: left">
+                        <div class="layui-inline">
+                            <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                        </div>
+                    </div>                     
+                </form>
                 </div>
-                <ul>
-                    <li style="line-height: 30px;">用途：“自动加价”功能可以自动给“未接单”状态的订单增加代练费。</li>
-                </ul>
-            </div>
-            <div class="layui-tab-content" style="height: 100px;">
-                <div class="layui-tab-item layui-show" id="auto-markup-show">
-                    <div style="padding-bottom:40px;">
-                    <form class="layui-form" method="" action="">
-                        <div style="float: left">
-                            <div class="layui-inline">
-                                <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
-                            </div>
-                        </div>                     
-                    </form>
-                    </div>
-                    <div id="auto-markup-index">
-                    @include('frontend.setting.sending-assist.auto-markup-list', ['orderAutoMarkups' => $orderAutoMarkups])
-                    </div>
+                <div id="auto-markup-index">
+                @include('frontend.v1.setting.sending-assist.auto-markup-list', ['orderAutoMarkups' => $orderAutoMarkups])
                 </div>
             </div>
-        </div> 
+        </div>
     </div>
 </div>
 @endsection

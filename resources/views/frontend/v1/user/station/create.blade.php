@@ -28,6 +28,7 @@
 
 @section('main')
 <div class="layui-card qs-text">
+    <div class="layui-card-header">岗位添加</div>
     <div class="layui-card-body">
         <form class="layui-form" method="" action="">
             {!! csrf_field() !!}

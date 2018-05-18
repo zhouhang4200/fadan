@@ -39,7 +39,7 @@ class AutomaticallyGrabController extends Controller
             ->paginate(20);
 
 
-        return view('frontend.setting.automatically-grab.index')->with([
+        return view('frontend.v1.setting.automatically-grab.index')->with([
             'game' => $game,
             'automaticallyGrabGoods' => $automaticallyGrabGoods,
             'foreignGoodsId' => $foreignGoodsId,
@@ -61,7 +61,7 @@ class AutomaticallyGrabController extends Controller
             ->first();
 
         if ($automaticallyGrabGoods) {
-            return response()->json(\View::make('frontend.setting.automatically-grab.edit', [
+            return response()->json(\View::make('frontend.v1.setting.automatically-grab.edit', [
                 'automaticallyGrabGoods' => $automaticallyGrabGoods,
                 'game' => $game,
                 'shop' => $shop,
@@ -146,7 +146,7 @@ class AutomaticallyGrabController extends Controller
      */
     public function delete(Request $request)
     {
-         AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', $request->id)->delete();
+        AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', $request->id)->delete();
         return response()->ajax(1, '删除成功');
     }
 }

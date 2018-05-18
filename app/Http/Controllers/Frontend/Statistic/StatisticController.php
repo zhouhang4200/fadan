@@ -502,7 +502,7 @@ class StatisticController extends Controller
         if (isset($final) && ! empty($final) && is_array($final)) {
             $final = $final[0];
         }
-        return view('frontend.finance.statistic.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final'));
+        return view('frontend.v1.finance.employee.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final'));
     }
 }
 

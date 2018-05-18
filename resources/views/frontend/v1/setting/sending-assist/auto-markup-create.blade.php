@@ -11,33 +11,20 @@
             width:140px;
         }
         .layui-input-inline input {
-            width:185px;
+            width: 85%;
         }
-        .tip,
-        .tips{
-            width: 300px;
-            height: 50px;
-            padding: 5%;
-            color: #fff;
-            border-radius: 10px;
-            background-color:#91C5FF;
+     .tips {
             position: absolute;
-            left:273px;
-            top: -67px;
-            padding: 5px;
+            width: 10%;
+            height: 30px;
+            right: 0;
+            top: 5px;
+            text-align: center
         }
-        .tip{
-            top:-65px;
-            left: 275px;
-        }
-        .tip::after,
-        .tips::after{
-            content: '';
-            border: 10px solid rgba(0, 0, 0, 0);
-            border-top-color:#91C5FF; 
-            position: absolute;
-            right: 255px;
-            top:60px;
+
+        .tips .iconfont {
+            left: 0px;
+            font-size: 25px;
         }
     </style>
 @endsection
@@ -50,7 +37,7 @@
     {{--            <li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
                 <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
             </ul>
-            <div class="layui-tab-content" style="height: 100px;">
+            <div class="layui-tab-content">
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                   <legend>自动加价添加</legend>
                 </fieldset>
@@ -62,10 +49,9 @@
                                 <label class="layui-form-label">*发单价≤:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="markup_amount" lay-verify="required|number|overZero" value="" autocomplete="off" placeholder="请输入" class="layui-input">
-                                    <a href="#" class="tooltip">
-                                        <i class="iconfont icon-wenhao" id="recharge"></i>
-                                        <span>填写值必须为大于0的正整数</span>
-                                    </a>
+                                    <div class="tips" lay-tips="填写值必须为大于0的正整数">
+                                        <i class="iconfont icon-exclamatory-mark-r"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -78,10 +64,9 @@
                                 <label class="layui-form-label">*加价开始时间(m):</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="minutes" lay-verify="required|minute|integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
-                                    <a href="#" class="tooltip">
-                                        <i class="iconfont icon-wenhao" id="recharge"></i>
-                                        <span>订单上架后第1次加价的时间，填写值必须为正整数，可以为0</span>
-                                    </a>
+                                    <div class="tips" lay-tips="订单上架后第1次加价的时间，填写值必须为正整数，可以为0">
+                                        <i class="iconfont icon-exclamatory-mark-r"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -92,10 +77,9 @@
                                         <option value="0" selected="">绝对值</option>
                                         <option value="1">百分比</option>
                                     </select>
-                                    <a href="#" class="tooltip">
-                                        <i class="iconfont icon-wenhao" id="recharge"></i>
-                                        <span>选择“绝对值”，则“增加值”中填写的值为增加的金额；选择“百分比”，则“增加值”中填写的值（百分数）乘以订单代练价格为增加的金额，所填写的值均为正整数或带2位小数</span>
-                                    </a>
+                                    <div class="tips" lay-tips="选择“绝对值”，则“增加值”中填写的值为增加的金额；选择“百分比”，则“增加值”中填写的值（百分数）乘以订单代练价格为增加的金额，所填写的值均为正整数或带2位小数">
+                                        <i class="iconfont icon-exclamatory-mark-r"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -114,10 +98,9 @@
                                 <label class="layui-form-label">加价次数限制:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="markup_number" lay-verify="integer" value="" autocomplete="off" placeholder="请输入" class="layui-input">
-                                    <a href="#" class="tooltip">
-                                        <i class="iconfont icon-wenhao" id="recharge"></i>
-                                        <span>不填则为无次数限制</span>
-                                    </a>
+                                    <div class="tips" lay-tips="不填则为无次数限制">
+                                        <i class="iconfont icon-exclamatory-mark-r"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-form-item">

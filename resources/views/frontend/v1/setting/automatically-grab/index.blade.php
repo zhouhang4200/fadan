@@ -13,12 +13,10 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-        <div class="explanation">
-            <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-            <ul>
-                <li>用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺旺旺绑定。</li>
-            </ul>
-        </div>
+         <blockquote class="layui-elem-quote">
+            操作提示</br>
+            用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺旺旺绑定。
+        </blockquote>
 
         <form class="layui-form" id="goods-form">
             <div class="layui-form-item">
@@ -65,7 +63,7 @@
         </table>
 
         {{ $automaticallyGrabGoods->links() }}
-
+        @section('pop')
         <div id="goods-add" style="display: none;padding: 30px 60px 0 0px;">
             <form class="layui-form" action="" id="goods-add-form">
                 <input type="hidden" name="type" value="">
@@ -108,12 +106,13 @@
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
+                    <button class="qs-btn qs-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
                     <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
                         </div>
                 </div>
             </form>
         </div>
+        @endsection
     </div>
 </div>
 @endsection

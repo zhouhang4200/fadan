@@ -21,7 +21,7 @@
                 {{--<li  class="layui-hide"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
                 <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
             </ul>
-            <div class="layui-tab-content" style="height: 100px;">
+            <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show" id="require-show">
                     <div style="padding-bottom:40px;">
                     <form class="layui-form" method="" action="">
@@ -33,7 +33,7 @@
                     </form>
                     </div>
                     <div id="require-index">
-                    @include('frontend.setting.sending-assist.require-form')
+                    @include('frontend.v1.setting.sending-assist.require-form')
                     </div>
                 </div>
             </div>

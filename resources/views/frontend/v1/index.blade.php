@@ -194,7 +194,7 @@
 
         <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
         @inject('withdraw', 'App\Services\Views\WithdrawService')
-        {{ $withdraw->button('余额提现', 'layui-btn layui-btn-normal layui-btn-custom-mini') }}
+        {{ $withdraw->button('余额提现', 'qs-btn qs-btn-normal qs-btn-custom-mini') }}
     </div>
 </div>
 <div class="layui-tab layui-hide">
@@ -283,23 +283,25 @@
         </div>
     </form>
 </div>
-<div id="voucher" style="display: none; padding: 10px">
-    <form class="layui-form" method="" action="">
-        <div class="layui-upload">
-            <button type="button" class="qs-btn layui-btn-normal" id="test1">上传图片</button>
-            <div class="layui-upload-list">
-            <img class="layui-upload-img" id="demo1" style="width:200px;height:200px">
-                <p id="demoText"></p>
+@section('pop')
+    <div id="voucher" style="display: none; padding: 10px">
+        <form class="layui-form" method="" action="">
+            <div class="layui-upload">
+                <button type="button" class="qs-btn layui-btn-normal" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                <img class="layui-upload-img" id="demo1" style="width:200px;height:200px">
+                    <p id="demoText"></p>
+                </div>
+            </div> 
+            <input type="hidden" name="voucher" id="voucher-img" value="">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button type="hidden" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="update-voucher">提交</button>
+                </div>
             </div>
-        </div> 
-        <input type="hidden" name="voucher" id="voucher-img" value="">
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-                <button type="hidden" class="qs-btn layui-btn-normal" lay-submit="" lay-filter="update-voucher">提交</button>
-            </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
+@endsection
 </div>
 </div>
 @endsection

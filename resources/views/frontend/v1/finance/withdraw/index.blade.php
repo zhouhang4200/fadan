@@ -27,7 +27,7 @@
             </div>
 
             @inject('withdraw', 'App\Services\Views\WithdrawService')
-            {{ $withdraw->button('提现', 'layui-btn layui-btn-normal', 'float:right;') }}
+            {{ $withdraw->button('提现', 'qs-btn qs-btn-normal', 'float:right;') }}
         </div>
     </form>
 

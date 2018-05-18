@@ -18,10 +18,11 @@
                 <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>
                 <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
             </ul>
-            <div class="layui-tab-content" style="height: 100px;">
+            <div class="layui-tab-content">
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                   <legend>添加</legend>
                 </fieldset>
+
                 <div class="layui-tab-item layui-show">
                     <form class="layui-form" method="POST" action="">
                         {!! csrf_field() !!}

@@ -12,6 +12,7 @@
 
 @section('main')
 <div class="layui-card qs-text">
+    <div class="layui-card-header">打手黑名单添加</div>
     <div class="layui-card-body">
         <form class="layui-form" method="" action="">
             {!! csrf_field() !!}

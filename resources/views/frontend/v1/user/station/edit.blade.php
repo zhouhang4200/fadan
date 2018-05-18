@@ -42,7 +42,7 @@
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">拥有权限</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-block" style="max-height: auto;min-height: auto;">
                         <table class="table table-bordered">
                             <thead>
                             <tr>

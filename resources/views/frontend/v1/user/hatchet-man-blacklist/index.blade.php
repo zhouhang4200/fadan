@@ -40,12 +40,13 @@
             <div style="float: left">
                 <div class="layui-inline" >
                     <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
+                    &nbsp;
                     <a href="{{ route('hatchet-man-blacklist.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
                 </div>
             </div>                     
         </form>
         <div class="layui-tab-item layui-show" lay-size="sm" id="staff">
-        @include('frontend.user.hatchet-man-blacklist.list')
+        @include('frontend.v1.user.hatchet-man-blacklist.list')
             {!! $hatchetManBlacklists->appends([
                 'hatchetManName' => $hatchetManName,
                 'hatchetManPhone' => $hatchetManPhone,
