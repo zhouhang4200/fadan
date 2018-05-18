@@ -209,7 +209,7 @@ class SendingAssistController extends Controller
             ->paginate(10);
 
         if ($request->ajax()) {
-            return response()->json(view()->make('frontend.setting.sending-assist.auto-markup-list', [
+            return response()->json(view()->make('frontend.v1.setting.sending-assist.auto-markup-list', [
                 'orderAutoMarkups' => $orderAutoMarkups,
             ])->render());
         }

@@ -33,7 +33,7 @@ class SystemLogController extends Controller
                 
             })->paginate(config('backend.page'));
 
-	        return view('frontend.user.system.index', compact('systemLogs', 'startDate', 'endDate'));
+	        return view('frontend.v1.user.system.index', compact('systemLogs', 'startDate', 'endDate'));
     	}
     }
 }
