@@ -187,6 +187,7 @@
             border: #ff8500;
         }
     </style>
+    <link rel="stylesheet" href="/frontend/v1/lib/css/im.css">
 @endsection
 
 @section('main')
@@ -194,22 +195,27 @@
         <div class="layui-card qs-text">
             <div class="layui-card-header">
                 订单信息
+                <div class="order-operation">
+                    <button class="order-btn" id="operation">
+                        <i class="iconfont icon-image-text"></i>操作记录</button>
+                    <button class="order-btn" id="carousel-btn">
+                        <i class="iconfont icon-image"></i>查看图片</button>
+                    <button class="order-btn" id="im">
+                        <i class="iconfont icon-duihua"></i>留言</button>
+                </div>
             </div>
             <div class="layui-card-body" style="padding: 15px 25px 15px 15px">
                 <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
-                    <input type="hidden" name="source_order_no">
-                    <input type="hidden" name="client_wang_wang">
-                    <input type="hidden" name="seller_nick">
+                    <input type="hidden" name="no" value="{{ $detail['no'] }}">
 
                     <div class="layui-row layui-col-space10 layui-form-item">
-
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">游戏</label>
                             <div class="layui-input-block">
-                                <select name="game_id" lay-filter="game_id" lay-verify="required">
+                                <select name="game_id" lay-filter="game_id" lay-verify="required" @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
                                     <option value=""></option>
                                     @forelse($game as $id => $name)
-                                        <option value="{{ $id }}" @if($id == $gameId) selected @endif>{{ $name }}</option>
+                                        <option value="{{ $id }}" @if($id == $detail['game_id']) selected @endif>{{ $name }}</option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -219,7 +225,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">区</label>
                             <div class="layui-input-block ">
-                                <select name="region" lay-verify="required" lay-filter="change-select" class="region">
+                                <select name="region" lay-verify="required" lay-filter="change-select" class="region"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -231,7 +237,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">服</label>
                             <div class="layui-input-block">
-                                <select name="serve" lay-filter="serve" class="serve" display-name="服">
+                                <select name="serve" lay-filter="serve" class="serve" display-name="服"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -240,7 +246,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">角色名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称">
+                                <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -249,14 +255,14 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">账号</label>
                             <div class="layui-input-block">
-                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号">
+                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
                             </div>
                         </div>
 
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">密码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码">
+                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -267,7 +273,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练类型</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型">
+                                <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -280,7 +286,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练标题</label>
                             <div class="layui-input-block tips-box">
-                                <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题">
+                                <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_title'] ?? '' }}">
                                 <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -289,7 +295,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练要求模板</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao" display-name="代练要求模板">
+                                <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao" display-name="代练要求模板"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                     <option value=""></option>
                                 </select>
                                 <div class="tips" id="game_leveling_requirements_template">
@@ -303,13 +309,13 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练说明</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"></textarea>
+                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}></textarea>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练要求</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"></textarea>
+                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -318,7 +324,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练价格</label>
                             <div class="layui-input-block">
-                                <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格">
+                                <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_amount'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -329,7 +335,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">安全保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金">
+                                <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['security_deposit'] ?? '' }}">
                                 <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -338,7 +344,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">效率保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金">
+                                <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['efficiency_deposit'] ?? '' }}">
                                 <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -350,10 +356,10 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练天数</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)">
+                                <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                     <option value=""></option>
                                     @for($i=0; $i<=30; $i++)
-                                        <option value="{{ $i }}">{{ $i }}天</option>
+                                        <option value="{{ $i }}" @if($detail['game_leveling_day'] == $i) selected  @endif>{{ $i }}天</option>
                                     @endfor
                                 </select>
                             </div>
@@ -361,10 +367,10 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练小时</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)">
+                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                     <option value=""></option>
                                     @for($i=0; $i<=24; $i++)
-                                        <option value="{{ $i }}">{{ $i }}小时</option>
+                                        <option value="{{ $i }}" @if($detail['game_leveling_hour'] == $i) selected  @endif>{{ $i }}小时</option>
                                     @endfor
                                 </select>
                             </div>
@@ -375,7 +381,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">玩家电话</label>
                             <div class="layui-input-block">
-                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话">
+                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话" value="{{ $detail['efficiency_deposit'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -397,7 +403,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价幅度</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_range'] ?? '' }}">
                                 <div class="tips" lay-tips="设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -407,7 +413,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价上限</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_top_limit'] ?? '' }}">
                                 <div class="tips" lay-tips="自动加价将不超过该价格">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -420,7 +426,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">接单密码</label>
                             <div class="layui-input-block">
-                            <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['order_password'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -429,15 +435,15 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源单号1</label>
+                            <label class="layui-form-label">补款单号1</label>
                             <div class="layui-input-block">
-                                <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_1'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源单号2</label>
+                            <label class="layui-form-label">补款单号2</label>
                             <div class="layui-input-block">
-                                <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_2'] ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -446,7 +452,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">来源价格</label>
                             <div class="layui-input-block">
-                                <input type="text" name="source_price" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="source_price" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_price'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6"></div>
@@ -454,10 +460,10 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                        <label class="layui-form-label">客服备注</label>
-                        <div class="layui-input-block">
-                            <input name="customer_service_remark" placeholder="请输入内容" class="layui-input">
-                        </div>
+                            <label class="layui-form-label">客服备注</label>
+                            <div class="layui-input-block">
+                                <input name="customer_service_remark" placeholder="请输入内容" class="layui-input" value="{{ $detail['customer_service_remark'] ?? '' }}">
+                            </div>
                         </div>
                         <div class="layui-col-lg6"></div>
                     </div>
@@ -465,7 +471,102 @@
                     <div class="layui-form-item layui-layout-admin">
                         <div class="layui-input-block">
                             <div class="layui-footer" style="left: 0;">
-                                <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
+                                @if($detail['status'] != 24)
+                                    <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
+                                    @if ($detail['master'] && $detail['status'] == 22)
+                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
+                                    @endif
+
+                                    @if ($detail['master'] && $detail['status'] == 1)
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
+                                    @endif
+
+                                    @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
+                                        <button lay-submit=""   lay-filter="operation"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
+                                    @endif
+
+                                    @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
+                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
+                                    @endif
+
+                                    @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] == 1)
+                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
+                                    @endif
+
+                                    @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">锁定</button>
+                                    @endif
+
+                                    @if ($detail['master'] && $detail['status'] == 18)
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
+                                    @endif
+
+                                    @if ($detail['master'])
+                                        @if ($detail['consult'] == 1 && $detail['status'] == 15)
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                        @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                        @endif
+                                    @else
+                                        @if ($detail['consult'] == 2 && $detail['status'] == 15)
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                        @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                        @endif
+                                    @endif
+
+                                    @if (in_array($detail['status'], [13, 14, 17, 18]))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
+                                    @endif
+
+                                    @if (in_array($detail['status'], [13,14,15]))
+                                        <button lay-submit=""   lay-filter="operation"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
+                                    @endif
+
+                                    @if ($detail['master'])
+                                        @if ($detail['complain'] == 1 && $detail['status'] == 16)
+                                            <button lay-submit=""   lay-filter="operation" data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
+                                            @if($detail['consult'] == 2)
+                                                <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            @endif
+                                        @endif
+                                    @else
+                                        @if ($detail['complain'] == 2 && $detail['status'] == 16)
+                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
+                                            @if($detail['consult'] == 1)
+                                                <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            @endif
+                                        @endif
+                                    @endif
+
+                                    @if ($detail['master'] && $detail['status'] == 14)
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                                    @endif
+
+
+                                    @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
+                                    @endif
+
+                                    @if (!$detail['master'] && ($detail['status'] == 13))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
+                                    @endif
+
+                                    @if (!$detail['master'] && ($detail['status'] == 14))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
+                                    @endif
+
+                                    @if (!$detail['master'] && ($detail['status'] == 13))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">异常</button>
+                                    @endif
+
+                                    @if (!$detail['master'] && ($detail['status'] == 17))
+                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
+                                    @endif
+                                @endif
+
                             </div>
                         </div>
                     </div>
@@ -479,7 +580,7 @@
             <div class="layui-card-body qs-text">
                 <table class="layui-table">
                     <colgroup>
-                        <col width="100">
+                        <col width="115">
                         <col>
                     </colgroup>
                     <tbody>
@@ -556,28 +657,182 @@
                 </table>
             </div>
         </div>
-        <div class="layui-card">
-            <div class="layui-card-header">发单模板
-                <div class="template">
-                    <button class="qs-btn" id="parse">解析模板</button>
-                    <button class="qs-btn qs-btn-primary" id="instructions">使用说明</button>
-                </div>
-            </div>
+        <div class="layui-card" style="margin-bottom: 72px;">
+            <div class="layui-card-header">平台数据</div>
             <div class="layui-card-body qs-text">
-                <form class="layui-form" action="" lay-filter="component-form-group">
-                    <textarea name="template" class="layui-textarea" style="min-height: 370px;width: 100%" id="tempalte">
-                    </textarea>
-                </form>
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="115">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>平台单号：</td>
+                        <td>{{ $detail['third_order_no']  }}</td>
+                    </tr>
+                    <tr>
+                        <td>订单状态：</td>
+                        <td>{{ config('order.status_leveling')[$detail['status']] }}</td>
+                    </tr>
+                    <tr>
+                        <td>接单平台：</td>
+                        <td>{{ config('order.third')[$detail['third']] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>打手呢称：</td>
+                        <td>{{ $detail['hatchet_man_name'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>打手电话：</td>
+                        <td>{{ $detail['hatchet_man_phone'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>打手QQ：</td>
+                        <td>{{ $detail['hatchet_man_qq'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>剩余代练时间：</td>
+                        <td>{{ $detail['left_time'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>发布时间：</td>
+                        <td> {{ $detail['created_at'] ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>接单时间：</td>
+                        <td>{{ $detail['receiving_time'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>提验时间：</td>
+                        <td>{{ $detail['check_time'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>结算时间：</td>
+                        <td>{{ $detail['checkout_time'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>接单客服：</td>
+                        <td>{{ $detail['pre_sale'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>发单客服：</td>
+                        <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>撤销说明：</td>
+                        <td>{{ $detail['consult_desc'] ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>仲裁说明：</td>
+                        <td>{{ $detail['complain_desc'] ?? '无' }}
+                            <span style="color:red">提示：客服将根据订单留言和截图的情况进行仲裁，仲裁中有新的情况和证据，请提交留言和截图。</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>支付金额：</td>
+                        <td>{{ $detail['payment_amount']?? ''  }}</td>
+                    </tr>
+                    <tr>
+                        <td>获得金额：</td>
+                        <td>{{ $detail['get_amount']?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>手续费：</td>
+                        <td>{{ $detail['poundage'] ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>利润：</td>
+                        <td>{{ $detail['profit'] ?? ''  }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 @endsection
 
+@section('pop')
+<div class="layui-boxx" id="layui-boxx" style="display: none;">
+    <div class="layui-layer-titlee" style="cursor: move;">
+        <div class="layui-unselect layim-chat-title">
+        </div>
+    </div>
+    <div id="layui-layim-chat" class="layui-layer-contentt">
+        <ul class="layui-unselect layim-chat-list">
+            <li class="layim-friend1008612 layim-chatlist-friend1008612 layim-this" layim-event="tabChat">
+                <img src="lib/css/res/touxiang.jpg">
+                <span>小闲</span>
+                <i class="layui-icon" layim-event="closeChat">ဇ</i>
+            </li>
+        </ul>
+        <div class="layim-chat-box">
+            <div class="layim-chat layim-chat-friend layui-show">
+                <div class="layim-chat-main">
+
+                </div>
+                <div class="layim-chat-footer">
+                    <div class="layim-chat-textarea">
+                        <textarea name="layim-chat-textarea"></textarea>
+                    </div>
+                    <div class="layim-chat-bottom">
+                        <div class="layim-chat-send">
+                            <span class="layim-send-close cancel" layim-event="closeThisChat">关闭</span>
+                            <span class="layim-send-btn" layim-event="send">发送</span>
+                            <span class="layim-send-set" layim-event="setSend" lay-type="show"><em class="layui-edge"></em></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="layui-layer-setwin">
+        <a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>
+    </span>
+</div>
+<div class="layui-carousel" id="carousel" style="display: none;"></div>
+@endsection
+
 @section('js')
+    <script id="message" type="text/html">
+        <ul>
+            @{{#  layui.each(d.message, function(index, item){ }}
+                @{{# if(item.sender == '您'){ }}
+                    <li class="layim-chat-mine">
+                        <div class="layim-chat-user">
+                            <img src="/frontend/images/service_avatar.jpg">
+                            <cite>
+                                <i>@{{ item.send_time }}</i>您
+                            </cite>
+                        </div>
+                        <div class="layim-chat-text">@{{ item.send_content}}</div>
+                    </li>
+                @{{# }else{  }}
+                    <li>
+                        <div class="layim-chat-user">
+                            <img src="/frontend/images/customer_avatar.jpg">
+                            <cite>打手
+                                <i> @{{ item.send_time }}</i>
+                            </cite>
+                        </div>
+                        <div class="layim-chat-text">@{{ item.send_content}}</div>
+                    </li>
+                @{{# }  }}
+            @{{# }); }}
+        </ul>
+    </script>
+    <script id="images" type="text/html">
+        <div carousel-item="" id="">
+            @{{#  layui.each(d, function(index, item){ }}
+                <div>条目1
+                    <div class="carousel-tips" style="background-image: url(@{{ item.url }});">@{{ item.url }}&nbsp;&nbsp;&nbsp;&nbsp;@{{ item.url }}</div>
+                </div>
+            @{{# }); }}
+        </div>
+    </script>
     <script>
-        layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element'], function(){
-            var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element;
-            var gameId = '{{ $gameId }}';
+        layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
+            var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel;
+            var gameId = '{{ $detail['game_id'] }}';
             // 验证规则
             form.verify({
                 zero: function(value){
@@ -617,10 +872,10 @@
                     shade: [0.2, '#000000']
                 });
 
-                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
+                $.post('{{ route('frontend.workbench.leveling.update') }}', {data: data.field}, function (result) {
                     if (result.status == 1) {
                         layer.open({
-                            content: result.message,
+                            content: '修改成功!',
                             btn: ['继续发布', '订单列表'],
                             btn1: function(index, layero){
                                 window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
@@ -630,16 +885,7 @@
                             }
                         });
                     } else {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
+                        layer.msg(result.message);
                     }
                     layer.close(load);
                 }, 'json');
@@ -671,11 +917,7 @@
                 loadRegionType();
                 loadGameLevelingTemplate();
                 loadBusinessmanContactTemplate();
-                setDefaultValueOption();
-                loadDefaultTemplate();
-                loadLevelingTemplate();
-                setFixedInfo();
-                parse();
+                setDefault();
                 $('.serve').html('');
             }
             // 加载下拉框的下级选项
@@ -767,23 +1009,9 @@
                         });
                         $('.leveling_type').html(type);
                         $('.region').html(region);
-                    layui.form.render();
+                        layui.form.render();
                     }
                 });
-            }
-            // 设置默认选中填充的值
-            function setDefaultValueOption() {
-                $("select[name=game_leveling_type]").val('排位');
-                $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
-                $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
-                @if(isset($taobaoTrade->tid))
-                    $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
-                    $('input[name=order_source]').val('天猫');
-                    $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
-                    $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
-                    $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
-                @endif
-                layui.form.render();
             }
             // 加载代练要求模板
             function loadGameLevelingTemplate() {
@@ -837,72 +1065,38 @@
                     layui.form.render();
                 }, 'json');
             }
-            // 生成代练模版
-            function loadLevelingTemplate() {
-                $.post('{{ route('frontend.workbench.leveling.get-template') }}', {game_id:gameId, tid:'{{ $tid  }}'}, function (result) {
-                    var template;
-                    if (result.content.sellerMemo) {
-                        var temp  = result.content.sellerMemo  + '\r\n';
-                        // 替换所有半角除号为全角
-                        template = temp.replace(/:/g, '：');
-                        template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';
-                        template += '商户QQ：'+ result.content.businessmanInfoMemo.qq  + '\r\n';
-                        @if(isset($taobaoTrade->tid))
-                            template = template.replace(/(?<=\u53f7\u4e3b\u65fa\u65fa\uff1a).*\b/, '{{ $taobaoTrade->buyer_nick }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u4ef7\u683c\uff1a).*\b/, '{{ $taobaoTrade->payment }}');
-                            template = template.replace(/(?<=\u6765\u6e90\u8ba2\u5355\u53f7\uff1a).*\b/, '{{ $taobaoTrade->tid }}');
-                            template = template.replace(/(?<=\u8ba2\u5355\u6765\u6e90\uff1a).*\b/, '天猫');
-                            if (template.indexOf('订单来源') == -1) {
-                                template += '订单来源：天猫'  + '\r\n';
-                            }
-                            if (template.indexOf('来源订单号') == -1) {
-                                template += '来源订单号：{{ $taobaoTrade->tid }}'  + '\r\n';
-                            }
-                            if (template.indexOf('来源价格') == -1) {
-                                template += '来源价格：{{ $taobaoTrade->payment }}'  + '\r\n';
-                            }
-                            if (template.indexOf('号主旺旺') == -1) {
-                                template += '号主旺旺：{{ $taobaoTrade->buyer_nick }}'  + '\r\n';
-                            }
-                        @endif
-                    }
-
-                    @if(isset($taobaoTrade->tid))
-                        $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
-                        $('input[name=order_source]').val('天猫');
-                        $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
-                        $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
-                    @endif
-
-                    $('#template').val(template);
-                    setDefaultValueOption();
-                    loadBusinessmanContactTemplate();
-                    setFixedInfo();
-                }, 'json');
-            }
             // 设置固定的订单信息
-            function setFixedInfo() {
-                @forelse($fixedInfo as $name => $item)
-                    @if($item['type'] == 1)
-                        $('input[name={{ $name }}]').val('{{ $item['value'] }}');
-                    @elseif($item['type'] == 2)
-                        $("select[name={{ $name }}]").val('{{  $item['value']  }}');
-                        @if($name == 'region')
-                           loadSelectChild($('.region').find("option:selected").attr('data-id'));
-                        @endif
-                    @elseif($item['type'] == 3)
-
-                    @elseif($item['type']== 4)
-                        $('textarea[name="{{ $name }}"]').val('{{ $item['value'] }}');
-                    @endif
-                @empty
-                @endforelse
+            function setDefault() {
+                // 设置区
+                $("select[name=region]").val('{{  $detail['region']  }}');
+                loadSelectChild($('.region').find("option:selected").attr('data-id'));
+                $("select[name=serve]").val('{{  $detail['serve']  }}');
+                $("select[name=game_leveling_type]").val('{{  $detail['game_leveling_type']  }}');
+                $("select[name=user_qq]").val('{{  $detail['user_qq']  }}');
                 layui.form.render();
             }
-            // 加载默认模板
-            function loadDefaultTemplate() {
-                var template = '游戏：\r\n区：\r\n服：\r\n角色名称：\r\n代练类型：\r\n账号：\r\n密码：\r\n代练标题：\r\n代练价格：\r\n代练时间(天)：\r\n代练时间(小时)：\r\n安全保证金：\r\n效率保证金：\r\n玩家电话：\r\n商户QQ：\r\n来源价格：';
-                $('[name="template"]').val(template);
+            // 加载留言
+            function loadMessage(bingId) {
+                var messageBingId = bingId ? bingId : 0;
+
+                $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
+                    if (result.status === 1) {
+                        if (result.content.third == 1) {
+                            var getTpl = message91show.innerHTML, view = $('.chat_window');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+
+                        } else if (result.content.third >= 2) {
+                            var getTpl = message.innerHTML, view = $('.layim-chat-main');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+                        }
+                    }
+                });
             }
             // 添加代练要求模板
             $('.layui-form').on('click', '#game_leveling_requirements_template', function () {
@@ -937,6 +1131,79 @@
                     }
                 });
             });
+            // 留言弹窗
+            $('#im').click(function () {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: false,
+                    area: ['850px', '561px'],
+                    shade: 0.8,
+                    moveType: 1,  //拖拽模式，0或者1
+                    content: $('#layui-boxx'),
+                    success: function (layero) {
+                        loadMessage(1);
+                    }
+                });
+            });
+            // 发送留言
+            $('.layim-send-btn').click(function(){
+                $('[name=layim-chat-textarea]').val('');
+                loadMessage(0);
+            });
+            // 查看图片
+            //改变下时间间隔、动画类型、高度
+            carousel.render({
+                elem: '#carousel',
+                anim: 'fade',
+                width: '100%',
+                arrow: 'always',
+                autoplay: false,
+                height: '100%',
+                indicator: 'none'
+            });
+            $('#carousel-btn').click(function () {
+                layer.open({
+                    type: 1,
+                    title: false ,
+//                    closeBtn: false,
+                    area: ['50%', '500px'],
+                    shade: 0.8,
+                    shadeClose: true,
+                    moveType: 1,
+                    content: $('#carousel'),
+                    success: function () {
+                        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
+                            if (result.status === 1) {
+                                var getTpl = images.innerHTML, view = $('#carousel');
+                                layTpl(getTpl).render(result.content, function(html){
+                                    view.html(html);
+                                    layui.form.render();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            // 操作记录
+            $('#operation').click(function () {
+                layer.open({
+                    type: 2,
+                    title: '操作记录',
+                    shadeClose: true,
+//                    closeBtn: false,
+                    area: ['850px', '500px'],
+                    shade: 0.8,
+                    moveType: 1,
+                    content: '{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}',
+                    success: function (layero) {
+                    }
+                });
+            });
+            // 取消操作
+            $('.cancel').click(function () {
+                layer.closeAll();
+            })
         });
     </script>
 @endsection

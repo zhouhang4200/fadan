@@ -18,7 +18,7 @@ class UserController extends Controller
         } else {
             $user = Auth::user()->parent;
         }
-        return view('frontend.user.persional.edit', compact('user'));
+        return view('frontend.v1.user.persional.edit', compact('user'));
     }
 	/**
 	 * 修改资料

@@ -367,6 +367,7 @@
                     if (result.content.sellerMemo) {
 
                         var temp  = result.content.sellerMemo  + '\r\n';
+                        console.log(temp);
                         // 替换所有半角除号为全角
                         template = temp.replace(/:/g, '：');
                         template += '商户电话：'+ result.content.businessmanInfoMemo.phone  + '\r\n';

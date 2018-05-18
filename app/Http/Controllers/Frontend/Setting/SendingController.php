@@ -20,7 +20,7 @@ class SendingController extends Controller
 		$user = User::find(Auth::user()->getPrimaryUserId());
 		$sendingControl = UserSetting::where('user_id', $user->id)->where('option', 'sending_control')->value('value');
 
-		return view('frontend.setting.sending-control.index', compact('sendingControl'));
+		return view('frontend.v1.setting.sending-control.index', compact('sendingControl'));
 	}
 
 	/**

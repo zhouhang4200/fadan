@@ -39,7 +39,7 @@ class SmsController extends Controller
 
         }
 
-        return view('frontend.setting.sms.index', compact('autoSmsTemplate', 'userSmsTemplate'));
+        return view('frontend.v1.setting.sms.index', compact('autoSmsTemplate', 'userSmsTemplate'));
     }
 
     /**
@@ -76,7 +76,7 @@ class SmsController extends Controller
            ->where('id', $request->id)
            ->first();
 
-        return response()->json(\View::make('frontend.setting.sms.edit', [
+        return response()->json(\View::make('frontend.v1.setting.sms.edit', [
             'template' => $template,
         ])->render());
     }

@@ -41,7 +41,7 @@ use App\Exceptions\CustomException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Models\LevelingConsult;
 use App\Services\Show91;
-use  Excel;
+use Excel;
 use App\Exceptions\DailianException;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Events\AutoRequestInterface;
@@ -138,61 +138,6 @@ class IndexController extends Controller
             'statusCount' => $statusCount,
             'allStatusCount' => $allStatusCount,
             'fullUrl' => $request->fullUrl(),
-        ]);
-    }
-
-    /**
-     * 新订单列表
-     * @param Request $request
-     * @param OrderRepository $orderRepository
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    public function indexNew(Request $request, OrderRepository $orderRepository)
-    {
-        $status = $request->input('status', 0);
-        $no = $request->input('no', '');
-        $taobaoStatus = $request->input('taobao_status', 0);
-        $gameId = $request->input('game_id', 0);
-        $wangWang = $request->input('wang_wang');
-        $customerServiceName = $request->input('customer_service_name');
-        $platform = $request->input('platform', 0);
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        $game = $this->game;
-        $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
-        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
-
-        if ($request->export) {
-            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
-            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
-        }
-
-        // 获取订单
-        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
-
-        // 查询各状态订单数
-        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
-
-        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
-            ->where('service_id', 4)->where('status', '!=', 24)->count();
-
-        return view('frontend.v1.workbench.leveling.index')->with([
-            'orders' => $orders,
-            'game' => $game,
-            'employee' => $employee,
-            'tags' => $tags,
-            'no' => $no,
-            'customerServiceName' => $customerServiceName,
-            'gameId' => $gameId,
-            'status' => $status,
-            'taobaoStatus' => $taobaoStatus,
-            'wangWang' => $wangWang,
-            'platform' => $platform,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'statusCount' => $statusCount,
-            'allStatusCount' => $allStatusCount,
         ]);
     }
 
@@ -367,7 +312,7 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
+        return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
     }
 
     /**
@@ -382,7 +327,7 @@ class IndexController extends Controller
             $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
             $originalPrice = $orderData['source_price']; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
-            $foreignOrderNO = isset($orderData['foreign_order_no']) ? $orderData['foreign_order_no'] : ''; // 来源订单号
+            $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
             $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
 
             $userId = Auth::user()->id; // 下单用户ID
@@ -639,7 +584,7 @@ class IndexController extends Controller
             $detail['complain_result'] = $text;
         }
 
-        return view('frontend.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
+        return view('frontend.v1.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
     }
 
     /**
@@ -693,8 +638,7 @@ class IndexController extends Controller
     public function history($order_no)
     {
         $dataList = OrderHistoryRepository::dataList($order_no);
-        $html = view('frontend.workbench.leveling.history', compact('dataList'))->render();
-        return response()->ajax(1, 'success', $html);
+        return  view('frontend.workbench.leveling.history', compact('dataList'));
     }
 
     /**
@@ -744,6 +688,14 @@ class IndexController extends Controller
         $show91Uid = config('show91.uid');
         $dailianUid = config('dailianmama.uid');
 
+//        for ($i =0; $i <=20; $i++) {
+//            $message[] = [
+//                'sender' => $i% 2 > 0 ? '您': '打手',
+//                'send_content' => str_random(20),
+//                'send_time' => date('Y-m-d H:i:s'),
+//            ];
+//        }
+
         return response()->ajax(1, 'success', [
             'third' => $orderDetail['third'],
             'show91Uid' => $show91Uid,
@@ -760,6 +712,7 @@ class IndexController extends Controller
      */
     public function leaveImage($order_no)
     {
+        $dataList = [];
         try {
             // $dataList = OrderAttachmentRepository::dataList($order_no);
             // 其他通用平台
@@ -779,8 +732,14 @@ class IndexController extends Controller
             return response()->ajax($e->getCode(), $e->getMessage());
         }
 
-        $html = view('frontend.workbench.leveling.leave-image', compact('dataList'))->render();
-        return response()->ajax(1, 'success', $html);
+//        $dataList[] = [
+//            'username' => 1,
+//            'description' => 1,
+//            'url' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526562696052&di=cf820cfbfd7cf178be9d99e01e8c4fad&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimage%2Fc0%253Dshijue1%252C0%252C0%252C294%252C40%2Fsign%3Dacd800cbb91c8701c2bbbaa54f16f45a%2Fa08b87d6277f9e2f85a3a3271530e924b899f30f.jpg',
+//            'created_at' => '1',
+//        ];
+
+        return response()->ajax(1, 'success', $dataList);
     }
 
     /**
@@ -1412,7 +1371,7 @@ class IndexController extends Controller
         $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
             ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
 
-        return view('frontend.workbench.leveling.wait')->with([
+        return view('frontend.v1.workbench.leveling.wait')->with([
                 'tid' => $tid,
                 'status' => $status,
                 'orders' => $orders,
@@ -1428,7 +1387,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 获取订单数据
+     * 获取待发订单数据
      * @param Request $request
      * @return array
      */
@@ -1470,6 +1429,7 @@ class IndexController extends Controller
     }
 
     /**
+     * 修改待发订单状态
      * @param Request $request
      */
     public function waitUpdate(Request $request)
@@ -1484,7 +1444,7 @@ class IndexController extends Controller
     }
 
     /**
-     * 待发单备注修改
+     * 修改待发单备注
      * @param Request $request
      */
     public function waitRemark(Request $request)
@@ -1780,6 +1740,109 @@ class IndexController extends Controller
         $fixedInfo['client_phone'] = ['type' => 1, 'value' => '13800138000'];
 
         return $fixedInfo;
+    }
+
+
+    /**
+     * v1订单列表
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function indexNew(Request $request, OrderRepository $orderRepository)
+    {
+        $status = $request->input('status', 0);
+        $no = $request->input('no', '');
+        $taobaoStatus = $request->input('taobao_status', 0);
+        $gameId = $request->input('game_id', 0);
+        $wangWang = $request->input('wang_wang');
+        $customerServiceName = $request->input('customer_service_name');
+        $platform = $request->input('platform', 0);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $game = $this->game;
+        $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
+        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
+
+        if ($request->export) {
+            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
+            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+        }
+
+        // 获取订单
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+
+        // 查询各状态订单数
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+
+        $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+            ->where('service_id', 4)->where('status', '!=', 24)->count();
+
+        return view('frontend.v1.workbench.leveling.index')->with([
+            'orders' => $orders,
+            'game' => $game,
+            'employee' => $employee,
+            'tags' => $tags,
+            'no' => $no,
+            'customerServiceName' => $customerServiceName,
+            'gameId' => $gameId,
+            'status' => $status,
+            'taobaoStatus' => $taobaoStatus,
+            'wangWang' => $wangWang,
+            'platform' => $platform,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'statusCount' => $statusCount,
+            'allStatusCount' => $allStatusCount,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param GameRepository $gameRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function createNew(Request $request, GameRepository $gameRepository)
+    {
+        $game = $this->game;
+        $tid = $request->tid;
+        $gameId = $request->game_id ? $request->game_id : 1;
+        $businessmanInfo = auth()->user()->getPrimaryInfo();
+
+        // 有淘宝订单则更新淘宝订单卖家备注
+        $fixedInfo = [];
+        $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
+        if ($taobaoTrade) {
+            if (empty($taobaoTrade->seller_memo)) {
+                // 获取备注并更新
+                $client = new TopClient;
+                $client->format = 'json';
+                $client->appkey = '12141884';
+                $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+
+                $req = new TradeFullinfoGetRequest;
+                $req->setFields("tid, type, status, payment, orders, seller_memo");
+                $req->setTid($tid);
+                $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
+
+                if (!empty($resp->trade->seller_memo)) {
+                    $taobaoTrade->seller_memo = $resp->trade->seller_memo;
+                    $taobaoTrade->save();
+                }
+            }
+            // 从收货地址中拆分区服角色信息
+            $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
+            // 获取抓取商品配置
+            $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
+            // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
+            if ($goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress, $taobaoTrade);
+            }
+        }
+
+        return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
     }
 }
 

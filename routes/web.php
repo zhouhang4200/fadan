@@ -263,16 +263,16 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('payment', 'OrderOperationController@payment')->name('frontend.workbench.order-operation.payment')->middleware('new.permission:frontend.workbench.order-operation.payment');
             });
         });
-
         // 代练
         Route::namespace('Leveling')->prefix('leveling')->group(function (){
+
             // 获取下单项的子菜单
             Route::post('get-select-child', 'IndexController@getSelectChild')->name('frontend.workbench.get-select-child');
             // 首页
-            Route::get('/', 'IndexController@index')->name('frontend.workbench.leveling.index')->middleware('new.permission:frontend.workbench.leveling.index');
+            Route::get('/', 'IndexController@indexNew')->name('frontend.workbench.leveling.index')->middleware('new.permission:frontend.workbench.leveling.index');
+            Route::any('test', 'IndexController@indexNew')->name('frontend.workbench.leveling.v1.index');
             // 根据订单状态获取订单数据
             Route::any('order-list', 'IndexController@orderList')->name('frontend.workbench.leveling.order-list');
-            Route::any('test', 'IndexController@indexNew')->name('frontend.workbench.leveling.test');
             // 创建订单
             Route::get('create', 'IndexController@create')->name('frontend.workbench.leveling.create')->middleware('new.permission:frontend.workbench.leveling.create');
             // 确认下单
@@ -324,7 +324,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 获取区服
             Route::post('get-region-type', 'IndexController@getRegionType')->name('frontend.workbench.leveling.get-region-type');
          });
-
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');
         // 商品模版

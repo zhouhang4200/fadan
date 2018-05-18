@@ -25,7 +25,7 @@ class SkinController extends Controller
         $skinTradeWX = isset(Auth::user()->getUserSetting()['skin_trade_wx']) ?
             Auth::user()->getUserSetting()['skin_trade_wx'] : '';
 
-        return view('frontend.setting.skin.index', compact('skinTradeQQ', 'skinTradeWX'));
+        return view('frontend.v1.setting.skin.index', compact('skinTradeQQ', 'skinTradeWX'));
     }
 
     /**
