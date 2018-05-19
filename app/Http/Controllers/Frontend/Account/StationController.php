@@ -25,7 +25,7 @@ class StationController extends Controller
             ->paginate(config('frontend.page'));
 
         if ($request->ajax()) {
-    		return response()->json(view()->make('frontend.user.station.list', [
+    		return response()->json(view()->make('frontend.v1.user.station.list', [
                 'userRoles' => $userRoles,
             ])->render());
     	}

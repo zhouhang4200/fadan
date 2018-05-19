@@ -26,12 +26,12 @@ class SmsController extends Controller
 
         if ($request->ajax()) {
             if ($type == 1) {
-                return response()->json(\View::make('frontend.setting.sms.auto-list', [
+                return response()->json(\View::make('frontend.v1.setting.sms.auto-list', [
                     'userSmsTemplate' => $userSmsTemplate,
                     'autoSmsTemplate' => $autoSmsTemplate,
                 ])->render());
             } else {
-                return response()->json(\View::make('frontend.setting.sms.manual-list', [
+                return response()->json(\View::make('frontend.v1.setting.sms.manual-list', [
                     'userSmsTemplate' => $userSmsTemplate,
                     'autoSmsTemplate' => $autoSmsTemplate,
                 ])->render());

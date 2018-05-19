@@ -26,7 +26,7 @@ class HatchetManBlacklistController extends Controller
 
         // 删除的时候页面不刷新
         if ($request->ajax()) {
-            return response()->json(view()->make('frontend.user.hatchet-man-blacklist.list', [
+            return response()->json(view()->make('frontend.v1.user.hatchet-man-blacklist.list', [
                 'hatchetManBlacklists' => $hatchetManBlacklists,
             ])->render());
         }

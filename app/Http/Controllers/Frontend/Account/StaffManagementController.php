@@ -37,7 +37,7 @@ class StaffManagementController extends Controller
 
         // 删除的时候页面不刷新
         if ($request->ajax()) {
-            return response()->json(view()->make('frontend.user.staff-management.list', [
+            return response()->json(view()->make('frontend.v1.user.staff-management.list', [
                 'users' => $users,
             ])->render());
         }
