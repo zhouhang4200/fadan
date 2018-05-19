@@ -30,6 +30,7 @@ use App\Repositories\Frontend\OrderHistoryRepository;
 use App\Services\DailianMama;
 use App\Services\Leveling\DD373Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -247,6 +248,12 @@ class IndexController extends Controller
                     $orderCurrent['third_name'] = config('partner.platform')[$orderCurrent['third']]['name'];
                 }
 
+                // 订单超过12小时
+                $currentTime = new Carbon();
+                $orderTime = $currentTime->parse($orderCurrent['created_at']);
+                $orderCurrent['day'] = $orderTime->diffInDays($currentTime, false);
+
+
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
                     if (is_string($value)) {
@@ -256,8 +263,8 @@ class IndexController extends Controller
                     }
                 }
                 $orderArr[] = $temp;
-            }
 
+            }
             return [
                 'code' => 0,
                 'msg' => '',
@@ -1844,6 +1851,170 @@ class IndexController extends Controller
         }
 
         return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
+    }
+
+    /**
+     * 增加代练价格
+     * @param Request $request
+     * @return mixed
+     */
+    public function addAmount(Request $request)
+    {
+        $orderNo = $request->no;
+        $amount = $request->amount;
+        DB::beginTransaction();
+        try {
+            $order = OrderModel::where('no', $orderNo)->lockForUpdate()->first();
+
+            if ($order) {
+                // 加价
+                if ($order->price < $amount) {
+                    $addAmount = bcsub($amount, $order->price);
+
+                    if (abs($order->price) == $amount) {
+                        throw new CustomException('金额不合法');
+                    }
+                    Asset::handle(new Expend($addAmount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+
+                    $order->price = $amount;
+                    $order->amount = $amount;
+                    $order->save();
+
+                    OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
+                        'field_value' => $amount
+                    ]);
+
+                    // 调用外部接口 加价
+                    if (config('leveling.third_orders')) {
+                        // 获取订单和订单详情以及仲裁协商信息
+                        $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
+                        // 遍历代练平台
+                        foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                            if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$updateData]);
+                            }
+                        }
+                    }
+                    $history[] = [
+                        'order_no' => $orderNo,
+                        'user_id' => auth()->user()->id,
+                        'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+                        'name' => '编辑',
+                        'type' => 22,
+                        'before' => serialize([]),
+                        'after' => serialize([]),
+                        'description' =>  '编辑:代练价格 编辑前：' . $order->price . ' 编辑后：' . $amount,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+
+                    if ($history) {
+                        \DB::table('order_histories')->insert($history);
+                    }
+                }
+            }
+            return response()->ajax(0, '加价失败订单不存在');
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '加价失败, ' . $exception->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '加价成功');
+    }
+
+    /**
+     * 增加代练时间
+     * @param Request $request
+     * @param OrderDetailRepository $detailRepository
+     * @return mixed
+     */
+    public function addTime(Request $request, OrderDetailRepository $detailRepository)
+    {
+        DB::beginTransaction();
+        try {
+            $orderNo = $request->no;
+            $day = $request->day;
+            $hour = $request->hour;
+
+            $detail = $detailRepository->getByOrderNo($orderNo);
+
+            if ($day > $detail['game_leveling_day'] || ($day  == $detail['game_leveling_day'] && $hour > $hour)) {
+                // 更新代练天数
+                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
+                    'field_value' => $day
+                ]);
+                // 更新代练小时
+                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
+                    'field_value' => $hour
+                ]);
+
+                // 调用接口更新值
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$updateData]);
+                        }
+                    }
+                }
+
+                // 写操作记录
+                $history[] = [
+                    'order_no' => $orderNo,
+                    'user_id' => auth()->user()->id,
+                    'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+                    'name' => '编辑',
+                    'type' => 22,
+                    'before' => serialize([]),
+                    'after' => serialize([]),
+                    'description' =>  '编辑:代练时间  编辑前：' . $detail['game_leveling_day'] . '天' . $detail['game_leveling_hour'] . '小时' .  ' 编辑后：' . $day. '天' . $hour . '小时',
+                    'created_at' => date('Y-m-d H:i:s'),
+                ];
+
+                if ($history) {
+                    \DB::table('order_histories')->insert($history);
+                }
+            } else {
+                return response()->ajax(0, '增加时间失败');
+            }
+
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '增加时间失败, ' . $exception->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '增加时间成功');
+    }
+
+    /***
+     * 置顶
+     * @param Request $request
+     */
+    public function setTop(Request $request)
+    {
+        $orderNo = $request->no;
+
+        try {
+            // 调用接口更新值
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['setTop']], [$updateData]);
+                    }
+                }
+            }
+            OrderDetail::where('order_no', $orderNo)->where('field_name', 'is_top')->update(['field_value'=> 1]);
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '置顶失败,' . $exception->getMessage());
+        }
+
+        return response()->ajax(1, '置顶成功');
     }
 }
 

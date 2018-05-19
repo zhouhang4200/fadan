@@ -370,7 +370,9 @@
             @{{# if (d.status == 1) {  }}
                 {{--<button class="qs-btn qs-btn-sm" style="width: 80px;" data-opt="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>--}}
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
+                @{{# if(d.day >= 1 && d.is_top != 1) {  }}
                 <button class="qs-btn qs-btn-sm qs-btn-primary"  style="width: 80px;" data-opt="top" data-no="@{{ d.no }}">置顶</button>
+                @{{# }  }}
             @{{# } else if (d.status == 13) {  }}
                 <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
@@ -460,6 +462,9 @@
     <script type="text/html" id="hatchetManQQAndPhone">
         @{{ d.hatchet_man_qq }}<br/>
         @{{ d.hatchet_man_phone }}
+    </script>
+    <script type="text/html" id="titleTemplate">
+        <span class="tips" lay-tips="@{{ d.game_leveling_title  }}">@{{ d.game_leveling_title }}</span>
     </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
@@ -569,7 +574,7 @@
                     {field: 'status_text', title: '订单状态', width: 90, style:"height: 40px;line-height: 20;", templet:'#statusTemplate' },
                     {field: 'seller_nick', title: '玩家旺旺',  width: 140, templet:'#wwTemplate', style:"height: 40px;line-height: 20px;"},
                     {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
-                    {field: 'game_leveling_title', title: '代练标题', width: 230},
+                    {field: 'game_leveling_title', title: '代练标题', width: 230, templet:'#titleTemplate'},
                     {field: 'game_name', title: '游戏/区/服', width: 140, templet:'#gameTemplate'},
                     {field: 'account_password', title: '账号/密码', width: 120, templet:'#accountPasswordTemplate'},
                     {field: 'role', title: '角色名称', width: 100},
@@ -667,6 +672,7 @@
                     });
                     return false
                 }
+
                 if (opt == 'revoke') {
                     layer.open({
                         type: 1,
@@ -690,7 +696,7 @@
                         });
                         return false;
                     });
-
+                    return false;
                 } else if (opt == 'applyArbitration') {
                     layer.open({
                         type: 1,
@@ -728,10 +734,9 @@
                                 }
                             });
                         }
-
                         return false;
                     });
-
+                    return false
                 } else if (opt == 'delete') {
                     layer.confirm('确认删除吗？', {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
@@ -748,6 +753,7 @@
 
                         layer.close(index);
                     });
+                    return false
                 } else if (opt == 'complete') {
                     layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
                         title: '提示'
@@ -766,6 +772,7 @@
                         });
                         layer.close(index);
                     });
+                    return false
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
                         var message = "对方进行操作【撤销】 对方支付代练费"+apiAmount+"元，我支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
@@ -790,6 +797,23 @@
                         });
                         layer.close(index);
                     });
+                    return false
+                } else if(opt == 'top') {
+                    $.post("{{ route('frontend.workbench.leveling.set-top') }}", {
+                        orderNo: orderNo
+                    }, function (result) {
+                        if (result.status == 1) {
+                            layer.alert(result.message, function () {
+                                layer.closeAll();
+                            });
+                        } else {
+                            layer.alert(result.message, function () {
+                                layer.closeAll();
+                            });
+                        }
+                        reloadOrderList();
+                    });
+                    return false
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo: orderNo,
@@ -805,6 +829,7 @@
                             });
                         }
                     });
+                    return false;
                 }
             });
             // 导出

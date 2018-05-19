@@ -8,6 +8,7 @@ use App\Events\OrderRevoking;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Extensions\Dailian\Controllers\Delete;
+use App\Extensions\Dailian\Controllers\ForceRevoke;
 use App\Extensions\Dailian\Controllers\Revoked;
 use App\Models\OrderDetail;
 use App\Models\TaobaoTrade;
@@ -73,10 +74,10 @@ class Temp extends Command
      */
     public function handle()
     {
-        $status = $this->argument('no');
+        $no = $this->argument('no');
         $user = $this->argument('user');
 
-        $this->complete($status, $user);
+        $this->forceRevoke($no, $user);
 
         die;
         // 我们是待接单
@@ -320,6 +321,11 @@ class Temp extends Command
     public function delete($no, $user)
     {
         (new Delete())->run($no, $user, 0);
+    }
+
+    public function forceRevoke($no, $user)
+    {
+        (new ForceRevoke())->run($no, $user);
     }
 
     public function addPrice()

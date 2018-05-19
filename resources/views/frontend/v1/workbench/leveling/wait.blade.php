@@ -13,8 +13,12 @@
         .qs-btn-sm {
             height: 27px;
             line-height: 27px;
+            vertical-align: top;
         }
-
+        .layui-table-view .layui-table[lay-size=sm] .layui-table-cell {
+            height: 28px;
+            line-height: 28px;
+        }
     </style>
 @endsection
 
