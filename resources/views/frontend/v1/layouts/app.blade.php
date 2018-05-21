@@ -358,7 +358,7 @@ $goodsRoute = [
                                         <a href="{{ route('frontend.setting.sms.index') }}">短信管理</a>
                                     </dd>
                                 @endif
-                                @if(Auth::user()->could('frontend.setting.tb-auth.store'))
+                                @if(Auth::user()->could('frontend.setting.tb-auth.index'))
                                     <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.tb-auth.store') layui-this  @endif">
                                         <a href="{{ route('frontend.setting.tb-auth.store') }}">店铺授权</a>
                                     </dd>
