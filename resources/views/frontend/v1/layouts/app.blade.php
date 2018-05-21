@@ -33,6 +33,7 @@ $financeRoute = [
     'frontend.statistic.employee',
     'frontend.statistic.order',
     'frontend.statistic.sms',
+    'frontend.finance.order-report.index',
 ];
 
 $settingRoute = [
@@ -319,11 +320,11 @@ $goodsRoute = [
                                         <a href="{{ route('frontend.statistic.sms') }}">短信统计</a>
                                     </dd>
                                 @endif
-                                @if(Auth::user()->could('frontend.finance.order-report'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.order-report') layui-this  @endif">
-                                        <a href="{{ route('frontend.finance.order-report') }}">财务订单列表</a>
+                                {{--@if(Auth::user()->could('frontend.finance.order-report'))--}}
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.order-report.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
                                     </dd>
-                                @endif
+                                {{--@endif--}}
                             </dl>
                         </li>
                     @endif

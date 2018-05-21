@@ -20,40 +20,62 @@
             <form class="layui-form" id="search">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-mid">说明：</label>
+                        <label class="layui-form-mid">订单号：</label>
                         <div class="layui-input-inline">
-                            <select name="trade_sub_type" lay-search="">
+                            <input type="text" class="layui-input" name="no" placeholder="相关单号" value="{{ $no }}">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-mid">游戏：</label>
+                        <div class="layui-input-inline">
+                            <select name="game_id" lay-search="">
                                 <option value="">请选择</option>
-                                @foreach (config('tradetype.user_sub') as $key => $value)
-                                    <option value="{{ $key }}" {{ $key == $tradeSubType ? 'selected' : '' }}> {{ $value }}</option>
+                                @foreach ($game as $key => $value)
+                                    <option value="{{ $key }}" {{ $key == $gameId ? 'selected' : '' }}> {{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+
                     <div class="layui-inline">
-                        <label class="layui-form-mid">类型：</label>
+                        <label class="layui-form-mid">店铺名称：</label>
                         <div class="layui-input-inline">
-                            <select name="trade_type" lay-search="">
-                                <option value="">所有类型</option>
-                                @foreach (config('tradetype.user_display') as $key => $value)
-                                    <option value="{{ $key }}" {{ $key == $tradeType ? 'selected' : '' }}> {{ $value }}</option>
+                            <input type="text" class="layui-input" name="seller_nick" placeholder="店铺名称" value="{{ $sellerNick }}">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-mid">接单平台：</label>
+                        <div class="layui-input-inline">
+                            <select name="platform">
+                                <option value="">全部</option>
+                                @foreach (config('partner.platform') as $key => $value)
+                                    <option value="{{ $key }}" @if($key == @platform) selected @endif>{{ $value['name'] }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+
                     <div class="layui-inline">
-                        <label class="layui-form-mid">相关单号：</label>
+                        <label class="layui-form-mid">订单状态：</label>
                         <div class="layui-input-inline">
-                            <input type="text" class="layui-input" name="trade_no" placeholder="相关单号" value="{{ $tradeNo }}">
+                            <select name="status" lay-search="">
+                                <option value="">请选择</option>
+                                @foreach (config('order.status_leveling') as $key => $value)
+                                    <option value="{{ $key }}  @if($key == $status) selected  @endif">{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
+
                     <div class="layui-inline">
                         <label class="layui-form-mid">时间：</label>
                         <div class="layui-input-inline" style="">
-                            <input type="text" class="layui-input" id="time-start" name="time_start" value="{{ $timeStart }}" placeholder="开始时间">
+                            <input type="text" class="layui-input" id="time-start" name="start_date" value="{{ $startDate }}" placeholder="开始时间">
                         </div>
                         <div class="layui-input-inline" style="">
-                            <input type="text" class="layui-input" id="time-end" name="time_end" value="{{ $timeEnd }}" placeholder="结束时间">
+                            <input type="text" class="layui-input" id="time-end" name="end_date" value="{{ $endDate }}" placeholder="结束时间">
                         </div>
                         <button class="qs-btn layui-btn-normal" type="submit">查询</button>
                         <button class="qs-btn layui-btn-normal" type="button" id="export">导出</button>
@@ -68,41 +90,80 @@
                 </colgroup>
                 <thead>
                 <tr>
-                    <th>流水号</th>
-                    <th>说明</th>
-                    <th>类型</th>
-                    <th>变动金额</th>
-                    <th>账户余额</th>
-                    <th>相关单号</th>
-                    <th>时间</th>
+                    <th>内部单号</th>
+                    <th>淘宝单号</th>
+                    <th>游戏</th>
+                    <th>订单状态</th>
+                    <th>店铺名称</th>
+                    <th>接单平台</th>
+                    <th>淘宝金额</th>
+                    <th>接单价格</th>
+                    <th>最终利润</th>
+                    <th>淘宝下单时间</th>
+                    <th>结算时间</th>
                 </tr>
                 </thead>
                 <tbody>
-                @forelse($dataList as $data)
+                @forelse($orders as $item)
+                    @php
+                        $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
+                    
+                        $paymentAmount = '';
+                        $getAmount = '';
+                        $poundage = '';
+                        $profit = '';
+                        $amount = '';
+                        if (in_array($item->status, [19, 20, 21])){
+                           // 支付金额
+                            if ($item->status == 21 && $item->levelingConsult) {
+                                $amount = $item->levelingConsult->api_amount;
+                            } else if($item->levelingConsult) {
+                                $amount = $item->levelingConsult->amount;
+                            }
+                            // 支付金额
+                            $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
+        
+                            $paymentAmount = (float)$paymentAmount + 0;
+                            $getAmount = (float)$getAmount + 0;
+                            $poundage = (float)$poundage + 0;
+                            // 利润
+                            $profit = ((float)$detail['source_price'] - $paymentAmount + $getAmount - $poundage) + 0;
+                        }
+                    @endphp
                     <tr>
-                        <td>{{ $data->id }}</td>
-                        <td>{{ config('tradetype.user_sub')[$data->trade_subtype] }}</td>
-                        <td>{{ config('tradetype.user')[$data->trade_type] }}</td>
-                        <td>{{ $data->fee + 0 }}</td>
-                        <td>{{ $data->balance + 0 }}</td>
-                        <td>{{ $data->trade_no }}</td>
-                        <td>{{ $data->created_at }}</td>
+                        <td>{{ $item->no }}</td>
+                        <td>
+                            单号1: {{ !empty($detail['source_order_no']) }}<br/>
+                            单号2: {{ !empty($detail['source_order_no_1']) }}<br/>
+                            单号3: {{ !empty($detail['source_order_no_2']) }}
+                        </td>
+                        <td>{{ $item->game_name }}</td>
+                        <td>{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</td>
+                        <td>{{ $detail['seller_nick'] ?? '' }}</td>
+                        <td>
+                            @if(isset($detail['third']) && $detail['third'])
+                                {{ config('partner.platform')[(int)$detail['third']]['name'] }}<br/>
+                                {{ $detail['third_order_no'] }}
+                            @else
+                            @endif
+                        </td>
+                        <td>{{ $detail['source_price'] ?? '' }}</td>
+                        <td>{{ $paymentAmount  }}</td>
+                        <td>{{ $profit }}</td>
+                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->updated_at }}</td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="999">暂时没有数据</td>
                     </tr>
                 @endforelse
-                </tbody>
-            </table>
 
-            {{ $dataList->appends([
-                'trade_no' => $tradeNo,
-                'trade_type' => $tradeType,
-                'trade_sub_type' => $tradeSubType,
-                'time_start' => $timeStart,
-                'time_end' => $timeEnd,
-                ])->links() }}
+                </tbody>
+
+            </table>
+            {{ $orders->appends(Request::all())->links() }}
+
             @endsection
         </div>
     </div>

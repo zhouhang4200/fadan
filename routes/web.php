@@ -227,7 +227,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 		// 我的提现
         Route::get('withdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.withdraw-order')->middleware('new.permission:frontend.finance.withdraw-order');
         // 财务订单报表
-        Route::get('order-report', 'WithdrawOrderController@orderReport')->name('frontend.finance.order-report')->middleware('new.permission:frontend.finance.order-report');
+        Route::get('order-report', 'OrderReportController@index')->name('frontend.finance.order-report.index');
 
 	});
 

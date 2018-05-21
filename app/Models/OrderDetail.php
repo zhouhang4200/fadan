@@ -25,8 +25,8 @@ class OrderDetail extends Model
     public static function findOrdersBy($fieldName, $fieldValue, $type = 2)
     {
         if ($type == 2) {
-//            return OrderDetail::where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
-            return OrderDetail::where('field_name_alias', $fieldName)
+            return OrderDetail::where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
+            ->where('field_name_alias', $fieldName)
                 ->where('field_value', $fieldValue)
                 ->pluck('order_no')
                 ->toArray();
