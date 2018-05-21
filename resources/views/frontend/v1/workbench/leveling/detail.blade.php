@@ -574,89 +574,7 @@
         </div>
     </div>
     <div class="layui-col-md4">
-        <div class="layui-card">
-            <div class="layui-card-header">淘宝数据</div>
-            <div class="layui-card-body qs-text">
-                <table class="layui-table">
-                    <colgroup>
-                        <col width="115">
-                        <col>
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <td>店铺名</td>
-                        <td>
-                            {{ $taobaoTrade->seller_nick or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>天猫单号</td>
-                        <td>
-                            {{ $taobaoTrade->tid or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>订单状态</td>
-                        <td>
-                            {{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>买家旺旺</td>
-                        <td>
-                            @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
-                                <a style="color:#1aa6de" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
-                                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
-                                </a>
-                            @else
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>购买单价</td>
-                        <td>{{ $taobaoTrade->price or '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>购买数量</td>
-                        <td>
-                            {{ $taobaoTrade->num or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>实付金额</td>
-                        <td>
-                            {{ $taobaoTrade->payment or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>所在区/服</td>
-                        <td>
-                            {{ $fixedInfo['serve']['value'] or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>角色名称</td>
-                        <td>
-                            {{ $fixedInfo['role']['value'] or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>买家留言</td>
-                        <td>
-                            {{ $taobaoTrade->buyer_message or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>下单时间</td>
-                        <td>
-                            {{ $taobaoTrade->created or '' }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="layui-card" style="margin-bottom: 72px;">
+        <div class="layui-card" style="">
             <div class="layui-card-header">平台数据</div>
             <div class="layui-card-body qs-text">
                 <table class="layui-table">
@@ -742,6 +660,88 @@
                     <tr>
                         <td>利润：</td>
                         <td>{{ $detail['profit'] ?? ''  }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-card" style="margin-bottom: 72px;">
+            <div class="layui-card-header">淘宝数据</div>
+            <div class="layui-card-body qs-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="115">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>店铺名</td>
+                        <td>
+                            {{ $taobaoTrade->seller_nick or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>天猫单号</td>
+                        <td>
+                            {{ $taobaoTrade->tid or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>订单状态</td>
+                        <td>
+                            {{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>买家旺旺</td>
+                        <td>
+                            @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
+                                <a style="color:#1aa6de" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
+                                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
+                                </a>
+                            @else
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>购买单价</td>
+                        <td>{{ $taobaoTrade->price or '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>购买数量</td>
+                        <td>
+                            {{ $taobaoTrade->num or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>实付金额</td>
+                        <td>
+                            {{ $taobaoTrade->payment or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>所在区/服</td>
+                        <td>
+                            {{ $fixedInfo['serve']['value'] or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>角色名称</td>
+                        <td>
+                            {{ $fixedInfo['role']['value'] or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>买家留言</td>
+                        <td>
+                            {{ $taobaoTrade->buyer_message or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>下单时间</td>
+                        <td>
+                            {{ $taobaoTrade->created or '' }}
+                        </td>
                     </tr>
                     </tbody>
                 </table>

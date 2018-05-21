@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="/vendor/layui/css/layui.css">
 <link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
+<link rel="stylesheet" href="/frontend/v1/lib/css/admin.css" media="all">
+<link rel="stylesheet" href="/frontend/v1/lib/css/new.css">
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script src="/vendor/layui/layui.js"></script>
 <style>
@@ -64,7 +66,7 @@
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="qs-btn" lay-submit lay-filter="formDemo" style="height: 28px;line-height: 28px">确定</button>
+                        <button class="qs-btn" lay-submit lay-filter="formDemo">确定</button>
                         <button type="reset" class="qs-btn reset">重置</button>
                     </div>
                 </div>
