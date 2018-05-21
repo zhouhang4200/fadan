@@ -1525,8 +1525,23 @@
             });
             // 发送留言
             $('.layim-send-btn').click(function(){
-                $('[name=layim-chat-textarea]').val('');
-                loadMessage(0);
+                var message = $('[name=layim-chat-textarea]').val();
+                if (message) {
+                    $.post("{{ route('frontend.workbench.leveling.send-message') }}", {
+                        'order_no': "{{ $detail['no'] }}",
+                        'message':message
+                    }, function (data) {
+                        $('[name=layim-chat-textarea]').val('');
+                        if (data.status === 1) {
+                            loadMessage(0);
+                        } else {
+                            layer.msg(data.message);
+                            return false;
+                        }
+                    }, 'json');
+                } else {
+                    layer.msg('请输入要发送的内容');
+                }
             });
             // 查看图片
             //改变下时间间隔、动画类型、高度
