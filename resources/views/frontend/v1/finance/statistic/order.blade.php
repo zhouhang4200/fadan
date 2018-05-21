@@ -5,7 +5,10 @@
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
     <style>
-
+    .layui-form-label {
+            width: 50px;
+            padding-left: 0px;
+        }
     </style>
 @endsection
 
@@ -15,7 +18,7 @@
         <form class="layui-form" method="" action="">
             <div class="layui-input-inline">
                 <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 100px;padding-left: 0px;">发布时间</label>
+                    <label class="layui-form-label">发布时间</label>
                     <div class="layui-input-inline">  
                         <input type="text" class="layui-input" value="{{ $startDate ?: null }}" name="start_date" id="test1" placeholder="年-月-日">
                     </div>

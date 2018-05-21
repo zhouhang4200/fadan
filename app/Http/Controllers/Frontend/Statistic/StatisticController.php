@@ -184,11 +184,14 @@ class StatisticController extends Controller
      */
     public function exportEmployee($excelDatas, $totalData)
     {
-        try {
+        // try {
             // 标题
             $title = [
                 '员工姓名',
-                '账号',
+                '发布数量',
+                '来源价格',
+                '发布价格',
+                '来源/发布差价',
                 '已结算单数',
                 '已结算发单金额',
                 '已撤销单数',
@@ -198,30 +201,35 @@ class StatisticController extends Controller
 
             $totalData = [
             	'总计',
-                $totalData->total_user_id_count,
-                $totalData->total_complete_order_count,
-                $totalData->total_complete_order_amount,
-                $totalData->total_revoke_order_count,
-                $totalData->total_arbitrate_order_count,
-                $totalData->total_profit,
+                $totalData->count,
+                $totalData->original_price,
+                $totalData->price,
+                $totalData->diff_price,
+                $totalData->complete_count,
+                $totalData->complete_price,
+                $totalData->revoked_count,
+                $totalData->arbitrationed_count,
+                $totalData->today_profit,
             ];
 
-            $chunkDatas = array_chunk(array_reverse($excelDatas->toArray()), 500);
+            $chunkDatas = array_chunk(array_reverse($excelDatas), 500);
 
             Excel::create('员工统计', function ($excel) use ($chunkDatas, $title, $totalData) {
                 foreach ($chunkDatas as $chunkData) {
                     // 内容
                     $datas = [];
                     foreach ($chunkData as $key => $data) {
-                    	$user = User::find($data['user_id']);
                         $datas[] = [
-                            $user->username,
-                            $data['name'],
-                            $data['complete_order_count'] ?? '--',
-                            $data['complete_order_amount'] ?? '--',
-                            $data['revoke_order_count'] ?? '--',
-                            $data['arbitrate_order_count'] ?? '--',
-                            $data['profit'] ?? '--',
+                            $data->username,
+                            $data->count,
+                            $data->original_price,
+                            $data->price,
+                            $data->diff_price,
+                            $data->complete_count,
+                            $data->complete_price,
+                            $data->revoked_count,
+                            $data->arbitrationed_count,
+                            $data->today_profit,
                         ];
                     }
                     // 将标题加入到数组
@@ -233,9 +241,9 @@ class StatisticController extends Controller
                     });
                 }
             })->export('xls');
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
 
-        }
+        // }
     }
 
     /**
@@ -328,7 +336,7 @@ class StatisticController extends Controller
         $start = $request->page ? ($request->page-1)*$limit : 0;
         $page = $request->page;
 
-        $userId = $request->user_id ?? Auth::id();
+        $userId = $request->user_id;
         $startDate = $request->start_date ?? Carbon::now()->toDateString();
         $endDate = $request->end_date ?? Carbon::now()->addDays(1)->toDateString();
         $fullUrl = $request->fullUrl();
@@ -465,7 +473,20 @@ class StatisticController extends Controller
             GROUP BY g.creator_user_id
         ");
 
-        if (! isset($totals) || ! is_array($totals) || empty($totals)) {
+        // 如果选择了某个具体员工
+        if ($request->user_id && isset($totals) && count($totals) > 0) {
+            foreach ($totals as $k => $total) {
+                if ($total->creator_user_id == $request->user_id) {
+                    $totals = $total;
+                }
+            }
+            // 如果这个id不存在结果里面
+            if (is_array($totals) && count($totals) > 1) {
+                $totals = [];
+            }
+        }
+
+        if (! isset($totals) || empty($totals)) {
             $totals = [];
         }
 
@@ -528,7 +549,18 @@ class StatisticController extends Controller
             $final = $final[0];
         }
 
-        return view('frontend.v1.finance.employee.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final'));
+        // if (isset($request->user_id)) {
+        //     $final = [];
+        // }
+
+        if ($request->export) {
+            if (count($totals) < 1) {
+                return redirect(route('frontend.statistic.employee'))->withInput()->with('empty', '数据为空!');
+            }
+            return $this->exportEmployee($totals, $final);
+        }
+
+        return view('frontend.v1.finance.employee.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final', 'parent'));
     }
 }
 

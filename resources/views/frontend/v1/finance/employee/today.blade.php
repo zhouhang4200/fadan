@@ -8,6 +8,10 @@
         .layui-laypage-em {
             background-color: #ff7a00 !important;
         }
+        .layui-form-label {
+            width: 50px;
+            padding-left: 0px;
+        }
     </style>
 @endsection
 
@@ -41,6 +45,17 @@
                         @endforelse
                     </select>
                 </div> -->
+                <label class="layui-form-label">员工姓名</label> 
+                    <div class="layui-input-inline">               
+                        <select name="user_id" lay-verify="" lay-search="">
+                            <option value="">请输入员工姓名</option>
+                            <option value="{{ $parent->id }}" {{ $parent->id == $userId ? 'selected' : '' }}>{{ $parent->username ?? '--' }}</option>
+                            @forelse($children as $child)
+                                <option value="{{ $child->id }}" {{ $child->id == $userId ? 'selected' : '' }}>{{ $child->username ?? '--' }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
                 <label class="layui-form-label" >发布时间</label>
                 <div class="layui-input-inline">  
                     <input type="text" id="start_date" lay-start_date="{{ $startDate }}" class="layui-input" value="{{ $startDate ?: null }}" name="start_date" placeholder="年-月-日">
@@ -50,6 +65,7 @@
                 </div>
                 <div class="layui-inline" >
                     <button class="qs-btn qs-btn-normal qs-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
+                     <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="qs-btn qs-btn-normal layui-btn-small" >导出</a>
                 </div>                 
             </div>
         </div>
@@ -110,38 +126,53 @@
                 @empty
                 @endforelse -->
                 @if(! empty($totals) && isset($totals))
-                @forelse($totals as $total)
-                    <!-- <tr style="color: red;">
-                        <td>总计</td>
-                        <td>{{ $total->count }} 单</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>{{ number_format($total->price, 2) }}</td>
-                        <td>{{ number_format($total->original_price, 2) }}</td>
-                        <td>{{ number_format($total->create_order_pay_amount, 2) }}</td>
-                        <td>{{ number_format($total->revoked_and_arbitrationed_return_order_price, 2) ?? '--' }}</td>
-                        <td>{{ number_format($total->revoked_and_arbitrationed_return_deposit, 2) ?? '--' }}</td>
-                        <td>{{ number_format($total->revoked_and_arbitrationed_pay_poundage, 2) ?? '--' }}</td>
-                        <td>{{ number_format($total->revoked_and_arbitrationed_profit, 2) ?? '--' }}</td>
-                        <td>{{ number_format($total->complete_order_profit, 2) ?? '--' }}</td>
-                        <td>{{ number_format($total->today_profit, 2) ?? '--' }}</td>
-                    </tr> -->
-                    <tr>
-                        <td>{{ $total->username }}</td>
-                        <td>{{ $total->count }}</td>
-                        <td>{{ number_format($total->original_price, 2) }}</td>
-                        <td>{{ number_format($total->price, 2) }}</td>
-                        <td>{{ number_format($total->diff_price, 2) }}</td>
-                        <td>{{ $total->complete_count }}</td>
-                        <td>{{ number_format($total->complete_price, 2) ?? '--' }}</td>
-                        <td>{{ $total->revoked_count }}</td>
-                        <td>{{ $total->arbitrationed_count }}</td>
-                        <td>{{ number_format($total->today_profit, 2) ?? '--' }}</td>
-                    </tr>
-                @empty
-                @endforelse
+                    @if (is_array($totals))
+                        @forelse($totals as $total)
+                            <!-- <tr style="color: red;">
+                                <td>总计</td>
+                                <td>{{ $total->count }} 单</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>{{ number_format($total->price, 2) }}</td>
+                                <td>{{ number_format($total->original_price, 2) }}</td>
+                                <td>{{ number_format($total->create_order_pay_amount, 2) }}</td>
+                                <td>{{ number_format($total->revoked_and_arbitrationed_return_order_price, 2) ?? '--' }}</td>
+                                <td>{{ number_format($total->revoked_and_arbitrationed_return_deposit, 2) ?? '--' }}</td>
+                                <td>{{ number_format($total->revoked_and_arbitrationed_pay_poundage, 2) ?? '--' }}</td>
+                                <td>{{ number_format($total->revoked_and_arbitrationed_profit, 2) ?? '--' }}</td>
+                                <td>{{ number_format($total->complete_order_profit, 2) ?? '--' }}</td>
+                                <td>{{ number_format($total->today_profit, 2) ?? '--' }}</td>
+                            </tr> -->
+                            <tr>
+                                <td>{{ $total->username }}</td>
+                                <td>{{ $total->count }}</td>
+                                <td>{{ number_format($total->original_price, 2) }}</td>
+                                <td>{{ number_format($total->price, 2) }}</td>
+                                <td>{{ number_format($total->diff_price, 2) }}</td>
+                                <td>{{ $total->complete_count }}</td>
+                                <td>{{ number_format($total->complete_price, 2) ?? '--' }}</td>
+                                <td>{{ $total->revoked_count }}</td>
+                                <td>{{ $total->arbitrationed_count }}</td>
+                                <td>{{ number_format($total->today_profit, 2) ?? '--' }}</td>
+                            </tr>
+                        @empty
+                        @endforelse
+                    @else 
+                        <tr>
+                            <td>{{ $totals->username }}</td>
+                            <td>{{ $totals->count }}</td>
+                            <td>{{ number_format($totals->original_price, 2) }}</td>
+                            <td>{{ number_format($totals->price, 2) }}</td>
+                            <td>{{ number_format($totals->diff_price, 2) }}</td>
+                            <td>{{ $totals->complete_count }}</td>
+                            <td>{{ number_format($totals->complete_price, 2) ?? '--' }}</td>
+                            <td>{{ $totals->revoked_count }}</td>
+                            <td>{{ $totals->arbitrationed_count }}</td>
+                            <td>{{ number_format($totals->today_profit, 2) ?? '--' }}</td>
+                        </tr>
+                    @endif
                 @endif
                 @if(! empty($final))
                 <tr style="color: red;">
