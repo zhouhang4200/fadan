@@ -1467,20 +1467,11 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        if (result.content.third == 1) {
-                            var getTpl = message91show.innerHTML, view = $('.chat_window');
-                            layTpl(getTpl).render(result.content, function(html){
-                                view.html(html);
-                                layui.form.render();
-                            });
-
-                        } else if (result.content.third >= 2) {
-                            var getTpl = message.innerHTML, view = $('.layim-chat-main');
-                            layTpl(getTpl).render(result.content, function(html){
-                                view.html(html);
-                                layui.form.render();
-                            });
-                        }
+                        var getTpl = message.innerHTML, view = $('.layim-chat-main');
+                        layTpl(getTpl).render(result.content, function(html){
+                            view.html(html);
+                            layui.form.render();
+                        });
                     }
                 });
             }

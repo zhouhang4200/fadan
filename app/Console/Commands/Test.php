@@ -8,7 +8,7 @@ use App\Models\OrderDetail;
 use App\Repositories\Frontend\OrderRepository;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
-use App\Services\Show91;
+use App\Services\Leveling\Show91Controller;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -75,9 +75,9 @@ class Test extends Command
     public function handle()
     {
         $type = $this->argument('type');
-      dd(  Show91::seeappeal([
-          'aid' => 'ORD180521105449004776'
-      ]));
+      dd(  Show91Controller::getMessage([
+          'show91_order_no' => 'ORD180521105449004776'
+        ]));
         if ($type == 1) {
             $this->shos91();
         } elseif ($type == 2) {
