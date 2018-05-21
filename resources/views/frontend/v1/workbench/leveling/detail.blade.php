@@ -140,17 +140,6 @@
             left: 0px;
             font-size: 25px;
         }
-        div[carousel-item]>* {
-            text-align: center;
-            line-height: 280px;
-            color: #fff;
-        }
-        div[carousel-item]>*:nth-child(2n) {
-            background-color: #009688;
-        }
-        div[carousel-item]>*:nth-child(2n+1) {
-            background-color: #5FB878;
-        }
         #carousel {
             position: relative;
         }
@@ -991,7 +980,7 @@
     <script id="images" type="text/html">
         <div carousel-item="" id="">
             @{{# var i = 0; layui.each(d, function(index, item){ }}
-                <div  style="background-image: url(@{{ item.url }});"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+                <div  style="background: url(@{{ item.url }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
                     <div class="carousel-tips" >@{{ item.description }} &nbsp;&nbsp;&nbsp; @{{ item.created_at }} </div>
                 </div>
                 @{{# if(i == 0){   i = 1;  } }}
@@ -1607,19 +1596,16 @@
                 }
             });
             // 查看图片
-            //改变下时间间隔、动画类型、高度
-            carousel.render({
+            var ins = carousel.render({
                 elem: '#carousel',
                 anim: 'fade',
-                width: '100%',
+                width: '500px',
                 arrow: 'always',
                 autoplay: false,
-                height: '100%',
+                height: '500px',
                 indicator: 'none'
             });
             $('#carousel-btn').click(function () {
-
-
                 $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
                     if (result.status === 1) {
                         if (result.content.length > 0 ) {
@@ -1638,6 +1624,16 @@
                                 moveType: 1,
                                 content: $('#carousel'),
                                 success: function () {
+                                    //改变下时间间隔、动画类型、高度
+                                    ins.reload({
+                                        elem: '#carousel',
+                                        anim: 'fade',
+                                        width: '100%',
+                                        arrow: 'always',
+                                        autoplay: false,
+                                        height: '100%',
+                                        indicator: 'none'
+                                    });
                                 }
                             });
                         } else {

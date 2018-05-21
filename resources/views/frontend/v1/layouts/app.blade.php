@@ -136,11 +136,10 @@ $goodsRoute = [
             <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
 
                 <li class="layui-nav-item" lay-unselect>
-                    <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+                    <a  id="leveling-message">
                         <i class="layui-icon layui-icon-notice"></i>
-
                         <!-- 如果有新消息，则显示小圆点 -->
-                        <span class="layui-badge-dot"></span>
+                        <span class="layui-badge-dot @if(levelingMessageCount(auth()->user()->getPrimaryUserId(), 4) == 0) layui-hide  @endif"></span>
                     </a>
                 </li>
                 <li class="layui-nav-item" lay-unselect style="margin-right: 30px;">
@@ -150,10 +149,7 @@ $goodsRoute = [
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a lay-href="set/user/info.html">基本资料</a>
-                        </dd>
-                        <dd>
-                            <a lay-href="set/user/password.html">修改密码</a>
+                            <a href="{{ route('frontend.index') }}">基本资料</a>
                         </dd>
                         <hr>
                         <dd style="text-align: center;">
@@ -476,6 +472,19 @@ $goodsRoute = [
     }).extend({
         index: 'lib/js/index' //主入口模块
     }).use('index');
+
+    $('#leveling-message').click(function () {
+        layer.open({
+            title:'代练留言',
+            type: 2,
+            move: false,
+            resize:false,
+            scrollbar: false,
+            area: ['800px', '500px'],
+            content: '{{ route('frontend.message-list') }}'
+        });
+        return false;
+    });
 </script>
 @yield('js')
 </body>
