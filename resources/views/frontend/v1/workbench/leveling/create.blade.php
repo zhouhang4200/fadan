@@ -769,9 +769,15 @@
                 $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
                 $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 @if(isset($taobaoTrade->tid))
+                    <?php $payment = 0;?>
+                    @forelse($allTaobaoTrade as $trade)
+                        <?php  $payment +=  $trade['payment'] ?>
+                    @empty
+                    @endforelse
+                    $('input[name=source_price]').val('{{ $payment }}');
+
                     $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
                     $('input[name=order_source]').val('天猫');
-                    $('input[name=source_price]').val('{{ $taobaoTrade->payment }}');
                     $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
                     $('input[name=seller_nick]').val('{{ $taobaoTrade->seller_nick }}');
                 @endif

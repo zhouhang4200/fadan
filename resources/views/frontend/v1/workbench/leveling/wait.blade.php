@@ -61,6 +61,7 @@
                             <div class="layui-form-item">
                                 <div class="layui-input-block" style="margin-left: 40px;">
                                     <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
+                                    <button class="qs-btn" lay-submit="" lay-filter="send">合并发布</button>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +101,7 @@
         @{{# } else if (d.handle_status == 2) {  }}
         <button  class="qs-btn qs-btn-sm" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=0">显示</button>
         @{{# } else if (d.handle_status == 1) {  }}
-        <a  class="qs-btn qs-btn-sm" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.id }}&game_id=@{{ d.game_id }}">发布</a>
+        <a  class="qs-btn qs-btn-sm" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}">发布</a>
         @{{# }  }}
     </script>
     <script type="text/html" id="wwTemplate">
@@ -179,7 +180,8 @@
                     {field: 'payment', title: '实付金额'},
                     {field: 'created', title: '下单时间',width: 180 },
                     {field: 'remark', title: '备注', edit:'text',width: 200 },
-                    {field: 'button', title: '操作', width: 200,  toolbar: '#operation'}
+                    {field: 'button', title: '操作', width: 200,  toolbar: '#operation'},
+                    {type: 'checkbox'}
                 ]],
                 height: 'full-250',
                 size: 'sm', //小尺寸的表格
@@ -198,6 +200,21 @@
                 $.post($(this).attr('href'), {ad:1}, function () {
                     reloadOrderList();
                 });
+            });
+
+            // 搜索
+            form.on('submit(send)', function (data) {
+                var checkStatus = table.checkStatus('order-list'), data = checkStatus.data;
+                var id = '';
+                var gameId = 0;
+                $.each(data, function (index, item) {
+                    if (gameId == 0) {
+                        gameId = item.game_id;
+                    }
+                    id += item.tid + ',';
+                });
+                window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
+                return false;
             });
         });
     </script>
