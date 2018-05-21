@@ -7,47 +7,47 @@
 @endsection
 
 @section('main')
-<div class="layui-card-body">
-    <div class="explanation">
-    <div class="ex_tit" style="margin-bottom: 10px;"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示" class=""></span></div>
-    <ul>
-    <li>该绑定用于抓取您淘宝店铺的订单。绑定成功后您店铺订单会自动同步到平台中。</li>
-    </ul>
-    </div>
-    <form class="layui-form layui-form-pane" action="">
-        <div class="layui-inline">
-            @php
-                $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
-                $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
-            @endphp
-            <a href="{{ $url }}" class="qs-btn" lay-submit="" lay-filter="auth">授权</a>
+    <div class="layui-card qs-text">
+        <div class="layui-card-body">
+            <blockquote class="layui-elem-quote">
+                操作提示<br/>
+                该绑定用于抓取您淘宝店铺的订单。绑定成功后您店铺订单会自动同步到平台中。
+            </blockquote>
+            <form class="layui-form layui-form-pane" action="">
+                <div class="layui-inline">
+                    @php
+                        $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
+                        $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
+                    @endphp
+                    <a href="{{ $url }}" class="qs-btn" lay-submit="" lay-filter="auth">授权</a>
+                </div>
+            </form>
+
+            <table class="layui-table" lay-size="sm">
+                <thead>
+                <tr>
+                    <th>店铺旺旺</th>
+                    <th>添加时间</th>
+                    <th width="13%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                @forelse($taobaoShopAuth as $item)
+                    <tr>
+                        <td>{{ $item->wang_wang }}</td>
+                        <td>{{ $item->created_at }}</td>
+                        <td>
+                            <button class="qs-btn layui-btn-normal layui-btn-small" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button>
+                        </td>
+                    </tr>
+                @empty
+
+                @endforelse
+                </tbody>
+            </table>
         </div>
-    </form>
-
-    <table class="layui-table" lay-size="sm">
-        <thead>
-        <tr>
-            <th>店铺旺旺</th>
-            <th>添加时间</th>
-            <th width="13%">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        @forelse($taobaoShopAuth as $item)
-            <tr>
-                <td>{{ $item->wang_wang }}</td>
-                <td>{{ $item->created_at }}</td>
-                <td>
-                    <button class="qs-btn layui-btn-normal layui-btn-small" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button>
-                </td>
-            </tr>
-        @empty
-
-        @endforelse
-        </tbody>
-    </table>
-</div>
+    </div>
 @endsection
 
 @section('js')
