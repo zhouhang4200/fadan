@@ -378,7 +378,7 @@
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
             @{{# } else if (d.status == 14) {  }}
                 <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
             @{{# } else if (d.status == 15) {  }}
 
                 @{{# if (d.consult == 1) {  }}
@@ -571,7 +571,7 @@
                 method: 'post',
                 cols: [[
                     {field: 'no', title: '订单号', width: 260, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},
-                    {field: 'status_text', title: '订单状态', width: 90, style:"height: 40px;line-height: 20;", templet:'#statusTemplate' },
+                    {field: 'status_text', title: '订单状态', width: 95, style:"height: 40px;line-height: 20;", templet:'#statusTemplate' },
                     {field: 'seller_nick', title: '玩家旺旺',  width: 140, templet:'#wwTemplate', style:"height: 40px;line-height: 20px;"},
                     {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
                     {field: 'game_leveling_title', title: '代练标题', width: 230, templet:'#titleTemplate'},
@@ -591,7 +591,7 @@
                     {field: 'poundage', title: '手续费', width: 100},
                     {field: 'city', title: '利润', width: 100},
                     {field: 'customer_service_name', title: '发单客服', width: 100},
-                    {field: 'button', title: '操作',width:230, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
+                    {field: 'button', title: '操作',width:195, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
                 ]],
                 height: 'full-260',
                 size: 'sm', //小尺寸的表格
