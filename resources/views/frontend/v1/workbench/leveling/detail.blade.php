@@ -245,14 +245,14 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">账号</label>
                             <div class="layui-input-block">
-                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
+                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['account'] ?? '' }}">
                             </div>
                         </div>
 
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">密码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
+                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['password'] ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -299,13 +299,13 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练说明</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}</textarea>
+                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_instructions'] ?? '' }}</textarea>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练要求</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}</textarea>
+                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_requirements'] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -381,7 +381,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">玩家电话</label>
                             <div class="layui-input-block">
-                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话" value="{{ $detail['efficiency_deposit'] ?? '' }}">
+                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话" value="{{ $detail['client_phone'] ?? '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
