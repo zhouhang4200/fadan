@@ -990,10 +990,11 @@
     </script>
     <script id="images" type="text/html">
         <div carousel-item="" id="">
-            @{{#  layui.each(d, function(index, item){ }}
-                <div>条目1
-                    <div class="carousel-tips" style="background-image: url(@{{ item.url }});">@{{ item.url }}&nbsp;&nbsp;&nbsp;&nbsp;@{{ item.url }}</div>
+            @{{# var i = 0; layui.each(d, function(index, item){ }}
+                <div  style="background-image: url(@{{ item.url }});"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+                    <div class="carousel-tips" >@{{ item.description }} &nbsp;&nbsp;&nbsp; @{{ item.created_at }} </div>
                 </div>
+                @{{# if(i == 0){   i = 1;  } }}
             @{{# }); }}
         </div>
     </script>
@@ -1617,24 +1618,31 @@
                 indicator: 'none'
             });
             $('#carousel-btn').click(function () {
-                layer.open({
-                    type: 1,
-                    title: false ,
-                    area: ['50%', '500px'],
-                    shade: 0.8,
-                    shadeClose: true,
-                    moveType: 1,
-                    content: $('#carousel'),
-                    success: function () {
-                        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
-                            if (result.status === 1) {
-                                var getTpl = images.innerHTML, view = $('#carousel');
-                                layTpl(getTpl).render(result.content, function(html){
-                                    view.html(html);
-                                    layui.form.render();
-                                });
-                            }
-                        });
+
+
+                $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
+                    if (result.status === 1) {
+                        if (result.content.length > 0 ) {
+                            var getTpl = images.innerHTML, view = $('#carousel');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+
+                            layer.open({
+                                type: 1,
+                                title: false ,
+                                area: ['50%', '500px'],
+                                shade: 0.8,
+                                shadeClose: true,
+                                moveType: 1,
+                                content: $('#carousel'),
+                                success: function () {
+                                }
+                            });
+                        } else {
+                            layer.msg('暂时没有图片');
+                        }
                     }
                 });
             });
