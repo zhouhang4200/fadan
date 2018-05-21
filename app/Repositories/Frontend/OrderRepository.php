@@ -297,8 +297,6 @@ class OrderRepository
         $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
-//        $query->where('status', '!=', 24);
-        $query->where('service_id', 4)->with(['detail']);
         $query->groupBy('status');
         return $query->pluck('count', 'status');
     }
