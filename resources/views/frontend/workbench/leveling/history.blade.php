@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="/frontend/v1/lib/js/layui/css/layui.css" media="all">
 <table class="layui-table" lay-size="sm">
     <thead>
     <tr>
