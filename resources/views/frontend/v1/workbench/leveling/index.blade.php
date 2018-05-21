@@ -89,6 +89,10 @@
                 margin-left: 40px;
             }
         }
+        /* 改写header高度 */
+        .layui-card-header {
+            font-size:12px;
+        }
     </style>
 @endsection
 
@@ -526,7 +530,7 @@
                 //执行重载
                 table.reload('order-list', {
                     where: condition,
-                    height: 'full-260',
+                    height: 'full-245',
                     page: {
                         curr: 1
                     },
@@ -593,7 +597,7 @@
                     {field: 'customer_service_name', title: '发单客服', width: 100},
                     {field: 'button', title: '操作',width:195, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
                 ]],
-                height: 'full-260',
+                height: 'full-245',
                 size: 'sm', //小尺寸的表格
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
