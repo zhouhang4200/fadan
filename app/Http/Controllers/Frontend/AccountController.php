@@ -49,7 +49,7 @@ class AccountController extends Controller
             $data['password'] = bcrypt(clientRSADecrypt($request->password));
         }
 
-        $data['type'] = $request->data['type'];
+        // $data['type'] = $request->data['type'];
         $data['leveling_type'] = $request->data['leveling_type'];
         $res = $user->update($data);
 
