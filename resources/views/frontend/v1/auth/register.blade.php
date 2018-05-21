@@ -13,9 +13,11 @@
         .geetest_holder.geetest_wind .geetest_btn {
             width:100% !important;
         }
-        .
         .geetest_holder {
             width: 100% !important;
+        }
+        .geetest_holder.geetest_wind {
+            width: 100%;
         }
     </style>
 </head>

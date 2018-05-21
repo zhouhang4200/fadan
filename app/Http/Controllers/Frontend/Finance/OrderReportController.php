@@ -66,4 +66,12 @@ class OrderReportController extends Controller
             'fullUrl' => $request->fullUrl(),
         ]);
     }
+
+    /**
+     * @param Request $request
+     */
+    public function export(Request $request)
+    {
+
+    }
 }
