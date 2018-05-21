@@ -44,16 +44,6 @@
         .last-item{
             margin-bottom: 5px;
         }
-        .layui-table-cell{
-            display: block;
-            height: 40px;
-            line-height: 20px;
-            word-break: break-all;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-left: 15px;
-        }
         .layui-tab-title li{
             min-width: 50px;
             font-size: 12px;
