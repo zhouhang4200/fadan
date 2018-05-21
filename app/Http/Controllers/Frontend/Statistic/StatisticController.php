@@ -354,9 +354,9 @@ class StatisticController extends Controller
             SELECT 
                 m.*,
                 CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END AS revoked_and_arbitrationed_profit,
-                CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS complete_order_profit,
+                CASE WHEN m.status = 20 THEN original_price-price ELSE 0 END AS complete_order_profit,
                 CASE WHEN m.status IN (19, 21) THEN original_price+create_order_pay_amount+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage ELSE 0 END
-                + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END AS today_profit
+                + CASE WHEN m.status = 20 THEN original_price+create_order_pay_amount ELSE 0 END + complain_order_pay_amount + complain_order_income_amount AS today_profit
             FROM
                 (
                 SELECT 
@@ -373,12 +373,17 @@ class StatisticController extends Controller
                     c.original_price,
                     c.created_at,
                     c.field_value,
-                    sum(case when c.status = 20 then 1 else 0 end) as complete_count,
-                    sum(case when c.status = 20 then c.price else 0 end) as complete_price,
-                    sum(case when c.status = 19 then 1 else 0 end) as revoked_count,
-                    sum(case when c.status = 21 then 1 else 0 end) as arbitrationed_count,
-                    sum(c.original_price-c.price) as diff_price,
+                    SUM(case when c.status = 20 then 1 else 0 end) as complete_count,
+                    SUM(case when c.status = 20 then c.price else 0 end) as complete_price,
+                    SUM(case when c.status = 19 then 1 else 0 end) as revoked_count,
+                    SUM(case when c.status = 21 then 1 else 0 end) as arbitrationed_count,
+                    c.original_price-c.price as diff_price,
                     SUM(CASE WHEN d.trade_subtype = 76 THEN d.fee ELSE 0 END) AS create_order_pay_amount,
+                    SUM(CASE WHEN d.trade_subtype = 77 THEN d.fee ELSE 0 END) AS change_order_pay_amount,
+                    SUM(CASE WHEN d.trade_subtype = 814 THEN d.fee ELSE 0 END) AS reback_order_income_amount,
+                    SUM(CASE WHEN d.trade_subtype = 813 THEN d.fee ELSE 0 END) AS delete_order_income_amount,
+                    SUM(CASE WHEN d.trade_subtype = 79 THEN d.fee ELSE 0 END) AS complain_order_pay_amount,
+                    SUM(CASE WHEN d.trade_subtype = 817 THEN d.fee ELSE 0 END) AS complain_order_income_amount,
                     SUM(CASE WHEN d.trade_subtype = 87 AND c.status IN (19, 21) THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
                     SUM(CASE WHEN d.trade_subtype BETWEEN 810 AND 811 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
                     SUM(CASE WHEN d.trade_subtype = 73 THEN d.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
@@ -445,14 +450,18 @@ class StatisticController extends Controller
                 SUM(revoked_count) AS revoked_count,
                 SUM(arbitrationed_count) AS arbitrationed_count,
                 SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(change_order_pay_amount) AS change_order_pay_amount,
+                SUM(reback_order_income_amount) AS reback_order_income_amount,
+                SUM(delete_order_income_amount) AS delete_order_income_amount,
+                SUM(complain_order_pay_amount) AS complain_order_pay_amount,
+                SUM(complain_order_income_amount) AS complain_order_income_amount,
                 SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
                 SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
                 SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
                 SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
                 SUM(complete_order_profit) AS complete_order_profit,
                 SUM(today_profit) AS today_profit
-            FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
-            where g.field_value != 0
+            FROM (".$queryStart.$queryMiddle.$queryTotalEnd." where m.field_value = '') g 
             GROUP BY g.creator_user_id
         ");
 
@@ -472,6 +481,11 @@ class StatisticController extends Controller
                 SUM(revoked_count) AS revoked_count,
                 SUM(arbitrationed_count) AS arbitrationed_count,
                 SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(change_order_pay_amount) AS change_order_pay_amount,
+                SUM(reback_order_income_amount) AS reback_order_income_amount,
+                SUM(delete_order_income_amount) AS delete_order_income_amount,
+                SUM(complain_order_pay_amount) AS complain_order_pay_amount,
+                SUM(complain_order_income_amount) AS complain_order_income_amount,
                 SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
                 SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
                 SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
@@ -491,6 +505,11 @@ class StatisticController extends Controller
                 SUM(revoked_count) AS revoked_count,
                 SUM(arbitrationed_count) AS arbitrationed_count,
                 SUM(create_order_pay_amount) AS create_order_pay_amount,
+                SUM(change_order_pay_amount) AS change_order_pay_amount,
+                SUM(reback_order_income_amount) AS reback_order_income_amount,
+                SUM(delete_order_income_amount) AS delete_order_income_amount,
+                SUM(complain_order_pay_amount) AS complain_order_pay_amount,
+                SUM(complain_order_income_amount) AS complain_order_income_amount,
                 SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
                 SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
                 SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
@@ -508,6 +527,7 @@ class StatisticController extends Controller
         if (isset($final) && ! empty($final) && is_array($final)) {
             $final = $final[0];
         }
+
         return view('frontend.v1.finance.employee.today', compact('statuses', 'status', 'datas', 'startDate', 'endDate', 'fullUrl', 'children', 'userId', 'totals', 'count', 'page', 'final'));
     }
 }

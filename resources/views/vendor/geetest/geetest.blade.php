@@ -49,6 +49,6 @@
         display: none;
     }
     .geetest_holder.geetest_wind .geetest_btn {
-        width:332px;
+        width:100%;
     }
 </style>

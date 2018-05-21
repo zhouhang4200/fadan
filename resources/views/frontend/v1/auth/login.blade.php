@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="/frontend/v1/lib/css/new.css">
     <link rel="stylesheet" href="/frontend/v1/lib/css/index.css">
     <title>登录</title>
+    <style>
+        .geetest_holder.geetest_wind .geetest_btn {
+            width:100% !important;
+        }
+        .
+        .geetest_holder {
+            width: 100% !important;
+        }
+    </style>
 </head>
 <body>
     <div class="main">
@@ -48,6 +57,7 @@
                                     </div>
                                 </form>
                             </div>
+
                             <div class="layui-tab-item">
                                 <form class="layui-form" action="">
                                     <div class="layui-form-item">
@@ -107,9 +117,9 @@
                                                 <input type="password" name="password_confirmation" required="" lay-verify="required" placeholder="再次输入密码" autocomplete="off" class="layui-input layui-form-danger">
                                             </div>
                                         </div>
-                                    <div class="layui-form-item">
+                                  <!--   <div class="layui-form-item">
                                         {!! Geetest::render() !!}
-                                    </div>
+                                    </div> -->
                                     <div class="layui-form-item" style="border: 0">
                                         <button class="layui-btn" lay-submit="" lay-filter="register">注册</button>
                                         <a class="register" target="_blank" href="{{ route('login') }}">登录</a>

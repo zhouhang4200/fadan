@@ -65,7 +65,7 @@ class ChangeCompleteOrderStatus extends Command
                         continue;
                     }
 
-                    $overTime = $carbon->parse($time)->addHours(3);
+                    $overTime = $carbon->parse($time)->addDays(3);
 
                     $readyOnTime = $carbon->diffInSeconds($overTime, false);
 
