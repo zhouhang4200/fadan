@@ -36,4 +36,5 @@ interface LevelingInterface
 	public static function replyMessage($orderDatas); // 回复留言
 	public static function updateAccountAndPassword($orderDatas); // 更改接单后的游戏账号密码
 	public static function updateImage($orderDatas); // 发送截图
+	public static function getArbitrationInfo($orderDatas); // 获取仲裁信息（留言，截图)
 }

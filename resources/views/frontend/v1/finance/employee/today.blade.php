@@ -180,7 +180,7 @@
                 @endif
                 @if(! empty($final))
                 <tr style="color: red;">
-                        <td>总计: {{ $final->creator_count }}</td>
+                        <td>总计:  {{ $final->creator_count }}</td>
                         <td>{{ $final->count ?? 0 }}</td>
                         <td>{{ number_format($final->original_price, 2) }}</td>
                         <td>{{ number_format($final->price, 2) }}</td>

@@ -6,6 +6,7 @@ use DB;
 use Redis;
 use Carbon\Carbon;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Console\Command;
 use App\Exceptions\DailianException;
 use App\Extensions\Dailian\Controllers\DailianFactory;
@@ -64,9 +65,19 @@ class ChangeCompleteOrderStatus extends Command
                         Redis::hDel('complete_orders', $orderNo);
                         continue;
                     }
-
+                    // 除了cnf 推荐号之外的都是3天
                     $overTime = $carbon->parse($time)->addDays(3);
 
+                    // 如果是dnf推荐号,则时间为1天
+                    // $isDnf = OrderDetail::where('order_no', $order->no)
+                    //     ->where('field_name', 'game_leveling_type')
+                    //     ->where('field_value', '推荐号')
+                    //     ->first();
+
+                    // if (isset($isDnf) && ! empty($isDnf)) {
+                    //     $overTime = $carbon->parse($time)->addDays(1);
+                    // }
+                    // 是否到了完成时间
                     $readyOnTime = $carbon->diffInSeconds($overTime, false);
 
                     if ($readyOnTime < 0) {
