@@ -49,7 +49,7 @@
             <div class="layui-card-header" style="padding-top: 20px;">
                 <div class="layui-row layui-col-space5">
                     <form class="layui-form" action="">
-                        <div class="layui-col-md3">
+                        <div class="layui-col-md3 first">
                             <div class="layui-form-item">
                                 <label class="layui-form-label" style="">订单单号</label>
                                 <div class="layui-input-block" style="">
