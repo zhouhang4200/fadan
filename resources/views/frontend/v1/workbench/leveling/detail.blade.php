@@ -1533,6 +1533,7 @@
                             view.html(html);
                             layui.form.render();
                         });
+                        $('.layim-chat-main').scrollTop( $('.layim-chat-main')[0].scrollHeight );
                     }
                 });
             }
