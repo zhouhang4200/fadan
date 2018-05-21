@@ -325,6 +325,11 @@
                             <label class="layui-form-label">代练价格</label>
                             <div class="layui-input-block">
                                 <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_amount'] ?? '' }}">
+                                @if(in_array($detail['status'], [13, 14, 17]))
+                                    <div class="tips"  id="add_price">
+                                        <i class="iconfont icon-add-r"></i>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -362,6 +367,11 @@
                                         <option value="{{ $i }}" @if($detail['game_leveling_day'] == $i) selected  @endif>{{ $i }}天</option>
                                     @endfor
                                 </select>
+                                @if(in_array($detail['status'], [13, 17]))
+                                    <div class="tips"  id="add_time">
+                                        <i class="iconfont icon-add-r"></i>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -408,7 +418,6 @@
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
                             </div>
-
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价上限</label>
@@ -790,6 +799,34 @@
     </span>
 </div>
 <div class="layui-carousel" id="carousel" style="display: none;"></div>
+<div style="padding: 20px 20px 0 20px;" id="add_price_pop">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">增加金额(元)</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" required  lay-verify="required|number" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+<div style="padding: 20px 20px 0 20px;" id="add_time_pop">
+    <form class="layui-form" action="">
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">增加时间</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" name="day"   autocomplete="off" class="layui-input" lay-verify="required|number">
+                </div>
+                <div class="layui-form-mid">天</div>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" name="hour"  autocomplete="off" class="layui-input" lay-verify="required|number">
+                </div>
+                <div class="layui-form-mid">小时</div>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('js')
@@ -930,6 +967,75 @@
                     layui.form.render();
                 }, 'json');
             }
+            // 增加代练金额
+            $('#add_price').click(function(){
+                layer.open({
+                    type: 1,
+                    title: '增加代练金额',
+                    shade: 0.2,
+                    area:['400px', 'auto'],
+                    btn: ['确定', '取消'],
+                    btnAlign:'c',
+                    moveType: 1,
+                    content: $('#add_price_pop'),
+                    yes: function (layero) {
+                        var amount = $('[name=game_leveling_amount]').val();
+                        var newAmount = $('#add_price_pop').find('input[name=price]').val();
+
+                        if (parseInt(newAmount) <=  parseInt(amount)) {
+                            layer.msg('价格只能大于当前金额');
+                        } else {
+                            $.post("{{ route('frontend.workbench.leveling.add-amount') }}", {no:'{{ $detail['no'] }}', amount:newAmount}, function (result) {
+                                if(result.status == 1) {
+                                    layer.alert(result.message, function () {
+                                        layer.closeAll();
+                                    })
+                                } else {
+                                    layer.msg(result.message);
+                                }
+                            }, 'json');
+                        }
+                    }
+                });
+            });
+            // 增加代练时间
+            $('#add_time').click(function(){
+                layer.open({
+                    type: 1,
+                    title: '增加代练时间',
+                    shade: 0.2,
+                    area: ['450px', 'auto'],
+                    btn: ['确定', '取消'],
+                    btnAlign: 'c',
+                    moveType: 1,
+                    content: $('#add_time_pop'),
+                    yes: function (layero) {
+                        var oldDay = parseInt($('[name=game_leveling_day]').val());
+                        var oldHour = parseInt($('[name=game_leveling_hour]').val());
+                        var day = parseInt($('#add_time_pop').find('input[name=day]').val());
+                        var hour = parseInt($('#add_time_pop').find('input[name=hour]').val());
+
+                        // 如果新的天数小于原来天数 或 天数相等新小时小于原小时
+                        if (day < oldDay || (day == oldDay && hour < oldHour)) {
+                            layer.msg('代练时间只可增加');
+                        } else {
+                            $.post("{{ route('frontend.workbench.leveling.add-time') }}", {
+                                no: '{{ $detail['no'] }}',
+                                day: day,
+                                hour: hour
+                            }, function (result) {
+                                if (result.status == 1) {
+                                    layer.alert(result.message, function () {
+                                        layer.closeAll();
+                                    })
+                                } else {
+                                    layer.msg(result.message);
+                                }
+                            }, 'json');
+                        }
+                    }
+                });
+            });
             // 模板使用说明
             $('#instructions').click(function () {
                 layer.open({
@@ -938,7 +1044,6 @@
                     ,closeBtn: false
                     ,area: '470px;'
                     ,shade: 0.2
-                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
                     ,btn: ['确定']
                     ,btnAlign: 'c'
                     ,content: '<div style="padding: 10px 15px; line-height: 22px;   font-weight: 300;">1.选择“游戏”后会自动显示对应模板。<br/>2.将模版复制，发给号主填写。<br/>3.粘贴号主填写好的模版，粘贴至模板输入框内。<br/>4.点击“解析模板”按钮将资料导入至左侧表格内，点击“发布”按钮，即可创建订单。</div>'
@@ -1166,7 +1271,6 @@
                 layer.open({
                     type: 1,
                     title: false ,
-//                    closeBtn: false,
                     area: ['50%', '500px'],
                     shade: 0.8,
                     shadeClose: true,
@@ -1191,7 +1295,6 @@
                     type: 2,
                     title: '操作记录',
                     shadeClose: true,
-//                    closeBtn: false,
                     area: ['850px', '500px'],
                     shade: 0.8,
                     moveType: 1,

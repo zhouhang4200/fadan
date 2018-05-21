@@ -226,6 +226,9 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('withdraw-order/store', 'WithdrawOrderController@store')->name('frontend.finance.withdraw-order.store')->middleware('new.permission:frontend.finance.withdraw-order.store');
 		// 我的提现
         Route::get('withdraw-order', 'WithdrawOrderController@index')->name('frontend.finance.withdraw-order')->middleware('new.permission:frontend.finance.withdraw-order');
+        // 财务订单报表
+        Route::get('order-report', 'OrderReportController@index')->name('frontend.finance.order-report.index');
+
 	});
 
 	// 工作台
@@ -323,6 +326,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('source-price', 'IndexController@sourcePrice')->name('frontend.workbench.leveling.source-price');
             // 获取区服
             Route::post('get-region-type', 'IndexController@getRegionType')->name('frontend.workbench.leveling.get-region-type');
+            // 加价
+            Route::post('add-amount', 'IndexController@addAmount')->name('frontend.workbench.leveling.add-amount');
+            // 加时
+            Route::post('add-time', 'IndexController@addTime')->name('frontend.workbench.leveling.add-time');
+            // 置顶
+            Route::post('set-top', 'IndexController@setTop')->name('frontend.workbench.leveling.set-top');
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

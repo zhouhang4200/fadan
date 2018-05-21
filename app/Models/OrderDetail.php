@@ -26,13 +26,13 @@ class OrderDetail extends Model
     {
         if ($type == 2) {
             return OrderDetail::where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
-                ->where('field_name_alias', $fieldName)
+            ->where('field_name_alias', $fieldName)
                 ->where('field_value', $fieldValue)
                 ->pluck('order_no')
                 ->toArray();
         } else {
-            return OrderDetail::where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
-                ->where('field_name', $fieldName)
+//            return OrderDetail::where('gainer_primary_user_id', Auth::user()->getPrimaryUserId())
+            return OrderDetail::where('field_name', $fieldName)
                 ->where('field_value', $fieldValue)
                 ->pluck('order_no')
                 ->toArray();

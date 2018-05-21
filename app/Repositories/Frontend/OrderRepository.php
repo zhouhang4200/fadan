@@ -157,10 +157,11 @@ class OrderRepository
      * @param $platform
      * @param $startDate
      * @param $endDate
+     * @param $sellerNick
      * @param $pageSize
      * @return mixed
      */
-    public function levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize = 50)
+    public function levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick = '', $pageSize = 50)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
@@ -187,7 +188,7 @@ class OrderRepository
             $thirdOrder = OrderDetail::findOrdersBy('third_order_no', $no, $type);
             $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
 
-            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder));
+            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder, [$no]));
         });
         $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus, $type) {
             $foreignOrder = OrderDetail::findOrdersBy('taobao_status', $taobaoStatus, $type);
@@ -206,6 +207,10 @@ class OrderRepository
                 $orderNoArr = [999];
             }
             return $query->whereIn('no', $orderNoArr);
+        });
+        $query->when(!empty($sellerNick), function ($query) use ($sellerNick, $primaryUserId, $type) {
+            $orderNo = OrderDetail::findOrdersBy('seller_nick', $sellerNick, $type);
+            return $query->whereIn('no', $orderNo);
         });
         $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
             $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);

@@ -33,6 +33,7 @@ $financeRoute = [
     'frontend.statistic.employee',
     'frontend.statistic.order',
     'frontend.statistic.sms',
+    'frontend.finance.order-report.index',
 ];
 
 $settingRoute = [
@@ -155,8 +156,8 @@ $goodsRoute = [
                             <a lay-href="set/user/password.html">修改密码</a>
                         </dd>
                         <hr>
-                        <dd layadmin-event="logout" style="text-align: center;">
-                            <a>退出</a>
+                        <dd style="text-align: center;">
+                            <a href="#" id="logout">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -319,6 +320,11 @@ $goodsRoute = [
                                         <a href="{{ route('frontend.statistic.sms') }}">短信统计</a>
                                     </dd>
                                 @endif
+                                {{--@if(Auth::user()->could('frontend.finance.order-report'))--}}
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.order-report.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
+                                    </dd>
+                                {{--@endif--}}
                             </dl>
                         </li>
                     @endif
@@ -422,6 +428,7 @@ $goodsRoute = [
 </style>
 <script src="/frontend/v1/lib/js/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
+<script src="/js/encrypt.js"></script>
 <script>
     layui.use(['element', 'form', 'laydate', 'layer'], function () {
         var element = layui.element,
@@ -437,7 +444,6 @@ $goodsRoute = [
                 insEnd.config.min = lay.extend({}, date, {
                     month: date.month - 1
                 });
-
                 //自动弹出结束日期的选择器
                 insEnd.config.elem[0].focus();
             }
@@ -455,6 +461,15 @@ $goodsRoute = [
                 });
             }
         });
+
+        $('#logout').click(function () {
+            layer.confirm('确定退出吗?', {icon: 3, title:'提示'}, function(index){
+                $.post('/logout', {}, function(str){
+                    window.location.href='/login';
+                });
+                layer.close(index);
+            });
+        });
     });
     layui.config({
         base: '/frontend/v1/' //静态资源所在路径
@@ -463,6 +478,6 @@ $goodsRoute = [
     }).use('index');
 </script>
 @yield('js')
-@yield('pop')
 </body>
+@yield('pop')
 </html>
