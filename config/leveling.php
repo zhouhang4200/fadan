@@ -238,6 +238,9 @@ return [
 			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/setTop', // 获取代练类型
+			'appeals'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/appeals', // 仲裁列表
+			'addevidence'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addevidence', // 添加仲裁证据
+			'seeappeal'                => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal', // 查看仲裁详情
     	],
     ],
 ];

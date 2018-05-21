@@ -9,7 +9,7 @@ use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-
+use App\Services\Leveling\WanziController;
 use Auth;
 use Asset;
 // use GuzzleHttp\Client;
@@ -216,6 +216,19 @@ class TestController extends Controller
 
     public function index()
     {
+        $datas['wanzi_order_no'] = 'ORD180521165250247826';
+        $info = WanziController::getArbitrationInfo($datas);
+
+
+        $infos['arbitration_id'] = 35;
+        $infos['content'] = '添加的证据';
+        $infos['pic'] = '';
+        $data = WanziController::addArbitrationInfo($infos);
+        // dd($data);
+dd($info);
+
+
+
 
         $orderDetail = OrderDetail::where('order_no', '2018051418371000000004')
         ->pluck('field_value', 'field_name')
