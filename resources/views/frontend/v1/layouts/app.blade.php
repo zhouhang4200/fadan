@@ -44,6 +44,7 @@ $settingRoute = [
     'frontend.setting.sms.index',
     'frontend.setting.tb-auth.index',
     'frontend.setting.sending-assist.auto-markup',
+    'frontend.setting.tb-auth.store',
 ];
 
 $goodsRoute = [
@@ -358,8 +359,8 @@ $goodsRoute = [
                                     </dd>
                                 @endif
                                 @if(Auth::user()->could('frontend.setting.tb-auth.index'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.tb-auth.index') layui-this  @endif">
-                                        <a href="{{ route('frontend.setting.tb-auth.index') }}">店铺授权</a>
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.tb-auth.store') layui-this  @endif">
+                                        <a href="{{ route('frontend.setting.tb-auth.store') }}">店铺授权</a>
                                     </dd>
                                 @endif
                                 @if(Auth::user()->could('frontend.setting.sending-assist.auto-markup'))

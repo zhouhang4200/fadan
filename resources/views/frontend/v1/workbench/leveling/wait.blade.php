@@ -7,8 +7,25 @@
         .layui-laypage .layui-laypage-curr .layui-laypage-em {
             background-color: #ff8500;
         }
+        .layui-form-item {
+            margin-bottom: 12px;
+        }
+        .layui-card-body {
+            padding-top: 0;
+        }
         .layui-tab {
             padding: 0;
+            font-size: 12px;
+        }
+        .layui-card-header {
+            height: auto;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .layui-tab-title li{
+            min-width: 50px;
+            font-size: 12px;
         }
         .qs-btn-sm {
             height: 27px;
@@ -19,6 +36,10 @@
             height: 28px;
             line-height: 28px;
         }
+        /* 改写header高度 */
+        .layui-card-header {
+            font-size:12px;
+        }
     </style>
 @endsection
 
@@ -28,7 +49,7 @@
             <div class="layui-card-header" style="padding-top: 20px;">
                 <div class="layui-row layui-col-space5">
                     <form class="layui-form" action="">
-                        <div class="layui-col-md3">
+                        <div class="layui-col-md3 first">
                             <div class="layui-form-item">
                                 <label class="layui-form-label" style="">订单单号</label>
                                 <div class="layui-input-block" style="">
@@ -84,7 +105,6 @@
                             <span class="qs-badge quantity-2 layui-hide"></span>
                         </li>
                     </ul>
-                    <div style="height: 10px"></div>
                 </div>
                 <div id="order-list" lay-filter="order-list">
                 </div>
