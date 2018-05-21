@@ -749,14 +749,6 @@ class IndexController extends Controller
         } catch (CustomException $e) {
             return response()->ajax($e->getCode(), $e->getMessage());
         }
-
-//        $dataList[] = [
-//            'username' => 1,
-//            'description' => 1,
-//            'url' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526562696052&di=cf820cfbfd7cf178be9d99e01e8c4fad&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimage%2Fc0%253Dshijue1%252C0%252C0%252C294%252C40%2Fsign%3Dacd800cbb91c8701c2bbbaa54f16f45a%2Fa08b87d6277f9e2f85a3a3271530e924b899f30f.jpg',
-//            'created_at' => '1',
-//        ];
-
         return response()->ajax(1, 'success', $dataList);
     }
 

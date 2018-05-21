@@ -623,7 +623,11 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	                } else {
 	                    $sortField[] = 0;
 	                }
-	                $messageArr[] = $item;
+                    $messageArr[] = [
+                        'sender' =>  isset($item['uid']) && $item['uid'] == config('show91.uid') ? '您': ($item['userNickname'] == '系统留言' ? '系统留言' :  '打手'),
+                        'send_content' => $item['mess'],
+                        'send_time' => $item['created_on'],
+                    ];
 	            }
 	            // 用ID倒序
 	            array_multisort($sortField, SORT_ASC, $messageArr);

@@ -178,6 +178,10 @@
             background: #ff8500;
             border: #ff8500;
         }
+        .layui-card-header {
+            height: 56px;
+            line-height: 56px;
+        }
     </style>
 @endsection
 

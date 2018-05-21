@@ -140,17 +140,6 @@
             left: 0px;
             font-size: 25px;
         }
-        div[carousel-item]>* {
-            text-align: center;
-            line-height: 280px;
-            color: #fff;
-        }
-        div[carousel-item]>*:nth-child(2n) {
-            background-color: #009688;
-        }
-        div[carousel-item]>*:nth-child(2n+1) {
-            background-color: #5FB878;
-        }
         #carousel {
             position: relative;
         }
@@ -188,6 +177,7 @@
         }
     </style>
     <link rel="stylesheet" href="/frontend/v1/lib/css/im.css">
+    <link rel="stylesheet" href="/frontend/css/bootstrap-fileinput.css">
 @endsection
 
 @section('main')
@@ -309,7 +299,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练说明</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}></textarea>
+                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}</textarea>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -483,96 +473,96 @@
                                 @if($detail['status'] != 24)
                                     <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
                                     @if ($detail['master'] && $detail['status'] == 22)
-                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
                                     @endif
 
                                     @if ($detail['master'] && $detail['status'] == 1)
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
+                                        <button  class="qs-btn opt-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
                                     @endif
 
                                     @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
-                                        <button lay-submit=""   lay-filter="operation"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
                                     @endif
 
                                     @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
-                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
                                     @endif
 
                                     @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] == 1)
-                                        <button lay-submit=""   lay-filter="operation" class="layui-btn layui-btn-normal"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
                                     @endif
 
                                     @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">锁定</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">锁定</button>
                                     @endif
 
                                     @if ($detail['master'] && $detail['status'] == 18)
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
                                     @endif
 
                                     @if ($detail['master'])
                                         @if ($detail['consult'] == 1 && $detail['status'] == 15)
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                            <button  class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                                         @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                            <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            <button class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                                         @endif
                                     @else
                                         @if ($detail['consult'] == 2 && $detail['status'] == 15)
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                            <button class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                                         @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                            <button  class="qs-btn opt-btn" data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                            <button  class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                                         @endif
                                     @endif
 
                                     @if (in_array($detail['status'], [13, 14, 17, 18]))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
                                     @endif
 
                                     @if (in_array($detail['status'], [13,14,15]))
-                                        <button lay-submit=""   lay-filter="operation"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
+                                        <button class="qs-btn opt-btn"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
                                     @endif
 
                                     @if ($detail['master'])
                                         @if ($detail['complain'] == 1 && $detail['status'] == 16)
-                                            <button lay-submit=""   lay-filter="operation" data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
+                                            <button class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
                                             @if($detail['consult'] == 2)
-                                                <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                             @endif
                                         @endif
                                     @else
                                         @if ($detail['complain'] == 2 && $detail['status'] == 16)
-                                            <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
+                                            <button  class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                                             @if($detail['consult'] == 1)
-                                                <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                             @endif
                                         @endif
                                     @endif
 
                                     @if ($detail['master'] && $detail['status'] == 14)
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
                                     @endif
 
 
                                     @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
+                                        <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                                     @endif
 
                                     @if (!$detail['master'] && ($detail['status'] == 13))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
                                     @endif
 
                                     @if (!$detail['master'] && ($detail['status'] == 14))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
+                                        <button  class="qs-btn opt-btn"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
                                     @endif
 
                                     @if (!$detail['master'] && ($detail['status'] == 13))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">异常</button>
+                                        <button  class="qs-btn"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">异常</button>
                                     @endif
 
                                     @if (!$detail['master'] && ($detail['status'] == 17))
-                                        <button lay-submit=""   lay-filter="operation" class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
+                                        <button  class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
                                     @endif
                                 @endif
 
@@ -584,89 +574,7 @@
         </div>
     </div>
     <div class="layui-col-md4">
-        <div class="layui-card">
-            <div class="layui-card-header">淘宝数据</div>
-            <div class="layui-card-body qs-text">
-                <table class="layui-table">
-                    <colgroup>
-                        <col width="115">
-                        <col>
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <td>店铺名</td>
-                        <td>
-                            {{ $taobaoTrade->seller_nick or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>天猫单号</td>
-                        <td>
-                            {{ $taobaoTrade->tid or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>订单状态</td>
-                        <td>
-                            {{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>买家旺旺</td>
-                        <td>
-                            @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
-                                <a style="color:#1aa6de" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
-                                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
-                                </a>
-                            @else
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>购买单价</td>
-                        <td>{{ $taobaoTrade->price or '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>购买数量</td>
-                        <td>
-                            {{ $taobaoTrade->num or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>实付金额</td>
-                        <td>
-                            {{ $taobaoTrade->payment or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>所在区/服</td>
-                        <td>
-                            {{ $fixedInfo['serve']['value'] or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>角色名称</td>
-                        <td>
-                            {{ $fixedInfo['role']['value'] or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>买家留言</td>
-                        <td>
-                            {{ $taobaoTrade->buyer_message or '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>下单时间</td>
-                        <td>
-                            {{ $taobaoTrade->created or '' }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="layui-card" style="margin-bottom: 72px;">
+        <div class="layui-card" style="">
             <div class="layui-card-header">平台数据</div>
             <div class="layui-card-body qs-text">
                 <table class="layui-table">
@@ -757,11 +665,93 @@
                 </table>
             </div>
         </div>
+        <div class="layui-card" style="margin-bottom: 72px;">
+            <div class="layui-card-header">淘宝数据</div>
+            <div class="layui-card-body qs-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="115">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>店铺名</td>
+                        <td>
+                            {{ $taobaoTrade->seller_nick or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>天猫单号</td>
+                        <td>
+                            {{ $taobaoTrade->tid or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>订单状态</td>
+                        <td>
+                            {{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>买家旺旺</td>
+                        <td>
+                            @if(!is_null($taobaoTrade) && $taobaoTrade->buyer_nick)
+                                <a style="color:#1aa6de" href="http://www.taobao.com/webww/ww.php?ver=3&touid={{ $taobaoTrade->buyer_nick}}&siteid=cntaobao&status=1&charset=utf-8"
+                                   class="btn btn-save buyer" target="_blank"><img src="/frontend/images/ww.gif" width="20px"> {{ $taobaoTrade->buyer_nick }}
+                                </a>
+                            @else
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>购买单价</td>
+                        <td>{{ $taobaoTrade->price or '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>购买数量</td>
+                        <td>
+                            {{ $taobaoTrade->num or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>实付金额</td>
+                        <td>
+                            {{ $taobaoTrade->payment or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>所在区/服</td>
+                        <td>
+                            {{ $fixedInfo['serve']['value'] or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>角色名称</td>
+                        <td>
+                            {{ $fixedInfo['role']['value'] or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>买家留言</td>
+                        <td>
+                            {{ $taobaoTrade->buyer_message or '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>下单时间</td>
+                        <td>
+                            {{ $taobaoTrade->created or '' }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 
 @section('pop')
-<div class="layui-boxx" id="layui-boxx" style="display: none;">
+<div class="layui-boxx" id="layui-boxx" style="display: none">
     <div class="layui-layer-titlee" style="cursor: move;">
         <div class="layui-unselect layim-chat-title">
         </div>
@@ -798,8 +788,138 @@
         <a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>
     </span>
 </div>
-<div class="layui-carousel" id="carousel" style="display: none;"></div>
-<div style="padding: 20px 20px 0 20px;" id="add_price_pop">
+<div class="layui-carousel" id="carousel" style="display: none"></div>
+<div class="consult" style="display: none; padding:  0 20px">
+    <div class="layui-tab-content">
+        <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
+        <form class="layui-form" method="POST" action="">
+            {!! csrf_field() !!}
+            <div style="width: 80%" id="info">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">*我愿意支付代练费（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入代练费" class="layui-input" style="width:400px">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">我已支付代练费（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="order_amount" id="order_amount" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">*需要对方赔付保证金</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入保证金" class="layui-input" style="width:400px">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">对方已预付安全保证金（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">对方已预付效率保证金（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">撤销理由</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                        <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="complain" style="display: none; padding: 20px">
+    <form class="layui-form">
+        <input type="hidden" id="order_no" name="order_no">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">证据截图</label>
+            <div class="layui-input-block">
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-1" style="width: 100px;height: 100px;"></div>
+                        <div style="height: 0;">
+                                <span class=" btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-2" style="width: 100px;height: 100px;"></div>
+                        <div>
+                                <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-3" style="width: 100px;height: 100px;"></div>
+                        <div>
+                               <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                               </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">仲裁理由</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入申请仲裁理由" name="complain_message"  class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                </button>
+                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="padding: 20px 20px 0 20px;display: none" id="add_price_pop">
     <form class="layui-form" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">增加金额(元)</label>
@@ -809,7 +929,7 @@
         </div>
     </form>
 </div>
-<div style="padding: 20px 20px 0 20px;" id="add_time_pop">
+<div style="padding: 20px 20px 0 20px;display: none" id="add_time_pop">
     <form class="layui-form" action="">
 
         <div class="layui-form-item">
@@ -859,13 +979,15 @@
     </script>
     <script id="images" type="text/html">
         <div carousel-item="" id="">
-            @{{#  layui.each(d, function(index, item){ }}
-                <div>条目1
-                    <div class="carousel-tips" style="background-image: url(@{{ item.url }});">@{{ item.url }}&nbsp;&nbsp;&nbsp;&nbsp;@{{ item.url }}</div>
+            @{{# var i = 0; layui.each(d, function(index, item){ }}
+                <div  style="background: url(@{{ item.url }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+                    <div class="carousel-tips" >@{{ item.description }} &nbsp;&nbsp;&nbsp; @{{ item.created_at }} </div>
                 </div>
+                @{{# if(i == 0){   i = 1;  } }}
             @{{# }); }}
         </div>
     </script>
+    <script src="/frontend/js/bootstrap-fileinput.js"></script>
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel;
@@ -946,6 +1068,216 @@
                 if (fieldName == 'game_leveling_requirements_template') {
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
+            });
+            // 对订单操作
+            $('.layui-form').on('click', '.opt-btn', function () {
+
+                var opt = $(this).attr("data-operation");
+                var orderNo = $(this).attr("data-no");
+                var orderAmount = $(this).attr("data-amount");
+                var orderSafe = $(this).attr("data-safe");
+                var orderEffect = $(this).attr("data-effect");
+                var apiAmount = $(this).attr("api_amount");
+                var apiDeposit = $(this).attr("api_deposit");
+                var apiService = $(this).attr("api_service");
+                var who=$(this).attr("who");
+                var reason=$(this).attr("reason");
+
+                if (!orderAmount) {
+                    orderAmount = 0;
+                }
+                if (!orderSafe) {
+                    orderSafe = 0;
+                }
+                if (!orderEffect) {
+                    orderEffect = 0;
+                }
+                $('#order_amount').val(orderAmount);
+                $('#safe').val(orderSafe);
+                $('#effect').val(orderEffect);
+
+                if (!opt) {
+                    return false;
+                }
+                if (opt == 'detail') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}?no=' + orderNo);
+                    return false;
+                }
+                // 留言
+                if (opt == 'message') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=1');
+                    return false;
+                }
+                // 操作记录
+                if (opt == 'operationRecord') {
+                    window.open('{{ route('frontend.workbench.leveling.detail') }}' + '?no=' + orderNo + '&tab=2');
+                    return false;
+                }
+                // 重发
+                if (opt == 'repeat') {
+                    window.open('{{ route('frontend.workbench.leveling.repeat') }}' + '/' + orderNo);
+                    return false;
+                }
+                // 联系旺旺
+                if (opt == 'wangWang') {
+                    var wangWang = $(data.elem).find("option:selected").attr("data-wang-wang");
+                    window.open('http://www.taobao.com/webww/ww.php?ver=3&touid=' + wangWang + '&siteid=cntaobao&status=1&charset=utf-8" class="btn btn-save buyer" target="_blank" title="' + wangWang);
+                    return false;
+                }
+                if (opt == 'sendSms') {
+                    $('.send-message  .layui-form').append('<input type="hidden" name="no" data-opt="' + orderNo + '"/>');
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '发送短信',
+                        area: ['500px'],
+                        content: $('.send-message')
+                    });
+                    return false
+                }
+                if (opt == 'revoke') {
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '协商撤销',
+                        area: ['650px', '550px'],
+                        content: $('.consult')
+                    });
+                    form.on('submit(consult)', function (data) {
+                        $.post("{{ route('frontend.workbench.leveling.consult') }}", {
+                            orderNo: orderNo,
+                            data: data.field
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.closeAll();
+                                layer.alert(result.message, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
+                        });
+                        return false;
+                    });
+
+                } else if (opt == 'applyArbitration') {
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '申请仲裁',
+                        area: ['600px', '380px'],
+                        content: $('.complain')
+                    });
+                    $('#order_no').val(orderNo);
+                    form.on('submit(complain)', function (data) {
+
+                        var complainLoad = layer.load(2, {shade:[0.2, '#000']});
+                        var pic1 = $('.pic-1 img').attr('src');
+                        var pic2 = $('.pic-2 img').attr('src');
+                        var pic3 = $('.pic-3 img').attr('src');
+
+                        if (pic1 == undefined && pic2 == undefined && pic3 == undefined) {
+                            layer.alert('请至少上传一张图片');
+                        } else {
+                            $.post("{{ route('frontend.workbench.leveling.complain') }}", {
+                                orderNo: orderNo,
+                                data: data.field,
+                                pic1: pic1,
+                                pic2: pic2,
+                                pic3: pic3
+                            }, function (result) {
+                                layer.close(complainLoad);
+                                if (result.status == 1) {
+                                    layer.alert(result.message, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    layer.alert(result.message);
+                                }
+                            });
+                        }
+                        return false;
+                    });
+
+                } else if (opt == 'delete') {
+                    layer.confirm('确认删除吗？', {icon: 3, title: '提示'}, function (index) {
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
+                        });
+
+                        layer.close(index);
+                    });
+                } else if (opt == 'complete') {
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
+                        title: '提示'
+                    }, function (index) {
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt,
+                            delivery: delivery
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message);
+                            }
+                        });
+                        layer.close(index);
+                    });
+                } else if (opt == 'agreeRevoke') {
+                    if (who == 1) {
+                        var message = "对方进行操作【撤销】 对方支付代练费"+apiAmount+"元，我支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                    } else {
+                        var message = "对方进行操作【撤销】 我支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                    }
+                    layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.alert(result.message, function () {
+                                    layer.closeAll();
+                                });
+                            }
+                        });
+                        layer.close(index);
+                    });
+                } else {
+                    $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                        orderNo: orderNo,
+                        keyWord: opt
+                    }, function (result) {
+                        if (result.status == 1) {
+                            layer.alert(result.message, function () {
+                                location.reload();
+                            });
+
+                        } else {
+                            layer.alert(result.message, function () {
+                                layer.closeAll();
+                            });
+                        }
+//                        reload();
+                    });
+                }
+
+                return false;
             });
             // 按游戏加载区\代练类型\代练模版\商户QQ
             loadGameInfo();
@@ -1186,20 +1518,12 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        if (result.content.third == 1) {
-                            var getTpl = message91show.innerHTML, view = $('.chat_window');
-                            layTpl(getTpl).render(result.content, function(html){
-                                view.html(html);
-                                layui.form.render();
-                            });
-
-                        } else if (result.content.third >= 2) {
-                            var getTpl = message.innerHTML, view = $('.layim-chat-main');
-                            layTpl(getTpl).render(result.content, function(html){
-                                view.html(html);
-                                layui.form.render();
-                            });
-                        }
+                        var getTpl = message.innerHTML, view = $('.layim-chat-main');
+                        layTpl(getTpl).render(result.content, function(html){
+                            view.html(html);
+                            layui.form.render();
+                        });
+                        $('.layim-chat-main').scrollTop( $('.layim-chat-main')[0].scrollHeight );
                     }
                 });
             }
@@ -1253,39 +1577,68 @@
             });
             // 发送留言
             $('.layim-send-btn').click(function(){
-                $('[name=layim-chat-textarea]').val('');
-                loadMessage(0);
+                var message = $('[name=layim-chat-textarea]').val();
+                if (message) {
+                    $.post("{{ route('frontend.workbench.leveling.send-message') }}", {
+                        'order_no': "{{ $detail['no'] }}",
+                        'message':message
+                    }, function (data) {
+                        $('[name=layim-chat-textarea]').val('');
+                        if (data.status === 1) {
+                            loadMessage(0);
+                        } else {
+                            layer.msg(data.message);
+                            return false;
+                        }
+                    }, 'json');
+                } else {
+                    layer.msg('请输入要发送的内容');
+                }
             });
             // 查看图片
-            //改变下时间间隔、动画类型、高度
-            carousel.render({
+            var ins = carousel.render({
                 elem: '#carousel',
                 anim: 'fade',
-                width: '100%',
+                width: '500px',
                 arrow: 'always',
                 autoplay: false,
-                height: '100%',
+                height: '500px',
                 indicator: 'none'
             });
             $('#carousel-btn').click(function () {
-                layer.open({
-                    type: 1,
-                    title: false ,
-                    area: ['50%', '500px'],
-                    shade: 0.8,
-                    shadeClose: true,
-                    moveType: 1,
-                    content: $('#carousel'),
-                    success: function () {
-                        $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
-                            if (result.status === 1) {
-                                var getTpl = images.innerHTML, view = $('#carousel');
-                                layTpl(getTpl).render(result.content, function(html){
-                                    view.html(html);
-                                    layui.form.render();
-                                });
-                            }
-                        });
+                $.get("{{ route('frontend.workbench.leveling.leave-image', ['order_no' => $detail['no']]) }}", function (result) {
+                    if (result.status === 1) {
+                        if (result.content.length > 0 ) {
+                            var getTpl = images.innerHTML, view = $('#carousel');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+
+                            layer.open({
+                                type: 1,
+                                title: false ,
+                                area: ['50%', '500px'],
+                                shade: 0.8,
+                                shadeClose: true,
+                                moveType: 1,
+                                content: $('#carousel'),
+                                success: function () {
+                                    //改变下时间间隔、动画类型、高度
+                                    ins.reload({
+                                        elem: '#carousel',
+                                        anim: 'fade',
+                                        width: '100%',
+                                        arrow: 'always',
+                                        autoplay: false,
+                                        height: '100%',
+                                        indicator: 'none'
+                                    });
+                                }
+                            });
+                        } else {
+                            layer.msg('暂时没有图片');
+                        }
                     }
                 });
             });

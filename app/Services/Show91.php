@@ -91,7 +91,7 @@ class Show91
         } catch (ConnectException $exception) {
             throw new RequestTimeoutException('订单操作异常');
         } catch (Exception $exception) {
-            throw new DailianException('操作失败');
+            throw new DailianException('操作失败' . $exception->getMessage());
         }
 
         try {
@@ -351,9 +351,9 @@ class Show91
      * 查看所有申诉的订单
      * @return [type] [description]
      */
-    public static function seeappeal()
+    public static function seeappeal($options = [])
     {
-    	return static::normalRequest(config('show91.url.seeappeal'));
+    	return static::normalRequest(config('show91.url.seeappeal'), $options);
     }
 
     /**

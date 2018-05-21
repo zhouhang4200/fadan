@@ -199,14 +199,20 @@ class OrderRepository
             return $query->where('game_id', $gameId);
         });
         $query->when($platform != 0, function ($query) use ($platform, $type) {
-            $orderNoArr = [];
-            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
-            if ($orderNo) {
-                $orderNoArr = $orderNo;
-            } else {
-                $orderNoArr = [999];
-            }
-            return $query->whereIn('no', $orderNoArr);
+//            $orderNoArr = [];
+//            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
+//            if ($orderNo) {
+//                $orderNoArr = $orderNo;
+//            } else {
+//                $orderNoArr = [999];
+//            }
+//            return $query->whereIn('no', $orderNoArr);
+            return $query->whereIn('no', function ($query) use($platform) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'third')
+                    ->where('field_value', $platform);
+            });
         });
         $query->when(!empty($sellerNick), function ($query) use ($sellerNick, $primaryUserId, $type) {
             $orderNo = OrderDetail::findOrdersBy('seller_nick', $sellerNick, $type);
@@ -270,14 +276,12 @@ class OrderRepository
             return $query->where('game_id', $gameId);
         });
         $query->when($platform != 0, function ($query) use ($platform, $type) {
-            $orderNoArr = [];
-            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
-            if ($orderNo) {
-                $orderNoArr = $orderNo;
-            } else {
-                $orderNoArr = [999];
-            }
-            return $query->whereIn('no', $orderNoArr);
+            return $query->whereIn('no', function ($query) use($platform) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'third')
+                    ->where('field_value', $platform);
+            });
         });
         $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
             $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
@@ -293,8 +297,6 @@ class OrderRepository
         $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
-//        $query->where('status', '!=', 24);
-        $query->where('service_id', 4)->with(['detail']);
         $query->groupBy('status');
         return $query->pluck('count', 'status');
     }
