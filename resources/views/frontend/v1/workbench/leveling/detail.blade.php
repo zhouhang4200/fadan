@@ -309,7 +309,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练说明</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}></textarea>
+                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_title'] ?? '' }}</textarea>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
