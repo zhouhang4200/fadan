@@ -27,7 +27,7 @@
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">登录</li>
-                            <li>注册</li>
+                            <li><a class="register" href="{{ route('register') }}">注册</a></li>
                         </ul>
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
@@ -58,7 +58,7 @@
                                 </form>
                             </div>
 
-                            <div class="layui-tab-item">
+<!--                             <div class="layui-tab-item">
                                 <form class="layui-form" action="">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">
@@ -117,15 +117,15 @@
                                                 <input type="password" name="password_confirmation" required="" lay-verify="required" placeholder="再次输入密码" autocomplete="off" class="layui-input layui-form-danger">
                                             </div>
                                         </div>
-                                  <!--   <div class="layui-form-item">
+                                    <div class="layui-form-item">
                                         {!! Geetest::render() !!}
-                                    </div> -->
+                                    </div>
                                     <div class="layui-form-item" style="border: 0">
                                         <button class="layui-btn" lay-submit="" lay-filter="register">注册</button>
                                         <a class="register" target="_blank" href="{{ route('login') }}">登录</a>
                                     </div>
                                 </form>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

@@ -51,4 +51,7 @@
     .geetest_holder.geetest_wind .geetest_btn {
         width:100%;
     }
+    .geetest_btn .geetest_radar_btn {
+        width:472px !important;
+    }
 </style>
