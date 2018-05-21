@@ -1106,7 +1106,6 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
                         });
                         return false;
                     });
@@ -1163,7 +1162,6 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
                         });
 
                         layer.close(index);
@@ -1183,7 +1181,6 @@
                             } else {
                                 layer.alert(result.message);
                             }
-                            reload();
                         });
                         layer.close(index);
                     });
@@ -1196,7 +1193,6 @@
                     layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo: orderNo,
-                            userId: userId,
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
@@ -1208,14 +1204,12 @@
                                     layer.closeAll();
                                 });
                             }
-                            reload();
                         });
                         layer.close(index);
                     });
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo: orderNo,
-                        userId: userId,
                         keyWord: opt
                     }, function (result) {
                         if (result.status == 1) {
@@ -1228,9 +1222,10 @@
                                 layer.closeAll();
                             });
                         }
-                        reload();
+//                        reload();
                     });
                 }
+
                 return false;
             });
             // 按游戏加载区\代练类型\代练模版\商户QQ
