@@ -170,7 +170,7 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, '', $pageSize);
 
         $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
 
@@ -287,9 +287,19 @@ class IndexController extends Controller
         $gameId = $request->game_id ? $request->game_id : 1;
         $businessmanInfo = auth()->user()->getPrimaryInfo();
 
+        // 拆分淘宝订单号
+        $tidArr = explode(',', $tid);
+        $filterTidArr = array_filter($tidArr);
+        // 获取所有淘宝订单
+        $allTaobaoTrade = TaobaoTrade::whereIn('tid', $filterTidArr)->orderBy('id')->get()->toArray();
+
         // 有淘宝订单则更新淘宝订单卖家备注
         $fixedInfo = [];
-        $taobaoTrade = TaobaoTrade::where('tid', $tid)->first();
+        $taobaoTrade = null;
+        if ($allTaobaoTrade) {
+            $taobaoTrade = TaobaoTrade::where('tid', $allTaobaoTrade[0]['tid'])->first();
+        }
+
         if ($taobaoTrade) {
             if (empty($taobaoTrade->seller_memo)) {
                 // 获取备注并更新
@@ -319,7 +329,8 @@ class IndexController extends Controller
             }
         }
 
-        return view('frontend.v1.workbench.leveling.create', compact('game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo'));
+        return view('frontend.v1.workbench.leveling.create', compact(
+            'game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo', 'allTaobaoTrade'));
     }
 
     /**
