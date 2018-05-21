@@ -75,8 +75,8 @@ class Test extends Command
     public function handle()
     {
         $type = $this->argument('type');
-      dd(  Show91::orderDetail([
-          'oid' => 'ORD180503155001150771'
+      dd(  Show91::seeappeal([
+          'aid' => 'ORD180521105449004776'
       ]));
         if ($type == 1) {
             $this->shos91();
