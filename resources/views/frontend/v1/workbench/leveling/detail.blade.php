@@ -182,395 +182,503 @@
 
 @section('main')
     <div class="layui-col-md8">
-        <div class="layui-card qs-text">
-            <div class="layui-card-header">
-                订单信息
-                <div class="order-operation">
-                    <button class="order-btn" id="operation">
-                        <i class="iconfont icon-image-text"></i>操作记录</button>
-                    <button class="order-btn" id="carousel-btn">
-                        <i class="iconfont icon-image"></i>查看图片</button>
-                    <button class="order-btn" id="im">
-                        <i class="iconfont icon-duihua"></i>留言</button>
+
+        <div class="layui-card qs-text" >
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="margin-top: 0;">
+                <ul class="layui-tab-title" style="height:56px;line-height: 56px;"  lay-filter="detail">
+                    <li class="layui-this" lay-id="1">订单信息</li>
+                    <li lay-id="2">仲裁证据</li>
+                    <li lay-id="3">操作记录</li>
+                    <div class="order-operation">
+                        <button class="order-btn" id="carousel-btn">
+                            <i class="iconfont icon-image"></i>查看图片</button>
+                        <button class="order-btn" id="im" style="margin:0 15px 0 5px">
+                            <i class="iconfont icon-duihua"></i>留言</button>
+                    </div>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
+                            <input type="hidden" name="no" value="{{ $detail['no'] }}">
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">游戏</label>
+                                    <div class="layui-input-block">
+                                        <select name="game_id" lay-filter="game_id" lay-verify="required" @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
+                                            <option value=""></option>
+                                            @forelse($game as $id => $name)
+                                                <option value="{{ $id }}" @if($id == $detail['game_id']) selected @endif>{{ $name }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">区</label>
+                                    <div class="layui-input-block ">
+                                        <select name="region" lay-verify="required" lay-filter="change-select" class="region"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">服</label>
+                                    <div class="layui-input-block">
+                                        <select name="serve" lay-filter="serve" class="serve" display-name="服"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">角色名称</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">账号</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['account'] ?? '' }}">
+                                    </div>
+                                </div>
+
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">密码</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['password'] ?? '' }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练类型</label>
+                                    <div class="layui-input-block">
+                                        <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练标题</label>
+                                    <div class="layui-input-block tips-box">
+                                        <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_title'] ?? '' }}">
+                                        <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
+                                            <i class="iconfont icon-exclamatory-mark-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练要求模板</label>
+                                    <div class="layui-input-block">
+                                        <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao" display-name="代练要求模板"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
+                                            <option value=""></option>
+                                        </select>
+                                        <div class="tips" id="game_leveling_requirements_template">
+                                            <i class="iconfont icon-add-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item layui-form-text">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练说明</label>
+                                    <div class="layui-input-block">
+                                        <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_instructions'] ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练要求</label>
+                                    <div class="layui-input-block">
+                                        <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_requirements'] ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练价格</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_amount'] ?? '' }}">
+                                        @if(in_array($detail['status'], [13, 14, 17]))
+                                            <div class="tips"  id="add_price">
+                                                <i class="iconfont icon-add-r"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">安全保证金</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['security_deposit'] ?? '' }}">
+                                        <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
+                                            <i class="iconfont icon-exclamatory-mark-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">效率保证金</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['efficiency_deposit'] ?? '' }}">
+                                        <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
+                                            <i class="iconfont icon-exclamatory-mark-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练天数</label>
+                                    <div class="layui-input-block">
+                                        <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
+                                            <option value=""></option>
+                                            @for($i=0; $i<=30; $i++)
+                                                <option value="{{ $i }}" @if($detail['game_leveling_day'] == $i) selected  @endif>{{ $i }}天</option>
+                                            @endfor
+                                        </select>
+                                        @if(in_array($detail['status'], [13, 17]))
+                                            <div class="tips"  id="add_time">
+                                                <i class="iconfont icon-add-r"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">代练小时</label>
+                                    <div class="layui-input-block">
+                                        <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
+                                            <option value=""></option>
+                                            @for($i=0; $i<=24; $i++)
+                                                <option value="{{ $i }}" @if($detail['game_leveling_hour'] == $i) selected  @endif>{{ $i }}小时</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">玩家电话</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话" value="{{ $detail['client_phone'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">商户QQ</label>
+                                    <div class="layui-input-block">
+                                        <select name="user_qq" lay-verify="required" lay-filter="aihao" display-name="商户QQ">
+                                            <option value=""></option>
+                                        </select>
+                                        <div class="tips"  id="user_qq">
+                                            <i class="iconfont icon-add-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">加价幅度</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_range'] ?? '' }}">
+                                        <div class="tips" lay-tips="设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次">
+                                            <i class="iconfont icon-exclamatory-mark-r"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">加价上限</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_top_limit'] ?? '' }}">
+                                        <div class="tips" lay-tips="自动加价将不超过该价格">
+                                            <i class="iconfont icon-exclamatory-mark-r"></i>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">接单密码</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['order_password'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">补款单号1</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_1'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">补款单号2</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_2'] ?? '' }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">来源价格</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="source_price" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_price'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6"></div>
+                            </div>
+
+                            <div class="layui-row layui-col-space10 layui-form-item">
+                                <div class="layui-col-lg6">
+                                    <label class="layui-form-label">客服备注</label>
+                                    <div class="layui-input-block">
+                                        <input name="customer_service_remark" placeholder="请输入内容" class="layui-input" value="{{ $detail['customer_service_remark'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="layui-col-lg6"></div>
+                            </div>
+
+                            <div class="layui-form-item layui-layout-admin">
+                                <div class="layui-input-block">
+                                    <div class="layui-footer" style="left: 0;">
+                                        @if($detail['status'] != 24)
+                                            <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
+                                            @if ($detail['master'] && $detail['status'] == 22)
+                                                <button  class="qs-btn opt-btn"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
+                                            @endif
+
+                                            @if ($detail['master'] && $detail['status'] == 1)
+                                                <button  class="qs-btn opt-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
+                                            @endif
+
+                                            @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
+                                                <button  class="qs-btn opt-btn"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
+                                            @endif
+
+                                            @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
+                                                <button  class="qs-btn opt-btn"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
+                                            @endif
+
+                                            @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] == 1)
+                                                <button  class="qs-btn opt-btn"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
+                                            @endif
+
+                                            @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
+                                                <button  class="qs-btn opt-btn"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">锁定</button>
+                                            @endif
+
+                                            @if ($detail['master'] && $detail['status'] == 18)
+                                                <button  class="qs-btn opt-btn"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
+                                            @endif
+
+                                            @if ($detail['master'])
+                                                @if ($detail['consult'] == 1 && $detail['status'] == 15)
+                                                    <button  class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                                @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
+                                                    <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    <button class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                                @endif
+                                            @else
+                                                @if ($detail['consult'] == 2 && $detail['status'] == 15)
+                                                    <button class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
+                                                @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
+                                                    <button  class="qs-btn opt-btn" data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    <button  class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
+                                                @endif
+                                            @endif
+
+                                            @if (in_array($detail['status'], [13, 14, 17, 18]))
+                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
+                                            @endif
+
+                                            @if (in_array($detail['status'], [13,14,15]))
+                                                <button class="qs-btn opt-btn"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
+                                            @endif
+
+                                            @if ($detail['master'])
+                                                @if ($detail['complain'] == 1 && $detail['status'] == 16)
+                                                    <button class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
+                                                    @if($detail['consult'] == 2)
+                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    @endif
+                                                @endif
+                                            @else
+                                                @if ($detail['complain'] == 2 && $detail['status'] == 16)
+                                                    <button  class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
+                                                    @if($detail['consult'] == 1)
+                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    @endif
+                                                @endif
+                                            @endif
+
+                                            @if ($detail['master'] && $detail['status'] == 14)
+                                                <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                                            @endif
+
+
+                                            @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
+                                                <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
+                                            @endif
+
+                                            @if (!$detail['master'] && ($detail['status'] == 13))
+                                                <button  class="qs-btn opt-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
+                                            @endif
+
+                                            @if (!$detail['master'] && ($detail['status'] == 14))
+                                                <button  class="qs-btn opt-btn"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
+                                            @endif
+
+                                            @if (!$detail['master'] && ($detail['status'] == 13))
+                                                <button  class="qs-btn"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">异常</button>
+                                            @endif
+
+                                            @if (!$detail['master'] && ($detail['status'] == 17))
+                                                <button  class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
+                                            @endif
+                                        @endif
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-form">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="150">
+                                    <col width="200">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>申请仲裁</th>
+                                    <th>申请时间</th>
+                                    <th>申请原因</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>我方/对方</td>
+                                    <td>2018-5-21 15:19:23</td>
+                                    <td>打手将账号弄封号</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="layui-row layui-col-space15" style="padding: 18px;border: 1px solid #e6e6e6;border-top:0;box-sizing: border-box;margin:0;margin-bottom: 18px;">
+                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 " style="height: 184px">
+                                <img src="./lib/css/res/game01.jpg" alt="" style="width: 100%;height: 100%">
+                            </div>
+                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
+                                <img src="./lib/css/res/game02.jpg" alt="" style="width: 100%;height: 100%">
+                            </div>
+                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
+                                <img src="./lib/css/res/game03.jpg" alt="" style="width: 100%;height: 100%">
+                            </div>
+                        </div>
+                        <div class="layui-form" style="margin-bottom: 18px;">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="90">
+                                    <col>
+                                    <col width="180">
+                                    <col width="80">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>留言方</th>
+                                    <th>留言说明</th>
+                                    <th>留言时间</th>
+                                    <th>留言证据</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>我方</td>
+                                    <td>协商未果,打手报复</td>
+                                    <td>2018-5-21 15:51:23</td>
+                                    <td>
+                                        <button class="qs-btn"style="width: 42px; padding:0;"><i class="iconfont icon-visible"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>对方</td>
+                                    <td>意外操作</td>
+                                    <td>2018-5-21 15:51:23</td>
+                                    <td>
+                                        <button class="qs-btn" style="width: 42px; padding:0;"><i class="iconfont icon-visible"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>客服</td>
+                                    <td style="color: red;">经审核判定打手报复无误</td>
+                                    <td>2018-5-21 15:51:23</td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="text-align: left;padding-left: 0;">留言说明</label>
+                                <div class="layui-input-block" style="max-width: auto;margin-left: 90px;">
+                                    <textarea  name = 'text' style="width: 100%;min-height: 80px;" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="text-align: left;padding-left: 0;">上传证据</label>
+                                <div class="layui-input-block" style="max-width: auto;margin-left: 90px;">
+                                    <input type="text" name="img_name" class="layui-input" style="width: 50%;display: inline-block;position: relative;">
+                                    <button type="button" class="qs-btn qs-btn-primary" id="sub_img"  style="margin-left: 10px;"><i class="layui-icon"></i>上传文件</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block" style="margin-left: 90px;">
+                                    <button class="qs-btn" lay-submit="" lay-filter="sub_evidence" id="sub_evidence">立即提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-tab-item" lay-id="message" id="message">
+
+                    </div>
                 </div>
             </div>
-            <div class="layui-card-body" style="padding: 15px 25px 15px 15px">
-                <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
-                    <input type="hidden" name="no" value="{{ $detail['no'] }}">
 
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">游戏</label>
-                            <div class="layui-input-block">
-                                <select name="game_id" lay-filter="game_id" lay-verify="required" @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
-                                    <option value=""></option>
-                                    @forelse($game as $id => $name)
-                                        <option value="{{ $id }}" @if($id == $detail['game_id']) selected @endif>{{ $name }}</option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">区</label>
-                            <div class="layui-input-block ">
-                                <select name="region" lay-verify="required" lay-filter="change-select" class="region"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">服</label>
-                            <div class="layui-input-block">
-                                <select name="serve" lay-filter="serve" class="serve" display-name="服"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled" @endif>
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">角色名称</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['role'] ?? '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">账号</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['account'] ?? '' }}">
-                            </div>
-                        </div>
-
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">密码</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['password'] ?? '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练类型</label>
-                            <div class="layui-input-block">
-                                <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练标题</label>
-                            <div class="layui-input-block tips-box">
-                                <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_title'] ?? '' }}">
-                                <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练要求模板</label>
-                            <div class="layui-input-block">
-                                <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao" display-name="代练要求模板"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
-                                    <option value=""></option>
-                                </select>
-                                <div class="tips" id="game_leveling_requirements_template">
-                                    <i class="iconfont icon-add-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item layui-form-text">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练说明</label>
-                            <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_instructions'] ?? '' }}</textarea>
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练要求</label>
-                            <div class="layui-input-block">
-                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>{{ $detail['game_leveling_requirements'] ?? '' }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练价格</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_amount'] ?? '' }}">
-                                @if(in_array($detail['status'], [13, 14, 17]))
-                                    <div class="tips"  id="add_price">
-                                        <i class="iconfont icon-add-r"></i>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">安全保证金</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['security_deposit'] ?? '' }}">
-                                <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">效率保证金</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['efficiency_deposit'] ?? '' }}">
-                                <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练天数</label>
-                            <div class="layui-input-block">
-                                <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
-                                    <option value=""></option>
-                                    @for($i=0; $i<=30; $i++)
-                                        <option value="{{ $i }}" @if($detail['game_leveling_day'] == $i) selected  @endif>{{ $i }}天</option>
-                                    @endfor
-                                </select>
-                                @if(in_array($detail['status'], [13, 17]))
-                                    <div class="tips"  id="add_time">
-                                        <i class="iconfont icon-add-r"></i>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练小时</label>
-                            <div class="layui-input-block">
-                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
-                                    <option value=""></option>
-                                    @for($i=0; $i<=24; $i++)
-                                        <option value="{{ $i }}" @if($detail['game_leveling_hour'] == $i) selected  @endif>{{ $i }}小时</option>
-                                    @endfor
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">玩家电话</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话" value="{{ $detail['client_phone'] ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">商户QQ</label>
-                            <div class="layui-input-block">
-                                <select name="user_qq" lay-verify="required" lay-filter="aihao" display-name="商户QQ">
-                                    <option value=""></option>
-                                </select>
-                                <div class="tips"  id="user_qq">
-                                    <i class="iconfont icon-add-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">加价幅度</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_range'] ?? '' }}">
-                                <div class="tips" lay-tips="设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">加价上限</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['markup_top_limit'] ?? '' }}">
-                                <div class="tips" lay-tips="自动加价将不超过该价格">
-                                    <i class="iconfont icon-exclamatory-mark-r"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">接单密码</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['order_password'] ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">补款单号1</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_1'] ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">补款单号2</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_2'] ?? '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源价格</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="source_price" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_price'] ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6"></div>
-                    </div>
-
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <div class="layui-col-lg6">
-                            <label class="layui-form-label">客服备注</label>
-                            <div class="layui-input-block">
-                                <input name="customer_service_remark" placeholder="请输入内容" class="layui-input" value="{{ $detail['customer_service_remark'] ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="layui-col-lg6"></div>
-                    </div>
-
-                    <div class="layui-form-item layui-layout-admin">
-                        <div class="layui-input-block">
-                            <div class="layui-footer" style="left: 0;">
-                                @if($detail['status'] != 24)
-                                    <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
-                                    @if ($detail['master'] && $detail['status'] == 22)
-                                        <button  class="qs-btn opt-btn"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
-                                    @endif
-
-                                    @if ($detail['master'] && $detail['status'] == 1)
-                                        <button  class="qs-btn opt-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
-                                    @endif
-
-                                    @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
-                                        <button  class="qs-btn opt-btn"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
-                                    @endif
-
-                                    @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] != 1)
-                                        <button  class="qs-btn opt-btn"  data-operation="urgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">加急</button>
-                                    @endif
-
-                                    @if ($detail['master'] && isset($detail['urgent_order']) && $detail['urgent_order'] == 1)
-                                        <button  class="qs-btn opt-btn"  data-operation="unUrgent" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消加急</button>
-                                    @endif
-
-                                    @if ($detail['master'] && in_array($detail['status'], [13, 14,  17]))
-                                        <button  class="qs-btn opt-btn"  data-operation="lock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">锁定</button>
-                                    @endif
-
-                                    @if ($detail['master'] && $detail['status'] == 18)
-                                        <button  class="qs-btn opt-btn"  data-operation="cancelLock" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消锁定</button>
-                                    @endif
-
-                                    @if ($detail['master'])
-                                        @if ($detail['consult'] == 1 && $detail['status'] == 15)
-                                            <button  class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
-                                        @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
-                                            <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            <button class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
-                                        @endif
-                                    @else
-                                        @if ($detail['consult'] == 2 && $detail['status'] == 15)
-                                            <button class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
-                                        @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
-                                            <button  class="qs-btn opt-btn" data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            <button  class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
-                                        @endif
-                                    @endif
-
-                                    @if (in_array($detail['status'], [13, 14, 17, 18]))
-                                        <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
-                                    @endif
-
-                                    @if (in_array($detail['status'], [13,14,15]))
-                                        <button class="qs-btn opt-btn"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
-                                    @endif
-
-                                    @if ($detail['master'])
-                                        @if ($detail['complain'] == 1 && $detail['status'] == 16)
-                                            <button class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
-                                            @if($detail['consult'] == 2)
-                                                <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            @endif
-                                        @endif
-                                    @else
-                                        @if ($detail['complain'] == 2 && $detail['status'] == 16)
-                                            <button  class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
-                                            @if($detail['consult'] == 1)
-                                                <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] }}" api_service="{{ $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
-                                            @endif
-                                        @endif
-                                    @endif
-
-                                    @if ($detail['master'] && $detail['status'] == 14)
-                                        <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
-                                    @endif
-
-
-                                    @if ($detail['master'] && ($detail['status'] == 1 || $detail['status'] == 22))
-                                        <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
-                                    @endif
-
-                                    @if (!$detail['master'] && ($detail['status'] == 13))
-                                        <button  class="qs-btn opt-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
-                                    @endif
-
-                                    @if (!$detail['master'] && ($detail['status'] == 14))
-                                        <button  class="qs-btn opt-btn"  data-operation="cancelComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消验收</button>
-                                    @endif
-
-                                    @if (!$detail['master'] && ($detail['status'] == 13))
-                                        <button  class="qs-btn"  data-operation="abnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">异常</button>
-                                    @endif
-
-                                    @if (!$detail['master'] && ($detail['status'] == 17))
-                                        <button  class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
-                                    @endif
-                                @endif
-
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
     <div class="layui-col-md4">
@@ -1015,8 +1123,17 @@
                         return '输入金额需大于或等于1元';
                     }
                 }
-
             });
+
+            element.on('tab()', function(){
+                var id = this.getAttribute('lay-id');
+                if (id == 3) {
+                    $.get('{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}', {id:1}, function (result) {
+                        $('#message').html(result);
+                    });
+                }
+            });
+
             // 下单
             form.on('submit(order)', function (data) {
                 if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
