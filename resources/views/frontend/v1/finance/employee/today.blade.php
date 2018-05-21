@@ -173,10 +173,14 @@
                             <td>{{ number_format($totals->today_profit, 2) ?? '--' }}</td>
                         </tr>
                     @endif
+                @else
+                    <tr>
+                        <td colspan="10">暂无</td>
+                    </tr>
                 @endif
                 @if(! empty($final))
                 <tr style="color: red;">
-                        <td>{{ $final->creator_count }}</td>
+                        <td>总计: {{ $final->creator_count }}</td>
                         <td>{{ $final->count ?? 0 }}</td>
                         <td>{{ number_format($final->original_price, 2) }}</td>
                         <td>{{ number_format($final->price, 2) }}</td>
