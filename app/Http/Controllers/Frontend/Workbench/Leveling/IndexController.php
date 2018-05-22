@@ -1520,6 +1520,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='order_password' THEN a.field_value ELSE '' END) AS order_password,
                 MAX(CASE WHEN a.field_name='game_leveling_requirements_template' THEN a.field_value ELSE '' END) AS game_leveling_requirements_template,
                 b.no,
+                b.status as order_status,
                 b.amount,
                 b.creator_user_id, 
                 b.creator_primary_user_id, 
@@ -2033,9 +2034,18 @@ class IndexController extends Controller
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+
+                if (! isset($datas['order_status']) || $datas['order_status'] != 16) {
+                    return '暂无相关信息';
+                }
+
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
                         $arbitrationInfos = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
+
+                        if (! isset($arbitrationInfos) || ! is_array($arbitrationInfos) || ! isset($arbitrationInfos['appeal']) || count($arbitrationInfos) < 1) {
+                            return '暂无相关信息';
+                        }
                         return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
                     }
                 }
