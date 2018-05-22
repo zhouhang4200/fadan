@@ -1919,6 +1919,7 @@ class IndexController extends Controller
             }
             OrderDetail::where('order_no', $orderNo)->where('field_name', 'is_top')->update(['field_value'=> 1]);
         } catch (\Exception $exception) {
+            myLog('top', [$exception->getMessage()]);
 //            return response()->ajax(0, '置顶失败,' . $exception->getMessage());
         }
 
