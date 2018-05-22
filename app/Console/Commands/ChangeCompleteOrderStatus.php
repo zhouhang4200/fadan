@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use DB;
 use Redis;
+use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -69,21 +70,20 @@ class ChangeCompleteOrderStatus extends Command
                     $overTime = $carbon->parse($time)->addDays(3);
 
                     // 如果是dnf推荐号,则时间为1天
-                    // $isDnf = OrderDetail::where('order_no', $order->no)
-                    //     ->where('field_name', 'game_leveling_type')
-                    //     ->where('field_value', '推荐号')
-                    //     ->first();
+                    $isDnf = OrderDetail::where('order_no', $order->no)
+                        ->where('field_name', 'game_leveling_type')
+                        ->where('field_value', '推荐号')
+                        ->first();
 
-                    // if (isset($isDnf) && ! empty($isDnf)) {
-                    //     $overTime = $carbon->parse($time)->addDays(1);
-                    // }
+                    if (isset($isDnf) && ! empty($isDnf) && $order->game_id == 86) {
+                        $overTime = $carbon->parse($time)->addDays(1);
+                    }
                     // 是否到了完成时间
                     $readyOnTime = $carbon->diffInSeconds($overTime, false);
 
                     if ($readyOnTime < 0) {
                         DailianFactory::choose('complete')->run($orderNo, 0, true);
                         Redis::hDel('complete_orders', $orderNo);
-                        myLog('auto-complete-success', ['自动完成' => '成功']);
                     }
                 }
             }
