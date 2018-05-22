@@ -1911,11 +1911,7 @@ class IndexController extends Controller
                 $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
                 // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                    if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
-                        // 控制器-》方法-》参数
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['setTop']], [$updateData]);
-                    }
+                    call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['setTop']], [$updateData]);
                 }
             }
             OrderDetail::where('order_no', $orderNo)->where('field_name', 'is_top')->update(['field_value'=> 1]);
