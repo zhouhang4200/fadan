@@ -24,13 +24,13 @@
 </div>
 <div class="layui-row layui-col-space15" style="padding: 18px;border: 1px solid #e6e6e6;border-top:0;box-sizing: border-box;margin:0;margin-bottom: 18px;">
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 " style="height: 184px">
-        <img src="./lib/css/res/game01.jpg" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['appeal']['pic1'] }}" alt="" style="width: 100%;height: 100%">
     </div>
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-        <img src="./lib/css/res/game02.jpg" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['appeal']['pic2'] }}" alt="" style="width: 100%;height: 100%">
     </div>
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-        <img src="./lib/css/res/game03.jpg" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['appeal']['pic3'] }}" alt="" style="width: 100%;height: 100%">
     </div>
 </div>
 <div class="layui-form" style="margin-bottom: 18px;">

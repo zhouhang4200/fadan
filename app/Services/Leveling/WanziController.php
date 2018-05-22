@@ -716,6 +716,19 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                     $details = $result['data'];
                 }
             }
+
+            if (isset($details['appeal']['pic1'])) {
+                $details['appeal']['pic1'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+            }
+
+            if (isset($details['appeal']['pic2'])) {
+                $details['appeal']['pic2'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+            }
+
+            if (isset($details['appeal']['pic3'])) {
+                $details['appeal']['pic3'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+            }
+
             return $details;
         } catch (Exception $e) {
             myLog('wanzi-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
