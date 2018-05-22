@@ -1812,27 +1812,6 @@
                 }
                 return false;
             });
-
-            function evidence(img){
-                console.log(222);
-                layer.open({
-                    type: 1,
-                    title: false //不显示标题栏
-                        ,
-                    closeBtn: false,
-                    area: ['700px',"auto"],
-                    shade: 0.8,
-                    shadeClose: true,
-                    id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                        ,
-                    moveType: 1 //拖拽模式，0或者1
-                        ,
-                        
-                    content: ' <img src='+img+'style="width:100%;height:100%;">',
-                    success: function (layero) {
-                    }
-                });
-            }
         });
     </script>
 @endsection

@@ -56,7 +56,7 @@
                 <td>{{ $arbitrationInfo['content'] }}</td>
                 <td>{{ $arbitrationInfo['created_on'] }}</td>
                 <td>
-                    <button class="qs-btn" style="width: 42px; padding:0;" data-img="{{ $arbitrationInfo['pic'] }}" onclick=" evidence('{{ $arbitrationInfo['pic'] }}')"><i class="iconfont icon-visible"></i></button>
+                    <button class="qs-btn" style="width: 42px; padding:0;" data-img="{{ $arbitrationInfo['pic'] }}"><i class="iconfont icon-visible"></i></button>
                 </td>
             </tr>
         @empty
