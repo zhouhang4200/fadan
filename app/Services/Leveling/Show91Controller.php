@@ -686,7 +686,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
      * 91独有的置顶功能
      * @param [type] $orderDatas [description]
      */
-    public function setTop($orderDatas)
+    public static function setTop($orderDatas)
     {
     	try {
 	        $options = [

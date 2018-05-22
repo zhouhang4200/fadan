@@ -276,7 +276,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">代练标题</label>
                             <div class="layui-input-block tips-box">
-                                <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题">
+                                <input type="text" name="game_leveling_title" lay-verify="required|title" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题">
                                 <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -595,6 +595,11 @@
                 gt5:function (value) { // 大于1
                     if (value < 1) {
                         return '输入金额需大于或等于1元';
+                    }
+                },
+                title:function (value) {
+                    if (value.length > 60) {
+                        return '标题不可大于60个字符';
                     }
                 }
 

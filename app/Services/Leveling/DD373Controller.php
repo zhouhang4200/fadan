@@ -756,4 +756,12 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     {
 
     }
+
+    /**
+     * 置顶
+     */
+    public static function setTop()
+    {
+
+    }
 }

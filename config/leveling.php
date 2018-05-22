@@ -85,6 +85,7 @@ return [
 		'updateImage'			   => 'updateImage', // 上传截图
 		'getArbitrationInfo'       => 'getArbitrationInfo', // 获取仲裁详情
 		'addArbitrationInfo'       => 'addArbitrationInfo', // '添加仲裁证据'
+		'setTop'                   => 'setTop', // 置顶
 	],
 
 	// 蚂蚁代练的信息
@@ -127,6 +128,7 @@ return [
 			'updateAccountAndPassword' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=changePwd', // 修改账号密码
 			'refuseRevoke'             => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=CancelAction', // 不同意撤销
 			'updateImage'			   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=uploadImage', //上传截图
+            'setTop'			       => '',
 		],
 		'status' => [
 			'1'  => '未接单',

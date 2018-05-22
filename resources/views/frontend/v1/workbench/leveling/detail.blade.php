@@ -279,7 +279,7 @@
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">代练标题</label>
                                     <div class="layui-input-block tips-box">
-                                        <input type="text" name="game_leveling_title" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_title'] ?? '' }}">
+                                        <input type="text" name="game_leveling_title" lay-verify="required|title" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['game_leveling_title'] ?? '' }}">
                                         <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
                                             <i class="iconfont icon-exclamatory-mark-r"></i>
                                         </div>
@@ -574,109 +574,9 @@
                             </div>
                         </form>
                     </div>
-                    <!-- <div class="layui-tab-item">
-                        <div class="layui-form">
-                            <table class="layui-table">
-                                <colgroup>
-                                    <col width="150">
-                                    <col width="150">
-                                    <col width="200">
-                                    <col>
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>申请仲裁</th>
-                                    <th>申请时间</th>
-                                    <th>申请原因</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>我方/对方</td>
-                                    <td>2018-5-21 15:19:23</td>
-                                    <td>打手将账号弄封号</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="layui-row layui-col-space15" style="padding: 18px;border: 1px solid #e6e6e6;border-top:0;box-sizing: border-box;margin:0;margin-bottom: 18px;">
-                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 " style="height: 184px">
-                                <img src="./lib/css/res/game01.jpg" alt="" style="width: 100%;height: 100%">
-                            </div>
-                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-                                <img src="./lib/css/res/game02.jpg" alt="" style="width: 100%;height: 100%">
-                            </div>
-                            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-                                <img src="./lib/css/res/game03.jpg" alt="" style="width: 100%;height: 100%">
-                            </div>
-                        </div>
-                        <div class="layui-form" style="margin-bottom: 18px;">
-                            <table class="layui-table">
-                                <colgroup>
-                                    <col width="90">
-                                    <col>
-                                    <col width="180">
-                                    <col width="80">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>留言方</th>
-                                    <th>留言说明</th>
-                                    <th>留言时间</th>
-                                    <th>留言证据</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>我方</td>
-                                    <td>协商未果,打手报复</td>
-                                    <td>2018-5-21 15:51:23</td>
-                                    <td>
-                                        <button class="qs-btn"style="width: 42px; padding:0;"><i class="iconfont icon-visible"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>对方</td>
-                                    <td>意外操作</td>
-                                    <td>2018-5-21 15:51:23</td>
-                                    <td>
-                                        <button class="qs-btn" style="width: 42px; padding:0;"><i class="iconfont icon-visible"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>客服</td>
-                                    <td style="color: red;">经审核判定打手报复无误</td>
-                                    <td>2018-5-21 15:51:23</td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <form class="layui-form" action="">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" style="text-align: left;padding-left: 0;">留言说明</label>
-                                <div class="layui-input-block" style="max-width: auto;margin-left: 90px;">
-                                    <textarea  name = 'text' style="width: 100%;min-height: 80px;" class="layui-textarea"></textarea>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" style="text-align: left;padding-left: 0;">上传证据</label>
-                                <div class="layui-input-block" style="max-width: auto;margin-left: 90px;">
-                                    <input type="text" name="img_name" class="layui-input" style="width: 50%;display: inline-block;position: relative;">
-                                    <button type="button" class="qs-btn qs-btn-primary" id="sub_img"  style="margin-left: 10px;"><i class="layui-icon"></i>上传文件</button>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-block" style="margin-left: 90px;">
-                                    <button class="qs-btn" lay-submit="" lay-filter="sub_evidence" id="sub_evidence">立即提交</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div> -->
                     <div class="layui-tab-item" lay-id="arbitration-info" id="arbitration-info">
                     </div>
                     <div class="layui-tab-item" lay-id="message" id="message">
-                    
                     </div>
                 </div>
             </div>
@@ -1041,7 +941,6 @@
 </div>
 <div style="padding: 20px 20px 0 20px;display: none" id="add_time_pop">
     <form class="layui-form" action="">
-
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">增加时间</label>
@@ -1123,6 +1022,11 @@
                 gt5:function (value) { // 大于1
                     if (value < 1) {
                         return '输入金额需大于或等于1元';
+                    }
+                },
+                title:function (value) {
+                    if (value.length > 60) {
+                        return '标题不可大于60个字符';
                     }
                 }
             });
@@ -1397,7 +1301,6 @@
                                 layer.closeAll();
                             });
                         }
-//                        reload();
                     });
                 }
 
@@ -1443,6 +1346,7 @@
                                 if(result.status == 1) {
                                     layer.alert(result.message, function () {
                                         layer.closeAll();
+                                        location.reload();
                                     })
                                 } else {
                                     layer.msg(result.message);
@@ -1464,29 +1368,24 @@
                     moveType: 1,
                     content: $('#add_time_pop'),
                     yes: function (layero) {
-//                        var oldDay = parseInt($('[name=game_leveling_day]').val());
-//                        var oldHour = parseInt($('[name=game_leveling_hour]').val());
                         var day = parseInt($('#add_time_pop').find('input[name=day]').val());
                         var hour = parseInt($('#add_time_pop').find('input[name=hour]').val());
 
-//                        // 如果新的天数小于原来天数 或 天数相等新小时小于原小时
-//                        if (day < oldDay || (day == oldDay && hour < oldHour)) {
-//                            layer.msg('代练时间只可增加');
-//                        } else {
-                            $.post("{{ route('frontend.workbench.leveling.add-time') }}", {
-                                no: '{{ $detail['no'] }}',
-                                day: day,
-                                hour: hour
-                            }, function (result) {
-                                if (result.status == 1) {
-                                    layer.alert(result.message, function () {
-                                        layer.closeAll();
-                                    })
-                                } else {
-                                    layer.msg(result.message);
-                                }
-                            }, 'json');
-//                        }
+                        $.post("{{ route('frontend.workbench.leveling.add-time') }}", {
+                            no: '{{ $detail['no'] }}',
+                            day: day,
+                            hour: hour
+                        }, function (result) {
+                            if (result.status == 1) {
+                                layer.alert(result.message, function () {
+                                    layer.closeAll();
+                                    location.reload();
+                                })
+                            } else {
+                                layer.msg(result.message);
+                            }
+                        }, 'json');
+
                     }
                 });
             });
