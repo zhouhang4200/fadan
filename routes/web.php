@@ -332,6 +332,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('add-time', 'IndexController@addTime')->name('frontend.workbench.leveling.add-time');
             // 置顶
             Route::post('set-top', 'IndexController@setTop')->name('frontend.workbench.leveling.set-top');
+            // 获取仲裁证据
+            Route::get('arbitration-info', 'IndexController@getArbitrationInfo')->name('frontend.workbench.leveling.arbitration-info');
+            // 发送仲裁证据
+            Route::post('add-arbitration', 'IndexController@addArbitrationInfo')->name('frontend.workbench.leveling.add-arbitration');
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

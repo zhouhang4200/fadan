@@ -83,6 +83,8 @@ return [
 		'replyMessage'             => 'replyMessage', // 回复留言
 		'updateAccountAndPassword' => 'updateAccountAndPassword', // 修改游戏账号密码
 		'updateImage'			   => 'updateImage', // 上传截图
+		'getArbitrationInfo'       => 'getArbitrationInfo', // 获取仲裁详情
+		'addArbitrationInfo'       => 'addArbitrationInfo', // '添加仲裁证据'
 	],
 
 	// 蚂蚁代练的信息

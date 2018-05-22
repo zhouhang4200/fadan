@@ -734,11 +734,12 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                 'account'           => config('leveling.wanzi.account'),
                 'sign'              => config('leveling.wanzi.sign'),
                 'appealEvi.aid'     => $orderDatas['arbitration_id'],
-                'appealEvi.content' => $orderDatas['content'],
-                'pic1'              => $orderDatas['pic'],
+                'appealEvi.content' => $orderDatas['add_content'],
+                'pic1'              => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
             ];
+
             // 发送
-            static::formDataRequest($options, config('leveling.wanzi.url')['addevidence']);
+            return static::formDataRequest($options, config('leveling.wanzi.url')['addevidence']);
         } catch (Exception $e) {
             myLog('wanzi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

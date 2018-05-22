@@ -2026,26 +2026,59 @@ class IndexController extends Controller
      */
     public function getArbitrationInfo(Request $request)
     {
-        $orderNo = $request->no;
+        $orderNo = $request->order_no;
 
         try {
             // 调用接口更新值
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
-                // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
-                        $arbitrationInfo = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
-
-                        dd($arbitrationInfo);
+                        $arbitrationInfos = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
+                        return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
                     }
                 }
             }
         } catch (\Exception $exception) {
-            
+            myLog('get-arbitration-advence', ['失败' => $exception->getMessage()]);
         } catch (DailianException $e) {
-            
+            myLog('get-arbitration-advence', ['失败' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 发送仲裁证据
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function addArbitrationInfo(Request $request)
+    {
+        $orderNo = $request->order_no;
+        $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+        $datas['arbitration_id'] = $request->arbitration_id;
+        $datas['add_content'] = $request->content;
+        $datas['pic'] = $request->pic;
+        try {
+            // 调用接口更新值
+            if (config('leveling.third_orders')) {
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
+                        $result = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addArbitrationInfo']], [$datas]);
+                        if (isset($result) && isset($result['result']) && $result['result'] == 0) {
+                            return response()->ajax(1, '发送成功');
+                        }
+                    }
+                }
+            }
+            return response()->ajax(0, '发送失败');
+        } catch (\Exception $exception) {
+            myLog('add-arbitration-advence', ['失败' => $exception->getMessage()]);
+            return response()->ajax(0, '发送失败');
+        } catch (DailianException $e) {
+            myLog('add-arbitration-advence', ['失败' => $e->getMessage()]);
+            return response()->ajax(0, '发送失败');
         }
     }
 }

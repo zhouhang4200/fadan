@@ -574,7 +574,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="layui-tab-item">
+                    <!-- <div class="layui-tab-item">
                         <div class="layui-form">
                             <table class="layui-table">
                                 <colgroup>
@@ -672,9 +672,11 @@
                                 </div>
                             </div>
                         </form>
+                    </div> -->
+                    <div class="layui-tab-item" lay-id="arbitration-info" id="arbitration-info">
                     </div>
                     <div class="layui-tab-item" lay-id="message" id="message">
-
+                    
                     </div>
                 </div>
             </div>
@@ -1130,6 +1132,11 @@
                 if (id == 3) {
                     $.get('{{ route('frontend.workbench.leveling.history', ['order_no' => $detail['no']]) }}', {id:1}, function (result) {
                         $('#message').html(result);
+                    });
+                }
+                if (id == 2) {
+                    $.get('{{ route('frontend.workbench.leveling.arbitration-info').'?order_no=' . $detail['no'] }}', {id:1}, function (result) {
+                        $('#arbitration-info').html(result);
                     });
                 }
             });
@@ -1777,6 +1784,55 @@
             $('.cancel').click(function () {
                 layer.closeAll();
             })
+
+            // 发送证据
+            // $('.add_evidence').click(function(){
+            form.on('submit(add_evidence)', function (data) {
+                var content = $('[name=content]').val();
+                var pic = $('.pic-add img').attr('src');
+                var arbitration_id = this.getAttribute('lay-id');
+                var order_no = this.getAttribute('lay-no');
+                console.log(content, pic, arbitration_id);
+                if (content) {
+                    $.post("{{ route('frontend.workbench.leveling.add-arbitration') }}", {
+                        'content':content,
+                        'pic':pic,
+                        'arbitration_id':arbitration_id,
+                        'order_no':order_no
+                    }, function (result) {
+                        if (result.status === 1) {
+                            layer.msg(result.message);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }, 'json');
+                    return false;
+                } else {
+                    layer.msg('请输入要发送的内容');
+                }
+                return false;
+            });
+
+            function evidence(img){
+                console.log(222);
+                layer.open({
+                    type: 1,
+                    title: false //不显示标题栏
+                        ,
+                    closeBtn: false,
+                    area: ['700px',"auto"],
+                    shade: 0.8,
+                    shadeClose: true,
+                    id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                        ,
+                    moveType: 1 //拖拽模式，0或者1
+                        ,
+                        
+                    content: ' <img src='+img+'style="width:100%;height:100%;">',
+                    success: function (layero) {
+                    }
+                });
+            }
         });
     </script>
 @endsection
