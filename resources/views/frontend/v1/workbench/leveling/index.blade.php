@@ -430,7 +430,7 @@
         @{{# if(d.timeout == 1 && d.status == 13)  { }}
             <span style="color:#ff8500"> @{{ d.timeout_time }}</span>
         @{{# } else if(d.status == 13 || d.status == 1) { }}
-            @{{ d.left_time }}
+            @{{ d.status_time }}
         @{{# } else {  }}
             @{{ d.status_time }}
         @{{# }  }}
