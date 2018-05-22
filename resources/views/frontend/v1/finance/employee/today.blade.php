@@ -218,25 +218,25 @@
             });
            
             var count = document.getElementById('render').getAttribute('lay-count');
-            var user_id= document.getElementById('user_id').getAttribute('lay-user_id');
-            var status= document.getElementById('status').getAttribute('lay-status');
-            var start_date = document.getElementById('start_date').getAttribute('lay-start_date');
-            var end_date = document.getElementById('end_date').getAttribute('lay-end_date');
-            var page = document.getElementById('render').getAttribute('lay-page');
+            // var user_id= document.getElementById('user_id').getAttribute('lay-user_id');
+            // var status= document.getElementById('status').getAttribute('lay-status');
+            // var start_date = document.getElementById('start_date').getAttribute('lay-start_date');
+            // var end_date = document.getElementById('end_date').getAttribute('lay-end_date');
+            // var page = document.getElementById('render').getAttribute('lay-page');
 
-            laypage.render({
-              elem: 'render'
-              ,count: count //数据总数，从服务端得到
-              ,curr: function(){
-                    return page ? page : 1; // 返回当前页码值
-                }()
-              ,jump: function(obj, first){
-                //首次不执行
-                if(!first){
-                    window.location.href="http://www.test.com/statistic/employee?status="+status+"&user_id="+user_id+"&start_date="+start_date+"&end_date="+end_date+"&page="+obj.curr+"&limit="+obj.limit;
-                }
-              }
-            });
+            // laypage.render({
+            //   elem: 'render'
+            //   ,count: count //数据总数，从服务端得到
+            //   ,curr: function(){
+            //         return page ? page : 1; // 返回当前页码值
+            //     }()
+            //   ,jump: function(obj, first){
+            //     //首次不执行
+            //     if(!first){
+            //         window.location.href="http://www.test.com/statistic/employee?status="+status+"&user_id="+user_id+"&start_date="+start_date+"&end_date="+end_date+"&page="+obj.curr+"&limit="+obj.limit;
+            //     }
+            //   }
+            // });
 
         });
     </script>

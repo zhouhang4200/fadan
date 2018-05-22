@@ -82,121 +82,121 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
-<div class="user-info" style="height: 200px;">
-    <div alt="" id="user-img" class="info-img fl" style="float:left;width:80px;height:80px;background-image:url('{{ $user->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;" >
-        <button class="qs-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
-        @if(Auth::user()->parent_id == 0)
-            <button class="qs-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:5px;margin-left:0px; padding:0">修改资料</button>
-        @endif
-    </div>
-    <div class="info-left">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">账号 ：</label>
-                <div class="layui-input-inline">
-                    {{ $user->name }}
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">主账号ID ：</label>
-                <div class="layui-input-inline">
-                    {{ Auth::user()->getPrimaryUserId() }}
-                </div>
-            </div>
-
+    <div class="user-info" style="height: 200px;">
+        <div alt="" id="user-img" class="info-img fl" style="float:left;width:80px;height:80px;background-image:url('{{ $user->voucher }}');background-size: cover !important;background-position: center !important;margin-bottom:3px;" >
+            <button class="qs-btn layui-btn-normal layui-btn-mini" id="voucher-user" style="width:100%;padding:0;margin-top:85px;">修改头像</button>
+            @if(Auth::user()->parent_id == 0)
+                <button class="qs-btn layui-btn-normal layui-btn-mini" id="persional-user"  style="width:100%;margin-top:5px;margin-left:0px; padding:0">修改资料</button>
+            @endif
         </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">类型 ：</label>
-                <div class="layui-input-inline">
-                    @if ($user->parent_id == 0)
-                        主账号
+        <div class="info-left">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">账号 ：</label>
+                    <div class="layui-input-inline">
+                        {{ $user->name }}
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">主账号ID ：</label>
+                    <div class="layui-input-inline">
+                        {{ Auth::user()->getPrimaryUserId() }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">类型 ：</label>
+                    <div class="layui-input-inline">
+                        @if ($user->parent_id == 0)
+                            主账号
+                        @else
+                            子账号
+                        @endif
+                    </div>
+                </div>
+                <div class="layui-inline" style="width:270px;">
+                    <label class="layui-form-label">最后登录 ：</label>
+                    <div class="layui-input-inline" style="margin-right:0;">
+                        {{ $loginHistoryTime }}
+                    </div>
+                </div>
+            </div>
+            @if ($user->parent_id == 0)
+            <div class="layui-form-item">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">昵称 ：</label>
+                    <div class="layui-input-inline" >
+                        {{ $user->username }}
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">年龄 ：</label>
+                    <div class="layui-input-inline">
+                        {{ $user->age }}
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">QQ ：</label>
+                    <div class="layui-input-inline" >
+                        {{ $user->qq }}
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">微信 ：</label>
+                    <div class="layui-input-inline">
+                        {{ $user->wechat }}
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">电话 ：</label>
+                    <div class="layui-input-inline">
+                        {{ $user->phone }}
+                    </div>
+                </div>
+                <div class="layui-inline" >
+                    <label class="layui-form-label">店铺旺旺号 ：</label>
+                    <div class="layui-input-inline">
+                        {{ $user->store_wang_wang }}
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">实名认证 ：</label>
+                    <div class="layui-input-inline" style="margin-right:0;">
+                    @if ($ident && $ident->status == 1)
+                         已实名认证
+                    @elseif ($ident && $ident->status == 2)
+                         实名认证未通过
+                    @elseif (! $ident && $user->parent_id == 0)
+                         <a href="{{ route('idents.create') }}" style="color:#707070">未实名认证</a>
                     @else
-                        子账号
+                        未实名认证
                     @endif
+                    </div>
                 </div>
             </div>
-            <div class="layui-inline" style="width:270px;">
-                <label class="layui-form-label">最后登录 ：</label>
-                <div class="layui-input-inline" style="margin-right:0;">
-                    {{ $loginHistoryTime }}
-                </div>
-            </div>
+            @endif
         </div>
-        @if ($user->parent_id == 0)
-        <div class="layui-form-item">
-            <div class="layui-inline" >
-                <label class="layui-form-label">昵称 ：</label>
-                <div class="layui-input-inline" >
-                    {{ $user->username }}
-                </div>
+        <div class="info-balance ">
+            <div class="available-balance">可用余额：
+                {{ $user->userAsset->balance + 0 }}
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">年龄 ：</label>
-                <div class="layui-input-inline">
-                    {{ $user->age }}
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline" >
-                <label class="layui-form-label">QQ ：</label>
-                <div class="layui-input-inline" >
-                    {{ $user->qq }}
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">微信 ：</label>
-                <div class="layui-input-inline">
-                    {{ $user->wechat }}
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">电话 ：</label>
-                <div class="layui-input-inline">
-                    {{ $user->phone }}
-                </div>
-            </div>
-            <div class="layui-inline" >
-                <label class="layui-form-label">店铺旺旺号 ：</label>
-                <div class="layui-input-inline">
-                    {{ $user->store_wang_wang }}
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline" >
-                <label class="layui-form-label">实名认证 ：</label>
-                <div class="layui-input-inline" style="margin-right:0;">
-                @if ($ident && $ident->status == 1)
-                     已实名认证
-                @elseif ($ident && $ident->status == 2)
-                     实名认证未通过
-                @elseif (! $ident && $user->parent_id == 0)
-                     <a href="{{ route('idents.create') }}" style="color:#707070">未实名认证</a>
-                @else
-                    未实名认证
-                @endif
-                </div>
-            </div>
-        </div>
-        @endif
-    </div>
-    <div class="info-balance ">
-        <div class="available-balance">可用余额：
-            {{ $user->userAsset->balance + 0 }}
-        </div>
-        <div class="blocked-balances">冻结余额：
-            {{ $user->userAsset->frozen + 0 }}
-         </div>
+            <div class="blocked-balances">冻结余额：
+                {{ $user->userAsset->frozen + 0 }}
+             </div>
 
-        <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
-        @inject('withdraw', 'App\Services\Views\WithdrawService')
-        {{ $withdraw->button('余额提现', 'qs-btn qs-btn-normal qs-btn-custom-mini') }}
+            <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
+            @inject('withdraw', 'App\Services\Views\WithdrawService')
+            {{ $withdraw->button('余额提现', 'qs-btn qs-btn-normal qs-btn-custom-mini') }}
+        </div>
     </div>
-</div>
 <div class="layui-tab layui-hide">
     <ul class="layui-tab-title">
         <li class="layui-this">昨日接单数据</li>
@@ -236,6 +236,8 @@
         </div>
     </div>
 </div>
+
+@section('pop')
 <div id="persional" style="display: none; padding: 10px">
     <form class="layui-form" method="" action="">
         <div>
@@ -283,6 +285,7 @@
         </div>
     </form>
 </div>
+@endsection
 @section('pop')
     <div id="voucher" style="display: none; padding: 10px">
         <form class="layui-form" method="" action="">
