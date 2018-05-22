@@ -2,6 +2,8 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Models\AutomaticallyGrabGoods;
+use App\Models\TaobaoTrade;
 use DB;
 use Redis;
 use Exception;
@@ -85,6 +87,8 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             $key = $this->orderNo;
             Redis::hSet('complete_orders', $key, $now);
 
+            $this->taobaoAutoDelivery();
+
             // 调用事件
             try {
                 event(new OrderApplyComplete($this->order));
@@ -93,4 +97,30 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             }
         }
     }
+
+    /**
+     * 设置了交易自动发货
+     */
+    public function taobaoAutoDelivery()
+    {
+        try {
+            // 获取淘宝单号
+            $taobaoTrade = TaobaoTrade::where('tid', $this->orderDetail['source_order_no'])->first();
+
+            if ($taobaoTrade) {
+                // 获取商品ID
+                $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
+                // 检测商品ID是否开启了自动发货
+                if ($goodsConfig && $goodsConfig->delivery == 1) {
+                    taobaoTradeDelivery($this->order->no);
+                }
+            }
+        } catch (\Exception $exception) {
+            myLog('apply-complete-error', [$exception->getFile(), $exception->getMessage(), $exception->getLine()]);
+        }
+
+    }
+
+
 }

@@ -194,6 +194,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('delete', 'AutomaticallyGrabController@delete')->name('frontend.setting.automatically-grab.delete');
             Route::post('show', 'AutomaticallyGrabController@show')->name('frontend.setting.automatically-grab.show');
             Route::post('edit', 'AutomaticallyGrabController@edit')->name('frontend.setting.automatically-grab.edit');
+            Route::post('delivery', 'AutomaticallyGrabController@delivery')->name('frontend.setting.automatically-grab.delivery');
         });
         // 短信管理
         Route::prefix('sms')->group(function () {

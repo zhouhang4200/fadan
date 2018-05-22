@@ -1034,7 +1034,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">增加金额(元)</label>
             <div class="layui-input-block">
-                <input type="text" name="price" required  lay-verify="required|number" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                <input type="text" name="price" required  lay-verify="required|number" placeholder="请输入增加金额" autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
@@ -1435,11 +1435,9 @@
                     moveType: 1,
                     content: $('#add_price_pop'),
                     yes: function (layero) {
-                        var amount = $('[name=game_leveling_amount]').val();
                         var newAmount = $('#add_price_pop').find('input[name=price]').val();
-
-                        if (parseInt(newAmount) <=  parseInt(amount)) {
-                            layer.msg('价格只能大于当前金额');
+                        if (parseInt(newAmount) <= 0) {
+                            layer.msg('增加价格需大于0');
                         } else {
                             $.post("{{ route('frontend.workbench.leveling.add-amount') }}", {no:'{{ $detail['no'] }}', amount:newAmount}, function (result) {
                                 if(result.status == 1) {
@@ -1466,15 +1464,15 @@
                     moveType: 1,
                     content: $('#add_time_pop'),
                     yes: function (layero) {
-                        var oldDay = parseInt($('[name=game_leveling_day]').val());
-                        var oldHour = parseInt($('[name=game_leveling_hour]').val());
+//                        var oldDay = parseInt($('[name=game_leveling_day]').val());
+//                        var oldHour = parseInt($('[name=game_leveling_hour]').val());
                         var day = parseInt($('#add_time_pop').find('input[name=day]').val());
                         var hour = parseInt($('#add_time_pop').find('input[name=hour]').val());
 
-                        // 如果新的天数小于原来天数 或 天数相等新小时小于原小时
-                        if (day < oldDay || (day == oldDay && hour < oldHour)) {
-                            layer.msg('代练时间只可增加');
-                        } else {
+//                        // 如果新的天数小于原来天数 或 天数相等新小时小于原小时
+//                        if (day < oldDay || (day == oldDay && hour < oldHour)) {
+//                            layer.msg('代练时间只可增加');
+//                        } else {
                             $.post("{{ route('frontend.workbench.leveling.add-time') }}", {
                                 no: '{{ $detail['no'] }}',
                                 day: day,
@@ -1488,7 +1486,7 @@
                                     layer.msg(result.message);
                                 }
                             }, 'json');
-                        }
+//                        }
                     }
                 });
             });

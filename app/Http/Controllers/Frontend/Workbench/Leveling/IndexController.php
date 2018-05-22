@@ -1662,99 +1662,6 @@ class IndexController extends Controller
     }
 
     /**
-     * DNF推荐号固定信息
-     * @param $receiverAddress
-     * @param $taobaoTrade
-     * @return mixed
-     */
-    protected function dnfFixedInfo($receiverAddress, $taobaoTrade)
-    {
-        $region = explode(':', $receiverAddress[0]);
-        $role = explode(':', $receiverAddress[1]);
-
-        // 取省份名字
-        if (strpos($region[1], '黑龙') !== false || strpos($region[1], '内蒙') !== false) {
-            $province = mb_substr($region[1],0 ,3);
-        } else {
-            $province = mb_substr($region[1],0 ,2);
-        }
-        // 去除省份
-        $noProvince = str_replace($province, '', $region[1]);
-        // 将汉字转为阿拉伯数字
-        $num = [
-            '一' => 1,
-            '二' => 2,
-            '三' => 3,
-            '四' => 4,
-            '五' => 5,
-            '六' => 6,
-            '七' => 7,
-            '八' => 8,
-            '九' => 9,
-        ];
-        $serveNum = str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
-
-        // 区
-        if ($province == '云南' || $province == '贵州' || $province == '云贵') {
-            $region = '云贵区';
-        } else {
-            $region = $province . '区';
-        }
-
-        // 服
-        $serve = '';
-        if ($province == '北京' && in_array($serveNum, [2, 4])) {
-            $serve = '北京2/4区';
-        } else if($province == '江苏' && in_array($serveNum, [5, 7])) {
-            $serve = '江苏5/7区';
-        } else if($province == '广西' && in_array($serveNum, [2, 4])) {
-            $serve = '广西2/4区';
-        }  else if($province == '东北' && in_array($serveNum, [4, 5, 6])) {
-            $serve = '东北4/5/6区';
-        } else if($province == '东北' && in_array($serveNum, [3, 7])) {
-            $serve = '东北3/7区';
-        } else if($province == '山东' && in_array($serveNum, [2, 7])) {
-            $serve = '山东2/7区';
-        } else if($province == '浙江' && in_array($serveNum, [4, 5])) {
-            $serve = '浙江4/5区';
-        } else if($province == '上海' && in_array($serveNum, [4, 5])) {
-            $serve = '上海4/5区';
-        } else if($province == '河北' && in_array($serveNum, [2, 3])) {
-            $serve = '河北2/3区';
-        } else if($province == '福建' && in_array($serveNum, [3, 4])) {
-            $serve = '福建3/4区';
-        } else if($province == '黑龙江' && in_array($serveNum, [2, 3])) {
-            $serve = '黑龙江2/3区';
-        } else if($province == '西北' && in_array($serveNum, [2, 3])) {
-            $serve = '西北2/3区';
-        } else if($province == '陕西' && in_array($serveNum, [2, 3])) {
-            $serve = '陕西2/3区';
-        } else if($province == '黑龙江' && in_array($serveNum, [1, 2])) {
-            $serve = '吉林1/2区';
-        } else {
-            $serve = $province . $serveNum  . '区';
-        }
-
-        // 固定的订单信息
-        $fixedInfo['region'] = ['type' => 2, 'value' => $region];
-        $fixedInfo['serve'] = ['type' => 2, 'value' => $serve];
-        $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
-        $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
-        $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
-        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号' . $serve . $taobaoTrade->num . '次'];
-        $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号' . $serve . $taobaoTrade->num . '次'];
-        $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
-        $fixedInfo['game_leveling_type'] = ['type' => 2, 'value' => '推荐号'];
-        $fixedInfo['efficiency_deposit'] = ['type' => 1, 'value' => 1];
-        $fixedInfo['game_leveling_day'] = ['type' => 2, 'value' => 0];
-        $fixedInfo['game_leveling_hour'] = ['type' => 2, 'value' => 6];
-        $fixedInfo['client_phone'] = ['type' => 1, 'value' => '13800138000'];
-
-        return $fixedInfo;
-    }
-
-
-    /**
      * v1订单列表
      * @param Request $request
      * @param OrderRepository $orderRepository
@@ -1865,26 +1772,25 @@ class IndexController extends Controller
     {
         $orderNo = $request->no;
         $amount = $request->amount;
+
         DB::beginTransaction();
         try {
             $order = OrderModel::where('no', $orderNo)->lockForUpdate()->first();
 
             if ($order) {
                 // 加价
-                if ($order->price < $amount) {
-                    $addAmount = bcsub($amount, $order->price);
+                $newAmount = $order->price + $amount;
+                if ($newAmount > $order->price) {
+                    $addAmount = bcsub($newAmount, $order->price);
 
-                    if (abs($order->price) == $amount) {
-                        throw new CustomException('金额不合法');
-                    }
                     Asset::handle(new Expend($addAmount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
 
-                    $order->price = $amount;
-                    $order->amount = $amount;
+                    $order->price = $newAmount;
+                    $order->amount = $newAmount;
                     $order->save();
 
                     OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
-                        'field_value' => $amount
+                        'field_value' => $newAmount
                     ]);
 
                     // 调用外部接口 加价
@@ -1906,7 +1812,7 @@ class IndexController extends Controller
                         'type' => 22,
                         'before' => serialize([]),
                         'after' => serialize([]),
-                        'description' =>  '编辑:代练价格 编辑前：' . $order->price . ' 编辑后：' . $amount,
+                        'description' =>  '编辑:代练价格 编辑前：' . bcsub($newAmount, $addAmount, 0). ' 编辑后：' . $newAmount,
                         'created_at' => date('Y-m-d H:i:s'),
                     ];
 
@@ -1914,8 +1820,9 @@ class IndexController extends Controller
                         \DB::table('order_histories')->insert($history);
                     }
                 }
+            } else {
+                return response()->ajax(0, '加价失败订单不存在');
             }
-            return response()->ajax(0, '加价失败订单不存在');
         } catch (\Exception $exception) {
             return response()->ajax(0, '加价失败, ' . $exception->getMessage());
         }
@@ -1939,48 +1846,47 @@ class IndexController extends Controller
 
             $detail = $detailRepository->getByOrderNo($orderNo);
 
-            if ($day > $detail['game_leveling_day'] || ($day  == $detail['game_leveling_day'] && $hour > $hour)) {
-                // 更新代练天数
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
-                    'field_value' => $day
-                ]);
-                // 更新代练小时
-                OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
-                    'field_value' => $hour
-                ]);
+            $newDay = $day + $detail['game_leveling_day'];
+            $newHour = $hour + $detail['game_leveling_hour'];
 
-                // 调用接口更新值
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                        if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$updateData]);
-                        }
+            // 更新代练天数
+            OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
+                'field_value' => $newDay
+            ]);
+            // 更新代练小时
+            OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
+                'field_value' => $newHour
+            ]);
+
+            // 调用接口更新值
+            if (config('leveling.third_orders')) {
+                // 获取订单和订单详情以及仲裁协商信息
+                $updateData = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
+                // 遍历代练平台
+                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                    if ($third == $updateData['third'] && isset($updateData['third_order_no']) && ! empty($updateData['third_order_no'])) {
+                        // 控制器-》方法-》参数
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$updateData]);
                     }
                 }
+            }
 
-                // 写操作记录
-                $history[] = [
-                    'order_no' => $orderNo,
-                    'user_id' => auth()->user()->id,
-                    'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
-                    'name' => '编辑',
-                    'type' => 22,
-                    'before' => serialize([]),
-                    'after' => serialize([]),
-                    'description' =>  '编辑:代练时间  编辑前：' . $detail['game_leveling_day'] . '天' . $detail['game_leveling_hour'] . '小时' .  ' 编辑后：' . $day. '天' . $hour . '小时',
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
+            // 写操作记录
+            $history[] = [
+                'order_no' => $orderNo,
+                'user_id' => auth()->user()->id,
+                'creator_primary_user_id' => auth()->user()->getPrimaryUserId(),
+                'name' => '编辑',
+                'type' => 22,
+                'before' => serialize([]),
+                'after' => serialize([]),
+                'description' =>  '编辑:代练时间  编辑前：' . $detail['game_leveling_day'] . '天' . $detail['game_leveling_hour'] . '小时' .  ' 编辑后：' . $newDay. '天' . $newHour . '小时',
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
 
-                if ($history) {
-                    \DB::table('order_histories')->insert($history);
-                }
-            } else {
-                return response()->ajax(0, '增加时间失败');
+            if ($history) {
+                \DB::table('order_histories')->insert($history);
             }
 
         } catch (\Exception $exception) {
@@ -2021,8 +1927,111 @@ class IndexController extends Controller
     }
 
     /**
+     * 解析DNF区服
+     * @param $region
+     * @return array
+     */
+    public function dnfRegionServe($region)
+    {
+        $regionArr = explode(':', $region);
+
+        // 取省份名字
+        if (strpos($regionArr[1], '黑龙') !== false || strpos($regionArr[1], '内蒙') !== false) {
+            $province = mb_substr($regionArr[1],0 ,3);
+        } else {
+            $province = mb_substr($regionArr[1],0 ,2);
+        }
+        // 去除省份
+        $noProvince = str_replace($province, '', $regionArr[1]);
+        // 将汉字转为阿拉伯数字
+        $num = [
+            '一' => 1,
+            '二' => 2,
+            '三' => 3,
+            '四' => 4,
+            '五' => 5,
+            '六' => 6,
+            '七' => 7,
+            '八' => 8,
+            '九' => 9,
+        ];
+        $serveNum = str_replace('区', '', str_replace(array_keys($num), array_values($num), $noProvince));
+
+        // 区
+        if ($province == '云南' || $province == '贵州' || $province == '云贵') {
+            $region = '云贵区';
+        } else {
+            $region = $province . '区';
+        }
+
+        // 服
+        $serve = '';
+        if ($province == '北京' && in_array($serveNum, [2, 4])) {
+            $serve = '北京2/4区';
+        } else if($province == '江苏' && in_array($serveNum, [5, 7])) {
+            $serve = '江苏5/7区';
+        } else if($province == '广西' && in_array($serveNum, [2, 4])) {
+            $serve = '广西2/4区';
+        }  else if($province == '东北' && in_array($serveNum, [4, 5, 6])) {
+            $serve = '东北4/5/6区';
+        } else if($province == '东北' && in_array($serveNum, [3, 7])) {
+            $serve = '东北3/7区';
+        } else if($province == '山东' && in_array($serveNum, [2, 7])) {
+            $serve = '山东2/7区';
+        } else if($province == '浙江' && in_array($serveNum, [4, 5])) {
+            $serve = '浙江4/5区';
+        } else if($province == '上海' && in_array($serveNum, [4, 5])) {
+            $serve = '上海4/5区';
+        } else if($province == '河北' && in_array($serveNum, [2, 3])) {
+            $serve = '河北2/3区';
+        } else if($province == '福建' && in_array($serveNum, [3, 4])) {
+            $serve = '福建3/4区';
+        } else if($province == '黑龙江' && in_array($serveNum, [2, 3])) {
+            $serve = '黑龙江2/3区';
+        } else if($province == '西北' && in_array($serveNum, [2, 3])) {
+            $serve = '西北2/3区';
+        } else if($province == '陕西' && in_array($serveNum, [2, 3])) {
+            $serve = '陕西2/3区';
+        } else if($province == '黑龙江' && in_array($serveNum, [1, 2])) {
+            $serve = '吉林1/2区';
+        } else {
+            $serve = $province . $serveNum  . '区';
+        }
+        return ['region' => $region, 'serve' => $serve];
+    }
+
+    /**
+     * DNF推荐号固定信息
+     * @param $receiverAddress
+     * @param $taobaoTrade
+     * @return mixed
+     */
+    protected function dnfFixedInfo($receiverAddress, $taobaoTrade)
+    {
+        $regionServe = $this->dnfRegionServe($receiverAddress[0]);
+        $role = explode(':', $receiverAddress[1]);
+        // 固定的订单信息
+        $fixedInfo['region'] = ['type' => 2, 'value' => $regionServe['region']];
+        $fixedInfo['serve'] = ['type' => 2, 'value' => $regionServe['serve']];
+        $fixedInfo['role'] = ['type' => 1, 'value' => $role[1]];
+        $fixedInfo['account'] = ['type' => 1, 'value' => $role[1]];
+        $fixedInfo['password'] = ['type' => 1, 'value' => '000000'];
+        $fixedInfo['game_leveling_title'] = ['type' => 1, 'value' => 'DNF推荐号' . $regionServe['serve'] . $taobaoTrade->num . '次'];
+        $fixedInfo['game_leveling_instructions'] = ['type' => 4, 'value' => 'DNF推荐号' . $regionServe['serve'] . $taobaoTrade->num . '次'];
+        $fixedInfo['security_deposit'] = ['type' => 1, 'value' => 1];
+        $fixedInfo['game_leveling_type'] = ['type' => 2, 'value' => '推荐号'];
+        $fixedInfo['efficiency_deposit'] = ['type' => 1, 'value' => 1];
+        $fixedInfo['game_leveling_day'] = ['type' => 2, 'value' => 0];
+        $fixedInfo['game_leveling_hour'] = ['type' => 2, 'value' => 6];
+        $fixedInfo['client_phone'] = ['type' => 1, 'value' => '13800138000'];
+
+        return $fixedInfo;
+    }
+
+    /**
      * 获取仲裁信息
-     * @return [type] [description]
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getArbitrationInfo(Request $request)
     {

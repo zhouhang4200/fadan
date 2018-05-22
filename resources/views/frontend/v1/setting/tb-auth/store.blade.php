@@ -11,7 +11,7 @@
         <div class="layui-card-body">
             <blockquote class="layui-elem-quote">
                 操作提示<br/>
-                该绑定用于抓取您淘宝店铺的订单。绑定成功后您店铺订单会自动同步到平台中。
+                该授权用于抓取您淘宝店铺的订单。授权成功后您店铺订单会自动同步到平台中。
             </blockquote>
             <form class="layui-form layui-form-pane" action="">
                 <div class="layui-inline">

@@ -5,7 +5,9 @@ use App\Exceptions\CustomException;
 use App\Extensions\Asset\Consume;
 use App\Extensions\Asset\Facades\Asset;
 use App\Models\City;
+use App\Models\OrderDetail;
 use App\Models\SmsSendRecord;
+use App\Models\TaobaoTrade;
 use App\Models\UserReceivingGoodsControl;
 use App\Services\SmSApi;
 use GuzzleHttp\Client;
@@ -1064,5 +1066,45 @@ if (!function_exists('base64ToBlob')) {
         }
     }
 }
+
+/**
+ * 淘宝交易订单发货
+ */
+if (!function_exists('taobaoTradeDelivery'))
+{
+    function taobaoTradeDelivery($orderNo)
+    {
+        $sourceOrderNo = OrderDetail::select()->where('order_no', $orderNo)
+            ->whereIn('field_name_alias', ['source_order_no'])
+            ->pluck('field_value')
+            ->toArray();
+        // 去重
+        $uniqueArray = array_filter(array_unique($sourceOrderNo));
+
+        if (count($uniqueArray)) {
+            // 将订单号淘宝订单状态改为交易成功
+            OrderDetail::where('order_no', $orderNo)
+                ->where('field_name', 'taobao_status')
+                ->update(['field_value' => 2]);
+
+            $taobaoTrade = TaobaoTrade::select('tid', 'seller_nick')->whereIn('tid', $uniqueArray)->get();
+            // 获取备注并更新
+            $client = new TopClient;
+            $client->format = 'json';
+            $client->appkey = '12141884';
+            $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+            foreach ($taobaoTrade as $item) {
+                try {
+                    $req = new LogisticsDummySendRequest;
+                    $req->setTid($item->tid);
+                    $resp = $client->execute($req, taobaoAccessToken($item->seller_nick));
+                } catch (\Exception $exception) {
+                    myLog('apply-complete-error', [$exception->getMessage()]);
+                }
+            }
+        }
+    }
+}
+
 
 

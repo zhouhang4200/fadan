@@ -15,7 +15,7 @@
     <div class="layui-card-body">
          <blockquote class="layui-elem-quote">
             操作提示</br>
-            用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺旺旺绑定。
+            用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺授权。
         </blockquote>
 
         <form class="layui-form" id="goods-form">
@@ -25,18 +25,20 @@
                 </div>
                 <div class="layui-input-inline" style="width: 200px;">
                     <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>
+                    <button class="qs-btn layui-btn-normal fr" lay-submit lay-filter="goods-add">添加商品</button>
                 </div>
-                <button class="qs-btn layui-btn-normal fr" lay-submit lay-filter="goods-add">添加商品</button>
+
             </div>
         </form>
 
-        <table class="layui-table" lay-size="sm">
+        <table class="layui-table layui-form" lay-size="sm">
             <thead>
             <tr>
                 <th>店铺</th>
                 <th>淘宝商品ID</th>
                 <th>绑定游戏</th>
                 <th>备注</th>
+                <th>提验自动发货</th>
                 <th>添加时间</th>
                 <th>更新时间</th>
                 <th width="15%">操作</th>
@@ -49,6 +51,9 @@
                     <td>{{ $item->foreign_goods_id }}</td>
                     <td>{{ $item->game->name ?? '' }}</td>
                     <td>{{ $item->remark }}</td>
+                    <td  width="8%">
+                        <input type="checkbox" name="status" lay-skin="switch" data-id="{{ $item->id }}" @if($item->delivery == 1) checked @endif lay-filter="delivery">
+                    </td>
                     <td>{{ $item->created_at }}</td>
                     <td>{{ $item->updated_at }}</td>
                     <td>
@@ -231,6 +236,13 @@
                     }, 'json');
                 });
                 return false;
+            });
+            //监听指定开关
+            form.on('switch(delivery)', function(data){
+                var delivery = this.checked ? 1 : 2;
+                $.post('{{ route('frontend.setting.automatically-grab.delivery') }}', {id:data.elem.getAttribute('data-id'), delivery: delivery}, function (result) {
+                    layer.msg(result.message);
+                }, 'json');
             });
 
             $('.cancel').click(function () {
