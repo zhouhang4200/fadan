@@ -730,7 +730,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                 }
             }
 
-            myLog('show91-arbitration-data', ['单号' => $orderDatas['order_no'] ?? '', '数据' => $infos]);
+            // myLog('show91-arbitration-data', ['单号' => $orderDatas['order_no'] ?? '', '数据' => $infos]);
             // 获取详情
             $details = [];
             if (isset($infos) && count($infos) > 0) {
@@ -749,15 +749,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             }
 
             if (isset($details['appeal']['pic1'])) {
-                $details['appeal']['pic1'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+                $details['appeal']['pic1'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
             }
 
             if (isset($details['appeal']['pic2'])) {
-                $details['appeal']['pic2'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+                $details['appeal']['pic2'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
             }
 
             if (isset($details['appeal']['pic3'])) {
-                $details['appeal']['pic3'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+                $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
             return $details;
         } catch (Exception $e) {
