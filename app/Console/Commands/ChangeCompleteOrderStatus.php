@@ -48,13 +48,13 @@ class ChangeCompleteOrderStatus extends Command
      */
     public function handle()
     {
-        try {
-            $carbon = new Carbon;
+        $carbon = new Carbon;
 
-            $orders = Redis::hGetAll('complete_orders');
+        $orders = Redis::hGetAll('complete_orders');
 
-            if (isset($orders) && is_array($orders) && count($orders) > 0) {
-                foreach ($orders as $orderNo => $time) {
+        if (isset($orders) && is_array($orders) && count($orders) > 0) {
+            foreach ($orders as $orderNo => $time) {
+                try {
                     $order = Order::where('no', $orderNo)->first();
 
                     if (! isset($order) || empty($order)) {
@@ -85,12 +85,14 @@ class ChangeCompleteOrderStatus extends Command
                         DailianFactory::choose('complete')->run($orderNo, 0, true);
                         Redis::hDel('complete_orders', $orderNo);
                     }
+                } catch (DailianException $e) {
+                    myLog('auto-complete-fail', ['订单号' => $order->no ?? '', '失败原因' => $e->getMessage()]);
+                    continue;
+                } catch (Exception $e) {
+                    myLog('auto-complete-fail', ['订单号' => $order->no ?? '', '失败原因' => $e->getMessage()]);
+                    continue;
                 }
             }
-        } catch (DailianException $e) {
-            myLog('auto-complete-fail', ['失败原因' => $e->getMessage()]);
-        } catch (Exception $e) {
-            myLog('auto-complete-fail', ['失败原因' => $e->getMessage()]);
         }
     }
 }

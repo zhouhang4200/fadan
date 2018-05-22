@@ -48,12 +48,10 @@ abstract class DailianAbstract
 //        }
 
         if (empty($this->order)) {
-            throw new DailianException('订单不存在');
+            throw new DailianException('订单不存在!');
         }
 
         $this->orderDetail = $this->order->detail->pluck('field_value', 'field_name');
-
-
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
             \Log::alert('订单：' .$this->order->no . '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus);
@@ -308,7 +306,7 @@ abstract class DailianAbstract
             ->first();
         // 获取上一条操作记录，如果上一条为仲裁中，则取除了仲裁中和撤销中的最早的一条状态
         if (! $beforeStatus) {
-            throw new DailianException('订单不存在1');
+            throw new DailianException('订单不存在');
         }
         
         if (in_array($order->status, [13, 14, 15, 18])) {
