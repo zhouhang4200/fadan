@@ -85,6 +85,7 @@ return [
 		'updateImage'			   => 'updateImage', // 上传截图
 		'getArbitrationInfo'       => 'getArbitrationInfo', // 获取仲裁详情
 		'addArbitrationInfo'       => 'addArbitrationInfo', // '添加仲裁证据'
+		'setTop'                   => 'setTop', // 置顶
 	],
 
 	// 蚂蚁代练的信息

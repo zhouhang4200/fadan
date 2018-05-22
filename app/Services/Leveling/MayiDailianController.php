@@ -879,4 +879,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             throw new DailianException($e->getMessage());
         }
     }
+
+    /**
+     * 置顶
+     */
+    public function setTop()
+    {
+
+    }
 }
