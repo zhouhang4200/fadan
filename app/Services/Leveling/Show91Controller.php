@@ -702,4 +702,76 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
     		throw new DailianException($e->getMessage());
     	}
     }
+
+    /**
+     * 获取仲裁详情
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function getArbitrationInfo($orderDatas)
+    {
+        try {
+            $options = [
+                'account' => config('leveling.wanzi.account'),
+                'sign'    => config('leveling.wanzi.sign'),
+                'aid'     => $orderDatas['wanzi_order_no'],
+            ];
+            // 发送
+            $lists = static::normalRequest($options, config('leveling.wanzi.url')['appeals']);
+            // 循环仲裁列表
+            $infos = [];
+            if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
+                foreach ($lists['data'] as $key => $list) {
+                    if (isset($list['order']) && isset($list['order']['order_id'])) {
+                        if ($list['order']['order_id'] == $orderDatas['wanzi_order_no']) {
+                            $infos[$key] = $list;
+                        }
+                    }
+                }
+            }
+
+            // 获取详情
+            $details = [];
+            if (isset($infos) && count($infos) > 0) {
+                // 只要最新的仲裁详情
+                $detailOptions = [
+                    'account' => config('leveling.wanzi.account'),
+                    'sign'    => config('leveling.wanzi.sign'),
+                    'aid'     => $infos[0]['id'],
+                ];
+                $result = static::normalRequest($detailOptions, config('leveling.wanzi.url')['seeappeal']);
+
+                if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
+                    $details = $result['data'];
+                }
+            }
+            return $details;
+        } catch (Exception $e) {
+            myLog('wanzi-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
+    }
+
+    /**
+     * 添加仲裁证据
+     * @param [type] $orderDatas [description]
+     */
+    public static function addArbitrationInfo($orderDatas)
+    {
+        try {
+            $options = [
+                'account'           => config('leveling.wanzi.account'),
+                'sign'              => config('leveling.wanzi.sign'),
+                'appealEvi.aid'     => $orderDatas['arbitration_id'],
+                'appealEvi.content' => $orderDatas['add_content'],
+                'pic1'              => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
+            ];
+
+            // 发送
+            return static::formDataRequest($options, config('leveling.wanzi.url')['addevidence']);
+        } catch (Exception $e) {
+            myLog('wanzi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
+    }
 }
