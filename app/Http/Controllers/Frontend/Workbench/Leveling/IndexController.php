@@ -2040,11 +2040,11 @@ class IndexController extends Controller
                     }
                 }
             }
-        } catch (\Exception $exception) {
-            myLog('get-arbitration-advence', ['失败' => $exception->getMessage()]);
         } catch (DailianException $e) {
             myLog('get-arbitration-advence', ['失败' => $e->getMessage()]);
-        }
+        } catch (\Exception $exception) {
+            myLog('get-arbitration-advence', ['失败' => $exception->getMessage()]);
+        } 
     }
 
     /**
@@ -2073,13 +2073,13 @@ class IndexController extends Controller
                 }
             }
             return response()->ajax(0, '发送失败');
-        } catch (\Exception $exception) {
-            myLog('add-arbitration-advence', ['失败' => $exception->getMessage()]);
-            return response()->ajax(0, '发送失败');
         } catch (DailianException $e) {
             myLog('add-arbitration-advence', ['失败' => $e->getMessage()]);
             return response()->ajax(0, '发送失败');
-        }
+        } catch (\Exception $exception) {
+            myLog('add-arbitration-advence', ['失败' => $exception->getMessage()]);
+            return response()->ajax(0, '发送失败');
+        } 
     }
 }
 
