@@ -429,10 +429,11 @@
         @{{ d.status_text }}  <br>
         @{{# if(d.timeout == 1)  { }}
             <span style="color:#ff8500"> @{{ d.timeout_time }}</span>
-        @{{# } else { }}
+        @{{# } elseif(d.status == 13) { }}
+            @{{ d.left_time }}
+        @{{# } else {  }}
             @{{ d.status_time }}
         @{{# }  }}
-
     </script>
     <script type="text/html" id="gameTemplate">
         @{{ d.game_name }} <br>
