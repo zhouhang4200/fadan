@@ -809,7 +809,7 @@
                     return false
                 } else if(opt == 'top') {
                     $.post("{{ route('frontend.workbench.leveling.set-top') }}", {
-                        orderNo: orderNo
+                        no: orderNo
                     }, function (result) {
                         if (result.status == 1) {
                             layer.alert(result.message, function () {
