@@ -88,9 +88,9 @@ class ChangeCompleteOrderStatus extends Command
                 }
             }
         } catch (DailianException $e) {
-            myLog('auto-complete-fail', ['失败原因' => $e->getMessage()]);
+            myLog('auto-complete-fail', ['订单号' => $order->no ?? '', '失败原因' => $e->getMessage()]);
         } catch (Exception $e) {
-            myLog('auto-complete-fail', ['失败原因' => $e->getMessage()]);
+            myLog('auto-complete-fail', ['订单号' => $order->no ?? '', '失败原因' => $e->getMessage()]);
         }
     }
 }
