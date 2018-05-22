@@ -149,4 +149,21 @@ class AutomaticallyGrabController extends Controller
         AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', $request->id)->delete();
         return response()->ajax(1, '删除成功');
     }
+
+    /**
+     * 提验是否自动发货
+     * @param Request $request
+     * @return mixed
+     */
+    public function delivery(Request $request)
+    {
+        try {
+            AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', $request->id)->update([
+                'delivery' => $request->delivery
+            ]);
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '更新失败');
+        }
+        return response()->ajax(1, '更新成功');
+    }
 }

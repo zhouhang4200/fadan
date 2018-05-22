@@ -160,7 +160,6 @@ class OrderAssign extends Command
                             continue;
                         }
                     }
-
                 }
             }
             sleep(1);
