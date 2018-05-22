@@ -883,7 +883,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     /**
      * 置顶
      */
-    public function setTop()
+    public static function setTop()
     {
 
     }
