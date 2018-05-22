@@ -712,42 +712,56 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
     {
         try {
             $options = [
-                'account' => config('leveling.wanzi.account'),
-                'sign'    => config('leveling.wanzi.sign'),
-                'aid'     => $orderDatas['wanzi_order_no'],
+                'account' => config('leveling.show91.account'),
+                'sign'    => config('leveling.show91.sign'),
+                'aid'     => $orderDatas['show91_order_no'],
             ];
             // 发送
-            $lists = static::normalRequest($options, config('leveling.wanzi.url')['appeals']);
+            $lists = static::normalRequest($options, config('leveling.show91.url')['appeals']);
             // 循环仲裁列表
             $infos = [];
             if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
                 foreach ($lists['data'] as $key => $list) {
                     if (isset($list['order']) && isset($list['order']['order_id'])) {
-                        if ($list['order']['order_id'] == $orderDatas['wanzi_order_no']) {
+                        if ($list['order']['order_id'] == $orderDatas['show91_order_no']) {
                             $infos[$key] = $list;
                         }
                     }
                 }
             }
 
+            // myLog('show91-arbitration-data', ['单号' => $orderDatas['order_no'] ?? '', '数据' => $infos]);
             // 获取详情
             $details = [];
             if (isset($infos) && count($infos) > 0) {
+                $infos = array_values($infos);
                 // 只要最新的仲裁详情
                 $detailOptions = [
-                    'account' => config('leveling.wanzi.account'),
-                    'sign'    => config('leveling.wanzi.sign'),
+                    'account' => config('leveling.show91.account'),
+                    'sign'    => config('leveling.show91.sign'),
                     'aid'     => $infos[0]['id'],
                 ];
-                $result = static::normalRequest($detailOptions, config('leveling.wanzi.url')['seeappeal']);
+                $result = static::normalRequest($detailOptions, config('leveling.show91.url')['seeappeal']);
 
                 if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
                     $details = $result['data'];
                 }
             }
+
+            if (isset($details['appeal']['pic1'])) {
+                $details['appeal']['pic1'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+            }
+
+            if (isset($details['appeal']['pic2'])) {
+                $details['appeal']['pic2'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+            }
+
+            if (isset($details['appeal']['pic3'])) {
+                $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+            }
             return $details;
         } catch (Exception $e) {
-            myLog('wanzi-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
+            myLog('show91-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
@@ -760,17 +774,17 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
     {
         try {
             $options = [
-                'account'           => config('leveling.wanzi.account'),
-                'sign'              => config('leveling.wanzi.sign'),
+                'account'           => config('leveling.show91.account'),
+                'sign'              => config('leveling.show91.sign'),
                 'appealEvi.aid'     => $orderDatas['arbitration_id'],
                 'appealEvi.content' => $orderDatas['add_content'],
                 'pic1'              => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
             ];
 
             // 发送
-            return static::formDataRequest($options, config('leveling.wanzi.url')['addevidence']);
+            return static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
         } catch (Exception $e) {
-            myLog('wanzi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
+            myLog('show91-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
