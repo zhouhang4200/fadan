@@ -704,6 +704,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             // 获取详情
             $details = [];
             if (isset($infos) && count($infos) > 0) {
+                $infos = array_values($infos);
                 // 只要最新的仲裁详情
                 $detailOptions = [
                     'account' => config('leveling.wanzi.account'),
