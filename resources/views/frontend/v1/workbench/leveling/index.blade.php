@@ -429,7 +429,7 @@
         @{{ d.status_text }}  <br>
         @{{# if(d.timeout == 1)  { }}
             <span style="color:#ff8500"> @{{ d.timeout_time }}</span>
-        @{{# } elseif(d.status == 13) { }}
+        @{{# } else if(d.status == 13) { }}
             @{{ d.left_time }}
         @{{# } else {  }}
             @{{ d.status_time }}
