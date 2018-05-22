@@ -427,7 +427,7 @@
     </script>
     <script type="text/html" id="statusTemplate">
         @{{ d.status_text }}  <br>
-        @{{# if(d.timeout == 1)  { }}
+        @{{# if(d.timeout == 1 && d.status == 13)  { }}
             <span style="color:#ff8500"> @{{ d.timeout_time }}</span>
         @{{# } else if(d.status == 13) { }}
             @{{ d.left_time }}
