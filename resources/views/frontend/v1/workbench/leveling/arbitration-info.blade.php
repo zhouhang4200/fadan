@@ -1,3 +1,4 @@
+<form class="layui-form" action="">
 <div class="layui-form">
     <table class="layui-table">
         <colgroup>
@@ -33,38 +34,41 @@
         <img src="{{ $arbitrationInfos['appeal']['pic3'] }}" alt="" style="width: 100%;height: 100%">
     </div>
 </div>
-<div class="layui-form" style="margin-bottom: 18px;">
+
+<div class="layui-form" style="margin-bottom: 18px;" id="message-list">
+
     <table class="layui-table">
-        <colgroup>
-            <col width="90">
-            <col>
-            <col width="180">
-            <col width="80">
-        </colgroup>
-        <thead>
+    <colgroup>
+        <col width="90">
+        <col>
+        <col width="180">
+        <col width="80">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>留言方</th>
+        <th>留言说明</th>
+        <th>留言时间</th>
+        <th>留言证据</th>
+    </tr>
+    </thead>
+    <tbody>
+    @forelse($arbitrationInfos['evis'] as $k => $arbitrationInfo)
         <tr>
-            <th>留言方</th>
-            <th>留言说明</th>
-            <th>留言时间</th>
-            <th>留言证据</th>
+            <td>{{ $arbitrationInfo['uid'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfo['uid']) ? '客服' : '对方') }}</td>
+            <td>{{ $arbitrationInfo['content'] }}</td>
+            <td>{{ $arbitrationInfo['created_on'] }}</td>
+            <td>
+                <button class="qs-btn" style="width: 42px; padding:0;" data-img="{{ $arbitrationInfo['pic'] }}"><i class="iconfont icon-visible"></i></button>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-        @forelse($arbitrationInfos['evis'] as $k => $arbitrationInfo)
-            <tr>
-                <td>{{ $arbitrationInfo['uid'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfo['uid']) ? '客服' : '对方') }}</td>
-                <td>{{ $arbitrationInfo['content'] }}</td>
-                <td>{{ $arbitrationInfo['created_on'] }}</td>
-                <td>
-                    <button class="qs-btn" style="width: 42px; padding:0;" data-img="{{ $arbitrationInfo['pic'] }}"><i class="iconfont icon-visible"></i></button>
-                </td>
-            </tr>
-        @empty
-        @endforelse
-        </tbody>
-    </table>
+    @empty
+    @endforelse
+    </tbody>
+</table>
+
 </div>
-<form class="layui-form" action="">
+
     <div class="layui-form-item">
         <label class="layui-form-label" style="text-align: left;padding-left: 0;">留言说明</label>
         <div class="layui-input-block" style="max-width: auto;margin-left: 90px;">

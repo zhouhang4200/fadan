@@ -1135,7 +1135,7 @@
                     });
                 }
                 if (id == 2) {
-                    $.get('{{ route('frontend.workbench.leveling.arbitration-info').'?order_no=' . $detail['no'] }}', {id:1}, function (result) {
+                    $.get('{{ route('frontend.workbench.leveling.arbitration-info').'?no=' . $detail['no'] }}', {id:1}, function (result) {
                         $('#arbitration-info').html(result);
                     });
                 }
@@ -1789,16 +1789,16 @@
                 var content = $('[name=content]').val();
                 var pic = $('.pic-add img').attr('src');
                 var arbitration_id = this.getAttribute('lay-id');
-                var order_no = this.getAttribute('lay-no');
-                console.log(content, pic, arbitration_id);
+                var no = this.getAttribute('lay-no');
                 if (content) {
                     $.post("{{ route('frontend.workbench.leveling.add-arbitration') }}", {
                         'content':content,
                         'pic':pic,
                         'arbitration_id':arbitration_id,
-                        'order_no':order_no
+                        'no':no
                     }, function (result) {
                         if (result.status === 1) {
+                            autoLoad("{{ route('frontend.workbench.leveling.arbitration-info') }}", '#arbitration-info', no);
                             layer.msg(result.message);
                         } else {
                             layer.msg(result.message);
@@ -1810,6 +1810,14 @@
                 }
                 return false;
             });
+
+            // 不刷新页面
+            function autoLoad(url, node, no = 0, option = 2) {
+                $.get(url, {no:no}, function (result) {
+                    $(node).html(result);
+                    form.render();
+                }, 'json');
+            }
         });
     </script>
 @endsection

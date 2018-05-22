@@ -2034,9 +2034,9 @@ class IndexController extends Controller
      */
     public function getArbitrationInfo(Request $request)
     {
-        $orderNo = $request->order_no;
-
-        try {
+        $orderNo = $request->no;
+        
+        // try {
             // 调用接口更新值
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
@@ -2053,15 +2053,21 @@ class IndexController extends Controller
                         if (! isset($arbitrationInfos) || ! is_array($arbitrationInfos) || ! isset($arbitrationInfos['appeal']) || count($arbitrationInfos) < 1) {
                             return '暂无相关信息';
                         }
-                        return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
                     }
                 }
+                if ($request->ajax()) {
+                    return response()->json(view()->make('frontend.v1.workbench.leveling.arbitration-info', [
+                        'arbitrationInfos' => $arbitrationInfos,
+                        'orderNo' => $orderNo,
+                    ])->render());
+                }
+                return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
             }
-        } catch (DailianException $e) {
-            myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
-        } catch (\Exception $exception) {
-            myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
-        } 
+        // } catch (DailianException $e) {
+        //     myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
+        // } catch (\Exception $exception) {
+        //     myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
+        // } 
     }
 
     /**
@@ -2071,7 +2077,7 @@ class IndexController extends Controller
      */
     public function addArbitrationInfo(Request $request)
     {
-        $orderNo = $request->order_no;
+        $orderNo = $request->no;
         $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
         $datas['arbitration_id'] = $request->arbitration_id;
         $datas['add_content'] = $request->content;
