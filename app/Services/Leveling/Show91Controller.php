@@ -730,6 +730,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                 }
             }
 
+            myLog('show91-arbitration-data', ['单号' => $orderDatas['order_no'] ?? '', '数据' => $infos]);
             // 获取详情
             $details = [];
             if (isset($infos) && count($infos) > 0) {
