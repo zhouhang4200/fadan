@@ -191,6 +191,9 @@ return [
 			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
+			'appeals'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/appeals', // 仲裁列表
+			'addevidence'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addevidence', // 添加仲裁证据
+			'seeappeal'                => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal', // 查看仲裁详情
     	],
     ],
 
