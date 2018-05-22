@@ -364,7 +364,7 @@
             @{{# if (d.status == 1) {  }}
                 {{--<button class="qs-btn qs-btn-sm" style="width: 80px;" data-opt="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>--}}
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="delete" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤单</button>
-                @{{# if(d.is_top != 1) {  }}
+                @{{# if(d.day >= 1 && d.is_top != 1) {  }}
                 <button class="qs-btn qs-btn-sm qs-btn-primary"  style="width: 80px;" data-opt="top" data-no="@{{ d.no }}">置顶</button>
                 @{{# }  }}
             @{{# } else if (d.status == 13) {  }}
