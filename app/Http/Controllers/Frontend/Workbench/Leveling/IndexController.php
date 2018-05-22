@@ -1917,12 +1917,11 @@ class IndexController extends Controller
                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['setTop']], [$updateData]);
                 }
             }
-            OrderDetail::where('order_no', $orderNo)->where('field_name', 'is_top')->update(['field_value'=> 1]);
-        } catch (\Exception $exception) {
-            myLog('top', [$exception->getMessage(), $exception->getFile(), $exception->getLine()]);
-//            return response()->ajax(0, '置顶失败,' . $exception->getMessage());
-        }
 
+        } catch (\Exception $exception) {
+
+        }
+        OrderDetail::where('order_no', $orderNo)->where('field_name', 'is_top')->update(['field_value'=> 1]);
         return response()->ajax(1, '置顶成功');
     }
 
