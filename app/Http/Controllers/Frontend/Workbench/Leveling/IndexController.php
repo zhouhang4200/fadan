@@ -241,7 +241,7 @@ class IndexController extends Controller
                 if ($orderInfo['status'] == 1) {
                     $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderInfo['created_at']));
                 }  elseif ($orderInfo['status'] == 13) {
-                    $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderInfo['receiving_time']));
+                    $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderCurrent['receiving_time']));
                 }
 
                 // 接单平台名字
