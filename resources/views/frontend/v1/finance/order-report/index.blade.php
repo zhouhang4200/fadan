@@ -133,9 +133,9 @@
                     <tr>
                         <td>{{ $item->no }}</td>
                         <td>
-                            单号1: {{ !empty($detail['source_order_no']) }}<br/>
-                            单号2: {{ !empty($detail['source_order_no_1']) }}<br/>
-                            单号3: {{ !empty($detail['source_order_no_2']) }}
+                            单号1: {{ !empty($detail['source_order_no']) ? $detail['source_order_no'] : '' }}<br/>
+                            单号2: {{ !empty($detail['source_order_no_1']) ? $detail['source_order_no_1'] : '' }}<br/>
+                            单号3: {{ !empty($detail['source_order_no_2']) ? $detail['source_order_no_2'] : ''}}
                         </td>
                         <td>{{ $item->game_name }}</td>
                         <td>{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</td>
