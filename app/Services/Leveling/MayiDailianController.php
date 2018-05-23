@@ -912,7 +912,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             ];
 
             $details = static::normalRequest($options);
-dd($details);
+
             if (! isset($details) || ! isset($details['status']) || $details['status'] != 1 || ! isset($details['data']) || ! is_array($details)) {
                 return '暂无相关信息';
             }
