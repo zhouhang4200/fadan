@@ -774,7 +774,7 @@ dd($details);
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
             foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['user_id'] = $detail['uid'];
+                $arr['info'][$k]['who'] = config('leveling.show91.uid') ? '我方' : (! isset($detail['uid']) ? '客服' : '对方');
                 $arr['info'][$k]['created_at'] = $detail['created_on'];
                 $arr['info'][$k]['content'] = $detail['content'];
                 $arr['info'][$k]['pic'] = $detail['pic'];
