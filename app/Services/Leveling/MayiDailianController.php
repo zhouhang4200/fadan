@@ -927,7 +927,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             if (isset($details['data']['supplement'])) {
                 foreach($details['data']['supplement'] as $k => $detail) {
-                    $arr['info'][$k]['user_id'] = $detail['userid'];
+                    $arr['info'][$k]['who'] = $detail['userid'] == config('leveling.mayidailian.uid') ? '我方' : '对方';
                     $arr['info'][$k]['created_at'] = $detail['add_time'];
                     $arr['info'][$k]['content'] = $detail['remark'];
                     $arr['info'][$k]['pic'] = $detail['img_url'];
