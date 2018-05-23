@@ -3,12 +3,15 @@
 }
 body {
   background-color: #ededed;
+  position: relative;
 }
 .main {
   background-color: #fff;
   width: 1366px;
-  margin: 0 auto;
-  margin-top: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
 }
 .main .layui-fluid {
   padding: 0;
