@@ -733,7 +733,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                 return '暂无相关信息';
             }
             $arr = [];
-            $arr['detail']['who'] = config('leveling.wanzi.uid') ? '我方' : (! isset($details['appeal']['uid']) ? '客服' : '对方');
+            $arr['detail']['who'] = config('leveling.wanzi.uid') ? '我方' : ($details['appeal']['uid'] == 0 ? '系统留言' : '对方');
             $arr['detail']['created_at'] = $details['appeal']['created_on'];
             $arr['detail']['content'] = $details['appeal']['content'];
             $arr['detail']['arbitration_id'] = $details['appeal']['id'];
@@ -742,7 +742,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
             foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['who'] = config('leveling.show91.uid') ? '我方' : (! isset($detail['uid']) ? '客服' : '对方');
+                $arr['info'][$k]['who'] = config('leveling.wanzi.uid') ? '我方' : ($details['appeal']['uid'] == 0 ? '系统留言' : '对方');
                 $arr['info'][$k]['created_at'] = $detail['created_on'];
                 $arr['info'][$k]['content'] = $detail['content'];
                 $arr['info'][$k]['pic'] = $detail['pic'];
