@@ -883,8 +883,88 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
     /**
      * 置顶
      */
-    public static function setTop()
+    public static function setTop($orderDatas)
     {
 
+    }
+
+    /**
+     * 获取仲裁详情
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
+     */
+    public static function getArbitrationInfo($orderDatas)
+    {
+        try {
+            if (!isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
+            $time = time();
+            $options = [
+                'method'    => 'dlOrdertsPubInfo',
+                'nid'       => $orderDatas['mayi_order_no'],
+                'appid'     => config('leveling.mayidailian.appid'),
+                'appsecret' => config('leveling.mayidailian.appsecret'),
+                'TimeStamp' => $time,
+                'Ver'       => config('leveling.mayidailian.Ver'),
+                'sign'      => static::getSign('dlOrderMessageReply', $time),
+            ];
+
+            $details = static::normalRequest($options);
+
+            if (! isset($details) || ! isset($details['status']) || $details['status'] != 1 || ! isset($details['data']) || ! is_array($details)) {
+                return '暂无相关信息';
+            }
+            $arr = [];
+            $arr['detail']['who'] = $details['data']['userid'] == config('leveling.mayi.uid') ? '我方' : '对方';
+            $arr['detail']['created_at'] = $details['data']['add_time'];
+            $arr['detail']['content'] = $details['data']['content'];
+            $arr['detail']['arbitration_id'] = $details['data']['ts_id'];
+            $arr['detail']['pic1'] = $details['data']['pic1'];
+            $arr['detail']['pic2'] = $details['data']['pic2'];
+            $arr['detail']['pic3'] = $details['data']['pic3'];
+
+            foreach($details['supplement'] as $k => $detail) {
+                $arr['info'][$k]['user_id'] = $detail['userid'];
+                $arr['info'][$k]['created_at'] = $detail['add_time'];
+                $arr['info'][$k]['content'] = $detail['remark'];
+                $arr['info'][$k]['pic'] = $detail['img_url'];
+            }
+            return $arr;
+        } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
+    }
+
+    /**
+     * 添加仲裁证据
+     * @param [type] $orderDatas [description]
+     */
+    public static function addArbitrationInfo($orderDatas)
+    {
+        try {
+            if (!isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
+                throw new DailianException('蚂蚁订单号不存在');
+            }
+
+            $time = time();
+            $options = [
+                'method' => 'dlOrderMessageReply',
+                'nid' => $orderDatas['mayi_order_no'],
+                'lytext' => $orderDatas['message'] ?? '留言',
+                'appid' => config('leveling.mayidailian.appid'),
+                'appsecret' => config('leveling.mayidailian.appsecret'),
+                'TimeStamp' => $time,
+                'Ver' => config('leveling.mayidailian.Ver'),
+                'sign' => static::getSign('dlOrderMessageReply', $time),
+            ];
+
+            static::normalRequest($options);
+        } catch (Exception $e) {
+            myLog('mayi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 }

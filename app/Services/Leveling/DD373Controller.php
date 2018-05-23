@@ -752,15 +752,29 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     	}
     }
 
-    public static function getArbitrateImages()
+    /**
+     * 置顶
+     */
+    public static function setTop($orderDatas)
     {
 
     }
 
     /**
-     * 置顶
+     * 获取仲裁详情
+     * @param  [type] $orderDatas [description]
+     * @return [type]             [description]
      */
-    public static function setTop()
+    public static function getArbitrationInfo($orderDatas)
+    {
+
+    }
+
+    /**
+     * 添加仲裁证据
+     * @param [type] $orderDatas [description]
+     */
+    public static function addArbitrationInfo($orderDatas)
     {
 
     }

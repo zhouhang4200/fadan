@@ -2049,10 +2049,6 @@ class IndexController extends Controller
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
                         $arbitrationInfos = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
-
-                        if (! isset($arbitrationInfos) || ! is_array($arbitrationInfos) || ! isset($arbitrationInfos['appeal']) || count($arbitrationInfos) < 1) {
-                            return '暂无相关信息';
-                        }
                     }
                 }
                 if ($request->ajax()) {
