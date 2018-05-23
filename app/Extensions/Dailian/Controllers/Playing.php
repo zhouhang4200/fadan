@@ -282,7 +282,7 @@ class Playing extends DailianAbstract implements DailianInterface
         if (UserAsset::balance($this->order->gainer_primary_user_id) < $platformBalanceAlarm) {
             $userInfo = User::find($this->order->gainer_primary_user_id);
 
-            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->gainer_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
 
             $client = new Client();
             $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
