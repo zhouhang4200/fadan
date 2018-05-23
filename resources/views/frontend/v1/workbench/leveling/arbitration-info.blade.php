@@ -16,22 +16,22 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ $arbitrationInfos['appeal']['uid'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfos['appeal']['uid']) ? '客服' : '对方') }}</td>
-            <td>{{ $arbitrationInfos['appeal']['created_on'] }}</td>
-            <td>{{ $arbitrationInfos['appeal']['content'] }}</td>
+            <td>{{ $arbitrationInfos['detail']['who'] }}</td>
+            <td>{{ $arbitrationInfos['detail']['created_at'] }}</td>
+            <td>{{ $arbitrationInfos['detail']['content'] }}</td>
         </tr>
         </tbody>
     </table>
 </div>
 <div class="layui-row layui-col-space15" style="padding: 18px;border: 1px solid #e6e6e6;border-top:0;box-sizing: border-box;margin:0;margin-bottom: 18px;">
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 " style="height: 184px">
-        <img src="{{ $arbitrationInfos['appeal']['pic1'] }}" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['detail']['pic1'] }}" alt="" style="width: 100%;height: 100%">
     </div>
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-        <img src="{{ $arbitrationInfos['appeal']['pic2'] }}" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['detail']['pic2'] }}" alt="" style="width: 100%;height: 100%">
     </div>
     <div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="height: 184px">
-        <img src="{{ $arbitrationInfos['appeal']['pic3'] }}" alt="" style="width: 100%;height: 100%">
+        <img src="{{ $arbitrationInfos['detail']['pic3'] }}" alt="" style="width: 100%;height: 100%">
     </div>
 </div>
 
@@ -53,11 +53,11 @@
     </tr>
     </thead>
     <tbody>
-    @forelse($arbitrationInfos['evis'] as $k => $arbitrationInfo)
+    @forelse($arbitrationInfos['info'] as $k => $arbitrationInfo)
         <tr>
-            <td>{{ $arbitrationInfo['uid'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfo['uid']) ? '客服' : '对方') }}</td>
+            <td>{{ $arbitrationInfo['user_id'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfo['user_id']) ? '客服' : '对方') }}</td>
             <td>{{ $arbitrationInfo['content'] }}</td>
-            <td>{{ $arbitrationInfo['created_on'] }}</td>
+            <td>{{ $arbitrationInfo['created_at'] }}</td>
             <td>
                 <button class="qs-btn" style="width: 42px; padding:0;" data-img="{{ $arbitrationInfo['pic'] }}"><i class="iconfont icon-visible"></i></button>
             </td>
@@ -100,7 +100,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block" style="margin-left: 90px;">
-            <button class="qs-btn" lay-submit="" lay-filter="add_evidence" id="sub_evidence" lay-id="{{ $arbitrationInfos['appeal']['id'] }}" lay-no="{{ $orderNo }}">立即提交</button>
+            <button class="qs-btn" lay-submit="" lay-filter="add_evidence" id="sub_evidence" lay-id="{{ $arbitrationInfos['detail']['arbitration_id'] ?? '' }}" lay-no="{{ $orderNo }}">立即提交</button>
         </div>
     </div>
 </form>

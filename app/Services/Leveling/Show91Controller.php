@@ -759,7 +759,27 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             if (isset($details['appeal']['pic3'])) {
                 $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
-            return $details;
+
+            if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
+                return '暂无相关信息';
+            }
+
+            $arr = [];
+            $arr['detail']['who'] = config('leveling.show91.uid') ? '我方' : (! isset($details['appeal']['uid']) ? '客服' : '对方');
+            $arr['detail']['created_at'] = $details['appeal']['created_on'];
+            $arr['detail']['content'] = $details['appeal']['content'];
+            $arr['detail']['arbitration_id'] = $details['appeal']['id'];
+            $arr['detail']['pic1'] = $details['appeal']['pic1'];
+            $arr['detail']['pic2'] = $details['appeal']['pic2'];
+            $arr['detail']['pic3'] = $details['appeal']['pic3'];
+
+            foreach($details['evis'] as $k => $detail) {
+                $arr['info'][$k]['user_id'] = $detail['uid'];
+                $arr['info'][$k]['created_at'] = $detail['created_on'];
+                $arr['info'][$k]['content'] = $detail['content'];
+                $arr['info'][$k]['pic'] = $detail['pic'];
+            }
+            return $arr;
         } catch (Exception $e) {
             myLog('show91-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

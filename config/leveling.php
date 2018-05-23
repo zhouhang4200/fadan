@@ -90,6 +90,7 @@ return [
 
 	// 蚂蚁代练的信息
 	'mayidailian' => [
+		'uid'       => 49,
 		'appid'     => '2f666a796ba36a6b',
 		'appsecret' => '66a225812f666a796ba36a6b6a151870',
 		'Ver'       => '1.0',
@@ -149,6 +150,7 @@ return [
 
 	// 91平台
     'show91' => [
+    	'uid'       => 314027,
 		'appid'     => 'RbO1SPEINbjU79DYrTpLxXAmJQxO6TYzVZ6awzyclvXejAQSMM98WBKxSRzm',
 		'appsecret' => 'EsPKc2m5NjymkAd95SQFVI5hDHI3IHUOwVmeNTVbKU7xFdkxZODkOwma92BB',
 		'aes_key'   => '45584685d8e4f5e8',
@@ -201,6 +203,7 @@ return [
 
     // 丸子平台
     'wanzi' => [
+    	'uid'       => 18,
     	'appid'     => '8FK2tEkFoHcB1UJu6TkSzLAwkh9e2WIwunbEA2lyFnJhpupzRelEuxjG34YX',
 		'appsecret' => '8mCSr0H3EbTIatauflbqzUIkKdZAQiFsAAF3Nu4Jp2nMCGZSBA6mSyF7E5J1',
 		'aes_key'   => '4158d685d8e4f5e8',
