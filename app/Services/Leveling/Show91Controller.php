@@ -774,7 +774,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
             foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['who'] = config('leveling.show91.uid') == $details['appeal']['uid'] ? '我方' : ($details['appeal']['uid'] == 0 ? '系统留言' : '对方');
+                $arr['info'][$k]['who'] = config('leveling.show91.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
                 $arr['info'][$k]['created_at'] = $detail['created_on'];
                 $arr['info'][$k]['content'] = $detail['content'];
                 $arr['info'][$k]['pic'] = $detail['pic'];
