@@ -15,6 +15,7 @@ use App\Events\OrderReceiving;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
+use GuzzleHttp\Client;
 
 /**
  * 接单操作
@@ -314,6 +315,53 @@ class Playing extends DailianAbstract implements DailianInterface
                 $updateAfterOrderDetail['source_order_no'],
                 0
             );
+        }
+    }
+
+    /**
+     * 检测发单人账号余额
+     */
+    public function checkUserBalance()
+    {
+        if(UserAsset::balance($this->order->creator_primary_user_id) < 20000) {
+            // https://oapi.dingtalk.com/robot/send?access_token=b5c71a94ecaba68b9fec8055100324c06b1d98a6cd3447c5d05e224efebe5285 代练小组
+            // https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8 测试用
+            $userInfo = User::find($this->order->creator_primary_user_id);
+
+            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+
+            $client = new Client();
+            $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                'json' => [
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => '发单商户ID: ' . $this->order->creator_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于2w, 已发送短信通知, 请运营同事及时跟进。'
+                    ],
+                    'at' => [
+                        'isAtAll' => true
+                    ]
+                ]
+            ]);
+        }
+        // 发单平台余额检测
+        $platformBalanceAlarm = config('leveling.balance_alarm')[$this->order->gainer_primary_user_id];
+        if (UserAsset::balance($this->order->gainer_primary_user_id) < $platformBalanceAlarm) {
+            $userInfo = User::find($this->order->creator_primary_user_id);
+
+            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+
+            $client = new Client();
+            $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                'json' => [
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => '接单平台ID: ' . $this->order->creator_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
+                    ],
+                    'at' => [
+                        'isAtAll' => true
+                    ]
+                ]
+            ]);
         }
     }
 }

@@ -17,4 +17,14 @@ class UserAsset extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * 获取用户余额
+     * @param $userId
+     * @return mixed
+     */
+    public static function balance($userId)
+    {
+        return self::where('user_id', $userId)->value('balance');
+    }
 }
