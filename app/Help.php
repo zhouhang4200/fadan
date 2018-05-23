@@ -1106,7 +1106,7 @@ if (!function_exists('taobaoTradeDelivery'))
         }
     }
 }
-if (function_exists('checkPayment'))
+if (!function_exists('checkPayment'))
 {
     /**
      * 检测下单是否扣过款

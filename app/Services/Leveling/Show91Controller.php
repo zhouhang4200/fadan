@@ -759,7 +759,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             if (isset($details['appeal']['pic3'])) {
                 $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
-
+dd($details);
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
                 return '暂无相关信息';
             }
