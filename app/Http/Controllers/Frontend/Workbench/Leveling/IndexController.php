@@ -2036,7 +2036,7 @@ class IndexController extends Controller
     {
         $orderNo = $request->no;
         
-        // try {
+        try {
             // 调用接口更新值
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
@@ -2063,11 +2063,11 @@ class IndexController extends Controller
                 }
                 return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
             }
-        // } catch (DailianException $e) {
-        //     myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
-        // } catch (\Exception $exception) {
-        //     myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
-        // } 
+        } catch (DailianException $e) {
+            myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
+        } catch (\Exception $exception) {
+            myLog('get-arbitration-advence', ['单号' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
+        } 
     }
 
     /**
