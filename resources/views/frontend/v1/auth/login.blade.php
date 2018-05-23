@@ -188,6 +188,7 @@
                 });
                 return false;
             });
+            $('body').height($(window).height());
         });
     </script>
 </body>
