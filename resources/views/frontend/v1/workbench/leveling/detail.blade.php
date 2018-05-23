@@ -1711,7 +1711,7 @@
             });
 
             // 不刷新页面
-            function autoLoad(url, node, no = 0, option = 2) {
+            function autoLoad(url, node, no) {
                 $.get(url, {no:no}, function (result) {
                     $(node).html(result);
                     form.render();
