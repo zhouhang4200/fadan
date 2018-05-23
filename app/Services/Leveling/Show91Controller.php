@@ -802,7 +802,7 @@ dd($details);
             ];
 
             // 发送
-            return static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
+            $res = static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
         } catch (Exception $e) {
             myLog('show91-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

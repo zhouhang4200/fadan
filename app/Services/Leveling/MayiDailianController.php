@@ -908,28 +908,30 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 'appsecret' => config('leveling.mayidailian.appsecret'),
                 'TimeStamp' => $time,
                 'Ver'       => config('leveling.mayidailian.Ver'),
-                'sign'      => static::getSign('dlOrderMessageReply', $time),
+                'sign'      => static::getSign('dlOrdertsPubInfo', $time),
             ];
 
             $details = static::normalRequest($options);
-
+dd($details);
             if (! isset($details) || ! isset($details['status']) || $details['status'] != 1 || ! isset($details['data']) || ! is_array($details)) {
                 return '暂无相关信息';
             }
             $arr = [];
-            $arr['detail']['who'] = $details['data']['userid'] == config('leveling.mayi.uid') ? '我方' : '对方';
+            $arr['detail']['who'] = $details['data']['userid'] == config('leveling.mayidailian.uid') ? '我方' : '对方';
             $arr['detail']['created_at'] = $details['data']['add_time'];
-            $arr['detail']['content'] = $details['data']['content'];
+            $arr['detail']['content'] = $details['data']['remark'];
             $arr['detail']['arbitration_id'] = $details['data']['ts_id'];
             $arr['detail']['pic1'] = $details['data']['pic1'];
             $arr['detail']['pic2'] = $details['data']['pic2'];
             $arr['detail']['pic3'] = $details['data']['pic3'];
 
-            foreach($details['supplement'] as $k => $detail) {
-                $arr['info'][$k]['user_id'] = $detail['userid'];
-                $arr['info'][$k]['created_at'] = $detail['add_time'];
-                $arr['info'][$k]['content'] = $detail['remark'];
-                $arr['info'][$k]['pic'] = $detail['img_url'];
+            if (isset($details['data']['supplement'])) {
+                foreach($details['data']['supplement'] as $k => $detail) {
+                    $arr['info'][$k]['user_id'] = $detail['userid'];
+                    $arr['info'][$k]['created_at'] = $detail['add_time'];
+                    $arr['info'][$k]['content'] = $detail['remark'];
+                    $arr['info'][$k]['pic'] = $detail['img_url'];
+                }
             }
             return $arr;
         } catch (Exception $e) {
@@ -948,20 +950,20 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             if (!isset($orderDatas['mayi_order_no']) || empty($orderDatas['mayi_order_no'])) {
                 throw new DailianException('蚂蚁订单号不存在');
             }
-
             $time = time();
             $options = [
-                'method' => 'dlOrderMessageReply',
-                'nid' => $orderDatas['mayi_order_no'],
-                'lytext' => $orderDatas['message'] ?? '留言',
-                'appid' => config('leveling.mayidailian.appid'),
+                'method'    => 'dlOrdertsPubAddInfo',
+                'nid'       => $orderDatas['mayi_order_no'],
+                'appid'     => config('leveling.mayidailian.appid'),
                 'appsecret' => config('leveling.mayidailian.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayidailian.Ver'),
-                'sign' => static::getSign('dlOrderMessageReply', $time),
+                'Ver'       => config('leveling.mayidailian.Ver'),
+                'sign'      => static::getSign('dlOrdertsPubAddInfo', $time),
+                'pic1'      => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
+                'bz'        => $orderDatas['add_content'],
             ];
 
-            static::normalRequest($options);
+            static::formDataRequest($options);
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

@@ -53,6 +53,7 @@
     </tr>
     </thead>
     <tbody>
+    @if(isset($arbitrationInfos['info']))
     @forelse($arbitrationInfos['info'] as $k => $arbitrationInfo)
         <tr>
             <td>{{ $arbitrationInfo['user_id'] == config('show91.uid') ? '我方' : (! isset($arbitrationInfo['user_id']) ? '客服' : '对方') }}</td>
@@ -64,6 +65,7 @@
         </tr>
     @empty
     @endforelse
+    @endif
     </tbody>
 </table>
 
