@@ -1383,6 +1383,10 @@ class IndexController extends Controller
         $buyerNick = $request->buyer_nick;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
+        $games = GoodsTemplate::where('service_id', 4)
+            ->leftJoin('games', 'goods_templates.game_id', '=', 'games.id')
+            ->pluck('games.name', 'games.id');
+        
 
         $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
@@ -1411,6 +1415,7 @@ class IndexController extends Controller
                 'disposeCount' => $disposeCount,
                 'unDisposeCount' => $unDisposeCount,
                 'hideCount' => $hideCount,
+                'games' => $games,
             ]
         );
     }
@@ -1428,7 +1433,12 @@ class IndexController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
 
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
+
+
+        $gameId = $request->game_id;
+        $type = $request->type;
+
+        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status', 'gameId', 'type'))
             ->where('user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)
             ->where('trade_status', '!=', 2)

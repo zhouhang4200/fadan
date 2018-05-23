@@ -32,6 +32,16 @@ class TaobaoTrade extends Model
         if (isset($filters['endDate']) && !empty($filters['endDate'])) {
             $query->where('created', '<=', $filters['endDate']." 23:59:59");
         }
+        if (isset($filters['gameId'])) {
+            $query->where('game_id', $filters['gameId']);
+        }
+        if (isset($filters['type']) && isset($filters['gameId'])) {
+            $goodsId = AutomaticallyGrabGoods::where('type', $filters['type'])
+                ->where('game_id', $filters['gameId'])
+                ->value('foreign_goods_id');
+
+            $query->where('num_iid', $goodsId)->where('game_id', $filters['gameId']);
+        }
     }
 
 }

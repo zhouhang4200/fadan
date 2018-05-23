@@ -58,6 +58,31 @@
                             </div>
                         </div>
                         <div class="layui-col-md3">
+                            <div class="layui-form-item">               
+                            <label class="layui-form-label">绑定游戏</label> 
+                                <div class="layui-input-block">
+                                    <select name="game_id" lay-filter="game" lay-search="">
+                                        <option value="">请输入绑定游戏名</option>
+                                        @forelse($games as $id => $name)
+                                            <option value="{{ $id }}">{{ $name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 layui-hide" id="type">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">订单类型</label>
+                                 <div class="layui-input-block">
+                                    <select name="type" lay-filter="" lay-search="">
+                                        <option value="">请选择</option>
+                                        <option value="0">普通订单</option>
+                                        <option value="1">推荐号</option>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">玩家旺旺</label>
                                 <div class="layui-input-block">
@@ -68,7 +93,7 @@
 
                         <div class="layui-col-md4">
                             <div class="layui-form-item">
-                                <label class="layui-form-label">发布时间</label>
+                                <label class="layui-form-label" style="padding-left: 0px">发布时间</label>
                                 <div class="layui-input-block">
                                     <input type="text"  class="layui-input qsdate" id="test-laydate-start" name="start_date" placeholder="开始日期">
                                     <div class="layui-form-mid" style="float:none;display: inline-block;width: 8%;text-align: center;margin:0;">
@@ -235,6 +260,15 @@
                 });
                 window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
                 return false;
+            });
+
+             form.on('select(game)', function (data) {
+                if (data.value == 86) {
+                    $('#type').removeClass('layui-hide');
+                } else {
+                    $("[name=type]").val('');
+                }
+                form.render();
             });
         });
     </script>
