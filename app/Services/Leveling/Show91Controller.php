@@ -742,7 +742,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                     'aid'     => $infos[0]['id'],
                 ];
                 $result = static::normalRequest($detailOptions, config('leveling.show91.url')['seeappeal']);
-
+                myLog('see-appeal-info', ['信息' => $result]);
                 if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
                     $details = $result['data'];
                 }
@@ -759,7 +759,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             if (isset($details['appeal']['pic3'])) {
                 $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
-dd($details);
+
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
                 return '暂无相关信息';
             }
