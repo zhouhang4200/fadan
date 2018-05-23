@@ -2101,10 +2101,8 @@ class IndexController extends Controller
                 // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
-                        $result = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addArbitrationInfo']], [$datas]);
-                        if (isset($result) && isset($result['result']) && $result['result'] == 0) {
-                            return response()->ajax(1, '发送成功');
-                        }
+                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addArbitrationInfo']], [$datas]);
+                        return response()->ajax(1, '发送成功');
                     }
                 }
             }

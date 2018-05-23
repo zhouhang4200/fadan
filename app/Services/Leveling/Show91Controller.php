@@ -759,13 +759,13 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             if (isset($details['appeal']['pic3'])) {
                 $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
-dd($details);
+
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
                 return '暂无相关信息';
             }
 
             $arr = [];
-            $arr['detail']['who'] = config('leveling.show91.uid') ? '我方' : (! isset($details['appeal']['uid']) ? '客服' : '对方');
+            $arr['detail']['who'] = config('leveling.show91.uid') == $details['appeal']['uid'] ? '我方' : ($details['appeal']['uid'] == 0 ? '系统留言' : '对方');
             $arr['detail']['created_at'] = $details['appeal']['created_on'];
             $arr['detail']['content'] = $details['appeal']['content'];
             $arr['detail']['arbitration_id'] = $details['appeal']['id'];
@@ -774,7 +774,7 @@ dd($details);
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
             foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['user_id'] = $detail['uid'];
+                $arr['info'][$k]['who'] = config('leveling.show91.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
                 $arr['info'][$k]['created_at'] = $detail['created_on'];
                 $arr['info'][$k]['content'] = $detail['content'];
                 $arr['info'][$k]['pic'] = $detail['pic'];
@@ -802,7 +802,7 @@ dd($details);
             ];
 
             // 发送
-            return static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
+            $res = static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
         } catch (Exception $e) {
             myLog('show91-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
