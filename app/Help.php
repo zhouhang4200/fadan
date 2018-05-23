@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\OrderDetail;
 use App\Models\SmsSendRecord;
 use App\Models\TaobaoTrade;
+use App\Models\UserAmountFlow;
 use App\Models\UserReceivingGoodsControl;
 use App\Services\SmSApi;
 use GuzzleHttp\Client;
@@ -1103,6 +1104,22 @@ if (!function_exists('taobaoTradeDelivery'))
                 }
             }
         }
+    }
+}
+if (function_exists('checkPayment'))
+{
+    /**
+     * 检测下单是否扣过款
+     * @param $orderNo
+     * @return bool
+     */
+    function checkPayment($orderNo)
+    {
+        $exist = UserAmountFlow::where('trade_type', 7)->where('trade_subtype', 76)->where('trade_no', $orderNo)->first();
+        if ($exist) {
+            return true;
+        }
+        return false;
     }
 }
 

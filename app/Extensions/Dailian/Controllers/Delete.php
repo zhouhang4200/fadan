@@ -88,26 +88,28 @@ class Delete extends DailianAbstract implements DailianInterface
      */
     public function updateAsset()
     {
-        // 发单 退回代练费
-        Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
+        if(checkPayment($this->order->no)) {
+            // 发单 退回代练费
+            Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new DailianException('流水记录写入失败');
-        }
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new DailianException('流水记录写入失败');
-        }
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new DailianException('流水记录写入失败');
+            }
 
-        // 创建退款单
-        try {
-            RefundsRecord::create([
-                'order_no' => $this->order->no,
-                'amount' => $this->order->amount,
-                'auditor' => 1,
-            ]);
-        } catch (\Exception $exception) {
+            // 创建退款单
+            try {
+                RefundsRecord::create([
+                    'order_no' => $this->order->no,
+                    'amount' => $this->order->amount,
+                    'auditor' => 1,
+                ]);
+            } catch (\Exception $exception) {
 
+            }
         }
     }
 
