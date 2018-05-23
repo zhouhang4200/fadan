@@ -280,7 +280,7 @@ class Playing extends DailianAbstract implements DailianInterface
         // 发单平台余额检测
         $platformBalanceAlarm = config('leveling.balance_alarm')[$this->order->gainer_primary_user_id];
         if (UserAsset::balance($this->order->gainer_primary_user_id) < $platformBalanceAlarm) {
-            $userInfo = User::find($this->order->creator_primary_user_id);
+            $userInfo = User::find($this->order->gainer_primary_user_id);
 
             sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
 
@@ -289,7 +289,7 @@ class Playing extends DailianAbstract implements DailianInterface
                 'json' => [
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '接单平台ID: ' . $this->order->creator_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
+                        'content' => '接单平台ID: ' . $this->order->gainer_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
                     ],
                     'at' => [
                         'isAtAll' => true
