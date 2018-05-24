@@ -145,7 +145,7 @@ $goodsRoute = [
                 </li>
                 <li class="layui-nav-item" lay-unselect style="margin-right: 30px;">
                     <a href="javascript:;">
-                        <img src="{{ auth()->user()->voucher }}" class="layui-nav-img">
+                        <img src="{{ auth()->user()->voucher ?? '' }}" class="layui-nav-img">
                         <cite>{{ auth()->user()->username }}</cite>
                     </a>
                     <dl class="layui-nav-child">

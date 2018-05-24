@@ -28,6 +28,9 @@ class RedirectIfAuthenticated
         }
 
         if (Auth::guard('web')->check()) {
+            if (Auth::user()->could('frontend.workbench.leveling.index')) {
+                return redirect('/workbench/leveling');
+            }
             return redirect('/');
         }
 
