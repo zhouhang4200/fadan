@@ -298,4 +298,9 @@ class Order extends Model
     {
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
+
+    public function getUserAmountFlows()
+    {
+        return $this->hasMany(UserAmountFlow::class, 'trade_no', 'no');
+    }
 }

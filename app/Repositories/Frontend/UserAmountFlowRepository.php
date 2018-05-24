@@ -5,11 +5,12 @@ use Exception;
 use Carbon\Carbon;
 use Auth;
 use DB;
+use App\Models\Order;
 use App\Models\UserAmountFlow;
 
 class UserAmountFlowRepository
 {
-    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $pageSize = 20)
+    public function getList($tradeNo, $tradeType, $tradeSubType, $timeStart, $timeEnd, $foreignOrderNo, $pageSize = 20)
     {
         $dataList = UserAmountFlow::where('user_id', Auth::user()->getPrimaryUserId())
             ->when(!empty($tradeNo), function ($query) use ($tradeNo) {
@@ -33,6 +34,11 @@ class UserAmountFlowRepository
             ->when(!empty($timeEnd), function ($query) use ($timeEnd) {
                 return $query->where('created_at', '<=', $timeEnd . ' 23:59:59');
             })
+            ->when(!empty($foreignOrderNo), function ($query) use ($foreignOrderNo) {
+                $orderNo = Order::where('foreign_order_no', $foreignOrderNo)->value('no') ?? '';
+                return $query->where('trade_no', $orderNo);
+            })
+            ->with('order')
             ->orderBy('id', 'desc')
             ->when($pageSize === 0, function ($query) {
                 return $query->limit(10000)->get();

@@ -17,4 +17,9 @@ class UserAmountFlow extends Model
     {
         return $this->morphTo();
     }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'trade_no', 'no');
+    }
 }
