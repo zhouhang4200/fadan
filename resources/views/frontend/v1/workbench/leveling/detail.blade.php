@@ -637,10 +637,7 @@
                         <td>结算时间：</td>
                         <td>{{ $detail['checkout_time'] ?? ''  }}</td>
                     </tr>
-                    <tr>
-                        <td>接单客服：</td>
-                        <td>{{ $detail['pre_sale'] ?? ''  }}</td>
-                    </tr>
+
                     <tr>
                         <td>发单客服：</td>
                         <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
