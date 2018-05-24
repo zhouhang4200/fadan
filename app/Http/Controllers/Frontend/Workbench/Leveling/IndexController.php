@@ -255,6 +255,7 @@ class IndexController extends Controller
                 $orderTime = $currentTime->parse($orderCurrent['created_at']);
                 $orderCurrent['day'] = $orderTime->diffInDays($currentTime, false);
                 $orderCurrent['password'] = str_replace(substr($orderCurrent['password'], -4, 4), '****', $orderCurrent['password']);
+                $orderCurrent['amount'] = intval($orderCurrent['amount']) == $orderCurrent['amount'] ? intval($orderCurrent['amount']) : $orderCurrent['amount'];
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
