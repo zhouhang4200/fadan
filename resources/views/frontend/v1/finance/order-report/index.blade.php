@@ -177,7 +177,7 @@
         });
 
         $('#export').click(function () {
-            var url = "{{ route('frontend.finance.amount-flow.export') }}?" + $('#search').serialize();
+            var url = "{{ route('frontend.finance.order-report.export') }}?" + $('#search').serialize();
             window.location.href = url;
         });
     </script>
