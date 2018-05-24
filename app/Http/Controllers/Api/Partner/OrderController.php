@@ -111,37 +111,94 @@ class OrderController extends Controller
 
             // 获取平台编号
             $third = config('leveling.third')[$request->user->id];
-
             if ($third) {
                 $thirdOrder = OrderDetail::where('field_name', config('leveling.third_orders')[$third])
                     ->where('field_value', $orderNO)->first();
 
                 if ($thirdOrder) {
                     $detail = $orderRepository->levelingDetail($thirdOrder->order_no);
+                    $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
+                    $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
+
+                    if (!in_array($detail['status'], [19, 20, 21])){
+                        $detail['payment_amount'] = '';
+                        $detail['get_amount'] = '';
+                        $detail['poundage'] = '';
+                        $detail['profit'] = '';
+                    } else {
+                        // 支付金额
+                        if ($detail['status'] == 21) {
+                            $amount = $detail['leveling_consult']['api_amount'];
+                        } else {
+                            $amount = $detail['leveling_consult']['amount'];
+                        }
+                        // 支付金额
+                        $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $amount;
+
+                        $detail['get_amount'] = (float)$detail['get_amount'] + 0;
+                        $detail['poundage'] = (float)$detail['poundage'] + 0;
+                        // 利润
+                        $detail['profit'] = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
+                    }
+
+                    $days = $detail['game_leveling_day'] ?? 0;
+                    $hours = $detail['game_leveling_hour'] ?? 0;
+                    $detail['leveling_time'] = $days . '天' . $hours . '小时'; // 代练时间
+
+                    // 如果存在接单时间
+                    if (isset($detail['receiving_time']) && !empty($detail['receiving_time'])) {
+                        // 计算到期的时间戳
+                        $expirationTimestamp = strtotime($detail['receiving_time']) + $days * 86400 + $hours * 3600;
+                        // 计算剩余时间
+                        $leftSecond = $expirationTimestamp - time();
+                        $detail['left_time'] = Sec2Time($leftSecond); // 剩余时间
+                    } else {
+                        $detail['left_time'] = '';
+                    }
+
                     $orderInfo = [
-                        'order_no' => $detail['no'],
-                        'status' => $detail['status'],
-                        'status_explain' => config('order.status_leveling')[$detail['status']],
-                        'game_name' => $detail['game_name'],
-                        'game_region' => $detail['region'] ?? '',
-                        'game_serve' => $detail['serve'] ?? '',
-                        'game_role' => $detail['role'] ?? '',
-                        'game_account' => $detail['account'] ?? '',
-                        'game_password' => $detail['password'] ?? '',
-                        'game_leveling_type' => $detail['game_leveling_type'] ?? '',
-                        'game_leveling_title' => $detail['game_leveling_title'] ?? '',
-                        'game_leveling_price' => $detail['game_leveling_amount'] ?? '',
-                        'game_leveling_day' => $detail['game_leveling_day'] ?? '',
-                        'game_leveling_hour' => $detail['game_leveling_hour'] ?? '',
-                        'game_leveling_security_deposit' => $detail['security_deposit'] ?? '',
+                        'order_no'                         => $detail['no'],
+                        'status'                           => $detail['status'],
+                        'status_explain'                   => config('order.status_leveling')[$detail['status']],
+                        'game_name'                        => $detail['game_name'],
+                        'game_region'                      => $detail['region'] ?? '',
+                        'game_serve'                       => $detail['serve'] ?? '',
+                        'game_role'                        => $detail['role'] ?? '',
+                        'game_account'                     => $detail['account'] ?? '',
+                        'game_password'                    => $detail['password'] ?? '',
+                        'game_leveling_type'               => $detail['game_leveling_type'] ?? '',
+                        'game_leveling_title'              => $detail['game_leveling_title'] ?? '',
+                        'game_leveling_price'              => $detail['game_leveling_amount'] ?? '',
+                        'game_leveling_day'                => $detail['game_leveling_day'] ?? '',
+                        'game_leveling_hour'               => $detail['game_leveling_hour'] ?? '',
+                        'game_leveling_security_deposit'   => $detail['security_deposit'] ?? '',
                         'game_leveling_efficiency_deposit' => $detail['efficiency_deposit'] ?? '',
-                        'game_leveling_requirements' => $detail['game_leveling_requirements'] ?? '',
-                        'game_leveling_instructions' => $detail['game_leveling_instructions'] ?? '',
-                        'businessman_phone' => $detail['client_phone'] ?? '',
-                        'businessman_qq' => $detail['user_qq'] ?? '',
-                        'order_password' => $detail['order_password'] ?? '',
+                        'game_leveling_requirements'       => $detail['game_leveling_requirements'] ?? '',
+                        'game_leveling_instructions'       => $detail['game_leveling_instructions'] ?? '',
+                        'businessman_phone'                => $detail['client_phone'] ?? '',
+                        'businessman_qq'                   => $detail['user_qq'] ?? '',
+                        'order_password'                   => $detail['order_password'] ?? '',
+                        'third'                            => config('order.third')[$detail['third']],
+                        'third_order_no'                   => $detail['third_order_no'],
+                        'hatchet_man_name'                 => $detail['hatchet_man_name'],
+                        'hatchet_man_phone'                => $detail['hatchet_man_phone'],
+                        'hatchet_man_qq'                   => $detail['hatchet_man_qq'],
+                        'left_time'                        => $detail['left_time'],
+                        'created_at'                       => $detail['created_at'],
+                        'receiving_time'                   => $detail['receiving_time'],
+                        'check_time'                       => $detail['check_time'],
+                        'checkout_time'                    => $detail['checkout_time'],
+                        'pre_sale'                         => $detail['pre_sale'],
+                        'customer_service_name'            => $detail['customer_service_name'],
+                        'consult_desc'                     => $detail['consult'],
+                        'complain_desc'                    => $detail['complain'],
+                        'payment_amount'                   => $detail['payment_amount'],
+                        'get_amount'                       => $detail['get_amount'],
+                        'poundage'                         => $detail['poundage'],
+                        'profit'                           => $detail['profit'],
                     ];
-                    myLog('query', [$third]);
+
+                    myLog('query', [$third, $orderInfo]);
                     return response()->ajax(1, '查询成功', [
                         'order_info' => base64_encode(openssl_encrypt(json_encode($orderInfo),
                             'aes-128-cbc', config('partner.platform')[$third]['aes_key'],
