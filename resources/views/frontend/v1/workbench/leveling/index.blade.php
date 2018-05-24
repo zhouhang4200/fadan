@@ -443,10 +443,6 @@
         @{{ d.account }} <br/>
         @{{ d.password }}
     </script>
-    <script type="text/html" id="accountPasswordTemplate">
-        @{{ d.account }} <br/>
-        @{{ d.password }}
-    </script>
     <script type="text/html" id="efficiencyAndSecurityDeposit">
         @{{ d.efficiency_deposit }}/@{{ d.security_deposit }}
     </script>
