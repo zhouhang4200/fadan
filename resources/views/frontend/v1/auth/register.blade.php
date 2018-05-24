@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/frontend/v1/lib/css/iconfont.css">
     <link rel="stylesheet" href="/frontend/v1/lib/css/new.css">
     <link rel="stylesheet" href="/frontend/v1/lib/css/index.css">
-    <title>注册</title>
+    <title>淘宝发单平台-注册</title>
     <style>
         .geetest_holder.geetest_wind .geetest_btn {
             width:100% !important;
