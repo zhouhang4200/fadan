@@ -254,7 +254,7 @@ class IndexController extends Controller
                 $currentTime = new Carbon();
                 $orderTime = $currentTime->parse($orderCurrent['created_at']);
                 $orderCurrent['day'] = $orderTime->diffInDays($currentTime, false);
-
+                $orderCurrent['password'] = str_replace(substr($orderCurrent['password'], -4, 4), '****', $orderCurrent['password']);
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
