@@ -657,7 +657,13 @@
                     </tr>
                     <tr>
                         <td>支付金额：</td>
-                        <td>{{ $detail['payment_amount']?? ''  }}</td>
+                        <td>
+                            @if(isset($detail['payment_amount']))
+                                {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
+                            @else
+                            ''
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td>获得金额：</td>
