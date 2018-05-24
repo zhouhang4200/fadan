@@ -544,7 +544,7 @@
                                             @endif
 
                                             @if ($detail['master'] && $detail['status'] == 14)
-                                                <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                                                <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成验收</button>
                                             @endif
 
 
