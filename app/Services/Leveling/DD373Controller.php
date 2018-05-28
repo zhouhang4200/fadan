@@ -6,6 +6,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
+use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 /**
@@ -21,7 +22,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return mixed
      * @throws Exception
      */
-    public static function formDataRequest($options = [], $url = '', $method = 'POST')
+    public static function formDataRequest($options = [], $url = '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
     		$data = [];
@@ -54,6 +55,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		if (isset($arrResult['code']) && $arrResult['code'] != 0) {
         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
 
+                        // 记录报警
+                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+
                         if ($url != config('leveling.dd373.url')['delete']) {
         				    throw new DailianException($message);
                         }
@@ -77,7 +81,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @return mixed
      * @throws Exception
      */
-    public static function normalRequest($options = [], $url= '', $method = 'POST')
+    public static function normalRequest($options = [], $url= '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
 	        $client = new Client();
@@ -102,6 +106,10 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['code']) && $arrResult['code'] != 0) {
         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
+
+                        // 记录报警
+                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+
 	        			myLog('dd373-return-error', [
 	        				'地址' => $url ?? '', 
 	        				'失败原因' => $arrResult['msg'] ?? '', 
@@ -164,17 +172,19 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param $orderData
      * @throws DailianException
      */
-    public static function onSale($orderData) {
+    public static function onSale($orderDatas) {
     	try {
 	        $time = time();
-	        $data = [
-	        	'platformOrderNo' => $orderData['dd373_order_no'],
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($data);
+	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['onSale']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['onSale'], 'onSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -186,17 +196,19 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param $orderData
      * @throws DailianException
      */
-    public static function offSale($orderData) {
+    public static function offSale($orderDatas) {
         try {
 	        $time = time();
-            $data = [
-	        	'platformOrderNo' => $orderData['dd373_order_no'],
+            $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($data);
+	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['offSale']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['offSale'], 'offSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -207,7 +219,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * 接单
      * @param $orderData
      */
-    public static function receive($orderData) {}
+    public static function receive($orderDatas) {}
 
     /**
      * 申请撤销
@@ -233,7 +245,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['applyRevoke']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['applyRevoke'], 'applyRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -245,19 +257,19 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param $orderData
      * @throws DailianException
      */
-    public static function cancelRevoke($orderData) {
+    public static function cancelRevoke($orderDatas) {
         try {
 	        $time = time();
-            $data = [
-	        	'platformOrderNo' => $orderData['dd373_order_no'],
+            $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'State' => 2,
-	        	'reason' => ! empty($orderData['revoke_message']) ?: '空',
+	        	'reason' => $orderDatas['revoke_message'] ?? '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($data);
+	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['cancelRevoke']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelRevoke'], 'cancelRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -269,19 +281,19 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * @param $orderData
      * @throws DailianException
      */
-    public static function agreeRevoke($orderData) {
+    public static function agreeRevoke($orderDatas) {
         try {
 	        $time = time();
-	        $data = [
-	        	'platformOrderNo' => $orderData['dd373_order_no'],
+	        $datas = [
+	        	'platformOrderNo' => $orderDatas['dd373_order_no'],
 	        	'State' => 1,
 	        	'reason' => '空',
 	        	'timestamp' => $time,
 	        ];
 	        // 对参数进行加工
-	       	$options = static::handleOptions($data);
+	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	$result = static::normalRequest($options, config('leveling.dd373.url')['agreeRevoke']);
+	       	$result = static::normalRequest($options, config('leveling.dd373.url')['agreeRevoke'], 'agreeRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -292,7 +304,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      * 强制撤销
      * @param $orderData
      */
-    public static function forceRevoke($orderData) {}
+    public static function forceRevoke($orderDatas) {}
 
     /**
      * 不同意撤销
@@ -311,7 +323,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['refuseRevoke']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['refuseRevoke'], 'refuseRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -339,7 +351,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::formDataRequest(array_merge($options, array_filter($finalPic)), config('leveling.dd373.url')['applyArbitration']);
+	       	static::formDataRequest(array_merge($options, array_filter($finalPic)), config('leveling.dd373.url')['applyArbitration'], 'applyArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -362,7 +374,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['cancelArbitration']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelArbitration'], 'cancelArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -402,7 +414,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['complete']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['complete'], 'complete', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -424,7 +436,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['lock']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['lock'], 'lock', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '锁定', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -446,7 +458,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['cancelLock']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['cancelLock'], 'cancelLock', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -480,7 +492,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['delete']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['delete'], 'delete', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
     		// throw new DailianException($e->getMessage());
@@ -498,23 +512,23 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
     		$time = time();
 	        $gameName = Game::find($orderDatas['game_id']);
 	        $datas = [
-	        	'order_no' => $orderDatas['dd373_order_no'],
-	        	'game_name' => $gameName ? $gameName->name : '',
-	        	'game_region' => $orderDatas['region'],
-	        	'game_serve' => $orderDatas['serve'],
-	        	'game_account' => $orderDatas['account'],
-	        	'game_password' => $orderDatas['password'],
-	        	'game_leveling_type' => $orderDatas['game_leveling_type'],
-	        	'game_leveling_title' => $orderDatas['game_leveling_title'],
-	        	'game_leveling_price' => $orderDatas['amount'],
-	        	'game_leveling_day' => $orderDatas['game_leveling_day'],
-	        	'game_leveling_hour' => $orderDatas['game_leveling_hour'],
-	        	'game_leveling_security_deposit' => $orderDatas['security_deposit'],
-	        	'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
-	        	'game_leveling_requirements' => $orderDatas['game_leveling_requirements'],
-	        	'game_leveling_instructions' => $orderDatas['game_leveling_instructions'],
-	        	'businessman_phone' => $orderDatas['client_phone'],
-	        	'businessman_qq' => $orderDatas['user_qq'],
+                'order_no'                         => $orderDatas['dd373_order_no'],
+                'game_name'                        => $gameName ? $gameName->name : '',
+                'game_region'                      => $orderDatas['region'],
+                'game_serve'                       => $orderDatas['serve'],
+                'game_account'                     => $orderDatas['account'],
+                'game_password'                    => $orderDatas['password'],
+                'game_leveling_type'               => $orderDatas['game_leveling_type'],
+                'game_leveling_title'              => $orderDatas['game_leveling_title'],
+                'game_leveling_price'              => $orderDatas['amount'],
+                'game_leveling_day'                => $orderDatas['game_leveling_day'],
+                'game_leveling_hour'               => $orderDatas['game_leveling_hour'],
+                'game_leveling_security_deposit'   => $orderDatas['security_deposit'],
+                'game_leveling_efficiency_deposit' => $orderDatas['efficiency_deposit'],
+                'game_leveling_requirements'       => $orderDatas['game_leveling_requirements'],
+                'game_leveling_instructions'       => $orderDatas['game_leveling_instructions'],
+                'businessman_phone'                => $orderDatas['client_phone'],
+                'businessman_qq'                   => $orderDatas['user_qq'],
 	        ]; 
 
 	        $datas = json_encode($datas);
@@ -558,7 +572,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['addTime']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['addTime'], 'addTime', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -580,7 +594,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['addMoney']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['addMoney'], 'addMoney', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -605,7 +619,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	return static::normalRequest($datas, config('leveling.dd373.url')['orderDetail']);
+	       	return static::normalRequest($datas, config('leveling.dd373.url')['orderDetail'], 'orderDetail', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -629,7 +643,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot']);
+	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot'], 'getScreenshot', $orderDatas);
 
             $images = [];
             foreach ($result['data'] as $item) {
@@ -664,7 +678,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 
 	        $datas['Sign'] = md5($str);
 	       	// 发送
-	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getMessage']);
+	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getMessage'], 'getMessage', $orderDatas);
 
             $message = [];
             foreach ($result['data'] as  $item) {
@@ -697,7 +711,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['replyMessage']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['replyMessage'], 'replyMessage', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -721,7 +735,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.dd373.url')['updateAccountAndPassword']);
+	       	static::normalRequest($options, config('leveling.dd373.url')['updateAccountAndPassword'], 'updateAccountAndPassword', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -745,7 +759,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        // 对参数进行加工
 	       	$options = static::handleOptions($datas);
 	       	// 发送
-	       	static::formDataRequest(array_merge($options, ['fileBase' => $orderDatas['file']]), config('leveling.dd373.url')['updateImage']);
+	       	static::formDataRequest(array_merge($options, ['fileBase' => $orderDatas['file']]), config('leveling.dd373.url')['updateImage'], 'updateImage', $orderDatas);
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '发送截图', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());

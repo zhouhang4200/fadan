@@ -78,6 +78,7 @@ class RegisterController extends Controller
             'api_token' => str_random(60),
             'app_id' => str_random(60),
             'app_secret' => str_random(60),
+            'voucher' => "/resources/users/moren.jpg",
         ]);
     }
 

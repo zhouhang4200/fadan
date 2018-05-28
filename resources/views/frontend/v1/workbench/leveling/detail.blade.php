@@ -544,7 +544,7 @@
                                             @endif
 
                                             @if ($detail['master'] && $detail['status'] == 14)
-                                                <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成</button>
+                                                <button  class="qs-btn opt-btn"  data-operation="complete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">完成验收</button>
                                             @endif
 
 
@@ -637,10 +637,7 @@
                         <td>结算时间：</td>
                         <td>{{ $detail['checkout_time'] ?? ''  }}</td>
                     </tr>
-                    <tr>
-                        <td>接单客服：</td>
-                        <td>{{ $detail['pre_sale'] ?? ''  }}</td>
-                    </tr>
+
                     <tr>
                         <td>发单客服：</td>
                         <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
@@ -657,7 +654,13 @@
                     </tr>
                     <tr>
                         <td>支付金额：</td>
-                        <td>{{ $detail['payment_amount']?? ''  }}</td>
+                        <td>
+                            @if(isset($detail['payment_amount']))
+                                {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
+                            @else
+                            ''
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td>获得金额：</td>

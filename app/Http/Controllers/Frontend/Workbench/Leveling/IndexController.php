@@ -254,7 +254,8 @@ class IndexController extends Controller
                 $currentTime = new Carbon();
                 $orderTime = $currentTime->parse($orderCurrent['created_at']);
                 $orderCurrent['day'] = $orderTime->diffInDays($currentTime, false);
-
+                $orderCurrent['password'] = str_replace(substr($orderCurrent['password'], -4, 4), '****', $orderCurrent['password']);
+                $orderCurrent['amount'] = intval($orderCurrent['amount']) == $orderCurrent['amount'] ? intval($orderCurrent['amount']) : $orderCurrent['amount'];
 
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
@@ -267,6 +268,7 @@ class IndexController extends Controller
                 $orderArr[] = $temp;
 
             }
+      
             return [
                 'code' => 0,
                 'msg' => '',
@@ -1511,6 +1513,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='serve' THEN a.field_value ELSE '' END) AS serve,
                 MAX(CASE WHEN a.field_name='account' THEN a.field_value ELSE '' END) AS account,
                 MAX(CASE WHEN a.field_name='password' THEN a.field_value ELSE '' END) AS password,
+                MAX(CASE WHEN a.field_name='source_order_no' THEN a.field_value ELSE '' END) AS source_order_no,
                 MAX(CASE WHEN a.field_name='role' THEN a.field_value ELSE '' END) AS role,
                 MAX(CASE WHEN a.field_name='game_leveling_type' THEN a.field_value ELSE '' END) AS game_leveling_type,
                 MAX(CASE WHEN a.field_name='game_leveling_title' THEN a.field_value ELSE '' END) AS game_leveling_title,
@@ -1550,6 +1553,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='game_leveling_requirements_template' THEN a.field_value ELSE '' END) AS game_leveling_requirements_template,
                 b.no,
                 b.status as order_status,
+                b.created_at as order_created_at,
                 b.amount,
                 b.creator_user_id, 
                 b.creator_primary_user_id, 

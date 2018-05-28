@@ -308,6 +308,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::delete('destroy', 'LevelingController@destroy')->name('order.leveling.destroy');
             Route::post('change/status', 'LevelingController@changeStatus')->name('order.leveling.change-status');
         });
+
+        // 接口失败报警
+        Route::prefix('notice')->group(function () {
+            Route::get('/', 'OrderApiNoticeController@index')->name('order.notice.index');
+            Route::post('repeat', 'OrderApiNoticeController@repeat')->name('order.notice.repeat');
+            Route::post('delete', 'OrderApiNoticeController@delete')->name('order.notice.delete');
+            Route::post('delete-all', 'OrderApiNoticeController@deleteAll')->name('order.notice.delete-all');
+        });
     });
 
     // 财务

@@ -388,7 +388,7 @@
                 @{{# if (d.consult == 1) {  }}
                     <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
                 @{{# } else if (d.consult == 2) {  }}
-                    <button class="qs-btn qs-btn-sm" style="width: 80px;"   data-opt="agreeRevoke" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="1" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;" data-no="@{{ d.no }}" data-opt="agreeRevoke" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="1" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
                 @{{# } }}
 
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
@@ -448,10 +448,6 @@
     <script type="text/html" id="gameTemplate">
         @{{ d.game_name }} <br>
         @{{ d.region }} / @{{ d.serve }}
-    </script>
-    <script type="text/html" id="accountPasswordTemplate">
-        @{{ d.account }} <br/>
-        @{{ d.password }}
     </script>
     <script type="text/html" id="accountPasswordTemplate">
         @{{ d.account }} <br/>

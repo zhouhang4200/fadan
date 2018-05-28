@@ -42,9 +42,15 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-mid">相关单号：</label>
+                <label class="layui-form-mid">订单号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="trade_no" placeholder="相关单号" value="{{ $tradeNo }}">
+                    <input type="text" class="layui-input" name="trade_no" placeholder="订单号" value="{{ $tradeNo }}">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-mid">天猫单号：</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="foreign_order_no" placeholder="天猫单号" value="{{ $foreignOrderNo }}">
                 </div>
             </div>
             <div class="layui-inline">
@@ -73,7 +79,8 @@
                 <th>类型</th>
                 <th>变动金额</th>
                 <th>账户余额</th>
-                <th>相关单号</th>
+                <th>订单号</th>
+                <th>天猫单号</th>
                 <th>时间</th>
             </tr>
         </thead>
@@ -86,6 +93,7 @@
                     <td>{{ $data->fee + 0 }}</td>
                     <td>{{ $data->balance + 0 }}</td>
                     <td>{{ $data->trade_no }}</td>
+                    <td>{{ $data->order->foreign_order_no }}</td>
                     <td>{{ $data->created_at }}</td>
                 </tr>
             @empty

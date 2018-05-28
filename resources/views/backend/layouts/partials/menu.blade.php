@@ -24,6 +24,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         'order.leveling.index',
                         'order.leveling.abnormal',
                         'frontend.user.oriented.index',
+                        'order.notice.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
@@ -51,6 +52,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <li>
                                     <a href="{{ route('order.leveling.abnormal') }}" @if($currentRouteName == 'order.leveling.abnormal') class="active" @endif>
                                         报警订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.notice.index') }}" @if($currentRouteName == 'order.notice.index') class="active" @endif>
+                                        接口失败报警
                                     </a>
                                 </li>
                             </ul>
