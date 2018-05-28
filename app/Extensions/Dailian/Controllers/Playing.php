@@ -105,19 +105,19 @@ class Playing extends DailianAbstract implements DailianInterface
     {
 
         // 兼容之前扣款流程,如果有扣过下单款则接单不再扣款,否则按新扣款流程在接单时才扣发单方款
-        if(!checkPayment($this->order->no)) {
-
-             Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
-
-            // 写多态关联
-            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new Exception('申请失败');
-            }
-
-            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new Exception('申请失败');
-            }
-        }
+//        if(!checkPayment($this->order->no)) {
+//
+//             Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+//
+//            // 写多态关联
+//            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+//                throw new Exception('申请失败');
+//            }
+//
+//            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+//                throw new Exception('申请失败');
+//            }
+//        }
 
         $orderDetails = OrderDetail::where('order_no', $this->order->no)
                 ->pluck('field_value', 'field_name')
@@ -257,7 +257,7 @@ class Playing extends DailianAbstract implements DailianInterface
      */
     public function checkUserBalance()
     {
-        if(UserAsset::balance($this->order->creator_primary_user_id) < 20000) {
+        if(UserAsset::balance($this->order->creator_primary_user_id) < 2000) {
             // https://oapi.dingtalk.com/robot/send?access_token=b5c71a94ecaba68b9fec8055100324c06b1d98a6cd3447c5d05e224efebe5285 代练小组
             // https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8 测试用
             $userInfo = User::find($this->order->creator_primary_user_id);
@@ -269,7 +269,7 @@ class Playing extends DailianAbstract implements DailianInterface
                 'json' => [
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '发单商户ID: ' . $this->order->creator_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于2w, 已发送短信通知, 请运营同事及时跟进。'
+                        'content' => '发单商户ID: ' . $this->order->creator_primary_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于2000元, 已发送短信通知, 请运营同事及时跟进。'
                     ],
                     'at' => [
                         'isAtAll' => true
@@ -289,7 +289,7 @@ class Playing extends DailianAbstract implements DailianInterface
                 'json' => [
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '接单平台ID: ' . $this->order->gainer_primary_user_id . ', 呢称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
+                        'content' => '接单平台ID: ' . $this->order->gainer_primary_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
                     ],
                     'at' => [
                         'isAtAll' => true

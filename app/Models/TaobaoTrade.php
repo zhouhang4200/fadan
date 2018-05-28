@@ -44,4 +44,30 @@ class TaobaoTrade extends Model
         }
     }
 
+    /**
+     * 关联内部订单
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'tid', 'foreign_order_no');
+    }
+
+    /**
+     * 获取交易状态对应的文字
+     * @return mixed
+     */
+    public function getTradeStatusText()
+    {
+        return config('order.taobao_trade_status')[$this->trade_status];
+    }
+
+    /**
+     * 如果有对应的订单则获取平台订单状态对应的文字
+     * @return mixed
+     */
+    public function getOrderStatusText()
+    {
+        return isset($this->order->status) ? config('order.status_leveling')[$this->order->status] : '';
+    }
 }

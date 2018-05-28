@@ -182,6 +182,10 @@
             height: 56px;
             line-height: 56px;
         }
+        /**橙色字体*/
+        .font-color-orange {
+            color:#ff8500;
+        }
     </style>
 @endsection
 
@@ -200,7 +204,7 @@
                     <div class="layui-row layui-col-space10 layui-form-item">
 
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">游戏</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 游戏</label>
                             <div class="layui-input-block">
                                 <select name="game_id" lay-filter="game_id" lay-verify="required">
                                     <option value=""></option>
@@ -213,7 +217,7 @@
                         </div>
 
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">区</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 区</label>
                             <div class="layui-input-block ">
                                 <select name="region" lay-verify="required" lay-filter="change-select" class="region">
                                     <option value=""></option>
@@ -225,16 +229,16 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">服</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 服</label>
                             <div class="layui-input-block">
-                                <select name="serve" lay-filter="serve" class="serve" display-name="服">
+                                <select name="serve" lay-verify="required" lay-filter="serve"  class="serve" display-name="服">
                                     <option value=""></option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">角色名称</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 角色名称</label>
                             <div class="layui-input-block">
                                 <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称">
                             </div>
@@ -243,14 +247,14 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">账号</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 账号</label>
                             <div class="layui-input-block">
                                 <input type="text" name="account" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="账号">
                             </div>
                         </div>
 
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">密码</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 密码</label>
                             <div class="layui-input-block">
                                 <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码">
                             </div>
@@ -261,7 +265,7 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练类型</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练类型</label>
                             <div class="layui-input-block">
                                 <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型">
                                     <option value=""></option>
@@ -274,7 +278,7 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练标题</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练标题</label>
                             <div class="layui-input-block tips-box">
                                 <input type="text" name="game_leveling_title" lay-verify="required|title" placeholder="" autocomplete="off" class="layui-input" display-name="代练标题">
                                 <div class="tips" lay-tips="王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129">
@@ -283,7 +287,7 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练要求模板</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练要求模板</label>
                             <div class="layui-input-block">
                                 <select name="game_leveling_requirements_template" lay-verify="" lay-filter="aihao" display-name="代练要求模板">
                                     <option value=""></option>
@@ -297,22 +301,22 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item layui-form-text">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练说明</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练说明</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_instructions" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"></textarea>
+                                <textarea name="game_leveling_instructions" lay-verify="required" placeholder="请输入内容" class="layui-textarea" display-name="代练说明"></textarea>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练要求</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练要求</label>
                             <div class="layui-input-block">
-                                <textarea name="game_leveling_requirements" placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"></textarea>
+                                <textarea name="game_leveling_requirements"  lay-verify="required"  placeholder="请输入内容" class="layui-textarea"  display-name="代练要求"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练价格</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练价格</label>
                             <div class="layui-input-block">
                                 <input type="text" name="game_leveling_amount" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input"  display-name="代练价格">
                             </div>
@@ -323,7 +327,7 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">安全保证金</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 安全保证金</label>
                             <div class="layui-input-block">
                                 <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金">
                                 <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
@@ -332,7 +336,7 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">效率保证金</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 效率保证金</label>
                             <div class="layui-input-block">
                                 <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金">
                                 <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
@@ -344,7 +348,7 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练天数</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练天数</label>
                             <div class="layui-input-block">
                                 <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)">
                                     <option value=""></option>
@@ -355,7 +359,7 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">代练小时</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 代练小时</label>
                             <div class="layui-input-block">
                                 <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)">
                                     <option value=""></option>
@@ -369,13 +373,13 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">玩家电话</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 玩家电话</label>
                             <div class="layui-input-block">
                                 <input type="text" name="client_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="玩家电话">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">商户QQ</label>
+                            <label class="layui-form-label"><span class="font-color-orange">*</span> 商户QQ</label>
                             <div class="layui-input-block">
                                 <select name="user_qq" lay-verify="required" lay-filter="aihao" display-name="商户QQ">
                                     <option value=""></option>
@@ -602,7 +606,6 @@
                         return '标题不可大于60个字符';
                     }
                 }
-
             });
             // 下单
             form.on('submit(order)', function (data) {

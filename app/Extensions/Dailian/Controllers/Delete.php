@@ -88,7 +88,7 @@ class Delete extends DailianAbstract implements DailianInterface
      */
     public function updateAsset()
     {
-        if(checkPayment($this->order->no)) {
+//        if(checkPayment($this->order->no)) {
             // 发单 退回代练费
             Asset::handle(new Income($this->order->amount, 7, $this->order->no, '退回代练费', $this->order->creator_primary_user_id));
 
@@ -110,7 +110,7 @@ class Delete extends DailianAbstract implements DailianInterface
             } catch (\Exception $exception) {
 
             }
-        }
+//        }
     }
 
     /**
