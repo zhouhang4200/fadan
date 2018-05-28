@@ -6,6 +6,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
+use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 class Show91Controller extends LevelingAbstract implements LevelingInterface
@@ -28,7 +29,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function formDataRequest($options = [], $url = '', $method = 'POST')
+    public static function formDataRequest($options = [], $url = '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
     		$datas = [];
@@ -59,22 +60,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '91接口返回错误';
-//	        			myLog('show91-return-error', [
-//	        				'地址' => $url ?? '',
-//	        				'失败错误码' => $arrResult['result'] ?? '',
-//	        				'失败原因' => $arrResult['reason'] ?? '',
-//	        			]);
+
+                        // 记录报警
+                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
                         }
 	        		}
 	        	}
-		        // 记录日志
-//		        myLog('show91-return-log', [
-//		            '地址' => $url ?? '',
-//		            '信息' => $options ?? '',
-//		            '结果' => $result ? json_decode($result, true) : '',
-//		        ]);
     		}
 
     		return json_decode($result, true);
@@ -92,7 +86,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function normalRequest($options = [], $url= '', $method = 'POST')
+    public static function normalRequest($options = [], $url= '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
 	        $client = new Client();
@@ -118,27 +112,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        		// 失败
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '91接口返回错误';
-//	        			myLog('show91-return-error', [
-//	        				'地址' => $url ?? '',
-//	        				'失败错误码' => $arrResult['result'] ?? '',
-//	        				'失败原因' => $arrResult['reason'] ?? '',
-//	        			]);
+                        // 记录报警
+                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
                         }
 	        		}
 	        	}
-		        // 记录日志
-//		        myLog('show91-return-log', [
-//		            '地址' => $url ?? '',
-//		            '信息' => $options ?? '',
-//		            '结果' => $result ? json_decode($result, true) : '',
-//		        ]);
     		}
-//			myLog('show91-request-log', [
-//	            '地址' => $url ?? '',
-//	            '参数' => $options ?? '',
-//	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('show91-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -178,7 +160,9 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['onSale']);
+	       	static::normalRequest($options, config('leveling.show91.url')['onSale'], 'onSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -197,7 +181,9 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['offSale']);
+	       	static::normalRequest($options, config('leveling.show91.url')['offSale'], 'offSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -225,7 +211,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'selfCancel.content'   => $orderDatas['revoke_message'] ?? '空',
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['applyRevoke']);
+	       	static::normalRequest($options, config('leveling.show91.url')['applyRevoke'], 'applyRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -245,7 +231,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['cancelRevoke']);
+	       	static::normalRequest($options, config('leveling.show91.url')['cancelRevoke'], 'cancelRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -267,7 +253,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.show91.password'),
 	        ];
 	       	// 发送
-	       	$result = static::normalRequest($options, config('leveling.show91.url')['agreeRevoke']);
+	       	$result = static::normalRequest($options, config('leveling.show91.url')['agreeRevoke'], 'agreeRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -296,7 +282,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.show91.password'),
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['refuseRevoke']);
+	       	static::normalRequest($options, config('leveling.show91.url')['refuseRevoke'], 'refuseRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -321,7 +307,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'pic3'           => $orderDatas['pic3'],
 	        ];
 	       	// 发送
-	       	static::formDataRequest($options, config('leveling.show91.url')['applyArbitration']);
+	       	static::formDataRequest($options, config('leveling.show91.url')['applyArbitration'], 'applyArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -341,7 +327,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'aid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['cancelArbitration']);
+	       	static::normalRequest($options, config('leveling.show91.url')['cancelArbitration'], 'cancelArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -385,7 +371,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.show91.password'),
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['complete']);
+	       	static::normalRequest($options, config('leveling.show91.url')['complete'], 'complete', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -407,19 +393,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
      * @return [type]             [description]
      */
     public static function cancelLock($orderDatas) {
-        try {
-	        $options = [
-				'account'         => config('leveling.show91.account'),
-				'sign'            => config('leveling.show91.sign'),
-				'platformOrderNo' => $orderDatas['show91_order_no'],
-				'timestamp'       => $time,
-	        ];
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['cancelLock']);
-    	} catch (Exception $e) {
-    		myLog('show91-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
+        
     }
 
     /**
@@ -449,7 +423,9 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['delete']);
+	       	static::normalRequest($options, config('leveling.show91.url')['delete'], 'delete', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -520,7 +496,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        ];
 
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['addTime']);
+	       	static::normalRequest($options, config('leveling.show91.url')['addTime'], 'addTime', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -541,7 +517,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'cash'    => $orderDatas['game_leveling_amount'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['addMoney']);
+	       	static::normalRequest($options, config('leveling.show91.url')['addMoney'], 'addMoney', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -560,7 +536,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	return static::normalRequest($options, config('leveling.show91.url')['orderDetail']);
+	       	return static::normalRequest($options, config('leveling.show91.url')['orderDetail'], 'orderDetail', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -579,7 +555,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	$dataList = static::normalRequest($options, config('leveling.show91.url')['getScreenshot']);
+	       	$dataList = static::normalRequest($options, config('leveling.show91.url')['getScreenshot'], 'getScreenshot', $orderDatas);
 
 	       	if (isset($dataList) && $dataList['result'] ==0 && !empty($dataList['data'])) {
 		       	foreach ($dataList['data'] as $key => $value) {
@@ -612,7 +588,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['show91_order_no'],
 	        ];
 	       	// 发送
-	       	$message = static::normalRequest($options, config('leveling.show91.url')['getMessage']);
+	       	$message = static::normalRequest($options, config('leveling.show91.url')['getMessage'], 'getMessage', $orderDatas);
 
 	       	if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
 	       		$sortField = [];
@@ -654,7 +630,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'mess'    => $orderDatas['message'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['replyMessage']);
+	       	static::normalRequest($options, config('leveling.show91.url')['replyMessage'], 'replyMessage', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -675,7 +651,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'newAccPwd' => $orderDatas['password'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['updateAccountAndPassword']);
+	       	static::normalRequest($options, config('leveling.show91.url')['updateAccountAndPassword'], 'updateAccountAndPassword', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -696,7 +672,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 				'isTop'   => 1,
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.show91.url')['setTop']);
+	       	static::normalRequest($options, config('leveling.show91.url')['setTop'], 'setTop', $orderDatas);
     	} catch (Exception $e) {
     		myLog('show91-local-error', ['方法' => '订单置顶', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -717,7 +693,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                 'aid'     => $orderDatas['show91_order_no'],
             ];
             // 发送
-            $lists = static::normalRequest($options, config('leveling.show91.url')['appeals']);
+            $lists = static::normalRequest($options, config('leveling.show91.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
             // 循环仲裁列表
             $infos = [];
             if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
@@ -741,7 +717,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                     'sign'    => config('leveling.show91.sign'),
                     'aid'     => $infos[0]['id'],
                 ];
-                $result = static::normalRequest($detailOptions, config('leveling.show91.url')['seeappeal']);
+                $result = static::normalRequest($detailOptions, config('leveling.show91.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
 
                 if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
                     $details = $result['data'];
@@ -802,7 +778,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             ];
 
             // 发送
-            $res = static::formDataRequest($options, config('leveling.show91.url')['addevidence']);
+            $res = static::formDataRequest($options, config('leveling.show91.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
         } catch (Exception $e) {
             myLog('show91-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

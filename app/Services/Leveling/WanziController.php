@@ -6,6 +6,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
+use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 class WanziController extends LevelingAbstract implements LevelingInterface
@@ -28,7 +29,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function formDataRequest($options = [], $url = '', $method = 'POST')
+    public static function formDataRequest($options = [], $url = '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
     		$datas = [];
@@ -60,6 +61,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '丸子接口返回错误';
 
+                        // 记录报警
+                        OrderApiNotice::createNotice(5, $message, $functionName, $datas);
+
         				if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
                         }
@@ -81,7 +85,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      * @param  string $method  [description]
      * @return [type]          [description]
      */
-    public static function normalRequest($options = [], $url= '', $method = 'POST')
+    public static function normalRequest($options = [], $url= '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
             $client = new Client();
@@ -107,6 +111,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                     // 失败
                     if (isset($arrResult['result']) && $arrResult['result'] != 0) {
                         $message = $arrResult['reason'] ?? '91接口返回错误';
+
+                        // 记录报警
+                        OrderApiNotice::createNotice(5, $message, $functionName, $datas);
 
                         if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
@@ -153,7 +160,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['onSale']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['onSale'], 'onSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -172,7 +181,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['offSale']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['offSale'], 'offSale', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -200,7 +211,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'selfCancel.content'   => $orderDatas['revoke_message'] ?? '空',
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['applyRevoke'], 'applyRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '申请撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -220,7 +231,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelRevoke']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelRevoke'], 'cancelRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '取消撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -242,7 +253,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.wanzi.password'),
 	        ];
 	       	// 发送
-	       	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke']);
+	       	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke'], 'agreeRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -271,7 +282,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.wanzi.password'),
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke'], 'refuseRevoke', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '不同意撤销', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -296,7 +307,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'pic3'           => $orderDatas['pic3'],
 	        ];
 	       	// 发送
-	       	static::formDataRequest($options, config('leveling.wanzi.url')['applyArbitration']);
+	       	static::formDataRequest($options, config('leveling.wanzi.url')['applyArbitration'], 'applyArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -316,7 +327,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'aid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelArbitration']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelArbitration'], 'cancelArbitration', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '取消仲裁', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -360,7 +371,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'p'       => config('leveling.wanzi.password'),
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['complete']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['complete'], 'complete', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单完成', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -382,19 +393,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      * @return [type]             [description]
      */
     public static function cancelLock($orderDatas) {
-        try {
-	        $options = [
-				'account'         => config('leveling.wanzi.account'),
-				'sign'            => config('leveling.wanzi.sign'),
-				'platformOrderNo' => $orderDatas['wanzi_order_no'],
-				'timestamp'       => $time,
-	        ];
-	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['cancelLock']);
-    	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '解除锁定', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
+    
     }
 
     /**
@@ -424,7 +423,9 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['delete']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['delete'], 'delete', $orderDatas);
+
+            return true;
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -495,7 +496,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	        ];
 
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['addTime']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['addTime'], 'addTime', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单加时', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -516,7 +517,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'cash'    => $orderDatas['game_leveling_amount'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['addMoney']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['addMoney'], 'addMoney', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单加款', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -535,7 +536,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	return static::normalRequest($options, config('leveling.wanzi.url')['orderDetail']);
+	       	return static::normalRequest($options, config('leveling.wanzi.url')['orderDetail'], 'orderDetail', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -554,7 +555,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	$dataList = static::normalRequest($options, config('leveling.wanzi.url')['getScreenshot']);
+	       	$dataList = static::normalRequest($options, config('leveling.wanzi.url')['getScreenshot'], 'getScreenshot', $orderDatas);
 
 	       	if (isset($dataList) && $dataList['result'] == 0 && !empty($dataList['data'])) {
 		       	foreach ($dataList['data'] as $key => $value) {
@@ -587,7 +588,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'oid'     => $orderDatas['wanzi_order_no'],
 	        ];
 	       	// 发送
-	       	$message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage']);
+	       	$message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage'], 'getMessage', $orderDatas);
 
 	       	if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
 	       		$sortField = [];
@@ -625,7 +626,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'mess'    => $orderDatas['message'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage'], 'replyMessage', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -646,7 +647,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'newAccPwd' => $orderDatas['password'],
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword'], 'updateAccountAndPassword', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -667,7 +668,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 				'isTop'   => 1,
 	        ];
 	       	// 发送
-	       	static::normalRequest($options, config('leveling.wanzi.url')['setTop']);
+	       	static::normalRequest($options, config('leveling.wanzi.url')['setTop'], 'setTop', $orderDatas);
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单置顶', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -688,7 +689,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                 'aid'     => $orderDatas['wanzi_order_no'],
             ];
             // 发送
-            $lists = static::normalRequest($options, config('leveling.wanzi.url')['appeals']);
+            $lists = static::normalRequest($options, config('leveling.wanzi.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
             // 循环仲裁列表
             $infos = [];
             if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
@@ -711,7 +712,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                     'sign'    => config('leveling.wanzi.sign'),
                     'aid'     => $infos[0]['id'],
                 ];
-                $result = static::normalRequest($detailOptions, config('leveling.wanzi.url')['seeappeal']);
+                $result = static::normalRequest($detailOptions, config('leveling.wanzi.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
 
                 if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
                     $details = $result['data'];
@@ -770,7 +771,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             ];
 
             // 发送
-            return static::formDataRequest($options, config('leveling.wanzi.url')['addevidence']);
+            return static::formDataRequest($options, config('leveling.wanzi.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
         } catch (Exception $e) {
             myLog('wanzi-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());

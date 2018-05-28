@@ -54,9 +54,9 @@ return [
 
 	// 调用第三方平台接口的控制器名称
 	'controller' => [
+		1 => Show91Controller::class,
 		4 => DD373Controller::class,
 		3 => MayiDailianController::class,
-		1 => Show91Controller::class,
 		5 => WanziController::class,
 	],
 
@@ -91,9 +91,9 @@ return [
 		'replyMessage'             => 'replyMessage', // 回复留言
 		'updateAccountAndPassword' => 'updateAccountAndPassword', // 修改游戏账号密码
 		'updateImage'			   => 'updateImage', // 上传截图
+		'setTop'                   => 'setTop', // 置顶
 		'getArbitrationInfo'       => 'getArbitrationInfo', // 获取仲裁详情
 		'addArbitrationInfo'       => 'addArbitrationInfo', // '添加仲裁证据'
-		'setTop'                   => 'setTop', // 置顶
 	],
 
 	// 蚂蚁代练的信息
@@ -203,9 +203,11 @@ return [
 			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
-			'appeals'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/appeals', // 仲裁列表
-			'addevidence'              => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addevidence', // 添加仲裁证据
-			'seeappeal'                => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal', // 查看仲裁详情
+			'getArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal', // 查看仲裁详情
+			'addArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addevidence', // 添加仲裁证据
+
+
+			'getArbitrationList'	   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/appeals', // **仲裁列表**
     	],
     ],
 
@@ -256,9 +258,48 @@ return [
 			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/setTop', // 获取代练类型
-			'appeals'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/appeals', // 仲裁列表
-			'addevidence'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addevidence', // 添加仲裁证据
-			'seeappeal'                => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal', // 查看仲裁详情
+			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal', // 查看仲裁详情
+			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addevidence', // 添加仲裁证据
+
+
+
+
+			'getArbitrationList'	   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/appeals', // 仲裁列表
     	],
     ],
+
+    // 操作对应的中文名
+    'operate' => [
+		'onSale'                   => '上架', // 上架 
+		'offSale'                  => '下架', // 下架 
+		'receive'                  => '接单', // 接单
+		'applyRevoke'              => '申请撤销', // 申请撤销 
+		'cancelRevoke'             => '取消撤销', // 取消撤销 
+		'agreeRevoke'              => '同意撤销', // 同意撤销 
+		'forceRevoke'              => '强制撤销', // 强制撤销 
+		'refuseRevoke'             => '不同意撤销', // 不同意撤销
+		'applyArbitration'         => '申请仲裁', // 申请仲裁 
+		'cancelArbitration'        => '取消仲裁', // 取消仲裁 
+		'customArbitration'        => '强制仲裁', // 强制仲裁(客服仲裁)
+		'applyComplete'            => '申请验收', // 申请验收 
+		'cancelComplete'           => '取消验收', // 取消验收 
+		'complete'                 => '完成验收', // 完成验收 
+		'lock'                     => '锁定', // 锁定 
+		'cancelLock'               => '取消锁定', // 取消锁定 
+		'abnormal'                 => '异常', // 异常 
+		'cancelAbnormal'           => '取消异常', // 取消异常
+		'delete'                   => '撤单', // 删除(撤单)
+		'updateOrder'              => '修改订单', // 修改订单
+		'addTime'                  => '订单加时', // 订单加时
+		'addMoney'                 => '订单加款', // 订单加款
+		'orderDetail'              => '获取订单详情', // 获取订单详情
+		'getScreenshot'            => '获取订单截图', // 获取订单截图
+		'getMessage'               => '获取留言', // 获取留言
+		'replyMessage'             => '回复留言', // 回复留言
+		'updateAccountAndPassword' => '修改游戏账号密码', // 修改游戏账号密码
+		'updateImage'			   => '上传截图', // 上传截图
+		'setTop'                   => '置顶', // 置顶
+		'getArbitrationInfo'       => '获取仲裁详情', // 获取仲裁详情
+		'addArbitrationInfo'       => '添加仲裁证据', // '添加仲裁证据'
+	],
 ];
