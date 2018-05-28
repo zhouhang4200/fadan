@@ -55,14 +55,14 @@ class OrderApiNotice extends Model
     {
     	if (isset($datas) && count($datas) > 0 && ! empty($third) && ! empty($functionName) && ! empty($reason)) {
 			$arr                     = [];
-			$arr['order_no']         = $datas['order_no'];
-			$arr['source_order_no']  = $datas['source_order_no'];
-			$arr['status']           = $datas['status'];
-			$arr['operate']          = config('leveling.operate')[$functionName];
-			$arr['third']            = $third;
-			$arr['reason']           = $reason;
-			$arr['order_created_at'] = $datas['order_created_at'];
-			$arr['function_name']    = $functionName;
+			$arr['order_no']         = $datas['order_no'] ?? 0;
+			$arr['source_order_no']  = $datas['source_order_no'] ?? 0;
+			$arr['status']           = $datas['order_status'] ?? 0;
+			$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
+			$arr['third']            = $third ?? 0;
+			$arr['reason']           = $reason ?? 0;
+			$arr['order_created_at'] = $datas['order_created_at'] ?? 0;
+			$arr['function_name']    = $functionName ?? 0;
 			$arr['created_at']       = Carbon::now()->toDateTimeString();
 			$arr['updated_at']       = Carbon::now()->toDateTimeString();
 
