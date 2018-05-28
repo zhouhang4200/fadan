@@ -48,7 +48,8 @@ class OrderSend extends Command
                 // 检测平台是否开启，
                 $client = new Client();
                 foreach (config('partner.platform') as $platform) {
-                    if ($platform['user_id'] != 8737) {
+                    // if ($platform['user_id'] != 8737) {
+                        myLog('send-who', ['platform' => $platform]);
                         $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
                         try {
                             $response = $client->request('POST', $platform['receive'], [
@@ -56,7 +57,6 @@ class OrderSend extends Command
                                     'data' => $decrypt
                                 ]
                             ]);
-                            myLog('send-who', ['platform' => $platform]);
                             $result = $response->getBody()->getContents();
 //                        OrderSend::insert([
 //                            'platform_name' => $platform['name'],
@@ -74,7 +74,7 @@ class OrderSend extends Command
 //                            'send_data' => $orderData,
 //                        ]);
                             myLog('order-send-ex', [$platform['name'], $exception->getMessage(), $decrypt]);
-                        }
+                        // }
                     }
                 }
             }
