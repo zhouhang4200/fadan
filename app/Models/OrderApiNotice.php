@@ -51,7 +51,7 @@ class OrderApiNotice extends Model
      * 前台各个平台操作失败生成报警
      * @return [type] [description]
      */
-    public function createNotice($third, $functionName, $reason, $datas)
+    public static function createNotice($third, $functionName, $reason, $datas)
     {
     	if (isset($datas) && count($datas) > 0 && ! empty($third) && ! empty($functionName) && ! empty($reason)) {
 			$arr                     = [];
