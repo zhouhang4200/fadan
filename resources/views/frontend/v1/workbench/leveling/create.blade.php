@@ -240,7 +240,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 角色名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="role" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称">
+                                <input type="text" name="role" lay-verify="required" placeholder="" autocomplete="off" class="layui-input"  display-name="角色名称">
                             </div>
                         </div>
                     </div>
