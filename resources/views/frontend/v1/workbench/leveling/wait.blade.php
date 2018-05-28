@@ -216,19 +216,21 @@
                 url: '{{ route('frontend.workbench.leveling.wait-order-list') }}',
                 method: 'post',
                 cols: [[
-                    {field: 'seller_nick', title: '店铺', width: 100},
+                    {field: 'seller_nick', title: '店铺', width: 150},
                     {field: 'tid', title: '订单号', width: 200},
-                    {field: 'game_name', title: '绑定游戏'},
+                    {field: 'trade_status', title: '淘宝订单状态', width: 120},
+                    {field: 'order_status', title: '平台订单状态', width: 120},
+                    {field: 'game_name', title: '绑定游戏', width: 120},
                     {field: 'buyer_nick', title: '买家旺旺', templet: '#wwTemplate',width: 150},
                     {field: 'price', title: '购买单价'},
                     {field: 'num', title: '购买数量'},
                     {field: 'payment', title: '实付金额'},
                     {field: 'created', title: '下单时间',width: 180 },
                     {field: 'remark', title: '备注', edit:'text',width: 200 },
-                    {field: 'button', title: '操作', width: 200,  toolbar: '#operation'},
-                    {type: 'checkbox'}
+                    {field: 'button', title: '操作', width: 100,  toolbar: '#operation', fixed: 'right'},
+                    {type: 'checkbox', fixed: 'right'}
                 ]],
-                height: 'full-250',
+                height: 'full-220',
                 size: 'sm', //小尺寸的表格
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],

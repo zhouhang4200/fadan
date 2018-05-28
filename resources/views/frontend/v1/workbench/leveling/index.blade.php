@@ -122,6 +122,16 @@
                             </div>
                         </div>
                         <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">代练类型</label>
+                                <div class="layui-input-block">
+                                    <select name="game_id" lay-search="">
+                                        <option value="">请选择代练类型</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 first">
                             <div class="layui-form-item ">
                                 <label class="layui-form-label"  style="">发单客服</label>
                                 <div class="layui-input-block" style="">
@@ -135,7 +145,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-col-md3 first">
+                        <div class="layui-col-md3 ">
                             <div class="layui-form-item last-item">
                                 <label class="layui-form-label">代练平台</label>
                                 <div class="layui-input-block">

@@ -310,14 +310,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('remark', 'IndexController@remark')->name('frontend.workbench.leveling.remark');
             // 订单操作记录
             Route::post('operation-record', 'IndexController@operationRecord')->name('frontend.workbench.leveling.operation-record');
-            // 待发单列表
-            Route::get('wait', 'IndexController@wait')->name('frontend.workbench.leveling.wait')->middleware('new.permission:frontend.workbench.leveling.wait');
-            // 待发单数据
-            Route::post('wait-order-list', 'IndexController@waitOrderList')->name('frontend.workbench.leveling.wait-order-list');
-            // 待接单数据更新
-            Route::post('wait-update', 'IndexController@waitUpdate')->name('frontend.workbench.leveling.wait-update');
-            // 待接单备注修改
-            Route::post('wait-remark', 'IndexController@waitRemark')->name('frontend.workbench.leveling.wait-remark');
+
             // 重发
             Route::get('repeat/{id?}', 'IndexController@repeat')->name('frontend.workbench.leveling.repeat');
             // 发送短信
@@ -338,6 +331,19 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::get('arbitration-info', 'IndexController@getArbitrationInfo')->name('frontend.workbench.leveling.arbitration-info');
             // 发送仲裁证据
             Route::post('add-arbitration', 'IndexController@addArbitrationInfo')->name('frontend.workbench.leveling.add-arbitration');
+
+            // 待发订单
+            Route::prefix('wait')->group(function(){
+                // 待发单列表
+                Route::get('/', 'WaitController@index')->name('frontend.workbench.leveling.wait')->middleware('new.permission:frontend.workbench.leveling.wait');
+                // 待发单数据
+                Route::post('order-list', 'WaitController@orderList')->name('frontend.workbench.leveling.wait-order-list');
+                // 待接单数据更新
+                Route::post('update', 'WaitController@update')->name('frontend.workbench.leveling.wait-update');
+                // 待接单备注修改
+                Route::post('remark', 'WaitController@remark')->name('frontend.workbench.leveling.wait-remark');
+            });
+
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');
