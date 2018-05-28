@@ -56,7 +56,7 @@ class OrderSend extends Command
                                     'data' => $decrypt
                                 ]
                             ]);
-
+                            myLog('send-who', ['platform' => $platform]);
                             $result = $response->getBody()->getContents();
 //                        OrderSend::insert([
 //                            'platform_name' => $platform['name'],
@@ -65,7 +65,7 @@ class OrderSend extends Command
 //                            'send_data' => $orderData,
 //                        ]);
                             myLog('order-send-result-des', [$platform['name'], $result]);
-                            myLog('order-send-result', [$platform['name'], $platform['receive'], $result, $orderData, $decrypt]);
+                            // myLog('order-send-result', [$platform['name'], $platform['receive'], $result, $orderData, $decrypt]);
                         } catch (\Exception $exception) {
 //                        OrderSend::insert([
 //                            'platform_name' => $platform['name'],
