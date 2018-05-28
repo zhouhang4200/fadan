@@ -51,7 +51,7 @@ class OrderApiNotice extends Model
      * 前台各个平台操作失败生成报警
      * @return [type] [description]
      */
-    public static function createNotice($third, $functionName, $reason, $datas)
+    public static function createNotice($third, $reason, $functionName, $datas)
     {
     	if (isset($datas) && count($datas) > 0 && ! empty($third) && ! empty($functionName) && ! empty($reason)) {
 			$arr                     = [];
@@ -66,7 +66,7 @@ class OrderApiNotice extends Model
 			$arr['created_at']       = Carbon::now()->toDateTimeString();
 			$arr['updated_at']       = Carbon::now()->toDateTimeString();
 
-	    	return static::updateOrCreate($arr, ['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName]);
+	    	static::updateOrCreate($arr, ['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName]);
     	}
     }
 }
