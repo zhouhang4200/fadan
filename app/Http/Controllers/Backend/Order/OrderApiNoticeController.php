@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Order;
 
 use DB;
+use Redis;
 use App\Models\Order;
 use App\Models\OrderApiNotice;
 use Illuminate\Http\Request;
@@ -24,6 +25,32 @@ class OrderApiNoticeController extends Controller
 
     	$filters = compact('orderNo', 'status', 'startDate', 'endDate');
 
+    	// 将值写入数据库
+    	$name = "order-api-notices";
+    	$orders = hGet($name);
+
+    	if (isset($orders) && is_array($orders)) {
+    		foreach ($orders as $key => $order) {
+    			$order = json_decode($order, true);
+    			$third = explode($key)[1];
+    			$functionName = explode($key)[2];
+    			
+				$arr                     = [];
+				$arr['order_no']         = $order['datas']['order_no'] ?? 0;
+				$arr['source_order_no']  = $order['datas']['source_order_no'] ?? 0;
+				$arr['status']           = $order['datas']['order_status'] ?? 0;
+				$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
+				$arr['third']            = $third ?? 0;
+				$arr['reason']           = $order['datas']['notice_reason'] ?? 0;
+				$arr['order_created_at'] = $order['datas']['order_created_at'] ?? 0;
+				$arr['function_name']    = $functionName ?? 0;
+				$arr['created_at']       = Carbon::now()->toDateTimeString();
+				$arr['updated_at']       = Carbon::now()->toDateTimeString();
+
+		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
+		    	Redis::hDel($name, $key);
+    		}
+    	}
     	$orders = OrderApiNotice::filter($filters)
     		->paginate(10);
 

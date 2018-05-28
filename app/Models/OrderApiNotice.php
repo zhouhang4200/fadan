@@ -66,10 +66,7 @@ class OrderApiNotice extends Model
 			$arr['created_at']       = Carbon::now()->toDateTimeString();
 			$arr['updated_at']       = Carbon::now()->toDateTimeString();
 
-			$res = static::create($arr);
-	    	// $res = static::updateOrCreate(['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
-
-	    	myLog('ceshi', ['res' => $res, 'arr' => $arr]);
+	    	$res = static::updateOrCreate(['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
     	}
     }
 }

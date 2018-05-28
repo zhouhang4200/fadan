@@ -2,6 +2,7 @@
 
 namespace App\Services\Leveling;
 
+use Redis;
 use Exception;
 use App\Models\Game;
 use Carbon\Carbon;
@@ -137,7 +138,12 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         $message = $arrResult['message'] ?? 'mayi接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(3, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order-api-notices";
+                        $key = $datas['order_no'].'-3-'.$functionName;
+                        $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
+                        // OrderApiNotice::createNotice(3, $message, $functionName, $datas);
 
                         if ($options['method'] != 'dlOrderDel') {
                             throw new DailianException($message);
