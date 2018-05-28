@@ -66,7 +66,7 @@ class OrderApiNotice extends Model
 			$arr['created_at']       = Carbon::now()->toDateTimeString();
 			$arr['updated_at']       = Carbon::now()->toDateTimeString();
 
-	    	static::updateOrCreate($arr, ['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName]);
+	    	static::updateOrCreate(['order_no' => $datas['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
     	}
     }
 }
