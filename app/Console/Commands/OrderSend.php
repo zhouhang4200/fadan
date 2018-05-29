@@ -9,6 +9,8 @@ use Redis;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
+use App\Models\Order as OrderModel;
+use App\Models\OrderDetail;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
@@ -62,36 +64,36 @@ class OrderSend extends Command
                             $arrResult = json_decode($result, true);
 
                             if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-                                $orderData = json_decode($orderData, true);
+                                $orderDatas = json_decode($orderData, true);
                                 // 蚂蚁订单
                                 if ($third == 3) {
                                     if (isset($arrResult['status']) && $arrResult['status'] != 1) {
-                                        $orderData['notice_reason'] = $arrResult['message'] ?? '';
-                                        $this->writeNotice($third, $orderData);
+                                        $orderDatas['notice_reason'] = $arrResult['message'] ?? '';
+                                        $this->writeNotice($third, $orderDatas);
                                     }
                                 }
 
                                 // 91 
                                 if ($third == 1) {
                                     if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-                                        $orderData['notice_reason'] = $arrResult['reason'] ?? '';
-                                        $this->writeNotice($third, $orderData);
+                                        $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                        $this->writeNotice($third, $orderDatas);
                                     }
                                 }
 
                                 // wanzi
                                 if ($third == 5) {
                                     if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-                                        $orderData['notice_reason'] = $arrResult['reason'] ?? '';
-                                        $this->writeNotice($third, $orderData);
+                                        $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                        $this->writeNotice($third, $orderDatas);
                                     }
                                 }
 
                                 // 373
                                 if ($third == 4) {
                                     if (isset($arrResult['code']) && $arrResult['code'] != 0) {
-                                        $orderData['notice_reason'] = $arrResult['msg'] ?? '';
-                                        $this->writeNotice($third, $orderData);
+                                        $orderDatas['notice_reason'] = $arrResult['msg'] ?? '';
+                                        $this->writeNotice($third, $orderDatas);
                                     }
                                 }
                             }
@@ -109,17 +111,15 @@ class OrderSend extends Command
 
     public function writeNotice($third, $orderData)
     {
-        $order = Order::where('no', $orderData['no'])->first();
-        $orderDetail = OrderDetail::where('order_no', $orderData['no'])->pluck('field_value', 'field_name')->toArray();
+        $order = OrderModel::where('no', $orderData['order_no'])->first();
+        $orderDetail = OrderDetail::where('order_no', $orderData['order_no'])->pluck('field_value', 'field_name')->toArray();
         // 记录报警
-        $orderData['status']           = 1;
-        $orderData['order_no']         = $order->no;
+        $orderData['order_status']     = 1;
         $orderData['source_order_no']  = $orderDetail['source_order_no'];
-        $orderData['order_created_at'] = $order->created_at;
-
+        $orderData['order_created_at'] = $order->created_at->toDateTimeString();
 
         $name = "order:order-api-notices";
-        $key = $orderData['order_no'].'-'.$third.'-'.$functionName;
+        $key = $orderData['order_no'].'-'.$third.'-'.'create';
         $value = json_encode(['third' => $third, 'reason' => $orderData['notice_reason'], 'functionName' => 'create', 'datas' => $orderData]);
 
         Redis::hSet($name, $key, $value);
