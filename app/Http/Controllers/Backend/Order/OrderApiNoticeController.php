@@ -32,8 +32,8 @@ class OrderApiNoticeController extends Controller
     	if ($orders) {
     		foreach ($orders as $key => $order) {
     			$order = json_decode($order, true);
-    			$third = explode($key)[1];
-    			$functionName = explode($key)[2];
+    			$third = explode('-', $key)[1] ?? 0;
+    			$functionName = explode($key)[2] ?? 0;
     			
 				$arr                     = [];
 				$arr['order_no']         = $order['datas']['order_no'] ?? 0;
