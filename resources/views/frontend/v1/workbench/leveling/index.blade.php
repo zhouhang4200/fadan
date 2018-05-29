@@ -636,7 +636,7 @@
                 }
             });
 
-            $('').on('click', '.qs-btn', function () {
+            $('.layui-card-body').on('click', '.qs-btn', function () {
                 var opt = $(this).attr("data-opt");
                 var orderNo = $(this).attr("data-no");
                 var orderAmount = $(this).attr("data-amount");
