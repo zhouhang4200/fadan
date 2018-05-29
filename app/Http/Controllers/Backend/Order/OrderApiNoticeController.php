@@ -27,7 +27,7 @@ class OrderApiNoticeController extends Controller
 
     	// 将值写入数据库
     	$name = "order:order-api-notices";
-    	$orders = Redis::hGet($name);
+    	$orders = Redis::hGetAll($name);
 
     	if (isset($orders) && is_array($orders)) {
     		foreach ($orders as $key => $order) {
