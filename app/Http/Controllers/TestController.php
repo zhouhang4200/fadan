@@ -216,6 +216,23 @@ class TestController extends Controller
 
     public function index()
     {
+
+        $client = new Client();
+        $res = $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+            'json' => [
+                'msgtype' => 'text',
+                'text' => [
+                    'content' => '11111'
+                ],
+                'at' => [
+                    'isAtAll' => true
+                ]
+            ]
+        ]);
+
+        dd(3, $res->getBody()->getContents());
+
+
         $data = "bbuz\/0T\/HzAQ+ZFWscOAprjyPn6CZBuYQthl6wI5Dqx17vtLiozA9zDd6yqb800VxOzRc6xENvBKMUGNDgJFJyv8tXsSWr86fDvi3HmKKut\/9oLrRegK1KKkSwWPpceHM1kpgYYJnVDXu39YbsMPmW+\/kwDb0j\/N7p16fm1HpnHx+wXHUANrO31ieIQK1pnuZByaRSwEcL15RaUM5EfktcOm8IzRfxDNEdW6Xc584heOYhfme+pj1uT5L8kmRQWCuvuCEVlkvdJq5BxmWGcBeiIZijTDJbXzxAlJ9WqgXI8fYDTgkgn7lB28mynQB7dUKaPos1PaKyQkN45mjZyY42stJRQ9EFPxVa72oJJPDfGEmgMy69LGIvv8OZXcIbnVdLEOdX+1\/u4K6eP17M9GIVxJ6RSyStWjomXBy9SAr6IrqQYNTcH2vjoCwworE1hzPptinF2RimSOCetYGV0jFbMHjGyXCVPBGtJv9d997Id88kusgmvcKCpfaYqhMNN9rEs1AIYHe5V9aq6rY89A49iqyXGjW8XvFJKZic8SeF4ImVfSHZnWU1zwo7haAHHfPYk1l9+T+IYRgeDqocrl\/u99EtWCCMMhjk0N1ExAMLijDNzRZHuADS6u0kIMhuLwyDb5WAFWA4MS8vBwiDoBDyRzpNEXQLla5Y3drJugMgnYm3MoJQOYKnxonouj3VpfcA3jIY0lv7zlMDZj45ynM18XF99vtrQWJvkhxWUMgpLhIFYtIoDo\/sP5+9EGFCwnVBj9CNSMZPjIhf0fIbVDweapZbf3Wn8CAuFbWiRpzqGrT\/2xFABKaIt9Cg4B+K2I9V9wnAmakeno5deMeORCLgmqVZlY8sL3YdggL50osFunxSz54c2NgfWG4G2jM0mXbcxIM65dj2CEDJcXQWIyF4D8RFJlWmRJwwPhsLk0raB3K+LAPjcxuBehWYKM0UC+YLvi0XXESkjNxdFKN\/\/fg99WWgjJ9NHVzBgEjxmwx2c9F3jKauvNHatqhPnp6BaEmvlzzz99D1DklfGUL9IvHBhuzV4eX9B56wLI107xXFKWIgsKwQM2jZ3NFu7WYAiFrJgDo\/29XuKnzNgpYKHYG44t8yYXr985mVgKyflUd6Gm2y8+7ahoxBcW4Wyc9TZXlk+o\/rI9wk\/amDZ1wrU2uYmBcZjzpZFcvWG4n1qVim4hNzsMhA4eZHbYaojfOFRCuaeIuQWaHGcaLwYmbUfQRfEDm2c0ABAIW5PfDxQyymMrG1pXEIpyxMGyILsX+X63dw\/wNgALQmL5bD8uHkbedXaA94C0mwGvIlcjjHJZlhlHb71ihg3Ec3PFLa3pg84hDnQVnxy\/G19UdVpdkbVwnO3WJ8KhFE+UiU3xSSr6tGgTnneZ6bk1nlD9dUADEUnS6R4bRzaH8fmSJbalb6YOKry4nQqRLwr1CTfgRvaljm+dpdkR6phxw\/pHiXJioJNDokkDPbdzfsjYU7Teewm2ww7KKFi6LMzpPXCWcmOZwmPuBXVM3njP1iL\/8RDdRjTApW6xN5eM0iGPZwISXCJOp5CKQ+8O46yNlKPQiV\/4tFecieA6UqiTn+MHp5g\/9z5ZN9JCUDWFWGwMClPybIlTCA==";
         $iv = '1234567891111152';
         $key = '45584685d8e4f5e8';
