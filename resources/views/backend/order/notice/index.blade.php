@@ -106,11 +106,10 @@
 
          // 删除所有
         form.on('submit(delete-all)', function (data) {
-            var id=this.getAttribute('lay-id');
             var s = window.location.search;
             var page=s.getAddrVal('page'); 
             layer.confirm('确认删除所有报警记录吗？', {icon: 3, title:'提示'}, function(index){
-                $.post("{{ route('order.notice.delete-all') }}", {id:id}, function (result) {
+                $.post("{{ route('order.notice.delete-all') }}", {}, function (result) {
                     layer.msg(result.message);
                     if (result.status > 0) {
                         $.get("{{ route('order.notice.index') }}?page="+page, function (result) {
@@ -126,7 +125,7 @@
 
         // 删除单个
         form.on('submit(delete)', function (data) {
-            var id=this.getAttribute('lay-id');
+            var id=this.getAttribute('data-id');
             var s = window.location.search;
             var page=s.getAddrVal('page'); 
             layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
@@ -146,7 +145,7 @@
 
          // 重发
         form.on('submit(repeat)', function (data) {
-            var id=this.getAttribute('lay-id');
+            var id=this.getAttribute('data-id');
             var s = window.location.search;
             var page=s.getAddrVal('page'); 
             $.post("{{ route('order.notice.repeat') }}?page="+page, {id:id}, function (result) {

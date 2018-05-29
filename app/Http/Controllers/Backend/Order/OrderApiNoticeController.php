@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Backend\Order;
 
 use DB;
 use Redis;
+use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\OrderApiNotice;
 use Illuminate\Http\Request;
+use App\Exceptions\DailianException;
 use App\Http\Controllers\Controller;
 
 class OrderApiNoticeController extends Controller
@@ -70,21 +72,26 @@ class OrderApiNoticeController extends Controller
      */
     public function repeat(Request $request)
     {
-    	$orderApiNotice = OrderApiNotice::find($request->id);
+    	try {
+	    	$orderApiNotice = OrderApiNotice::find($request->id);
 
-    	if (isset($orderApiNotice) && isset($orderApiNotice->third) && isset($orderApiNotice->orderNo) && isset($orderApiNotice->functionName) && $orderApiNotice->status == 1) {
-	    	$datas = Order::orderAndDetailAndConsult($orderApiNotice->orderNo);
+	    	if (isset($orderApiNotice) && isset($orderApiNotice->third) && isset($orderApiNotice->order_no) && isset($orderApiNotice->function_name) && in_array($orderApiNotice->status, [1, 22, 24])) {
+		    	$datas = Order::orderAndDetailAndConsult($orderApiNotice->order_no);
 
-	    	$bool = call_user_func_array([config('leveling.controller')[$orderApiNotice->third], config('leveling.action')[$orderApiNotice->functionName]], [$datas]);
+		    	$bool = call_user_func_array([config('leveling.controller')[$orderApiNotice->third], config('leveling.action')[$orderApiNotice->function_name]], [$datas]);
 
-	    	// 删除记录
-	    	if ($bool) {
-	    		OrderApiNotice::destroy($request->id);
+		    	// 删除记录
+		    	if ($bool) {
+		    		OrderApiNotice::destroy($request->id);
+		    	}
+
+		    	return response()->ajax(1, '重发成功');
 	    	}
-
-	    	return response()->ajax(1, '重发成功');
-    	}
-
+    	} catch (DailianException $e) {
+	    	return response()->ajax(0, $e->getMessage());
+	    } catch (Exception $e) {
+	    	return response()->ajax(0, '本地错误');
+	    }
     	return response()->ajax(0, '重发失败，数据缺失');
     }
 
@@ -107,7 +114,11 @@ class OrderApiNoticeController extends Controller
      */
     public function deleteAll(Request $request)
     {
-    	DB::select("delete from order_api_notices");
+    	$orders = OrderApiNotice::get();
+
+    	$orders->map(function ($order) {
+    		$order->delete();
+    	});
 
     	return response()->ajax(1, '删除成功');
     }
