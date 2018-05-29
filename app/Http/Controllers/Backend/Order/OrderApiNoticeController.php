@@ -26,8 +26,8 @@ class OrderApiNoticeController extends Controller
     	$filters = compact('orderNo', 'status', 'startDate', 'endDate');
 
     	// 将值写入数据库
-    	$name = "order-api-notices";
-    	$orders = hGet($name);
+    	$name = "order:order-api-notices";
+    	$orders = Redis::hGet($name);
 
     	if (isset($orders) && is_array($orders)) {
     		foreach ($orders as $key => $order) {

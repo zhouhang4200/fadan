@@ -139,7 +139,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
                         // 记录报警
                         $datas['notice_reason'] = $message;
-                        $name = "order-api-notices";
+                        $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-3-'.$functionName;
                         $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
                         Redis::hSet($name, $key, $value);
