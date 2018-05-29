@@ -50,11 +50,11 @@ class OrderApiNoticeController extends Controller
 
 		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
 		    	Redis::hDel($name, $key);
-		    	myLog('redis', ['res' => $res, 'key' => $key]);
     		}
     	}
     	$orders = OrderApiNotice::filter($filters)
     		->paginate(10);
+		myLog('redis', ['orders' => $orders]);
 
     	if ($request->ajax()) {
     		return response()->json(view()->make('backend.order.notice.list', compact('orderNo', 'status', 'startDate', 'endDate', 'orders'))->render());
