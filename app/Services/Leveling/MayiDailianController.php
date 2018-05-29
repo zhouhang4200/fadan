@@ -248,6 +248,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                 ->update(['field_value' => '']);
             // 删除该平台订单
             static::delete($orderDatas);
+            myLog('mayi-test-delete', ['原因' -> $e->getMessage()]);
             throw new DailianException($e->getMessage());
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
