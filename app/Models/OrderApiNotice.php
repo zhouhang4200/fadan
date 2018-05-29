@@ -32,7 +32,7 @@ class OrderApiNotice extends Model
     		$query->where('order_no', $filters['orderNo']);
     	}
 
-    	if (isset($filters['status'])) {
+    	if (isset($filters['status']) && ! empty($filters['status'])) {
     		$query->where('status', $filters['status']);
     	}
 

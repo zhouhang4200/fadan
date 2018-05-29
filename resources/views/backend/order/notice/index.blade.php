@@ -77,8 +77,8 @@
                                 {!! $orders->appends([
                                     'order_no' => $orderNo,
                                     'status' => $status,
-                                    'startDate' => $startDate,
-                                    'endDate' => $endDate,
+                                    'start_date' => $startDate,
+                                    'end_date' => $endDate,
                                   ])->render() !!}
                             </div>
                         </div>
