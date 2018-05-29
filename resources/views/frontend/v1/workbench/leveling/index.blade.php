@@ -112,7 +112,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">代练游戏</label>
                                 <div class="layui-input-block">
-                                    <select name="game_id" lay-search="">
+                                    <select name="game_id" lay-search="" lay-filter="game">
                                         <option value="">请选择游戏</option>
                                         @foreach($game as  $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
@@ -125,7 +125,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">代练类型</label>
                                 <div class="layui-input-block">
-                                    <select name="game_id" lay-search="">
+                                    <select name="game_leveling_type" lay-search="">
                                         <option value="">请选择代练类型</option>
                                     </select>
                                 </div>
@@ -197,6 +197,9 @@
                         <li class="" lay-id="16">仲裁中
                             <span class="qs-badge quantity-16 layui-hide"></span>
                         </li>
+                        <li class="" lay-id="100">淘宝退款中
+                            <span class="qs-badge quantity-100 layui-hide"></span>
+                        </li>
                         <li class="" lay-id="17">异常
                             <span class="qs-badge quantity-17 layui-hide"></span>
                         </li>
@@ -210,9 +213,6 @@
                         <li class="" lay-id="21">已仲裁
                         </li>
                         <li class="" lay-id="22">已下架
-                        </li>
-                        <li class="" lay-id="100">淘宝退款中
-                            <span class="qs-badge quantity-100 layui-hide"></span>
                         </li>
                         <li class="" lay-id="24">已撤单
                         </li>
@@ -504,61 +504,26 @@
                 $('form').append('<input name="status" type="hidden" value="' + this.getAttribute('lay-id')  + '">');
                 reloadOrderList();
             });
-            // 弹窗的取消按钮
-            $('.cancel').click(function () {
-                layer.closeAll();
-            });
             // 搜索
             form.on('submit(search)', function (data) {
                 reloadOrderList(data.field);
                 return false;
             });
-            // 订单表格重载
-            function reloadOrderList(parameter) {
-                var condition = {};
-                if (parameter == undefined) {
-                    var formCondition = $('form').serializeArray();
-                    $.each(formCondition, function() {
-                        condition[this.name] = this.value;
+            // 导出
+            form.on('submit(export)', function (data) {
+                window.location.href = "{{ Request::fullUrl() }}";
+            });
+            // 选择游戏加载对应的代练类型
+            form.on('select(game)', function (data) {
+                $.post('{{ route('frontend.workbench.get-game-leveling-type') }}', {game_id: data.value}, function (result) {
+                    var options = '<option value="">请选择代练类型</option>';
+                    $.each(result.content, function(index, item) {
+                       options += '<option value="' + item  + '">' + item  + '</option>';
                     });
-                } else {
-                    condition = parameter;
-                }
-                //执行重载
-                table.reload('order-list', {
-                    where: condition,
-                    height: 'full-245',
-                    page: {
-                        curr: 1
-                    },
-                    done: function(res, curr, count){
-                        changeStyle(layui.table.index);
-                        setStatusNumber(res.status_count);
-                        layui.form.render();
-                    }
-                });
-            }
-            // 重新渲染后重写样式
-            function changeStyle(index) {
-                var getTpl = changeStyleTemplate.innerHTML, view = $('body');
-                layTpl(getTpl).render(index, function(html){
-                    view.append(html);
-                });
-            }
-            // 设置订单状态数
-            function setStatusNumber(parameter) {
-                if (parameter.length == 0) {
-                    $('.qs-badge').addClass('layui-hide');
-                }
-                $.each(parameter, function(key, val) {
-                    var name = 'quantity-'  +  key;
-                    if ($('span').hasClass(name) && val > 0) {
-                        $('.' + name).html(val).removeClass('layui-hide');
-                    } else {
-                        $('.' + name).addClass('layui-hide');
-                    }
-                });
-            }
+                    $('select[name=game_leveling_type]').html(options);
+                    layui.form.render();
+                }, 'json')
+            });
             // 备注编辑
             table.on('edit(order-list)', function(obj){
                 var value = obj.value, field = obj.field; // 修改后的值, 修改的字段
@@ -608,6 +573,52 @@
                     setStatusNumber(res.status_count);
                 }
             });
+            // 订单表格重载
+            function reloadOrderList(parameter) {
+                var condition = {};
+                if (parameter == undefined) {
+                    var formCondition = $('form').serializeArray();
+                    $.each(formCondition, function() {
+                        condition[this.name] = this.value;
+                    });
+                } else {
+                    condition = parameter;
+                }
+                //执行重载
+                table.reload('order-list', {
+                    where: condition,
+                    height: 'full-245',
+                    page: {
+                        curr: 1
+                    },
+                    done: function(res, curr, count){
+                        changeStyle(layui.table.index);
+                        setStatusNumber(res.status_count);
+                        layui.form.render();
+                    }
+                });
+            }
+            // 重新渲染后重写样式
+            function changeStyle(index) {
+                var getTpl = changeStyleTemplate.innerHTML, view = $('body');
+                layTpl(getTpl).render(index, function(html){
+                    view.append(html);
+                });
+            }
+            // 设置订单状态数
+            function setStatusNumber(parameter) {
+                if (parameter.length == 0) {
+                    $('.qs-badge').addClass('layui-hide');
+                }
+                $.each(parameter, function(key, val) {
+                    var name = 'quantity-'  +  key;
+                    if ($('span').hasClass(name) && val > 0) {
+                        $('.' + name).html(val).removeClass('layui-hide');
+                    } else {
+                        $('.' + name).addClass('layui-hide');
+                    }
+                });
+            }
             // 对订单操作
             $('.layui-card-body').on('click', '.qs-btn', function () {
                 var opt = $(this).attr("data-opt");
@@ -849,9 +860,9 @@
                     return false;
                 }
             });
-            // 导出
-            form.on('submit(export)', function (data) {
-                window.location.href = "{{ Request::fullUrl() }}";
+            // 弹窗的取消按钮
+            $('.cancel').click(function () {
+                layer.closeAll();
             });
         });
     </script>

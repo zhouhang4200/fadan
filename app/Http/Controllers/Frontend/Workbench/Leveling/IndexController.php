@@ -159,9 +159,9 @@ class IndexController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $pageSize = $request->input('limit', 50);
-
         $taobaoStatus = $request->input('taobao_status', 0);
         $platform = $request->input('platform', 0);
+        $levelingType = $request->input('game_leveling_type', 0);
 
         if ($request->export) {
 
@@ -170,15 +170,12 @@ class IndexController extends Controller
             return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
         }
 
-        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, '', $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType, $pageSize);
 
-        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
 
 
         if ($request->ajax()) {
-            if (!in_array($status, array_flip(config('order.status_leveling')))) {
-                return response()->ajax(0, '不存在的类型');
-            }
 
             $orderArr = [];
             foreach ($orders as $item) {
@@ -1374,132 +1371,6 @@ class IndexController extends Controller
     }
 
     /**
-     * 待发单
-     * @param Request $request
-     * @return $this
-     */
-    public function wait(Request $request)
-    {
-        $tid = $request->tid;
-        $status = $request->input('status', 0);
-        $buyerNick = $request->buyer_nick;
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        $games = GoodsTemplate::where('service_id', 4)
-            ->leftJoin('games', 'goods_templates.game_id', '=', 'games.id')
-            ->pluck('games.name', 'games.id');
-        
-
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
-            ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('service_id', 4)
-            ->where('trade_status', '!=', 2)
-            ->orderBy('id', 'desc')
-            ->paginate(30);
-
-        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('trade_status', '!=', 2)->count();
-        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 0)->where('trade_status', '!=', 2)->count();
-        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 1)->where('trade_status', '!=', 2)->count();
-        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
-
-        return view('frontend.v1.workbench.leveling.wait')->with([
-                'tid' => $tid,
-                'status' => $status,
-                'orders' => $orders,
-                'buyerNick' => $buyerNick,
-                'startDate' => $startDate,
-                'endDate' => $endDate,
-                'totalCount' => $totalCount,
-                'disposeCount' => $disposeCount,
-                'unDisposeCount' => $unDisposeCount,
-                'hideCount' => $hideCount,
-                'games' => $games,
-            ]
-        );
-    }
-
-    /**
-     * 获取待发订单数据
-     * @param Request $request
-     * @return array
-     */
-    public function waitOrderList(Request $request)
-    {
-        $tid = $request->tid;
-        $status = $request->input('status', 0);
-        $buyerNick = $request->buyer_nick;
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-
-
-
-        $gameId = $request->game_id;
-        $type = $request->type;
-
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status', 'gameId', 'type'))
-            ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('service_id', 4)
-            ->where('trade_status', '!=', 2)
-            ->orderBy('id', 'desc')
-            ->paginate(30);
-
-        $orderCount =  TaobaoTrade::select(\DB::raw('handle_status, count(1) as count'))
-            ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('trade_status', '!=', 2)->groupBy('handle_status')->pluck('count', 'handle_status');
-        
-        $a1 = [0 => 0, 1=> 0, 2 => 0];
-        $a2 = $orderCount->toArray();
-
-        foreach ($a1 as $key => $item) {
-            if (!isset($a2[$key])) {
-                $a2[$key] = 0;
-            }
-        }
-
-        return [
-            'code' => 0,
-            'msg' => '',
-            'count' => $orders->total(),
-            'data' =>  $orders->items(),
-            'status_count' =>  $a2
-        ];
-    }
-
-    /**
-     * 修改待发订单状态
-     * @param Request $request
-     */
-    public function waitUpdate(Request $request)
-    {
-        $status = $request->status;
-
-        if (in_array($status, [0, 2])) {
-            TaobaoTrade::where('id', $request->id)
-                ->where('user_id', auth()->user()->getPrimaryUserId())
-                ->update(['handle_status' => $status]);
-        }
-    }
-
-    /**
-     * 修改待发单备注
-     * @param Request $request
-     */
-    public function waitRemark(Request $request)
-    {
-        try {
-            TaobaoTrade::where('id', $request->id)
-                ->where('user_id', auth()->user()->getPrimaryUserId())
-                ->update(['remark' => $request->value]);
-        } catch (\Exception $exception) {
-
-        }
-    }
-
-    /**
      * 获取订单，订单详情，协商仲裁的所有信息
      * @param $orderNo
      * @return array
@@ -1712,6 +1583,7 @@ class IndexController extends Controller
         $platform = $request->input('platform', 0);
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $levelingType = $request->input('end_date');
 
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
@@ -1723,10 +1595,10 @@ class IndexController extends Controller
         }
 
         // 获取订单
-        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
 
         // 查询各状态订单数
-        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate);
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
 
         $allStatusCount = OrderModel::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)->where('status', '!=', 24)->count();
@@ -2128,6 +2000,26 @@ class IndexController extends Controller
             myLog('add-arbitration-advence', ['单号' => $orderNo ?? '', '失败' => $exception->getMessage()]);
             return response()->ajax(0, '发送失败');
         } 
+    }
+
+    /**
+     * 获取游戏代练类型
+     * @param Request $request
+     */
+    public function getGameLevelingType(Request $request)
+    {
+        // 获取模版
+        $templateId = GoodsTemplate::where('service_id', 4)->where('game_id', $request->game_id)->value('id');
+
+        $levelingType = GoodsTemplateWidgetValue::where('goods_template_widget_id', function ($query) use ($templateId){
+            $query->select('id')
+                ->from(with(new GoodsTemplateWidget())->getTable())
+                ->where('goods_template_id', $templateId)
+                ->where('field_name', 'game_leveling_type');
+        })->pluck('field_value');
+
+        return response()->ajax(1, 'success', $levelingType);
+
     }
 }
 
