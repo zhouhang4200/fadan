@@ -48,6 +48,7 @@ class TmallOrderApi
                     'pay_time' => $result->PayTime,
                     'remark' => $result->ReceiverAddress,
                     'ip' => base64_decode($result->BuyerIp),
+                    'buyer_alipay_no' => $result->BuyerAlipayNo,
                 ];
             } else if ($result->Status == 'WAIT_SELLER_SEND_GOODS') {
                 return [
@@ -58,6 +59,7 @@ class TmallOrderApi
                     'pay_time' => $result->PayTime,
                     'remark' => $result->ReceiverAddress,
                     'ip' => base64_decode($result->BuyerIp),
+                    'buyer_alipay_no' => $result->BuyerAlipayNo,
                 ];
             }
         }
