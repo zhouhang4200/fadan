@@ -29,8 +29,8 @@ class OrderApiNotice extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-    	if (isset($filters['order_no'])) {
-    		$query->where('order_no', $filters['order_no']);
+    	if (isset($filters['orderNo'])) {
+    		$query->where('order_no', $filters['orderNo']);
     	}
 
     	if (isset($filters['status'])) {
