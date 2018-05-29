@@ -99,7 +99,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
 
             return json_decode($result, true);
         } catch (Exception $e) {
-            myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
+            myLog('mayi-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
 
             throw new Exception($e->getMessage());
         }
@@ -201,6 +201,14 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             static::normalRequest($options, 'onSale', $orderDatas);
 
             return true;
+        } catch (DailianException $e) {
+            // 将他们的订单号在我们平台设为空
+            OrderDetail::where('order_no', $orderDatas['order_no'])
+                ->where('field_name', 'mayi_order_no')
+                ->update(['field_value' => '']);
+            // 删除该平台订单
+            static::delete($orderDatas);
+            throw new DailianException($e->getMessage());
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
@@ -233,6 +241,14 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
             static::normalRequest($options, 'offSale', $orderDatas);
 
             return true;
+        } catch (DailianException $e) {
+            // 将他们的订单号在我们平台设为空
+            OrderDetail::where('order_no', $orderDatas['order_no'])
+                ->where('field_name', 'mayi_order_no')
+                ->update(['field_value' => '']);
+            // 删除该平台订单
+            static::delete($orderDatas);
+            throw new DailianException($e->getMessage());
         } catch (Exception $e) {
             myLog('mayi-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
