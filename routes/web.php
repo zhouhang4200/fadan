@@ -332,6 +332,9 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 发送仲裁证据
             Route::post('add-arbitration', 'IndexController@addArbitrationInfo')->name('frontend.workbench.leveling.add-arbitration');
 
+            // 获取游戏代练类型
+            Route::post('get-game-leveling-type', 'IndexController@getGameLevelingType')->name('frontend.workbench.get-game-leveling-type');
+
             // 待发订单
             Route::prefix('wait')->group(function(){
                 // 待发单列表
@@ -343,7 +346,6 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 // 待接单备注修改
                 Route::post('remark', 'WaitController@remark')->name('frontend.workbench.leveling.wait-remark');
             });
-
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

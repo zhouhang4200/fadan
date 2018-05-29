@@ -3,6 +3,7 @@ namespace App\Repositories\Frontend;
 
 use App\Models\LevelingConsult;
 use App\Models\OrderDetail;
+use App\Models\TaobaoTrade;
 use DB, Auth, Excel;
 use Carbon\Carbon;
 use App\Models\Order;
@@ -158,10 +159,11 @@ class OrderRepository
      * @param $startDate
      * @param $endDate
      * @param $sellerNick
+     * @param $levelingType
      * @param $pageSize
      * @return mixed
      */
-    public function levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick = '', $pageSize = 50)
+    public function levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType, $pageSize = 50)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
@@ -181,32 +183,38 @@ class OrderRepository
             $query->where('creator_primary_user_id', $primaryUserId); // 发单
         }
 
-        $query->when($status != 0, function ($query) use ($status) {
-            return $query->where('status', $status);
+        $query->when($status != 0, function ($query) use ($status, $primaryUserId) {
+            if ($status == 100) {
+                return  $query->whereIn('foreign_order_no', function ($query) use($primaryUserId) {
+                    $query->select('tid')
+                        ->from(with(new TaobaoTrade())->getTable())
+                        ->where('user_id', $primaryUserId)
+                        ->where('trade_status', 3);
+                });
+            } else {
+                return $query->where('status', $status);
+            }
         });
         $query->when(!empty($no), function ($query) use ($no, $type) {
-            $thirdOrder = OrderDetail::findOrdersBy('third_order_no', $no, $type);
-            $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
-
-            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder, [$no]));
+            return $query->whereIn('no', function ($query) use($no) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->whereIn('field_name', ['third_order_no', 'source_order_no'])
+                    ->where('field_value', $no);
+            });
         });
-        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus, $type) {
-            $foreignOrder = OrderDetail::findOrdersBy('taobao_status', $taobaoStatus, $type);
-
-            return $query->whereIn('no', $foreignOrder);
+        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus) {
+            return $query->whereIn('no', function ($query) use($taobaoStatus) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'taobao_status')
+                    ->where('field_value', $taobaoStatus);
+            });
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
         });
-        $query->when($platform != 0, function ($query) use ($platform, $type) {
-//            $orderNoArr = [];
-//            $orderNo = OrderDetail::findOrdersBy('third', $platform, $type);
-//            if ($orderNo) {
-//                $orderNoArr = $orderNo;
-//            } else {
-//                $orderNoArr = [999];
-//            }
-//            return $query->whereIn('no', $orderNoArr);
+        $query->when($platform != 0, function ($query) use ($platform) {
             return $query->whereIn('no', function ($query) use($platform) {
                 $query->select('order_no')
                     ->from(with(new OrderDetail())->getTable())
@@ -214,17 +222,29 @@ class OrderRepository
                     ->where('field_value', $platform);
             });
         });
-        $query->when(!empty($sellerNick), function ($query) use ($sellerNick, $primaryUserId, $type) {
-            $orderNo = OrderDetail::findOrdersBy('seller_nick', $sellerNick, $type);
-            return $query->whereIn('no', $orderNo);
+        $query->when(!empty($wangWang), function ($query) use ($wangWang) {
+            return $query->whereIn('no', function ($query) use($wangWang) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'client_wang_wang')
+                    ->where('field_value', $wangWang);
+            });
         });
-        $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
-            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
-            return $query->whereIn('no', $orderNo);
+        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName) {
+            return $query->whereIn('no', function ($query) use($customerServiceName) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'customer_service_name')
+                    ->where('field_value', $customerServiceName);
+            });
         });
-        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName, $type) {
-            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
-            return $query->whereIn('no', $orderNo);
+        $query->when(!empty($levelingType), function ($query) use ($levelingType) {
+            return $query->whereIn('no', function ($query) use($levelingType) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'game_leveling_type')
+                    ->where('field_value', $levelingType);
+            });
         });
         $query->when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);
@@ -232,16 +252,25 @@ class OrderRepository
         $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
-//        $query->where('status', '!=', 24);
         $query->where('service_id', 4)->with(['detail', 'levelingConsult']);
         $query->orderBy('id', 'desc');
 
-        $data = $query->paginate($pageSize);
-
-        return $data;
+        return $query->paginate($pageSize);
     }
 
-    public function levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate)
+    /**
+     * @param $status
+     * @param $no
+     * @param $taobaoStatus
+     * @param $gameId
+     * @param $wangWang
+     * @param $customerServiceName
+     * @param $platform
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType)
     {
         $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
         $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
@@ -259,18 +288,21 @@ class OrderRepository
         } else {
             $query->where('creator_primary_user_id', $primaryUserId); // 发单
         }
-
-
         $query->when(!empty($no), function ($query) use ($no, $type) {
-            $thirdOrder = OrderDetail::findOrdersBy('third_order_no', $no, $type);
-            $foreignOrder = OrderDetail::findOrdersBy('source_order_no', $no, $type);
-
-            return $query->whereIn('no', array_merge($thirdOrder, $foreignOrder));
+            return $query->whereIn('no', function ($query) use($no) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->whereIn('field_name', ['third_order_no', 'source_order_no'])
+                    ->where('field_value', $no);
+            });
         });
-        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus, $type) {
-            $foreignOrder = OrderDetail::findOrdersBy('taobao_status', $taobaoStatus, $type);
-
-            return $query->whereIn('no', $foreignOrder);
+        $query->when($taobaoStatus  != 0, function ($query) use ($taobaoStatus) {
+            return $query->whereIn('no', function ($query) use($taobaoStatus) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'taobao_status')
+                    ->where('field_value', $taobaoStatus);
+            });
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
@@ -284,12 +316,28 @@ class OrderRepository
             });
         });
         $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
-            $orderNo = OrderDetail::findOrdersBy('client_wang_wang', $wangWang, $type);
-            return $query->whereIn('no', $orderNo);
+            return $query->whereIn('no', function ($query) use($wangWang) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'client_wang_wang')
+                    ->where('field_value', $wangWang);
+            });
         });
-        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName, $type) {
-            $orderNo = OrderDetail::findOrdersBy('customer_service_name', $customerServiceName, $type);
-            return $query->whereIn('no', $orderNo);
+        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName) {
+            return $query->whereIn('no', function ($query) use($customerServiceName) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'customer_service_name')
+                    ->where('field_value', $customerServiceName);
+            });
+        });
+        $query->when(!empty($levelingType), function ($query) use ($levelingType) {
+            return $query->whereIn('no', function ($query) use($levelingType) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'game_leveling_type')
+                    ->where('field_value', $levelingType);
+            });
         });
         $query->when(!empty($startDate), function ($query) use ($startDate) {
             return $query->where('created_at', '>=', $startDate);

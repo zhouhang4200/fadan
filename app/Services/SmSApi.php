@@ -44,4 +44,27 @@ class SmSApi
         $result = $client->request('GET', $uri);
         return  $result->getBody()->getContents();
     }
+
+    // 发模板短息
+    public static function sendTemplate($tel, $gameName = '')
+    {
+        $url = 'http://10.6.6.185:8209/api/Sms/SendMsg';
+        $data = [
+            'type'     => 10,
+            'tel'      => $tel,
+            'erpname'  => 'ios代充',
+            'gamename' => $gameName,
+        ];
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('POST', $url, ['form_params' => $data]);
+
+        $contents = $res->getBody()->getContents();
+        $arr = json_decode($contents);
+        if ($arr->Code != '1000') {
+            return false;
+        }
+
+        return true;
+    }
 }
