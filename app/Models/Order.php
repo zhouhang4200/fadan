@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Carbon\Carbon;
 use App\Exceptions\OrderNoticeException;
 use Illuminate\Database\Eloquent\Model;
@@ -310,7 +311,7 @@ class Order extends Model
         return $this->hasMany(OrderApiNotice::class, 'order_no', 'no');
     }
 
-    public static function getOrderAndDetailAndConsult($orderNo)
+    public static function orderAndDetailAndConsult($orderNo)
     {
         $collectionArr =  DB::select("
             SELECT a.order_no, 

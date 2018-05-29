@@ -18,7 +18,7 @@
                 <td>{{ $order->order_no }}</td>
                 <td>{{ $order->resource_order_no }}</td>
                 <td>
-                    {{ config('order.leveling_status')[$order->status] }}
+                    {{ config('order.status_leveling')[$order->status] ?? '' }}
                 </td>
                 <td>
                     {{ $order->operate }}
@@ -27,7 +27,7 @@
                 <td>{{ $order->reason }}</td>
                 <td>{{ $order->order_created_at }}</td>
                 <td>
-                    @if($order->status == 1)
+                    @if(in_array($order->status, [1, 22, 24]))
                         <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="repeat" data-id="{{ $order->id }}">重发</button>
                     @endif
                     <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="delete" data-id="{{ $order->id }}">删除</button>

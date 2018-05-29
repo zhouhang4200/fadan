@@ -2,11 +2,11 @@
 
 namespace App\Services\Leveling;
 
+use Redis;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
-use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 /**
@@ -56,7 +56,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-4-'.$functionName;
+                        $value = json_encode(['third' => 4, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
                         if ($url != config('leveling.dd373.url')['delete']) {
         				    throw new DailianException($message);
@@ -108,7 +112,11 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
         				$message = $arrResult['msg'] ?? 'dd373接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-4-'.$functionName;
+                        $value = json_encode(['third' => 4, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
 	        			myLog('dd373-return-error', [
 	        				'地址' => $url ?? '', 

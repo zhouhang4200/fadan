@@ -2,11 +2,11 @@
 
 namespace App\Services\Leveling;
 
+use Redis;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
-use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 class Show91Controller extends LevelingAbstract implements LevelingInterface
@@ -62,7 +62,11 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
         				$message = $arrResult['reason'] ?? '91接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-1-'.$functionName;
+                        $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
@@ -113,7 +117,11 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	        		if (isset($arrResult['result']) && $arrResult['result'] != 0) {
         				$message = $arrResult['reason'] ?? '91接口返回错误';
                         // 记录报警
-                        OrderApiNotice::createNotice(1, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-1-'.$functionName;
+                        $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
