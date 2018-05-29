@@ -173,14 +173,12 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 
             return true;
     	} catch (DailianException $e) {
-            // 将他们的订单号在我们平台设为空
-            OrderDetail::where('order_no', $orderDatas['order_no'])
-                ->where('field_name', 'wanzi_order_no')
-                ->update(['field_value' => '']);
             // 删除该平台订单
             static::delete($orderDatas);
     		throw new DailianException($e->getMessage());
     	}  catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
             myLog('wanzi-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
@@ -202,14 +200,12 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 
             return true;
     	} catch (DailianException $e) {
-            // 将他们的订单号在我们平台设为空
-            OrderDetail::where('order_no', $orderDatas['order_no'])
-                ->where('field_name', 'wanzi_order_no')
-                ->update(['field_value' => '']);
             // 删除该平台订单
             static::delete($orderDatas);
             throw new DailianException($e->getMessage());
         }  catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
             myLog('wanzi-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
