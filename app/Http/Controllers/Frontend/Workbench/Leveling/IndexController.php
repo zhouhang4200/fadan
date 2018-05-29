@@ -1945,7 +1945,7 @@ class IndexController extends Controller
                 // 获取订单和订单详情以及仲裁协商信息
                 $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
 
-                if (! isset($datas['order_status']) || $datas['order_status'] != 16) {
+                if (! isset($datas['order_status']) || $datas['order_status'] != 16 || $datas['order_status'] != 21) {
                     return '暂无相关信息';
                 }
 

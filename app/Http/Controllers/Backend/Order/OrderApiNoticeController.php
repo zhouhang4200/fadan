@@ -70,6 +70,7 @@ class OrderApiNoticeController extends Controller
     		}
     	}
     	$orders = OrderApiNotice::filter($filters)
+            ->latest('id')
     		->paginate(10);
 
     	if ($request->ajax()) {
