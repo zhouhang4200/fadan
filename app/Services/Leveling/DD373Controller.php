@@ -7,6 +7,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException;
 
 /**
@@ -118,27 +119,12 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                         $value = json_encode(['third' => 4, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
                         Redis::hSet($name, $key, $value);
 
-	        			myLog('dd373-return-error', [
-	        				'地址' => $url ?? '', 
-	        				'失败原因' => $arrResult['msg'] ?? '', 
-	        				'失败数据' => $arrResult['data'] ?? '',
-	        			]);
                         if ($url != config('leveling.dd373.url')['delete']) {
         				    throw new DailianException($message);
                         }
 	        		}
-			        // 记录日志
-			        myLog('dd373-return-logs', [
-			            '地址' => $url ?? '',
-			            'dd373信息' => $options['jsonData'] ?? ($options['jsonData'] ?? ''),
-			            '结果' => $result ? json_decode($result, true) : '',
-			        ]);
 	        	}
     		}
-			myLog('dd373-request-logs', [
-	            '地址' => $url ?? '',
-	            '参数' => $options ?? '',
-	        ]);
     		return json_decode($result, true);
         } catch (Exception $e) {
         	myLog('dd373-local-error', ['方法' => '请求', '原因' => $e->getMessage()]);
@@ -193,10 +179,16 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.dd373.url')['onSale'], 'onSale', $orderDatas);
 
             return true;
-    	} catch (Exception $e) {
-    		myLog('dd373-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+    	} catch (DailianException $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
     		throw new DailianException($e->getMessage());
-    	}
+    	} catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            myLog('dd373-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -217,10 +209,16 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.dd373.url')['offSale'], 'offSale', $orderDatas);
 
             return true;
-    	} catch (Exception $e) {
-    		myLog('dd373-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
+    	} catch (DailianException $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
     		throw new DailianException($e->getMessage());
-    	}
+    	} catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            myLog('dd373-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**

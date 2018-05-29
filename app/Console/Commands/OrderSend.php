@@ -49,7 +49,7 @@ class OrderSend extends Command
                 $client = new Client();
                 foreach (config('partner.platform') as $platform) {
                     // if ($platform['user_id'] != 8737) {
-                        myLog('send-who', ['platform' => $platform]);
+                        // myLog('send-who', ['platform' => $platform]);
                         $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
                         try {
                             $response = $client->request('POST', $platform['receive'], [

@@ -7,6 +7,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
+use App\Models\OrderDetail;
 use App\Exceptions\DailianException;
 
 class Show91Controller extends LevelingAbstract implements LevelingInterface
@@ -171,10 +172,16 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.show91.url')['onSale'], 'onSale', $orderDatas);
 
             return true;
-    	} catch (Exception $e) {
-    		myLog('show91-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
+    	} catch (DailianException $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            throw new DailianException($e->getMessage());
+        }  catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            myLog('show91-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -192,10 +199,16 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 	       	static::normalRequest($options, config('leveling.show91.url')['offSale'], 'offSale', $orderDatas);
 
             return true;
-    	} catch (Exception $e) {
-    		myLog('show91-local-error', ['方法' => '上架', '原因' => $e->getMessage()]);
-    		throw new DailianException($e->getMessage());
-    	}
+    	} catch (DailianException $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            throw new DailianException($e->getMessage());
+        }  catch (Exception $e) {
+            // 删除该平台订单
+            static::delete($orderDatas);
+            myLog('show91-local-error', ['方法' => '下架', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
