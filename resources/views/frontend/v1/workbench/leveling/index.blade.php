@@ -83,6 +83,9 @@
         .layui-card-header {
             font-size:12px;
         }
+        .layui-table-edit {
+            height: 50px;
+        }
     </style>
 @endsection
 
@@ -464,6 +467,13 @@
         @{{ d.hatchet_man_qq }}<br/>
         @{{ d.hatchet_man_phone }}
     </script>
+    <script type="text/html" id="remarkTemplate">
+        @{{# if(d.customer_service_remark) {  }}
+            @{{ d.customer_service_remark }}
+        @{{# } else {  }}
+            <span style="color:#cccccc">点击输入</span>
+        @{{# }  }}
+    </script>
     <script type="text/html" id="titleTemplate">
         <span class="tips" lay-tips="@{{ d.game_leveling_title  }}">@{{ d.game_leveling_title }}</span>
     </script>
@@ -539,7 +549,7 @@
                     {field: 'no', title: '订单号', width: 260, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},
                     {field: 'status_text', title: '订单状态', width: 95, style:"height: 40px;line-height: 20;", templet:'#statusTemplate' },
                     {field: 'seller_nick', title: '玩家旺旺',  width: 140, templet:'#wwTemplate', style:"height: 40px;line-height: 20px;"},
-                    {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text'},
+                    {field: 'customer_service_remark', title: '客服备注', minWidth: 160,edit: 'text', templet:'#remarkTemplate'},
                     {field: 'game_leveling_title', title: '代练标题', width: 230, templet:'#titleTemplate'},
                     {field: 'game_name', title: '游戏/区/服', width: 140, templet:'#gameTemplate'},
                     {field: 'account_password', title: '账号/密码', width: 120, templet:'#accountPasswordTemplate'},
@@ -620,7 +630,13 @@
                 });
             }
             // 对订单操作
-            $('.layui-card-body').on('click', '.qs-btn', function () {
+            $('.layui-card-body').on('click', '[data-field=customer_service_remark]', function () {
+                if ($(this).text().trim() == '点击输入') {
+                    $('.layui-table-edit').val('');
+                }
+            });
+
+            $('').on('click', '.qs-btn', function () {
                 var opt = $(this).attr("data-opt");
                 var orderNo = $(this).attr("data-no");
                 var orderAmount = $(this).attr("data-amount");
