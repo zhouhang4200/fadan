@@ -2,11 +2,11 @@
 
 namespace App\Services\Leveling;
 
+use Redis;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
-use App\Models\OrderApiNotice;
 use App\Exceptions\DailianException;
 
 class WanziController extends LevelingAbstract implements LevelingInterface
@@ -62,7 +62,11 @@ class WanziController extends LevelingAbstract implements LevelingInterface
         				$message = $arrResult['reason'] ?? '丸子接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(5, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-5-'.$functionName;
+                        $value = json_encode(['third' => 5, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
         				if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
@@ -113,7 +117,11 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                         $message = $arrResult['reason'] ?? '91接口返回错误';
 
                         // 记录报警
-                        OrderApiNotice::createNotice(5, $message, $functionName, $datas);
+                        $datas['notice_reason'] = $message;
+                        $name = "order:order-api-notices";
+                        $key = $datas['order_no'].'-5-'.$functionName;
+                        $value = json_encode(['third' => 5, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
+                        Redis::hSet($name, $key, $value);
 
                         if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);

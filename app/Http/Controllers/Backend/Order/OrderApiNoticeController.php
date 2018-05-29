@@ -28,10 +28,11 @@ class OrderApiNoticeController extends Controller
 
     	// 将值写入数据库
     	$name = "order:order-api-notices";
-    	$orders = Redis::hGetAll($name);
+    	$orderNotices = Redis::hGetAll($name);
+    	$ss = OrderApiNotice::get();
 
-    	if ($orders) {
-    		foreach ($orders as $key => $order) {
+    	if ($orderNotices) {
+    		foreach ($orderNotices as $key => $order) {
     			$order = json_decode($order, true);
     			$third = explode('-', $key)[1] ?? 0;
     			$functionName = explode('-', $key)[2] ?? 0;
@@ -54,7 +55,6 @@ class OrderApiNoticeController extends Controller
     	}
     	$orders = OrderApiNotice::filter($filters)
     		->paginate(10);
-		myLog('redis', ['orders' => $orders]);
 
     	if ($request->ajax()) {
     		return response()->json(view()->make('backend.order.notice.list', compact('orderNo', 'status', 'startDate', 'endDate', 'orders'))->render());
