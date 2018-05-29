@@ -247,4 +247,5 @@ return [
         'Weight' => App\Extensions\Weight\Facade::class,
     ],
 
+    'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php')
 ];

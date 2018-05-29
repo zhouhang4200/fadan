@@ -345,6 +345,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('update', 'WaitController@update')->name('frontend.workbench.leveling.wait-update');
                 // 待接单备注修改
                 Route::post('remark', 'WaitController@remark')->name('frontend.workbench.leveling.wait-remark');
+                // 待发单增加处理倒计时
+                Route::post('time', 'WaitController@time')->name('frontend.workbench.leveling.wait-time');
+                // 排序
+                Route::post('sort', 'WaitController@sort')->name('frontend.workbench.leveling.wait-sort');
             });
          });
         // 获取用户所有前台可显示的商品

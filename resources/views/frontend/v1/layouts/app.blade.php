@@ -426,7 +426,9 @@ $goodsRoute = [
 <script src="/frontend/v1/lib/js/layui/layui.js"></script>
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script src="/js/encrypt.js"></script>
+<script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
+    var socket = io('http://js.qsios.com:90');
     layui.use(['element', 'form', 'laydate', 'layer'], function () {
         var element = layui.element,
                 form = layui.form,

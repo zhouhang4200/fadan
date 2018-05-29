@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Events\NotificationEvent;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\AutomaticallyGrabGoods;
@@ -29,6 +30,7 @@ use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
 use App\Repositories\Frontend\OrderHistoryRepository;
 use App\Services\DailianMama;
 use App\Services\Leveling\DD373Controller;
+use App\Services\RedisConnect;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -59,51 +61,16 @@ class WaitController extends Controller
 {
     /**
      * 待发单
-     * @param Request $request
-     * @return $this
+     * @param GameRepository $gameRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index( GameRepository $gameRepository)
     {
-        $tid = $request->tid;
-        $status = $request->input('status', 0);
-        $buyerNick = $request->buyer_nick;
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        $games = GoodsTemplate::where('service_id', 4)
-            ->leftJoin('games', 'goods_templates.game_id', '=', 'games.id')
-            ->pluck('games.name', 'games.id');
+        $games = $gameRepository->availableByServiceId(4);
+        $orderRedis = RedisConnect::order();
+        $sort = $orderRedis->get('wait:sort:' . auth()->user()->id) ?? 'asc';
 
-
-        $orders = TaobaoTrade::filter(compact('tid', 'buyerNick', 'startDate', 'endDate', 'status'))
-            ->where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('service_id', 4)
-            ->where('trade_status', '!=', 2)
-            ->orderBy('id', 'desc')
-            ->paginate(30);
-
-        $totalCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('trade_status', '!=', 2)->count();
-        $unDisposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 0)->where('trade_status', '!=', 2)->count();
-        $disposeCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 1)->where('trade_status', '!=', 2)->count();
-        $hideCount = TaobaoTrade::where('user_id', auth()->user()->getPrimaryUserId())
-            ->where('handle_status', 2)->where('trade_status', '!=', 2)->count();
-
-        return view('frontend.v1.workbench.leveling.wait')->with([
-                'tid' => $tid,
-                'status' => $status,
-                'orders' => $orders,
-                'buyerNick' => $buyerNick,
-                'startDate' => $startDate,
-                'endDate' => $endDate,
-                'totalCount' => $totalCount,
-                'disposeCount' => $disposeCount,
-                'unDisposeCount' => $unDisposeCount,
-                'hideCount' => $hideCount,
-                'games' => $games,
-            ]
-        );
+        return view('frontend.v1.workbench.leveling.wait', compact('games', 'sort'));
     }
 
     /**
@@ -113,6 +80,9 @@ class WaitController extends Controller
      */
     public function orderList(Request $request)
     {
+        $orderRedis = RedisConnect::order();
+        $sort = $orderRedis->get('wait:sort:' . auth()->user()->id) ?? 'asc';
+
         $tid = $request->tid;
         $status = $request->input('status', 0);
         $buyerNick = $request->buyer_nick;
@@ -125,7 +95,7 @@ class WaitController extends Controller
             ->where('user_id', auth()->user()->getPrimaryUserId())
             ->where('service_id', 4)
             ->where('trade_status', '!=', 2)
-//            ->orderBy('id', 'desc')
+            ->orderBy('id', $sort)
             ->with([
                 'order' => function($query){
                     $query->groupBy('id');
@@ -146,6 +116,7 @@ class WaitController extends Controller
             }
         }
 
+
         $orderList = [];
         foreach ($orders->items() as $key => $item) {
             $orderList[] = [
@@ -162,6 +133,7 @@ class WaitController extends Controller
                 'payment' => $item->payment,
                 'created' => $item->created,
                 'remark' => $item->remark,
+                'time' => $orderRedis->get('wait:time:' . $item->tid),
             ];
         }
 
@@ -202,5 +174,29 @@ class WaitController extends Controller
         } catch (\Exception $exception) {
 
         }
+    }
+
+    /**
+     * 待发单加上处理时间
+     * @param Request $request
+     */
+    public function time(Request $request)
+    {
+        $order = RedisConnect::order();
+        $order->setex('wait:time:' . $request->tid, 60, date('Y-m-d H:i:s'));
+
+        event(new NotificationEvent('waitOrderChange', [
+            'user_id' => auth()->user()->getPrimaryUserId(),
+        ]));
+    }
+
+    /**
+     * 排序方式
+     * @param Request $request
+     */
+    public function sort(Request $request)
+    {
+        $order = RedisConnect::order();
+        $order->set('wait:sort:' . auth()->user()->id, $request->type);
     }
 }
