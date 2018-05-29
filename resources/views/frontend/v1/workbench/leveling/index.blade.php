@@ -429,7 +429,7 @@
         @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{  d.third_order_no }} </a>  @{{#  } }}
     </script>
     <script type="text/html" id="wwTemplate">
-        @{{# if(d.third_name) { }}
+        @{{# if(d.client_wang_wang) { }}
         <a  style="color:#1f93ff" href="http://www.taobao.com/webww/ww.php?ver=3&touid=@{{ d.client_wang_wang }}&siteid=cntaobao&status=1&charset=utf-8"  target="_blank" title="@{{ d.client_wang_wang }}">
             <img src="/frontend/images/ww.gif" width="20px">@{{ d.client_wang_wang }}</a><br>
         <div>@{{ d.seller_nick }}</div>
