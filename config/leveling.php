@@ -301,5 +301,8 @@ return [
 		'setTop'                   => '置顶', // 置顶
 		'getArbitrationInfo'       => '获取仲裁详情', // 获取仲裁详情
 		'addArbitrationInfo'       => '添加仲裁证据', // '添加仲裁证据'
+
+
+		'create'				   => '下单', // 下单推送
 	],
 ];
