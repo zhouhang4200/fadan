@@ -29,7 +29,7 @@ class OrderApiNoticeController extends Controller
     	$name = "order:order-api-notices";
     	$orders = Redis::hGetAll($name);
 
-    	if (isset($orders) && is_array($orders)) {
+    	if ($orders) {
     		foreach ($orders as $key => $order) {
     			$order = json_decode($order, true);
     			$third = explode($key)[1];
@@ -49,6 +49,7 @@ class OrderApiNoticeController extends Controller
 
 		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
 		    	Redis::hDel($name, $key);
+		    	myLog('redis', ['res' => $res, 'key' => $key]);
     		}
     	}
     	$orders = OrderApiNotice::filter($filters)
