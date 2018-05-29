@@ -18,7 +18,7 @@
                 <td>{{ $order->order_no }}</td>
                 <td>{{ $order->resource_order_no }}</td>
                 <td>
-                    {{ config('order.leveling_status')[$order->status] }}
+                    {{ config('order.status_leveling')[$order->status] ?? '' }}
                 </td>
                 <td>
                     {{ $order->operate }}
