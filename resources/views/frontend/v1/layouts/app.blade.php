@@ -113,6 +113,13 @@ $goodsRoute = [
             color: #303133;
             font-size: 14px;
         }
+        .layui-side-menu .layui-nav .layui-nav-item .layui-icon {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            margin-top: -20px;
+            font-size: 24px;
+        }
     </style>
     @yield('css')
 </head>
@@ -178,7 +185,7 @@ $goodsRoute = [
                     @if(count(array_intersect($homeRoute, $userPermissions)))
                     <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $homeRoute)) layui-nav-itemed @endif">
                         <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                            <i class="layui-icon layui-icon-home"></i>
+                            <i class="layui-icon icon-electronics-o"></i>
                             <cite>首页</cite>
                         </a>
                         <dl class="layui-nav-child">
@@ -201,8 +208,8 @@ $goodsRoute = [
 
                     @if(count(array_intersect($workbenchRoute, $userPermissions)))
                     <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $workbenchRoute)) layui-nav-itemed @endif">
-                        <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                            <i class="layui-icon layui-icon-home"></i>
+                        <a href="javascript:;" lay-tips="工作台" lay-direction="2">
+                            <i class="layui-icon iconfont  icon-electronics-o"></i>
                             <cite>工作台</cite>
                         </a>
                         <dl class="layui-nav-child">
@@ -233,7 +240,7 @@ $goodsRoute = [
                     @if(count(array_intersect($accountRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $accountRoute)) layui-nav-itemed @endif">
                             <a href="javascript:;" lay-tips="账号" lay-direction="2">
-                                <i class="layui-icon layui-icon-home"></i>
+                                <i class="layui-icon iconfont  icon-group-o"></i>
                                 <cite>账号</cite>
                             </a>
                             <dl class="layui-nav-child">
@@ -278,7 +285,7 @@ $goodsRoute = [
                     @if(count(array_intersect($financeRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $financeRoute)) layui-nav-itemed @endif">
                             <a href="javascript:;" lay-tips="财务" lay-direction="2">
-                                <i class="layui-icon layui-icon-home"></i>
+                                <i class="layui-icon iconfont  icon-finance-o"></i>
                                 <cite>财务</cite>
                             </a>
                             <dl class="layui-nav-child">
@@ -328,8 +335,8 @@ $goodsRoute = [
 
                     @if(count(array_intersect($settingRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $settingRoute)) layui-nav-itemed @endif">
-                            <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                                <i class="layui-icon layui-icon-home"></i>
+                            <a href="javascript:;" lay-tips="设置" lay-direction="2">
+                                <i class="layui-icon  iconfont    icon-setting-o"></i>
                                 <cite>设置</cite>
                             </a>
                             <dl class="layui-nav-child">
@@ -375,7 +382,7 @@ $goodsRoute = [
                     @if(count(array_intersect($goodsRoute, $userPermissions)))
                     <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $goodsRoute)) layui-nav-itemed @endif">
                         <a href="javascript:;" lay-tips="商品列表" lay-direction="2">
-                            <i class="layui-icon layui-icon-home"></i>
+                            <i class="layui-icon  iconfont  icon-add-s"></i>
                             <cite>商品列表</cite>
                         </a>
                         <dl class="layui-nav-child">
