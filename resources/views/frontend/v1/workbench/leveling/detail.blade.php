@@ -961,7 +961,7 @@
 </div>
 
 
-<img src="" id="img-box" style="width:100%;height:100%;display: none">
+
 @endsection
 
 @section('js')
@@ -1728,20 +1728,20 @@
             }
 
             $('.layui-card').on('click', '.photo', function () {
-//                var imgSrc = ;
-                $('#img-box').attr('src', $(this).attr('data-img'));
-                layer.open({
-                    type: 1,
-                    closeBtn:0,
-                    title:false,
-                    shadeClose:true,
-//                    maxWidth:'500',
-//                    maxHeight:'800',
-                    offset: 'auto',
-                    shade: 0.8,
-                    content: $('#img-box')
-            });
-
+                var imgSrc = $(this).attr('data-img');
+                layer.photos({
+                    photos: {
+                        "id": 123, //相册id
+                        "data": [   //相册包含的图片，数组格式
+                            {
+                                "src": imgSrc, //原图地址
+                                "thumb": imgSrc //缩略图地址
+                            }
+                        ]
+                    },
+                    anim: -1,
+                    shade: 0.8
+                });
             })
         });
     </script>
