@@ -2038,14 +2038,15 @@ class IndexController extends Controller
         $levelingType = $request->input('game_leveling_type', 0);
 
         $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
+        $statusCount[100] = $orderRepository->levelingTaobaoRefundOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
 
-        // 查询淘宝退款订单号数量
-        $statusCount[100]  = OrderModel::whereIn('foreign_order_no', function ($query) {
-            $query->select('tid')
-                ->from(with(new TaobaoTrade())->getTable())
-                ->where('user_id', auth()->user()->getPrimaryUserId())
-                ->where('trade_status', 3);
-        })->count();
+//        // 查询淘宝退款订单号数量
+//        $statusCount[100]  = OrderModel::whereIn('foreign_order_no', function ($query) {
+//            $query->select('tid')
+//                ->from(with(new TaobaoTrade())->getTable())
+//                ->where('user_id', auth()->user()->getPrimaryUserId())
+//                ->where('trade_status', 3);
+//        })->count();
 
         return response()->ajax('1', 'success', $statusCount);
     }
