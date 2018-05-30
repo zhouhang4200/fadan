@@ -1733,7 +1733,6 @@
                     shadeClose:true,
                     offset: 'auto',
                     shade: 0.8,
-                    btnAlign: 'c',
                     content: '<img src="' + imgSrc + '" alt="" style="width:100%;height:100%">',
                     success: function (layero) {
                     }
