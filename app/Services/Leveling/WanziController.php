@@ -707,37 +707,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             $options = [
                 'account' => config('leveling.wanzi.account'),
                 'sign'    => config('leveling.wanzi.sign'),
-                'aid'     => $orderDatas['wanzi_order_no'],
+                'oid'     => $orderDatas['wanzi_order_no'],
             ];
-            // 发送
-            $lists = static::normalRequest($options, config('leveling.wanzi.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
-            // 循环仲裁列表
-            $infos = [];
-            if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
-                foreach ($lists['data'] as $key => $list) {
-                    if (isset($list['order']) && isset($list['order']['order_id'])) {
-                        if ($list['order']['order_id'] == $orderDatas['wanzi_order_no']) {
-                            $infos[$key] = $list;
-                        }
-                    }
-                }
-            }
 
             // 获取详情
-            $details = [];
-            if (isset($infos) && count($infos) > 0) {
-                $infos = array_values($infos);
-                // 只要最新的仲裁详情
-                $detailOptions = [
-                    'account' => config('leveling.wanzi.account'),
-                    'sign'    => config('leveling.wanzi.sign'),
-                    'aid'     => $infos[0]['id'],
-                ];
-                $result = static::normalRequest($detailOptions, config('leveling.wanzi.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
+            $result = static::normalRequest($options, config('leveling.wanzi.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
 
-                if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
-                    $details = $result['data'];
-                }
+            $details = [];
+            if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
+                $details = $result['data'];
             }
 
             if (isset($details['appeal']['pic1'])) {
@@ -763,11 +741,13 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             $arr['detail']['pic2'] = $details['appeal']['pic2'];
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
-            foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['who'] = config('leveling.wanzi.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
-                $arr['info'][$k]['created_at'] = $detail['created_on'];
-                $arr['info'][$k]['content'] = $detail['content'];
-                $arr['info'][$k]['pic'] = $detail['pic'];
+            if (isset($details['evis'])) {
+                foreach($details['evis'] as $k => $detail) {
+                    $arr['info'][$k]['who'] = config('leveling.wanzi.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
+                    $arr['info'][$k]['created_at'] = $detail['created_on'];
+                    $arr['info'][$k]['content'] = $detail['content'];
+                    $arr['info'][$k]['pic'] = env('WANZI_API_URL').'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'];
+                }
             }
             return $arr;
         } catch (Exception $e) {

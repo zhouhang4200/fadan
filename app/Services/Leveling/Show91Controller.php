@@ -711,51 +711,27 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             $options = [
                 'account' => config('leveling.show91.account'),
                 'sign'    => config('leveling.show91.sign'),
-                'aid'     => $orderDatas['show91_order_no'],
+                'oid'     => $orderDatas['show91_order_no'],
             ];
-            // 发送
-            $lists = static::normalRequest($options, config('leveling.show91.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
 
-            // 循环仲裁列表
-            $infos = [];
-            if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {
-                foreach ($lists['data'] as $key => $list) {
-                    if (isset($list['order']) && isset($list['order']['order_id'])) {
-                        if ($list['order']['order_id'] == $orderDatas['show91_order_no']) {
-                            $infos[$key] = $list;
-                        }
-                    }
-                }
-            }
-
-            // myLog('show91-arbitration-data', ['单号' => $orderDatas['order_no'] ?? '', '数据' => $infos]);
             // 获取详情
-            $details = [];
-            if (isset($infos) && count($infos) > 0) {
-                $infos = array_values($infos);
-                // 只要最新的仲裁详情
-                $detailOptions = [
-                    'account' => config('leveling.show91.account'),
-                    'sign'    => config('leveling.show91.sign'),
-                    'aid'     => $infos[0]['id'],
-                ];
-                $result = static::normalRequest($detailOptions, config('leveling.show91.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
+            $result = static::normalRequest($options, config('leveling.show91.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
 
-                if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
-                    $details = $result['data'];
-                }
+            $details = [];
+            if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
+                $details = $result['data'];
             }
 
             if (isset($details['appeal']['pic1'])) {
-                $details['appeal']['pic1'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+                $details['appeal']['pic1'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
             }
 
             if (isset($details['appeal']['pic2'])) {
-                $details['appeal']['pic2'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+                $details['appeal']['pic2'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
             }
 
             if (isset($details['appeal']['pic3'])) {
-                $details['appeal']['pic3'] = 'http://www.show91.com/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+                $details['appeal']['pic3'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
 
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
@@ -771,11 +747,13 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             $arr['detail']['pic2'] = $details['appeal']['pic2'];
             $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
-            foreach($details['evis'] as $k => $detail) {
-                $arr['info'][$k]['who'] = config('leveling.show91.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
-                $arr['info'][$k]['created_at'] = $detail['created_on'];
-                $arr['info'][$k]['content'] = $detail['content'];
-                $arr['info'][$k]['pic'] = $detail['pic'];
+            if (isset($details['evis'])) {
+                foreach($details['evis'] as $k => $detail) {
+                    $arr['info'][$k]['who'] = config('leveling.show91.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
+                    $arr['info'][$k]['created_at'] = $detail['created_on'];
+                    $arr['info'][$k]['content'] = $detail['content'];
+                    $arr['info'][$k]['pic'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'];
+                }
             }
             return $arr;
         } catch (Exception $e) {
