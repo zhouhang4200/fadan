@@ -8,6 +8,7 @@ use DB, Auth, Excel;
 use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Monolog\Handler\DynamoDbHandlerTest;
 
 /**
  * Class OrderRepository
@@ -346,8 +347,102 @@ class OrderRepository
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
         $query->groupBy('status');
-        return $query->pluck('count', 'status');
+        $statusCount = $query->pluck('count', 'status');
+
+        return $statusCount;
     }
+
+    /**
+     * 淘宝退款订单数量统计
+     * @param $status
+     * @param $no
+     * @param $taobaoStatus
+     * @param $gameId
+     * @param $wangWang
+     * @param $customerServiceName
+     * @param $platform
+     * @param $startDate
+     * @param $endDate
+     * @param $levelingType
+     * @return mixed
+     */
+    public function levelingTaobaoRefundOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType)
+    {
+        $primaryUserId = Auth::user()->getPrimaryUserId(); // 当前账号的主账号
+        $type = Auth::user()->leveling_type; // 账号类型是接单还是发单
+
+        $query = Order::select('id,no, foreign_order_no, source,status,goods_id,goods_name,service_id,
+            service_name, game_id,game_name,original_price,price,quantity,original_amount,amount,remark,
+            creator_user_id,creator_primary_user_id,gainer_user_id,gainer_primary_user_id,created_at, status');
+
+        if ($status != 1) {
+            if ($type == 1) {
+                $query->where('gainer_primary_user_id', $primaryUserId); // 接单
+            } else {
+                $query->where('creator_primary_user_id', $primaryUserId); // 发单
+            }
+        } else {
+            $query->where('creator_primary_user_id', $primaryUserId); // 发单
+        }
+        $query->when(!empty($no), function ($query) use ($no, $type) {
+            return $query->whereIn('no', function ($query) use($no) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->whereIn('field_name', ['third_order_no', 'source_order_no'])
+                    ->where('field_value', $no);
+            });
+        });
+        $query->whereIn('foreign_order_no', function ($query) use($primaryUserId) {
+            $query->select('tid')
+                ->from(with(new TaobaoTrade())->getTable())
+                ->where('user_id', $primaryUserId)
+                ->where('trade_status', 3);
+        });
+        $query->when($gameId  != 0, function ($query) use ($gameId) {
+            return $query->where('game_id', $gameId);
+        });
+        $query->when($platform != 0, function ($query) use ($platform, $type) {
+            return $query->whereIn('no', function ($query) use($platform) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'third')
+                    ->where('field_value', $platform);
+            });
+        });
+        $query->when(!empty($wangWang), function ($query) use ($wangWang, $primaryUserId, $type) {
+            return $query->whereIn('no', function ($query) use($wangWang) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'client_wang_wang')
+                    ->where('field_value', $wangWang);
+            });
+        });
+        $query->when(!empty($customerServiceName), function ($query) use ($customerServiceName) {
+            return $query->whereIn('no', function ($query) use($customerServiceName) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'customer_service_name')
+                    ->where('field_value', $customerServiceName);
+            });
+        });
+        $query->when(!empty($levelingType), function ($query) use ($levelingType) {
+            return $query->whereIn('no', function ($query) use($levelingType) {
+                $query->select('order_no')
+                    ->from(with(new OrderDetail())->getTable())
+                    ->where('field_name', 'game_leveling_type')
+                    ->where('field_value', $levelingType);
+            });
+        });
+        $query->when(!empty($startDate), function ($query) use ($startDate) {
+            return $query->where('created_at', '>=', $startDate);
+        });
+        $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
+            return $query->where('created_at', '<=', $endDate. " 23:59:59");
+        });
+
+        return $query->count();
+    }
+
     /**
      * 代练订单详情
      * @param $orderNo
