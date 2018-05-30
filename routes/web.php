@@ -176,6 +176,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('update', 'SendingAssistController@autoMarkupUpdate')->name('frontend.setting.sending-assist.auto-markup.update');
                 Route::post('destroy', 'SendingAssistController@autoMarkupDestroy')->name('frontend.setting.sending-assist.auto-markup.destroy');
             });
+            // 发单渠道设置
+            Route::prefix('order-send-channel')->group(function () {
+                Route::get('/', 'OrderSendChannelController@index')->name('frontend.setting.order-send-channel.index')->middleware('new.permission:frontend.setting.order-send-channel.index');
+                Route::post('set', 'OrderSendChannelController@set')->name('frontend.setting.order-send-channel.set');
+            });
         });
         // api 风控设置
         Route::prefix('api-risk-management')->group(function () {
