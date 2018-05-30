@@ -1000,10 +1000,13 @@
         </div>
     </script>
     <script src="/frontend/js/bootstrap-fileinput.js"></script>
+    <script src="/vendor/zoomify.min.js"></script>
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel;
             var gameId = '{{ $detail['game_id'] }}';
+
+
             // 验证规则
             form.verify({
                 zero: function(value){
@@ -1683,7 +1686,7 @@
             // 取消操作
             $('.cancel').click(function () {
                 layer.closeAll();
-            })
+            });
 
             // 发送证据
             // $('.add_evidence').click(function(){
@@ -1720,6 +1723,22 @@
                     form.render();
                 }, 'json');
             }
+
+            $('.layui-card').on('click', '.photo', function () {
+                var imgSrc = $(this).attr('data-img');
+                layer.open({
+                    type: 1,
+                    closeBtn:0,
+                    title: false,
+                    shadeClose:true,
+                    shade: 0.8,
+                    btnAlign: 'c',
+                    content: '<img src="' + imgSrc + '" alt="" style="width:100%;height:100%">',
+                    success: function (layero) {
+                    }
+                });
+
+            })
         });
     </script>
 @endsection
