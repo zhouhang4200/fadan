@@ -45,6 +45,7 @@ $settingRoute = [
     'frontend.setting.tb-auth.index',
     'frontend.setting.sending-assist.auto-markup',
     'frontend.setting.tb-auth.store',
+    'frontend.setting.order-send-channel.index',
 ];
 
 $goodsRoute = [
@@ -332,7 +333,6 @@ $goodsRoute = [
                             </dl>
                         </li>
                     @endif
-
                     @if(count(array_intersect($settingRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $settingRoute)) layui-nav-itemed @endif">
                             <a href="javascript:;" lay-tips="设置" lay-direction="2">
@@ -370,15 +370,16 @@ $goodsRoute = [
                                         <a href="{{ route('frontend.setting.tb-auth.store') }}">店铺授权</a>
                                     </dd>
                                 @endif
-                                @if(Auth::user()->could('frontend.setting.sending-assist.auto-markup'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.sending-assist.auto-markup') layui-this  @endif">
-                                        <a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">代练发单辅助</a>
+        
+                                @if(count(array_intersect(['frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'], $userPermissions)) > 0)
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.sending-assist.auto-markup' || Route::currentRouteName() == 'frontend.setting.order-send-channel.index') layui-this  @endif">
+                                        <a href="{{ array_intersect(['frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'], $userPermissions)[0] }}">代练发单辅助</a>
                                     </dd>
                                 @endif
                             </dl>
                         </li>
                     @endif
-
+                    
                     @if(count(array_intersect($goodsRoute, $userPermissions)))
                     <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $goodsRoute)) layui-nav-itemed @endif">
                         <a href="javascript:;" lay-tips="商品列表" lay-direction="2">
