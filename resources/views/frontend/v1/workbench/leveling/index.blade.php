@@ -187,7 +187,9 @@
                 <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
                     <ul class="layui-tab-title">
                         <li class="layui-this" lay-id="0">全部 <span  class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
-                        <li class="" lay-id="1">未接单</li>
+                        <li class="" lay-id="1">未接单
+                            <span class="qs-badge quantity-1 layui-hide"></span>
+                        </li>
                         <li class="" lay-id="13">代练中
                             <span class="qs-badge quantity-13 layui-hide"></span>
                         </li>
@@ -570,7 +572,7 @@
                     {field: 'button', title: '操作',width:195, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
                 ]],
                 height: 'full-245',
-                size: 'sm', //小尺寸的表格
+                size: 'sm',
                 page: {
                     layout: [ 'count', 'prev', 'page', 'next', 'skip'],
                     groups: 10,
@@ -580,7 +582,7 @@
                 },
                 done: function(res, curr, count){
                     changeStyle(layui.table.index);
-                    setStatusNumber(res.status_count);
+                    setStatusNumber();
                 }
             });
             // 订单表格重载
@@ -603,7 +605,7 @@
                     },
                     done: function(res, curr, count){
                         changeStyle(layui.table.index);
-                        setStatusNumber(res.status_count);
+                        setStatusNumber();
                         layui.form.render();
                     }
                 });
@@ -616,26 +618,34 @@
                 });
             }
             // 设置订单状态数
-            function setStatusNumber(parameter) {
-                if (parameter.length == 0) {
-                    $('.qs-badge').addClass('layui-hide');
-                }
-                $.each(parameter, function(key, val) {
-                    var name = 'quantity-'  +  key;
-                    if ($('span').hasClass(name) && val > 0) {
-                        $('.' + name).html(val).removeClass('layui-hide');
-                    } else {
-                        $('.' + name).addClass('layui-hide');
-                    }
+            function setStatusNumber() {
+                var condition = {};
+                var parameter;
+                var formCondition = $('form').serializeArray();
+                $.each(formCondition, function() {
+                    condition[this.name] = this.value;
                 });
+                $.post('{{ route('frontend.workbench.leveling.order-status-count') }}', condition, function (result) {
+                    parameter = result.content;
+                    if (parameter.length == 0){
+                        $('.qs-badge').addClass('layui-hide');
+                    }
+                    $('.qs-badge').addClass('layui-hide');
+                    $.each(parameter, function(key, val) {
+                        var name = 'quantity-'  +  key;
+                        if ($('span').hasClass(name) && val > 0) {
+                            $('.' + name).html(val).removeClass('layui-hide');
+                        }
+                    });
+                }, 'json');
             }
-            // 对订单操作
+            // 备注
             $('.layui-card-body').on('click', '[data-field=customer_service_remark]', function () {
                 if ($(this).text().trim() == '点击输入') {
                     $('.layui-table-edit').val('');
                 }
             });
-
+            // 对订单操作
             $('.layui-card-body').on('click', '.qs-btn', function () {
                 var opt = $(this).attr("data-opt");
                 var orderNo = $(this).attr("data-no");

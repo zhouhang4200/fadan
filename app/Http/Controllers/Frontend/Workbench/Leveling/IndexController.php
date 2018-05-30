@@ -172,9 +172,6 @@ class IndexController extends Controller
 
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType, $pageSize);
 
-        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
-
-
         if ($request->ajax()) {
 
             $orderArr = [];
@@ -271,7 +268,6 @@ class IndexController extends Controller
                 'msg' => '',
                 'count' => $orders->total(),
                 'data' =>  $orderArr,
-                'status_count' => $statusCount
             ];
         }
     }
@@ -2020,6 +2016,38 @@ class IndexController extends Controller
 
         return response()->ajax(1, 'success', $levelingType);
 
+    }
+
+    /**
+     * 获取订单状态的数量
+     * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function orderStatusCount(Request $request, OrderRepository $orderRepository)
+    {
+        $no = $request->input('no', 0);
+        $customerServiceName = $request->input('customer_service_name', 0);
+        $gameId = $request->input('game_id', 0);
+        $status = $request->input('status', 0);
+        $wangWang = $request->input('wang_wang');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $taobaoStatus = $request->input('taobao_status', 0);
+        $platform = $request->input('platform', 0);
+        $levelingType = $request->input('game_leveling_type', 0);
+
+        $statusCount = $orderRepository->levelingOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
+
+        // 查询淘宝退款订单号数量
+        $statusCount[100]  = OrderModel::whereIn('foreign_order_no', function ($query) {
+            $query->select('tid')
+                ->from(with(new TaobaoTrade())->getTable())
+                ->where('user_id', auth()->user()->getPrimaryUserId())
+                ->where('trade_status', 3);
+        })->count();
+
+        return response()->ajax('1', 'success', $statusCount);
     }
 }
 
