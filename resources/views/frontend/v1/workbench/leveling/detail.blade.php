@@ -1729,8 +1729,10 @@
                 layer.open({
                     type: 1,
                     closeBtn:0,
-                    area: ['500px', '300px'],
+                    title:false,
                     shadeClose:true,
+                    maxWidth:'500',
+                    maxHeight:'800',
                     offset: 'auto',
                     shade: 0.8,
                     content: '<img src="' + imgSrc + '" alt="" style="width:100%;height:100%">',
