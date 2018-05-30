@@ -200,7 +200,7 @@
                     {field: 'payment', title: '实付金额'},
                     {field: 'created', title: '下单时间',width: 180 , sort:true},
                     {field: 'remark', title: '备注', edit:'text',width: 200 },
-                    {field: 'button', title: '操作', width: 100,  toolbar: '#operation', fixed: 'right'},
+                    {field: 'button', title: '操作', width: 155,  toolbar: '#operation', fixed: 'right'},
                     {type: 'checkbox', fixed: 'right'}
                 ]],
                 height: 'full-260',
