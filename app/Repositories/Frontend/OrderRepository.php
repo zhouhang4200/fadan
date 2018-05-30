@@ -392,11 +392,11 @@ class OrderRepository
                     ->where('field_value', $no);
             });
         });
-        $query->whereIn('no', function ($query) use($taobaoStatus) {
-                $query->select('order_no')
-                    ->from(with(new OrderDetail())->getTable())
-                    ->where('field_name', 'taobao_status')
-                    ->where('field_value', 3);
+        $query->whereIn('foreign_order_no', function ($query) use($primaryUserId) {
+            $query->select('tid')
+                ->from(with(new TaobaoTrade())->getTable())
+                ->where('user_id', $primaryUserId)
+                ->where('trade_status', 3);
         });
         $query->when($gameId  != 0, function ($query) use ($gameId) {
             return $query->where('game_id', $gameId);
