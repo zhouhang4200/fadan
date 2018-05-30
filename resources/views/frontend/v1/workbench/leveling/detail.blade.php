@@ -1729,7 +1729,7 @@
                 layer.open({
                     type: 1,
                     closeBtn:0,
-                    title: false,
+                    area: ['500px', '300px'],
                     shadeClose:true,
                     offset: 'auto',
                     shade: 0.8,
