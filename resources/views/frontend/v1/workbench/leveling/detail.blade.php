@@ -959,6 +959,9 @@
         </div>
     </form>
 </div>
+
+
+
 @endsection
 
 @section('js')
@@ -1000,10 +1003,13 @@
         </div>
     </script>
     <script src="/frontend/js/bootstrap-fileinput.js"></script>
+    <script src="/vendor/zoomify.min.js"></script>
     <script>
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel;
             var gameId = '{{ $detail['game_id'] }}';
+
+
             // 验证规则
             form.verify({
                 zero: function(value){
@@ -1683,7 +1689,7 @@
             // 取消操作
             $('.cancel').click(function () {
                 layer.closeAll();
-            })
+            });
 
             // 发送证据
             // $('.add_evidence').click(function(){
@@ -1720,6 +1726,23 @@
                     form.render();
                 }, 'json');
             }
+
+            $('.layui-card').on('click', '.photo', function () {
+                var imgSrc = $(this).attr('data-img');
+                layer.photos({
+                    photos: {
+                        "id": 123, //相册id
+                        "data": [   //相册包含的图片，数组格式
+                            {
+                                "src": imgSrc, //原图地址
+                                "thumb": imgSrc //缩略图地址
+                            }
+                        ]
+                    },
+                    anim: -1,
+                    shade: 0.8
+                });
+            })
         });
     </script>
 @endsection

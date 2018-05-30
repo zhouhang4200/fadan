@@ -142,12 +142,12 @@
 @section('js')
     <script type="text/html" id="operation">
         @{{# if (d.handle_status == 0) {  }}
-        <a  class="qs-btn qs-btn-sm create" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}"  data-tid="@{{ d.tid }}" data-click-time="@{{ d.time}}" data-status="1"  target="_blank">发布</a>
-        <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table update" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=2">隐藏</button>
+        <a  class="qs-btn qs-btn-sm create" style="width: 60px" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}"  data-tid="@{{ d.tid }}" data-click-time="@{{ d.time}}" data-status="1"  target="_blank">发布</a>
+        <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table update" style="width: 60px" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=2">隐藏</button>
         @{{# } else if (d.handle_status == 2) {  }}
-        <button  class="qs-btn qs-btn-sm update" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=0">显示</button>
+        <button  class="qs-btn qs-btn-sm update" style="width: 60px" data-opt="update" href="{{ route('frontend.workbench.leveling.wait-update') }}?id=@{{ d.id }}&status=0">显示</button>
         @{{# } else if (d.handle_status == 1) {  }}
-        <a  class="qs-btn qs-btn-sm create" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}" data-tid="@{{ d.tid }}" data-click-time="@{{ d.time}}" data-status="1"  target="_blank">发布</a>
+        <a  class="qs-btn qs-btn-sm create" style="width: 60px" data-opt="create" href="{{ route('frontend.workbench.leveling.create') }}?tid=@{{ d.tid }}&game_id=@{{ d.game_id }}" data-tid="@{{ d.tid }}" data-click-time="@{{ d.time}}" data-status="1"  target="_blank">发布</a>
         @{{# }  }}
     </script>
     <script type="text/html" id="wwTemplate">
@@ -175,9 +175,6 @@
             });
             // 排序
             table.on('sort(order-list)', function(obj) {
-//                console.log(obj.field); //当前排序的字段名
-//                console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
-//                console.log(this); //当前排序的 th 对象
                 table.reload('order-list', {
                     initSort: {
                     field: 'created',
@@ -203,7 +200,7 @@
                     {field: 'payment', title: '实付金额'},
                     {field: 'created', title: '下单时间',width: 180 , sort:true},
                     {field: 'remark', title: '备注', edit:'text',width: 200 },
-                    {field: 'button', title: '操作', width: 100,  toolbar: '#operation', fixed: 'right'},
+                    {field: 'button', title: '操作', width: 155,  toolbar: '#operation', fixed: 'right'},
                     {type: 'checkbox', fixed: 'right'}
                 ]],
                 height: 'full-260',
