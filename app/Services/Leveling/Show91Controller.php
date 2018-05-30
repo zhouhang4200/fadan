@@ -715,6 +715,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             ];
             // 发送
             $lists = static::normalRequest($options, config('leveling.show91.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
+
             // 循环仲裁列表
             $infos = [];
             if (isset($lists) && $lists['result'] == 0 && ! empty($lists)) {

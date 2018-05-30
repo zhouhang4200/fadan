@@ -31,16 +31,9 @@
 
 @section('main') 
 <div class="layui-card qs-text">
+    <div class="layui-card-header">自动加价添加</div>
     <div class="layui-card-body">
-        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-            <ul class="layui-tab-title">
-    {{--            <li><a href="{{ route('frontend.setting.sending-assist.require') }}">代练要求模板</a></li>--}}
-                <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
-            </ul>
             <div class="layui-tab-content">
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                  <legend>自动加价添加</legend>
-                </fieldset>
                 <div class="layui-tab-item layui-show">
                     <form class="layui-form" method="POST" action="">
                         {!! csrf_field() !!}
@@ -113,7 +106,6 @@
                     </form>
                 </div>
             </div>
-        </div>
     </div> 
 </div>
 @endsection

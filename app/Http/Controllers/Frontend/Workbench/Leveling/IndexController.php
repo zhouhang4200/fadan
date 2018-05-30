@@ -1945,7 +1945,7 @@ class IndexController extends Controller
                 // 获取订单和订单详情以及仲裁协商信息
                 $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
 
-                if (! isset($datas['order_status']) || $datas['order_status'] != 16 || $datas['order_status'] != 21) {
+                if (! isset($datas['order_status']) || ! in_array($datas['order_status'], [16, 21])) {
                     return '暂无相关信息';
                 }
 
@@ -1954,6 +1954,7 @@ class IndexController extends Controller
                         $arbitrationInfos = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
                     }
                 }
+
                 if ($request->ajax()) {
                     return response()->json(view()->make('frontend.v1.workbench.leveling.arbitration-info', [
                         'arbitrationInfos' => $arbitrationInfos,
