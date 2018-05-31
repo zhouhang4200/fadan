@@ -97,13 +97,22 @@
 @section('js')
     <script>
         //Demo
-        layui.use('form', function(){
+        layui.use('form', function() {
             var form = layui.form;
 
             //监听提交
-            form.on('submit(formDemo)', function(data){
+            form.on('submit(formDemo)', function (data) {
                 layer.msg(JSON.stringify(data.field));
                 return false;
+            });
+
+            $('input[name=order_no]').on('blur', function () {
+                $.post('{{ route('frontend.user.complaint.query-order') }}', {no:$(this).val()}, function (result) {
+                    $('input[name=complaint_primary_user_id]').val(result.content.creator_primary_user_id);
+                    $('input[name=be_complaint_primary_user_id]').val(result.content.gainer_primary_user_id);
+                    $('input[name=amount]').val(result.content.amount);
+                    layui.form.render();
+                }, 'json');
             });
         });
     </script>
