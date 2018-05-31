@@ -340,11 +340,11 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.statistic.sms') }}">短信统计</a>
                                     </dd>
                                 @endif
-                                {{--@if(Auth::user()->could('frontend.finance.order-report'))--}}
+                                @if(Auth::user()->could('frontend.finance.order-report.index'))
                                     <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.order-report.index') layui-this  @endif">
                                         <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
                                     </dd>
-                                {{--@endif--}}
+                                @endif
                             </dl>
                         </li>
                     @endif
