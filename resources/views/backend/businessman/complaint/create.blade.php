@@ -110,6 +110,7 @@
                 $.post('{{ route('frontend.user.complaint.query-order') }}', {no:$(this).val()}, function (result) {
                     $('input[name=complaint_primary_user_id]').val(result.content.creator_primary_user_id);
                     $('input[name=be_complaint_primary_user_id]').val(result.content.gainer_primary_user_id);
+                    $('input[name=amount]').val(result.content.amount);
                     layui.form.render();
                 }, 'json');
             });
