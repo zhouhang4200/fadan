@@ -25,8 +25,7 @@
     </div>
     <div class="layui-card-body">
         <blockquote class="layui-elem-quote">
-            操作提示<br/>
-            用途：发布渠道设置可以控制发布的订单所能转单的平台，每种游戏至少选择一家平台。
+            操作提示：发布渠道设置可以控制发布的订单所能转单的平台，每种游戏至少选择一家平台。
         </blockquote>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show" id="show">

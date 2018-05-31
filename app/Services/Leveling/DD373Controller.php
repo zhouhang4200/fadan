@@ -38,7 +38,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	        $response = $client->request($method, $url, [
 	            'multipart' => $options,
 	        ]);
-	        $result =  $response->getBody()->getContents();
+	        $result = $response->getBody()->getContents();
 
             myLog('dd373-api-log', [$url, $options, $result]);
 
@@ -94,7 +94,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	            'form_params' => $options,
 	            'body' => 'x-www-form-urlencoded',
 	        ]);
-	        $result =  $response->getBody()->getContents();
+	        $result = $response->getBody()->getContents();
 
 	        if (! isset($result) || empty($result)) {
                 if ($url != config('leveling.dd373.url')['delete']) {
@@ -787,7 +787,23 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function getArbitrationInfo($orderDatas)
     {
+        try {
+            $time = time();
+            $datas = [
+                'platformOrderNo' => $orderDatas['dd373_order_no'],
+                'platformSign' => config('leveling.dd373.platform-sign'),
+            ];
 
+            $str = "platformOrderNo=".$orderDatas['dd373_order_no']."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+
+            $datas['Sign'] = md5($str);
+            // 发送
+            $result = static::formDataRequest($datas, config('leveling.dd373.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
+            dd($result);
+        } catch (Exception $e) {
+            myLog('dd373-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 
     /**
@@ -796,6 +812,20 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
      */
     public static function addArbitrationInfo($orderDatas)
     {
-
+        try {
+            $time = time();
+            $datas = [
+                'platformOrderNo' => $orderDatas['dd373_order_no'],
+                'content'         => $orderDatas['add_content'],
+                'timestamp'       => $time,
+            ];
+            // 对参数进行加工
+            $options = static::handleOptions($datas);
+            // 发送
+            static::formDataRequest(array_merge($options, ['fileBase' => $orderDatas['pic']]), config('leveling.dd373.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
+        } catch (Exception $e) {
+            myLog('dd373-local-error', ['方法' => '发送截图', '原因' => $e->getMessage()]);
+            throw new DailianException($e->getMessage());
+        }
     }
 }

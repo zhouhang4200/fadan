@@ -138,6 +138,11 @@ return [
 			'refuseRevoke'             => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=CancelAction', // 不同意撤销
 			'updateImage'			   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=uploadImage', //上传截图
             'setTop'			       => '',
+            'getArbitrationInfo'       => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getArbitrate', // 查看仲裁详情
+			'addArbitrationInfo'       => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=sendArbitrateMessage', // 添加仲裁证据
+
+
+			'getArbitrationList'	   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getArbitrateMessages', // **留言列表**
 		],
 		'status' => [
 			'1'  => '未接单',
