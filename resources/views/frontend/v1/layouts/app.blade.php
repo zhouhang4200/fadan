@@ -142,18 +142,14 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
 
 <body class="layui-layout-body">
 
-<div class="layui-layout layui-layout-admin">
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
             <!-- 头部区域 -->
             <ul class="layui-nav layui-layout-left">
                 <li class="layui-nav-item layadmin-flexible" lay-unselect>
                     <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
                         <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
-                    </a>
-                </li>
-                <li class="layui-nav-item" lay-unselect>
-                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
-                        <i class="layui-icon layui-icon-refresh-3"></i>
                     </a>
                 </li>
             </ul>
@@ -199,58 +195,58 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
 
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
                     @if(count(array_intersect($homeRoute, $userPermissions)))
-                    <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $homeRoute)) layui-nav-itemed @endif">
-                        <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                            <i class="layui-icon icon-electronics-o"></i>
-                            <cite>首页</cite>
-                        </a>
-                        <dl class="layui-nav-child">
-                            <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.index') layui-this  @endif">
-                                <a href="{{ route('frontend.index') }}">首页</a>
-                            </dd>
-                            @if(Auth::user()->could('data.index'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'data.index') layui-this  @endif">
-                                    <a href="{{ route('data.index') }}">经营数据</a>
+                        <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $homeRoute)) layui-nav-itemed @endif">
+                            <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                                <i class="layui-icon icon-electronics-o"></i>
+                                <cite>首页</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.index') layui-this  @endif">
+                                    <a href="{{ route('frontend.index') }}">首页</a>
                                 </dd>
-                            @endif
-                            @if(Auth::user()->could('home-punishes.index'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'home-punishes.index') layui-this  @endif">
-                                    <a href="{{ route('home-punishes.index') }}">奖惩记录</a>
-                                </dd>
-                            @endif
-                        </dl>
-                    </li>
+                                @if(Auth::user()->could('data.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'data.index') layui-this  @endif">
+                                        <a href="{{ route('data.index') }}">经营数据</a>
+                                    </dd>
+                                @endif
+                                @if(Auth::user()->could('home-punishes.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'home-punishes.index') layui-this  @endif">
+                                        <a href="{{ route('home-punishes.index') }}">奖惩记录</a>
+                                    </dd>
+                                @endif
+                            </dl>
+                        </li>
                     @endif
 
                     @if(count(array_intersect($workbenchRoute, $userPermissions)))
-                    <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $workbenchRoute)) layui-nav-itemed @endif">
-                        <a href="javascript:;" lay-tips="工作台" lay-direction="2">
-                            <i class="layui-icon iconfont  icon-electronics-o"></i>
-                            <cite>工作台</cite>
-                        </a>
-                        <dl class="layui-nav-child">
-                            @if(Auth::user()->could('frontend.workbench.index'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.index') layui-this  @endif">
-                                    <a href="{{ route('frontend.workbench.index') }}">代充订单</a>
-                                </dd>
-                            @endif
-                            @if(Auth::user()->could('frontend.workbench.leveling.wait'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.wait') layui-this  @endif">
-                                    <a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
-                                </dd>
-                            @endif
-                            @if(Auth::user()->could('frontend.workbench.leveling.create'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.create') layui-this  @endif">
-                                    <a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
-                                </dd>
-                            @endif
-                            @if(Auth::user()->could('frontend.workbench.leveling.index'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.index') layui-this  @endif">
-                                    <a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
-                                </dd>
-                            @endif
-                        </dl>
-                    </li>
+                        <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $workbenchRoute)) layui-nav-itemed @endif">
+                            <a href="javascript:;" lay-tips="工作台" lay-direction="2">
+                                <i class="layui-icon iconfont  icon-electronics-o"></i>
+                                <cite>工作台</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                @if(Auth::user()->could('frontend.workbench.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.workbench.index') }}">代充订单</a>
+                                    </dd>
+                                @endif
+                                @if(Auth::user()->could('frontend.workbench.leveling.wait'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.wait') layui-this  @endif">
+                                        <a href="{{ route('frontend.workbench.leveling.wait') }}">代练待发</a>
+                                    </dd>
+                                @endif
+                                @if(Auth::user()->could('frontend.workbench.leveling.create'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.create') layui-this  @endif">
+                                        <a href="{{ route('frontend.workbench.leveling.create') }}">代练发布</a>
+                                    </dd>
+                                @endif
+                                @if(Auth::user()->could('frontend.workbench.leveling.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
+                                    </dd>
+                                @endif
+                            </dl>
+                        </li>
                     @endif
 
                     @if(count(array_intersect($accountRoute, $userPermissions)))
@@ -260,24 +256,24 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                 <cite>账号</cite>
                             </a>
                             <dl class="layui-nav-child">
-                                    <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $myAccount)) layui-this  @endif">
-                                        <a href="{{ route('home-accounts.index') }}">我的账号</a>
-                                    </dd>
-                                    @if(Auth::user()->parent_id == 0)
-                                        @if(App\Models\RealNameIdent::where('user_id', Auth::id())->first())
-                                            <dd data-name="console" class="@if( Route::currentRouteName() == 'idents.index') layui-this  @endif">
-                                                <a href="{{ route('idents.index') }}">实名认证</a>
-                                            </dd>
-                                        @else
-                                            <dd data-name="console" class="@if( Route::currentRouteName() == 'idents.create') layui-this  @endif">
-                                                <a href="{{ route('idents.create') }}">实名认证</a>
-                                            </dd>
-                                        @endif
+                                <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $myAccount)) layui-this  @endif">
+                                    <a href="{{ route('home-accounts.index') }}">我的账号</a>
+                                </dd>
+                                @if(Auth::user()->parent_id == 0)
+                                    @if(App\Models\RealNameIdent::where('user_id', Auth::id())->first())
+                                        <dd data-name="console" class="@if( Route::currentRouteName() == 'idents.index') layui-this  @endif">
+                                            <a href="{{ route('idents.index') }}">实名认证</a>
+                                        </dd>
+                                    @else
+                                        <dd data-name="console" class="@if( Route::currentRouteName() == 'idents.create') layui-this  @endif">
+                                            <a href="{{ route('idents.create') }}">实名认证</a>
+                                        </dd>
                                     @endif
-                                    
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'login.history') layui-this  @endif">
-                                        <a href="{{ route('login.history') }}">登录记录</a>
-                                    </dd>
+                                @endif
+
+                                <dd data-name="console" class="@if( Route::currentRouteName() == 'login.history') layui-this  @endif">
+                                    <a href="{{ route('login.history') }}">登录记录</a>
+                                </dd>
 
                                 @if(Auth::user()->could('station.index'))
                                     <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $stationManagement)) layui-this  @endif">
@@ -396,21 +392,21 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                             </dl>
                         </li>
                     @endif
-                    
+
                     @if(count(array_intersect($goodsRoute, $userPermissions)))
-                    <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $goodsRoute)) layui-nav-itemed @endif">
-                        <a href="javascript:;" lay-tips="商品列表" lay-direction="2">
-                            <i class="layui-icon  iconfont  icon-add-s"></i>
-                            <cite>商品列表</cite>
-                        </a>
-                        <dl class="layui-nav-child">
-                            @if(Auth::user()->could('frontend.goods.index'))
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.goods.index') layui-this  @endif">
-                                    <a href="{{ route('frontend.goods.index') }}">代充订单</a>
-                                </dd>
-                            @endif
-                        </dl>
-                    </li>
+                        <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $goodsRoute)) layui-nav-itemed @endif">
+                            <a href="javascript:;" lay-tips="商品列表" lay-direction="2">
+                                <i class="layui-icon  iconfont  icon-add-s"></i>
+                                <cite>商品列表</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                @if(Auth::user()->could('frontend.goods.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.goods.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.goods.index') }}">代充订单</a>
+                                    </dd>
+                                @endif
+                            </dl>
+                        </li>
                     @endif
                 </ul>
             </div>
@@ -428,6 +424,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         <!-- 辅助元素，一般用于移动设备下遮罩 -->
         <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
+</div>
 
 <style>
     .layui-side-menu,
