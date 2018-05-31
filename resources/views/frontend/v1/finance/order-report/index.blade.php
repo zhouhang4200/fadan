@@ -142,7 +142,7 @@
                         <td>{{ $detail['seller_nick'] ?? '' }}</td>
                         <td>
                             @if(isset($detail['third']) && $detail['third'])
-                                {{ config('partner.platform')[(int)$detail['third']]['name'] }}<br/>
+                                {{ isset(config('partner.platform')[(int)$detail['third']]) ? config('partner.platform')[(int)$detail['third']]['name'] : '' }}<br/>
                                 {{ $detail['third_order_no'] }}
                             @else
                             @endif
