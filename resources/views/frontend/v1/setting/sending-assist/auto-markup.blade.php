@@ -17,8 +17,8 @@
 <div class="layui-card qs-text">
     <div class='layui-card-header'>
         <ul class="layui-tab layui-tab-title layui-tab-brief ">
-            <li><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
-            <li class="layui-this"><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">发布渠道设置</a></li>
+            <li @if(Route::currentRouteName() == 'frontend.setting.sending-assist.auto-markup') class = 'layui-this' @endif><a href="{{ route('frontend.setting.sending-assist.auto-markup') }}">自动加价配置</a></li>
+            <li @if(Route::currentRouteName() == 'frontend.setting.order-send-channel.index') class = 'layui-this' @endif><a href="{{ route('frontend.setting.order-send-channel.index') }}">发布渠道设置</a></li>
         </ul>
     </div>
     <div class="layui-card-body">

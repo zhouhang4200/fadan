@@ -203,7 +203,7 @@ return [
 			'refuseRevoke'             => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
-			'getArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal', // 查看仲裁详情
+			'getArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal2', // 查看仲裁详情
 			'addArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addevidence', // 添加仲裁证据
 
 
@@ -258,7 +258,7 @@ return [
 			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 不同意撤销
 			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/getPlays', // 获取代练类型
 			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/setTop', // 获取代练类型
-			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal', // 查看仲裁详情
+			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal2', // 查看仲裁详情
 			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addevidence', // 添加仲裁证据
 
 
