@@ -574,10 +574,11 @@
                 height: 'full-245',
                 size: 'sm',
                 page: {
-                    layout: [ 'count', 'prev', 'page', 'next', 'skip'],
+//                    layout: [ 'count', 'prev', 'page', 'next', 'skip'],
+                    layout: ['prev', 'page', 'next'],
                     groups: 10,
-                    prev: '上一页',
-                    next: '下一页',
+                    prev: '«',
+                    next: '»',
                     limit:50
                 },
                 done: function(res, curr, count){
