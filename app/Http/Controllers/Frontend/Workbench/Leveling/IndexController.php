@@ -196,10 +196,11 @@ class IndexController extends Controller
                     $orderCurrent['profit'] = '';
                 } else {
                     // 支付金额
-                    if ($orderInfo['status'] == 21) {
+                    // 支付金额
+                    if (in_array($orderInfo['status'], [21, 19])) {
                         $amount = $orderInfo['leveling_consult']['api_amount'];
                     } else {
-                        $amount = $orderInfo['leveling_consult']['amount'];
+                        $amount = $orderInfo['amount'];
                     }
                     // 支付金额
                     $orderCurrent['payment_amount'] = $amount !=0 ?  $amount + 0:  $orderInfo['amount'] + 0;
