@@ -1955,9 +1955,14 @@ class IndexController extends Controller
                     return response()->json(view()->make('frontend.v1.workbench.leveling.arbitration-info', [
                         'arbitrationInfos' => $arbitrationInfos,
                         'orderNo' => $orderNo,
+                        'status' => $datas['order_status'],
                     ])->render());
                 }
-                return  view('frontend.v1.workbench.leveling.arbitration-info', compact('arbitrationInfos', 'orderNo'));
+                return  view('frontend.v1.workbench.leveling.arbitration-info')->with([
+                    'status' => $datas['order_status'],
+                    'orderNo' => $orderNo,
+                    'arbitrationInfos' => $arbitrationInfos,
+                ]);
             }
         } catch (DailianException $e) {
             myLog('get-arbitration-advence', ['单号 DailianException' => $datas->order_no ?? '', '失败' => $e->getMessage()]);

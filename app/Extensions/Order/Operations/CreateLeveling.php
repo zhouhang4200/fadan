@@ -145,32 +145,13 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->field_value = $this->details[$item->field_name] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
-                // 写入关联淘宝订单号
-                if ($item->field_name == 'source_order_no' && !empty($this->details[$item->field_name])) {
-                    $taobaoOrderNo = new OrderDetail;
-                    $taobaoOrderNo->order_no = $this->order->no;
-                    $taobaoOrderNo->field_name = 'source_order_no_hide';
-                    $taobaoOrderNo->field_name_alias = 'source_order_no';
-                    $taobaoOrderNo->field_display_name = '关联淘宝订单号';
-                    $taobaoOrderNo->field_value = $this->details[$item->field_name] ?? '';
-                    $taobaoOrderNo->creator_primary_user_id = $this->order->creator_primary_user_id;
-                    $taobaoOrderNo->save();
-
+                // 更新对应的淘宝订单状态为
+                if (in_array($item->field_name , ['source_order_no', 'source_order_no_1', 'source_order_no_2']) && !empty($this->details[$item->field_name])) {
                     // 更新淘宝待发单状态
                     $taobaoTrade = TaobaoTrade::where('tid', $this->details[$item->field_name])->first();
                     if ($taobaoTrade) {
                         $taobaoTrade->handle_status = 1;
                         $taobaoTrade->save();
-
-                        // 淘宝订单状态记录
-                        $taobaoOrderNoStatus = new OrderDetail;
-                        $taobaoOrderNoStatus->order_no = $this->order->no;
-                        $taobaoOrderNoStatus->field_name = 'taobao_status';
-                        $taobaoOrderNoStatus->field_name_alias = 'taobao_status';
-                        $taobaoOrderNoStatus->field_display_name = '淘宝订单状态';
-                        $taobaoOrderNoStatus->field_value = 1;
-                        $taobaoOrderNoStatus->creator_primary_user_id = $this->order->creator_primary_user_id;
-                        $taobaoOrderNoStatus->save();
                     }
                 }
 
