@@ -193,7 +193,7 @@
                     <div class="available-balance">可用余额：
                         {{ $user->userAsset->balance + 0 }}
                     </div>
-                    <div class="blocked-balances">冻结余额：
+                    <div class="blocked-balances">托管金额：
                         {{ $user->userAsset->frozen + 0 }}
                     </div>
                     <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
