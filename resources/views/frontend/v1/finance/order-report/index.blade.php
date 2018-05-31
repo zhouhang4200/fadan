@@ -148,7 +148,6 @@
                             @endif
                         </td>
                         <td>{{ $detail['source_price'] ?? '' }}</td>
-                        <td>{{ $paymentAmount  }}</td>
                         <td>{{ $profit }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>

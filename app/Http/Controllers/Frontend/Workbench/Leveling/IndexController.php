@@ -522,10 +522,13 @@ class IndexController extends Controller
             $detail['profit'] = '';
         } else {
             // 支付金额
-            if ($detail['status'] == 21) {
-                $amount = $detail['leveling_consult']['api_amount'];
-            } else {
-                $amount = $detail['leveling_consult']['amount'];
+            $amount = 0;
+            if (isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] != 0) {
+                if ($detail['status'] == 21) {
+                    $amount = $detail['leveling_consult']['api_amount'];
+                } else {
+                    $amount = $detail['leveling_consult']['amount'];
+                }
             }
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $amount;
@@ -546,7 +549,7 @@ class IndexController extends Controller
             $expirationTimestamp = strtotime($detail['receiving_time']) + $days * 86400 + $hours * 3600;
             // 计算剩余时间
             $leftSecond = $expirationTimestamp - time();
-            $detail['left_time'] = Sec2Time($leftSecond); // 剩余时间
+            $detail['left_time'] = sec2Time($leftSecond); // 剩余时间
         } else {
             $detail['left_time'] = '';
         }
@@ -623,12 +626,14 @@ class IndexController extends Controller
         // 获取商户的联系方式模版信息
         $contact = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())->get();
 
+        $taobaoTrade = TaobaoTrade::where('tid', $detail['source_order_no'])->first();
+
         // 写入订单关联数据
         $detail['master'] = $detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() ? 1 : 0;
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
-        return view('frontend.workbench.leveling.repeat', compact('detail', 'template', 'game', 'contact'));
+        return view('frontend.v1.workbench.leveling.repeat', compact('detail', 'template', 'game', 'contact', 'taobaoTrade'));
     }
 
     /**
