@@ -23,6 +23,13 @@ $accountRoute = [
     'idents.edit',
     'staff-management.index',
     'hatchet-man-blacklist.index',
+    'home-accounts.edit',
+    'station.edit',
+    'station.create',
+    'staff-management.edit',
+    'staff-management.create',
+    'hatchet-man-blacklist.edit',
+    'hatchet-man-blacklist.create',
 ];
 
 $financeRoute = [
@@ -52,6 +59,14 @@ $goodsRoute = [
     'frontend.goods.index',
 ];
 
+$myAccount = ['home-accounts.edit', 'home-accounts.index'];
+$stationManagement = ['station.create', 'station.index', 'station.edit'];
+$employeeManagement = ['staff-management.index', 'staff-management.edit', 'staff-management.create'];
+$blacklist = ['hatchet-man-blacklist.index', 'hatchet-man-blacklist.create', 'hatchet-man-blacklist.edit'];
+$finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.finance.asset-daily', 
+    'frontend.finance.withdraw-order', 'frontend.finance.order-report.index', 'frontend.statistic.employee',
+    'frontend.statistic.order', 'frontend.statistic.sms'
+];
 ?>
 <!DOCTYPE html>
 <html>
@@ -245,7 +260,7 @@ $goodsRoute = [
                                 <cite>账号</cite>
                             </a>
                             <dl class="layui-nav-child">
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'home-accounts.index') layui-this  @endif">
+                                    <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $myAccount)) layui-this  @endif">
                                         <a href="{{ route('home-accounts.index') }}">我的账号</a>
                                     </dd>
                                     @if(Auth::user()->parent_id == 0)
@@ -265,17 +280,17 @@ $goodsRoute = [
                                     </dd>
 
                                 @if(Auth::user()->could('station.index'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'station.index') layui-this  @endif">
+                                    <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $stationManagement)) layui-this  @endif">
                                         <a href="{{ route('station.index') }}">岗位管理</a>
                                     </dd>
                                 @endif
                                 @if(Auth::user()->could('staff-management.index'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'staff-management.index') layui-this  @endif">
+                                    <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $employeeManagement)) layui-this  @endif">
                                         <a href="{{ route('staff-management.index') }}">员工管理</a>
                                     </dd>
                                 @endif
                                 @if(Auth::user()->could('hatchet-man-blacklist.index'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'hatchet-man-blacklist.index') layui-this  @endif">
+                                    <dd data-name="console" class="@if( in_array(Route::currentRouteName(), $blacklist)) layui-this  @endif">
                                         <a href="{{ route('hatchet-man-blacklist.index') }}">打手黑名单</a>
                                     </dd>
                                 @endif
@@ -284,7 +299,7 @@ $goodsRoute = [
                     @endif
 
                     @if(count(array_intersect($financeRoute, $userPermissions)))
-                        <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $financeRoute)) layui-nav-itemed @endif">
+                        <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $finance)) layui-nav-itemed @endif">
                             <a href="javascript:;" lay-tips="财务" lay-direction="2">
                                 <i class="layui-icon iconfont  icon-finance-o"></i>
                                 <cite>财务</cite>
@@ -370,10 +385,12 @@ $goodsRoute = [
                                         <a href="{{ route('frontend.setting.tb-auth.store') }}">店铺授权</a>
                                     </dd>
                                 @endif
-        
-                                @if(count(array_intersect(['frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'], $userPermissions)) > 0)
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.setting.sending-assist.auto-markup' || Route::currentRouteName() == 'frontend.setting.order-send-channel.index') layui-this  @endif">
-                                        <a href="{{ array_intersect(['frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'], $userPermissions)[0] }}">代练发单辅助</a>
+                                <?php $route = array_intersect(['frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'], $userPermissions); ?>
+                                @if(count($route) > 0)
+                                    <dd data-name="console" class="@if(in_array(Route::currentRouteName(), [ 'frontend.setting.sending-assist.auto-markup', 'frontend.setting.order-send-channel.index'])) layui-this  @endif">
+                                        <a href="{{ Auth::user()->could('frontend.setting.sending-assist.auto-markup') ? route('frontend.setting.sending-assist.auto-markup') : (Auth::user()->could('frontend.setting.order-send-channel.index') ?
+                                        route('frontend.setting.order-send-channel.index') : '' )
+                                          }} ">代练发单辅助</a>
                                     </dd>
                                 @endif
                             </dl>

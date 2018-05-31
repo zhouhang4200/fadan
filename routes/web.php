@@ -74,6 +74,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('destroy', 'StationController@destroy')->name('station.destroy');
     });
 
+    // 打手黑名单
     Route::namespace('Account')->group(function () {
         Route::prefix('hatchet-man-blacklist')->group(function () {
             Route::get('/', 'HatchetManBlacklistController@index')->name('hatchet-man-blacklist.index')->middleware('new.permission:hatchet-man-blacklist.index');
