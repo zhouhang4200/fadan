@@ -60,7 +60,7 @@ class OrderSend extends Command
 
                 $client = new Client();
                 foreach (config('partner.platform') as $third => $platform) {
-                    if (isset($orderSendChannel) && isset($blackThirds) && ! empty($blackThirds) && ! in_array($third, $blackThirds)) {
+                    if (! isset($orderSendChannel) || ! isset($blackThirds) || (isset($blackThirds) && ! empty($blackThirds) && ! in_array($third, $blackThirds))) {
                         $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
                         try {
                             $response = $client->request('POST', $platform['receive'], [
