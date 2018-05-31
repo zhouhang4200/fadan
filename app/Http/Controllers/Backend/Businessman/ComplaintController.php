@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Businessman;
 
+use App\Models\Order;
 use Auth, Asset, DB;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
@@ -85,5 +86,18 @@ class ComplaintController extends Controller
         return redirect(route('frontend.user.complaint.index'))->withInput()->with([
             'message' => '添加成功'
         ]);
+    }
+
+    /**
+     * 查询订单
+     * @param Request $request
+     */
+    public function queryOrder(Request $request)
+    {
+//        try {
+            return response()->ajax(1, 'success', Order::where('no', $request->no)->first());
+//        } catch (\Exception $exception) {
+//
+//        }
     }
 }

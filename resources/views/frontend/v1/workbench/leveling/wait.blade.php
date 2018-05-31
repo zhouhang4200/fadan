@@ -228,15 +228,34 @@
             // 搜索
             form.on('submit(send)', function (data) {
                 var checkStatus = table.checkStatus('order-list'), data = checkStatus.data;
-                var id = '';
-                var gameId = 0;
-                $.each(data, function (index, item) {
-                    if (gameId == 0) {
-                        gameId = item.game_id;
+
+                if (checkStatus.data.length > 3) {
+                    layer.msg('合并发单最多能选3个订单');
+                    return false;
+                }
+
+                var createIng = 0;
+                $('.layui-table-fixed-r').find('input[name="layTableCheckbox"]:checked').each(function(){
+                    var tr = $(this).parents('tr');
+                    if (tr.find('a').attr('data-status') == 0) {
+                        createIng = 1;
+                        return false;
                     }
-                    id += item.tid + ',';
                 });
-                window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
+
+                if (createIng == 1) {
+                    layer.msg('您选中的订单中,有其他客服正在发布的订单，请稍后再试');
+                } else {
+                    var id = '';
+                    var gameId = 0;
+                    $.each(data, function (index, item) {
+                        if (gameId == 0) {
+                            gameId = item.game_id;
+                        }
+                        id += item.tid + ',';
+                    });
+                    window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
+                }
                 return false;
             });
              form.on('select(game)', function (data) {

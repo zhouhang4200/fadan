@@ -161,6 +161,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('/', 'ComplaintController@index')->name('frontend.user.complaint.index');
             Route::get('create', 'ComplaintController@create')->name('frontend.user.complaint.create');
             Route::post('/', 'ComplaintController@store')->name('frontend.user.complaint.store');
+            Route::post('query-order', 'ComplaintController@queryOrder')->name('frontend.user.complaint.query-order');
         });
 
         // 店铺授权管理
