@@ -368,6 +368,7 @@
             </div>
         </form>
     </div>
+    <div class="layui-carousel" id="carousel" style="display: none"></div>
 @endsection
 
 @section('js')
@@ -386,8 +387,11 @@
                 <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
                 <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
             @{{# } else if (d.status == 14) {  }}
-                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
-                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="showPhoto" data-no="@{{ d.no }}">查看图片</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="complete" data-no="@{{ d.no }}">完成验收</button>
+
+                {{--<button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>--}}
+                {{--<button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>--}}
             @{{# } else if (d.status == 15) {  }}
 
                 @{{# if (d.consult == 1) {  }}
@@ -506,9 +510,24 @@
             }
         </style>
     </script>
+    <script id="images" type="text/html">
+        <div carousel-item="" id="">
+            @{{# var i = 0; layui.each(d, function(index, item){ }}
+            <div  style="background: url(@{{ item.url }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+                <div class="carousel-tips" >@{{ item.description }} &nbsp;&nbsp;&nbsp; @{{ item.created_at }} </div>
+            </div>
+            @{{# if(i == 0){   i = 1;  } }}
+            @{{# }); }}
+        </div>
+    </script>
     <script>
-        layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
-            var form = layui.form, layer = layui.layer, element = layui.element, layTpl = layui.laytpl, table = layui.table;
+        layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function () {
+            var form = layui.form,
+                    layer = layui.layer,
+                    element = layui.element,
+                    layTpl = layui.laytpl,
+                    table = layui.table,
+                    carousel =  layui.carousel;
             // 是否将天猫订单发货
             var delivery = 0;
             // 状态切换
@@ -868,6 +887,52 @@
                         }
                     });
                     return false
+                } else if (opt == 'showPhoto') {
+                    // 查看图片
+                    var ins = carousel.render({
+                        elem: '#carousel',
+                        anim: 'fade',
+                        width: '500px',
+                        arrow: 'always',
+                        autoplay: false,
+                        height: '500px',
+                        indicator: 'none'
+                    });
+                    $.get("{{ route('frontend.workbench.leveling.leave-image') }}?order_no=" + orderNo, function (result) {
+                        if (result.status === 1) {
+                            if (result.content.length > 0 ) {
+                                var getTpl = images.innerHTML, view = $('#carousel');
+                                layTpl(getTpl).render(result.content, function(html){
+                                    view.html(html);
+                                    layui.form.render();
+                                });
+
+                                layer.open({
+                                    type: 1,
+                                    title: false ,
+                                    area: ['50%', '500px'],
+                                    shade: 0.8,
+                                    shadeClose: true,
+                                    moveType: 1,
+                                    content: $('#carousel'),
+                                    success: function () {
+                                        //改变下时间间隔、动画类型、高度
+                                        ins.reload({
+                                            elem: '#carousel',
+                                            anim: 'fade',
+                                            width: '100%',
+                                            arrow: 'always',
+                                            autoplay: false,
+                                            height: '100%',
+                                            indicator: 'none'
+                                        });
+                                    }
+                                });
+                            } else {
+                                layer.msg('暂时没有图片');
+                            }
+                        }
+                    });
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo: orderNo,

@@ -725,7 +725,7 @@ class IndexController extends Controller
      * @param $order_no
      * @return mixed
      */
-    public function leaveImage($order_no)
+    public function leaveImage(Request $request)
     {
         $dataList = [];
         try {
@@ -733,7 +733,7 @@ class IndexController extends Controller
             // 其他通用平台
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
-                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order_no);
+                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($request->order_no);
                // 遍历代练平台
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
