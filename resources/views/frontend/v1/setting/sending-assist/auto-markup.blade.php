@@ -21,20 +21,20 @@
             <li @if(Route::currentRouteName() == 'frontend.setting.order-send-channel.index') class = 'layui-this' @endif><a href="{{ route('frontend.setting.order-send-channel.index') }}">发布渠道设置</a></li>
         </ul>
     </div>
-    <div class="layui-card-body">
+    <div class="layui-card-body" style="padding: 15px 25px 15px 15px">
         <blockquote class="layui-elem-quote">
             操作提示: “自动加价”功能可以自动给“未接单”状态的订单增加代练费。
         </blockquote>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show" id="auto-markup-show">
                 <div style="padding-bottom:40px;">
-                <form class="layui-form" method="" action="">
-                    <div style="float: left">
-                        <div class="layui-inline">
-                            <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
-                        </div>
-                    </div>                     
-                </form>
+                    <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
+                        <div style="float: left">
+                            <div class="layui-inline">
+                                <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                            </div>
+                        </div>                     
+                    </form>
                 </div>
                 <div id="auto-markup-index">
                 @include('frontend.v1.setting.sending-assist.auto-markup-list', ['orderAutoMarkups' => $orderAutoMarkups])
