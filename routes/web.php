@@ -301,7 +301,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             // 发送新订单留言
             Route::post('send-message', 'IndexController@sendMessage')->name('frontend.workbench.leveling.send-message');
             // 获取订单截图
-            Route::get('leave-image/{order_no}', 'IndexController@leaveImage')->name('frontend.workbench.leveling.leave-image');
+            Route::get('leave-image/{order_no?}', 'IndexController@leaveImage')->name('frontend.workbench.leveling.leave-image');
             // 获取订单截图
             Route::post('upload-image', 'IndexController@uploadImage')->name('frontend.workbench.leveling.upload-image');
             // 修改订单
