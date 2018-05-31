@@ -530,7 +530,6 @@ class IndexController extends Controller
             }
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $amount;
-
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
