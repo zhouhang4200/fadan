@@ -115,7 +115,7 @@ class OrderReportController extends Controller
                     if (in_array($order->status, [19, 20, 21])){
                        // 支付金额
                         if (in_array($order->status, [21, 19])) {
-                            $amount = $detail->levelingConsult->api_amount;
+                            $amount = $order->levelingConsult->api_amount;
                         }
                         // 支付金额
                         $paymentAmount = $amount !=0 ?  $amount + 0:  $order->amount + 0;
