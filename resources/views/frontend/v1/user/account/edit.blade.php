@@ -11,6 +11,7 @@
 
 @section('main')
 <div class="layui-card qs-text">
+    <div class="layui-card-header">修改密码</div>
     <div class="layui-card-body" style="padding: 15px 25px 15px 15px">
         <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
             <div class="layui-row layui-col-space10 layui-form-item">
