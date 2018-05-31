@@ -129,26 +129,10 @@
                     })
                 }
             });
-            window.location.href="{{ route('frontend.index') }}";
+            {{--window.location.href="{{ route('frontend.index') }}"; --}}
             layer.closeAll();
             return false;
         });
-
-
-//        $('#recharge').mouseout(function(){
-//            $('.tips').addClass('none');
-//        });
-//
-//        $('#recharge').mousemove(function(){
-//            $('.tips').removeClass('none');
-//        });
-//        $('#store').mouseout(function(){
-//            $('.tip').addClass('none');
-//        });
-//
-//        $('#store').mousemove(function(){
-//            $('.tip').removeClass('none');
-//        });
     });
 
 </script>
