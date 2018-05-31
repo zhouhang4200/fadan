@@ -93,7 +93,7 @@
                     <td>{{ $data->fee + 0 }}</td>
                     <td>{{ $data->balance + 0 }}</td>
                     <td>{{ $data->trade_no }}</td>
-                    <td>{{ $data->order->foreign_order_no }}</td>
+                    <td>{{ $data->order->foreign_order_no ?? '' }}</td>
                     <td>{{ $data->created_at }}</td>
                 </tr>
             @empty
