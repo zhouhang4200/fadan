@@ -5,25 +5,26 @@
 @section('css')
     <style>
         .layui-input, .layui-textarea {
-            width: 450px;
+            width: 350px;
         }
         .layui-form-label {
             width:140px;
         }
-        .layui-input-inline input {
-            width: 85%;
+        .layui-form-item .layui-input-inline {
+            width: 350px;
         }
+
         .tips {
             position: absolute;
             width: 10%;
             height: 30px;
-            right: 0;
+            right: -35px;
             top: 5px;
             text-align: center
         }
 
         .tips .iconfont {
-            left: 0px;
+            left: -5px;
             font-size: 25px;
         }
     </style>
@@ -100,9 +101,10 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-input-block">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-inline">
                                 <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="submit">确认</button>
-                                <a class="qs-btn layui-btn-normal" onclick="cancel()">取消</a>
+                                <a class="qs-btn qs-btn-primary" onclick="cancel()">取消</a>
                             </div>
                         </div>
                     </div>
