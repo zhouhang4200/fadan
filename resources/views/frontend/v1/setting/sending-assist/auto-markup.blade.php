@@ -23,8 +23,7 @@
     </div>
     <div class="layui-card-body">
         <blockquote class="layui-elem-quote">
-            操作提示<br/>
-            用途：“自动加价”功能可以自动给“未接单”状态的订单增加代练费。
+            操作提示: “自动加价”功能可以自动给“未接单”状态的订单增加代练费。
         </blockquote>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show" id="auto-markup-show">

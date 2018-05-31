@@ -10,9 +10,7 @@
 <div class="layui-card qs-text">
     <div class="layui-card-body">
         <blockquote class="layui-elem-quote">
-            操作提示<br/>
-            该功能可以控制，平台用户对您的订单的接单权限<br/>
-            控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)
+            操作提示: 该功能可以控制，平台用户对您的订单的接单权限。控制方式：无（表示不控制所有平台用户可接您的订单）白名单（只有白名单中的用户可接您的单）黑名单（在黑名单中用户无法接您的订单）(三种方式只会有一种生效)
         </blockquote>
         <form class="layui-form layui-form-pane" action="">
             <div class="layui-form-item" pane>

@@ -19,8 +19,7 @@
 <div class="layui-card qs-text">
     <div class="layui-card-body">
         <blockquote class="layui-elem-quote">
-            操作提示<br/>
-            用途：编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。
+            操作提示: 编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。
         </blockquote>
         <fieldset>
             <legend><a name="hr">自动发送</a></legend>

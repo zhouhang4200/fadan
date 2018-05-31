@@ -10,8 +10,7 @@
 <div class="layui-card qs-text">
     <div class="layui-card-body">
         <blockquote class="layui-elem-quote">
-            操作提示<br/>
-            绑定该旺旺用于自动加款。绑定成功后，您拍下的加款卡金额会自动加到您的平台账号余额中。
+            操作提示: 绑定该旺旺用于自动加款。绑定成功后，您拍下的加款卡金额会自动加到您的平台账号余额中。
         </blockquote>
         <form class="layui-form layui-form-pane" action="">
 
