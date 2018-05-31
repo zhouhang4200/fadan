@@ -78,7 +78,7 @@
     </tbody>
 </table>
 </div>
-
+@if($status == 16)
 <form class="layui-form" action="">
 <div class="layui-form-item">
     <label class="layui-form-label" style="text-align: left;padding-left: 0;">留言说明</label>
@@ -115,7 +115,7 @@
     </div>
 </div>
 </form>
-
+@endif
 <script>
     layer.photos({
         anim: -1,
