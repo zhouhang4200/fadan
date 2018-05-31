@@ -788,9 +788,8 @@
                     </div>
                     <div class="layim-chat-bottom">
                         <div class="layim-chat-send">
-                            <span class="layim-send-close cancel" layim-event="closeThisChat">关闭</span>
-                            <span class="layim-send-btn" layim-event="send">发送</span>
-                            <span class="layim-send-set" layim-event="setSend" lay-type="show"><em class="layui-edge"></em></span>
+                            <span class="qs-btn opt-btn cancel" layim-event="closeThisChat">关闭</span>
+                            <span class="qs-btn opt-btn" layim-event="send">发送</span>
                         </div>
                     </div>
                 </div>

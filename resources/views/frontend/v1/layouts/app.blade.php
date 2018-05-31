@@ -172,7 +172,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                         <cite>{{ auth()->user()->username }}</cite>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd>
+                        <dd style="text-align: center;">
                             <a href="{{ route('frontend.index') }}">基本资料</a>
                         </dd>
                         <hr>
@@ -340,11 +340,11 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.statistic.sms') }}">短信统计</a>
                                     </dd>
                                 @endif
-                                {{--@if(Auth::user()->could('frontend.finance.order-report'))--}}
+                                @if(Auth::user()->could('frontend.finance.order-report.index'))
                                     <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.order-report.index') layui-this  @endif">
                                         <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
                                     </dd>
-                                {{--@endif--}}
+                                @endif
                             </dl>
                         </li>
                     @endif

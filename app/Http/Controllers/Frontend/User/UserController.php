@@ -37,9 +37,6 @@ class UserController extends Controller
         $user->qq = $request->data['qq'];
         $user->wechat = $request->data['wechat'];
         $user->phone = $request->data['phone'];
-//        $user->wang_wang = $request->data['wang_wang'];
-        $user->store_wang_wang = $request->data['store_wang_wang'];
-
         $bool = $user->save();
 
         if ($bool) {

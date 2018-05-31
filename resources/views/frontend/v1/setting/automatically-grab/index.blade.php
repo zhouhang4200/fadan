@@ -14,8 +14,7 @@
 <div class="layui-card qs-text">
     <div class="layui-card-body">
          <blockquote class="layui-elem-quote">
-            操作提示</br>
-            用途：添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺授权。
+            操作提示: 添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺授权。
         </blockquote>
 
         <form class="layui-form" id="goods-form">
