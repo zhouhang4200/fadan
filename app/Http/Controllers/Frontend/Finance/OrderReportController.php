@@ -111,13 +111,13 @@ class OrderReportController extends Controller
                     $getAmount = '';
                     $poundage = '';
                     $profit = '';
-                    $amount = '';
+                    $amount = 0;
                     if (in_array($order->status, [19, 20, 21])){
                        // 支付金额
-                        if ($order->status == 21 && $order->levelingConsult) {
-                            $amount = $order->levelingConsult->api_amount;
-                        } else if($order->levelingConsult) {
-                            $amount = $order->levelingConsult->amount;
+                        if (in_array($detail['status'], [21, 19])) {
+                            $amount = $detail['leveling_consult']['api_amount'];
+                        } else {
+                            $amount = $detail['amount'];
                         }
                         // 支付金额
                         $paymentAmount = $amount !=0 ?  $amount + 0:  $order->amount + 0;
@@ -140,7 +140,7 @@ class OrderReportController extends Controller
                         $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
                     }
                     $data = [
-                        $order->no."\t",
+                        $order->no . "\t",
                         $sourceNo.$sourceNo1.$sourceNo2,
                         $order->game_name,
                         isset(config('order.status_leveling')[$order->status]) ? config('order.status_leveling')[$order->status] : '',

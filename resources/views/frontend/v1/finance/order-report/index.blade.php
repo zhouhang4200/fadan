@@ -115,10 +115,10 @@
                         $amount = '';
                         if (in_array($item->status, [19, 20, 21])){
                            // 支付金额
-                            if ($item->status == 21 && $item->levelingConsult) {
+                            if (in_array($item->status, [21, 19])) {
                                 $amount = $item->levelingConsult->api_amount;
-                            } else if($item->levelingConsult) {
-                                $amount = $item->levelingConsult->amount;
+                            } else {
+                                $amount = $item->amount;
                             }
                             // 支付金额
                             $paymentAmount = $amount !=0 ?  $amount + 0:  $item->amount + 0;
@@ -148,7 +148,6 @@
                             @endif
                         </td>
                         <td>{{ $detail['source_price'] ?? '' }}</td>
-                        <td>{{ $paymentAmount  }}</td>
                         <td>{{ $profit }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
