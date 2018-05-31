@@ -127,10 +127,10 @@ class OrderController extends Controller
                         $detail['profit'] = '';
                     } else {
                         // 支付金额
-                        if ($detail['status'] == 21) {
+                        if (in_array($detail['status'], [21, 19])) {
                             $amount = $detail['leveling_consult']['api_amount'];
                         } else {
-                            $amount = $detail['leveling_consult']['amount'];
+                            $amount = $detail['amount'];
                         }
                         // 支付金额
                         $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $amount;
