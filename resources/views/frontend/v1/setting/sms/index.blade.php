@@ -27,7 +27,7 @@
         </fieldset>
 
         <div id="auto-list">
-            @include('frontend.setting.sms.auto-list')
+            @include('frontend.v1.setting.sms.auto-list')
         </div>
 
         {{--<fieldset>--}}

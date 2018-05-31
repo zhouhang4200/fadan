@@ -13,13 +13,13 @@
         <tr>
             <td width="10%">{{ $item->name }}</td>
             <td>{{ $item->contents }}</td>
-            <td  width="10%">{{ config('sms.purpose')[$item->purpose] }}</td>
-            <td  width="4%">
+            <td  width="8%">{{ config('sms.purpose')[$item->purpose] }}</td>
+            <td  width="5%">
                 <input type="checkbox" name="status" lay-skin="switch" data-id="{{ $item->id }}" @if($item->status == 1) checked @endif lay-filter="test">
             </td>
 
             <td  width="5%">
-                <button class="qs-btn layui-bg-blue qs-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
+                <button class="qs-btn qs-btn-normal qs-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
             </td>
         </tr>
     @empty
