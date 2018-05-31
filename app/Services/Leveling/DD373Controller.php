@@ -799,7 +799,31 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
             $datas['Sign'] = md5($str);
             // 发送
             $result = static::formDataRequest($datas, config('leveling.dd373.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
-            dd($result);
+
+            if (! isset($result) || $result['code'] != 0) {
+                return '接口无相关信息';
+            }
+
+            $arr = [];
+            // $arr['detail']['who'] = $result['data']['UserType'] == 1 ? '我方' : ($result['data']['UserType'] == 2 ? '接单平台' : ($result['data']['UserType'] == 3 ? '接单平台客服' : ($result['data']['UserType'] == 4 ? '对方' : '')));
+            $arr['detail']['who'] = '我方';
+            $arr['detail']['created_at'] = $result['data']['AppealTime'];
+            $arr['detail']['content'] = $result['data']['Describe'];
+            $arr['detail']['pic1'] = $result['data']['ImageList'][0] ?? '';
+            $arr['detail']['pic2'] = $result['data']['ImageList'][1] ?? '';
+            $arr['detail']['pic3'] = $result['data']['ImageList'][2] ?? '';
+
+            $res = static::formDataRequest($datas, config('leveling.dd373.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
+
+            if (isset($res['data']) && $res['code'] == 0) {
+                foreach($res['data'] as $k => $detail) {
+                    $arr['info'][$k]['who'] = $detail['senderType'] == 1 ? '我方' : ($detail['senderType'] == 2 ? '接单平台' : ($detail['senderType'] == 3 ? '接单平台客服' : ($detail['senderType'] == 4 ? '对方' : '')));
+                    $arr['info'][$k]['created_at'] = $detail['sendTime'];
+                    $arr['info'][$k]['content'] = $detail['content'];
+                    $arr['info'][$k]['pic'] = $detail['imgUrl'][0] ?? '';
+                }
+            }
+            return $arr;
         } catch (Exception $e) {
             myLog('dd373-local-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
@@ -822,9 +846,9 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
             // 对参数进行加工
             $options = static::handleOptions($datas);
             // 发送
-            static::formDataRequest(array_merge($options, ['fileBase' => $orderDatas['pic']]), config('leveling.dd373.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
+            static::formDataRequest(array_merge($options, ['fileBase' => base64ToBlob($orderDatas['pic'])]), config('leveling.dd373.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
         } catch (Exception $e) {
-            myLog('dd373-local-error', ['方法' => '发送截图', '原因' => $e->getMessage()]);
+            myLog('dd373-local-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage()]);
             throw new DailianException($e->getMessage());
         }
     }
