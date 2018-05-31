@@ -172,7 +172,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                         <cite>{{ auth()->user()->username }}</cite>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd>
+                        <dd style="text-align: center;">
                             <a href="{{ route('frontend.index') }}">基本资料</a>
                         </dd>
                         <hr>
