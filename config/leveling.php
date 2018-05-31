@@ -180,6 +180,7 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
+        'api_url' => env('SHOW91_API_URL', 'http://www.show91.com'),
     	'url' => [
 			'onSale'                   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 上架
 			'offSale'                  => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/grounding', // 下架
@@ -235,6 +236,7 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
+        'api_url' => env('SHOW91_API_URL', 'http://10.0.1.51:8080'),
     	'url' => [
 			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 上架
 			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 下架

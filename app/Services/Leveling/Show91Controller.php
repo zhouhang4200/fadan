@@ -702,8 +702,9 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 获取仲裁详情
-     * @param  [type] $orderDatas [description]
-     * @return [type]             [description]
+     * @param $orderDatas
+     * @return array
+     * @throws DailianException
      */
     public static function getArbitrationInfo($orderDatas)
     {
@@ -723,15 +724,15 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
             }
 
             if (isset($details['appeal']['pic1'])) {
-                $details['appeal']['pic1'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+                $details['appeal']['pic1'] = config('leveling.show91.api_url') . '/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
             }
 
             if (isset($details['appeal']['pic2'])) {
-                $details['appeal']['pic2'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+                $details['appeal']['pic2'] = config('leveling.show91.api_url') . '/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
             }
 
             if (isset($details['appeal']['pic3'])) {
-                $details['appeal']['pic3'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+                $details['appeal']['pic3'] = config('leveling.show91.api_url') . '/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
 
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
@@ -752,7 +753,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                     $arr['info'][$k]['who'] = config('leveling.show91.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
                     $arr['info'][$k]['created_at'] = $detail['created_on'];
                     $arr['info'][$k]['content'] = $detail['content'];
-                    $arr['info'][$k]['pic'] = env('SHOW91_API_URL').'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'];
+                    $arr['info'][$k]['pic'] = isset($detail['pic']) ? config('leveling.show91.api_url') . '/gameupload/appeal/' . $detail['uid'] . '/' . $detail['pic'] : '';
                 }
             }
             return $arr;
