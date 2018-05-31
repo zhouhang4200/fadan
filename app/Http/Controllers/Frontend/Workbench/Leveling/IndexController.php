@@ -523,12 +523,10 @@ class IndexController extends Controller
         } else {
             // 支付金额
             $amount = 0;
-            if (isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] != 0) {
-                if ($detail['status'] == 21) {
-                    $amount = $detail['leveling_consult']['api_amount'];
-                } else {
-                    $amount = $detail['leveling_consult']['amount'];
-                }
+            if (in_array($detail['status'], [21, 19])) {
+                $amount = $detail['leveling_consult']['api_amount'];
+            } else {
+                $amount = $detail['amount'];
             }
             // 支付金额
             $detail['payment_amount'] = $amount !=0 ?  $amount + 0:  $amount;
