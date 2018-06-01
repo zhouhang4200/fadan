@@ -197,8 +197,8 @@
             </div>
             <div class="layui-card-body" style="padding: 15px 25px 15px 15px">
                 <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
-                    <input type="hidden" name="source_order_no">
-                    <input type="hidden" name="client_wang_wang">
+                    <input type="hidden" name="source_order_no" value="{{ $detail['source_order_no'] ?? '' }}">
+                    <input type="hidden" name="client_wang_wang" value="{{ $detail['client_wang_wang'] ?? '' }}">
                     <input type="hidden" name="seller_nick" value="{{ $detail['seller_nick'] ?? '' }}">
                     <input type="hidden" name="is_repeat" value="1">
 
