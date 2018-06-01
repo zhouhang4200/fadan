@@ -54,14 +54,23 @@ class OrderSend extends Command
                     ->where('game_id', $order->game_id)
                     ->first();
 
+                $managerSetChannel = OrderSendChannel::where('user_id', 0)
+                    ->where('game_id', $order->game_id)
+                    ->first();
+
                 $blackThirds = [];
+                $managerBlackThirds = [];
                 if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
                     $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
                 }
 
+                if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
+                    $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                }
+
                 $client = new Client();
                 foreach (config('partner.platform') as $third => $platform) {
-                    if (isset($orderSendChannel) && ! empty($blackThirds) && in_array($third, $blackThirds)) {
+                    if (in_array($third, $blackThirds) || in_array($third, $managerBlackThirds)) {
                         continue;
                     }
                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));

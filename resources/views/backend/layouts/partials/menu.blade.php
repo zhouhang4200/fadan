@@ -288,7 +288,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
                     @if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))
-                    <li @if($currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups'  ||$currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'admin-accounts') class="open active" @endif>
+                    <li @if($currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups'  || $currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'admin-accounts' || $currentRouteName == 'backend.order-send-channel.index') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>权限管理</span>
@@ -327,6 +327,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="{{ route('admin-groups.index') }}" @if($currentRouteName == 'admin-groups.index') class="active" @endif>
                                     管理员列表
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('backend.order-send-channel.index') }}" @if($currentRouteName == 'backend.order-send-channel.index') class="active" @endif>
+                                    发单渠道设置
                                 </a>
                             </li>
 
