@@ -799,7 +799,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
             $datas['Sign'] = md5($str);
             // 发送
             $result = static::formDataRequest($datas, config('leveling.dd373.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
-
+// dd($result);
             if (! isset($result) || $result['code'] != 0) {
                 return '接口无相关信息';
             }
