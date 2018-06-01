@@ -122,7 +122,7 @@
                         if (in_array($item->status, [21, 19])) {
                             $paymentAmount = $item->levelingConsult->api_amount;
                             $getAmount = $item->levelingConsult->api_amount;
-                            $poundage = $item->levelingConsult->api_amount;
+                            $poundage = $item->levelingConsult->api_service;
                         } else {
                             $paymentAmount = $item->amount;
                         }
