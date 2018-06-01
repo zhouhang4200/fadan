@@ -805,8 +805,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
             }
 
             $arr = [];
-            // $arr['detail']['who'] = $result['data']['UserType'] == 1 ? '我方' : ($result['data']['UserType'] == 2 ? '接单平台' : ($result['data']['UserType'] == 3 ? '接单平台客服' : ($result['data']['UserType'] == 4 ? '对方' : '')));
-            $arr['detail']['who'] = '我方';
+            $arr['detail']['who'] = $result['data']['UserType'] == 1 ? '我方' : ($result['data']['UserType'] == 2 ? '接单平台' : ($result['data']['UserType'] == 3 ? '接单平台客服' : ($result['data']['UserType'] == 4 ? '对方' : '')));
             $arr['detail']['created_at'] = $result['data']['AppealTime'];
             $arr['detail']['content'] = $result['data']['Describe'];
             $arr['detail']['pic1'] = $result['data']['ImageList'][0] ?? '';

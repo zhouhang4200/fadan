@@ -36,7 +36,7 @@
     <div class="layui-card-body">
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    <form class="layui-form" method="POST" action="">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
                         {!! csrf_field() !!}
                         <div>
                             <div class="layui-form-item">

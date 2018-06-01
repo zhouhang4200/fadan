@@ -243,6 +243,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('admin-accounts', 'AdminAccountController@store')->name('admin-accounts.store')->middleware('permission:admin-accounts.store');
         Route::get('admin-accounts/{id}/edit', 'AdminAccountController@edit')->name('admin-accounts.edit')->middleware('permission:admin-accounts.edit');
         Route::put('admin-accounts/{id}', 'AdminAccountController@update')->name('admin-accounts.update')->middleware('permission:admin-accounts.update');
+        // 发单渠道设置
+        Route::prefix('order-send-channel')->group(function () {
+            Route::get('/', 'OrderSendChannelController@index')->name('backend.order-send-channel.index');
+            Route::post('set', 'OrderSendChannelController@set')->name('backend.order-send-channel.set');
+        });
     });
 
     Route::namespace('Account')->prefix('account')->group(function () {
