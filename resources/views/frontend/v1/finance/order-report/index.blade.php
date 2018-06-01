@@ -138,6 +138,10 @@
                                     }
                                     $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                 }
+                                // 查询所有来源单号相同的订单的支付金额
+
+                                // 查询所有来源订单相同的 获得金额与手续费
+
                                 // 计算利润
                                 $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                             }
