@@ -132,11 +132,11 @@
                             $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', [$detail['source_order_no'], $detail['source_order_no_1'], $detail['source_order_no_2']])->get();
 
                             if ($taobaoTrade) {
-                                foreach ($taobaoTrade as $item) {
-                                    if ($item->trade_status == 7) {
-                                        $taobaoRefund = bcadd($item->payment, $taobaoRefund, 2);
+                                foreach ($taobaoTrade as $trade) {
+                                    if ($trade->trade_status == 7) {
+                                        $taobaoRefund = bcadd($trade->payment, $taobaoRefund, 2);
                                     }
-                                    $taobaoAmout = bcadd($item->payment, $taobaoAmout, 2);
+                                    $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                 }
                                 // 计算利润
                                 $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
