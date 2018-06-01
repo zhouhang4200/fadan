@@ -85,7 +85,7 @@ class Test extends Command
         // 查询所有代练订单
         $orders = Order::where('service_id', 4)->where('foreign_order_no', '')->get();
         foreach ($orders as $item) {
-            $detail = OrderDetail::where('order_no', $orders->no)->where('field_name', 'source_order_no')->first();
+            $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'source_order_no')->first();
             if ($detail) {
                 $item->foreign_order_no = $detail->field_value;
 
