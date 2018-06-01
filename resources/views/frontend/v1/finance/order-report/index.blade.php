@@ -134,9 +134,9 @@
                             if ($taobaoTrade) {
                                 foreach ($taobaoTrade as $item) {
                                     if ($item->trade_status == 7) {
-                                        $taobaoRefund += $item->payment;
+                                        $taobaoRefund = bcadd($item->payment, $taobaoRefund, 2);
                                     }
-                                    $taobaoAmout += $item->payment;
+                                    $taobaoAmout = bcadd($item->payment, $taobaoAmout, 2);
                                 }
                             }
                         }
