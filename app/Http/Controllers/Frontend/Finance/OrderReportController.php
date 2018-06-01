@@ -15,9 +15,11 @@ use Auth;
 class OrderReportController extends Controller
 {
     /**
+     *
      * @param Request $request
      * @param OrderRepository $orderRepository
-     * @return array|\Illuminate\Http\RedirectResponse
+     * @param GameRepository $gameRepository
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request, OrderRepository $orderRepository, GameRepository $gameRepository)
     {
@@ -70,6 +72,8 @@ class OrderReportController extends Controller
     /**
      * 财务订单列表导出
      * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @param GameRepository $gameRepository
      */
     public function export(Request $request, OrderRepository $orderRepository, GameRepository $gameRepository)
     {

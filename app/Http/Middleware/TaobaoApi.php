@@ -31,6 +31,7 @@ class TaobaoApi
                 $request->data
             ]);
         } else {
+            myLog('api-request-err', [file_get_contents("php://input")]);
             return response()->tb(0, '请求格式错误');
         }
         return $next($request);
