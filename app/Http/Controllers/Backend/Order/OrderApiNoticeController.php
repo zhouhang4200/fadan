@@ -63,7 +63,12 @@ class OrderApiNoticeController extends Controller
                             'content' => '订单（内部单号：'.$arr['order_no']. '）调用【'.config('order.third')[$arr['third']].'】【'.$arr['operate'].'】接口失败:'.$arr['reason']
                         ],
                         'at' => [
-                            'isAtAll' => true
+                            'isAtAll' => false,
+                            "atMobiles" =>  [
+                                // "+86-18500132452",
+                                "13437284998",
+                                "13343450907"
+                            ]
                         ]
                     ]
                 ]);
