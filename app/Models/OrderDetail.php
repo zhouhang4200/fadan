@@ -11,6 +11,7 @@ class OrderDetail extends Model
         'order_no',
         'creator_primary_user_id',
         'field_name',
+        'field_name_alias',
         'field_display_name',
         'field_value',
     ];

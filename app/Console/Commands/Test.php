@@ -71,7 +71,6 @@ class Test extends Command
         12 => "异常",
         13 => "仲裁中",
         14 => "已仲裁",
-
     ];
 
     /**
@@ -81,20 +80,41 @@ class Test extends Command
      */
     public function handle()
     {
-
         // 查询所有代练订单
-        $orders = Order::where('service_id', 4)->where('foreign_order_no', '')->get();
-        foreach ($orders as $item) {
-            $detail = OrderDetail::where('order_no', $item->no)->where('field_name', 'source_order_no')->first();
-            if ($detail) {
-                $item->foreign_order_no = $detail->field_value;
+        $query = Order::where('service_id', 4)->groupBy('foreign_order_no');
 
-                $this->info($item->save());
+        $query->chunk(500, function ($orders) {
+            foreach ($orders as $item) {
+
+                if ($item->foreign_order_no) {
+                    // 查找相同的淘宝单号
+                    $all = Order::where('foreign_order_no', $item->foreign_order_no)->orderBy('created_at', 'asc')->pluck('creator_primary_user_id', 'no')->toArray();
+
+                    $i = 0;
+                    $insert = [];
+                    foreach ($all as $key => $val) {
+                        if ($i != 0) {
+                            $insert[] = [
+                                'order_no' =>   $key,
+                                'creator_primary_user_id' => $val,
+                                'field_display_name' => '是否为重发',
+                                'field_name' => 'is_repeat',
+                                'field_name_alias' => 'is_repeat',
+                                'field_value' => 1,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s'),
+                            ];
+                        }
+                        $i++;
+                    }
+                    if (count($insert)) {
+                        OrderDetail::insert($insert);
+                    }
+                }
             }
-        }
+        });
+
         die;
-
-
         $type = $this->argument('type');
       dd(  Show91Controller::getMessage([
           'show91_order_no' => 'ORD180521105449004776'
