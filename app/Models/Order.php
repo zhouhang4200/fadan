@@ -116,6 +116,15 @@ class Order extends Model
     }
 
     /**
+     * 订单外部订单关联
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function taobaoTrade()
+    {
+        return $this->belongsTo(TaobaoTrade::class, 'tid', 'foreign_order_no');
+    }
+
+    /**
      * 发单人
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

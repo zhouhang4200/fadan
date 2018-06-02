@@ -159,8 +159,8 @@
                                         }
                                     }
 
-                                    // 计算利润
-                                    $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
+                                 // 计算利润
+                                $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                             }
                         }
                     @endphp
@@ -187,7 +187,7 @@
                         <td>{{ $getAmount }}</td>
                         <td>{{ $poundage }}</td>
                         <td>{{ $profit }}</td>
-                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->taobaoTrade->created ?? '' }}</td>
                         <td>{{ $item->updated_at }}</td>
                     </tr>
                 @empty

@@ -253,7 +253,7 @@ class OrderRepository
         $query->when(!empty($endDate) !=0, function ($query) use ($endDate) {
             return $query->where('created_at', '<=', $endDate. " 23:59:59");
         });
-        $query->where('service_id', 4)->with(['detail', 'levelingConsult']);
+        $query->where('service_id', 4)->with(['detail', 'levelingConsult', 'taobaoTrade']);
         $query->orderBy('id', 'desc');
 
         return $query->paginate($pageSize);
