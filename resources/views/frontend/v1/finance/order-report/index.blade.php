@@ -140,18 +140,21 @@
                                     }
                                     $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                 }
-                                // 查询所有来源单号相同的订单的支付金额
-                                $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
-                                foreach ($sameOrders as $sameOrder) {
-                                    // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
-                                    if (in_array($sameOrder->status, [21, 19])) {
-                                        $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
-                                        $getAmount += $sameOrder->levelingConsult->api_amount;
-                                        $poundage += $sameOrder->levelingConsult->api_service;
-                                    } else {
-                                        $paymentAmount += $sameOrder->amount;
+                                if ($detail['source_order_no']) {
+                                     // 查询所有来源单号相同的订单的支付金额
+                                    $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
+                                    foreach ($sameOrders as $sameOrder) {
+                                        // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
+                                        if (in_array($sameOrder->status, [21, 19])) {
+                                            $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
+                                            $getAmount += $sameOrder->levelingConsult->api_amount;
+                                            $poundage += $sameOrder->levelingConsult->api_service;
+                                        } else {
+                                            $paymentAmount += $sameOrder->amount;
+                                        }
                                     }
                                 }
+
                                 // 计算利润
                                 $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                             }
