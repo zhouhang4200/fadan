@@ -140,7 +140,7 @@
                                     }
                                     $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                 }
-                                if ($detail['source_order_no']) {
+                                if (!empty($detail['source_order_no'])) {
                                      // 查询所有来源单号相同的订单的支付金额
                                     $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
                                     foreach ($sameOrders as $sameOrder) {
