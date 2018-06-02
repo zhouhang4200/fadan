@@ -181,12 +181,12 @@
                             @else
                             @endif
                         </td>
-                        <td>{{ $taobaoAmout }}</td>
-                        <td>{{ $taobaoRefund }}</td>
-                        <td>{{ $orgPaymentAmount }}</td>
-                        <td>{{ $getAmount }}</td>
-                        <td>{{ $poundage }}</td>
-                        <td>{{ $profit }}</td>
+                        <td>{{ $taobaoAmout  + 0 }}</td>
+                        <td>{{ $taobaoRefund  + 0 }}</td>
+                        <td>{{ $orgPaymentAmount  + 0 }}</td>
+                        <td>{{ $getAmount  + 0 }}</td>
+                        <td>{{ $poundage  + 0 }}</td>
+                        <td>{{ $profit  + 0 }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                     </tr>
