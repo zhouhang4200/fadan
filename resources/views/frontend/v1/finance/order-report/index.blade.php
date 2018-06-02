@@ -128,7 +128,7 @@
                         }
 
                         // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
-                        if (isset($detail['is_repeat'])  && ! $detail['is_repeat'] ) {
+                        if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
                             $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', [$detail['source_order_no'], $detail['source_order_no_1'], $detail['source_order_no_2']])->get();
 
                             if ($taobaoTrade) {
