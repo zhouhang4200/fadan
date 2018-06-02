@@ -121,7 +121,7 @@ class Order extends Model
      */
     public function taobaoTrade()
     {
-        return $this->belongsTo(TaobaoTrade::class, 'tid', 'foreign_order_no');
+        return $this->belongsTo(TaobaoTrade::class, 'foreign_order_no', 'tid');
     }
 
     /**
