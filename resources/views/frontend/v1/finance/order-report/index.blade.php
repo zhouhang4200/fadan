@@ -125,7 +125,7 @@
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
-                        } else if ($item == 23) {
+                        } else if ($item->status == 23) {
                             $paymentAmount = 0;
                         }
                         if (!empty($detail['source_order_no'])) {
