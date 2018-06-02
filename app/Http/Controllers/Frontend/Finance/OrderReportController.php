@@ -103,8 +103,11 @@ class OrderReportController extends Controller
             '店铺名称',
             '接单平台',
             '淘宝金额',
-            '接单价格',
-            '最终利润',
+            '淘宝退款',
+            '支付金额',
+            '获得金额',
+            '手续费',
+            '利润',
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
