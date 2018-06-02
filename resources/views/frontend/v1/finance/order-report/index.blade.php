@@ -123,8 +123,10 @@
                             $paymentAmount = $item->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
                             $getAmount = $item->levelingConsult->api_amount;
                             $poundage = $item->levelingConsult->api_service;
-                        } else {
+                        } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
+                        } else if ($item == 23) {
+                            $paymentAmount = 0;
                         }
 
                         // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
