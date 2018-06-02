@@ -139,7 +139,7 @@
                                     $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                 }
                                 // 查询所有来源单号相同的订单的支付金额
-                                $sameOrders =  \App\Models\Order::where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
+                                $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
                                 foreach ($sameOrders as $sameOrder) {
                                     // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                                     if (in_array($sameOrder->status, [21, 19])) {
