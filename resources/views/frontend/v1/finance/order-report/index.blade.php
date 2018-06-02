@@ -114,19 +114,23 @@
                         $taobaoAmout = ''; // 淘宝金额取值:所有淘宝订单总支付金额
                         $taobaoRefund = ''; // 淘宝退款:所有淘宝订单已退款状态的支付金额
                         $paymentAmount = ''; // 支付金额: 订单总金额 或 仲裁结果需支付的金额
+                        $orgPaymentAmount = ''; // 支付金额
                         $getAmount = ''; // 获得金额: 仲裁结果需支付的金额
                         $poundage = ''; // 手续费: 只有在已仲裁 已撤销 才有值
                         $profit = ''; // 利润
 
                         // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                         if (in_array($item->status, [21, 19])) {
+                            $orgPaymentAmount = $item->levelingConsult->api_amount;
                             $paymentAmount = $item->levelingConsult->api_amount;
                             $getAmount = $item->levelingConsult->api_amount;
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
+                            $orgPaymentAmount = $item->amount;
                         } else if ($item->status == 23) {
                             $paymentAmount = 0;
+                            $orgPaymentAmount = 0;
                         }
                         if (!empty($detail['source_order_no'])) {
                             // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
@@ -179,7 +183,7 @@
                         </td>
                         <td>{{ $taobaoAmout }}</td>
                         <td>{{ $taobaoRefund }}</td>
-                        <td>{{ $paymentAmount }}</td>
+                        <td>{{ $orgPaymentAmount }}</td>
                         <td>{{ $getAmount }}</td>
                         <td>{{ $poundage }}</td>
                         <td>{{ $profit }}</td>
