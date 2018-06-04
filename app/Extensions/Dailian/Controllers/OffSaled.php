@@ -58,6 +58,7 @@ class OffSaled extends DailianAbstract implements DailianInterface
             autoUnShelveDel($this->orderNo);
             // 从留言获取任务中删除
             levelingMessageDel($this->orderNo);
+            $this->runEvent();
         } catch (DailianException $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '下架', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);

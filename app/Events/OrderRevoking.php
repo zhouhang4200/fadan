@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
@@ -9,10 +10,6 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-/**
- * Class OrderRevoking
- * @package App\Events
- */
 class OrderRevoking
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;

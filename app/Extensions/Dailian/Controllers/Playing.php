@@ -66,6 +66,7 @@ class Playing extends DailianAbstract implements DailianInterface
             // 从自动下架任务中删除
             autoUnShelveDel($this->orderNo);
             $this->checkUserBalance();
+            $this->runEvent();
         } catch (DailianException $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '接单', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);

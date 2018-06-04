@@ -29,7 +29,7 @@ class ChangeTaobaoTradeStatus
         // 订单状态为: 已撤销、已仲裁、已撤单、强制撤销订单
         if (in_array($event->order->status, [19, 23, 21, 24])) {
             //  查询所有关联淘宝单号
-            $tid = OrderDetail::where('order_no', $event->order->no)->where('field_name_alias', 'source_order_no')->pluck('field_value');
+            $tid = OrderDetail::where('order_no', $event->order->no)->where('field_name_alias', 'source_order_no')->pluck('field_value')->toArray();
 
             $taobaoTrade = TaobaoTrade::whereIn('tid', array_filter(array_unique($tid)))->get();
             // 如果对应淘宝订单没有变为“已退款/交易成功
