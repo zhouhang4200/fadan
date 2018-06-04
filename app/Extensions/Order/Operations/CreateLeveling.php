@@ -172,13 +172,11 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 }
             }
             // 如果有补款单号，那么更新此单关联订单的补款单号
-            $otherOrders = OrderDetail::where('field_name', 'source_order_no')
-                ->where('field_value', $this->foreignOrderNO)
-                ->get();
+            $otherOrders = Order::where('foreign_order_no', $this->foreignOrderNO)->get();
 
             if (isset($this->details['source_order_no_1']) && ! empty($this->details['source_order_no_1'])) {
                 foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->order_no)
+                    OrderDetail::where('order_no', $otherOrder->no)
                         ->where('field_name', 'source_order_no_1')
                         ->update(['field_value' => $this->details['source_order_no_1']]);
                 }
@@ -186,7 +184,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
             if (isset($this->details['source_order_no_2']) && ! empty($this->details['source_order_no_2'])) {
                 foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->order_no)
+                    OrderDetail::where('order_no', $otherOrder->no)
                         ->where('field_name', 'source_order_no_2')
                         ->update(['field_value' => $this->details['source_order_no_2']]);
                 }
