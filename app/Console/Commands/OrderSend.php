@@ -124,7 +124,7 @@ class OrderSend extends Command
                             myLog('order-send-result-des', [$platform['name'], $result]);
 
                         } catch (\Exception $exception) {
-                            myLog('order-send-ex', [$platform['name'], $exception->getMessage(), $decrypt]);
+                            myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
                         }
                     }
 
