@@ -172,13 +172,13 @@ class OrderReportController extends Controller
                     $sourceNo = '';
                     $sourceNo1 = '';
                     $sourceNo2 = '';
-                    if (!empty($detail['source_order_no'])) {
+                    if (isset($detail['source_order_no']) && !empty($detail['source_order_no'])) {
                         $sourceNo = '单号1：'.$detail['source_order_no'];
                     }
-                    if (!empty($detail['source_order_no_1'])) {
+                    if (isset($detail['source_order_no_1']) && !empty($detail['source_order_no_1'])) {
                         $sourceNo1 = "\n单号2：".$detail['source_order_no_1'];
                     }
-                    if (!empty($detail['source_order_no_2'])) {
+                    if (isset($detail['source_order_no_2']) && !empty($detail['source_order_no_2'])) {
                         $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
                     }
 
