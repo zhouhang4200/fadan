@@ -43,7 +43,7 @@ class OrderApiNoticeController extends Controller
     			
 				$arr                     = [];
 				$arr['order_no']         = $order['datas']['order_no'] ?? 0;
-				$arr['source_order_no']  = $order['datas']['source_order_no'] ?? 0;
+				$arr['source_order_no']  = $orderModel->foreign_order_no ?? 0;
 				$arr['status']           = $orderModel->status ?? 0;
 				$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
 				$arr['third']            = $third ?? 0;
