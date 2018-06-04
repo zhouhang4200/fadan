@@ -127,6 +127,7 @@ class WaitController extends Controller
                 'trade_status' => $item->getTradeStatusText(),
                 'order_status' => $item->getOrderStatusText(),
                 'game_name' => $item->game_name,
+                'game_id' => $item->game_id,
                 'buyer_nick' => $item->buyer_nick,
                 'price' => $item->price,
                 'num' => $item->num,
