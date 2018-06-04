@@ -48,31 +48,30 @@ class OrderSend extends Command
 
             if($orderData) {
                 try {
-                    $orderDatas = json_decode($orderData, true);
-                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
-
-                    // 检测平台是否开启，
-                    $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
-                        ->where('game_id', $order->game_id)
-                        ->first();
-
-                    $managerSetChannel = OrderSendChannel::where('user_id', 0)
-                        ->where('game_id', $order->game_id)
-                        ->first();
-
-                    $blackThirds = [];
-                    $managerBlackThirds = [];
-                    if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
-                        $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
-                    }
-
-                    if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
-                        $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
-                    }
-                    myLog('order-channel', ['order' => $order, 'orderSendChannel' => $orderSendChannel, 'managerSetChannel' => $managerSetChannel, 'blackThirds' => $blackThirds, 'managerBlackThirds' => $managerBlackThirds]);
-
                     $client = new Client();
                     foreach (config('partner.platform') as $third => $platform) {
+                        $orderDatas = json_decode($orderData, true);
+                        $order = OrderModel::where('no', $orderDatas['order_no'])->first();
+
+                        // 检测平台是否开启，
+                        $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
+                            ->where('game_id', $order->game_id)
+                            ->first();
+
+                        $managerSetChannel = OrderSendChannel::where('user_id', 0)
+                            ->where('game_id', $order->game_id)
+                            ->first();
+
+                        $blackThirds = [];
+                        $managerBlackThirds = [];
+                        if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
+                            $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
+                        }
+
+                        if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
+                            $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                        }
+                        myLog('order-channel', ['order' => $order, 'orderSendChannel' => $orderSendChannel, 'managerSetChannel' => $managerSetChannel, 'blackThirds' => $blackThirds, 'managerBlackThirds' => $managerBlackThirds]);
                         if (in_array($third, $blackThirds) || in_array($third, $managerBlackThirds)) {
                             continue;
                         }
