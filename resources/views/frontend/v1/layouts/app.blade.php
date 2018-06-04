@@ -509,6 +509,48 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         });
         return false;
     });
+
+    $('body').on('click', '#withdraw', function () {
+        layer.open({
+            type: 1,
+            title: '提现单',
+            area: ['350px', '240px'],
+            content: $('#withdraw-box')
+        });
+    });
+
+    $('body').on('click', '#withdraw-submit', function () {
+
+        var loading = layer.load(2, {shade: [0.1, '#000']});
+
+        $.ajax({
+            url: "{{ route('frontend.finance.withdraw-order.store') }}",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                fee: $('[name="fee"]').val(),
+                remark: $('[name="remark"]').val()
+            },
+            error: function (data) {
+                layer.close(loading);
+                var responseJSON = data.responseJSON.errors;
+                for (var key in responseJSON) {
+                    layer.msg(responseJSON[key][0]);
+                    break;
+                }
+            },
+            success: function (data) {
+                layer.close(loading);
+                if (data.status === 1) {
+                    layer.alert('操作成功', function () {
+                        location.href = "{{ route('frontend.finance.withdraw-order') }}";
+                    });
+                } else {
+                    layer.alert(data.message);
+                }
+            }
+        });
+    });
 </script>
 @yield('js')
 </body>

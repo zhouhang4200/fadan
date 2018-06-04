@@ -85,7 +85,7 @@ class OrderReportController extends Controller
         $urgentOrder = $request->input('urgent_order', 0);
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $pageSize = $request->input('limit', 15);
+        $pageSize = $request->input('limit', 10);
 
         $taobaoStatus = $request->input('taobao_status', 0);
         $platform = $request->input('platform', 0);

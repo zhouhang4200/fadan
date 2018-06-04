@@ -1149,7 +1149,7 @@
                                     window.location.reload()
                                 });
                             }
-                        });
+                        }, 'json');
                         layer.close(index);
                     });
                 } else if (operation == 'agreeRevoke') {
