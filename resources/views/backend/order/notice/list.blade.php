@@ -6,6 +6,7 @@
             <th>淘宝单号</th>
             <th>内部状态</th>
             <th>商户操作</th>
+            <th>发单商户</th>
             <th>接单平台</th>
             <th>失败返回消息</th>
             <th>发布时间</th>
@@ -21,9 +22,8 @@
                 <td>
                     {{ config('order.status_leveling')[$order->status] ?? '' }}
                 </td>
-                <td>
-                    {{ $order->operate }}
-                </td>
+                <td>{{ $order->operate }} </td>
+                <td>{{ isset($order->order) ? (\App\Models\User::find($order->order->creator_user_id)->username ?? '') : '' }} </td>
                 <td>{{ config('order.third')[$order->third] }}</td>
                 <td>{{ $order->reason }}</td>
                 <td>{{ $order->order_created_at }}</td>
