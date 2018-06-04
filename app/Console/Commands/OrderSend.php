@@ -47,25 +47,30 @@ class OrderSend extends Command
             $orderData = $this->redis->lpop('order:send');
 
             if($orderData) {
-                $orderDatas = json_decode($orderData, true);
-                $order = OrderModel::where('no', $orderDatas['order_no'])->first();
-                // 检测平台是否开启，
-                $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
-                    ->where('game_id', $order->game_id)
-                    ->first();
+                try {
+                    $orderDatas = json_decode($orderData, true);
+                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
 
-                $managerSetChannel = OrderSendChannel::where('user_id', 0)
-                    ->where('game_id', $order->game_id)
-                    ->first();
+                    // 检测平台是否开启，
+                    $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
+                        ->where('game_id', $order->game_id)
+                        ->first();
 
-                $blackThirds = [];
-                $managerBlackThirds = [];
-                if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
-                    $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
-                }
+                    $managerSetChannel = OrderSendChannel::where('user_id', 0)
+                        ->where('game_id', $order->game_id)
+                        ->first();
 
-                if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
-                    $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                    $blackThirds = [];
+                    $managerBlackThirds = [];
+                    if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
+                        $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
+                    }
+
+                    if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
+                        $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                    }
+                } catch (\Exception $e) {
+                    myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage()]);
                 }
 
                 $client = new Client();
