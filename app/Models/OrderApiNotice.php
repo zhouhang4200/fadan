@@ -17,7 +17,7 @@ class OrderApiNotice extends Model
 
     public function order()
     {
-    	return $this->belongsTo(Order::class, 'no', 'order_no');
+    	return $this->belongsTo(Order::class, 'order_no', 'no');
     }
 
     /**
