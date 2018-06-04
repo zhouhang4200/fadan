@@ -263,6 +263,9 @@ body .layui-laydate .layui-this {
     font-size: 12px;
 }
 /* 分页样式 */
+.pagination{
+    height: 30px;
+}
 .pagination > li a, .pagination > li span{
     float: left;
     min-width: 30px;
