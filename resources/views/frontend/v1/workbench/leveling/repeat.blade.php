@@ -781,13 +781,6 @@
                 $('select[name=region]').val('{{ $detail['region'] }}');
 
                 @if(isset($taobaoTrade->tid))
-                    <?php $payment = 0;?>
-                    @forelse($allTaobaoTrade as $trade)
-                        <?php  $payment +=  $trade['payment'] ?>
-                    @empty
-                    @endforelse
-                    $('input[name=source_price]').val('{{ $payment }}');
-
                     $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
                     $('input[name=order_source]').val('天猫');
                     $('input[name=client_wang_wang]').val('{{ $taobaoTrade->buyer_nick }}');
