@@ -91,25 +91,34 @@ class Test extends Command
                     $all = Order::where('foreign_order_no', $item->foreign_order_no)->orderBy('created_at', 'asc')->pluck('creator_primary_user_id', 'no')->toArray();
 
                     $i = 0;
-                    $insert = [];
+//                    $insert = [];
                     foreach ($all as $key => $val) {
                         if ($i != 0) {
-                            $insert[] = [
-                                'order_no' =>   $key,
-                                'creator_primary_user_id' => $val,
-                                'field_display_name' => '是否为重发',
-                                'field_name' => 'is_repeat',
-                                'field_name_alias' => 'is_repeat',
-                                'field_value' => 1,
-                                'created_at' => date('Y-m-d H:i:s'),
-                                'updated_at' => date('Y-m-d H:i:s'),
-                            ];
+                            $exist = OrderDetail::where('order_no', $key)->where('field_name', 'is_repeat')->first();
+
+                            if (!$exist) {
+                                $insert = [
+                                    'order_no' =>   $key,
+                                    'creator_primary_user_id' => $val,
+                                    'field_display_name' => '是否为重发',
+                                    'field_name' => 'is_repeat',
+                                    'field_name_alias' => 'is_repeat',
+                                    'field_value' => 1,
+//                                'created_at' => date('Y-m-d H:i:s'),
+//                                'updated_at' => date('Y-m-d H:i:s'),
+                                ];
+                                OrderDetail::create($insert);
+                            } else {
+                                $exist->field_value = 1;
+                                $exist->field_name_alias = 'is_repeat';
+                                $exist->save();
+                            }
                         }
                         $i++;
                     }
-                    if (count($insert)) {
-                        OrderDetail::insert($insert);
-                    }
+//                    if (count($insert)) {
+//
+//                    }
                 }
             }
         });
