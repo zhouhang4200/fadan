@@ -5,6 +5,7 @@ use App\Exceptions\OrderException as Exception;
 use App\Models\SiteInfo;
 use App\Models\Weight;
 use App\Services\KamenOrderApi;
+use App\Services\SmSApi;
 
 // 发货
 class Delivery extends \App\Extensions\Order\Operations\Base\Operation
@@ -42,6 +43,16 @@ class Delivery extends \App\Extensions\Order\Operations\Base\Operation
         $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
         if ($this->order->foreignOrder && $has) {
             KamenOrderApi::share()->success($this->order->foreignOrder->kamen_order_no);
+        }
+
+        // 发送推广短信
+        if (
+            $this->order->foreignOrder
+            && is_numeric($this->order->foreignOrder->tel)
+            && strlen($this->order->foreignOrder->tel) == 11
+            && $this->order->game_name == '王者荣耀'
+        ) {
+            SmSApi::sendTemplate($this->order->foreignOrder->tel);
         }
     }
 }
