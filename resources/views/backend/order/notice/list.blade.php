@@ -17,7 +17,7 @@
         @forelse($orders as $order)
             <tr>
                 <td>{{ $order->order_no }}</td>
-                <td>{{ $order->resource_order_no }}</td>
+                <td>{{ $order->source_order_no }}</td>
                 <td>
                     {{ config('order.status_leveling')[$order->status] ?? '' }}
                 </td>
