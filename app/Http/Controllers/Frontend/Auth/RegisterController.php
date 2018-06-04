@@ -51,8 +51,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'geetest_challenge' => 'required',
-            'phone' => 'required',
-            'qq' => 'required',
+//            'phone' => 'required',
+//            'qq' => 'required',
             'username' => 'required',
             'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255',
