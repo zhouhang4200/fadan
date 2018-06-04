@@ -529,7 +529,7 @@
                     table = layui.table,
                     carousel =  layui.carousel;
             // 是否将天猫订单发货
-            var delivery = 0;
+            var delivery = 1;
             // 状态切换
             element.on('tab(order-list)', function () {
                 $('form').append('<input name="status" type="hidden" value="' + this.getAttribute('lay-id')  + '">');
@@ -824,7 +824,7 @@
                     });
                     return false
                 } else if (opt == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
+                    layer.confirm("确定完成订单？<br/> <input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
                         title: '提示'
                     }, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
@@ -955,6 +955,13 @@
             // 弹窗的取消按钮
             $('.cancel').click(function () {
                 layer.closeAll();
+            });
+            $('body').on('click', '#delivery', function () {
+                if ($(this).is(':checked')) {
+                    delivery = 1;
+                } else {
+                    delivery = 0;
+                }
             });
         });
     </script>
