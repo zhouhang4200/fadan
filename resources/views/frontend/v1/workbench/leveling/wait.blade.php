@@ -71,7 +71,7 @@
                                 <label class="layui-form-label">绑定游戏</label>
                                 <div class="layui-input-block">
                                     <select name="game_id" lay-filter="game" lay-search="">
-                                        <option value="">请输入绑定游戏名</option>
+                                        <option value="">请选择</option>
                                         @forelse($games as $id => $name)
                                             <option value="{{ $id }}">{{ $name }}</option>
                                         @empty
