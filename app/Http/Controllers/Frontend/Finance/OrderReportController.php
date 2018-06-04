@@ -15,9 +15,11 @@ use Auth;
 class OrderReportController extends Controller
 {
     /**
+     *
      * @param Request $request
      * @param OrderRepository $orderRepository
-     * @return array|\Illuminate\Http\RedirectResponse
+     * @param GameRepository $gameRepository
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request, OrderRepository $orderRepository, GameRepository $gameRepository)
     {
@@ -70,6 +72,8 @@ class OrderReportController extends Controller
     /**
      * 财务订单列表导出
      * @param Request $request
+     * @param OrderRepository $orderRepository
+     * @param GameRepository $gameRepository
      */
     public function export(Request $request, OrderRepository $orderRepository, GameRepository $gameRepository)
     {
@@ -99,31 +103,69 @@ class OrderReportController extends Controller
             '店铺名称',
             '接单平台',
             '淘宝金额',
-            '接单价格',
-            '最终利润',
+            '淘宝退款',
+            '支付金额',
+            '获得金额',
+            '手续费',
+            '利润',
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
             $orders->chunk(1000, function ($chunkOrders) use ($out) {
-                foreach ($chunkOrders as $order) {
-                    $detail = $order->detail->pluck('field_value', 'field_name')->toArray();
-                    $paymentAmount = '';
-                    $getAmount = '';
-                    $poundage = '';
-                    $profit = '';
-                    $amount = 0;
-                    if (in_array($order->status, [19, 20, 21])){
-                       // 支付金额
-                        if (in_array($order->status, [21, 19])) {
-                            $amount = $order->levelingConsult->api_amount;
+                foreach ($chunkOrders as $item) {
+                    $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
+
+                    $taobaoAmout = ''; // 淘宝金额取值:所有淘宝订单总支付金额
+                    $taobaoRefund = ''; // 淘宝退款:所有淘宝订单已退款状态的支付金额
+                    $paymentAmount = ''; // 支付金额: 订单总金额 或 仲裁结果需支付的金额
+                    $orgPaymentAmount = ''; // 支付金额
+                    $getAmount = ''; // 获得金额: 仲裁结果需支付的金额
+                    $poundage = ''; // 手续费: 只有在已仲裁 已撤销 才有值
+                    $profit = ''; // 利润
+
+                    // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
+                    if (in_array($item->status, [21, 19])) {
+                        $orgPaymentAmount = $item->levelingConsult->api_amount;
+                        $paymentAmount = $item->levelingConsult->api_amount;
+                        $getAmount = $item->levelingConsult->api_amount;
+                        $poundage = $item->levelingConsult->api_service;
+                    } else if ($item->status == 20) {
+                        $paymentAmount = $item->amount;
+                        $orgPaymentAmount = $item->amount;
+                    } else if ($item->status == 23) {
+                        $paymentAmount = 0;
+                        $orgPaymentAmount = 0;
+                    }
+                    if (!empty($detail['source_order_no'])) {
+                        // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
+                        if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
+                            $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', [$detail['source_order_no'], $detail['source_order_no_1'], $detail['source_order_no_2']])->get();
+
+                            if ($taobaoTrade) {
+                                foreach ($taobaoTrade as $trade) {
+                                    if ($trade->trade_status == 7) {
+                                        $taobaoRefund = bcadd($trade->payment, $taobaoRefund, 2);
+                                    }
+                                    $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
+                                }
+
+                                // 查询所有来源单号相同的订单的支付金额
+                                $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
+                                foreach ($sameOrders as $sameOrder) {
+                                    // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
+                                    if (in_array($sameOrder->status, [21, 19])) {
+                                        $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
+                                        $getAmount += $sameOrder->levelingConsult->api_amount;
+                                        $poundage += $sameOrder->levelingConsult->api_service;
+                                    } else {
+                                        $paymentAmount += $sameOrder->amount;
+                                    }
+                                }
+                            }
+
+                            // 计算利润
+                            $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                         }
-                        // 支付金额
-                        $paymentAmount = $amount !=0 ?  $amount + 0:  $order->amount + 0;
-                        $paymentAmount = (float)$paymentAmount + 0;
-                        $getAmount = (float)$getAmount + 0;
-                        $poundage = (float)$poundage + 0;
-                        // 利润
-                        $profit = ((float)$detail['source_price'] - $paymentAmount + $getAmount - $poundage) + 0;
                     }
                     $sourceNo = '';
                     $sourceNo1 = '';
@@ -138,17 +180,20 @@ class OrderReportController extends Controller
                         $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
                     }
                     $data = [
-                        $order->no . "\t",
-                        $sourceNo.$sourceNo1.$sourceNo2,
-                        $order->game_name,
-                        isset(config('order.status_leveling')[$order->status]) ? config('order.status_leveling')[$order->status] : '',
+                        $item->no . "\t",
+                        $sourceNo . $sourceNo1 . $sourceNo2,
+                        $item->game_name,
+                        isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
                         $detail['seller_nick'] ?? '',
                         isset($detail['third']) && $detail['third'] ? config('partner.platform')[(int)$detail['third']]['name'] .'/'.$detail['third_order_no']: '',
-                        (string)$detail['source_price'] ?? '',
-                        (string)$paymentAmount,
+                        (string)$taobaoAmout,
+                        (string)$taobaoRefund,
+                        (string)$orgPaymentAmount,
+                        (string)$getAmount,
+                        (string)$poundage,
                         (string)$profit,
-                        $order->created_at,
-                        $order->updated_at,
+                        $item->taobaoTrade->created ?? '',
+                        $item->updated_at,
                     ];
                     fputcsv($out, $data);
                 }

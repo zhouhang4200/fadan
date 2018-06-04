@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Frontend\Finance;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Auth;
 use App\Repositories\Frontend\UserAmountFlowRepository;
 use App\Extensions\Excel\ExportFrontendUserAmountFlow;
 
