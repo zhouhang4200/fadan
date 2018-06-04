@@ -1272,7 +1272,7 @@
                     if (who == 1) {
                         var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     } else {
-                        var message = "对方发起协商撤销。 我支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
+                        var message = "对方发起协商撤销。 你支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     }
                     layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
