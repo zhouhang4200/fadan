@@ -188,13 +188,18 @@ class OrderReportController extends Controller
                         $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
                     }
 
+                    $third = '';
+                    if(isset($detail['third']) && $detail['third']){
+                        $third = isset(config('partner.platform')[(int)$detail['third']]) ? config('partner.platform')[(int)$detail['third']]['name'] . '/ '. $detail['third_order_no']: ''  ;
+                    }
+
                     $data = [
                         $item->no . "\t",
                         $sourceNo . $sourceNo1 . $sourceNo2,
                         $item->game_name,
                         isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
                         $detail['seller_nick'] ?? '',
-                        isset($detail['third']) && $detail['third'] ? config('partner.platform')[(int)$detail['third']]['name'] .'/'.$detail['third_order_no']: '',
+                        $third,
                         (string)$taobaoAmout,
                         (string)$taobaoRefund,
                         (string)$orgPaymentAmount,
