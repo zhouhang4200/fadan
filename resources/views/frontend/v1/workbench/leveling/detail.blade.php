@@ -1545,7 +1545,7 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        var getTpl = $('#layui-boxx').html(), view = $('.layim-chat-main');
+                        var getTpl = message.innerHTML, view = $('.layim-chat-main');
                         layTpl(getTpl).render(result.content, function(html){
                             view.html(html);
                             layui.form.render();
@@ -1596,7 +1596,7 @@
                     area: ['850px', '561px'],
                     shade: 0.8,
                     moveType: 1,  //拖拽模式，0或者1
-                    content: $('#layui-boxx'),
+                    content: $('#message'),
                     success: function (layero) {
                         loadMessage(1);
                     }
