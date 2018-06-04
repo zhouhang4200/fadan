@@ -141,7 +141,7 @@
                                     isset($detail['source_order_no_1']) ?? '',
                                     isset($detail['source_order_no_2']) ?? '',
                                 ];
-                                $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', array_filter($tid))->get();
+                                $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_filter($tid))->get();
 
                                 if ($taobaoTrade) {
                                     foreach ($taobaoTrade as $trade) {
