@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <button class="layui-btn layui-bg-blue" lay-submit="" lay-filter="add">确认添加</button>
+                <button class="qs-btn" lay-submit="" lay-filter="add">确认添加</button>
             </div>
         </form>
     </div>

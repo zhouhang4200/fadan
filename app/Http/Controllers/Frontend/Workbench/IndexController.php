@@ -43,7 +43,7 @@ class IndexController extends Controller
         $services = $serviceRepository->available();
         $games = $gameRepository->available();
 
-        return view('frontend.workbench.recharge.index', compact('orders', 'services', 'games', 'type', 'no'));
+        return view('frontend.v1.workbench.recharge.index', compact('orders', 'services', 'games', 'type', 'no'));
     }
 
     /**
@@ -53,7 +53,7 @@ class IndexController extends Controller
     {
         try {
             orderStatusCount(auth()->user()->getPrimaryUserId(), $request->status, 2);
-        } catch (\ErrorException $exception) {
+        } catch (\Exception $exception) {
 
         }
     }
@@ -75,7 +75,7 @@ class IndexController extends Controller
                 return response()->ajax(0, '不存在的类型');
             }
             $orders = $orderRepository->dataList($type, $searchType, $searchContent);
-            return response()->json(\View::make('frontend.workbench.order-list', [
+            return response()->json(\View::make('frontend.v1.workbench.recharge.order-list', [
                 'type' => $type,
                 'no' => $no,
                 'orders' => $orders,

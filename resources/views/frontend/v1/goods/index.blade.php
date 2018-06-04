@@ -1,6 +1,6 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '商品 - 商品列表')
+@section('title', '商品 - 商品管理')
 
 @section('css')
     <style>
@@ -41,9 +41,9 @@
                     <input type="text" class="layui-input" name="name" placeholder="商品名" value="{{ $name  }}">
                 </div>
                 <div class="layui-input-inline" style="width: 200px;">
-                    <button class="layui-btn layui-btn-normal" type="submit">查询</button>
+                    <button class="qs-btn" type="submit">查询</button>
                 </div>
-                <a  href="{{ route('frontend.goods.create') }}" class="layui-btn layui-btn-normal fr" >添加商品</a>
+                <a  href="{{ route('frontend.goods.create') }}" class="qs-btn fr" >添加商品</a>
             </div>
         </form>
 
@@ -72,8 +72,8 @@
                     <td>{{ $item->foreign_goods_id }}</td>
                     <td>{{ $item->created_at }}</td>
                     <td>{{ $item->updated_at }}</td>
-                    <td><a class="layui-btn layui-btn-normal layui-btn-small edit"  href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}">编辑</a>
-                    <button class="layui-btn layui-btn-normal layui-btn-small delete" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button></td>
+                    <td><a class="qs-btn edit"  href="{{ route('frontend.goods.edit', ['id' => $item->id]) }}">编辑</a>
+                    <button class="qs-btn delete" data-id="{{ $item->id }}" lay-submit="" lay-filter="delete-goods">删除</button></td>
                 </tr>
             @empty
                 <tr>

@@ -1,66 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>工作台</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="_token" content="{{ csrf_token() }}" >
-    <!--START 样式表-->
-    @include('frontend.layouts.links')
-    <style>
+@extends('frontend.v1.layouts.app')
 
-        .left-menu {
-            width: 265px;
-            background-color: #F5F5F5;
-            border-left: solid 1px #D7D7D7;
-            height: 100%;
-            padding: 75px 20px 10px 0;
-            position: fixed;
-            z-index: 99;
-            top: 0;
-            bottom: 0;
-            left: -296px;
-            box-shadow: 0 0 10px 0 rgba(100, 100, 100, 0.5);
-            min-height: 650px;
+@section('title', '工作台 - 代充')
+
+@section('css')
+    {{--<link href="{{ asset('/css/index.css') }}" rel="stylesheet">--}}
+    <style>
+        .layui-laypage-skip input {
+            height: 27px !important;
         }
-        .left-menu > .open-btn {
-            color: #FFF;
-            background-color: #1E9FFF;
-            width: 16px;
-            padding: 8px 6px 8px 7px;
-            margin-top: -80px;
-            border: solid 1px #1E9FFF;
-            border-right: 0 none;
-            position: absolute;
-            z-index: 99;
-            top: 50%;
-            right: -37px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
-            border-radius: 0 5px 5px 0;
+        .laytable-cell-1-0, .laytable-cell-1-5, .laytable-cell-1-7{
+            height: 40px !important;
         }
-        .left-menu > .close-btn {
-            color: #FFF;
-            background-color: #1E9FFF;
-            width: 16px;
-            padding: 8px 6px 8px 7px;
-            margin-top: -80px;
-            border: solid 1px #1E9FFF;
-            border-right: 0 none;
-            position: absolute;
-            z-index: 99;
-            top: 50%;
-            right: -31px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 5px 0 rgba(204, 204, 204, 0.5);
-            border-radius: 0 5px 5px 0;
+        th:nth-child(1) > div, th:nth-child(6) > div, th:nth-child(8) > div {
+            line-height: 40px !important;
         }
+        .laytable-cell-1-13{
+            height: 40px !important;
+            line-height: 40px !important;
+        }
+        .layui-laypage-em {
+            background-color: #1E9FFF !important;
+        }
+        .layui-form-select .layui-input {
+            padding-right:0 !important;
+        }
+        .layui-table-cell {
+            overflow: inherit;
+        }
+        .layui-form-item .layui-inline {
+            margin-bottom: 5px;
+            margin-right: 5px;
+        }
+        .layui-form-mid {
+            margin-right: 4px;
+        }
+
+        /**新订单提示*/
         .prom-wrap {
             width: 100%;
             left: 0;
             bottom: 0;
+            z-index: 999;
         }
         .fixed {
             position: fixed;
@@ -73,7 +53,7 @@
             background: white;
             position: relative;
             z-index: 100;
-            border: 1px solid #1E9FFF;
+            border: 1px solid #F78400;
             border-radius: 5px;
             box-sizing: border-box;
             width: 290px;
@@ -94,7 +74,7 @@
             position: relative;
         }
         .prom-list-body {
-            padding: 20px 15px;
+            padding: 0 15px 15px 15px;
             font-size: 13px;
         }
         .prom-list-footer {
@@ -102,11 +82,12 @@
             line-height: 40px;
             font-weight: bold;
             font-size: 15px;
-            color: #1E9FFF;
-            border-top: 1px solid #1E9FFF;
+            color: #F78400;
+            border-top: 1px solid #F78400;
+            text-align: center;
         }
         .prom-list-footer .prom-list-footer-tab.get {
-            border-right: 1px solid #1E9FFF;
+            border-right: 1px solid #F78400;
         }
         .prom-list-footer .prom-list-footer-tab {
             width: 50%;
@@ -128,87 +109,34 @@
             border-radius: 3px;
             font-size: 14px;
         }
-        .header .user {
-            right: 30px;
+        .fr {
+            float: right;
         }
-        .layui-tab-content {
-            padding: 0 !important;
+        .fl {
+            float: left;
         }
+        .overflow {
+            overflow: hidden;
+        }
+
+
     </style>
-    <!--END 样式表-->
-</head>
-<body>
+@endsection
 
-
-
-
-<!--START 顶部菜单-->
-@include('frontend.layouts.header')
-<!--END 顶部菜单-->
-
-<!--START 主体-->
-<div class="main">
-    <div class="workbench-wrapper">
-        @if(Auth::user()->could('frontend.workbench.order'))
-            <div class="left-menu" id="left-menu">
-            <form class="layui-form " action="">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">类型</label>
-                    <div class="layui-input-block">
-                        <select name="service_id" lay-verify="required" lay-search lay-filter="service">
-                            <option value="">请选择类型</option>
-                            @forelse($services as $k => $v)
-                                <option value="{{ $k }}">{{ $v }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">游戏</label>
-                    <div class="layui-input-block">
-                        <select name="game_id" lay-verify="required" lay-search lay-filter="game">
-                            <option value="">请选择游戏</option>
-                            @forelse($games as $k => $v)
-                                <option value="{{ $k }}">{{ $v }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">商品</label>
-                    <div class="layui-input-block">
-                        <select name="goods" lay-verify="required" lay-search id="goods" lay-filter="goods" >
-                            <option value="">请选择商品</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="template"></div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn layui-bg-blue" lay-submit lay-filter="order">确认下单</button>
-                    </div>
-                </div>
-            </form>
-            <div class="open-btn"> 打开下单面板</div>
-            <div class="close-btn layui-hide">关闭下单面板</div>
-        </div>
-        @endif
-        <div class="right-content">
-            <div class="content">
-                <div class="path"><span>工作台</span>
-                </div>
-
+@section('main')
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">
+            </div>
+            <div class="layui-card-body">
                 <div class="layui-tab layui-tab-brief layui-form" lay-filter="order-list">
                     <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="need">急需处理 <span class="layui-badge layui-bg-blue wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
+                        <li class="layui-this" lay-id="need">急需处理 <span class="qs-badge wait-handle-quantity @if(waitHandleQuantity(Auth::user()->id) == 0) layui-hide  @endif">{{ waitHandleQuantity(Auth::user()->id) }}</span></li>
                         <li class="" lay-id="ing">处理中</li>
                         <li class="" lay-id="finish">已完成</li>
                         <li class="" lay-id="after-sales">售后中</li>
                         <li class="" lay-id="cancel">已取消</li>
-                        <li class="" lay-id="market">集市 <span class="layui-badge layui-bg-blue market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
+                        <li class="" lay-id="market">集市 <span class="qs-badge market-order-quantity @if(marketOrderQuantity() == 0) layui-hide  @endif">{{ marketOrderQuantity() }}</span></li>
                     </ul>
 
                     <div class="layui-tab-content">
@@ -220,30 +148,19 @@
                         <div class="layui-tab-item market"></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-</div>
-
-
-<div class="prom-wrap fixed" id='prom'>
-    <ul class="prom-inner">
-    </ul>
-</div>
-<div id="audio"></div>
-<!--END 主体-->
-
-@include('frontend.layouts.scripts')
-
-<!--START 底部-->
-<link rel="stylesheet" href="/frontend/css/layui-rewrit.css">
-@include('frontend.layouts.footer')
-<!--END 底部-->
+    <div class="prom-wrap fixed" id='prom'>
+        <ul class="prom-inner">
+        </ul>
+    </div>
+    <div id="audio"></div>
+@endsection
 
 <!--START 脚本-->
-@yield('js')
-<script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?v20170927') }}"></script>
+@section('js')
+<script type="text/javascript" src="{{ asset('/frontend/js/orders-notice.js?20180604') }}"></script>
 <script type="text/html" id="goodsTemplate">
     @{{#  layui.each(d, function(index, item){ }}
 
@@ -478,7 +395,7 @@
                 maxmin: true, //开启最大化最小化按钮
                 area: ['600px', '630px'],
                 scrollbar: false,
-                content: "{{ route('frontend.workbench.order-operation.detail') }}?no=" + no
+                content: "{{ url('/workbench/recharge/order-operation/detail') }}?no=" + no
             });
         }
         // 订单发货
@@ -505,11 +422,13 @@
             });
         }
         // 取消订单
-        layer.confirm('您确定要"取消订单"吗?', {icon: 3, title:'提示'}, function(index) {
-            $.post('{{ route('frontend.workbench.order-operation.cancel') }}', {no:no}, function (result) {
-                notification(result.status, result.message)
-            }, 'json')
-        });
+        function cancel(no) {
+            layer.confirm('您确定要"取消订单"吗?', {icon: 3, title:'提示'}, function(index) {
+                $.post('{{ route('frontend.workbench.order-operation.cancel') }}', {no:no}, function (result) {
+                    notification(result.status, result.message)
+                }, 'json')
+            });
+        }
         // 确认收货
         function confirm(no) {
             layer.confirm('您确定要"确认收货"吗?', {icon: 3, title:'提示'}, function(index) {
@@ -542,7 +461,7 @@
                     remark:value
                 }, function (result) {
                     notification(result.status, result.message)
-                }, 'json')
+                }, 'json');
                 layer.close(index);
             });
 
@@ -653,6 +572,4 @@
         setTimeout("updateEndTime()", 1000);
     }
 </script>
-<!--END 脚本-->
-</body>
-</html>
+@endsection
