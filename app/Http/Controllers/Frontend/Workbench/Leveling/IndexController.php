@@ -1189,6 +1189,25 @@ class IndexController extends Controller
             $orderDetails = OrderDetail::where('order_no', $order->no)
                 ->pluck('field_value', 'field_name')
                 ->toArray();
+
+            // 如果有补款单号，那么更新此单关联订单的补款单号
+            $otherOrders = OrderModel::where('foreign_order_no', $order->foreign_order_no)->get();
+
+            if (isset($orderDetails['source_order_no_1']) && ! empty($orderDetails['source_order_no_1'])) {
+                foreach($otherOrders as $otherOrder) {
+                    OrderDetail::where('order_no', $otherOrder->no)
+                        ->where('field_name', 'source_order_no_1')
+                        ->update(['field_value' => $orderDetails['source_order_no_1']]);
+                }
+            }
+
+            if (isset($orderDetails['source_order_no_2']) && ! empty($orderDetails['source_order_no_2'])) {
+                foreach($otherOrders as $otherOrder) {
+                    OrderDetail::where('order_no', $otherOrder->no)
+                        ->where('field_name', 'source_order_no_2')
+                        ->update(['field_value' => $orderDetails['source_order_no_2']]);
+                }
+            }
                     
             $this->checkIfAutoMarkup($order, $orderDetails);
         } catch (CustomException $customException) {
