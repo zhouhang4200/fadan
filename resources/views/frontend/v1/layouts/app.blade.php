@@ -510,7 +510,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         return false;
     });
 
-    $(body).on('click', 'withdraw', function () {
+    $('body').on('click', 'withdraw', function () {
         layer.open({
             type: 1,
             title: '提现单',
@@ -519,7 +519,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         });
     });
 
-    $(body).on('click', '#withdraw-submit', function () {
+    $('body').on('click', '#withdraw-submit', function () {
 
         var loading = layer.load(2, {shade: [0.1, '#000']});
 
