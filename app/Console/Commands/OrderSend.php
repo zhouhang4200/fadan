@@ -115,7 +115,7 @@ class OrderSend extends Command
                                     // 373
                                     if ($third == 4) {
                                         if (isset($arrResult['code']) && $arrResult['code'] != 0) {
-                                            $orderDatas['notice_reason'] = $arrResult['msg'] ?? '';
+                                            $orderDatas['notice_reason'] = isset($arrResult['data']) && ! empty($arrResult['data']) ? $arrResult['data'] : ($arrResult['msg'] ?? '');
                                             $this->writeNotice($third, $orderDatas);
                                         }
                                     }
@@ -168,7 +168,5 @@ class OrderSend extends Command
                 ]
             ]
         ]);
-
-        myLog('reason', ['third' => $third, 'no' => $order->no, 'reason' => $orderData['notice_reason']]);
     }
 }
