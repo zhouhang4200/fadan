@@ -10,11 +10,6 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-/**
- * 强制撤销后执行事件
- * Class OrderForceRevoke
- * @package App\Events
- */
 class OrderForceRevoke
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -22,7 +17,7 @@ class OrderForceRevoke
     public $order;
 
     /**
-     * OrderForceRevoke constructor.
+     * OrderReceiving constructor.
      * @param $order
      */
     public function __construct($order)

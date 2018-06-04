@@ -52,6 +52,7 @@ class CancelComplete extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
+            $this->runEvent();
         } catch (DailianException $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '取消验收', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);

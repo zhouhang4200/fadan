@@ -36,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
         // 订单被接单事件
         'App\Events\OrderReceiving' => [
             'App\Listeners\OrderReceiving\SendSms',
+            'App\Listeners\ChangeTaobaoTradeStatus',
         ],
         // 订单撤销中事件
         'App\Events\OrderRevoking' => [
@@ -44,11 +45,62 @@ class EventServiceProvider extends ServiceProvider
         // 订单仲裁中事件
         'App\Events\OrderArbitrationing' => [
             'App\Listeners\OrderArbitrationing\SendSms',
+            'App\Listeners\ChangeTaobaoTradeStatus',
         ],
         // 订单申请验收事件
         'App\Events\OrderApplyComplete' => [
             'App\Listeners\OrderApplyComplete\SendSms',
+            'App\Listeners\ChangeTaobaoTradeStatus',
         ],
+        //
+        'App\Events\OrderAbnormal' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderCancelAbnormal' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderCancelArbitration' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderCancelComplete' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderComplete' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderLock' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderNoReceive' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderOffSaled' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderPlaying' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderRefuseRevoke' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderUnLock' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+        //
+        'App\Events\OrderUnRevoke' => [
+            'App\Listeners\ChangeTaobaoTradeStatus',
+        ],
+
         // 订单仲裁后事件
         'App\Events\OrderArbitrationed' => [
             'App\Listeners\ChangeTaobaoTradeStatus',

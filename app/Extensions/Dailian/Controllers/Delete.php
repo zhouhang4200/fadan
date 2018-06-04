@@ -61,6 +61,7 @@ class Delete extends DailianAbstract implements DailianInterface
             delRedisCompleteOrders($this->orderNo);
             // 从留言获取任务中删除
             levelingMessageDel($this->orderNo);
+            $this->runEvent();
         } catch (DailianException $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '删除', '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
