@@ -34,7 +34,7 @@ class ChangeTaobaoTradeStatus
             $taobaoTrade = TaobaoTrade::whereIn('tid', array_filter(array_unique($tid)))->get();
             // 如果对应淘宝订单没有变为“已退款/交易成功
             foreach ($taobaoTrade as $trade) {
-                if (in_array($trade->trade_status, [2, 7])) {
+                if (! in_array($trade->trade_status, [2, 7])) {
                     $taobaoTrade->handle_status = 0;
                     $taobaoTrade->save();
                 }

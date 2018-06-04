@@ -958,7 +958,6 @@
         </div>
     </form>
 </div>
-
 @endsection
 
 @section('js')
