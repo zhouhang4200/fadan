@@ -789,7 +789,7 @@
                     <div class="layim-chat-bottom">
                         <div class="layim-chat-send">
                             <span class="qs-btn opt-btn cancel" layim-event="closeThisChat">关闭</span>
-                            <span class="qs-btn opt-btn" layim-event="send">发送</span>
+                            <span class="qs-btn opt-btn layim-send-btn" layim-event="send">发送</span>
                         </div>
                     </div>
                 </div>
