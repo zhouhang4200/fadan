@@ -69,66 +69,67 @@ class OrderSend extends Command
                     if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
                         $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
                     }
-                } catch (\Exception $e) {
-                    myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage()]);
-                }
 
-                $client = new Client();
-                foreach (config('partner.platform') as $third => $platform) {
-                    if (in_array($third, $blackThirds) || in_array($third, $managerBlackThirds)) {
-                        continue;
-                    }
-                    $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
-                    try {
-                        $response = $client->request('POST', $platform['receive'], [
-                            'form_params' => [
-                                'data' => $decrypt
-                            ]
-                        ]);
-                        $result = $response->getBody()->getContents();
+                    $client = new Client();
+                    foreach (config('partner.platform') as $third => $platform) {
+                        if (in_array($third, $blackThirds) || in_array($third, $managerBlackThirds)) {
+                            continue;
+                        }
+                        $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
+                        try {
+                            $response = $client->request('POST', $platform['receive'], [
+                                'form_params' => [
+                                    'data' => $decrypt
+                                ]
+                            ]);
+                            $result = $response->getBody()->getContents();
 
-                        if (isset($result) && ! empty($result)) {
-                            $arrResult = json_decode($result, true);
+                            if (isset($result) && ! empty($result)) {
+                                $arrResult = json_decode($result, true);
 
-                            if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
-                                // 蚂蚁订单
-                                if ($third == 3) {
-                                    if (isset($arrResult['status']) && $arrResult['status'] != 1) {
-                                        $orderDatas['notice_reason'] = $arrResult['message'] ?? '';
-                                        $this->writeNotice($third, $orderDatas);
+                                if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+                                    // 蚂蚁订单
+                                    if ($third == 3) {
+                                        if (isset($arrResult['status']) && $arrResult['status'] != 1) {
+                                            $orderDatas['notice_reason'] = $arrResult['message'] ?? '';
+                                            $this->writeNotice($third, $orderDatas);
+                                        }
                                     }
-                                }
 
-                                // 91 
-                                if ($third == 1) {
-                                    if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-                                        $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
-                                        $this->writeNotice($third, $orderDatas);
+                                    // 91
+                                    if ($third == 1) {
+                                        if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+                                            $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                            $this->writeNotice($third, $orderDatas);
+                                        }
                                     }
-                                }
 
-                                // wanzi
-                                if ($third == 5) {
-                                    if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-                                        $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
-                                        $this->writeNotice($third, $orderDatas);
+                                    // wanzi
+                                    if ($third == 5) {
+                                        if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+                                            $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                            $this->writeNotice($third, $orderDatas);
+                                        }
                                     }
-                                }
 
-                                // 373
-                                if ($third == 4) {
-                                    if (isset($arrResult['code']) && $arrResult['code'] != 0) {
-                                        $orderDatas['notice_reason'] = $arrResult['msg'] ?? '';
-                                        $this->writeNotice($third, $orderDatas);
+                                    // 373
+                                    if ($third == 4) {
+                                        if (isset($arrResult['code']) && $arrResult['code'] != 0) {
+                                            $orderDatas['notice_reason'] = $arrResult['msg'] ?? '';
+                                            $this->writeNotice($third, $orderDatas);
+                                        }
                                     }
                                 }
                             }
-                        }
-                        myLog('order-send-result-des', [$platform['name'], $result]);
+                            myLog('order-send-result-des', [$platform['name'], $result]);
 
-                    } catch (\Exception $exception) {
-                        myLog('order-send-ex', [$platform['name'], $exception->getMessage(), $decrypt]);
+                        } catch (\Exception $exception) {
+                            myLog('order-send-ex', [$platform['name'], $exception->getMessage(), $decrypt]);
+                        }
                     }
+
+                } catch (\Exception $e) {
+                    myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage()]);
                 }
             }
         }
