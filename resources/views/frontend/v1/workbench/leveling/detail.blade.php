@@ -789,7 +789,7 @@
                     <div class="layim-chat-bottom">
                         <div class="layim-chat-send">
                             <span class="qs-btn opt-btn cancel" layim-event="closeThisChat">关闭</span>
-                            <span class="qs-btn opt-btn" layim-event="send">发送</span>
+                            <span class="qs-btn opt-btn layim-send-btn" layim-event="send">发送</span>
                         </div>
                     </div>
                 </div>
@@ -962,7 +962,7 @@
 @endsection
 
 @section('js')
-    <script id="message" type="text/html">
+    <script id="imTemplate" type="text/html">
         <ul>
             @{{#  layui.each(d.message, function(index, item){ }}
                 @{{# if(item.sender == '您'){ }}
@@ -1545,7 +1545,7 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        var getTpl = message.innerHTML, view = $('.layim-chat-main');
+                        var getTpl = imTemplate.innerHTML, view = $('.layim-chat-main');
                         layTpl(getTpl).render(result.content, function(html){
                             view.html(html);
                             layui.form.render();
@@ -1594,7 +1594,7 @@
                     title: false,
                     closeBtn: false,
                     area: ['850px', '561px'],
-                    shade: 0.8,
+                    shade: 0.2,
                     moveType: 1,  //拖拽模式，0或者1
                     content: $('#layui-boxx'),
                     success: function (layero) {

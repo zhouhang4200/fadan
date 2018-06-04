@@ -429,13 +429,13 @@
 
                     <div class="layui-row layui-col-space10 layui-form-item">
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源单号1</label>
+                            <label class="layui-form-label">补款单号1</label>
                             <div class="layui-input-block">
                                 <input type="text" name="source_order_no_1" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $allTaobaoTrade[1]['tid'] or '' }}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">来源单号2</label>
+                            <label class="layui-form-label">补款单号2</label>
                             <div class="layui-input-block">
                                 <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $allTaobaoTrade[2]['tid'] or '' }}">
                             </div>

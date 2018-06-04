@@ -49,7 +49,7 @@
             <div class="layui-card-header" style="padding-top: 20px;">
                 <div class="layui-row layui-col-space5">
                     <form class="layui-form" action="">
-                        <input type="hidden" name="status">
+                        <input type="hidden" name="status" value="0">
                         <div class="layui-col-md3 first">
                             <div class="layui-form-item">
                                 <label class="layui-form-label" style="">订单单号</label>
@@ -71,7 +71,7 @@
                                 <label class="layui-form-label">绑定游戏</label>
                                 <div class="layui-input-block">
                                     <select name="game_id" lay-filter="game" lay-search="">
-                                        <option value="">请输入绑定游戏名</option>
+                                        <option value="">请选择</option>
                                         @forelse($games as $id => $name)
                                             <option value="{{ $id }}">{{ $name }}</option>
                                         @empty
