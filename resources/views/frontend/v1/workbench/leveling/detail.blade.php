@@ -1744,6 +1744,8 @@
             $('body').on('click', '#delivery', function () {
                 if ($(this).is(':checked')) {
                     delivery = 1;
+                } else {
+                    delivery = 0;
                 }
             });
         });
