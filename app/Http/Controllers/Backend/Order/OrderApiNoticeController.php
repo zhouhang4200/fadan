@@ -54,24 +54,6 @@ class OrderApiNoticeController extends Controller
 
 		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
 		    	Redis::hDel($name, $key);
-                // 往群里发消息
-                $client = new Client();
-                $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
-                    'json' => [
-                        'msgtype' => 'text',
-                        'text' => [
-                            'content' => '订单（内部单号：'.$arr['order_no']. '）调用【'.config('order.third')[$arr['third']].'】【'.$arr['operate'].'】接口失败:'.$arr['reason']
-                        ],
-                        'at' => [
-                            'isAtAll' => false,
-                            "atMobiles" =>  [
-                                "18500132452",
-                                "13437284998",
-                                "13343450907"
-                            ]
-                        ]
-                    ]
-                ]);
     		}
     	}
     	$orders = OrderApiNotice::filter($filters)

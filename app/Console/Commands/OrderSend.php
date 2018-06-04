@@ -88,6 +88,7 @@ class OrderSend extends Command
                                 $arrResult = json_decode($result, true);
 
                                 if (isset($arrResult) && is_array($arrResult) && count($arrResult) > 0) {
+                                    $orderDatas['notice_reason'] = '空';
                                     // 蚂蚁订单
                                     if ($third == 3) {
                                         if (isset($arrResult['status']) && $arrResult['status'] != 1) {
@@ -119,6 +120,25 @@ class OrderSend extends Command
                                             $this->writeNotice($third, $orderDatas);
                                         }
                                     }
+
+                                     // 往群里发消息
+                                    $client = new Client();
+                                    $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                                        'json' => [
+                                            'msgtype' => 'text',
+                                            'text' => [
+                                                'content' => '订单（内部单号：'.$orderDatas['order_no']. '）调用【'.config('order.third')[$third].'】【下单】接口失败:'.$orderDatas['notice_reason']
+                                            ],
+                                            'at' => [
+                                                'isAtAll' => false,
+                                                "atMobiles" =>  [
+                                                    "18500132452",
+                                                    "13437284998",
+                                                    "13343450907"
+                                                ]
+                                            ]
+                                        ]
+                                    ]);
                                 }
                             }
                             myLog('order-send-result-des', [$orderDatas['order_no'], $platform['name'], $result]);

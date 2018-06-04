@@ -64,10 +64,30 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 
                         // 记录报警
                         $datas['notice_reason'] = $message;
+                        $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-1-'.$functionName;
                         $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
                         Redis::hSet($name, $key, $value);
+
+                         // 往群里发消息
+                        $client = new Client();
+                        $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                            'json' => [
+                                'msgtype' => 'text',
+                                'text' => [
+                                    'content' => '订单（内部单号：'.$datas['order_no']. '）调用【'.config('order.third')[1].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
+                                ],
+                                'at' => [
+                                    'isAtAll' => false,
+                                    "atMobiles" =>  [
+                                        "18500132452",
+                                        "13437284998",
+                                        "13343450907"
+                                    ]
+                                ]
+                            ]
+                        ]);
 
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
@@ -119,10 +139,30 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
         				$message = $arrResult['reason'] ?? '91接口返回错误';
                         // 记录报警
                         $datas['notice_reason'] = $message;
+                        $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-1-'.$functionName;
                         $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
                         Redis::hSet($name, $key, $value);
+
+                         // 往群里发消息
+                        $client = new Client();
+                        $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                            'json' => [
+                                'msgtype' => 'text',
+                                'text' => [
+                                    'content' => '订单（内部单号：'.$datas['order_no']. '）调用【'.config('order.third')[1].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
+                                ],
+                                'at' => [
+                                    'isAtAll' => false,
+                                    "atMobiles" =>  [
+                                        "18500132452",
+                                        "13437284998",
+                                        "13343450907"
+                                    ]
+                                ]
+                            ]
+                        ]);
 
         				if ($url != config('leveling.show91.url')['delete']) {
                             throw new DailianException($message);
