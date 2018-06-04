@@ -35,8 +35,8 @@ class ChangeTaobaoTradeStatus
             // 如果对应淘宝订单没有变为“已退款/交易成功
             foreach ($taobaoTrade as $trade) {
                 if (! in_array($trade->trade_status, [2, 7])) {
-                    $taobaoTrade->handle_status = 0;
-                    $taobaoTrade->save();
+                    $trade->handle_status = 0;
+                    $trade->save();
                 }
             }
         }
