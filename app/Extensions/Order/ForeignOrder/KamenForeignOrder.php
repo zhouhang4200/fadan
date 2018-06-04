@@ -12,7 +12,6 @@ use Exception;
 use App\Models\Goods;
 use App\Models\GoodsTemplateWidget;
 use App\Models\ForeignOrder as ForeignOrderModel;
-use App\Services\SmSApi;
 
 class KamenForeignOrder extends ForeignOrder
 {
@@ -79,15 +78,6 @@ class KamenForeignOrder extends ForeignOrder
             $decodeArray['total_price'] = $totalPrice;
             $decodeArray['remark'] = $remark;
             $decodeArray['province'] = loginDetail($tmallOrderInfo['ip'])['province'];
-
-            // 拿到买家手机号，发送推广短信，与流程无关
-            try {
-                if (is_numeric($tmallOrderInfo['buyer_alipay_no']) && strlen($tmallOrderInfo['buyer_alipay_no']) == 11) {
-                    SmSApi::sendTemplate($tmallOrderInfo['buyer_alipay_no']);
-                }
-            } catch (\Exception $e) {
-                # 算了
-            }
         } else {
             $price = $decodeArray['ProductPrice'];
             $totalPrice = bcmul($price, $decodeArray['BuyNum'], 4);
