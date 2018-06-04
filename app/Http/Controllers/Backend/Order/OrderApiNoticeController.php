@@ -39,11 +39,12 @@ class OrderApiNoticeController extends Controller
     			$order = json_decode($order, true);
     			$third = explode('-', $key)[1] ?? 0;
     			$functionName = explode('-', $key)[2] ?? 0;
+                $orderModel = Order::where('no', $order['datas']['order_no'])->first();
     			
 				$arr                     = [];
 				$arr['order_no']         = $order['datas']['order_no'] ?? 0;
 				$arr['source_order_no']  = $order['datas']['source_order_no'] ?? 0;
-				$arr['status']           = $order['datas']['order_status'] ?? 0;
+				$arr['status']           = $orderModel->status ?? 0;
 				$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
 				$arr['third']            = $third ?? 0;
 				$arr['reason']           = $order['datas']['notice_reason'] ?? 0;

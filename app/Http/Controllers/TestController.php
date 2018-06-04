@@ -222,7 +222,7 @@ class TestController extends Controller
             'json' => [
                 'msgtype' => 'text',
                 'text' => [
-                    'content' => '11111'
+                    'content' => '订单双金必须大于0元'
                 ],
                 'at' => [
                     'isAtAll' => true
