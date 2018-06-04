@@ -1594,7 +1594,7 @@
                     title: false,
                     closeBtn: false,
                     area: ['850px', '561px'],
-                    shade: 0.8,
+                    shade: 0.2,
                     moveType: 1,  //拖拽模式，0或者1
                     content: $('#layui-boxx'),
                     success: function (layero) {
