@@ -1135,6 +1135,9 @@
                     layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
                         title: '提示'
                     }, function (index) {
+                        console.log(orderNo);
+                        console.log(operation);
+                        console.log(delivery);
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
                             orderNo:orderNo,
                             keyWord:operation,
@@ -1149,7 +1152,7 @@
                                     window.location.reload()
                                 });
                             }
-                        });
+                        }, 'json');
                         layer.close(index);
                     });
                 } else if (operation == 'agreeRevoke') {
