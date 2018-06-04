@@ -286,8 +286,8 @@
             ,pass: [
                 /^[\S]{6,12}$/
                 ,'密码必须6到12位，且不能出现空格'
-            ] 
-        }); 
+            ]
+        });
         //普通图片上传
         var uploadInst = upload.render({
             elem: '#test1'
@@ -332,7 +332,7 @@
                 shade: 0.2,
                 title: '修改头像',
                 area: ['250px', '370px'],
-                content: $('#voucher')      
+                content: $('#voucher')
             });
         });
 

@@ -110,7 +110,7 @@ class OrderOperationController extends Controller
     {
         $order = $orderRepository->detail($request->no);
         if ($order) {
-            return view('frontend.workbench.order-detail', compact('order'));
+            return view('frontend.v1.workbench.recharge.order-detail', compact('order'));
         }
     }
 

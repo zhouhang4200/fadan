@@ -6,14 +6,14 @@ var orderHub = {
         var _this=this;
         _this.count++;
         var temp=$('<li class="fr prom-list relative animated fadeInRight" data-id='+data.orderId+'>'+
-            '<div class="text_center prom-list-header relative">集市新订单 </div>'+
+            '<div class="text_center prom-list-header relative">新订单 </div>'+
             '<div class="prom-list-body">'+
             '<p>订单号：'+ data.orderId +'<br>'+
             '游戏:'+ data.gameName +
             '</p>'+
             '<div class="overflow prom-list-contents" style="margin-top:15px">'+
-            '<span class="fl">商品：'+ data.goods+ '</span>'+
-            '<span class="fr">价格：<span style="color:red">'+ data.price +'</span>元</span>'+
+            '<div class="">商品：'+ data.goods+ '</div>'+
+            '<div style="margin-top: 10px;text-align: right">价格：<span style="color:red">'+ data.price +'</span>元</div>'+
             '</div>'+
             '</div>'+
             '<div class="prom-list-footer overflow text_center">'+
