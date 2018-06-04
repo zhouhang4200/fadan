@@ -150,7 +150,7 @@
                                         foreach ($sameOrders as $sameOrder) {
                                             // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                                             if (in_array($sameOrder->status, [21, 19])) {
-                                                $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
+                                                $paymentAmount += $sameOrder->levelingConsult->api_amount;
                                                 $getAmount += $sameOrder->levelingConsult->api_amount;
                                                 $poundage += $sameOrder->levelingConsult->api_service;
                                             } else if ($item->status == 20) {
@@ -183,12 +183,12 @@
                             @else
                             @endif
                         </td>
-                        <td>{{ $taobaoAmout }}</td>
-                        <td>{{ $taobaoRefund }}</td>
-                        <td>{{ $orgPaymentAmount }}</td>
-                        <td>{{ $getAmount }}</td>
-                        <td>{{ $poundage }}</td>
-                        <td>{{ $profit }}</td>
+                        <td>{{ $taobaoAmout + 0 }}</td>
+                        <td>{{ $taobaoRefund + 0  }}</td>
+                        <td>{{ $orgPaymentAmount + 0  }}</td>
+                        <td>{{ $getAmount + 0  }}</td>
+                        <td>{{ $poundage + 0  }}</td>
+                        <td>{{ $profit + 0  }}</td>
                         <td>{{ $item->taobaoTrade->created ?? '' }}</td>
                         <td>{{ $item->updated_at }}</td>
                     </tr>
