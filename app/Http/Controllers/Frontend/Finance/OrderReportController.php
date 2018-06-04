@@ -115,13 +115,13 @@ class OrderReportController extends Controller
                 foreach ($chunkOrders as $item) {
                     $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
 
-                    $taobaoAmout = ''; // 淘宝金额取值:所有淘宝订单总支付金额
-                    $taobaoRefund = ''; // 淘宝退款:所有淘宝订单已退款状态的支付金额
-                    $paymentAmount = ''; // 支付金额: 订单总金额 或 仲裁结果需支付的金额
-                    $orgPaymentAmount = ''; // 支付金额
-                    $getAmount = ''; // 获得金额: 仲裁结果需支付的金额
-                    $poundage = ''; // 手续费: 只有在已仲裁 已撤销 才有值
-                    $profit = ''; // 利润
+                    $taobaoAmout = 0; // 淘宝金额取值:所有淘宝订单总支付金额
+                    $taobaoRefund = 0; // 淘宝退款:所有淘宝订单已退款状态的支付金额
+                    $paymentAmount = 0; // 支付金额: 订单总金额 或 仲裁结果需支付的金额
+                    $orgPaymentAmount = 0; // 支付金额
+                    $getAmount = 0; // 获得金额: 仲裁结果需支付的金额
+                    $poundage = 0; // 手续费: 只有在已仲裁 已撤销 才有值
+                    $profit = 0; // 利润
 
                     // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                     if (in_array($item->status, [21, 19])) {
@@ -154,31 +154,34 @@ class OrderReportController extends Controller
                                 foreach ($sameOrders as $sameOrder) {
                                     // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                                     if (in_array($sameOrder->status, [21, 19])) {
-                                        $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
+                                        $paymentAmount += $sameOrder->levelingConsult->api_amount;
                                         $getAmount += $sameOrder->levelingConsult->api_amount;
                                         $poundage += $sameOrder->levelingConsult->api_service;
-                                    } else {
+                                    } else if ($item->status == 20) {
                                         $paymentAmount += $sameOrder->amount;
+                                    } else if ($item->status == 23) {
+                                        $paymentAmount += 0;
                                     }
                                 }
                             }
-
                             // 计算利润
                             $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                         }
                     }
+
                     $sourceNo = '';
                     $sourceNo1 = '';
                     $sourceNo2 = '';
-                    if (!empty($detail['source_order_no'])) {
+                    if (isset($detail['source_order_no']) && !empty($detail['source_order_no'])) {
                         $sourceNo = '单号1：'.$detail['source_order_no'];
                     }
-                    if (!empty($detail['source_order_no_1'])) {
+                    if (isset($detail['source_order_no_1']) && !empty($detail['source_order_no_1'])) {
                         $sourceNo1 = "\n单号2：".$detail['source_order_no_1'];
                     }
-                    if (!empty($detail['source_order_no_2'])) {
+                    if (isset($detail['source_order_no_2']) && !empty($detail['source_order_no_2'])) {
                         $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
                     }
+
                     $data = [
                         $item->no . "\t",
                         $sourceNo . $sourceNo1 . $sourceNo2,
