@@ -139,7 +139,13 @@ class OrderReportController extends Controller
                     if (!empty($detail['source_order_no'])) {
                         // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
                         if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
-                            $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', [$detail['source_order_no'], $detail['source_order_no_1'], $detail['source_order_no_2']])->get();
+
+                            $tid = [
+                                $detail['source_order_no'],
+                                isset($detail['source_order_no_1']) ?? '',
+                                isset($detail['source_order_no_2']) ?? '',
+                            ];
+                            $taobaoTrade = \App\Models\TaobaoTrade::whereIn('tid', array_filter($tid))->get();
 
                             if ($taobaoTrade) {
                                 foreach ($taobaoTrade as $trade) {
