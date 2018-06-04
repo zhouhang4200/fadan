@@ -361,7 +361,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 代练小时</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)">
+                                <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)" lay-search="" >
                                     <option value=""></option>
                                     @for($i=0; $i<=24; $i++)
                                         <option value="{{ $i }}">{{ $i }}小时</option>
