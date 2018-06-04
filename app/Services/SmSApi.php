@@ -56,12 +56,17 @@ class SmSApi
             'gamename' => $gameName,
         ];
 
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('POST', $url, ['form_params' => $data]);
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('POST', $url, ['form_params' => $data, 'connect_timeout' => 2]);
 
-        $contents = $res->getBody()->getContents();
-        $arr = json_decode($contents);
-        if ($arr->Code != '1000') {
+            $contents = $res->getBody()->getContents();
+            $arr = json_decode($contents);
+            if ($arr->Code != '1000') {
+                throw new \Exception('发送短信接口返回错误');
+            }
+        } catch (\Exception $e) {
+            myLog('send-sms-failure', [$e->getMessage()]);
             return false;
         }
 

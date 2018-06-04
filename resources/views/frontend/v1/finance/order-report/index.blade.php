@@ -153,8 +153,10 @@
                                                 $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
                                                 $getAmount += $sameOrder->levelingConsult->api_amount;
                                                 $poundage += $sameOrder->levelingConsult->api_service;
-                                            } else {
+                                            } else if ($item->status == 20) {
                                                 $paymentAmount += $sameOrder->amount;
+                                            } else if ($item->status == 23) {
+                                                $paymentAmount += 0;
                                             }
                                         }
                                     }
