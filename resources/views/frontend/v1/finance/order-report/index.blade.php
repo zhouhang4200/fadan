@@ -150,7 +150,7 @@
                                         foreach ($sameOrders as $sameOrder) {
                                             // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                                             if (in_array($sameOrder->status, [21, 19])) {
-                                                $paymentAmount += $sameOrder->levelingConsult->api_amount == 0 ? $item->amount : $item->levelingConsult->api_amount;
+                                                $paymentAmount += $sameOrder->levelingConsult->api_amount;
                                                 $getAmount += $sameOrder->levelingConsult->api_amount;
                                                 $poundage += $sameOrder->levelingConsult->api_service;
                                             } else if ($item->status == 20) {
