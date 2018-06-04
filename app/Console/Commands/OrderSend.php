@@ -69,6 +69,7 @@ class OrderSend extends Command
                     if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
                         $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
                     }
+                    myLog('order-channel', ['order' => $order, 'orderSendChannel' => $orderSendChannel, 'managerSetChannel' => $managerSetChannel, 'blackThirds' => $blackThirds, 'managerBlackThirds' => $managerBlackThirds]);
 
                     $client = new Client();
                     foreach (config('partner.platform') as $third => $platform) {
