@@ -48,7 +48,7 @@ class OrderApiNoticeController extends Controller
 				$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
 				$arr['third']            = $third ?? 0;
 				$arr['reason']           = $order['datas']['notice_reason'] ?? 0;
-				$arr['order_created_at'] = $order['datas']['order_created_at'] ?? 0;
+				$arr['order_created_at'] = $orderModel->created_at ?? 0;
 				$arr['function_name']    = $functionName ?? 0;
 				$arr['created_at']       = Carbon::now()->toDateTimeString();
 				$arr['updated_at']       = Carbon::now()->toDateTimeString();
