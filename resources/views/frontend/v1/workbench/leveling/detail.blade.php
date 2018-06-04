@@ -962,7 +962,7 @@
 @endsection
 
 @section('js')
-    <script id="message" type="text/html">
+    <script id="imTemplate" type="text/html">
         <ul>
             @{{#  layui.each(d.message, function(index, item){ }}
                 @{{# if(item.sender == '您'){ }}
@@ -1545,7 +1545,7 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        var getTpl = message.innerHTML, view = $('.layim-chat-main');
+                        var getTpl = imTemplate.innerHTML, view = $('.layim-chat-main');
                         layTpl(getTpl).render(result.content, function(html){
                             view.html(html);
                             layui.form.render();
