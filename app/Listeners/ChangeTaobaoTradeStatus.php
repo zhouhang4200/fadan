@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\TaobaoTrade;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
