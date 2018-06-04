@@ -1596,7 +1596,7 @@
                     area: ['850px', '561px'],
                     shade: 0.8,
                     moveType: 1,  //拖拽模式，0或者1
-                    content: $('#message'),
+                    content: $('#layui-boxx'),
                     success: function (layero) {
                         loadMessage(1);
                     }
