@@ -1545,7 +1545,7 @@
 
                 $.get("{{ route('frontend.workbench.leveling.leave-message', ['order_no' => $detail['no']]) }}?bing_id=" + messageBingId, function (result) {
                     if (result.status === 1) {
-                        var getTpl = $('#layui-boxx').innerHTML, view = $('.layim-chat-main');
+                        var getTpl = $('#layui-boxx').html(), view = $('.layim-chat-main');
                         layTpl(getTpl).render(result.content, function(html){
                             view.html(html);
                             layui.form.render();
