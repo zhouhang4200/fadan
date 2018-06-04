@@ -108,6 +108,7 @@ class OrderReportController extends Controller
             '获得金额',
             '手续费',
             '利润',
+            '发单客服',
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
@@ -206,6 +207,7 @@ class OrderReportController extends Controller
                         (string)$getAmount,
                         (string)$poundage,
                         (string)$profit,
+                        $detail['customer_service_name'] ?? '',
                         $item->taobaoTrade->created ?? '',
                         $item->updated_at,
                     ];

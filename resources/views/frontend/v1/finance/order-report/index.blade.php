@@ -102,6 +102,7 @@
                     <th>获得金额</th>
                     <th>手续费</th>
                     <th>利润</th>
+                    <th>发单客服</th>
                     <th>淘宝下单时间</th>
                     <th>代练结算时间</th>
                 </tr>
@@ -195,6 +196,7 @@
                         <td>{{ $getAmount + 0  }}</td>
                         <td>{{ $poundage + 0  }}</td>
                         <td>{{ $profit + 0  }}</td>
+                        <td>{{ $detail['customer_service_name'] ?? '' }}</td>
                         <td>{{ $item->taobaoTrade->created ?? '' }}</td>
                         <td>{{ $item->updated_at }}</td>
                     </tr>
