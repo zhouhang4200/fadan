@@ -77,7 +77,7 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
-        $this->forceRevoke($no, $user);
+        $this->complete($no, $user);
 
         die;
         // 我们是待接单
