@@ -156,6 +156,11 @@ class OrderController extends Controller
                         $detail['left_time'] = '';
                     }
 
+                    // 天猫订单状态
+                    $order = OrderModel::where('no', $detail['no'])->first();
+
+                    $tmStatus = isset($order->taobaoTrade) ? $order->taobaoTrade->trade_status : '';
+
                     $orderInfo = [
                         'order_no'                         => $detail['no'],
                         'status'                           => $detail['status'],
@@ -196,6 +201,7 @@ class OrderController extends Controller
                         'get_amount'                       => $detail['get_amount'],
                         'poundage'                         => $detail['poundage'],
                         'profit'                           => $detail['profit'],
+                        'tm_status'                        => $tmStatus,
                     ];
 
                     myLog('query', [$third, $orderInfo]);
