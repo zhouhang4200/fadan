@@ -1005,7 +1005,7 @@
         layui.use(['form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
             var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel;
             var gameId = '{{ $detail['game_id'] }}';
-
+            var delivery = 0;
 
             // 验证规则
             form.verify({
@@ -1739,7 +1739,13 @@
                     anim: -1,
                     shade: 0.8
                 });
-            })
+            });
+
+            $('body').on('click', '#delivery', function () {
+                if ($(this).is(':checked')) {
+                    delivery = 1;
+                }
+            });
         });
     </script>
 @endsection
