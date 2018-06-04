@@ -434,8 +434,8 @@
         @{{# }  }}
     </script>
     <script type="text/html" id="noTemplate">
-        天猫：<a style="color:#1f93ff"  href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{ d.source_order_no }}</a> <br/>
-        @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}"> @{{  d.third_order_no }} </a>  @{{#  } }}
+        天猫：<a style="color:#1f93ff"  href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}" target="_blank"> @{{ d.source_order_no }}</a> <br/>
+        @{{# if(d.third_name) { }}  @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}" target="_blank"> @{{  d.third_order_no }} </a>  @{{#  } }}
     </script>
     <script type="text/html" id="wwTemplate">
         @{{# if(d.client_wang_wang) { }}

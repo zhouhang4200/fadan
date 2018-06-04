@@ -165,7 +165,7 @@ class StaffManagementController extends Controller
         $data['parent_id'] = Auth::user()->getPrimaryUserId();
         $data['app_id'] = str_random(60);
         $data['app_secret'] = str_random(60);
-        $data['voucher'] = "/resources/users/moren.jpg";
+        $data['voucher'] = "/frontend/v1/images/default-avatar.png";
         $roleIds = $request->roles ?: [];
         // 添加子账号同时添加角色
         $user = User::create($data);
