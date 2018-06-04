@@ -473,7 +473,7 @@
                             <div class="layui-form-item layui-layout-admin">
                                 <div class="layui-input-block">
                                     <div class="layui-footer" style="left: 0;">
-                                        @if($detail['status'] != 24)
+                                        
                                             <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="order">确定</button>
                                             @if ($detail['master'] && $detail['status'] == 22)
                                                 <button  class="qs-btn opt-btn"  data-operation="onSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">上架</button>
@@ -483,7 +483,7 @@
                                                 <button  class="qs-btn opt-btn" style="width: 92px;" data-operation="offSale" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">下架</button>
                                             @endif
 
-                                            @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21]))
+                                            @if ($detail['master'] && in_array($detail['status'], [14, 15, 16, 17, 18, 19, 20, 21, 24]))
                                                 <button  class="qs-btn opt-btn"  data-operation="repeat" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary" style="width: 92px;" >重发</button>
                                             @endif
 
@@ -567,7 +567,7 @@
                                             @if (!$detail['master'] && ($detail['status'] == 17))
                                                 <button  class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
                                             @endif
-                                        @endif
+                                      
 
                                     </div>
                                 </div>
