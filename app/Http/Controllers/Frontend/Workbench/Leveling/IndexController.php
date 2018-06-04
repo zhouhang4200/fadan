@@ -558,7 +558,7 @@ class IndexController extends Controller
                 //发起人的主ID 与 当前主ID一样则撤销发起人
                 $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
 
-                if ($user->getPrimaryUserId() == Auth::user()->getPrimaryUserId()) {
+                if ($detail['leveling_consult']['consult'] == 1) {
                     $text = '你发起协商撤销。';
                 } else {
                     $text = '对方发起协商撤销。';
