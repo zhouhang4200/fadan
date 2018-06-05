@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Backend\Order;
 
-use App\Models\User;
 use DB;
 use Log;
 use Excel;
 use Auth;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderNotice;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Backend\OrderRepository;
 use App\Exceptions\OrderNoticeException;
-use App\Repositories\Backend\GameRepository;
+use App\Repositories\Frontend\GameRepository;
 use App\Repositories\Backend\ServiceRepository;
 
 /**
@@ -48,6 +48,7 @@ class LevelingController extends Controller
         $gainerPrimaryUserId = $request->input('gainer_primary_user_id');
         $no = $request->input('no');
         $foreignOrderNo = $request->input('foreign_order_no');
+        $thirdOrderNo = $request->input('third_order_no');
         $export = $request->input('export', 0);
 
         if ($request->gainer_primary_user_id) {
@@ -55,7 +56,7 @@ class LevelingController extends Controller
         }
 
         $filters = compact('startDate', 'endDate', 'source', 'status', 'serviceId', 'gameId', 'creatorPrimaryUserId',
-            'gainerPrimaryUserId', 'no', 'foreignOrderNo');
+            'gainerPrimaryUserId', 'no', 'foreignOrderNo', 'thirdOrderNo');
 
         // 订单导出
         if ($export) {
@@ -67,7 +68,7 @@ class LevelingController extends Controller
         return view('backend.order.leveling.index')->with([
             'orders' => $orders,
             'services' => $serviceRepository->available(),
-            'games' => $gameRepository->available(),
+            'games' => $gameRepository->availableByServiceId(4),
 
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -78,6 +79,7 @@ class LevelingController extends Controller
             'creatorPrimaryUserId' => $creatorPrimaryUserId,
             'gainerPrimaryUserId' => $request->gainer_primary_user_id,
             'no' => $no,
+            'thirdOrderNo' => $thirdOrderNo,
             'foreignOrderNo' => $foreignOrderNo,
             'fullUrl' => $request->fullUrl(),
         ]);
