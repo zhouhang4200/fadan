@@ -106,19 +106,19 @@ class Playing extends DailianAbstract implements DailianInterface
     {
 
         // 兼容之前扣款流程,如果有扣过下单款则接单不再扣款,否则按新扣款流程在接单时才扣发单方款
-//        if(!checkPayment($this->order->no)) {
-//
-//             Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
-//
-//            // 写多态关联
-//            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-//                throw new Exception('申请失败');
-//            }
-//
-//            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-//                throw new Exception('申请失败');
-//            }
-//        }
+        if(!checkPayment($this->order->no)) {
+
+             Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new Exception('申请失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('申请失败');
+            }
+        }
 
         $orderDetails = OrderDetail::where('order_no', $this->order->no)
                 ->pluck('field_value', 'field_name')
