@@ -325,6 +325,16 @@ class Order extends Model
         return $this->hasMany(OrderApiNotice::class, 'order_no', 'no');
     }
 
+    /**
+     * 获取进行中的金额
+     * @return mixed
+     */
+    public static function ingOrderAmount()
+    {
+        return self::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->where('service_id', 4)
+            ->whereIn('status', [13, 14, 15, 16, 17, 18])->sum('amount');
+    }
+
     public static function orderAndDetailAndConsult($orderNo)
     {
         $collectionArr =  DB::select("
