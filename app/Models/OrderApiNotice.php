@@ -12,7 +12,7 @@ class OrderApiNotice extends Model
 	protected $datas = ['deleted_at'];
 
 	protected $fillable = [
-		'order_no', 'status', 'source_order_no', 'operate', 'third', 'reason', 'order_created_at', 'function_name', 'created_at', 'updated_at'
+		'order_no', 'status', 'source_order_no', 'operate', 'third', 'reason', 'order_created_at', 'function_name', 'created_at', 'updated_at', 'notice_created_at', 'user_id'
 	];
 
     public function order()
