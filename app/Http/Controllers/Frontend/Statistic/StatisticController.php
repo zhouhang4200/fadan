@@ -454,7 +454,7 @@ class StatisticController extends Controller
 
         $totalDatas = DB::select("select count(z.creator_user_id) as creator_count, count(z.no) as count, sum(original_price) as original_price,
             sum(price) as price, sum(diff_price) as diff_price, sum(complete_count) as complete_count, 
-            sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$userQuery.") z group by z.creator_user_id");
+            sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$totalQuery.") z group by z.creator_user_id");
 
         if (isset($totalDatas) && ! empty($totalDatas) && count($totalDatas) > 0) {
             $totalDatas = $totalDatas[0];
