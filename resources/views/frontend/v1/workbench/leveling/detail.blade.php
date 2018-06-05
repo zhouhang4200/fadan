@@ -655,10 +655,10 @@
                     <tr>
                         <td>支付金额：</td>
                         <td>
-                            @if(isset($detail['payment_amount']))
+                            @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
                                 {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
                             @else
-                            ''
+
                             @endif
                         </td>
                     </tr>
