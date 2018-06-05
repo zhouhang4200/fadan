@@ -86,6 +86,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-3-'.$functionName;
                         $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
@@ -163,6 +164,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-3-'.$functionName;
                         $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);

@@ -65,6 +65,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-1-'.$functionName;
                         $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
@@ -140,6 +141,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-1-'.$functionName;
                         $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);

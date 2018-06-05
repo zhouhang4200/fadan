@@ -41,17 +41,19 @@ class OrderApiNoticeController extends Controller
     			$functionName = explode('-', $key)[2] ?? 0;
                 $orderModel = Order::where('no', $order['datas']['order_no'])->first();
     			
-				$arr                     = [];
-				$arr['order_no']         = $order['datas']['order_no'] ?? 0;
-				$arr['source_order_no']  = $orderModel->foreign_order_no ?? 0;
-				$arr['status']           = $orderModel->status ?? 0;
-				$arr['operate']          = config('leveling.operate')[$functionName] ?? 0;
-				$arr['third']            = $third ?? 0;
-				$arr['reason']           = $order['datas']['notice_reason'] ?? 0;
-				$arr['order_created_at'] = $orderModel->created_at ?? 0;
-				$arr['function_name']    = $functionName ?? 0;
-				$arr['created_at']       = Carbon::now()->toDateTimeString();
-				$arr['updated_at']       = Carbon::now()->toDateTimeString();
+                $arr                      = [];
+                $arr['order_no']          = $order['datas']['order_no'] ?? 0;
+                $arr['source_order_no']   = $orderModel->foreign_order_no ?? 0;
+                $arr['status']            = $orderModel->status ?? 0;
+                $arr['operate']           = config('leveling.operate')[$functionName] ?? 0;
+                $arr['third']             = $third ?? 0;
+                $arr['reason']            = $order['datas']['notice_reason'] ?? 0;
+                $arr['order_created_at']  = $orderModel->created_at ?? 0;
+                $arr['function_name']     = $functionName ?? 0;
+                $arr['user_id']           = $orderModel->creator_user_id;
+                $arr['notice_created_at'] = $order['datas']['notice_created_at'] ?? Carbon::now()->toDateTimeString();
+                $arr['created_at']        = Carbon::now()->toDateTimeString();
+                $arr['updated_at']        = Carbon::now()->toDateTimeString();
 
 		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
 		    	Redis::hDel($name, $key);
