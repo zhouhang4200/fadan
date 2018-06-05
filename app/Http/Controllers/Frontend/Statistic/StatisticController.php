@@ -439,7 +439,7 @@ class StatisticController extends Controller
                 GROUP BY d.trade_no
             ) m
         ";
-
+        $datas = [];
         // $datas = DB::select($queryStart.$queryMiddle.$queryEnd);
 
         // 缓存
