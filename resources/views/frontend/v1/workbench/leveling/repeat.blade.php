@@ -402,7 +402,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价幅度</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['markup_range'] ?? '' }}">
                                 <div class="tips" lay-tips="设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -412,7 +412,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价上限</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['markup_top_limit'] ?? '' }}">
                                 <div class="tips" lay-tips="自动加价将不超过该价格">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
