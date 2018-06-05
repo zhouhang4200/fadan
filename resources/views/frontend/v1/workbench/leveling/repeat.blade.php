@@ -353,12 +353,12 @@
                             <div class="layui-input-block">
                                 <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)">
                                     @php
-                                        $day = preg_match('/\d+/', $detail['game_leveling_day'], $arr);
-                                        $hour = preg_match('/\d+/', $detail['game_leveling_hour'], $arr);
+                                         preg_match('/\d+/', $detail['game_leveling_day'], $day);
+                                         preg_match('/\d+/', $detail['game_leveling_hour'], $hour);
                                     @endphp
                                     <option value=""></option>
                                     @for($i=0; $i<=30; $i++)
-                                        <option value="{{ $i }}" @if($i == $day) selected @endif>{{ $i }}天</option>
+                                        <option value="{{ $i }}" @if($i == $day[0]) selected @endif>{{ $i }}天</option>
                                     @endfor
                                 </select>
                             </div>
@@ -369,7 +369,7 @@
                                 <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)" lay-search="" >
                                     <option value=""></option>
                                     @for($i=0; $i<=24; $i++)
-                                        <option value="{{ $i }}" @if($i == $hour) selected @endif>{{ $i }}小时</option>
+                                        <option value="{{ $i }}" @if($i == $hour[0]) selected @endif>{{ $i }}小时</option>
                                     @endfor
                                 </select>
                             </div>
