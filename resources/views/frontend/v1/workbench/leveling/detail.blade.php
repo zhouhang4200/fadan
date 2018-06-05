@@ -678,6 +678,7 @@
                 </table>
             </div>
         </div>
+        @if ($detail['creator_primary_user_id'] == auth()->user()->getPrimaryUserId())
         <div class="layui-card" style="margin-bottom: 72px;">
             <div class="layui-card-header">淘宝数据</div>
             <div class="layui-card-body qs-text">
@@ -760,6 +761,7 @@
                 </table>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 
