@@ -67,24 +67,18 @@
             <tbody>
                 @if(! empty($userDatas) && isset($userDatas) && count($userDatas) > 0)
                     @forelse($userDatas as $userData)
-                        @if (!$userData->username)
-                            <tr>
-                                <td colspan="10">暂无</td>
-                            </tr>
-                        @else
                         <tr>
-                            <td>{{ $userData->username }}</td>
-                            <td>{{ $userData->count }}</td>
-                            <td>{{ number_format($userData->original_price, 2) }}</td>
-                            <td>{{ number_format($userData->price, 2) }}</td>
-                            <td>{{ number_format($userData->diff_price, 2) }}</td>
-                            <td>{{ $userData->complete_count }}</td>
-                            <td>{{ number_format($userData->complete_price, 2) ?? '--' }}</td>
-                            <td>{{ $userData->revoked_count }}</td>
-                            <td>{{ $userData->arbitrationed_count }}</td>
-                            <td>{{ number_format($userData->profit, 2) ?? '--' }}</td>
+                            <td>{{ $userData->username ?? \App\Models\User::find($userId)->username }}</td>
+                            <td>{{ $userData->count ?? 0 }}</td>
+                            <td>{{ number_format($userData->original_price, 2) ?? 0 }}</td>
+                            <td>{{ number_format($userData->price, 2) ?? 0 }}</td>
+                            <td>{{ number_format($userData->diff_price, 2) ?? 0 }}</td>
+                            <td>{{ $userData->complete_count ?? 0 }}</td>
+                            <td>{{ number_format($userData->complete_price, 2) ?? 0 }}</td>
+                            <td>{{ $userData->revoked_count ?? 0 }}</td>
+                            <td>{{ $userData->arbitrationed_count ?? 0 }}</td>
+                            <td>{{ number_format($userData->profit, 2) ?? 0 }}</td>
                         </tr>
-                        @endif
                     @empty
                         <tr>
                             <td colspan="10">暂无</td>
