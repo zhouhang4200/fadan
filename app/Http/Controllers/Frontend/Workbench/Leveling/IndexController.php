@@ -252,6 +252,16 @@ class IndexController extends Controller
                 $orderCurrent['password'] = str_replace(substr($orderCurrent['password'], -4, 4), '****', $orderCurrent['password']);
                 $orderCurrent['amount'] = intval($orderCurrent['amount']) == $orderCurrent['amount'] ? intval($orderCurrent['amount']) : $orderCurrent['amount'];
 
+
+                // 如果是接单账号则隐藏:玩家旺旺、客服备注、来源价格、利润 等字段数据
+                if (auth()->user()->getPrimaryUserId() == $orderCurrent['gainer_primary_user_id']) {
+                    $orderCurrent['profit'] = '';
+                    $orderCurrent['client_wang_wang'] = '';
+                    $orderCurrent['seller_nick'] = '';
+                    $orderCurrent['source_price'] = '';
+                    $orderCurrent['customer_service_name'] = '';
+                }
+
                 $temp = [];
                 foreach ($orderCurrent as $key => $value) {
                     if (is_string($value)) {
@@ -598,6 +608,15 @@ class IndexController extends Controller
                 $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
             }
             $detail['complain_result'] = $text;
+        }
+
+        // 如果是接单账号则隐藏:玩家旺旺、客服备注、来源价格、利润 等字段数据
+        if (auth()->user()->getPrimaryUserId() == $detail['gainer_primary_user_id']) {
+            $detail['profit'] = '';
+            $detail['client_wang_wang'] = '';
+            $detail['seller_nick'] = '';
+            $detail['source_price'] = '';
+            $detail['customer_service_name'] = '';
         }
 
         return view('frontend.v1.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
