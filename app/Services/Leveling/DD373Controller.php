@@ -59,6 +59,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-4-'.$functionName;
                         $value = json_encode(['third' => 4, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
@@ -135,6 +136,7 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
                         // 记录报警
                         $datas['notice_reason'] = $message;
                         $datas['operate'] = config('leveling.operate')[$functionName] ?? '无';
+                        $datas['notice_created_at'] = Carbon::now()->toDateTimeString();
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-4-'.$functionName;
                         $value = json_encode(['third' => 4, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);

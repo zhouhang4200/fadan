@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 use App\Services\RedisConnect;
 
 use Redis;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
@@ -143,6 +144,7 @@ class OrderSend extends Command
         $orderData['order_status']     = 1;
         $orderData['source_order_no']  = $orderDetail['source_order_no'];
         $orderData['order_created_at'] = $order->created_at->toDateTimeString();
+        $orderData['notice_created_at'] = Carbon::now()->toDateTimeString();
 
         $name = "order:order-api-notices";
         $key = $orderData['order_no'].'-'.$third.'-'.'create';
