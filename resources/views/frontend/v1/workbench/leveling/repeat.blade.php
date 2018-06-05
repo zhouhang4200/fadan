@@ -602,10 +602,14 @@
             // 下单
             form.on('submit(order)', function (data) {
                 var value = 0;
+                var chose = false;
                 layer.confirm('用哪一个客服身份重发？', {
                     btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
                 }, function(index, layero){
                     value = 1;
+                    chose = true;
+                }, function (index, layero) {
+                    chose = true;
                 });
 
                 if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
@@ -617,37 +621,40 @@
                     return false;
                 }
 
-                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: value}, function (result) {
+                if (chose) {
                     var load = layer.load(0, {
                         shade: [0.2, '#000000']
                     });
 
-                    if (result.status == 1) {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    }
+                    $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: value}, function (result) {
 
-                }, 'json');
-                layer.closeAll();
+                        if (result.status == 1) {
+                            layer.open({
+                                content: result.message,
+                                btn: ['继续发布', '订单列表'],
+                                btn1: function(index, layero){
+                                    window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                                },
+                                btn2: function(index, layero){
+                                    window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                                }
+                            });
+                        } else {
+                            layer.open({
+                                content: result.message,
+                                btn: ['继续发布', '订单列表'],
+                                btn1: function(index, layero){
+                                    window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                                },
+                                btn2: function(index, layero){
+                                    window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                                }
+                            });
+                        }
+
+                    }, 'json');
+                    layer.closeAll();
+                }
                 return false;
             });
             // 切换游戏时加截新的模版
