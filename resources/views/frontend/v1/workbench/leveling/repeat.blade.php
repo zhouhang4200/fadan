@@ -616,11 +616,12 @@
                     layer.msg('代练小时不能大于24小时');
                     return false;
                 }
-                var load = layer.load(0, {
-                    shade: [0.2, '#000000']
-                });
 
                 $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: value}, function (result) {
+                    var load = layer.load(0, {
+                        shade: [0.2, '#000000']
+                    });
+
                     if (result.status == 1) {
                         layer.open({
                             content: result.message,
@@ -644,8 +645,9 @@
                             }
                         });
                     }
-                    layer.close(load);
+
                 }, 'json');
+                layer.closeAll();
                 return false;
             });
             // 切换游戏时加截新的模版
