@@ -230,22 +230,26 @@ class AutoMarkupOrderEveryHour extends Command
     {
         DB::beginTransaction();
         try {
-            //如果上限 - 代练金额  小于  加价幅度 但是又大于0
-            if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
-                // 加价金额
-                $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
-                // 加价后的订单金额
-                $afterAddAmount = $orderDetails['markup_top_limit'];
-                // 流水
-                Asset::handle(new Expend($rangeMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
-            } else {
-                // 加价金额
-                $rangeMoney = $orderDetails['markup_range'];
-                // 加价后的订单金额
-                $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
-                // 流水
-                Asset::handle(new Expend($orderDetails['markup_range'], 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
-            }
+                //如果上限 - 代练金额  小于  加价幅度 但是又大于0
+                if (bcsub($orderDetails['markup_top_limit'], $datas['add_amount']) < $orderDetails['markup_range']) {
+                    // 加价金额
+                    $rangeMoney = bcsub($orderDetails['markup_top_limit'], $datas['add_amount']);
+                    // 加价后的订单金额
+                    $afterAddAmount = $orderDetails['markup_top_limit'];
+                    // 流水
+                    if(checkPayment($order->no)) {
+                        Asset::handle(new Expend($rangeMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+                    }
+                } else {
+                    // 加价金额
+                    $rangeMoney = $orderDetails['markup_range'];
+                    // 加价后的订单金额
+                    $afterAddAmount = bcadd($datas['add_amount'], $orderDetails['markup_range'], 2);
+                    // 流水
+                    if(checkPayment($order->no)) {
+                        Asset::handle(new Expend($orderDetails['markup_range'], 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+                    }
+                }
 
             $res = Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
             // 订单详情金额更新

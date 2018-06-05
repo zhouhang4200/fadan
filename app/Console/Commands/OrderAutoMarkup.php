@@ -250,7 +250,9 @@ class OrderAutoMarkup extends Command
             // 增加后的金额
             $afterAddAmount = bcadd(bcmul($markupMoney, bcadd($number, 1)), $firstAmount, 2);
             // 流水
-            Asset::handle(new Expend($markupMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            if(checkPayment($order->no)) {
+                Asset::handle(new Expend($markupMoney, 7, $order->no, '代练改价支出', $order->creator_primary_user_id));
+            }
             // 订单金额更新
             Order::where('no', $order->no)->update(['price' => $afterAddAmount, 'amount' => $afterAddAmount]);
             // 订单详情金额更新
