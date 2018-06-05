@@ -257,6 +257,7 @@
                         if (gameId == 0) {
                             gameId = item.game_id;
                         }
+                        $.post('{{ route('frontend.workbench.leveling.wait-time') }}', {tid:item.tid}, function (result) {});
                         id += item.tid + ',';
                     });
                     window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
