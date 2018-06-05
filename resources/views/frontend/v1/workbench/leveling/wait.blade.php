@@ -327,6 +327,7 @@
                     },
                     done: function(res, curr, count){
                         setStatusNumber(res.status_count);
+                        $('.send').addClass('qs-btn-message');
                         layui.form.render();
                     }
                 });
