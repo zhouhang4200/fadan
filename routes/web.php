@@ -342,7 +342,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 
             // 获取游戏代练类型
             Route::post('get-game-leveling-type', 'IndexController@getGameLevelingType')->name('frontend.workbench.get-game-leveling-type');
-
+            // DNF 区服解析
+            Route::post('dnf-serve/{region?}', 'IndexController@dnfRegionServe')->name('frontend.workbench.leveling.dnf-serve');
             // 待发订单
             Route::prefix('wait')->group(function(){
                 // 待发单列表

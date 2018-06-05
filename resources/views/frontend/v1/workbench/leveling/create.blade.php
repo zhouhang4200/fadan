@@ -219,8 +219,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 区</label>
                             <div class="layui-input-block ">
-                                <select name="region" lay-verify="required" lay-filter="change-select" class="region">
-                                    <option value=""></option>
+                                <select name="region" lay-verify="required" lay-filter="change-select" class="region" display-name="区">
                                 </select>
                             </div>
                         </div>
@@ -232,7 +231,6 @@
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 服</label>
                             <div class="layui-input-block">
                                 <select name="serve" lay-verify="required" lay-filter="serve"  class="serve" display-name="服">
-                                    <option value=""></option>
                                 </select>
                             </div>
                         </div>
@@ -565,7 +563,7 @@
             </div>
             <div class="layui-card-body qs-text">
                 <form class="layui-form" action="" lay-filter="component-form-group">
-                    <textarea name="template" class="layui-textarea" style="min-height: 370px;width: 100%" id="tempalte">
+                    <textarea name="template" class="layui-textarea" style="min-height: 370px;width: 100%" id="template">
                     </textarea>
                 </form>
             </div>
@@ -679,7 +677,7 @@
                 loadDefaultTemplate();
                 loadLevelingTemplate();
                 setFixedInfo();
-                parse();
+
                 $('.serve').html('');
             }
             // 加载下拉框的下级选项
@@ -716,6 +714,7 @@
 
                 for (var i = fieldArrs.length - 1; i >= 0; i--) {
                     var arr = fieldArrs[i].split('：');
+
                     // 跳过格式不对的行或空行
                     if (typeof arr[1] == "undefined") {
                         continue;
@@ -723,31 +722,46 @@
                     // 去两端空格
                     var name = $.trim(arr[0]);
                     var value = $.trim(arr[1]);
-                    // 获取表单dom
-                    var $formDom = $('#form-order').find('[display-name="' + name + '"]');
-                    // 填充表单
-                    switch ($formDom.prop('type')) {
-                        case 'select-one':
-                            $formDom.find('option').each(function () {
-                                if ($(this).text() == value && $(this).text() != '') {
-                                    $formDom.val($(this).val());
-                                    return false;
+
+                    // dnf
+                    if (name == '所在区/服') {
+                        $.post('{{ route('frontend.workbench.leveling.dnf-serve') }}/1:' + value, {region:1}, function (result) {
+                            $("select[name=region]").val(result.region);
+                            $("select[name=serve]").val(result.serve);
+                            layui.form.render();
+                        }, 'json')
+                    } else {
+                        // 获取表单dom
+                        var $formDom = $('#form-order').find('[display-name="' + name + '"]');
+                        // 填充表单
+                        switch ($formDom.prop('type')) {
+                            case 'select-one':
+                                $formDom.find('option').each(function () {
+                                    if ($.trim($(this).text()) == value && $(this).text() != '') {
+                                        $formDom.val($(this).val());
+                                        if (name == '区') {
+                                            loadSelectChild($('.region').find("option:selected").attr('data-id'));
+                                        }
+                                        return false;
+                                    }
+                                });
+                                break;
+                            case 'checkbox':
+                                if (value == 1) {
+                                    $formDom.prop('checked', true);
+                                } else {
+                                    $formDom.prop('checked', false);
                                 }
-                            });
-                            break;
-                        case 'checkbox':
-                            if (value == 1) {
-                                $formDom.prop('checked', true);
-                            } else {
-                                $formDom.prop('checked', false);
-                            }
-                            break;
-                        default:
-                            if (value != '') {
-                                $formDom.val(value);
-                            }
-                            break;
+                                break;
+                            default:
+                                if (value != '') {
+                                    $formDom.val(value);
+                                }
+                                break;
+                        }
+
                     }
+
                 }
                 layui.form.render();
             }
@@ -885,6 +899,7 @@
                     @endif
 
                     $('#template').val(template);
+                    parse();
                     setDefaultValueOption();
                     loadBusinessmanContactTemplate();
                     setFixedInfo();
