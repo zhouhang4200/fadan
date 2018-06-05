@@ -66,6 +66,11 @@ class Order extends Model
         } elseif (isset($filters['foreignOrderNo']) && $filters['foreignOrderNo']) {
 
             $query->where('foreign_order_no', $filters['foreignOrderNo']);
+        } elseif (isset($filters['thirdOrderNo']) && $filters['thirdOrderNo']) {
+            $no = OrderDetail::where('field_value', $filters['thirdOrderNo'])
+                ->whereIn('field_name', config('leveling.third_orders'))
+                ->value('order_no');
+            $query->where('no', $no);
         } else {
             if (isset($filters['status']) && $filters['status']) {
                 $query->where('status', $filters['status']);
