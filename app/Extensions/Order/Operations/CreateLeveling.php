@@ -145,14 +145,29 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->field_value = $this->details[$item->field_name] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
 
-                // 更新对应的淘宝订单状态为
-                if (in_array($item->field_name , ['source_order_no', 'source_order_no_1', 'source_order_no_2']) && !empty($this->details[$item->field_name])) {
-                    // 更新淘宝待发单状态
-                    $taobaoTrade = TaobaoTrade::where('tid', $this->details[$item->field_name])->first();
-                    if ($taobaoTrade) {
-                        $taobaoTrade->handle_status = 1;
-                        $taobaoTrade->save();
-                    }
+                // 更新淘宝待发单状态
+                $taobaoTrade = TaobaoTrade::where('tid', $this->details[$item->field_name])->first();
+
+                // 查询是否有进行中的淘宝单号
+                $existOrder = Order::where('foreign_order_no', $this->details[$item->field_name])
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($existOrder && !in_array($existOrder->status, [15, 16, 19, 20, 21, 22, 23, 24])) {
+                    throw new Exception('该订单已经发布，请勿重发');
+                } else if ($taobaoTrade) {
+                    $taobaoTrade->handle_status = 1;
+                    $taobaoTrade->save();
+
+                    // 淘宝订单状态记录
+                    $taobaoOrderNoStatus = new OrderDetail;
+                    $taobaoOrderNoStatus->order_no = $this->order->no;
+                    $taobaoOrderNoStatus->field_name = 'taobao_status';
+                    $taobaoOrderNoStatus->field_name_alias = 'taobao_status';
+                    $taobaoOrderNoStatus->field_display_name = '淘宝订单状态';
+                    $taobaoOrderNoStatus->field_value = 1;
+                    $taobaoOrderNoStatus->creator_primary_user_id = $this->order->creator_primary_user_id;
+                    $taobaoOrderNoStatus->save();
                 }
 
                 // 如果有设置自动下架时间，则将此订单加入自动下架任务中
