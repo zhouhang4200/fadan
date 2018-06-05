@@ -452,36 +452,8 @@ class StatisticController extends Controller
         }
 
         // 总计
-        // $totals = Cache::remember("statistic:employee:total:$userId:$startDate:$endDate", 120, function () use ($queryStart, $queryMiddle, $queryTotalEnd) {
-        //     return DB::select("SELECT 
-        //             g.creator_user_id,
-        //             g.username,
-        //             COUNT(no) AS count,
-        //             SUM(price) AS price,
-        //             SUM(complete_price) AS complete_price,
-        //             SUM(original_price) AS original_price,
-        //             SUM(diff_price) AS diff_price,
-        //             SUM(complete_count) AS complete_count,
-        //             SUM(revoked_count) AS revoked_count,
-        //             SUM(arbitrationed_count) AS arbitrationed_count,
-        //             SUM(create_order_pay_amount) AS create_order_pay_amount,
-        //             SUM(change_order_pay_amount) AS change_order_pay_amount,
-        //             SUM(reback_order_income_amount) AS reback_order_income_amount,
-        //             SUM(delete_order_income_amount) AS delete_order_income_amount,
-        //             SUM(complain_order_pay_amount) AS complain_order_pay_amount,
-        //             SUM(complain_order_income_amount) AS complain_order_income_amount,
-        //             SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
-        //             SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
-        //             SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
-        //             SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
-        //             SUM(complete_order_profit) AS complete_order_profit,
-        //             SUM(today_profit) AS today_profit
-        //         FROM (".$queryStart.$queryMiddle.$queryTotalEnd." where m.field_value = '') g 
-        //         GROUP BY g.creator_user_id
-        //     ");
-        // });
-
-        $totals = DB::select("SELECT 
+        $totals = Cache::remember("statistic:employee:total:$userId:$startDate:$endDate", 120, function () use ($queryStart, $queryMiddle, $queryTotalEnd) {
+            return DB::select("SELECT 
                     g.creator_user_id,
                     g.username,
                     COUNT(no) AS count,
@@ -507,6 +479,7 @@ class StatisticController extends Controller
                 FROM (".$queryStart.$queryMiddle.$queryTotalEnd." where m.field_value = '') g 
                 GROUP BY g.creator_user_id
             ");
+        });
 
         // 如果选择了某个具体员工
         if ($request->user_id && isset($totals) && count($totals) > 0) {
@@ -526,60 +499,8 @@ class StatisticController extends Controller
         }
 
         // 缓存
-        // $final = Cache::remember("statistic:employee:final:$userId:$startDate:$endDate", 120, function () use ($queryStart, $queryMiddle, $queryTotalEnd) {
-        //     return DB::select("
-        //         SELECT 
-        //             count(k.creator_user_id) as creator_count,
-        //             SUM(count) AS count,
-        //             SUM(price) AS price,
-        //             SUM(complete_price) AS complete_price,
-        //             SUM(original_price) AS original_price,
-        //             SUM(diff_price) AS diff_price,
-        //             SUM(complete_count) AS complete_count,
-        //             SUM(revoked_count) AS revoked_count,
-        //             SUM(arbitrationed_count) AS arbitrationed_count,
-        //             SUM(create_order_pay_amount) AS create_order_pay_amount,
-        //             SUM(change_order_pay_amount) AS change_order_pay_amount,
-        //             SUM(reback_order_income_amount) AS reback_order_income_amount,
-        //             SUM(delete_order_income_amount) AS delete_order_income_amount,
-        //             SUM(complain_order_pay_amount) AS complain_order_pay_amount,
-        //             SUM(complain_order_income_amount) AS complain_order_income_amount,
-        //             SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
-        //             SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
-        //             SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
-        //             SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
-        //             SUM(complete_order_profit) AS complete_order_profit,
-        //             SUM(today_profit) AS today_profit
-        //         FROM
-        //         (SELECT 
-        //             g.creator_user_id,
-        //             g.username,
-        //             COUNT(no) AS count,
-        //             SUM(price) AS price,
-        //             SUM(complete_price) AS complete_price,
-        //             SUM(original_price) AS original_price,
-        //             SUM(diff_price) AS diff_price,
-        //             SUM(complete_count) AS complete_count,
-        //             SUM(revoked_count) AS revoked_count,
-        //             SUM(arbitrationed_count) AS arbitrationed_count,
-        //             SUM(create_order_pay_amount) AS create_order_pay_amount,
-        //             SUM(change_order_pay_amount) AS change_order_pay_amount,
-        //             SUM(reback_order_income_amount) AS reback_order_income_amount,
-        //             SUM(delete_order_income_amount) AS delete_order_income_amount,
-        //             SUM(complain_order_pay_amount) AS complain_order_pay_amount,
-        //             SUM(complain_order_income_amount) AS complain_order_income_amount,
-        //             SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
-        //             SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
-        //             SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
-        //             SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
-        //             SUM(complete_order_profit) AS complete_order_profit,
-        //             SUM(today_profit) AS today_profit
-        //         FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
-        //         GROUP BY g.creator_user_id) k
-        //     ");
-        // });
-
-$final = DB::select("
+        $final = Cache::remember("statistic:employee:final:$userId:$startDate:$endDate", 120, function () use ($queryStart, $queryMiddle, $queryTotalEnd) {
+            return DB::select("
                 SELECT 
                     count(k.creator_user_id) as creator_count,
                     SUM(count) AS count,
@@ -629,58 +550,7 @@ $final = DB::select("
                 FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
                 GROUP BY g.creator_user_id) k
             ");
-
-
-        // $final = DB::select("
-        //     SELECT 
-        //         count(k.creator_user_id) as creator_count,
-        //         SUM(count) AS count,
-        //         SUM(price) AS price,
-        //         SUM(complete_price) AS complete_price,
-        //         SUM(original_price) AS original_price,
-        //         SUM(diff_price) AS diff_price,
-        //         SUM(complete_count) AS complete_count,
-        //         SUM(revoked_count) AS revoked_count,
-        //         SUM(arbitrationed_count) AS arbitrationed_count,
-        //         SUM(create_order_pay_amount) AS create_order_pay_amount,
-        //         SUM(change_order_pay_amount) AS change_order_pay_amount,
-        //         SUM(reback_order_income_amount) AS reback_order_income_amount,
-        //         SUM(delete_order_income_amount) AS delete_order_income_amount,
-        //         SUM(complain_order_pay_amount) AS complain_order_pay_amount,
-        //         SUM(complain_order_income_amount) AS complain_order_income_amount,
-        //         SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
-        //         SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
-        //         SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
-        //         SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
-        //         SUM(complete_order_profit) AS complete_order_profit,
-        //         SUM(today_profit) AS today_profit
-        //     FROM
-        //     (SELECT 
-        //         g.creator_user_id,
-        //         g.username,
-        //         COUNT(no) AS count,
-        //         SUM(price) AS price,
-        //         SUM(complete_price) AS complete_price,
-        //         SUM(original_price) AS original_price,
-        //         SUM(diff_price) AS diff_price,
-        //         SUM(complete_count) AS complete_count,
-        //         SUM(revoked_count) AS revoked_count,
-        //         SUM(arbitrationed_count) AS arbitrationed_count,
-        //         SUM(create_order_pay_amount) AS create_order_pay_amount,
-        //         SUM(change_order_pay_amount) AS change_order_pay_amount,
-        //         SUM(reback_order_income_amount) AS reback_order_income_amount,
-        //         SUM(delete_order_income_amount) AS delete_order_income_amount,
-        //         SUM(complain_order_pay_amount) AS complain_order_pay_amount,
-        //         SUM(complain_order_income_amount) AS complain_order_income_amount,
-        //         SUM(revoked_and_arbitrationed_return_order_price) AS revoked_and_arbitrationed_return_order_price,
-        //         SUM(revoked_and_arbitrationed_return_deposit) AS revoked_and_arbitrationed_return_deposit,
-        //         SUM(revoked_and_arbitrationed_pay_poundage) AS revoked_and_arbitrationed_pay_poundage,
-        //         SUM(revoked_and_arbitrationed_profit) AS revoked_and_arbitrationed_profit,
-        //         SUM(complete_order_profit) AS complete_order_profit,
-        //         SUM(today_profit) AS today_profit
-        //     FROM (".$queryStart.$queryMiddle.$queryTotalEnd.") g 
-        //     GROUP BY g.creator_user_id) k
-        // ");
+        });
 
         if (! isset($final) || ! is_array($final) || empty($final)) {
             $final = [];
