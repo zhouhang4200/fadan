@@ -90,7 +90,7 @@
                     </tr>
                 @endif
                 @if(! empty($totalDatas))
-                <tr style="color: red;">
+                    <tr style="color: red;">
                         <td>总计:  {{ $totalDatas->creator_count }}</td>
                         <td>{{ $totalDatas->count ?? 0 }}</td>
                         <td>{{ number_format($totalDatas->original_price, 2) }}</td>
@@ -101,6 +101,19 @@
                         <td>{{ $totalDatas->revoked_count ?? 0 }}</td>
                         <td>{{ $totalDatas->arbitrationed_count ?? 0 }}</td>
                         <td>{{ number_format($totalDatas->profit, 2) ?? '--' }}</td>
+                    </tr>
+                @else
+                    <tr style="color: red;">
+                        <td>总计:  0</td>
+                        <td>0</td>
+                        <td>0.00</td>
+                        <td>0.00</td>
+                        <td>0.00</td>
+                        <td>0</td>
+                        <td>0.00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0.00</td>
                     </tr>
                 @endif
             </tbody>
