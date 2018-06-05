@@ -259,7 +259,7 @@ class IndexController extends Controller
                     $orderCurrent['client_wang_wang'] = '';
                     $orderCurrent['seller_nick'] = '';
                     $orderCurrent['source_price'] = '';
-                    $orderCurrent['customer_service_name'] = '';
+                    $orderCurrent['customer_service_remark'] = '';
                 }
 
                 $temp = [];
@@ -616,7 +616,7 @@ class IndexController extends Controller
             $detail['client_wang_wang'] = '';
             $detail['seller_nick'] = '';
             $detail['source_price'] = '';
-            $detail['customer_service_name'] = '';
+            $detail['customer_service_remark'] = '';
         }
 
         return view('frontend.v1.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
