@@ -27,7 +27,7 @@
                 <td>{{ config('order.third')[$order->third] }}</td>
                 <td>{{ $order->reason }}</td>
                 <td>{{ $order->order_created_at }}</td>
-                <td>{{ $order->updated_at }}</td>
+                <td>{{ $order->notice_updated_at }}</td>
                 <td>
                     @if(in_array($order->status, [1, 22, 24]) && $order->function_name != 'create')
                         <button class="layui-btn layui-btn-normal layui-btn" style="margin-top: 10px;" lay-submit="" lay-filter="repeat" data-id="{{ $order->id }}">重发</button>
