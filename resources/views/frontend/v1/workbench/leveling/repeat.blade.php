@@ -602,14 +602,14 @@
             // 下单
             form.on('submit(order)', function (data) {
                 var value = 0;
-                var chose = false;
+                var chose = 0;
                 layer.confirm('用哪一个客服身份重发？', {
                     btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
                 }, function(index, layero){
                     value = 1;
-                    chose = true;
+                    chose = 1;
                 }, function (index, layero) {
-                    chose = true;
+                    chose = 1;
                 });
 
                 if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
@@ -621,7 +621,7 @@
                     return false;
                 }
 
-                if (chose) {
+                if (chose == 1) {
                     var load = layer.load(0, {
                         shade: [0.2, '#000000']
                     });
