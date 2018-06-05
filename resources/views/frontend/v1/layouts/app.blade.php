@@ -136,6 +136,9 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
             margin-top: -20px;
             font-size: 24px;
         }
+        .layui-card-body {
+            padding-bottom: 30px;
+        }
     </style>
     @yield('css')
 </head>
