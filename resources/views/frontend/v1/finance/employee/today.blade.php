@@ -67,6 +67,11 @@
             <tbody>
                 @if(! empty($userDatas) && isset($userDatas) && count($userDatas) > 0)
                     @forelse($userDatas as $userData)
+                        @if (!$userData->username)
+                            <tr>
+                                <td colspan="10">暂无</td>
+                            </tr>
+                        @else
                         <tr>
                             <td>{{ $userData->username }}</td>
                             <td>{{ $userData->count }}</td>
@@ -79,7 +84,11 @@
                             <td>{{ $userData->arbitrationed_count }}</td>
                             <td>{{ number_format($userData->profit, 2) ?? '--' }}</td>
                         </tr>
+                        @endif
                     @empty
+                        <tr>
+                            <td colspan="10">暂无</td>
+                        </tr>
                     @endforelse
                 @else
                     <tr>
