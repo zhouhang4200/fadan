@@ -457,9 +457,18 @@
                     switch ($formDom.prop('type')) {
                         case 'select-one':
                             $formDom.find('option').each(function () {
-                                if ($(this).text() == value && $(this).text() != '') {
-                                    $formDom.val($(this).val());
-                                    return false;
+                                if (name == '区') {
+                                    $formDom.find('option').each(function () {
+                                        console.log($.trim($(this).text()));
+
+                                        console.log(value.trim());
+                                        console.log($(this).text() == value.trim());
+                                        if ($(this).text() == value && $(this).text() != '') {
+                                            $formDom.val($(this).val());
+
+                                            return false;
+                                        }
+                                    });
                                 }
                             });
                             break;

@@ -462,12 +462,11 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                 laydate = layui.laydate;
         var insStart = laydate.render({
             elem: '#test-laydate-start',
-            min: 0,
             done: function (value, date) {
                 //更新结束日期的最小日期
-                insEnd.config.min = lay.extend({}, date, {
-                    month: date.month - 1
-                });
+//                insEnd.config.min = lay.extend({}, date, {
+//                    month: date.month - 1
+//                });
                 //自动弹出结束日期的选择器
                 insEnd.config.elem[0].focus();
             }
@@ -476,13 +475,6 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         //结束日期
         var insEnd = laydate.render({
             elem: '#test-laydate-end',
-            min: 0,
-            done: function (value, date) {
-                //更新开始日期的最大日期
-                insStart.config.max = lay.extend({}, date, {
-                    month: date.month - 1
-                });
-            }
         });
 
         $('#logout').click(function () {

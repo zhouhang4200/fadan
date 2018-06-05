@@ -402,7 +402,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价幅度</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_range" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['markup_range'] ?? '' }}">
                                 <div class="tips" lay-tips="设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -412,7 +412,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">加价上限</label>
                             <div class="layui-input-block">
-                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="markup_top_limit" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['markup_top_limit'] ?? '' }}">
                                 <div class="tips" lay-tips="自动加价将不超过该价格">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -601,44 +601,15 @@
             });
             // 下单
             form.on('submit(order)', function (data) {
-                if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
-                    layer.msg('代练时间不能都为0');
-                    return false;
-                }
-                if(data.field.game_leveling_hour > 24) {
-                    layer.msg('代练小时不能大于24小时');
-                    return false;
-                }
-                var load = layer.load(0, {
-                    shade: [0.2, '#000000']
+                layer.confirm('用哪一个客服身份重发？', {
+                    btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
+                }, function(){
+                    order(data, 1);
+                    layer.closeAll();
+                }, function() {
+                    order(data, 0);
+                    layer.closeAll();
                 });
-
-                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
-                    if (result.status == 1) {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    }
-                    layer.close(load);
-                }, 'json');
                 return false;
             });
             // 切换游戏时加截新的模版
@@ -662,7 +633,49 @@
             });
             // 按游戏加载区\代练类型\代练模版\商户QQ
             loadGameInfo();
+            // 下单
+            function order(data, value) {
+                if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
+                    layer.msg('代练时间不能都为0');
+                    return false;
+                }
+                if(data.field.game_leveling_hour > 24) {
+                    layer.msg('代练小时不能大于24小时');
+                    return false;
+                }
+                var load = layer.load(0, {
+                    shade: [0.2, '#000000']
+                });
+                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: value}, function (result) {
+
+                    if (result.status == 1) {
+                        layer.open({
+                            content: result.message,
+                            btn: ['继续发布', '订单列表'],
+                            btn1: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                            },
+                            btn2: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            content: result.message,
+                            btn: ['继续发布', '订单列表'],
+                            btn1: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                            },
+                            btn2: function(index, layero){
+                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                            }
+                        });
+                    }
+
+                }, 'json');
+            }
             // 加载下单必要的信息
+
             function loadGameInfo() {
                 loadRegionType();
                 loadGameLevelingTemplate();
