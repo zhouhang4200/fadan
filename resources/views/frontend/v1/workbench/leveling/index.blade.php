@@ -165,11 +165,11 @@
                             <div class="layui-form-item last-item">
                                 <label class="layui-form-label">发布时间</label>
                                 <div class="layui-input-block">
-                                    <input type="text"  class="layui-input qsdate" id="test-laydate-start" placeholder="开始日期">
+                                    <input type="text"  class="layui-input qsdate" id="test-laydate-start" name="start_date" placeholder="开始日期">
                                     <div class="layui-form-mid">
                                         -
                                     </div>
-                                    <input type="text" class="layui-input qsdate" id="test-laydate-end" placeholder="结束日期">
+                                    <input type="text" class="layui-input qsdate" id="test-laydate-end" name="end_date" placeholder="结束日期">
                                 </div>
                             </div>
                         </div>
