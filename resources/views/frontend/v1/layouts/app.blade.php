@@ -462,7 +462,6 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                 laydate = layui.laydate;
         var insStart = laydate.render({
             elem: '#test-laydate-start',
-            min: 0,
             done: function (value, date) {
                 //更新结束日期的最小日期
 //                insEnd.config.min = lay.extend({}, date, {
@@ -476,7 +475,6 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         //结束日期
         var insEnd = laydate.render({
             elem: '#test-laydate-end',
-            min: 0
         });
 
         $('#logout').click(function () {
