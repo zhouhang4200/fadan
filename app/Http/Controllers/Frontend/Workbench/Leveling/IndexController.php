@@ -1707,7 +1707,9 @@ class IndexController extends Controller
                 if ($newAmount > $order->price) {
                     $addAmount = bcsub($newAmount, $order->price);
 
-                    Asset::handle(new Expend($addAmount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                    if (checkPayment($order->no)) {
+                        Asset::handle(new Expend($addAmount, 7, $orderNo, '代练改价支出', $order->creator_primary_user_id));
+                    }
 
                     $order->price = $newAmount;
                     $order->amount = $newAmount;

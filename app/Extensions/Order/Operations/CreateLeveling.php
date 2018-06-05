@@ -194,19 +194,22 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
     public function updateAsset()
     {
-        try {
-            Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
-        } catch (CustomException $customException) {
-            throw new CustomException('代练价格不能大于账户余额');
-        }
 
-        // 写多态关联
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new CustomException('申请失败');
-        }
+        if ($this->order->creator_primary_user_id != 8317) {
+            try {
+                Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+            } catch (CustomException $customException) {
+                throw new CustomException('代练价格不能大于账户余额');
+            }
 
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new Exception('申请失败');
+            // 写多态关联
+            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                throw new CustomException('申请失败');
+            }
+
+            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                throw new Exception('申请失败');
+            }
         }
     }
 
