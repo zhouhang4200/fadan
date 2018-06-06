@@ -764,7 +764,7 @@ if (!function_exists('sendSms')){
 //            return ['status' => 0, 'message' => $exception->getMessage()];
 //        }
 
-        $sendResult = (new SmSApi())->send(2, $phone, $content, $sendUserId);
+        $sendResult = (new SmSApi())->send(2, $phone, $content);
 
         if ((bool)strpos($sendResult, "mterrcode=000")) {
             // 发送成功写发送记录
@@ -780,7 +780,7 @@ if (!function_exists('sendSms')){
             ]);
             return ['status' => 1, 'message' => '发送成功'];
         }
-        myLog('sms-send', [$sendResult]);
+        myLog('sms-send', [$sendResult, $phone, $content]);
         return ['status' => 0, 'message' => '发送失败'];
     }
 }

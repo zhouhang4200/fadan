@@ -78,7 +78,7 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
-        echo taobaoAesEncrypt(\GuzzleHttp\json_encode(["Tid" => '169089154989950874']));
+        dd((new SmSApi())->send(2, '18500132452', '22'));
 
         die;
         // 我们是待接单
