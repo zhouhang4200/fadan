@@ -124,7 +124,7 @@
                         if (in_array($item->status, [21, 19])) {
                             $orgPaymentAmount = $item->levelingConsult->api_amount;
                             $paymentAmount = $item->levelingConsult->api_amount;
-                            $getAmount = $item->levelingConsult->api_amount;
+                            $getAmount = $item->levelingConsult->api_deposit;
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
@@ -158,7 +158,7 @@
                                         // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                                         if (in_array($sameOrder->status, [21, 19])) {
                                             $paymentAmount += $sameOrder->levelingConsult->api_amount;
-                                            $getAmount += $sameOrder->levelingConsult->api_amount;
+                                            $getAmount += $sameOrder->levelingConsult->api_deposit;
                                             $poundage += $sameOrder->levelingConsult->api_service;
                                         } else if ($item->status == 20) {
                                             $paymentAmount += $sameOrder->amount;
