@@ -123,8 +123,7 @@ class OrderSend extends Command
                                     }
                                 }
                             }
-                            // 写基础数据
-                            event(new OrderBasicData($orderDatas['order_no']));
+
 
                             myLog('order-send-result-des', [$orderDatas['order_no'], $platform['name'], $result]);
 
@@ -132,6 +131,8 @@ class OrderSend extends Command
                             myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
                         }
                     }
+                    // 写基础数据
+                    event(new OrderBasicData($orderDatas['order_no']));
 
                 } catch (\Exception $e) {
                     myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage()]);

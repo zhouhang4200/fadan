@@ -50,11 +50,11 @@ class TaobaoController extends Controller
     public function tradeSuccess(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 2;
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 2,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }

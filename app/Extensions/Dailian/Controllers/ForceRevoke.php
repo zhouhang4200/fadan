@@ -127,13 +127,4 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
         // 写入结算时间
         OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
     }
-
-    /**
-     * 写基础数据
-     * @return [type] [description]
-     */
-    public function writeOrderBasicData()
-    {
-        event(new OrderBasicData($this->orderNo));
-    }
 }

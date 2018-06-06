@@ -32,17 +32,17 @@ class WriteOrderBasicData
     public function handle(OrderBasicData $event)
     {
         // 订单
-        $order = Order::where('no', $event->orderNo)->first();
+        $order = Order::where('no', $event->order->no)->first();
         // 订单详情
-        $orderDetail = OrderDetail::where('order_no', $event->orderNo)
+        $orderDetail = OrderDetail::where('order_no', $order->no)
             ->pluck('field_value', 'field_name')
             ->toArray();
         // 仲裁信息
-        $consult = LevelingConsult::where('order_no', $event->orderNo)->first();
+        $consult = LevelingConsult::where('order_no', $order->no)->first();
         // 天猫订单
         $tmOrder = TaobaoTrade::where('tid', $order->foreign_order_no)->first();
         // 投诉表
-        $complaint = BusinessmanComplaint::where('order_no', $event->orderNo)->first();
+        $complaint = BusinessmanComplaint::where('order_no', $order->no)->first();
 
         $data                          = [];
         $data['tm_status']             = '';
@@ -86,7 +86,7 @@ class WriteOrderBasicData
             }
         }
         
-        $data['order_no']                = $event->orderNo;
+        $data['order_no']                = $order->no;
         $data['status']                  = $order->status;
         $data['client_wang_wang']        = $orderDetail['client_wang_wang'];
         $data['customer_service_name']   = $orderDetail['customer_service_name'];
@@ -104,6 +104,6 @@ class WriteOrderBasicData
         $data['order_finished_at']       = $orderDetail['checkout_time'];
         $data['is_repeat']               = $orderDetail['is_repeat'] ? 1 : 0;
 
-        OrderBasicDataModel::updateOrCreate(['order_no' => $event->orderNo], $data);
+        OrderBasicDataModel::updateOrCreate(['order_no' => $order->no], $data);
     }
 }

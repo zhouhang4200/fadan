@@ -76,6 +76,25 @@ class TaobaoTradeRepository
         return true;
     }
 
+    /**
+     * 更新交易订单状态
+     * @param $updateData
+     * @return bool
+     * @throws Exception
+     */
+    public static function updateTradeStatus($updateData)
+    {
+        // 创建交易数据
+        $taobaoTrade = TaobaoTrade::where('tid', $updateData['tid'])->first();
+        if (empty($TaobaoTrade)) {
+            throw new Exception('数据不存在');
+        }
+        $taobaoTrade->trade_status = $updateData['trade_status'];
+        $taobaoTrade->save();
+
+        return true;
+    }
+
     // 处理接口传的数据
     public static function getParams($data)
     {

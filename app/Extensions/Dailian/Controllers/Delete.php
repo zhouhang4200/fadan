@@ -140,13 +140,4 @@ class Delete extends DailianAbstract implements DailianInterface
             return true;
         }
     }
-
-     /**
-     * 写基础数据
-     * @return [type] [description]
-     */
-    public function writeOrderBasicData()
-    {
-        event(new OrderBasicData($this->orderNo));
-    }
 }
