@@ -102,6 +102,7 @@ class WriteOrderBasicData
         $data['original_price']          = $order->original_price;
         $data['order_created_at']        = $order->created_at;
         $data['order_finished_at']       = $orderDetail['checkout_time'];
+        $data['is_repeat']               = $orderDetail['is_repeat'] ? 1 : 0;
 
         OrderBasicDataModel::updateOrCreate(['order_no' => $event->orderNo], $data);
     }

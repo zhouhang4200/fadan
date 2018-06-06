@@ -8,6 +8,7 @@ use App\Services\RedisConnect;
 use Redis;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use App\Events\OrderBasicData;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
 use App\Models\Order as OrderModel;
@@ -122,6 +123,9 @@ class OrderSend extends Command
                                     }
                                 }
                             }
+                            // 写基础数据
+                            event(new OrderBasicData($orderDatas['order_no']));
+
                             myLog('order-send-result-des', [$orderDatas['order_no'], $platform['name'], $result]);
 
                         } catch (\Exception $exception) {

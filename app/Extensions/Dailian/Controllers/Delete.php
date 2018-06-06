@@ -8,6 +8,7 @@ use DB;
 use Asset;
 use Exception;
 use App\Services\Show91;
+use App\Events\OrderBasicData;
 use App\Services\DailianMama;
 use App\Extensions\Asset\Income;
 use App\Exceptions\AssetException;
@@ -57,6 +58,8 @@ class Delete extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
+            // 写基础数据
+            $this->writeOrderBasicData();
             $this->orderCount();
             delRedisCompleteOrders($this->orderNo);
             // 从留言获取任务中删除
@@ -136,5 +139,14 @@ class Delete extends DailianAbstract implements DailianInterface
             }
             return true;
         }
+    }
+
+     /**
+     * 写基础数据
+     * @return [type] [description]
+     */
+    public function writeOrderBasicData()
+    {
+        event(new OrderBasicData($this->orderNo));
     }
 }
