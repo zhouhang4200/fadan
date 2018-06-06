@@ -23,7 +23,6 @@ class TaobaoTradeRepository
         $goods = AutomaticallyGrabGoods::where('foreign_goods_id', $trade['num_iid'])->first();
 
         if ($goods) {
-
             // 查找是否有绑定旺旺授权
             $auth = TaobaoShopAuthorization::where('wang_wang', $trade['seller_nick'])
                 ->where('user_id', $goods->user_id)
@@ -86,10 +85,12 @@ class TaobaoTradeRepository
     {
         // 创建交易数据
         $taobaoTrade = TaobaoTrade::where('tid', $updateData['tid'])->first();
-        if (empty($TaobaoTrade)) {
+
+        if (empty($taobaoTrade)) {
             throw new Exception('数据不存在');
         }
         $taobaoTrade->trade_status = $updateData['trade_status'];
+        $taobaoTrade->handle_status = $updateData['handle_status'];
         $taobaoTrade->save();
 
         return true;
