@@ -169,7 +169,7 @@
                                     }
 
                                  // 计算利润
-                                 $profit =   bcadd(($taobaoAmout - $taobaoRefund - $paymentAmount - $poundage), $getAmount);
+                                 $profit = bcadd(($taobaoAmout - $taobaoRefund - $paymentAmount - $poundage), $getAmount);
                                 //$profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
                             }
                         }
