@@ -884,7 +884,7 @@ if (!function_exists('export')) {
 
             fclose($out);
         },200, [
-            'Content-Type' => 'application/force-download',
+            'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
         ]);
         $response->send();
