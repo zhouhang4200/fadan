@@ -78,7 +78,33 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
-        $this->forceRevoke($no, $user);
+
+        $completeOrder = [
+            "2018060615594900000269",
+            "2018060417360900001381",
+            "2018060417375800001389",
+            "2018060409105800000307",
+            "2018060313491400000966",
+            "2018060519330300001172",
+            "2018060315220500001166",
+            "2018053102035900000127",
+            "2018060612301100000153",
+            "2018052401395600000147",
+            "2018060517474400001088",
+            "2018060512573500000810",
+            "2018060614510400000225",
+            "2018060520422800001215",
+            "2018060517392100001077",
+            "2018053011182400000622",
+            "2018060312255400000803",
+            "2018060520142500001192",
+            "2018060516040500000987",
+        ];
+
+        foreach ($completeOrder as $item) {
+            $this->complete($item);
+        }
+
         die;
         // 我们是待接单
         if ($status == 1) {
@@ -308,9 +334,14 @@ class Temp extends Command
      * @param $no
      * @param $user
      */
-    public function complete($no, $user)
+    public function complete($no)
     {
-        (new Complete())->run($no, $user, 0);
+
+        $order  = \App\Models\Order::where('no', $no)->first();
+        if ($order) {
+            dump((new Complete())->run($order->no, $order->creator_primary_user_id, 0));
+        }
+
     }
 
     /**
