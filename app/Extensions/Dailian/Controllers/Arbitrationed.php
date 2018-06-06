@@ -7,6 +7,7 @@ use DB;
 use Asset;
 use Redis;
 use Exception;
+use App\Events\OrderBasicData;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;
 use App\Extensions\Asset\Income;
@@ -57,9 +58,8 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
 		    // 后续操作
 		    $this->after();
-		    //仲裁完成之后，订单状态改为完成
-		    $this->after();
-
+            // 写基础数据
+            $this->writeOrderBasicData();
             $this->orderCount();
 		    LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 2]);
 		    // 24H自动完成
@@ -364,4 +364,13 @@ class Arbitrationed extends DailianAbstract implements DailianInterface
 	    	throw new DailianException('参数传入错误或不满足条件');
 	    }
 	}
+
+    /**
+     * 写基础数据
+     * @return [type] [description]
+     */
+    public function writeOrderBasicData()
+    {
+        event(new OrderBasicData($this->orderNo));
+    }
 }

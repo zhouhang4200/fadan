@@ -7,6 +7,7 @@ use DB;
 use Asset;
 use Exception;
 use App\Models\User;
+use App\Events\OrderBasicData;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Income;
@@ -61,6 +62,8 @@ class Revoked extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
+            // 写基础数据
+            $this->writeOrderBasicData();
             $this->orderCount();
             LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
             delRedisCompleteOrders($this->orderNo);
@@ -395,26 +398,16 @@ class Revoked extends DailianAbstract implements DailianInterface
                 }
             }
 
-            /**
-             * 以下只 适用于 91  和 代练妈妈
-             */
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         // 91 同意撤销接口
-            //         $options = [
-            //             'oid' => $orderDetails['show91_order_no'],
-            //             'v' => 1,
-            //             'p' => config('show91.password'),
-            //         ];
-            //         Show91::confirmSc($options);
-            //         break;
-            //     case 2:
-            //         DailianMama::operationOrder($this->order, 20009);
-            //         break;
-            // }
             return true;
         }
+    }
+
+    /**
+     * 写基础数据
+     * @return [type] [description]
+     */
+    public function writeOrderBasicData()
+    {
+        event(new OrderBasicData($this->orderNo));
     }
 }

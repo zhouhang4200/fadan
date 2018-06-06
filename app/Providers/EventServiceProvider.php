@@ -117,6 +117,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderForceRevoke' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
         ],
+        // 创建或修改订单基础数据
+        'App\Events\OrderBasicData' => [
+            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+        ],
     ];
 
     /**

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrderFlowsTable extends Migration
+class CreateOrderBasicDatasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateOrderFlowsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_flows', function (Blueprint $table) {
+        Schema::create('order_basic_datas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_no')->comment('订单号');
             $table->tinyInteger('status')->comment('订单状态');
@@ -36,9 +36,10 @@ class CreateOrderFlowsTable extends Migration
             $table->decimal('consult_amount', 10, 4)->comment('撤销/仲裁发单方支出代练费');
             $table->decimal('consult_deposit', 10, 4)->comment('撤销/仲裁发单方获得的双金');
             $table->decimal('consult_poundage', 10, 4)->comment('撤销/仲裁发单方支出的手续费');
-            $table->decimal('judge_amount', 10, 4)->comment('订单产生纠纷裁决发单支出金额');
+            $table->decimal('creator_judge_income', 10, 4)->comment('订单产生纠纷裁决发单获得金额');
+            $table->decimal('creator_judge_payment', 10, 4)->comment('订单产生纠纷裁决发单支出金额');
             $table->timestamp('order_created_at')->comment('订单发单时间');
-            $table->timestamp('order_finished_at')->comment('订单发单时间');
+            $table->timestamp('order_finished_at')->comment('订单结算时间');
             $table->timestamps();
         });
     }
@@ -50,6 +51,6 @@ class CreateOrderFlowsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_flows');
+        Schema::dropIfExists('order_basic_datas');
     }
 }
