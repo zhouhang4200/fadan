@@ -108,7 +108,6 @@
                             <div class="layui-form-item">
                                 <div class="layui-input-block" style="margin-left: 40px;">
                                     <button class="qs-btn" lay-submit="" lay-filter="search">搜索</button>
-                                    <button class="qs-btn" lay-submit="" lay-filter="send">合并发布</button>
                                 </div>
                             </div>
                         </div>
@@ -130,6 +129,7 @@
                         <li class="" lay-id="2">已隐藏
                             <span class="qs-badge quantity-2 layui-hide"></span>
                         </li>
+                        <button class="qs-btn qs-btn-message send"  style="float: right" lay-submit="" lay-filter="send">合并发布</button>
                     </ul>
                 </div>
                 <div id="order-list" lay-filter="order-list">
@@ -225,11 +225,16 @@
                     reloadOrderList();
                 });
             });
-            // 搜索
-            form.on('submit(send)', function (data) {
-                var checkStatus = table.checkStatus('order-list'), data = checkStatus.data;
+            // 合并发布
+            form.on('submit(send)', function (obj) {
 
-                if (checkStatus.data.length > 3) {
+                if($(obj.elem).hasClass('qs-btn-message')) {
+                    layer.msg('请选择需要合并发布的订单');
+                    return false;
+                }
+                var checkStatus = table.checkStatus('order-list'), checkData = checkStatus.data;
+
+                if (checkData.length > 3) {
                     layer.msg('合并发单最多能选3个订单');
                     return false;
                 }
@@ -248,17 +253,41 @@
                 } else {
                     var id = '';
                     var gameId = 0;
-                    $.each(data, function (index, item) {
+                    $.each(checkData, function (index, item) {
                         if (gameId == 0) {
                             gameId = item.game_id;
                         }
+                        $.post('{{ route('frontend.workbench.leveling.wait-time') }}', {tid:item.tid}, function (result) {});
                         id += item.tid + ',';
                     });
                     window.open('{{ route('frontend.workbench.leveling.create') }}?tid=' + id + '&game_id=' + gameId);
                 }
                 return false;
             });
-             form.on('select(game)', function (data) {
+
+            form.on('checkbox()', function(){
+                var number = 0;
+
+                $('.layui-table-fixed-r').find('input[name="layTableCheckbox"]:checked').each(function(){
+                    number = number + 1;
+                });
+
+                if (number == 0) {
+                    $('.send').addClass('qs-btn-message');
+                    number = 0;
+                } else {
+                    $('.send').removeClass('qs-btn-message');
+                    number = 0;
+                }
+            });
+            form.on('checkbox(layTableAllChoose)', function (data) {
+                if(table.checkStatus('order-list').isAll) {
+                    $('.send').addClass('qs-btn-message');
+                } else {
+                    $('.send').removeClass('qs-btn-message');
+                }
+            });
+            form.on('select(game)', function (data) {
                 if (data.value == 86) {
                     $('#type').removeClass('layui-hide');
                 } else {
@@ -298,6 +327,7 @@
                     },
                     done: function(res, curr, count){
                         setStatusNumber(res.status_count);
+                        $('.send').addClass('qs-btn-message');
                         layui.form.render();
                     }
                 });

@@ -28,7 +28,7 @@ class TaobaoApi
                 $request->data['NumIid'],
                 $request->data['BuyerNick'],
                 $request->data['SellerNick'],
-                $request->data
+//                $request->data
             ]);
         } else {
             myLog('api-request-err', [file_get_contents("php://input")]);

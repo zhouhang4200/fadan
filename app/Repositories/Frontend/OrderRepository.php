@@ -200,7 +200,15 @@ class OrderRepository
             return $query->whereIn('no', function ($query) use($no) {
                 $query->select('order_no')
                     ->from(with(new OrderDetail())->getTable())
-                    ->whereIn('field_name', ['third_order_no', 'source_order_no', 'source_order_no_1', 'source_order_no_2'])
+                    ->whereIn('field_name', [
+                        'third_order_no',
+                        'source_order_no',
+                        'source_order_no_1',
+                        'source_order_no_2',
+                        'dd373_order_no',
+                        'mayi_order_no',
+                        'show91_order_no',
+                    ])
                     ->where('field_value', $no);
             });
         });
