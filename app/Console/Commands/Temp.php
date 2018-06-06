@@ -80,11 +80,13 @@ class Temp extends Command
 
 
         $completeOrder = [
-            "2018053110222400000509",
+            "2018060315535900001270",
+            "2018060414022900000915",
+            "2018060412102700000661",
         ];
 
         foreach ($completeOrder as $item) {
-            $this->complete($item);
+            $this->revoked($item);
         }
 
         die;
@@ -322,6 +324,21 @@ class Temp extends Command
         $order  = \App\Models\Order::where('no', $no)->first();
         if ($order) {
             dump((new Complete())->run($order->no, $order->creator_primary_user_id, 0));
+        }
+
+    }
+
+    /**
+     * 完成订单
+     * @param $no
+     * @param $user
+     */
+    public function revoked($no)
+    {
+
+        $order  = \App\Models\Order::where('no', $no)->first();
+        if ($order) {
+            dump((new Revoked())->run($order->no, $order->creator_primary_user_id, 0));
         }
 
     }
