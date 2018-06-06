@@ -887,7 +887,7 @@ if (!function_exists('export')) {
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
         ]);
-        $response->send();
+        return $response;
     }
 }
 
