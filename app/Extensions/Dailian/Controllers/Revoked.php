@@ -7,7 +7,6 @@ use DB;
 use Asset;
 use Exception;
 use App\Models\User;
-use App\Events\OrderBasicData;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Income;
@@ -62,8 +61,6 @@ class Revoked extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
-            // 写基础数据
-            $this->writeOrderBasicData();
             $this->orderCount();
             LevelingConsult::where('order_no', $this->orderNo)->update(['complete' => 1]);
             delRedisCompleteOrders($this->orderNo);
@@ -400,14 +397,5 @@ class Revoked extends DailianAbstract implements DailianInterface
 
             return true;
         }
-    }
-
-    /**
-     * 写基础数据
-     * @return [type] [description]
-     */
-    public function writeOrderBasicData()
-    {
-        event(new OrderBasicData($this->orderNo));
     }
 }

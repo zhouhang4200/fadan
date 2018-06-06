@@ -7,7 +7,6 @@ use Asset;
 use Exception;
 use App\Extensions\Asset\Income;
 use App\Models\OrderDetail;
-use App\Events\OrderBasicData;
 use App\Exceptions\DailianException;
 use App\Exceptions\AssetException;
 use App\Repositories\Frontend\OrderDetailRepository;
@@ -52,8 +51,6 @@ class ForceRevoke extends DailianAbstract implements DailianInterface
 		    $this->updateAsset();
 		    // 订单日志描述
 		    $this->setDescription();
-            // 写基础数据
-            $this->writeOrderBasicData();
 		    // 保存操作日志
 		    $this->saveLog();
             $this->orderCount();

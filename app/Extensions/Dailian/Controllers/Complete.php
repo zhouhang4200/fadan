@@ -12,7 +12,6 @@ use Asset;
 use TopClient;
 use Exception;
 use ErrorException;
-use App\Events\OrderBasicData;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
@@ -69,8 +68,6 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->saveLog();
             // 后续操作
             $this->after();
-            // 写基础数据
-            $this->writeOrderBasicData();
             // 发短信
             $this->sendMessage();
             $this->orderCount();
@@ -220,14 +217,5 @@ class Complete extends DailianAbstract implements DailianInterface
         } catch (Exception $exception) {
             myLog('ex', ['订单完成 异常', $exception->getMessage()]);
         }
-    }
-
-    /**
-     * 写基础数据
-     * @return [type] [description]
-     */
-    public function writeOrderBasicData()
-    {
-        event(new OrderBasicData($this->orderNo));
     }
 }
