@@ -780,6 +780,7 @@ if (!function_exists('sendSms')){
             ]);
             return ['status' => 1, 'message' => '发送成功'];
         }
+        myLog('sms-send', [$sendResult]);
         return ['status' => 0, 'message' => '发送失败'];
     }
 }
