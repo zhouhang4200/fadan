@@ -172,7 +172,7 @@ class OrderReportController extends Controller
                                 }
                             }
                             // 计算利润
-                            $profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
+                            $profit =   bcadd(($taobaoRefund - $taobaoRefund - $paymentAmount - $poundage), $getAmount);
                         }
                     }
 
