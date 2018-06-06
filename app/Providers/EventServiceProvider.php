@@ -32,7 +32,7 @@ class EventServiceProvider extends ServiceProvider
         // 订单完成事件
         'App\Events\OrderFinish' => [
             'App\Listeners\OrderFinish\SendSms',
-            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+            'App\Listeners\WriteOrderBasicData',
         ],
         // 订单被接单事件
         'App\Events\OrderReceiving' => [
@@ -105,22 +105,22 @@ class EventServiceProvider extends ServiceProvider
         // 订单仲裁后事件
         'App\Events\OrderArbitrationed' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
-            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+            'App\Listeners\WriteOrderBasicData',
         ],
         // 订单撤销后事件
         'App\Events\OrderRevoked' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
-            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+            'App\Listeners\WriteOrderBasicData',
         ],
         // 订单撤单后事件
         'App\Events\OrderDelete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
-            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+            'App\Listeners\WriteOrderBasicData',
         ],
         // 订单强制撤销后事件
         'App\Events\OrderForceRevoke' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
-            'App\Listeners\OrderBasicData\WriteOrderBasicData',
+            'App\Listeners\WriteOrderBasicData',
         ],
         // 创建或修改订单基础数据
         'App\Events\OrderBasicData' => [
