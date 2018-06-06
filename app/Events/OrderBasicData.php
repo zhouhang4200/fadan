@@ -14,15 +14,15 @@ class OrderBasicData
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $orderNo;
+    public $order;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($orderNo)
+    public function __construct($order)
     {
-        $this->orderNo = $orderNo;
+        $this->order = $order;
     }
 
     /**
