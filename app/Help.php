@@ -884,10 +884,10 @@ if (!function_exists('export')) {
 
             fclose($out);
         },200, [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="' .  $name .   '.csv"',
         ]);
-        return $response;
+        $response->send();
     }
 }
 

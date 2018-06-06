@@ -15,6 +15,7 @@ use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderAttachmentRepository;
 use App\Repositories\Frontend\OrderDetailRepository;
 use App\Services\DailianMama;
+use App\Services\KamenOrderApi;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Show91;
@@ -78,7 +79,6 @@ class Temp extends Command
         $user = $this->argument('user');
 
         $this->forceRevoke($no, $user);
-
         die;
         // 我们是待接单
         if ($status == 1) {

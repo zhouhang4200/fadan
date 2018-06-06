@@ -78,7 +78,7 @@ class KamenOrderApi
 
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-//        return $response->getBody()->getContents();
+        return $response->getBody()->getContents();
         } catch (\Exception $exception) {
 
         }
