@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Illuminate\Auth\Events;
+namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -10,18 +10,19 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class Logined
+class OrderBasicData
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $orderNo;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($orderNo)
     {
-        //
+        $this->orderNo = $orderNo;
     }
 
     /**

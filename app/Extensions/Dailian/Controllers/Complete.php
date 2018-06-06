@@ -12,6 +12,7 @@ use Asset;
 use TopClient;
 use Exception;
 use ErrorException;
+use App\Events\OrderBasicData;
 use App\Services\Show91;
 use App\Models\OrderDetail;
 use App\Services\DailianMama;
@@ -66,8 +67,10 @@ class Complete extends DailianAbstract implements DailianInterface
 		    $this->setDescription();
 		    // 保存操作日志
 		    $this->saveLog();
-
+            // 后续操作
             $this->after();
+            // 写基础数据
+            $this->writeOrderBasicData();
             // 发短信
             $this->sendMessage();
             $this->orderCount();
@@ -168,26 +171,6 @@ class Complete extends DailianAbstract implements DailianInterface
                 }
             }
 
-            /**
-             * 以下只适用于  91  和 代练妈妈
-             */
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         // 91 完成接口
-            //         $options = [
-            //             'oid' => $orderDetails['show91_order_no'],
-            //             'p' => config('show91.password'),
-            //         ];
-            //         Show91::accept($options);
-            //         break;
-            //     case 2:
-            //         // 代练妈妈完成接口
-            //         DailianMama::operationOrder($this->order, 20013);
-            //         break;
-            // }
-
             // 将相关的淘宝订单发货''
             if ($this->delivery == 1) {
                 $sourceOrderNo = OrderDetail::select()->where('order_no', $this->order->no)
@@ -237,5 +220,14 @@ class Complete extends DailianAbstract implements DailianInterface
         } catch (Exception $exception) {
             myLog('ex', ['订单完成 异常', $exception->getMessage()]);
         }
+    }
+
+    /**
+     * 写基础数据
+     * @return [type] [description]
+     */
+    public function writeOrderBasicData()
+    {
+        event(new OrderBasicData($this->orderNo));
     }
 }
