@@ -340,8 +340,11 @@ class StatisticController extends Controller
         $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endAddDate'";
 
         $userSql = '';
+        $totalSql = "and a.creator_user_id in ($userIds)";
+
         if (isset($userId) && !empty($userId)) {
             $userSql = "and a.creator_user_id = '$userId'";
+            $totalSql = "and a.creator_user_id = '$userId'";
         }
 
         $userDatas = DB::select("select 
@@ -371,8 +374,7 @@ class StatisticController extends Controller
             left join users b
             on a.creator_user_id = b.id
             where a.is_repeat != 1 
-            and ".$timeSql."
-            and a.creator_user_id in ($userIds)
+            and ".$timeSql.$totalSql."
         ");
 
       //   $totalQuery = "SELECT 
