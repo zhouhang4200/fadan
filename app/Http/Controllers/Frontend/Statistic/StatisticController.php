@@ -350,6 +350,14 @@ class StatisticController extends Controller
             $userIds = implode(',', $userIds);
         }
 
+        $timeSql = "a.created_at >= '$startDate' AND a.created_at < '$endDate'";
+
+        if ($startDate == $endDate) {
+            $endAddDate = Carbon::parse($endDate)->addDays(1)->toDateString();
+            $timeSql = "a.created_at >= '$startDate' AND a.created_at < '$endAddDate'";
+        }
+
+
         $totalQuery = "SELECT 
             m.no,
             m.date,
@@ -392,10 +400,9 @@ class StatisticController extends Controller
             LEFT JOIN 
             user_amount_flows d 
             ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
-            WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' 
+            WHERE a.service_id = 4 AND ".$timeSql."
             AND oc.field_name='is_repeat' AND oc.field_value != 1
             AND a.creator_user_id IN ($userIds)
-            AND d.trade_no IS NOT NULL
                 ) m
             GROUP BY m.no";
 
@@ -438,13 +445,11 @@ class StatisticController extends Controller
         ON a.game_id = e.id 
         LEFT JOIN order_details oc
         ON  a.no = oc.order_no
-        LEFT JOIN 
-        user_amount_flows d 
+        LEFT JOIN user_amount_flows d 
         ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
-        WHERE a.service_id = 4 AND a.created_at >= '$startDate' AND a.created_at < '$endDate' 
+        WHERE a.service_id = 4 AND ".$timeSql."
         AND oc.field_name='is_repeat' AND oc.field_value != 1
         AND a.creator_user_id = $userId
-        AND d.trade_no IS NOT NULL
             ) m
         GROUP BY m.no";
 
