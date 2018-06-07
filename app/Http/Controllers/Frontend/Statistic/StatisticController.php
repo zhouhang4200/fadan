@@ -336,7 +336,7 @@ class StatisticController extends Controller
     {
         $userId = $request->user_id ?? Auth::user()->id;
         $startDate = $request->start_date ?? Carbon::now()->toDateString();
-        $endDate = $request->end_date ?? Carbon::now()->addDays(1)->toDateString();
+        $endDate = $request->end_date ?? Carbon::now()->toDateString();
         $fullUrl = $request->fullUrl();
         $children = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
 
