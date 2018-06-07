@@ -194,11 +194,6 @@ class StatisticController extends Controller
                 '来源价格',
                 '发布价格',
                 '来源/发布差价',
-                '已结算单数',
-                '已结算发单金额',
-                '已撤销单数',
-                '已仲裁单数',
-                '利润',
             ];
 
             $totalData = [
@@ -207,11 +202,6 @@ class StatisticController extends Controller
                 $totalData->original_price,
                 $totalData->price,
                 $totalData->diff_price,
-                $totalData->complete_count,
-                $totalData->complete_price,
-                $totalData->revoked_count,
-                $totalData->arbitrationed_count,
-                $totalData->profit,
             ];
 
             $chunkDatas = array_chunk(array_reverse($excelDatas), 500);
@@ -227,11 +217,6 @@ class StatisticController extends Controller
                             $data->original_price,
                             $data->price,
                             $data->diff_price,
-                            $data->complete_count,
-                            $data->complete_price,
-                            $data->revoked_count,
-                            $data->arbitrationed_count,
-                            $data->profit,
                         ];
                     }
                     // 将标题加入到数组
@@ -351,19 +336,16 @@ class StatisticController extends Controller
             $userIds = implode(',', $userIds);
         }
 
-        $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endDate'";
-
-        if ($startDate == $endDate) {
-            $endAddDate = Carbon::parse($endDate)->addDays(1)->toDateString();
-            $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endAddDate' ";
-        }
+        $endAddDate = Carbon::parse($endDate)->addDays(1)->toDateString();
+        $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endAddDate'";
 
         $userSql = '';
-        if (isset($userId)) {
+        if (isset($userId) && !empty($userId)) {
             $userSql = "and a.creator_user_id = '$userId'";
         }
 
-        $userDatas = DB::select("select count(a.order_no) as count,
+        $userDatas = DB::select("select 
+            count(a.order_no) as count,
             Sum(a.price) as price,
             sum(a.original_price) as original_price,
             sum(a.original_price-price) as  diff_price,
