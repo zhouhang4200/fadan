@@ -594,70 +594,67 @@
                     </colgroup>
                     <tbody>
                     <tr>
-                        <td>平台单号：</td>
+                        <td>平台单号</td>
                         <td>{{ $detail['third_order_no']  }}</td>
                     </tr>
                     <tr>
-                        <td>订单状态：</td>
+                        <td>订单状态</td>
                         <td>{{ config('order.status_leveling')[$detail['status']] }}</td>
                     </tr>
                     <tr>
-                        <td>接单平台：</td>
+                        <td>接单平台</td>
                         <td>{{ config('order.third')[$detail['third']] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>打手呢称：</td>
+                        <td>打手呢称</td>
                         <td>{{ $detail['hatchet_man_name'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>打手电话：</td>
+                        <td>打手电话</td>
                         <td>{{ $detail['hatchet_man_phone'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>打手QQ：</td>
+                        <td>打手QQ</td>
                         <td>{{ $detail['hatchet_man_qq'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>剩余代练时间：</td>
+                        <td>剩余代练时间</td>
                         <td>{{ $detail['left_time'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>发布时间：</td>
+                        <td>发布时间</td>
                         <td> {{ $detail['created_at'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>接单时间：</td>
+                        <td>接单时间</td>
                         <td>{{ $detail['receiving_time'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>提验时间：</td>
+                        <td>提验时间</td>
                         <td>{{ $detail['check_time'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>结算时间：</td>
+                        <td>结算时间</td>
                         <td>{{ $detail['checkout_time'] ?? ''  }}</td>
                     </tr>
 
                     <tr>
-                        <td>发单客服：</td>
+                        <td>发单客服</td>
                         <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
                     </tr>
                     <tr>
-                        <td>撤销说明：</td>
+                        <td>撤销说明</td>
                         <td>{{ $detail['consult_desc'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>仲裁说明：</td>
+                        <td>仲裁说明</td>
                         <td>{{ $detail['complain_desc'] ?? '无' }}
+                            <br>
                             <span style="color:red">提示：客服将根据订单留言和截图的情况进行仲裁，仲裁中有新的情况和证据，请提交留言和截图。</span>
                         </td>
                     </tr>
                     <tr>
-                        <td>来源价格：</td>
-                        <td>{{ $detail['source_price'] ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>支付代练费用：</td>
+                        <td>支付代练费用</td>
                         <td>
                             @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
                                 {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
@@ -667,15 +664,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>获得赔偿金额：</td>
+                        <td>获得赔偿金额</td>
                         <td>{{ $detail['get_amount'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>手续费：</td>
+                        <td>手续费</td>
                         <td>{{ $detail['poundage'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>最终支付金额：</td>
+                        <td>最终支付金额</td>
                         <td>{{ $detail['profit'] ?? ''  }}</td>
                     </tr>
                     </tbody>

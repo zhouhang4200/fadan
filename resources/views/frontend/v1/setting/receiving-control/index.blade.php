@@ -57,83 +57,87 @@
             </div>
         </div>
 
-        <div id="user-add" style="display: none;padding: 20px">
-            <form class="layui-form"   id="user-add-form">
-                <input type="hidden" name="type" value="">
-                <div class="layui-form-item">
-                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-form-item layui-form-text">
-                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-                </div>
-                <div class="layui-form-item">
-                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="user-add-save">确定添加</button>
-                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
-                </div>
-            </form>
-        </div>
 
-        <div id="category-add" style="display: none;padding: 20px">
-            <form class="layui-form" action="" id="category-add-form">
-                <input type="hidden" name="type" value="">
-                <div class="layui-form-item">
-                    <select name="service_id" lay-verify="required">
-                        @foreach ($services as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="layui-form-item">
-                    <select name="game_id" lay-verify="required">
-                        @foreach ($games as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="layui-form-item">
-                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-form-item layui-form-text">
-                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-                </div>
-                <div class="layui-form-item">
-                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="category-add-save">确定添加</button>
-                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
-                </div>
-            </form>
-        </div>
-
-        <div id="goods-add" style="display: none;padding: 20px">
-            <form class="layui-form" action="" id="goods-add-form">
-                <input type="hidden" name="type" value="">
-                <div class="layui-form-item">
-                    <select name="service_id" lay-verify="required">
-                        @foreach ($services as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="layui-form-item">
-                    <select name="goods_id" lay-verify="required">
-                        @foreach ($goods as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="layui-form-item">
-                    <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-form-item layui-form-text">
-                    <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
-                </div>
-                <div class="layui-form-item">
-                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
-                    <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
+@endsection
+
+@section('pop')
+    <div id="user-add" style="display: none;padding: 20px">
+        <form class="layui-form"   id="user-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="user-add-save">确定添加</button>
+                <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="category-add" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="category-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="required">
+                    @foreach ($services as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <select name="game_id" lay-verify="required">
+                    @foreach ($games as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="category-add-save">确定添加</button>
+                <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="goods-add" style="display: none;padding: 20px">
+        <form class="layui-form" action="" id="goods-add-form">
+            <input type="hidden" name="type" value="">
+            <div class="layui-form-item">
+                <select name="service_id" lay-verify="required">
+                    @foreach ($services as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <select name="goods_id" lay-verify="required">
+                    @foreach ($goods as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <input type="text" name="other_user_id" required lay-verify="required" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <textarea name="remark" placeholder="备注信息" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-form-item">
+                <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-add-save">确定添加</button>
+                <button  type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('js')
