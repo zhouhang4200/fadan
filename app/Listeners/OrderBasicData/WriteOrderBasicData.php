@@ -73,7 +73,9 @@ class WriteOrderBasicData
 
         if (isset($tmOrder) && ! empty($tmOrder)) {
             $data['tm_status']           = $tmOrder->trade_status;
-            $data['tm_income']           = $tmOrder->payment;
+            if ($data['tm_status'] == 7) {
+                $data['tm_income']           = $tmOrder->payment;
+            }
         } 
 
         if (isset($complaint) && ! empty($complaint)) {
