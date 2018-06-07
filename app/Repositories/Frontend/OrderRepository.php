@@ -576,7 +576,8 @@ class OrderRepository
         $query->orderBy('id', 'desc');
 
         return export([
-            '订单号',
+            '淘宝单号',
+            '接单平台',
             '订单状态',
             '玩家旺旺',
             '客服备注',
@@ -687,7 +688,8 @@ class OrderRepository
                     }
 
                     $data = [
-                        '天猫:' . $orderCurrent['source_order_no'] . "\t" . $orderCurrent['third_name'] ? $orderCurrent['third_name'] . ':' . $orderCurrent['third_order_no'] . "\t": '',
+                        '天猫:' . $orderCurrent['source_order_no'] . "\t",
+                        $orderCurrent['third_name'] ? $orderCurrent['third_name'] . ':' . $orderCurrent['third_order_no'] . "\t": '',
                         $orderCurrent['status_text'],
                         $orderCurrent['client_wang_wang'] ?? "",
                         $orderCurrent['customer_service_remark'],
