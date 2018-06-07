@@ -583,10 +583,10 @@
                     {field: 'hatchet_man_qq', title: '打手QQ电话', width: 113, templet:'#hatchetManQQAndPhone'},
                     {field: 'client_phone', title: '号主电话', width: 100},
                     {field: 'source_price', title: '来源价格', width: 100},
-                    {field: 'payment_amount', title: '支付金额', width: 100},
-                    {field: 'get_amount', title: '获得金额', width: 100},
+                    {field: 'payment_amount', title: '支付代练费用', width: 100},
+                    {field: 'get_amount', title: '获得赔偿金额', width: 100},
                     {field: 'poundage', title: '手续费', width: 100},
-                    {field: 'profit', title: '利润', width: 100},
+                    {field: 'profit', title: '最终支付金额', width: 100},
                     {field: 'customer_service_name', title: '发单客服', width: 100},
                     {field: 'button', title: '操作',width:195, fixed: 'right', style:"height: 40px;line-height: 20px;", toolbar: '#operation'}
                 ]],

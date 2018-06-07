@@ -653,7 +653,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>支付金额：</td>
+                        <td>来源价格：</td>
+                        <td>{{ $detail['source_price'] ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>支付代练费用：</td>
                         <td>
                             @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
                                 {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
@@ -663,15 +667,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>获得金额：</td>
-                        <td>{{ $detail['get_amount']?? '' }}</td>
+                        <td>获得赔偿金额：</td>
+                        <td>{{ $detail['get_amount'] ?? '' }}</td>
                     </tr>
                     <tr>
                         <td>手续费：</td>
                         <td>{{ $detail['poundage'] ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>利润：</td>
+                        <td>最终支付金额：</td>
                         <td>{{ $detail['profit'] ?? ''  }}</td>
                     </tr>
                     </tbody>
