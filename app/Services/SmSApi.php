@@ -26,7 +26,7 @@ class SmSApi
     public function send($type, $to, $content)
     {
         $user = $type == 1 ? '20156' : '20157';
-        $password = $type == 1 ? env('SMS_CODE_PASSWORD') : env('SMS_SALE_PASSWORD');
+        $password = $type == 1 ? 'gcsEc1sx' : 'zbXRhLhl';
 
         //预定义参数，参数说明见文档
         $spSc = "02"; // 服务代码

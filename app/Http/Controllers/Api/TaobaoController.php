@@ -71,11 +71,11 @@ class TaobaoController extends Controller
     public function refundCreated(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 3; // 1.买家付完款 2.交易成功 3.买家发起退款
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 3,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }
@@ -90,11 +90,11 @@ class TaobaoController extends Controller
     public function tradeShip(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 4;
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 4,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }
@@ -111,11 +111,11 @@ class TaobaoController extends Controller
     public function refundAgree(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 5;
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 5,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }
@@ -132,11 +132,11 @@ class TaobaoController extends Controller
     public function refundRefuse(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 6; // 1.买家付完款 2.交易成功 3.买家发起退款
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 6,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }
@@ -153,11 +153,11 @@ class TaobaoController extends Controller
     public function refundSuccess(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 7; // 1.买家付完款 2.交易成功 3.买家发起退款
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 7,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }
@@ -174,11 +174,11 @@ class TaobaoController extends Controller
     public function refundClosed(Request $request)
     {
         try {
-            $data = TaobaoTradeRepository::getParams($request->data);
-            $data['trade']['trade_status'] = 8; // 1.买家付完款 2.交易成功 3.买家发起退款
-            $data['trade']['handle_status'] = 1;
-
-            TaobaoTradeRepository::update($data['trade'], $data['order']);
+            TaobaoTradeRepository::updateTradeStatus([
+                'tid' => $request->data['Tid'],
+                'trade_status' => 8,
+                'handle_status' => 1,
+            ]);
         } catch (Exception $e) {
             return response()->tb(0, $e->getMessage());
         }

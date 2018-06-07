@@ -78,7 +78,8 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
-        $this->forceRevoke($no, $user);
+        dd((new SmSApi())->send(2, '18500132452', '22'));
+
         die;
         // 我们是待接单
         if ($status == 1) {
@@ -308,9 +309,29 @@ class Temp extends Command
      * @param $no
      * @param $user
      */
-    public function complete($no, $user)
+    public function complete($no)
     {
-        (new Complete())->run($no, $user, 0);
+
+        $order  = \App\Models\Order::where('no', $no)->first();
+        if ($order) {
+            dump((new Complete())->run($order->no, $order->creator_primary_user_id, 0));
+        }
+
+    }
+
+    /**
+     * 完成订单
+     * @param $no
+     * @param $user
+     */
+    public function revoked($no)
+    {
+
+        $order  = \App\Models\Order::where('no', $no)->first();
+        if ($order) {
+            dump((new Revoked())->run($order->no, $order->creator_primary_user_id, 0));
+        }
+
     }
 
     /**
