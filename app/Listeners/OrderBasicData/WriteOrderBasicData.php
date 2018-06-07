@@ -102,7 +102,7 @@ class WriteOrderBasicData
         $data['security_deposit']        = $orderDetail['security_deposit'];
         $data['efficiency_deposit']      = $orderDetail['efficiency_deposit'];
         $data['original_price']          = $order->original_price;
-        $data['order_created_at']        = $order->created_at;
+        $data['order_created_at']        = $order->created_at->toDateTimeString();
         $data['order_finished_at']       = $orderDetail['checkout_time'];
         $data['is_repeat']               = $orderDetail['is_repeat'] ? 1 : 0;
 
