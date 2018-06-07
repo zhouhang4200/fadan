@@ -335,7 +335,7 @@ class StatisticController extends Controller
      */
     public function todayData(Request $request)
     {
-        $userId = $request->user_id ?? Auth::user()->id;
+        $userId = $request->user_id;
         $startDate = $request->start_date ?? Carbon::now()->toDateString();
         $endDate = $request->end_date ?? Carbon::now()->toDateString();
         $fullUrl = $request->fullUrl();
@@ -351,135 +351,150 @@ class StatisticController extends Controller
             $userIds = implode(',', $userIds);
         }
 
-        $timeSql = "a.created_at >= '$startDate' AND a.created_at < '$endDate'";
+        $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endDate'";
 
         if ($startDate == $endDate) {
             $endAddDate = Carbon::parse($endDate)->addDays(1)->toDateString();
-            $timeSql = "a.created_at >= '$startDate' AND a.created_at < '$endAddDate'";
+            $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endAddDate' ";
         }
 
-        // $totalQuery = ""
+        $userSql = '';
+        if (isset($userId)) {
+            $userSql = "and a.creator_user_id = '$userId'";
+        }
 
+        $userDatas = DB::select("select count(a.order_no) as count,
+            Sum(a.price) as price,
+            sum(a.original_price) as original_price,
+            sum(a.original_price-price) as  diff_price,
+            a.creator_user_id,
+            b.username
+            from order_basic_datas a
+            left join users b
+            on a.creator_user_id = b.id
+            where a.is_repeat != 1 
+            and ".$timeSql.$userSql."
+            group by a.creator_user_id
+        ");
 
+        $totalDatas = DB::select("select 
+            count(distinct a.creator_user_id) as creator_count,
+            count(a.order_no) as count,
+            Sum(a.price) as price,
+            sum(a.original_price) as original_price,
+            sum(a.original_price-price) as  diff_price,
+            a.creator_user_id,
+            b.username
+            from order_basic_datas a
+            left join users b
+            on a.creator_user_id = b.id
+            where a.is_repeat != 1 
+            and ".$timeSql."
+            and a.creator_user_id in ($userIds)
+        ");
 
+      //   $totalQuery = "SELECT 
+      //       m.no,
+      //       m.date,
+      //       m.status,
+      //       m.price,
+      //       m.creator_user_id,
+      //       m.creator_primary_user_id,
+      //       m.name,
+      //       m.username,
+      //       m.game_id,
+      //       m.game_name,
+      //       m.original_price,
+      //       m.created_at,
+      //       m.field_value,
+      //       m.field_name,
+      //       SUM(CASE WHEN m.status = 20 THEN 1 ELSE 0 END) AS complete_count,
+      //       SUM(CASE WHEN m.status = 20 THEN m.price ELSE 0 END) AS complete_price,
+      //       SUM(CASE WHEN m.status = 19 THEN 1 ELSE 0 END) AS revoked_count,
+      //       SUM(CASE WHEN m.status = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+      //       m.original_price-m.price AS diff_price,
+      //       SUM(CASE WHEN m.trade_subtype = 76 THEN m.fee ELSE 0 END) AS create_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 77 THEN m.fee ELSE 0 END) AS change_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 814 THEN m.fee ELSE 0 END) AS reback_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 813 THEN m.fee ELSE 0 END) AS delete_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 79 THEN m.fee ELSE 0 END) AS complain_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 817 THEN m.fee ELSE 0 END) AS complain_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 87 AND m.status IN (19, 21) THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
+      //       SUM(CASE WHEN m.trade_subtype BETWEEN 810 AND 811 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
+      //       SUM(CASE WHEN m.trade_subtype = 73 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
+      //     FROM 
+      //     ( SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
+      //       b.name, b.username, a.original_price, e.name AS game_name, oc.field_value, oc.field_name, d.trade_subtype, d.fee, d.trade_no
+      //       FROM orders a
+      //       LEFT JOIN users b
+      //       ON a.creator_user_id = b.id
+      //       LEFT JOIN games e
+      //       ON a.game_id = e.id 
+      //       LEFT JOIN order_details oc
+      //       ON  a.no = oc.order_no
+      //       LEFT JOIN 
+      //       user_amount_flows d 
+      //       ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
+      //       WHERE a.service_id = 4 AND ".$timeSql."
+      //       AND oc.field_name='is_repeat' AND oc.field_value != 1
+      //       AND a.creator_user_id IN ($userIds)
+      //           ) m
+      //       GROUP BY m.no";
 
+      //       $userQuery = "SELECT 
+      //       m.no,
+      //       m.date,
+      //       m.status,
+      //       m.price,
+      //       m.creator_user_id,
+      //       m.creator_primary_user_id,
+      //       m.name,
+      //       m.username,
+      //       m.game_id,
+      //       m.game_name,
+      //       m.original_price,
+      //       m.created_at,
+      //       m.field_value,
+      //       m.field_name,
+      //       SUM(CASE WHEN m.status = 20 THEN 1 ELSE 0 END) AS complete_count,
+      //       SUM(CASE WHEN m.status = 20 THEN m.price ELSE 0 END) AS complete_price,
+      //       SUM(CASE WHEN m.status = 19 THEN 1 ELSE 0 END) AS revoked_count,
+      //       SUM(CASE WHEN m.status = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+      //       m.original_price-m.price AS diff_price,
+      //       SUM(CASE WHEN m.trade_subtype = 76 THEN m.fee ELSE 0 END) AS create_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 77 THEN m.fee ELSE 0 END) AS change_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 814 THEN m.fee ELSE 0 END) AS reback_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 813 THEN m.fee ELSE 0 END) AS delete_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 79 THEN m.fee ELSE 0 END) AS complain_order_pay_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 817 THEN m.fee ELSE 0 END) AS complain_order_income_amount,
+      //       SUM(CASE WHEN m.trade_subtype = 87 AND m.status IN (19, 21) THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
+      //       SUM(CASE WHEN m.trade_subtype BETWEEN 810 AND 811 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
+      //       SUM(CASE WHEN m.trade_subtype = 73 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
+      // FROM 
+      // ( SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
+      //   b.name, b.username, a.original_price, e.name AS game_name, oc.field_value, oc.field_name, d.trade_subtype, d.fee, d.trade_no
+      //   FROM orders a
+      //   LEFT JOIN users b
+      //   ON a.creator_user_id = b.id
+      //   LEFT JOIN games e
+      //   ON a.game_id = e.id 
+      //   LEFT JOIN order_details oc
+      //   ON  a.no = oc.order_no
+      //   LEFT JOIN user_amount_flows d 
+      //   ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
+      //   WHERE a.service_id = 4 AND ".$timeSql."
+      //   AND oc.field_name='is_repeat' AND oc.field_value != 1
+      //   AND a.creator_user_id = $userId
+      //       ) m
+      //   GROUP BY m.no";
 
+      //   $userDatas = DB::select("select z.username, count(z.no) as count, sum(original_price) as original_price,
+      //       sum(price) as price, sum(diff_price) as diff_price, sum(complete_count) as complete_count, 
+      //       sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$userQuery.") z");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $totalQuery = "SELECT 
-            m.no,
-            m.date,
-            m.status,
-            m.price,
-            m.creator_user_id,
-            m.creator_primary_user_id,
-            m.name,
-            m.username,
-            m.game_id,
-            m.game_name,
-            m.original_price,
-            m.created_at,
-            m.field_value,
-            m.field_name,
-            SUM(CASE WHEN m.status = 20 THEN 1 ELSE 0 END) AS complete_count,
-            SUM(CASE WHEN m.status = 20 THEN m.price ELSE 0 END) AS complete_price,
-            SUM(CASE WHEN m.status = 19 THEN 1 ELSE 0 END) AS revoked_count,
-            SUM(CASE WHEN m.status = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
-            m.original_price-m.price AS diff_price,
-            SUM(CASE WHEN m.trade_subtype = 76 THEN m.fee ELSE 0 END) AS create_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 77 THEN m.fee ELSE 0 END) AS change_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 814 THEN m.fee ELSE 0 END) AS reback_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 813 THEN m.fee ELSE 0 END) AS delete_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 79 THEN m.fee ELSE 0 END) AS complain_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 817 THEN m.fee ELSE 0 END) AS complain_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 87 AND m.status IN (19, 21) THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
-            SUM(CASE WHEN m.trade_subtype BETWEEN 810 AND 811 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
-            SUM(CASE WHEN m.trade_subtype = 73 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
-          FROM 
-          ( SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
-            b.name, b.username, a.original_price, e.name AS game_name, oc.field_value, oc.field_name, d.trade_subtype, d.fee, d.trade_no
-            FROM orders a
-            LEFT JOIN users b
-            ON a.creator_user_id = b.id
-            LEFT JOIN games e
-            ON a.game_id = e.id 
-            LEFT JOIN order_details oc
-            ON  a.no = oc.order_no
-            LEFT JOIN 
-            user_amount_flows d 
-            ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
-            WHERE a.service_id = 4 AND ".$timeSql."
-            AND oc.field_name='is_repeat' AND oc.field_value != 1
-            AND a.creator_user_id IN ($userIds)
-                ) m
-            GROUP BY m.no";
-
-            $userQuery = "SELECT 
-            m.no,
-            m.date,
-            m.status,
-            m.price,
-            m.creator_user_id,
-            m.creator_primary_user_id,
-            m.name,
-            m.username,
-            m.game_id,
-            m.game_name,
-            m.original_price,
-            m.created_at,
-            m.field_value,
-            m.field_name,
-            SUM(CASE WHEN m.status = 20 THEN 1 ELSE 0 END) AS complete_count,
-            SUM(CASE WHEN m.status = 20 THEN m.price ELSE 0 END) AS complete_price,
-            SUM(CASE WHEN m.status = 19 THEN 1 ELSE 0 END) AS revoked_count,
-            SUM(CASE WHEN m.status = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
-            m.original_price-m.price AS diff_price,
-            SUM(CASE WHEN m.trade_subtype = 76 THEN m.fee ELSE 0 END) AS create_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 77 THEN m.fee ELSE 0 END) AS change_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 814 THEN m.fee ELSE 0 END) AS reback_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 813 THEN m.fee ELSE 0 END) AS delete_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 79 THEN m.fee ELSE 0 END) AS complain_order_pay_amount,
-            SUM(CASE WHEN m.trade_subtype = 817 THEN m.fee ELSE 0 END) AS complain_order_income_amount,
-            SUM(CASE WHEN m.trade_subtype = 87 AND m.status IN (19, 21) THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_order_price,
-            SUM(CASE WHEN m.trade_subtype BETWEEN 810 AND 811 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_return_deposit,
-            SUM(CASE WHEN m.trade_subtype = 73 THEN m.fee ELSE 0 END) AS revoked_and_arbitrationed_pay_poundage
-      FROM 
-      ( SELECT a.no, a.created_at, game_id, a.status, a.price, a.creator_user_id, a.creator_primary_user_id, DATE_FORMAT(a.created_at, '%Y-%m-%d') AS DATE,
-        b.name, b.username, a.original_price, e.name AS game_name, oc.field_value, oc.field_name, d.trade_subtype, d.fee, d.trade_no
-        FROM orders a
-        LEFT JOIN users b
-        ON a.creator_user_id = b.id
-        LEFT JOIN games e
-        ON a.game_id = e.id 
-        LEFT JOIN order_details oc
-        ON  a.no = oc.order_no
-        LEFT JOIN user_amount_flows d 
-        ON a.no = d.trade_no AND a.creator_primary_user_id = d.user_id
-        WHERE a.service_id = 4 AND ".$timeSql."
-        AND oc.field_name='is_repeat' AND oc.field_value != 1
-        AND a.creator_user_id = $userId
-            ) m
-        GROUP BY m.no";
-
-        $userDatas = DB::select("select z.username, count(z.no) as count, sum(original_price) as original_price,
-            sum(price) as price, sum(diff_price) as diff_price, sum(complete_count) as complete_count, 
-            sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$userQuery.") z");
-
-        $totalDatas = DB::select("select count(z.creator_user_id) as creator_count, count(z.no) as count, sum(original_price) as original_price,
-            sum(price) as price, sum(diff_price) as diff_price, sum(complete_count) as complete_count, 
-            sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$totalQuery.") z group by z.creator_user_id");
+      //   $totalDatas = DB::select("select count(z.creator_user_id) as creator_count, count(z.no) as count, sum(original_price) as original_price,
+      //       sum(price) as price, sum(diff_price) as diff_price, sum(complete_count) as complete_count, 
+      //       sum(complete_price) as complete_price, sum(revoked_count) as revoked_count, sum(arbitrationed_count) as arbitrationed_count, case when z.status in (19, 20, 21) then sum(diff_price+revoked_and_arbitrationed_return_order_price+revoked_and_arbitrationed_return_deposit+revoked_and_arbitrationed_pay_poundage) else 0 end as profit from (".$totalQuery.") z group by z.creator_user_id");
 
         if (isset($totalDatas) && ! empty($totalDatas) && count($totalDatas) > 0) {
             $totalDatas = $totalDatas[0];

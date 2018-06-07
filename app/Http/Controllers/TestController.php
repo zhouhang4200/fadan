@@ -216,6 +216,8 @@ class TestController extends Controller
 
     public function index()
     {
+        $order = OrderModel::where('no', '2018060409274600000002')->first();
+        dd($order->created_at->toDateTimeString());
 
         $client = new Client();
         $res = $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
