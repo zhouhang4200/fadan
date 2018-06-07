@@ -339,7 +339,7 @@ class StatisticController extends Controller
         $endAddDate = Carbon::parse($endDate)->addDays(1)->toDateString();
         $timeSql = "a.order_created_at >= '$startDate' AND a.order_created_at < '$endAddDate'";
 
-        $userSql = '';
+        $userSql = "and a.creator_user_id in ($userIds)";
         $totalSql = "and a.creator_user_id in ($userIds)";
 
         if (isset($userId) && !empty($userId)) {
