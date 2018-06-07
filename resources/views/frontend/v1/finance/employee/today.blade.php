@@ -57,11 +57,6 @@
                 <th>来源价格</th>
                 <th>发布价格</th>
                 <th>来源/发布差价</th>
-                <th>已结算单数</th>
-                <th>已结算发单金额</th>
-                <th>已撤销单数</th>
-                <th>已仲裁单数</th>
-                <th>利润</th>
             </tr>
             </thead>
             <tbody>
@@ -73,11 +68,11 @@
                             <td>{{ number_format($userData->original_price, 2) ?? 0 }}</td>
                             <td>{{ number_format($userData->price, 2) ?? 0 }}</td>
                             <td>{{ number_format($userData->diff_price, 2) ?? 0 }}</td>
-                            <td>{{ $userData->complete_count ?? 0 }}</td>
+                            <!-- <td>{{ $userData->complete_count ?? 0 }}</td>
                             <td>{{ number_format($userData->complete_price, 2) ?? 0 }}</td>
                             <td>{{ $userData->revoked_count ?? 0 }}</td>
                             <td>{{ $userData->arbitrationed_count ?? 0 }}</td>
-                            <td>{{ number_format($userData->profit, 2) ?? 0 }}</td>
+                            <td>{{ number_format($userData->profit, 2) ?? 0 }}</td> -->
                         </tr>
                     @empty
                         <tr>
@@ -96,11 +91,11 @@
                         <td>{{ number_format($totalDatas->original_price, 2) }}</td>
                         <td>{{ number_format($totalDatas->price, 2) }}</td>
                         <td>{{ number_format($totalDatas->diff_price, 2) }}</td>
-                        <td>{{ $totalDatas->complete_count ?? 0 }}</td>
+                        <!-- <td>{{ $totalDatas->complete_count ?? 0 }}</td>
                         <td>{{ number_format($totalDatas->complete_price, 2) ?? '--' }}</td>
                         <td>{{ $totalDatas->revoked_count ?? 0 }}</td>
                         <td>{{ $totalDatas->arbitrationed_count ?? 0 }}</td>
-                        <td>{{ number_format($totalDatas->profit, 2) ?? '--' }}</td>
+                        <td>{{ number_format($totalDatas->profit, 2) ?? '--' }}</td> -->
                     </tr>
                 @else
                     <tr style="color: red;">
@@ -109,11 +104,11 @@
                         <td>0.00</td>
                         <td>0.00</td>
                         <td>0.00</td>
-                        <td>0</td>
+                        <!-- <td>0</td>
                         <td>0.00</td>
                         <td>0</td>
                         <td>0</td>
-                        <td>0.00</td>
+                        <td>0.00</td> -->
                     </tr>
                 @endif
             </tbody>
