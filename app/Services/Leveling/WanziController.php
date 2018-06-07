@@ -761,15 +761,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
             }
 
             if (isset($details['appeal']['pic1'])) {
-                $details['appeal']['pic1'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
+                $details['appeal']['pic1'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
             }
 
             if (isset($details['appeal']['pic2'])) {
-                $details['appeal']['pic2'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
+                $details['appeal']['pic2'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
             }
 
             if (isset($details['appeal']['pic3'])) {
-                $details['appeal']['pic3'] = env('WANZI_API_URL').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
+                $details['appeal']['pic3'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
             }
             if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
                 return '暂无相关信息';

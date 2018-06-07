@@ -15,7 +15,9 @@ class CreateOrderBasicDatasTable extends Migration
     {
         Schema::create('order_basic_datas', function (Blueprint $table) {
             $table->increments('id');
+            $table->date('date')->comment('日期');
             $table->string('order_no')->comment('订单号');
+            $table->tinyInteger('third')->unsigned()->comment('平台号');
             $table->tinyInteger('is_repeat')->unsigned()->comment('是否为重发单');
             $table->tinyInteger('status')->comment('订单状态');
             $table->tinyInteger('tm_status')->comment('天猫订单状态');

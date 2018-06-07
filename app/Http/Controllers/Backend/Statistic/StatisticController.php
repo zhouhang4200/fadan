@@ -6,7 +6,7 @@ use DB;
 use Excel;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\PlatformStatistic;
+use App\Models\OrderBasicData;
 use App\Http\Controllers\Controller;
 
 /**
@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
  */
 class StatisticController extends Controller
 {
+    /**
     public function index(Request $request)
     {
     	$userId    = $request->user_id;
@@ -134,6 +135,118 @@ class StatisticController extends Controller
     	return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 
             'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics', 'totalPlatformStatistics'));
     }
+    */
+   
+   public function index(Request $request)
+   {
+        $userId    = $request->user_id;
+        $third     = $request->third;
+        $gameId    = $request->game_id;
+        $startDate = $request->start_date;
+        $endDate   = $request->end_date;
+        $fullUrl   = $request->fullUrl();
+
+        $userIds = [];
+        if ($request->user_id) {
+            $user = User::where('id', $request->user_id)->first();
+            if ($user->parent_id == 0) {
+                $userIds = [$userId];
+            } else {
+                $userIds = $user->children()->withTrashed()->pluck('id')->merge($userId);
+            }
+        }   
+        $users = DB::select("
+            SELECT DISTINCT b.name as username, a.user_id
+            FROM platform_statistics a 
+            LEFT JOIN users b 
+            ON a.user_id = b.id
+        ");
+
+        $games = DB::select("
+            SELECT b.id, b.name 
+            FROM third_games a 
+            LEFT JOIN games b
+            ON a.game_id = b.id
+        ");
+
+        $filters = compact('startDate', 'endDate', 'userIds', 'third', 'gameId');     
+
+        $paginatePlatformStatistics = OrderBasicData::filter($filters)
+            ->select(DB::raw("
+                    date,
+                    COUNT(order_no) AS count,
+                    COUNT(DISTINCT client_wang_wang) AS client_wang_wang_count,
+                    COUNT(DISTINCT creator_primary_user_id) AS primary_creator_count,
+                    COUNT(DISTINCT third) AS third_count,
+                    SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+                    SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
+                    SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
+                    SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+                    SUM(CASE WHEN STATUS = 23 THEN 1 ELSE 0 END) AS forced_count,
+                    SUM(CASE WHEN STATUS = 24 THEN 1 ELSE 0 END) AS deleted_count,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(order_finished_at)-UNIX_TIMESTAMP(order_created_at) ELSE 0 END) AS total_use_time,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN security_deposit ELSE 0 END) AS total_security_deposit,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN efficiency_deposit ELSE 0 END) AS total_efficiency_deposit,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN original_price ELSE 0 END) AS total_original_price,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN price ELSE 0 END) AS total_price,
+                    SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS total_completed_price,
+                    SUM(CASE WHEN STATUS = 19 THEN consult_amount ELSE 0 END) AS total_revoked_payment,
+                    SUM(CASE WHEN STATUS = 21 THEN consult_amount ELSE 0 END) AS total_arbitrationed_payment,
+                    SUM(CASE WHEN STATUS = 19 THEN consult_deposit ELSE 0 END) AS total_revoked_income,
+                    SUM(CASE WHEN STATUS = 21 THEN consult_deposit ELSE 0 END) AS total_arbitrationed_income,
+                    SUM(CASE WHEN STATUS IN (19, 21) THEN consult_poundage ELSE 0 END) AS total_poundage,
+                    SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 19 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 21 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
+                    SUM(CASE WHEN STATUS = 20 THEN price-creator_judge_income+creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 19 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 21 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
+                "))
+        ->groupBy('date')
+        ->latest('date')
+        ->paginate(15);
+
+            // dd($paginatePlatformStatistics);
+
+        $totalPlatformStatistics = OrderBasicData::filter($filters)
+            ->select(DB::raw("
+                    date,
+                    COUNT(order_no) AS count,
+                    COUNT(DISTINCT client_wang_wang) AS client_wang_wang_count,
+                    COUNT(DISTINCT creator_primary_user_id) AS primary_creator_count,
+                    COUNT(DISTINCT third) AS third_count,
+                    SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+                    SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
+                    SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
+                    SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+                    SUM(CASE WHEN STATUS = 23 THEN 1 ELSE 0 END) AS forced_count,
+                    SUM(CASE WHEN STATUS = 24 THEN 1 ELSE 0 END) AS deleted_count,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(order_finished_at)-UNIX_TIMESTAMP(order_created_at) ELSE 0 END) AS total_use_time,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN security_deposit ELSE 0 END) AS total_security_deposit,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN efficiency_deposit ELSE 0 END) AS total_efficiency_deposit,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN original_price ELSE 0 END) AS total_original_price,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN price ELSE 0 END) AS total_price,
+                    SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS total_completed_price,
+                    SUM(CASE WHEN STATUS = 19 THEN consult_amount ELSE 0 END) AS total_revoked_payment,
+                    SUM(CASE WHEN STATUS = 21 THEN consult_amount ELSE 0 END) AS total_arbitrationed_payment,
+                    SUM(CASE WHEN STATUS = 19 THEN consult_deposit ELSE 0 END) AS total_revoked_income,
+                    SUM(CASE WHEN STATUS = 21 THEN consult_deposit ELSE 0 END) AS total_arbitrationed_income,
+                    SUM(CASE WHEN STATUS IN (19, 21) THEN consult_poundage ELSE 0 END) AS total_poundage,
+                    SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 19 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 21 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
+                    SUM(CASE WHEN STATUS = 20 THEN price-creator_judge_income+creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 19 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) +
+                    SUM(CASE WHEN STATUS = 21 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
+                "))
+        ->first();
+
+        if ($request->export && $paginatePlatformStatistics->count() > 0) {
+            static::export($paginatePlatformStatistics->toArray()['data']);
+        }
+        return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 
+            'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics', 'totalPlatformStatistics'));
+   }
 
     /**
      * 导出
@@ -188,38 +301,37 @@ class StatisticController extends Controller
                 foreach ($chunkData as $key => $data) {
                     $arr[] = [
                         $data['date'],
-                        $data['order_count'],
-                        $data['wang_wang_order_avg'],
-                        $data['receive_order_count'],
-                        $data['complete_order_count'],
-                        $data['complete_order_rate'],
-                        $data['revoke_order_count'],
-                        $data['revoke_order_rate'],
-                        $data['arbitrate_order_count'],
-                        $data['arbitrate_order_rate'],
-                        $data['done_order_use_time_avg'],
-                        $data['done_order_security_deposit_avg'],
-                        $data['done_order_efficiency_deposit_avg'],
-                        $data['done_order_original_amount_avg'],
-                        $data['done_order_original_amount'],
-                        $data['done_order_amount_avg'],
-                        $data['done_order_amount'],
-                        $data['complete_order_amount_avg'],
-                        $data['complete_order_amount'],
-                        $data['revoke_payment_avg'],
-                        $data['revoke_payment'],
-                        $data['revoke_income_avg'],
-                        $data['revoke_income'],
-                        $data['arbitrate_payment_avg'],
-                        $data['arbitrate_payment'],
-                        $data['arbitrate_income_avg'],
-                        $data['arbitrate_income'],
-                        $data['poundage_avg'],
-                        $data['poundage'],
-                        $data['user_profit_avg'],
-                        $data['user_profit'],
-                        $data['platform_profit_avg'],
-                        $data['platform_profit'],
+                        $data['count'],
+                        $data['client_wang_wang_count'] == 0 ? 0 : bcdiv($data['count'], $data['client_wang_wang_count'], 2),
+                        $data['received_count'],
+                        $data['completed_count'],
+                        $data['count'] == 0 ? 0 : bcdiv($data['completed_count'], $data['count'], 2),
+                        $data['revoked_count'],
+                        $data['count'] == 0 ? 0 : bcdiv($data['revoked_count'], $data['count'], 2),
+                        $data['arbitrationed_count'],
+                        $data['count'] == 0 ? 0 : bcdiv($data['arbitrationed_count'], $data['count'], 2),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : sec2Time(bcdiv($data['total_use_time'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']))),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_security_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_efficiency_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_original_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
+                        $data['total_price'],
+                        $data['completed_count'] == 0 ? 0 : bcdiv($data['total_completed_price'], $data['completed_count'], 2),
+                        $data['total_completed_price'],
+                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_payment'], $data['revoked_count'], 2),
+                        $data['total_revoked_payment'],
+                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_income'], $data['revoked_count'], 2),
+                        $data['total_revoked_income'],
+                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_payment'], $data['arbitrationed_count'], 2),
+                        $data['total_arbitrationed_payment'],
+                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_income'], $data['arbitrationed_count'], 2),
+                        $data['total_arbitrationed_income'],
+                        $data['arbitrationed_count']+$data['revoked_count'] == 0 ? 0 : bcdiv($data['total_poundage'], ($data['arbitrationed_count']+$data['revoked_count']), 2),
+                        $data['total_poundage'],
+                        $data['primary_creator_count'] == 0 ? 0 : bcdiv($data['total_creator_profit'], $data['primary_creator_count'], 2),
+                        $data['total_creator_profit'],
+                        $data['third_count'] == 0 ? 0 : bcdiv($data['total_gainer_profit'], $data['third_count'], 2),
+                        $data['total_gainer_profit'],
                     ];
                 }
                 // 将标题加入到数组
