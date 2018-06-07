@@ -663,8 +663,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>来源价格：</td>
+                        <td>{{ $detail['source_price'] ?? '' }}</td>
+                    </tr>
+                    <tr>
                         <td>获得赔偿金额：</td>
-                        <td>{{ $detail['get_amount']?? '' }}</td>
+                        <td>{{ $detail['get_amount'] ?? '' }}</td>
                     </tr>
                     <tr>
                         <td>手续费：</td>
