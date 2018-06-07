@@ -220,8 +220,8 @@ return [
     // 丸子平台
     'wanzi' => [
     	'uid'       => 18,
-    	'appid'     => '8FK2tEkFoHcB1UJu6TkSzLAwkh9e2WIwunbEA2lyFnJhpupzRelEuxjG34YX',
-		'appsecret' => '8mCSr0H3EbTIatauflbqzUIkKdZAQiFsAAF3Nu4Jp2nMCGZSBA6mSyF7E5J1',
+    	'appid'     => 'T8WsMDT4mJ5DxKJkf4fWVP5XYU00McJxxyAeoX4aPIy6jrWN70bmQltXfwof',
+		'appsecret' => 'XlDzhGb9EeiJW2r6os1CVC6bKLrikFDHgH5mVLGdVRMNyYhY7Q4QvFIL2SBx',
 		'aes_key'   => '4158d685d8e4f5e8',
 		'aes_iv'    => '1234567891111152',
 		'account'   => env('WANZI_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
@@ -241,7 +241,7 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
-        'api_url' => env('SHOW91_API_URL', 'http://10.0.1.51:8080'),
+        'api_url' => env('WANZI_API_URL', 'http://10.0.1.51:8080'),
     	'url' => [
 			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 上架
 			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 下架
