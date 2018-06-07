@@ -286,7 +286,7 @@
         账号：{{ optional($transferInfo)->bank_card  }}<br/>
         户名：{{ optional($transferInfo)->name }}<br/>
         开户行：{{ optional($transferInfo)->bank_name }}<br/>
-        转账备注：{{ $user->id }}<br/>
+        转账备注：{{ optional($transferInfo)->user_id }}<br/>
     </div>
     <div style="line-height: 22px;" id="alipay">
         <p style="color:#e51c23">1. 请先联系运营人员开通“自动加款”功能。</p>
@@ -294,7 +294,7 @@
         转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
         账号：{{ optional($transferInfo)->alipay  }}<br/>
         开户行：{{ optional($transferInfo)->bank_name }}<br/>
-        转账备注：{{ $user->id }}<br/>
+        转账备注：{{ optional($transferInfo)->user_id }}<br/>
     </div>
 </div>
 @endsection
