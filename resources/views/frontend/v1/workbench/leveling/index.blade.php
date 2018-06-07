@@ -543,7 +543,13 @@
             });
             // 导出
             form.on('submit(export)', function (data) {
-                window.location.href = "{{ route('frontend.workbench.leveling.index', ['export' => 1])}}";
+                var formCondition = $('form').serializeArray();
+                var condition = '';
+                $.each(formCondition, function() {
+                    condition += this.name + '=' + this.value + '&';
+                });
+                console.log("{{ route('frontend.workbench.leveling.index')}}?export=1&" + condition);
+                window.location.href = "{{ route('frontend.workbench.leveling.index', ['export' => 1])}}" + condition;
                 return false;
             });
             // 选择游戏加载对应的代练类型

@@ -291,8 +291,9 @@
     <div style="line-height: 22px;" id="alipay">
         <p style="color:#e51c23">1. 请先联系运营人员开通“自动加款”功能。</p>
         <p style="color:#e51c23">2. 请用您的支付宝往以下支付宝账号转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</p>
-        <br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
+        转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
         账号：{{ optional($transferInfo)->alipay  }}<br/>
+        开户行：{{ optional($transferInfo)->bank_name }}<br/>
         转账备注：{{ $user->id }}<br/>
     </div>
 </div>
