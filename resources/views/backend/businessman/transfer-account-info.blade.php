@@ -40,7 +40,12 @@
                                                 <input type="text" name="id" required disabled readonly  lay-verify="" autocomplete="off" class="layui-input" value="{{ Route::input('userId') }}">
                                             </div>
                                         </div>
-
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">转账支付宝</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="alipay"    autocomplete="off" class="layui-input" value="{{ $transferInfo->alipay or '' }}">
+                                            </div>
+                                        </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">转账账号</label>
                                             <div class="layui-input-block">
@@ -90,7 +95,8 @@
                 id:data.field.id,
                 name:data.field.name,
                 bank_name:data.field.bank_name,
-                bank_card:data.field.bank_card
+                bank_card:data.field.bank_card,
+                alipay:data.field.alipay
             }, function (result) {
                  layer.msg(result.message);
             }, 'json');

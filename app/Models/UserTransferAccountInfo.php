@@ -11,5 +11,6 @@ class UserTransferAccountInfo extends Model
       'name',
       'bank_name',
       'bank_card',
+      'alipay',
     ];
 }

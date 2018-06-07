@@ -177,6 +177,8 @@
                             <div class="layui-form-item last-item">
                                 <div class="layui-input-block last-item-btn">
                                     <button class="qs-btn" lay-submit="" lay-filter="search" style="height: 30px;line-height: 30px;float: left;font-size: 12px;">搜索</button>
+                                    <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?')===false ? '?' : '&'  }}export=1" class="layui-btn layui-btn-normal " type="button" function="query">导出</a>
+
                                 </div>
                             </div>
                         </div>

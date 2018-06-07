@@ -302,6 +302,23 @@
         </div>
     </form>
 </div>
+<div class="layui-form" id="charge-pop">
+    <div class="layui-form-item">
+        <label class="layui-form-label">充值方式</label>
+        <div class="layui-input-block">
+            <input type="radio" name="chargeMode" value="支付宝" title="支付宝">
+            <input type="radio" name="chargeMode" value="银行卡" title="银行卡" checked>
+        </div>
+    </div>
+    <div style="padding: 15px; line-height: 22px;">
+        <span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span> <br/>
+         转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
+         账号：{{ optional($transferInfo)->bank_card  }}<br/>
+         户名：{{ optional($transferInfo)->name }}<br/>
+         开户行：{{ optional($transferInfo)->bank_name }}<br/>
+         转账备注：{{ $user->id }}<br/>
+    </div>
+</div>
 @endsection
 
 @section('js')
@@ -403,12 +420,7 @@
                 ,shade: 0.2
                 ,btn: ['确定']
                 ,btnAlign: 'c'
-                ,content: '<div style="padding: 15px; line-height: 22px;"><span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span>' +
-                '<br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>' +
-                '账号：{{ optional($transferInfo)->bank_card  }}<br/>' +
-                '户名：{{ optional($transferInfo)->name }}<br/>' +
-                '开户行：{{ optional($transferInfo)->bank_name }}<br/>' +
-                '转账备注：{{ $user->id }}<br/></div>'
+                ,content: $('#charge-pop1')
             });
         });
 

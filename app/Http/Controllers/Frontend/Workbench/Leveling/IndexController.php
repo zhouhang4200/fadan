@@ -164,10 +164,7 @@ class IndexController extends Controller
         $levelingType = $request->input('game_leveling_type', 0);
 
         if ($request->export) {
-
-            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
-
-            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+            $orderRepository->levelingDataListExport($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType, $pageSize);
         }
 
         $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType, $pageSize);
@@ -196,15 +193,6 @@ class IndexController extends Controller
                     $orderCurrent['profit'] = '';
                 } else {
                     // 支付金额
-//                    // 支付金额
-//                    if (in_array($orderInfo['status'], [21, 19])) {
-//                        $amount = $orderInfo['leveling_consult']['api_amount'];
-//                    } else {
-//                        $amount = $orderInfo['amount'];
-//                    }
-//                    // 支付金额
-//                    $orderCurrent['payment_amount'] = $amount !=0 ?  $amount + 0:  $orderInfo['amount'] + 0;
-
                     $amount = 0;
                     if (in_array($orderInfo['status'], [21, 19])) {
                         $amount = $orderInfo['leveling_consult']['api_amount'];
@@ -219,7 +207,6 @@ class IndexController extends Controller
                     $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
                     // 利润
                     $orderCurrent['profit'] = ($orderCurrent['get_amount']  - $orderCurrent['payment_amount']  - $orderCurrent['poundage']) + 0;
-//                    $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
                 }
 
                 $days = $orderCurrent['game_leveling_day'] ?? 0;
@@ -1634,11 +1621,9 @@ class IndexController extends Controller
 
         $game = $this->game;
         $employee = User::where('parent_id', Auth::user()->getPrimaryUserId())->get();
-        $tags = GoodsTemplateWidgetValueRepository::getTags(Auth::user()->getPrimaryUserId());
 
         if ($request->export) {
-            $options = compact('no', 'foreignOrderNo', 'gameId', 'status', 'wangWang', 'urgentOrder', 'startDate', 'endDate');
-            return redirect(route('frontend.workbench.leveling.excel'))->with(['options' => $options]);
+            return $orderRepository->levelingExport($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
         }
 
         // 获取订单
@@ -1654,7 +1639,7 @@ class IndexController extends Controller
             'orders' => $orders,
             'game' => $game,
             'employee' => $employee,
-            'tags' => $tags,
+//            'tags' => $tags,
             'no' => $no,
             'customerServiceName' => $customerServiceName,
             'gameId' => $gameId,
@@ -1666,6 +1651,7 @@ class IndexController extends Controller
             'endDate' => $endDate,
             'statusCount' => $statusCount,
             'allStatusCount' => $allStatusCount,
+            'fullUrl' => $request->fullUrl(),
         ]);
     }
 

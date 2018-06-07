@@ -150,6 +150,7 @@ class UserController extends Controller
            'bank_name' => $request->bank_name,
            'bank_card' => $request->bank_card,
            'admin_user_id' => Auth::user()->id,
+           'alipay' => $request->alipay,
         ]);
         return response()->ajax(1, '修改成功');
     }
