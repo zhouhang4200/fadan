@@ -209,7 +209,8 @@ class IndexController extends Controller
                     $orderCurrent['get_amount'] = (float)$orderCurrent['get_amount'] + 0;
                     $orderCurrent['poundage'] = (float)$orderCurrent['poundage'] + 0;
                     // 利润
-                    $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
+                    $orderCurrent['profit'] = ($orderCurrent['get_amount']  - $orderCurrent['payment_amount']  - $orderCurrent['poundage']) + 0;
+//                    $orderCurrent['profit'] = ((float)$orderCurrent['source_price'] - $orderCurrent['payment_amount'] + $orderCurrent['get_amount'] - $orderCurrent['poundage']) + 0;
                 }
 
                 $days = $orderCurrent['game_leveling_day'] ?? 0;
@@ -544,7 +545,7 @@ class IndexController extends Controller
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
-            $detail['profit'] = ((float)$detail['source_price'] - $detail['payment_amount'] + $detail['get_amount'] - $detail['poundage']) + 0;
+            $detail['profit'] = ($detail['get_amount']  - $detail['payment_amount']  - $detail['poundage']) + 0;
         }
 
         $days = $detail['game_leveling_day'] ?? 0;

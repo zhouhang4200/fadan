@@ -654,10 +654,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>来源价格</td>
-                        <td>{{ $detail['source_price'] ?? '' }}</td>
-                    </tr>
-                    <tr>
                         <td>支付代练费用</td>
                         <td>
                             @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
