@@ -12,5 +12,40 @@ class OrderBasicData extends Model
 		'order_no', 'status', 'client_wang_wang', 'customer_service_name', 'game_id',
 		'game_name', 'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'gainer_primary_user_id',
 		'price', 'security_deposit', 'efficiency_deposit', 'original_price', 'order_created_at', 'is_repeat',
+		'third', 'date'
 	];
+
+	/**
+     * 平台统计信息筛选
+     * @param  [type] $query   [description]
+     * @param  [type] $filters [description]
+     * @return [type]          [description]
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if ($filters['userIds']) {
+            $query->whereIn('creator_primary_user_id', $filters['userIds']);
+        }
+
+        if ($filters['third']) {
+            $query->where('third', $filters['third']);
+        }
+
+        if ($filters['gameId']) {
+            $query->where('game_id', $filters['gameId']);
+        }
+
+        if ($filters['startDate'] && empty($filters['endDate'])) {
+            $query->where('date', '>=', $filters['startDate']);
+        }
+
+        if ($filters['endDate'] && empty($filters['startDate'])) {
+            $query->where('date', '<=', $filters['endDate']);
+        }
+
+        if ($filters['endDate'] && $filters['startDate']) {
+            $query->whereBetween('date', [$filters['startDate'], $filters['endDate']]);
+        }
+        return $query;
+    }
 }

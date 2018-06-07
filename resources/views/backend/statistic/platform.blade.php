@@ -119,123 +119,123 @@
                             @forelse($paginatePlatformStatistics as $paginatePlatformStatistic)
                                 <tr>
                                     <td>{{ $paginatePlatformStatistic->date }}</td>
-                                    <td>{{ $paginatePlatformStatistic->order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->wang_wang_order_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->receive_order_count }}</td>
-                                    <td>{{ $paginatePlatformStatistic->complete_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->client_wang_wang_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->count, $paginatePlatformStatistic->client_wang_wang_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->received_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count }}</td>
                                     <td>
-                                    @if($paginatePlatformStatistic->complete_order_rate == 0)
+                                    @if($paginatePlatformStatistic->count == 0)
                                     0%
-                                    @elseif($paginatePlatformStatistic->complete_order_rate == 1)
+                                    @elseif($paginatePlatformStatistic->count != 0 && bcdiv($paginatePlatformStatistic->completed_count, $paginatePlatformStatistic->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->complete_order_rate ? round(bcmul($paginatePlatformStatistic->complete_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($paginatePlatformStatistic->completed_count, $paginatePlatformStatistic->count, 2) ? round(bcmul(bcdiv($paginatePlatformStatistic->completed_count, $paginatePlatformStatistic->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoked_count }}</td>
                                     <td>
-                                    @if($paginatePlatformStatistic->revoke_order_rate == 0)
+                                    @if($paginatePlatformStatistic->count == 0)
                                     0%
-                                    @elseif($paginatePlatformStatistic->revoke_order_rate == 1)
+                                    @elseif(bcdiv($paginatePlatformStatistic->revoked_count, $paginatePlatformStatistic->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->revoke_order_rate ? round(bcmul($paginatePlatformStatistic->revoke_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($paginatePlatformStatistic->revoked_count, $paginatePlatformStatistic->count, 2) ? round(bcmul(bcdiv($paginatePlatformStatistic->revoked_count, $paginatePlatformStatistic->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_order_count }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrationed_count }}</td>
                                     <td>
-                                    @if($paginatePlatformStatistic->arbitrate_order_rate == 0)
+                                    @if($paginatePlatformStatistic->count == 0)
                                     0%
-                                    @elseif($paginatePlatformStatistic->arbitrate_order_rate == 1)
+                                    @elseif(bcdiv($paginatePlatformStatistic->arbitrationed_count, $paginatePlatformStatistic->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $paginatePlatformStatistic->arbitrate_order_rate ? round(bcmul($paginatePlatformStatistic->arbitrate_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($paginatePlatformStatistic->arbitrationed_count, $paginatePlatformStatistic->count, 2) ? round(bcmul(bcdiv($paginatePlatformStatistic->arbitrationed_count, $paginatePlatformStatistic->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_use_time_avg < 60 ? $paginatePlatformStatistic->done_order_use_time_avg.'秒' : sec2Time($paginatePlatformStatistic->done_order_use_time_avg) }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_security_deposit_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_efficiency_deposit_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_original_amount_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_original_amount }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_amount_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->done_order_amount }}</td>
-                                    <td>{{ $paginatePlatformStatistic->complete_order_amount_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->complete_order_amount }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_payment_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_payment }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_income_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->revoke_income }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_payment_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_payment }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_income_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->arbitrate_income }}</td>
-                                    <td>{{ $paginatePlatformStatistic->poundage_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->poundage }}</td>
-                                    <td>{{ $paginatePlatformStatistic->user_profit_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->user_profit }}</td>
-                                    <td>{{ $paginatePlatformStatistic->platform_profit_avg }}</td>
-                                    <td>{{ $paginatePlatformStatistic->platform_profit }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : ( bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)) < 60 ? bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)).'秒' : sec2Time(bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)))) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_security_deposit, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_efficiency_deposit, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_original_price, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_original_price }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_price, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_price }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_completed_price, $paginatePlatformStatistic->completed_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_completed_price }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_revoked_payment, $paginatePlatformStatistic->revoked_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_revoked_payment }}</td>
+                                    <td>{{ $paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_revoked_income, $paginatePlatformStatistic->revoked_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_revoked_income }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_arbitrationed_payment, $paginatePlatformStatistic->arbitrationed_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_arbitrationed_payment }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_arbitrationed_income, $paginatePlatformStatistic->arbitrationed_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_arbitrationed_income }}</td>
+                                    <td>{{ $paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_poundage, ($paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count), 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_poundage }}</td>
+                                    <td>{{ $paginatePlatformStatistic->primary_creator_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_creator_profit, $paginatePlatformStatistic->primary_creator_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_creator_profit }}</td>
+                                    <td>{{ $paginatePlatformStatistic->third_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_gainer_profit, $paginatePlatformStatistic->third_count, 2) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->total_gainer_profit }}</td>
                                 </tr>
                             @empty
                             @endforelse
                                 <tr style="color:red">
                                     <td>总计</td>
-                                    <td>{{ $totalPlatformStatistics->order_count }}</td>
-                                    <td>{{ $totalPlatformStatistics->wang_wang_order_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->receive_order_count }}</td>
-                                    <td>{{ $totalPlatformStatistics->complete_order_count }}</td>
+                                    <td>{{ $totalPlatformStatistics->count ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->client_wang_wang_count == 0 ? 0 : bcdiv($totalPlatformStatistics->count, $totalPlatformStatistics->client_wang_wang_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->received_count ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count ?? 0 }}</td>
                                     <td>
-                                    @if($totalPlatformStatistics->complete_order_rate == 0)
+                                    @if($totalPlatformStatistics->count == 0)
                                     0%
-                                    @elseif($totalPlatformStatistics->complete_order_rate == 1)
+                                    @elseif($totalPlatformStatistics->count != 0 && bcdiv($totalPlatformStatistics->completed_count, $totalPlatformStatistics->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $totalPlatformStatistics->complete_order_rate ? round(bcmul($totalPlatformStatistics->complete_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($totalPlatformStatistics->completed_count, $totalPlatformStatistics->count, 2) ? round(bcmul(bcdiv($totalPlatformStatistics->completed_count, $totalPlatformStatistics->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $totalPlatformStatistics->revoke_order_count }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoked_count ?? 0 }}</td>
                                     <td>
-                                    @if($totalPlatformStatistics->revoke_order_rate == 0)
+                                    @if($totalPlatformStatistics->count == 0)
                                     0%
-                                    @elseif($totalPlatformStatistics->revoke_order_rate == 1)
+                                    @elseif(bcdiv($totalPlatformStatistics->revoked_count, $totalPlatformStatistics->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $totalPlatformStatistics->revoke_order_rate ? round(bcmul($totalPlatformStatistics->revoke_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($totalPlatformStatistics->revoked_count, $totalPlatformStatistics->count, 2) ? round(bcmul(bcdiv($totalPlatformStatistics->revoked_count, $totalPlatformStatistics->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $totalPlatformStatistics->arbitrate_order_count }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrationed_count ?? 0 }}</td>
                                     <td>
-                                    @if($totalPlatformStatistics->arbitrate_order_rate == 0)
+                                    @if($totalPlatformStatistics->count == 0)
                                     0%
-                                    @elseif($totalPlatformStatistics->arbitrate_order_rate == 1)
+                                    @elseif(bcdiv($totalPlatformStatistics->arbitrationed_count, $totalPlatformStatistics->count, 2) == 1)
                                     100%
                                     @else
-                                    {{ $totalPlatformStatistics->arbitrate_order_rate ? round(bcmul($totalPlatformStatistics->arbitrate_order_rate, 100), 2) : 0 }}%
+                                    {{ bcdiv($totalPlatformStatistics->arbitrationed_count, $totalPlatformStatistics->count, 2) ? round(bcmul(bcdiv($totalPlatformStatistics->arbitrationed_count, $totalPlatformStatistics->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $totalPlatformStatistics->done_order_use_time_avg < 60 ? $totalPlatformStatistics->done_order_use_time_avg.'秒' : sec2Time($totalPlatformStatistics->done_order_use_time_avg) }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_security_deposit_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_efficiency_deposit_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_original_amount_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_original_amount }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_amount_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->done_order_amount }}</td>
-                                    <td>{{ $totalPlatformStatistics->complete_order_amount_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->complete_order_amount }}</td>
-                                    <td>{{ $totalPlatformStatistics->revoke_payment_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->revoke_payment }}</td>
-                                    <td>{{ $totalPlatformStatistics->revoke_income_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->revoke_income }}</td>
-                                    <td>{{ $totalPlatformStatistics->arbitrate_payment_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->arbitrate_payment }}</td>
-                                    <td>{{ $totalPlatformStatistics->arbitrate_income_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->arbitrate_income }}</td>
-                                    <td>{{ $totalPlatformStatistics->poundage_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->poundage }}</td>
-                                    <td>{{ $totalPlatformStatistics->user_profit_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->user_profit }}</td>
-                                    <td>{{ $totalPlatformStatistics->platform_profit_avg }}</td>
-                                    <td>{{ $totalPlatformStatistics->platform_profit }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : ( bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)) < 60 ? bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)).'秒' : sec2Time(bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)))) }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_security_deposit, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_efficiency_deposit, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_original_price, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_original_price ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_price, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_price ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_completed_price, $totalPlatformStatistics->completed_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_completed_price ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoked_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_revoked_payment, $totalPlatformStatistics->revoked_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_revoked_payment ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->revoked_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_revoked_income, $totalPlatformStatistics->revoked_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_revoked_income ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_arbitrationed_payment, $totalPlatformStatistics->arbitrationed_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_arbitrationed_payment ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_arbitrationed_income, $totalPlatformStatistics->arbitrationed_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_arbitrationed_income ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->arbitrationed_count+$totalPlatformStatistics->revoked_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_poundage, ($totalPlatformStatistics->arbitrationed_count+$totalPlatformStatistics->revoked_count), 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_poundage ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->primary_creator_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_creator_profit, $totalPlatformStatistics->primary_creator_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_creator_profit ?? 0 }}</td>
+                                    <td>{{ $totalPlatformStatistics->third_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_gainer_profit, $totalPlatformStatistics->third_count, 2) }}</td>
+                                    <td>{{ $totalPlatformStatistics->total_gainer_profit ?? 0 }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -264,7 +264,7 @@
 @section('js')
 <script>
     //Demo
-    layui.use(['form', 'laytpl', 'element', 'laydate'], function(){
+    layui.use(['form', 'laytpl', 'element', 'laydate'], function() {
         var form = layui.form, layer = layui.layer, laydate = layui.laydate, table = layui.table;
 
         //日期

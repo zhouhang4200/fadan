@@ -89,6 +89,8 @@ class WriteOrderBasicData
         }
         
         $data['order_no']                = $order->no;
+        $data['date']                    = $order->created_at->toDateString();
+        $data['third']                   = $orderDetail['third'];
         $data['status']                  = $order->status;
         $data['client_wang_wang']        = $orderDetail['client_wang_wang'];
         $data['customer_service_name']   = $orderDetail['customer_service_name'];
