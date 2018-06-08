@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
 //        'App\Console\Commands\OrderSend', //推送下单信息
         'App\Console\Commands\AutoMarkupOrderEveryHour', // 每小时加价一次
         'App\Console\Commands\TestOrder',
+        'App\Console\Commands\RunOrderBasicDatas', // 将所有的订单写到基础数据表
     ];
 
     /**
