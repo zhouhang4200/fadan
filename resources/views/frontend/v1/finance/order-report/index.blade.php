@@ -140,17 +140,19 @@
                                     isset($detail['source_order_no_1']) ?? '',
                                     isset($detail['source_order_no_2']) ?? '',
                                 ];
-                                $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_filter($tid))->get();
+                                //$taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_filter($tid))->get();
 
-                                if ($taobaoTrade) {
-                                    foreach ($taobaoTrade as $trade) {
-                                        if ($trade->trade_status == 7) {
-                                            $taobaoRefund = bcadd($trade->payment, $taobaoRefund, 2);
-                                        }
-                                        $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
-                                    }
+                                //if ($taobaoTrade) {
+                                    //foreach ($taobaoTrade as $trade) {
+                                        //if ($trade->trade_status == 7) {
+                                         //   $taobaoRefund = $taobaoTradeData[$detail['source_order_no']];
+                                        //}
+                                        //$taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
+                                    //}
 
-                                }
+                                //}
+                                $taobaoAmout = isset($taobaoTradeData[$item->no]['payment']) ? $taobaoTradeData[$item->no]['payment'] : 0;
+                                $taobaoAmout = isset($taobaoTradeData[$item->no]['refund']) ? $taobaoTradeData[$item->no]['refund'] : 0;
                             }
                         }
                         $profit =   ($getAmount  - $paymentAmount  - $poundage) + 0;
