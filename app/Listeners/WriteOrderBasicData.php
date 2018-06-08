@@ -10,7 +10,7 @@ use App\Models\BusinessmanComplaint;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\OrderBasicData as OrderBasicDataModel;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 class WriteOrderBasicData
 {

@@ -213,7 +213,7 @@ class OrderReportController extends Controller
                     $data = [
                         $item->no . "\t",
                         $sourceNo,
-                        '补款单号1:' . $sourceNo1 . '补款单号2:' . $sourceNo2,
+                        $sourceNo1 . ' ' . $sourceNo2,
                         $item->game_name,
                         isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
                         $detail['seller_nick'] ?? '',
