@@ -152,9 +152,9 @@
 
                                 //}
 
-                                foreach (array_unique(array_filter($tid)) as $key => $trade) {
-                                      $taobaoAmout = isset($taobaoTradeData[$key]) ? bcadd($taobaoAmout, $taobaoTradeData[$item->no]['payment'], 2) : 0;
-                                      $taobaoRefund = isset($taobaoTradeData[$key]) ? bcadd($taobaoAmout, $taobaoTradeData[$item->no]['refund'], 2) : 0;
+                                foreach (array_unique(array_filter($tid)) as $trade) {
+                                      $taobaoAmout = isset($taobaoTradeData[$trade]) ? bcadd($taobaoAmout, $taobaoTradeData[$trade]['payment'], 2) : 0;
+                                      $taobaoRefund = isset($taobaoTradeData[$trade]) ? bcadd($taobaoAmout, $taobaoTradeData[$trade]['refund'], 2) : 0;
                                 }
 
                             }
