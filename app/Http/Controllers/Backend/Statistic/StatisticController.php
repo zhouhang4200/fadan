@@ -155,18 +155,20 @@ class StatisticController extends Controller
                 $userIds = $user->children()->withTrashed()->pluck('id')->merge($userId);
             }
         }   
+        
         $users = DB::select("
-            SELECT DISTINCT b.name as username, a.user_id
-            FROM platform_statistics a 
+            SELECT DISTINCT b.username, b.id as user_id
+            FROM order_basic_datas a 
             LEFT JOIN users b 
-            ON a.user_id = b.id
+            ON a.creator_primary_user_id = b.id
         ");
 
         $games = DB::select("
-            SELECT b.id, b.name 
-            FROM third_games a 
+            SELECT a.game_id, b.name
+            FROM goods_templates a 
             LEFT JOIN games b
             ON a.game_id = b.id
+            where a.service_id = 4
         ");
 
         $filters = compact('startDate', 'endDate', 'userIds', 'third', 'gameId');     
