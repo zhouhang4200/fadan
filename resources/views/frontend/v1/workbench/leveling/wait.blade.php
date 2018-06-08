@@ -179,13 +179,13 @@
                 if (obj.type != null) {
                     type = obj.type;
                 }
-                table.reload('order-list', {
-                    initSort: {
-                    field: 'created',
-                    type: type
-                }});
                 $.post('{{ route('frontend.workbench.leveling.wait-sort') }}', {type:obj.type}, function () {
-                }, 'json')
+                    table.reload('order-list', {
+                        initSort: {
+                            field: 'created',
+                            type: type
+                        }});
+                }, 'json');
             });
             // 加载数据
             table.render({
