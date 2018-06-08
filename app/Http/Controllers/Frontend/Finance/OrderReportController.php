@@ -52,32 +52,32 @@ class OrderReportController extends Controller
 
         // 处理数据
         $tid = [];
-        $taobaoTradeData = [];
-        foreach($orders as $item) {
-            $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
-
-            if (!empty($detail['source_order_no'])) {
-                // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
-                if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
-                    $tid = [
-                        $detail['source_order_no'],
-                        isset($detail['source_order_no_1']) ?? '',
-                        isset($detail['source_order_no_2']) ?? '',
-                    ];
-                    $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
-
-                    if ($taobaoTrade) {
-                        foreach ($taobaoTrade as $trade) {
-                            if ($trade->trade_status == 7) {
-                                $taobaoTradeData[$item->no]['refund']  = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['refund'])) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['refund'], 2) : $trade->payment;
-                            } else {
-                                $taobaoTradeData[$item->no]['payment'] = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['payment']) ) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['payment'], 2) : $trade->payment;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        $taobaoTradeData = [];
+//        foreach($orders as $item) {
+//            $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
+//
+//            if (!empty($detail['source_order_no'])) {
+//                // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
+//                if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
+//                    $tid = [
+//                        $detail['source_order_no'],
+//                        isset($detail['source_order_no_1']) ?? '',
+//                        isset($detail['source_order_no_2']) ?? '',
+//                    ];
+//                    $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
+//
+//                    if ($taobaoTrade) {
+//                        foreach ($taobaoTrade as $trade) {
+//                            if ($trade->trade_status == 7) {
+//                                $taobaoTradeData[$item->no]['refund']  = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['refund'])) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['refund'], 2) : $trade->payment;
+//                            } else {
+//                                $taobaoTradeData[$item->no]['payment'] = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['payment']) ) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['payment'], 2) : $trade->payment;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
 //        $taobaoTrade = TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
 //
@@ -116,7 +116,7 @@ class OrderReportController extends Controller
             'startDate' => $startDate,
             'endDate' => $endDate,
             'sellerNick' => $sellerNick,
-            'taobaoTradeData' => $taobaoTradeData,
+//            'taobaoTradeData' => $taobaoTradeData,
             'fullUrl' => $request->fullUrl(),
         ]);
     }
