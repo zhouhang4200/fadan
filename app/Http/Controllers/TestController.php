@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\Data\DayDataController;
 use App\Services\KamenOrderApi;
 use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
+use App\Extensions\Dailian\Controllers\DailianFactory;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Services\Leveling\WanziController;
@@ -216,8 +217,17 @@ class TestController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
+        $orderNo = $request->order_no;
+        $operate = $request->operate;
+        $thirdUserId = $request->uid;
+        $bool = $request->bool;
+
+        if (! empty($operate) && ! empty($orderNo)) {
+            DailianFactory::choose($operate)->run($orderNo, $thirdUserId, $bool);
+        }
+dd('OK');
         // 更新天猫返回总金额
         $all = OrderBasicData::get();
 
