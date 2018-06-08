@@ -118,6 +118,8 @@ class OrderReportController extends Controller
         export([
             '内部单号',
             '淘宝单号',
+            '补款单号1',
+            '补款单号2',
             '游戏',
             '订单状态',
             '店铺名称',
@@ -188,10 +190,10 @@ class OrderReportController extends Controller
                         $sourceNo = $detail['source_order_no'];
                     }
                     if (isset($detail['source_order_no_1']) && !empty($detail['source_order_no_1'])) {
-                        $sourceNo1 = "\n单号2：".$detail['source_order_no_1'];
+                        $sourceNo1 = $detail['source_order_no_1'];
                     }
                     if (isset($detail['source_order_no_2']) && !empty($detail['source_order_no_2'])) {
-                        $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
+                        $sourceNo2 = $detail['source_order_no_2'];
                     }
 
                     $third = '';
@@ -201,8 +203,9 @@ class OrderReportController extends Controller
 
                     $data = [
                         $item->no . "\t",
-                        $sourceNo,
-                        $sourceNo1 . ' ' . $sourceNo2,
+                        $sourceNo . "\t",
+                        $sourceNo1 . "\t",
+                        $sourceNo2 . "\t",
                         $item->game_name,
                         isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
                         $detail['seller_nick'] ?? '',
