@@ -143,7 +143,7 @@ class OrderReportController extends Controller
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
-            $orders->chunk(1000, function ($chunkOrders) use ($out) {
+            $orders->chunk(15, function ($chunkOrders) use ($out) {
                 foreach ($chunkOrders as $item) {
                     $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
 
@@ -174,10 +174,10 @@ class OrderReportController extends Controller
 
                             $tid = [
                                 $detail['source_order_no'],
-                                isset($detail['source_order_no_1']) ?? '',
-                                isset($detail['source_order_no_2']) ?? '',
+                                $detail['source_order_no_1'] ?? '',
+                                $detail['source_order_no_2'] ?? '',
                             ];
-                            $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_filter($tid))->get();
+                            $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
 
                             if ($taobaoTrade) {
                                 foreach ($taobaoTrade as $trade) {
