@@ -219,7 +219,7 @@ return [
 
     // 丸子平台
     'wanzi' => [
-    	'uid'       => 18,
+    	'uid'       => 7,
     	'appid'     => 'T8WsMDT4mJ5DxKJkf4fWVP5XYU00McJxxyAeoX4aPIy6jrWN70bmQltXfwof',
 		'appsecret' => 'XlDzhGb9EeiJW2r6os1CVC6bKLrikFDHgH5mVLGdVRMNyYhY7Q4QvFIL2SBx',
 		'aes_key'   => '4158d685d8e4f5e8',
@@ -241,37 +241,37 @@ return [
 	        11 => '等待玩家付款',
 	        12 => '玩家超时未付款',
     	],
-        'api_url' => env('WANZI_API_URL', 'http://10.0.1.51:8080'),
+        'api_url' => env('WANZI_API_URL', 'http://www.fulugou.net'),
     	'url' => [
-			'onSale'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 上架
-			'offSale'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/grounding', // 下架
-			'applyRevoke'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addCancelOrder', // 申请撤销
-			'cancelRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/cancelSc', // 取消撤销
-			'agreeRevoke'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 同意撤销
-			'applyArbitration'         => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addappeal', // 申请仲裁
-			'cancelArbitration'        => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/cancelAppeal', // 取消仲裁
-			'complete'                 => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/accept', // 订单完成
+			'onSale'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/grounding', // 上架
+			'offSale'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/grounding', // 下架
+			'applyRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addCancelOrder', // 申请撤销
+			'cancelRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/cancelSc', // 取消撤销
+			'agreeRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/confirmSc', // 同意撤销
+			'applyArbitration'         => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addappeal', // 申请仲裁
+			'cancelArbitration'        => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/cancelAppeal', // 取消仲裁
+			'complete'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/accept', // 订单完成
 			'lock'                     => '', // 锁定
 			'cancelLock'               => '', // 取消锁定
-			'delete'                   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/chedan', // 删除订单
-			'updateOrder'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/qs/updateOrder', // 修改订单
-			'addTime'                  => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addLimitTime3', // 加时
-			'addMoney'                 => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addPrice2', // 加款
-			'orderDetail'              => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/orderDetail', // 订单详情
-			'getScreenshot'            => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/topic', // 订单截图
-			'getMessage'               => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/messageList', //获取留言
-			'replyMessage'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addMess', // 回复留言addMess
-			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/editOrderAccPwd', // 修改账号密码
-			'refuseRevoke'             => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/confirmSc', // 不同意撤销
-			'getPlays'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/getPlays', // 获取代练类型
-			'setTop'				   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/setTop', // 获取代练类型
-			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/seeappeal2', // 查看仲裁详情
-			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/addevidence', // 添加仲裁证据
+			'delete'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/chedan', // 删除订单
+			'updateOrder'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/qs/updateOrder', // 修改订单
+			'addTime'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addLimitTime3', // 加时
+			'addMoney'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addPrice2', // 加款
+			'orderDetail'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/orderDetail', // 订单详情
+			'getScreenshot'            => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/topic', // 订单截图
+			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/messageList', //获取留言
+			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addMess', // 回复留言addMess
+			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/editOrderAccPwd', // 修改账号密码
+			'refuseRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/confirmSc', // 不同意撤销
+			'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/getPlays', // 获取代练类型
+			'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/setTop', // 获取代练类型
+			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/seeappeal2', // 查看仲裁详情
+			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addevidence', // 添加仲裁证据
 
 
 
 
-			'getArbitrationList'	   => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/appeals', // 仲裁列表
+			'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/appeals', // 仲裁列表
     	],
     ],
 
