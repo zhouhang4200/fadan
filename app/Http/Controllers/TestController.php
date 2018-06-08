@@ -13,6 +13,7 @@ use App\Services\Leveling\WanziController;
 use Auth;
 use App\Models\OrderBasicData;
 use Asset;
+use App\Models\TaobaoTrade;
 // use GuzzleHttp\Client;
 use App\Extensions\Asset\Recharge;
 use App\Extensions\Asset\Withdraw;
@@ -217,23 +218,52 @@ class TestController extends Controller
 
     public function index()
     {
-        $orders = OrderBasicData::where('date', '0000-00-00')->get();
+        // 更新天猫返回总金额
+        $all = OrderBasicData::get();
 
-        foreach ($orders as $key => $order) {
-            $date = Carbon::parse($order->order_created_at)->toDateString();
-            $order->date = $date;
-            $order->save();
+        foreach ($all as $dataOrder) {
+
+            $sourceOrderNos = OrderDetail::where('order_no', $dataOrder->order_no)
+                ->where('field_name_alias', 'source_order_no')
+                ->where('field_value', '!=', '')
+                ->pluck('field_value')
+                ->unique()
+                ->toArray();
+
+            $tmIncome = 0;
+            if (isset($sourceOrderNos) && ! empty($sourceOrderNos) && is_array($sourceOrderNos) && count($sourceOrderNos) > 0) {
+                foreach ($sourceOrderNos as $sourceOrderNo) {
+                    $tmOrder = TaobaoTrade::where('tid', $sourceOrderNo)->first();
+                    if (isset($tmOrder) && ! empty($tmOrder) && $tmOrder->trade_status == 7) {
+                        $tmIncome += $tmOrder->payment;
+                    }
+                }
+            }
+
+            $dataOrder->tm_income = $tmIncome;
+            $dataOrder->save();
         }
 
-        // $thirdOrders = OrderBasicData::where('third', '0')->get();
+        // 更新date
+        foreach ($all as $dataOrder) {
+            $date = $dataOrder->updated_at->toDateString();
+            if ($dataOrder->order_finished_at != '0000-00-00 00:00:00') {
+                $date = Carbon::parse($dataOrder->order_finished_at)->toDateString();
+            } 
+            $dataOrder->date = $date;
+            $dataOrder->save();
+        }
 
-        // foreach ($thirdOrders as $thirdOrder) {
-        //     $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
-        //     if ($model->field_value) {
-        //         $thirdOrder->third = $model->field_value;
-        //         $thirdOrder->save();
-        //     }
-        // }
+        // 更新第三方
+        $thirdOrders = OrderBasicData::where('third', '0')->get();
+
+        foreach ($thirdOrders as $thirdOrder) {
+            $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
+            if ($model->field_value) {
+                $thirdOrder->third = $model->field_value;
+                $thirdOrder->save();
+            }
+        }
 
         // $datas = OrderBasicData::get();
 
