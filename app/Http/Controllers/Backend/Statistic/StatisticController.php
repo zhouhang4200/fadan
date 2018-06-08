@@ -155,12 +155,12 @@ class StatisticController extends Controller
                 $userIds = $user->children()->withTrashed()->pluck('id')->merge($userId);
             }
         }   
-        
+
         $users = DB::select("
             SELECT DISTINCT b.username, b.id as user_id
             FROM order_basic_datas a 
             LEFT JOIN users b 
-            ON a.creator_primary_user_id = b.id
+            ON a.creator_user_id = b.id
         ");
 
         $games = DB::select("
