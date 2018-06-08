@@ -19,13 +19,13 @@
                         <form class="layui-form" id="user-form">
                             <div class="layui-form-item">
                                 <div class="layui-input-inline">
-                                    <input type="text" class="layui-input" name="creator_primary_user_id"  placeholder="订单号" value="{{ Request::input('creator_primary_user_id') }}">
+                                    <input type="text" class="layui-input" name="order_no"  placeholder="订单号" value="{{ Request::input('order_no') }}">
                                 </div>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ Request::input('creator_primary_user_id') }}">
+                                    <input type="text" name="start_date" id="startDate" autocomplete="off" class="layui-input" placeholder="开始时间" value="{{ Request::input('start_date') }}">
                                 </div>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="end_date" id="endDate" autocomplete="off" class="layui-input" placeholder="结束时间" value="{{ Request::input('creator_primary_user_id') }}">
+                                    <input type="text" name="end_date" id="endDate" autocomplete="off" class="layui-input" placeholder="结束时间" value="{{ Request::input('end_date') }}">
                                 </div>
                                 <div class="layui-input-inline">
                                     <button class="layui-btn layui-btn-normal" type="submit" lay-submit="" lay-filter="user-search">查询</button>
