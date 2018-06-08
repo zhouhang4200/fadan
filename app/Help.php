@@ -764,25 +764,29 @@ if (!function_exists('sendSms')){
 //            return ['status' => 0, 'message' => $exception->getMessage()];
 //        }
 
-        $sendResult = (new SmSApi())->send(2, $phone, $content);
+        try {
+            $sendResult = (new SmSApi())->send(2, $phone, $content);
 
-        myLog('sms-send', [$sendResult, $phone, $content]);
-        if ((bool)strpos($sendResult, "mterrcode=000")) {
-            // 发送成功写发送记录
-            SmsSendRecord::create([
-                'foreign_order_no' => $foreignOrderNo,
-                'third_order_no' => $thirdOrderNo,
-                'third' => $third,
-                'user_id' => $sendUserId,
-                'order_no' => $orderNo,
-                'client_phone' => $phone,
-                'contents' => $content,
-                'date' => date('Y-m-d'),
-            ]);
-            return ['status' => 1, 'message' => '发送成功'];
+            myLog('sms-send', [$sendResult, $phone, $content]);
+            if ((bool)strpos($sendResult, "mterrcode=000")) {
+                // 发送成功写发送记录
+                SmsSendRecord::create([
+                    'foreign_order_no' => $foreignOrderNo,
+                    'third_order_no' => $thirdOrderNo,
+                    'third' => $third,
+                    'user_id' => $sendUserId,
+                    'order_no' => $orderNo,
+                    'client_phone' => $phone,
+                    'contents' => $content,
+                    'date' => date('Y-m-d'),
+                ]);
+                return ['status' => 1, 'message' => '发送成功'];
+            }
+
+            return ['status' => 0, 'message' => '发送失败'];
+        } catch (\Exception $exception) {
+
         }
-
-        return ['status' => 0, 'message' => '发送失败'];
     }
 }
 

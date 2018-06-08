@@ -130,7 +130,7 @@ class OrderReportController extends Controller
             '支付金额',
             '获得金额',
             '手续费',
-            '利润',
+            '最终支付金额',
             '发单客服',
             '淘宝下单时间',
             '结算时间',
