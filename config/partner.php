@@ -25,8 +25,8 @@ return [
         ],
         5 => [
             'name' => '丸子代练', // 平台名称
-            'user_id' => 84568, // 千手用户ID
-            'receive' => env('WANZI_API_URL', 'http://10.0.1.51:8080').'/oauth/qs/receiveOrder', // 接收订单地址
+            'user_id' => 8880, // 千手用户ID
+            'receive' => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/qs/receiveOrder', // 接收订单地址
             'aes_key'   => '4158d685d8e4f5e8',
             'aes_iv'    => '1234567891111152',
         ],

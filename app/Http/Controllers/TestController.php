@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Services\Leveling\WanziController;
 use Auth;
+use App\Models\OrderBasicData;
 use Asset;
 // use GuzzleHttp\Client;
 use App\Extensions\Asset\Recharge;
@@ -216,6 +217,36 @@ class TestController extends Controller
 
     public function index()
     {
+        $orders = OrderBasicData::where('date', '0000-00-00')->get();
+
+        foreach ($orders as $key => $order) {
+            $date = Carbon::parse($order->order_created_at)->toDateString();
+            $order->date = $date;
+            $order->save();
+        }
+
+        // $thirdOrders = OrderBasicData::where('third', '0')->get();
+
+        // foreach ($thirdOrders as $thirdOrder) {
+        //     $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
+        //     if ($model->field_value) {
+        //         $thirdOrder->third = $model->field_value;
+        //         $thirdOrder->save();
+        //     }
+        // }
+
+        // $datas = OrderBasicData::get();
+
+        // foreach ($datas as $data) {
+        //     $ord = OrderModel::where('no', $data->order_no)->first();
+        //     if ($ord->created_at->toDateTimeString() != $data->order_created_at) {
+        //         $data->order_created_at = $ord->created_at->toDateTimeString();
+        //         $data->save();
+        //     }
+        // }
+dd('OK');
+
+
         $order = OrderModel::where('no', '2018060409274600000002')->first();
         dd($order->created_at->toDateTimeString());
 

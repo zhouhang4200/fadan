@@ -88,6 +88,7 @@ class EventServiceProvider extends ServiceProvider
         //
         'App\Events\OrderPlaying' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\WriteOrderBasicData',
         ],
         //
         'App\Events\OrderRefuseRevoke' => [

@@ -14,7 +14,7 @@ return [
 		8737 => 3, // 蚂蚁
 		8739 => 4, // dd373
 		8456 => 1, // 91
-		84568 => 5, // 丸子
+		8880 => 5, // 丸子
 	],
 
     // 发单平台余额报警值
@@ -22,7 +22,7 @@ return [
         8737 => 3000, // 蚂蚁
         8739 => 10000, // dd373
         8456 => 10000, // 91
-        84568 => 10000, // 丸子
+        8880 => 10000, // 丸子
     ],
 
 	// 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
@@ -141,7 +141,6 @@ return [
             'getArbitrationInfo'       => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getArbitrate', // 查看仲裁详情
 			'addArbitrationInfo'       => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=sendArbitrateMessage', // 添加仲裁证据
 
-
 			'getArbitrationList'	   => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html').'?action=getArbitrateMessages', // **留言列表**
 		],
 		'status' => [
@@ -211,8 +210,6 @@ return [
 			'setTop'				   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/setTop', // 获取代练类型
 			'getArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/seeappeal2', // 查看仲裁详情
 			'addArbitrationInfo'       => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/addevidence', // 添加仲裁证据
-
-
 			'getArbitrationList'	   => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/appeals', // **仲裁列表**
     	],
     ],
@@ -226,7 +223,7 @@ return [
 		'aes_iv'    => '1234567891111152',
 		'account'   => env('WANZI_ACCOUNT', '51683C315D36488FB266904B6FD4BDFF'),
 		'sign'      => env('WANZI_SIGN','8469245010c0515a5c451bd20cd59cab'),
-		'password'  => env('WANZI_PAY_PASSWORD', 'qqq111'),
+		'password'  => env('WANZI_PAY_PASSWORD', 'qweasd123'),
 		'status' => [
 	        0  => '已发布',
 	        1  => '代练中',
@@ -267,10 +264,6 @@ return [
 			'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/setTop', // 获取代练类型
 			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/seeappeal2', // 查看仲裁详情
 			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/addevidence', // 添加仲裁证据
-
-
-
-
 			'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/oauth/appeals', // 仲裁列表
     	],
     ],
@@ -308,7 +301,6 @@ return [
 		'setTop'                   => '置顶', // 置顶
 		'getArbitrationInfo'       => '获取仲裁详情', // 获取仲裁详情
 		'addArbitrationInfo'       => '添加仲裁证据', // '添加仲裁证据'
-
 
 		'create'				   => '下单', // 下单推送
 	],

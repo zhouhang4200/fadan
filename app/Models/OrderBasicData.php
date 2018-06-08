@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderBasicData extends Model
@@ -44,7 +45,9 @@ class OrderBasicData extends Model
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
-            $query->whereBetween('date', [$filters['startDate'], $filters['endDate']]);
+            $addDate = Carbon::parse($filters['endDate'])->addDays(1)->toDateString();
+            
+            $query->where('date', '>=', $filters['startDate'])->where('date', '<', $addDate);
         }
         return $query;
     }
