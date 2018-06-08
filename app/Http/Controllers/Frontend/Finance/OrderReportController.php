@@ -55,28 +55,9 @@ class OrderReportController extends Controller
         $taobaoTradeData = [];
         foreach($orders as $item) {
             $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
-
-            if (!empty($detail['source_order_no'])) {
-                // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
-                if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
-                    $tid = [
-                        $detail['source_order_no'],
-                        isset($detail['source_order_no_1']) ?? '',
-                        isset($detail['source_order_no_2']) ?? '',
-                    ];
-//                    $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
-//
-//                    if ($taobaoTrade) {
-//                        foreach ($taobaoTrade as $trade) {
-//                            if ($trade->trade_status == 7) {
-//                                $taobaoTradeData[$item->no]['refund']  = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['refund'])) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['refund'], 2) : $trade->payment;
-//                            } else {
-//                                $taobaoTradeData[$item->no]['payment'] = (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['payment']) ) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['payment'], 2) : $trade->payment;
-//                            }
-//                        }
-//                    }
-                }
-            }
+            $tid[] = $detail['source_order_no'];
+            $tid[] = $detail['source_order_no_1'] ?? '';
+            $tid[] = $detail['source_order_no_2'] ?? '';
         }
 
         $taobaoTrade = TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
@@ -88,10 +69,6 @@ class OrderReportController extends Controller
                     'refund' => $trade->trade_status == 7 ? $trade->payment : 0,
                 ];
             }
-        }
-
-        if (!in_array($status, array_flip(config('order.status_leveling')))) {
-            return response()->ajax(0, '不存在的类型');
         }
 
         return view('frontend.v1.finance.order-report.index')->with([
@@ -141,6 +118,8 @@ class OrderReportController extends Controller
         export([
             '内部单号',
             '淘宝单号',
+            '补款单号1',
+            '补款单号2',
             '游戏',
             '订单状态',
             '店铺名称',
@@ -155,7 +134,7 @@ class OrderReportController extends Controller
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
-            $orders->chunk(1000, function ($chunkOrders) use ($out) {
+            $orders->chunk(500, function ($chunkOrders) use ($out) {
                 foreach ($chunkOrders as $item) {
                     $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
 
@@ -186,10 +165,10 @@ class OrderReportController extends Controller
 
                             $tid = [
                                 $detail['source_order_no'],
-                                isset($detail['source_order_no_1']) ?? '',
-                                isset($detail['source_order_no_2']) ?? '',
+                                $detail['source_order_no_1'] ?? '',
+                                $detail['source_order_no_2'] ?? '',
                             ];
-                            $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_filter($tid))->get();
+                            $taobaoTrade = \App\Models\TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
 
                             if ($taobaoTrade) {
                                 foreach ($taobaoTrade as $trade) {
@@ -197,21 +176,6 @@ class OrderReportController extends Controller
                                         $taobaoRefund = bcadd($trade->payment, $taobaoRefund, 2);
                                     }
                                     $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
-                                }
-
-                                // 查询所有来源单号相同的订单的支付金额
-                                $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
-                                foreach ($sameOrders as $sameOrder) {
-                                    // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
-                                    if (in_array($sameOrder->status, [21, 19])) {
-                                        $paymentAmount += $sameOrder->levelingConsult->api_amount;
-                                        $getAmount += $sameOrder->levelingConsult->api_deposit;
-                                        $poundage += $sameOrder->levelingConsult->api_service;
-                                    } else if ($item->status == 20) {
-                                        $paymentAmount += $sameOrder->amount;
-                                    } else if ($item->status == 23) {
-                                        $paymentAmount += 0;
-                                    }
                                 }
                             }
                         }
@@ -223,13 +187,13 @@ class OrderReportController extends Controller
                     $sourceNo1 = '';
                     $sourceNo2 = '';
                     if (isset($detail['source_order_no']) && !empty($detail['source_order_no'])) {
-                        $sourceNo = '单号1：'.$detail['source_order_no'];
+                        $sourceNo = $detail['source_order_no'];
                     }
                     if (isset($detail['source_order_no_1']) && !empty($detail['source_order_no_1'])) {
-                        $sourceNo1 = "\n单号2：".$detail['source_order_no_1'];
+                        $sourceNo1 = $detail['source_order_no_1'];
                     }
                     if (isset($detail['source_order_no_2']) && !empty($detail['source_order_no_2'])) {
-                        $sourceNo2 = "\n单号3：".$detail['source_order_no_2'];
+                        $sourceNo2 = $detail['source_order_no_2'];
                     }
 
                     $third = '';
@@ -239,8 +203,9 @@ class OrderReportController extends Controller
 
                     $data = [
                         $item->no . "\t",
-                        $sourceNo,
-                        '补款单号1:' . $sourceNo1 . '补款单号2:' . $sourceNo2,
+                        $sourceNo . "\t",
+                        $sourceNo1 . "\t",
+                        $sourceNo2 . "\t",
                         $item->game_name,
                         isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
                         $detail['seller_nick'] ?? '',
