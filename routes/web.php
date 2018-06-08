@@ -359,6 +359,13 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 // 排序
                 Route::post('sort', 'WaitController@sort')->name('frontend.workbench.leveling.wait-sort');
             });
+            // 订单投诉
+            Route::prefix('complaint')->group(function(){
+                // 列表
+                Route::get('/', 'ComplaintController@index')->name('frontend.workbench.leveling.complaint');
+                // 数据
+                Route::post('list-data', 'ComplaintController@listData')->name('frontend.workbench.leveling.complaint-list-data');
+            });
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

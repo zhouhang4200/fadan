@@ -34,7 +34,7 @@
                         </form>
                     </div>
                     <div class="filter-block pull-right">
-                        <a href="{{ route('frontend.user.complaint.create') }}" class="layui-btn layui-btn-samll layui-btn-normal">添加</a>
+                        <a href="{{ route('businessman.complaint.create') }}" class="layui-btn layui-btn-samll layui-btn-normal">添加</a>
                     </div>
                 </header>
                 <div class="main-box-body clearfix">

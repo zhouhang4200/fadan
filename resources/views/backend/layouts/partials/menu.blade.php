@@ -86,7 +86,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('frontend.user.complaint.index') }}" @if($currentRouteName == 'frontend.user.complaint.index') class="active" @endif>
+                                    <a href="{{ route('businessman.complaint.index') }}" @if($currentRouteName == 'businessman.complaint.index') class="active" @endif>
                                         商户投诉
                                     </a>
                                 </li>
@@ -287,7 +287,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             </li>
                         </ul>
                     </li>
-                    @if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))
+                    {{--@if (Auth::user()->hasAnyPermission(['admin-accounts.index', 'admin-modules.index', 'admin-permissions.index', 'admin-roles.index', 'admin-groups.index']))--}}
                     <li @if($currentOneLevelMenu == 'admin-roles' || $currentOneLevelMenu == 'admin-permissions' || $currentOneLevelMenu == 'admin-groups'  || $currentOneLevelMenu == 'admin-modules' || $currentOneLevelMenu == 'admin-accounts' || $currentRouteName == 'backend.order-send-channel.index') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
@@ -338,7 +338,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
 
                         </ul>
                     </li>
-                    @endif
+                    {{--@endif--}}
 
                     <li @if($currentOneLevelMenu == 'system-logs') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">

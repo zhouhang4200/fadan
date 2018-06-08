@@ -1,56 +1,14 @@
 <?php
-
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
-use App\Events\NotificationEvent;
-use App\Extensions\Dailian\Controllers\Arbitrationing;
-use App\Extensions\Dailian\Controllers\Complete;
-use App\Models\AutomaticallyGrabGoods;
-use App\Models\BusinessmanContactTemplate;
-use App\Models\GameLevelingRequirementsTemplate;
-use App\Models\GoodsTemplateWidget;
-use App\Models\UserSetting;
-use App\Exceptions\AssetException;
-use App\Extensions\Asset\Expend;
-use App\Extensions\Asset\Income;
-use App\Extensions\Order\Operations\CreateLeveling;
-use App\Models\Game;
-use App\Models\GoodsTemplateWidgetValue;
-use App\Models\OrderDetail;
-use App\Models\Order as OrderModel;
-use App\Models\OrderHistory;
-use App\Models\SmsTemplate;
+use DB, Order, Exception, Asset, Redis, Excel;
 use App\Models\TaobaoTrade;
-use App\Models\User;
-use App\Repositories\Api\TaobaoTradeRepository;
-use App\Repositories\Frontend\GoodsTemplateWidgetRepository;
-use App\Repositories\Frontend\OrderDetailRepository;
-use App\Repositories\Frontend\OrderRepository;
-use App\Repositories\Frontend\GoodsTemplateWidgetValueRepository;
-use App\Repositories\Frontend\OrderHistoryRepository;
-use App\Services\DailianMama;
-use App\Services\Leveling\DD373Controller;
-use App\Services\RedisConnect;
+use App\Events\NotificationEvent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Services\RedisConnect;
 use App\Http\Controllers\Controller;
-
-use App\Models\GoodsTemplate;
-
-use DB, Order, Exception, Asset, Redis;
 use App\Repositories\Frontend\GameRepository;
-use App\Exceptions\CustomException;
-use App\Extensions\Dailian\Controllers\DailianFactory;
-use App\Models\LevelingConsult;
-use App\Services\Show91;
-use Excel;
-use App\Exceptions\DailianException;
-use App\Repositories\Frontend\OrderAttachmentRepository;
-use App\Events\AutoRequestInterface;
-use TopClient;
-use TradeFullinfoGetRequest;
-use App\Models\OrderAutoMarkup;
+
 
 /**
  * 代练待发订单
@@ -64,7 +22,7 @@ class WaitController extends Controller
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index( GameRepository $gameRepository)
+    public function index(GameRepository $gameRepository)
     {
         $games = $gameRepository->availableByServiceId(4);
         $orderRedis = RedisConnect::order();
