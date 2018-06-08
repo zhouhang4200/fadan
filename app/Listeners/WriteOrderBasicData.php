@@ -38,8 +38,6 @@ class WriteOrderBasicData
             ->toArray();
         // 仲裁信息
         $consult = LevelingConsult::where('order_no', $order->no)->first();
-        // 天猫订单
-        $tmOrder = TaobaoTrade::where('tid', $order->foreign_order_no)->first();
         // 投诉表
         $complaint = BusinessmanComplaint::where('order_no', $order->no)->first();
 
@@ -56,6 +54,7 @@ class WriteOrderBasicData
         $data['creator_judge_income']  = 0;
         $data['creator_judge_payment'] = 0;
 
+        // 撤销信息
         if (isset($consult) && ! empty($consult)) {
             if ($consult->complete && $consult->consult) {
                 $data['revoke_creator'] = $consult->consult == 1 ? $order->creator_user_id : $order->gainer_user_id;
@@ -70,13 +69,28 @@ class WriteOrderBasicData
             $data['consult_poundage']    = $consult->api_service;
         }  
 
-        if (isset($tmOrder) && ! empty($tmOrder)) {
-            $data['tm_status']           = $tmOrder->trade_status;
-            if ($data['tm_status'] == 7) {
-                $data['tm_income']           = $tmOrder->payment;
-            }
-        } 
+        // 来源单号和天猫单号
+        $sourceOrderNos = OrderDetail::where('order_no', $order->no)
+            ->where('field_name_alias', 'source_order_no')
+            ->where('field_value', '!=', '')
+            ->pluck('field_value')
+            ->unique()
+            ->toArray();
 
+        $tmIncome = 0;
+        if (isset($sourceOrderNos) && ! empty($sourceOrderNos) && is_array($sourceOrderNos) && count($sourceOrderNos) > 0) {
+            foreach ($sourceOrderNos as $sourceOrderNo) {
+                $tmOrder = TaobaoTrade::where('tid', $sourceOrderNo)->first();
+
+                if (isset($tmOrder) && ! empty($tmOrder) && $tmOrder->trade_status == 7) {
+                    $tmIncome += $tmOrder->payment;
+                }
+            }
+        }
+
+        $data['tm_income'] = $tmIncome;
+
+        // 仲裁信息
         if (isset($complaint) && ! empty($complaint)) {
             if ($complaint->complaint_primary_user_id == $order->creator_primary_user_id) {
                 $data['creator_judge_income']        = $complaint->amount;
@@ -88,7 +102,7 @@ class WriteOrderBasicData
         }
         
         $data['order_no']                = $order->no;
-        $data['date']                    = $order->created_at->toDateString();
+        $data['date']                    = Carbon::now()->toDateString();
         $data['third']                   = $orderDetail['third'];
         $data['status']                  = $order->status;
         $data['client_wang_wang']        = $orderDetail['client_wang_wang'];
