@@ -293,7 +293,7 @@
         <p style="color:#e51c23">2. 请用您的支付宝往以下支付宝账号转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</p>
         转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
         账号：{{ optional($transferInfo)->alipay  }}<br/>
-        开户行：{{ optional($transferInfo)->bank_name }}<br/>
+        户名：{{ optional($transferInfo)->name }}<br/>
         转账备注：{{ optional($transferInfo)->user_id }}<br/>
     </div>
 </div>

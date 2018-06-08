@@ -13,4 +13,16 @@ class BusinessmanComplaint extends Model
       'amount',
       'remark',
     ];
+
+    /**
+     * 订单过滤
+     * @param $query
+     * @param array $filters
+     */
+    public static function scopeFilter($query, $filters = [])
+    {
+        if (isset($filters['orderNo']) && $filters['orderNo']) {
+            $query->where('order_no', $filters['orderNo']);
+        }
+    }
 }

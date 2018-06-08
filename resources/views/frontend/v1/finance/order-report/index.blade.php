@@ -169,7 +169,7 @@
                         </td>
                         <td>{{ $taobaoAmout + 0 }}</td>
                         <td>{{ $taobaoRefund + 0  }}</td>
-                        <td>{{ $orgPaymentAmount + 0  }}</td>
+                        <td>{{ $paymentAmount + 0  }}</td>
                         <td>{{ $getAmount + 0  }}</td>
                         <td>{{ $poundage + 0  }}</td>
                         <td>{{ $profit + 0  }}</td>

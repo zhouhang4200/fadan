@@ -25,7 +25,7 @@ class ComplaintController extends Controller
      */
     public function index(Request $request)
     {
-        $complaint = BusinessmanComplaint::paginate(30);
+        $complaint = BusinessmanComplaint::filter(['orderNo' => $request->order_no])->paginate(30);
 
         return view('backend.businessman.complaint.index')->with([
            'complaint' => $complaint,

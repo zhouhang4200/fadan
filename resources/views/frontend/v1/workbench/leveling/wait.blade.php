@@ -175,13 +175,17 @@
             });
             // 排序
             table.on('sort(order-list)', function(obj) {
-                table.reload('order-list', {
-                    initSort: {
-                    field: 'created',
-                    type: obj.type
-                }});
+                var type = 'desc';
+                if (obj.type != null) {
+                    type = obj.type;
+                }
                 $.post('{{ route('frontend.workbench.leveling.wait-sort') }}', {type:obj.type}, function () {
-                }, 'json')
+                    table.reload('order-list', {
+                        initSort: {
+                            field: 'created',
+                            type: type
+                        }});
+                }, 'json');
             });
             // 加载数据
             table.render({

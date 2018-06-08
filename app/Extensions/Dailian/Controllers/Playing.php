@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Exceptions\CustomException;
 use DB;
 use Asset;
 use Exception;
@@ -108,7 +109,20 @@ class Playing extends DailianAbstract implements DailianInterface
         // 兼容之前扣款流程,如果有扣过下单款则接单不再扣款,否则按新扣款流程在接单时才扣发单方款
         if(!checkPayment($this->order->no)) {
 
-             Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+             try {
+                 Asset::handle(new Expend($this->order->amount, 6, $this->order->no, '代练支出', $this->order->creator_primary_user_id));
+
+             } catch (CustomException $exception) {
+                 if ($exception->getMessage() == '您的账号余额不足') {
+                     // 发送短信通知发单人
+                     $phone = User::where('id', $this->order->creator_primary_user_id)->value('phone');
+                     if ($phone) {
+                         sendSms(0, $this->order->no, $phone, '您在淘宝发单平台的账户余额不足，打手接单失败，请立刻充值，保证业务正常运行。',
+                             '', $foreignOrderNo = '', $thirdOrderNo = '', $third = 0);
+                     }
+                 }
+                 throw new Exception($exception->getMessage());
+             }
 
             // 写多态关联
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
