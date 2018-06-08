@@ -92,6 +92,7 @@
                 <tr>
                     <th>内部单号</th>
                     <th>淘宝单号</th>
+                    <th>补款单号</th>
                     <th>游戏</th>
                     <th>订单状态</th>
                     <th>店铺名称</th>
@@ -101,7 +102,7 @@
                     <th>支付代练费用</th>
                     <th>获得赔偿金额</th>
                     <th>手续费</th>
-                    <th>利润</th>
+                    <th>最终支付金额</th>
                     <th>发单客服</th>
                     <th>淘宝下单时间</th>
                     <th>代练结算时间</th>
@@ -122,16 +123,13 @@
 
                         // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                         if (in_array($item->status, [21, 19])) {
-                            $orgPaymentAmount = $item->levelingConsult->api_amount;
                             $paymentAmount = $item->levelingConsult->api_amount;
                             $getAmount = $item->levelingConsult->api_deposit;
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
-                            $orgPaymentAmount = $item->amount;
                         } else if ($item->status == 23) {
                             $paymentAmount = 0;
-                            $orgPaymentAmount = 0;
                         }
                         if (!empty($detail['source_order_no'])) {
                             // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
@@ -152,34 +150,17 @@
                                         $taobaoAmout = bcadd($trade->payment, $taobaoAmout, 2);
                                     }
 
-                                     // 查询所有来源单号相同的订单的支付金额
-                                    $sameOrders =  \App\Models\Order::where('no', '!=', $item->no)->where('foreign_order_no', $detail['source_order_no'])->with('levelingConsult')->get();
-                                    foreach ($sameOrders as $sameOrder) {
-                                        // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
-                                        if (in_array($sameOrder->status, [21, 19])) {
-                                            $paymentAmount += $sameOrder->levelingConsult->api_amount;
-                                            $getAmount += $sameOrder->levelingConsult->api_deposit;
-                                            $poundage += $sameOrder->levelingConsult->api_service;
-                                        } else if ($item->status == 20) {
-                                            $paymentAmount += $sameOrder->amount;
-                                        } else if ($item->status == 23) {
-                                            $paymentAmount += 0;
-                                        }
-                                    }
-                                    }
-
-                                 // 计算利润
-                                 $profit = bcadd(($taobaoAmout - $taobaoRefund - $paymentAmount - $poundage), $getAmount);
-                                //$profit = bcadd(bcsub(bcsub($taobaoAmout, $taobaoRefund), bcsub($paymentAmount, $poundage)) , $getAmount, 2);
+                                }
                             }
                         }
+                        $profit =   ($getAmount  - $paymentAmount  - $poundage) + 0;
                     @endphp
                     <tr>
                         <td>{{ $item->no }}</td>
+                        <td>{{ !empty($detail['source_order_no']) ? $detail['source_order_no'] : '' }}</td>
                         <td>
-                            单号1: {{ !empty($detail['source_order_no']) ? $detail['source_order_no'] : '' }}<br/>
-                            单号2: {{ !empty($detail['source_order_no_1']) ? $detail['source_order_no_1'] : '' }}<br/>
-                            单号3: {{ !empty($detail['source_order_no_2']) ? $detail['source_order_no_2'] : ''}}
+                            单号1: {{ !empty($detail['source_order_no_1']) ? $detail['source_order_no_1'] : '' }}<br/>
+                            单号2: {{ !empty($detail['source_order_no_2']) ? $detail['source_order_no_2'] : ''}}
                         </td>
                         <td>{{ $item->game_name }}</td>
                         <td>{{ isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '' }}</td>
