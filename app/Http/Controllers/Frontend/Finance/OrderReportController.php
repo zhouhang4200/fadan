@@ -124,6 +124,7 @@ class OrderReportController extends Controller
             '订单状态',
             '店铺名称',
             '接单平台',
+            '接单平台单号',
             '淘宝金额',
             '淘宝退款',
             '支付金额',
@@ -196,9 +197,11 @@ class OrderReportController extends Controller
                         $sourceNo2 = $detail['source_order_no_2'];
                     }
 
-                    $third = '';
-                    if(isset($detail['third']) && $detail['third']){
-                        $third = isset(config('partner.platform')[(int)$detail['third']]) ? config('partner.platform')[(int)$detail['third']]['name'] . '/ '. $detail['third_order_no']: ''  ;
+                    $third = '-';
+                    $thirdOrderNo = '-';
+                    if(isset($detail['third']) && $detail['third'] && isset(config('partner.platform')[(int)$detail['third']])){
+                        $third = config('partner.platform')[(int)$detail['third']]['name'];
+                        $thirdOrderNo =  $detail['third_order_no'];
                     }
 
                     $data = [
@@ -208,16 +211,17 @@ class OrderReportController extends Controller
                         $sourceNo2 . "\t",
                         $item->game_name,
                         isset(config('order.status_leveling')[$item->status]) ? config('order.status_leveling')[$item->status] : '',
-                        $detail['seller_nick'] ?? '',
+                        $detail['seller_nick'] ?? '-',
                         $third,
+                        $thirdOrderNo,
                         (string)$taobaoAmout,
                         (string)$taobaoRefund,
                         (string)$orgPaymentAmount,
                         (string)$getAmount,
                         (string)$poundage,
                         (string)$profit,
-                        $detail['customer_service_name'] ?? '',
-                        $item->taobaoTrade->created ?? '',
+                        $detail['customer_service_name'] ?? '-',
+                        $item->taobaoTrade->created ?? '-',
                         $item->updated_at,
                     ];
                     fputcsv($out, $data);
