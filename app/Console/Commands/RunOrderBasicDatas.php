@@ -128,10 +128,10 @@ class RunOrderBasicDatas extends Command
                 
                 $data['order_no']                = $order->no;
                 $data['date']                    = $order->updated_at->toDateString();
-                $data['third']                   = $orderDetail['third'];
+                $data['third']                   = $orderDetail['third'] ?? '';
                 $data['status']                  = $order->status;
-                $data['client_wang_wang']        = $orderDetail['client_wang_wang'];
-                $data['customer_service_name']   = $orderDetail['customer_service_name'];
+                $data['client_wang_wang']        = $orderDetail['client_wang_wang'] ?? '';
+                $data['customer_service_name']   = $orderDetail['customer_service_name'] ?? '';
                 $data['game_id']                 = $order->game_id;
                 $data['game_name']               = $order->game_name;
                 $data['creator_user_id']         = $order->creator_user_id;
