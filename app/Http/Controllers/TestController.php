@@ -217,23 +217,23 @@ class TestController extends Controller
 
     public function index()
     {
-        // $orders = OrderBasicData::where('date', '0000-00-00')->get();
+        $orders = OrderBasicData::where('date', '0000-00-00')->get();
 
-        // foreach ($orders as $key => $order) {
-        //     $date = Carbon::parse($order->order_created_at)->toDateString();
-        //     $order->date = $date;
-        //     $order->save();
-        // }
-
-        $thirdOrders = OrderBasicData::where('third', '0')->get();
-
-        foreach ($thirdOrders as $thirdOrder) {
-            $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
-            if ($model->field_value) {
-                $thirdOrder->third = $model->field_value;
-                $thirdOrder->save();
-            }
+        foreach ($orders as $key => $order) {
+            $date = Carbon::parse($order->order_created_at)->toDateString();
+            $order->date = $date;
+            $order->save();
         }
+
+        // $thirdOrders = OrderBasicData::where('third', '0')->get();
+
+        // foreach ($thirdOrders as $thirdOrder) {
+        //     $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
+        //     if ($model->field_value) {
+        //         $thirdOrder->third = $model->field_value;
+        //         $thirdOrder->save();
+        //     }
+        // }
 
         // $datas = OrderBasicData::get();
 
