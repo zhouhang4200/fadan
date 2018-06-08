@@ -55,14 +55,9 @@ class OrderReportController extends Controller
         $taobaoTradeData = [];
         foreach($orders as $item) {
             $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
-//            if (!empty($detail['source_order_no'])) {
-//                // 如果不是重新下的单则计算淘宝总金额与淘宝退款总金额与利润
-//                if (!isset($detail['is_repeat'])  || (isset($detail['is_repeat']) && ! $detail['is_repeat'] )) {
-                    $tid[] = $detail['source_order_no'];
-                    $tid[] = $detail['source_order_no_1'] ?? '';
-                    $tid[] = $detail['source_order_no_2'] ?? '';
-//                }
-//            }
+            $tid[] = $detail['source_order_no'];
+            $tid[] = $detail['source_order_no_1'] ?? '';
+            $tid[] = $detail['source_order_no_2'] ?? '';
         }
 
         $taobaoTrade = TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
@@ -137,7 +132,7 @@ class OrderReportController extends Controller
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
-            $orders->chunk(15, function ($chunkOrders) use ($out) {
+            $orders->chunk(500, function ($chunkOrders) use ($out) {
                 foreach ($chunkOrders as $item) {
                     $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
 
