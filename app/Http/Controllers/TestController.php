@@ -221,10 +221,11 @@ class TestController extends Controller
     {
         $orderNo = $request->order_no;
         $operate = $request->operate;
-            // dd($orderNo, $operate);
-        // dd(2);
+        $thirdUserId = $request->uid;
+        $bool = $request->bool;
+
         if (! empty($operate) && ! empty($orderNo)) {
-            DailianFactory::choose($operate)->run($orderNo, 8456, false);
+            DailianFactory::choose($operate)->run($orderNo, $thirdUserId, $bool);
         }
 dd('OK');
         // 更新天猫返回总金额
