@@ -4,9 +4,6 @@
 
 @section('css')
     <style>
-        .layui-form-label {
-            width:110px;
-        }
         .layui-table thead tr th{
               height: 50px;
               text-align: center;
@@ -41,7 +38,7 @@
                                             @endforelse
                                     </select>
                                 </div>
-                                <label class="layui-form-label">第三方平台</label>
+                                <label class="layui-form-label" style="width: 90px">第三方平台</label>
                                 <div class="form-group col-xs-1">
                                     <select name="third" lay-filter="">    
                                         <option  value="">请选择</option>            
@@ -153,7 +150,7 @@
                                     {{ bcdiv($paginatePlatformStatistic->arbitrationed_count, $paginatePlatformStatistic->count, 2) ? round(bcmul(bcdiv($paginatePlatformStatistic->arbitrationed_count, $paginatePlatformStatistic->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : ( bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)) < 60 ? bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)).'秒' : sec2Time(bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count)))) }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : ( bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 0) < 60 ? bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 0).'秒' : sec2Time(bcdiv($paginatePlatformStatistic->total_use_time, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 0))) }}</td>
                                     <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_security_deposit, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
                                     <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_efficiency_deposit, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
                                     <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_original_price, ($paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->revoked_count+$paginatePlatformStatistic->arbitrationed_count), 2) }}</td>
@@ -214,7 +211,7 @@
                                     {{ bcdiv($totalPlatformStatistics->arbitrationed_count, $totalPlatformStatistics->count, 2) ? round(bcmul(bcdiv($totalPlatformStatistics->arbitrationed_count, $totalPlatformStatistics->count, 2), 100), 2) : 0 }}%
                                     @endif
                                     </td>
-                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : ( bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)) < 60 ? bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)).'秒' : sec2Time(bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count)))) }}</td>
+                                    <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : ( bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 0) < 60 ? bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 0).' 秒' : sec2Time(bcdiv($totalPlatformStatistics->total_use_time, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 0))) }}</td>
                                     <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_security_deposit, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
                                     <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_efficiency_deposit, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
                                     <td>{{ $totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count == 0 ? 0 : bcdiv($totalPlatformStatistics->total_original_price, ($totalPlatformStatistics->completed_count+$totalPlatformStatistics->revoked_count+$totalPlatformStatistics->arbitrationed_count), 2) }}</td>
