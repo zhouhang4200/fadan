@@ -135,7 +135,7 @@ class OrderReportController extends Controller
             '淘宝下单时间',
             '结算时间',
         ], '财务订单导出', $orders, function ($orders, $out){
-            $orders->chunk(500, function ($chunkOrders) use ($out) {
+            $orders->chunk(100, function ($chunkOrders) use ($out) {
                 foreach ($chunkOrders as $item) {
                     $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
 
