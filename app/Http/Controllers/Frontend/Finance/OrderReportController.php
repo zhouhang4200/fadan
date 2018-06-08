@@ -69,9 +69,9 @@ class OrderReportController extends Controller
                     if ($taobaoTrade) {
                         foreach ($taobaoTrade as $trade) {
                             if ($trade->trade_status == 7) {
-                                $taobaoTradeData[$item->no]['refund'] += isset($taobaoTradeData[$item->no]['refund']) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['refund'], 2) : $trade->payment;
+                                $taobaoTradeData[$item->no]['refund'] += (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['refund'])) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['refund'], 2) : $trade->payment;
                             } else {
-                                $taobaoTradeData[$item->no]['payment'] += isset($taobaoTradeData[$item->no]['payment']) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['payment'], 2) : $trade->payment;
+                                $taobaoTradeData[$item->no]['payment'] += (isset($taobaoTradeData[$item->no]) && isset($taobaoTradeData[$item->no]['payment']) ) ? bcadd($trade->payment, $taobaoTradeData[$item->no]['payment'], 2) : $trade->payment;
                             }
                         }
                     }
