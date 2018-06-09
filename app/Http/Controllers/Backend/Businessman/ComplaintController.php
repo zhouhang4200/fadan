@@ -55,7 +55,7 @@ class ComplaintController extends Controller
         $this->validate($request, [
             'complaint_primary_user_id' => 'bail|required|integer',
             'be_complaint_primary_user_id' => 'bail|required|integer|different:complaint_primary_user_id',
-            'order_no'    => 'bail|required|min:22|max:22',
+            'order_no'    => 'bail|required|min:22|max:22|unique:businessman_complaints',
             'amount'  => 'bail|required|numeric',
             'remark'  => 'bail|required|string|max:200',
         ],[],[
