@@ -161,7 +161,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('/', 'ComplaintController@index')->name('businessman.complaint.index');
             Route::get('create', 'ComplaintController@create')->name('businessman.complaint.create');
             Route::post('/', 'ComplaintController@store')->name('businessman.complaint.store');
-//            Route::post('query-order', 'ComplaintController@queryOrder')->name('businessman.user.complaint.query-order');
+            Route::post('query-order', 'ComplaintController@queryOrder')->name('businessman.complaint.query-order');
         });
 
         // 店铺授权管理

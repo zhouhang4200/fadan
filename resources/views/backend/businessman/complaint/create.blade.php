@@ -47,7 +47,7 @@
             <div class="main-box-body clearfix">
 
                 <div class="layui-tab-item layui-show col-lg-5">
-                    <form class="layui-form" action="{{ route('frontend.user.complaint.store') }}" method="post">
+                    <form class="layui-form" action="{{ route('businessman.complaint.store') }}" method="post">
 
                         <div class="layui-form-item">
                             <label class="layui-form-label">*投诉商户ID</label>
@@ -107,7 +107,7 @@
             });
 
             $('input[name=order_no]').on('blur', function () {
-                $.post('{{ route('frontend.user.complaint.query-order') }}', {no:$(this).val()}, function (result) {
+                $.post('{{ route('businessman.complaint.query-order') }}', {no:$(this).val()}, function (result) {
                     $('input[name=complaint_primary_user_id]').val(result.content.creator_primary_user_id);
                     $('input[name=be_complaint_primary_user_id]').val(result.content.gainer_primary_user_id);
                     $('input[name=amount]').val(result.content.amount);
