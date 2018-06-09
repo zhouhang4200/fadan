@@ -490,7 +490,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 
             return true;
     	} catch (Exception $e) {
-    		myLog('show91-local-error', ['方法' => '删除订单', '原因' => $e->getMessage()]);
+    		myLog('show91-local-error', ['方法' => '删除订单', '订单' => $orderDatas['show91_order_no'], '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
     	}
     }

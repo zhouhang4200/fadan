@@ -18,6 +18,7 @@ use App\Services\DailianMama;
 use App\Services\KamenOrderApi;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
+use App\Services\Leveling\Show91Controller;
 use App\Services\Show91;
 use App\Services\SmSApi;
 use GuzzleHttp\Client;
@@ -78,7 +79,9 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
-        dd(loginDetail('219.140.151.155'));
+        dd(Show91Controller::delete([
+            'show91_order_no'     => 'ORD180609143917717776',
+        ]));
 
         $order = [
             '2018052410595700000771',

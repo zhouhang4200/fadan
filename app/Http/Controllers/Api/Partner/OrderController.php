@@ -275,7 +275,7 @@ class OrderController extends Controller
                 if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
                     // 同步价格
                     AutoMarkupOrderEveryHour::deleteRedisHashKey($orderData->no);
-                    return response()->partner(0, '接单失败, 订单价格不一致');
+                    return response()->partner(0, '接单失败, 订单价格不一致' . $orderData->no);
                 }
 
         
