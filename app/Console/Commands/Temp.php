@@ -79,6 +79,9 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
+        dd(Show91Controller::orderDetail([
+            'show91_order_no'     => 'ORD180525004830965745',
+        ]));
         dd(Show91Controller::delete([
             'show91_order_no'     => 'ORD180609201239498796',
         ]));
