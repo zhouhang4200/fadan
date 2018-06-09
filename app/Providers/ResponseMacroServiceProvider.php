@@ -52,7 +52,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
         Response::macro('partner', function ($code  = 1, $message = '成功', $data= []) {
             $data = ['code' => $code, 'message' => $message, 'data' => $data];
             try {
-                myLog('partner-response', [$data, request('app_id')]);
+                myLog('partner-response', [$data, request()]);
             } catch (\Exception $exception) {
                 myLog('partner-response', [$exception->getMessage()]);
             }
