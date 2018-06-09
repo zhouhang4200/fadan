@@ -83,7 +83,7 @@ class ComplaintController extends Controller
         }
         DB::commit();
 
-        return redirect(route('frontend.user.complaint.index'))->withInput()->with([
+        return redirect(route('businessman.complaint.index'))->withInput()->with([
             'message' => '添加成功'
         ]);
     }
