@@ -180,7 +180,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                             'json' => [
                                 'msgtype' => 'text',
                                 'text' => [
-                                    'content' => '订单（内部单号：'.$datas['order_no']. '）调用【'.config('order.third')[3].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
+                                    'content' => '订单（内部单号：'.$datas['no']. '）调用【'.config('order.third')[3].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
                                 ],
                                 'at' => [
                                     'isAtAll' => false,
