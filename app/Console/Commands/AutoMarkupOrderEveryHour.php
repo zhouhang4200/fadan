@@ -258,7 +258,7 @@ class AutoMarkupOrderEveryHour extends Command
                 ->update(['field_value' => $afterAddAmount]);
             // 主账号对象
             $user = User::find($order->creator_primary_user_id);
-            
+
             // 第几次加价
             $number = $datas['add_number']+1;
             // 写订单日志
