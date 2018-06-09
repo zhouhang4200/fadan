@@ -78,6 +78,8 @@ class Temp extends Command
         $no = $this->argument('no');
         $user = $this->argument('user');
 
+        dd(loginDetail('219.140.151.155'));
+
         $order = [
             '2018052410595700000771',
             '2018052411030300000788',

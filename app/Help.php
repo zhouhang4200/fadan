@@ -47,26 +47,37 @@ if (!function_exists('loginDetail')) {
      */
     function loginDetail($ip)
     {
-    	$url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=' . $ip;
+        try {
+            $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip;
 
-    	$client = new Client();
+            $client = new Client();
 
-    	$res = $client->request('GET', $url);
-    	$res = $res->getBody();
-    	$res = json_decode($res);
+            $res = $client->request('GET', $url);
+            $res = $res->getBody();
+            $res = json_decode($res);
 
-        if (isset($res->ret) && $res->ret == 1) {
+            if (isset($res->code) && $res->code == 0) {
 
-            $city = City::where('name', $res->city)->first();
+                $city = City::where('name', $res->data->city)->first();
 
+                return [
+                    'country'  => $res->data->country,
+                    'province' => $res->data->region,
+                    'city'     => empty($res->data->city) ? $res->data->region : $res->data->city,
+                    'city_id'  => $city ? $city->id : 0,
+                    'ip'       => ip2long($ip),
+                ];
+            }
+        } catch (\Exception $exception) {
             return [
-                'country'  => $res->country,
-                'province' => $res->province,
-                'city'     => empty($res->city) ? $res->province : $res->city,
-                'city_id'  => $city ? $city->id : 0,
+                'country'  => '',
+                'province' => '',
+                'city'     => '',
+                'city_id'  => 0,
                 'ip'       => ip2long($ip),
             ];
         }
+
         return [
             'country'  => '',
             'province' => '',
