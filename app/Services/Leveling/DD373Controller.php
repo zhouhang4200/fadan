@@ -694,14 +694,17 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getScreenshot'], 'getScreenshot', $orderDatas);
 
             $images = [];
-            foreach ($result['data'] as $item) {
-                $images[] = [
-                    'username' => $item['uploadUserName'],
-                    'description' => $item['description'],
-                    'url' => 'http://' . ltrim($item['imageUrl'], '//'),
-                    'created_at' => $item['uploadTime'],
-                ];
+            if (isset($result['data']) && count($result['data']) > 0) {
+                foreach ($result['data'] as $item) {
+                    $images[] = [
+                        'username' => $item['uploadUserName'],
+                        'description' => $item['description'],
+                        'url' => 'http://' . ltrim($item['imageUrl'], '//'),
+                        'created_at' => $item['uploadTime'],
+                    ];
+                }
             }
+
             return $images;
     	} catch (Exception $e) {
     		myLog('dd373-local-error', ['方法' => '订单截图', '原因' => $e->getMessage()]);
