@@ -46,9 +46,12 @@ class OrderSend extends Command
         $this->redis = RedisConnect::order();
 
         while (1) {
+            myLog('send-order-run', ['1', '时间' =>date('Y-m-d H:i:s')]);
             $orderData = $this->redis->lpop('order:send');
 
             if($orderData) {
+                myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s')]);
+
                 try {
                     $orderDatas = json_decode($orderData, true);
                     $order = OrderModel::where('no', $orderDatas['order_no'])->first();
