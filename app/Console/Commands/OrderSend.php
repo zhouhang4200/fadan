@@ -130,14 +130,14 @@ class OrderSend extends Command
                             myLog('order-send-result', [$orderDatas['order_no'], $platform['name'], $result, $decrypt]);
 
                         } catch (\Exception $exception) {
-                            myLog('order-send-ex', [$platform['name'], $exception->getMessage()]);
+                            myLog('order-send-ex', [$platform['name'], 'no' => $orderDatas['order_no'] ?? '',  'message' => $exception->getMessage(), '行' => $exception->getLine()]);
                         }
                     }
                     // 写基础数据
-                    event(new OrderBasicData($order));
+//                    event(new OrderBasicData($order));
 
                 } catch (\Exception $e) {
-                    myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage()]);
+                    myLog('order-send-ex', ['no' => $orderDatas['order_no'] ?? '', 'message' => $e->getMessage(), '行' => $e->getLine()]);
                 }
             }
         }
