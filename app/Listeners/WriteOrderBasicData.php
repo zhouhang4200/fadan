@@ -120,7 +120,7 @@ class WriteOrderBasicData
             $data['efficiency_deposit']      = $orderDetail['efficiency_deposit'];
             $data['original_price']          = $order->original_price;
             $data['order_created_at']        = $order->created_at->toDateTimeString();
-            $data['order_finished_at']       = $orderDetail['checkout_time'] ?? 0;
+            $data['order_finished_at']       = $orderDetail['checkout_time'];
             $data['is_repeat']               = $orderDetail['is_repeat'] ?? 0;
 
             OrderBasicDataModel::updateOrCreate(['order_no' => $order->no], $data);
