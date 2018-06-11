@@ -66,9 +66,15 @@ class WriteOrderBasicData
                     $data['arbitration_creator'] = $consult->complain == 1 ? $order->creator_user_id : $order->gainer_user_id;
                 }
 
-                $data['consult_amount']      = $consult->api_amount;
-                $data['consult_deposit']     = $consult->api_deposit;
-                $data['consult_poundage']    = $consult->api_service;
+                if ($consult->complete == 1) {
+                    $data['consult_amount']      = $consult->amount;
+                    $data['consult_deposit']     = $consult->deposit;
+                    $data['consult_poundage']    = $consult->api_service;
+                } elseif ($consult->complete == 2) {
+                    $data['consult_amount']      = $consult->api_amount;
+                    $data['consult_deposit']     = $consult->api_deposit;
+                    $data['consult_poundage']    = $consult->api_service;
+                }
             }
 
             // 来源单号和天猫单号
