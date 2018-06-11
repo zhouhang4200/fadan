@@ -159,6 +159,86 @@
             });
             return false;
         });
+         // 完成
+        form.on('submit(complete)', function (data) {
+            var order_no=this.getAttribute('data-no');
+            var s = window.location.search;
+            var page=s.getAddrVal('page'); 
+            $.post("{{ route('order.notice.complete') }}?page="+page, {order_no:order_no}, function (result) {
+                layer.msg(result.message);
+                if (result.status > 0) {
+                    $.get("{{ route('order.notice.index') }}", function (result) {
+                        $('#notice').html(result);
+                        form.render();
+                    }, 'json');
+                }
+            });
+            return false;
+        });
+         // 取消撤销
+        form.on('submit(cancel-revoke)', function (data) {
+            var order_no=this.getAttribute('data-no');
+            var s = window.location.search;
+            var page=s.getAddrVal('page'); 
+            $.post("{{ route('order.notice.cancel-revoke') }}?page="+page, {order_no:order_no}, function (result) {
+                layer.msg(result.message);
+                if (result.status > 0) {
+                    $.get("{{ route('order.notice.index') }}", function (result) {
+                        $('#notice').html(result);
+                        form.render();
+                    }, 'json');
+                }
+            });
+            return false;
+        });
+         // 同意撤销
+        form.on('submit(agree-revoke)', function (data) {
+            var order_no=this.getAttribute('data-no');
+            var s = window.location.search;
+            var page=s.getAddrVal('page'); 
+            $.post("{{ route('order.notice.agree-revoke') }}?page="+page, {order_no:order_no}, function (result) {
+                layer.msg(result.message);
+                if (result.status > 0) {
+                    $.get("{{ route('order.notice.index') }}", function (result) {
+                        $('#notice').html(result);
+                        form.render();
+                    }, 'json');
+                }
+            });
+            return false;
+        });
+         // 不同意撤销
+        form.on('submit(refuse-revoke)', function (data) {
+            var order_no=this.getAttribute('data-no');
+            var s = window.location.search;
+            var page=s.getAddrVal('page'); 
+            $.post("{{ route('order.notice.refuse-revoke') }}?page="+page, {order_no:order_no}, function (result) {
+                layer.msg(result.message);
+                if (result.status > 0) {
+                    $.get("{{ route('order.notice.index') }}", function (result) {
+                        $('#notice').html(result);
+                        form.render();
+                    }, 'json');
+                }
+            });
+            return false;
+        });
+         // 取消仲裁
+        form.on('submit(cancel-arbitration)', function (data) {
+            var order_no=this.getAttribute('data-no');
+            var s = window.location.search;
+            var page=s.getAddrVal('page'); 
+            $.post("{{ route('order.notice.cancel-arbitration') }}?page="+page, {order_no:order_no}, function (result) {
+                layer.msg(result.message);
+                if (result.status > 0) {
+                    $.get("{{ route('order.notice.index') }}", function (result) {
+                        $('#notice').html(result);
+                        form.render();
+                    }, 'json');
+                }
+            });
+            return false;
+        });
 
         String.prototype.getAddrVal = String.prototype.getAddrVal||function(name){
             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
