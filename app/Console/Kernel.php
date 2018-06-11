@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\TestOrder',
         'App\Console\Commands\RunOrderBasicDatas', // 将所有的订单写到基础数据表
         'App\Console\Commands\CheckOrderBasicDatas', // 检查基础数据表里面的来源价和退款
-        'App\Console\Commands\OrderSendEveryMinute' // 每分钟运行一次订单发送
+        'App\Console\Commands\OrderSendEveryMinute', // 每分钟运行一次订单发送
+        'App\Console\Commands\ChangeOrderBasicDataDate', // 修改基础表里面的日期，按订单发布时间来统计数据
     ];
 
     /**

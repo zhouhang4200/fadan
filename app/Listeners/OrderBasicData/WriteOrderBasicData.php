@@ -105,7 +105,7 @@ class WriteOrderBasicData
             }
 
             $data['order_no']                = $order->no;
-            $data['date']                    = Carbon::now()->toDateString();
+            $data['date']                    = $order->created_at->toDateString();
             $data['third']                   = $orderDetail['third'];
             $data['status']                  = $order->status;
             $data['client_wang_wang']        = $orderDetail['client_wang_wang'];

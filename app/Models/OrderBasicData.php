@@ -25,7 +25,7 @@ class OrderBasicData extends Model
     public static function scopeFilter($query, $filters = [])
     {
         if ($filters['userIds']) {
-            $query->whereIn('creator_primary_user_id', $filters['userIds']);
+            $query->whereIn('creator_user_id', $filters['userIds']);
         }
 
         if ($filters['third']) {
