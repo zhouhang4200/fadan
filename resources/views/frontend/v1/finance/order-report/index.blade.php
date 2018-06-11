@@ -123,8 +123,8 @@
 
                         // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
                         if (in_array($item->status, [19, 21])  && isset($item->levelingConsult->api_amount) && $item->levelingConsult->complete != 0) {
-                            $paymentAmount = $item->levelingConsult->amount;
-                            $getAmount = $item->levelingConsult->deposit;
+                            $paymentAmount = $item->levelingConsult->complete == 1 ? $item->levelingConsult->amount :  $item->levelingConsult->api_amount;
+                            $getAmount = $item->levelingConsult->complete == 1 ? $item->levelingConsult->deposit :  $item->levelingConsult->api_deposit;
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
