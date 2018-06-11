@@ -32,10 +32,10 @@ class BusinessmanComplaint extends Model
             $no = OrderDetail::where('field_value', $filters['orderNo'])
                 ->whereIn('field_name', ['third_order_no', 'source_order_no'])
                 ->value('order_no');
-            return $query->where('order_no', $no);
+            $query->where('order_no', $no);
         }
         if (isset($filters['status']) && $filters['status']) {
-            return $query->where('status', $filters['status']);
+            $query->where('status', $filters['status']);
         }
         if (isset($filters['gameId']) && $filters['gameId']) {
             $query->where('game_id', $filters['gameId']);
@@ -47,7 +47,6 @@ class BusinessmanComplaint extends Model
         if (isset($filters['endDate']) && $filters['endDate']) {
             $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
-
     }
 
     /**
