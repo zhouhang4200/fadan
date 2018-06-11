@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Order;
 
 use DB;
+use Auth;
 use Redis;
 use Exception;
 use Carbon\Carbon;
@@ -12,6 +13,8 @@ use App\Models\OrderApiNotice;
 use Illuminate\Http\Request;
 use App\Exceptions\DailianException;
 use App\Http\Controllers\Controller;
+use App\Models\OrderHistory;
+use App\Extensions\Dailian\Controllers\DailianFactory;
 
 class OrderApiNoticeController extends Controller
 {
@@ -126,5 +129,165 @@ class OrderApiNoticeController extends Controller
     	});
 
     	return response()->ajax(1, '删除成功');
+    }
+
+    /**
+     * 完成
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function complete(Request $request)
+    {
+        try {
+            $order = Order::where('no', $request->input('order_no', 0))->first();
+            DailianFactory::choose('complete')->run($order->no, $order->creator_user_id, 0);
+
+            // 写记录
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = creator_user_id;
+            $data['admin_user_id'] = Auth::user()->id;
+            $data['type'] = 0;
+            $data['name'] = '补充';
+            $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【完成验收】';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (DailianException $e) {
+            myLog('complete-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            myLog('complete-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 取消撤销
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function cancelRevoke(Request $request)
+    {
+        try {
+            $order = Order::where('no', $request->input('order_no', 0))->first();
+            DailianFactory::choose('cancelRevoke')->run($order->no, $order->creator_user_id, 0);
+
+            // 写记录
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = creator_user_id;
+            $data['admin_user_id'] = Auth::user()->id;
+            $data['type'] = 0;
+            $data['name'] = '补充';
+            $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【取消撤销】';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (DailianException $e) {
+            myLog('cancel-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            myLog('cancel-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 同意撤销
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function agreeRevoke(Request $request)
+    {
+        try {
+            $order = Order::where('no', $request->input('order_no', 0))->first();
+            DailianFactory::choose('agreeRevoke')->run($order->no, $order->creator_user_id, 0);
+
+            // 写记录
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = creator_user_id;
+            $data['admin_user_id'] = Auth::user()->id;
+            $data['type'] = 0;
+            $data['name'] = '补充';
+            $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【同意撤销】';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (DailianException $e) {
+            myLog('agree-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            myLog('agree-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 不同意撤销
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function refuseRevoke(Request $request)
+    {
+        try {
+            $order = Order::where('no', $request->input('order_no', 0))->first();
+            DailianFactory::choose('refuseRevoke')->run($order->no, $order->creator_user_id, 0);
+
+            // 写记录
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = creator_user_id;
+            $data['admin_user_id'] = Auth::user()->id;
+            $data['type'] = 0;
+            $data['name'] = '补充';
+            $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【不同意撤销】';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (DailianException $e) {
+            myLog('refuse-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            myLog('refuse-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 取消仲裁
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function cancelArbitration(Request $request)
+    {
+        try {
+            $order = Order::where('no', $request->input('order_no', 0))->first();
+            DailianFactory::choose('cancelArbitration')->run($order->no, $order->creator_user_id, 0);
+
+            // 写记录
+            $data = [];
+            $data['order_no'] = $order->no;
+            $data['user_id'] = creator_user_id;
+            $data['admin_user_id'] = Auth::user()->id;
+            $data['type'] = 0;
+            $data['name'] = '补充';
+            $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【取消仲裁】';
+            $data['before'] = '';
+            $data['after'] = '';
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['creator_primary_user_id'] = $order->creator_primary_user_id;
+
+            OrderHistory::create($data);
+        } catch (DailianException $e) {
+            myLog('cancel-arbitration--order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            myLog('cancel-arbitration--order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+        }
     }
 }

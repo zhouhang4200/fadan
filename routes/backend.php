@@ -321,6 +321,11 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('repeat', 'OrderApiNoticeController@repeat')->name('order.notice.repeat');
             Route::post('delete', 'OrderApiNoticeController@delete')->name('order.notice.delete');
             Route::post('delete-all', 'OrderApiNoticeController@deleteAll')->name('order.notice.delete-all');
+            Route::post('complete', 'OrderApiNoticeController@complete')->name('order.notice.complete'); // 完成
+            Route::post('cancel-revoke', 'OrderApiNoticeController@cancelRevoke')->name('order.notice.cancel-revoke'); // 取消撤销
+            Route::post('agree-revoke', 'OrderApiNoticeController@agreeRevoke')->name('order.notice.agree-revoke'); // 同意撤销
+            Route::post('refuse-revoke', 'OrderApiNoticeController@refuseRevoke')->name('order.notice.refuse-revoke'); // 不同意撤销
+            Route::post('cancel-arbitration', 'OrderApiNoticeController@cancelArbitration')->name('order.notice.cancel-arbitration'); // 取消仲裁
         });
     });
 
