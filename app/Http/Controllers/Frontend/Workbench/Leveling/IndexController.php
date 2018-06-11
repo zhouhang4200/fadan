@@ -33,7 +33,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-
+use App\Events\OrderBasicData;
 use App\Models\GoodsTemplate;
 
 use DB, Order, Exception, Asset, Redis;
@@ -1224,7 +1224,15 @@ class IndexController extends Controller
                         ->update(['field_value' => $orderDetails['source_order_no_2']]);
                 }
             }
+
+            // 将来源价格同步到订单表
+            $order->original_amount = $orderDetails['source_price'];
+            $order->original_price = $orderDetails['source_price'];
+            $order->save();
                     
+            // 写入基础数据表
+            event(new OrderBasicData($order));
+            
             $this->checkIfAutoMarkup($order, $orderDetails);
         } catch (CustomException $customException) {
             DB::rollBack();
@@ -1538,6 +1546,7 @@ class IndexController extends Controller
                     ->unique()
                     ->toArray();
 
+                $value = 0;
                 $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
 
                 if (empty($value)) {
@@ -1581,6 +1590,7 @@ class IndexController extends Controller
                     ->unique()
                     ->toArray();
 
+                $value = 0;
                 $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
 
                 if (! isset($value) || empty($value)) {
@@ -1591,6 +1601,7 @@ class IndexController extends Controller
                     OrderDetail::where('order_no', $request->no)
                         ->where('field_name', 'source_price')
                         ->update(['field_value' => $value]);
+
                     return response()->ajax(1, $value);
                 }
             }

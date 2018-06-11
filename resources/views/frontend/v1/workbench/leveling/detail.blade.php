@@ -445,7 +445,7 @@
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">补款单号2</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="source_order_no_2" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_2'] ?? '' }}">
+                                        <input type="text" name="source_order_no_2" id="order_detail" lay-no="{{ $detail['no'] ?? '' }}" lay-verify="" placeholder="" autocomplete="off" class="layui-input" value="{{ $detail['source_order_no_2'] ?? '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -1749,6 +1749,57 @@
                 } else {
                     delivery = 0;
                 }
+            });
+
+            // 计算来源价格
+            $("body").on('blur', 'input[name=source_order_no]', function(){
+                var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_order_no_1]', function(){
+                var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_no= $('input[name=source_order_no_1]').val();
+                var source_name = 'source_order_no_1';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_order_no_2]', function(){
+                var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_no= $('input[name=source_order_no_2]').val();
+                var source_name = 'source_order_no_2';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_price]', function(){
+                var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_price= $('input[name=source_price]').val();
+                var source_name = 'source_price';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_price:source_price, source_name:source_name}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
             });
         });
     </script>
