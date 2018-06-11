@@ -580,6 +580,7 @@ class Temp extends Command
                         $show91Order['data']['price'] + 0,
                         config('order.status_leveling')[$orderInfo->status],
                         $this->show91Status[$show91Order['data']['order_status']],
+                        $orderInfo->created_at,
                     ]);
 
                 }
