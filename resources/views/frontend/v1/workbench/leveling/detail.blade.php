@@ -552,6 +552,11 @@
                                                 <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                                             @endif
 
+                                            @if ($detail['master'] && (in_array($detail['status'], [19, 20, 21])))
+                                                <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="complaints" data-no="{{ $detail['no'] }}"   data-amount="{{ $detail['amount'] }}">投诉</button>
+                                            @endif
+
+
                                             @if (!$detail['master'] && ($detail['status'] == 13))
                                                 <button  class="qs-btn opt-btn"  data-operation="applyComplete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请完成</button>
                                             @endif
@@ -567,8 +572,6 @@
                                             @if (!$detail['master'] && ($detail['status'] == 17))
                                                 <button  class="qs-btn"  data-operation="cancelAbnormal" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消异常</button>
                                             @endif
-                                      
-
                                     </div>
                                 </div>
                             </div>
@@ -858,6 +861,83 @@
     </div>
 </div>
 <div class="complain" style="display: none; padding: 20px">
+    <form class="layui-form">
+        <input type="hidden" id="order_no" name="order_no">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">证据截图</label>
+            <div class="layui-input-block">
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-1" style="width: 100px;height: 100px;"></div>
+                        <div style="height: 0;">
+                                <span class=" btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-2" style="width: 100px;height: 100px;"></div>
+                        <div>
+                                <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="fileinput-group">
+                    <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                        <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                            <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail pic-3" style="width: 100px;height: 100px;"></div>
+                        <div>
+                               <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                               </span>
+                            <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                <i class="iconfont icon-shanchu4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">仲裁理由</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入申请仲裁理由" name="complain_message"  class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                </button>
+                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="complaints" style="display: none; padding: 20px">
     <form class="layui-form">
         <input type="hidden" id="order_no" name="order_no">
         <div class="layui-form-item layui-form-text">
