@@ -122,9 +122,9 @@
                         $profit = 0; // 利润
 
                         // 已仲裁 已撤销状态时 取接口的传值 否则取订单的支付金额
-                        if (in_array($item->status, [21, 19])) {
-                            $paymentAmount = $item->levelingConsult->api_amount;
-                            $getAmount = $item->levelingConsult->api_deposit;
+                        if (in_array($item->status, [19, 21])  && isset($item->levelingConsult->api_amount) && $item->levelingConsult->complete != 0) {
+                            $paymentAmount = $item->levelingConsult->amount;
+                            $getAmount = $item->levelingConsult->deposit;
                             $poundage = $item->levelingConsult->api_service;
                         } else if ($item->status == 20) {
                             $paymentAmount = $item->amount;
