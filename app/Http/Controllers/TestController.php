@@ -219,6 +219,11 @@ class TestController extends Controller
 
     public function index(Request $request)
     {
+        // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();
+        // $b = isset($a['checkout_time']);
+        // $c = $a['checkout_time'] ?? 1;
+        // dd($a, $b, $c);
+
         $orderNo = $request->order_no;
         $operate = $request->operate;
         $thirdUserId = $request->uid;

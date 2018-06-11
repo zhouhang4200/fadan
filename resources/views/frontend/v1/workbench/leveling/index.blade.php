@@ -86,6 +86,12 @@
         .layui-table-edit {
             height: 50px;
         }
+
+        .layui-layer-btn .layui-layer-btn0 {
+            border-color: #ff8500;
+            background-color: #ff8500;
+            color: #fff;
+        }
     </style>
 @endsection
 
@@ -680,9 +686,9 @@
                 var orderAmount = $(this).attr("data-amount");
                 var orderSafe = $(this).attr("data-safe");
                 var orderEffect = $(this).attr("data-effect");
-                var apiAmount = $(this).attr("data-api_amount");
-                var apiDeposit = $(this).attr("data-api_deposit");
-                var apiService = $(this).attr("data-api_service");
+                var apiAmount = parseFloat($(this).attr("data-api_amount"));
+                var apiDeposit = parseFloat($(this).attr("data-api_deposit"));
+                var apiService = parseFloat($(this).attr("data-api_service"));
                 var who=$(this).attr("data-who");
                 var reason=$(this).attr("data-reason");
 
@@ -856,9 +862,9 @@
                     return false
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
-                        var message = "对方进行操作【撤销】 对方支付代练费"+apiAmount+"元，我支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                        var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     } else {
-                        var message = "对方进行操作【撤销】 我支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元，原因："+reason+"，确定同意撤销？";
+                        var message = "对方发起协商撤销。 你支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     }
                     layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
