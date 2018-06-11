@@ -574,7 +574,7 @@ class Temp extends Command
                 if ($show91Order) {
                     // 写入并关闭资源
                     fputcsv($fp, [
-                        $orderInfo->no,
+                        $orderInfo->no . "\t",
                         $orderDetail['show91_order_no'],
                         $orderInfo->amount,
                         $show91Order['data']['price'] + 0,
