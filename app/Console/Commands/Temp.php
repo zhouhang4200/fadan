@@ -580,10 +580,11 @@ class Temp extends Command
                         config('order.status_leveling')[$orderInfo->status],
                         $this->show91Status[$show91Order['data']['order_status']],
                     ]);
-                    fclose($fp);
+
                 }
             }
         }
+        fclose($fp);
     }
 
     public function get($orderNO, $beginId = 0)
