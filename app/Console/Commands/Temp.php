@@ -549,6 +549,7 @@ class Temp extends Command
 
         // 打开文件资源，不存在则创建
         $fp = fopen(storage_path('logs/show91.csv'), 'a');
+        fwrite($fp, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
         // 处理头部标题
         fputcsv($fp, [
             '内部订单',
