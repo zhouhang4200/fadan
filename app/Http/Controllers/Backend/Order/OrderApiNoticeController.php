@@ -25,6 +25,13 @@ class OrderApiNoticeController extends Controller
 	 */
     public function index(Request $request)
     {
+        try {
+
+        } catch (Exception $e) {
+
+        }
+
+        
     	$orderNo = $request->order_no;
     	$status = $request->status;
     	$startDate = $request->start_date;
@@ -318,7 +325,7 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
-            
+
             DailianFactory::choose('cancelArbitration')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
             DB::rollback();
