@@ -92,6 +92,9 @@
             background-color: #ff8500;
             color: #fff;
         }
+        .layui-table-edit:focus {
+            border-color: #e6e6e6 !important
+        }
     </style>
 @endsection
 
