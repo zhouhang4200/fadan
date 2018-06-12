@@ -140,14 +140,14 @@ class OrderApiNoticeController extends Controller
      */
     public function complete(Request $request)
     {
+        DB::beginTransaction();
         try {
             $order = Order::where('no', $request->input('order_no', 0))->first();
-            DailianFactory::choose('complete')->run($order->no, $order->creator_user_id, 0);
 
             // 写记录
             $data = [];
             $data['order_no'] = $order->no;
-            $data['user_id'] = creator_user_id;
+            $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = Auth::user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
@@ -158,11 +158,19 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
+
+            DailianFactory::choose('complete')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
+            DB::rollback();
             myLog('complete-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         } catch (Exception $e) {
+            DB::rollback();
             myLog('complete-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         }
+        DB::commit();
+        return response()->ajax(1, '成功');
     }
 
     /**
@@ -172,14 +180,14 @@ class OrderApiNoticeController extends Controller
      */
     public function cancelRevoke(Request $request)
     {
+        DB::beginTransaction();
         try {
             $order = Order::where('no', $request->input('order_no', 0))->first();
-            DailianFactory::choose('cancelRevoke')->run($order->no, $order->creator_user_id, 0);
 
             // 写记录
             $data = [];
             $data['order_no'] = $order->no;
-            $data['user_id'] = creator_user_id;
+            $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = Auth::user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
@@ -190,11 +198,19 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
+
+            DailianFactory::choose('cancelRevoke')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
+            DB::rollback();
             myLog('cancel-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         } catch (Exception $e) {
+            DB::rollback();
             myLog('cancel-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         }
+        DB::commit();
+        return response()->ajax(1, '成功');
     }
 
     /**
@@ -203,15 +219,15 @@ class OrderApiNoticeController extends Controller
      * @return [type]           [description]
      */
     public function agreeRevoke(Request $request)
-    {
+    {   
+        DB::beginTransaction();
         try {
             $order = Order::where('no', $request->input('order_no', 0))->first();
-            DailianFactory::choose('agreeRevoke')->run($order->no, $order->creator_user_id, 0);
 
             // 写记录
             $data = [];
             $data['order_no'] = $order->no;
-            $data['user_id'] = creator_user_id;
+            $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = Auth::user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
@@ -222,11 +238,19 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
+
+            DailianFactory::choose('agreeRevoke')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
+            DB::rollback();
             myLog('agree-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         } catch (Exception $e) {
+            DB::rollback();
             myLog('agree-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         }
+        DB::commit();
+        return response()->ajax(1, '成功');
     }
 
     /**
@@ -236,14 +260,14 @@ class OrderApiNoticeController extends Controller
      */
     public function refuseRevoke(Request $request)
     {
+        DB::beginTransaction();
         try {
             $order = Order::where('no', $request->input('order_no', 0))->first();
-            DailianFactory::choose('refuseRevoke')->run($order->no, $order->creator_user_id, 0);
 
             // 写记录
             $data = [];
             $data['order_no'] = $order->no;
-            $data['user_id'] = creator_user_id;
+            $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = Auth::user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
@@ -254,11 +278,19 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
+
+            DailianFactory::choose('refuseRevoke')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
+            DB::rollback();
             myLog('refuse-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         } catch (Exception $e) {
+            DB::rollback();
             myLog('refuse-revoke-order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         }
+        DB::commit();
+        return response()->ajax(1, '成功');
     }
 
     /**
@@ -268,14 +300,14 @@ class OrderApiNoticeController extends Controller
      */
     public function cancelArbitration(Request $request)
     {
+        DB::beginTransaction();
         try {
             $order = Order::where('no', $request->input('order_no', 0))->first();
-            DailianFactory::choose('cancelArbitration')->run($order->no, $order->creator_user_id, 0);
 
             // 写记录
             $data = [];
             $data['order_no'] = $order->no;
-            $data['user_id'] = creator_user_id;
+            $data['user_id'] = $order->creator_user_id;
             $data['admin_user_id'] = Auth::user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
@@ -286,10 +318,18 @@ class OrderApiNoticeController extends Controller
             $data['creator_primary_user_id'] = $order->creator_primary_user_id;
 
             OrderHistory::create($data);
+            
+            DailianFactory::choose('cancelArbitration')->run($order->no, $order->creator_user_id, 0);
         } catch (DailianException $e) {
+            DB::rollback();
             myLog('cancel-arbitration--order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         } catch (Exception $e) {
+            DB::rollback();
             myLog('cancel-arbitration--order-api-notice', ['no' => $order->no ?? '', 'message' => $e->getMessage()]);
+            return response()->ajax(0, '失败');
         }
+        DB::commit();
+        return response()->ajax(1, '成功');
     }
 }
