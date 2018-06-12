@@ -759,12 +759,12 @@
                             data: data.field
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message,function () {
+                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
                                 });
                             } else {
-                                layer.alert(result.message,function () {
+                                layer.msg(result.message, {icon: 5},function () {
                                     layer.closeAll();
                                 });
                             }
@@ -790,7 +790,7 @@
                         var pic3 = $('.pic-3 img').attr('src');
 
                         if (pic1 == undefined && pic2 == undefined && pic3 == undefined) {
-                            layer.alert('请至少上传一张图片');
+                            layer.msg('请至少上传一张图片', {icon: 5});
                             layer.close(complainLoad);
                         } else {
                             $.post("{{ route('frontend.workbench.leveling.complain') }}", {
@@ -802,12 +802,12 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
-                                    layer.alert(result.message,function () {
+                                    layer.msg(result.message, {icon: 6},function () {
                                         reloadOrderList();
                                         layer.closeAll();
                                     });
                                 } else {
-                                    layer.alert(result.message,function () {
+                                    layer.msg(result.message, {icon: 5},function () {
                                         layer.closeAll();
                                     });
                                 }
@@ -823,12 +823,12 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message,function () {
+                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
                                 });
                             } else {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 5}, function () {
                                     layer.closeAll();
                                 });
                             }
@@ -847,12 +847,12 @@
                             delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message,function () {
+                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
                                 });
                             } else {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 5}, function () {
                                     layer.closeAll();
                                 });
                             }
@@ -872,12 +872,12 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     reloadOrderList();
                                     layer.closeAll();
                                 });
                             } else {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 5}, function () {
                                     layer.closeAll();
                                 });
                             }
@@ -890,12 +890,12 @@
                         no: orderNo
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 6}, function () {
                                 reloadOrderList();
                                 layer.closeAll();
                             });
                         } else {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 5}, function () {
                                 layer.closeAll();
                             });
                         }
@@ -943,7 +943,7 @@
                                     }
                                 });
                             } else {
-                                layer.msg('暂时没有图片');
+                                layer.msg('暂时没有图片', {icon: 5});
                             }
                         }
                     });
@@ -953,12 +953,12 @@
                         keyWord: opt
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 6}, function () {
                                 reloadOrderList();
                                 layer.closeAll();
                             });
                         } else {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 5}, function () {
                                 layer.closeAll();
                             });
                         }

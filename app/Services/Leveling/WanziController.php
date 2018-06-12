@@ -33,14 +33,14 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     public static function formDataRequest($options = [], $url = '', $functionName = '', $datas = [], $method = 'POST')
     {
     	try {
-    		$datas = [];
+    		$data = [];
 	        foreach ($options as $name => $value) {
-	            $datas[$name]['name'] = $name;
-	            $datas[$name]['contents'] = $value;
+	            $data[$name]['name'] = $name;
+	            $data[$name]['contents'] = $value;
 	        }
 	        $client = new Client();
 	        $response = $client->request($method, $url, [
-	            'multipart' => $datas,
+	            'multipart' => $data,
 	        ]);
 	        $result = $response->getBody()->getContents();
 

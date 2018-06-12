@@ -1136,11 +1136,11 @@
             // 下单
             form.on('submit(order)', function (data) {
                 if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
-                    layer.msg('代练时间不能都为0');
+                    layer.msg('代练时间不能都为0', {icon: 5});
                     return false;
                 }
                 if(data.field.game_leveling_hour > 24) {
-                    layer.msg('代练小时不能大于24小时');
+                    layer.msg('代练小时不能大于24小时', {icon: 5});
                     return false;
                 }
                 var load = layer.load(0, {
@@ -1160,7 +1160,7 @@
                             }
                         });
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 5});
                     }
                     layer.close(load);
                 }, 'json');
@@ -1266,11 +1266,11 @@
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.closeAll();
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
                                 });
                             } else {
-                                layer.alert(result.message);
+                                layer.msg(result.message, {icon: 5});
                             }
                         });
                         return false;
@@ -1304,11 +1304,11 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
-                                    layer.alert(result.message, function () {
+                                    layer.msg(result.message, {icon: 6}, function () {
                                         location.reload();
                                     });
                                 } else {
-                                    layer.alert(result.message);
+                                    layer.msg(result.message, {icon: 5});
                                 }
                             });
                         }
@@ -1322,11 +1322,11 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
                                 });
                             } else {
-                                layer.alert(result.message);
+                                layer.msg(result.message, {icon: 5});
                             }
                         });
 
@@ -1342,11 +1342,11 @@
                             delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
                                 });
                             } else {
-                                layer.alert(result.message);
+                                layer.msg(result.message, {icon: 5});
                             }
                         });
                         layer.close(index);
@@ -1363,11 +1363,11 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
                                 });
                             } else {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 5}, function () {
                                     layer.closeAll();
                                 });
                             }
@@ -1380,12 +1380,12 @@
                         keyWord: opt
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 6}, function () {
                                 location.reload();
                             });
 
                         } else {
-                            layer.alert(result.message, function () {
+                            layer.msg(result.message, {icon: 5}, function () {
                                 layer.closeAll();
                             });
                         }
@@ -1428,16 +1428,16 @@
                     yes: function (layero) {
                         var newAmount = $('#add_price_pop').find('input[name=price]').val();
                         if (parseInt(newAmount) <= 0) {
-                            layer.msg('增加价格需大于0');
+                            layer.msg('增加价格需大于0', {icon: 5});
                         } else {
                             $.post("{{ route('frontend.workbench.leveling.add-amount') }}", {no:'{{ $detail['no'] }}', amount:newAmount}, function (result) {
                                 if(result.status == 1) {
-                                    layer.alert(result.message, function () {
+                                    layer.msg(result.message, {icon: 6}, function () {
                                         layer.closeAll();
                                         location.reload();
                                     })
                                 } else {
-                                    layer.msg(result.message);
+                                    layer.msg(result.message, {icon: 5});
                                 }
                             }, 'json');
                         }
@@ -1465,12 +1465,12 @@
                             hour: hour
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.alert(result.message, function () {
+                                layer.msg(result.message, {icon: 6}, function () {
                                     layer.closeAll();
                                     location.reload();
                                 })
                             } else {
-                                layer.msg(result.message);
+                                layer.msg(result.message, {icon: 5});
                             }
                         }, 'json');
 
@@ -1696,12 +1696,12 @@
                         if (data.status === 1) {
                             loadMessage(0);
                         } else {
-                            layer.msg(data.message);
+                            layer.msg(data.message, {icon: 5});
                             return false;
                         }
                     }, 'json');
                 } else {
-                    layer.msg('请输入要发送的内容');
+                    layer.msg('请输入要发送的内容', {icon: 5});
                 }
             });
             // 查看图片
@@ -1746,7 +1746,7 @@
                                 }
                             });
                         } else {
-                            layer.msg('暂时没有图片');
+                            layer.msg('暂时没有图片', {icon: 5});
                         }
                     }
                 });
@@ -1786,14 +1786,14 @@
                     }, function (result) {
                         if (result.status === 1) {
                             autoLoad("{{ route('frontend.workbench.leveling.arbitration-info') }}", '#arbitration-info', no);
-                            layer.msg(result.message);
+                            layer.msg(result.message, {icon: 6});
                         } else {
-                            layer.msg(result.message);
+                            layer.msg(result.message, {icon: 5});
                         }
                     }, 'json');
                     return false;
                 } else {
-                    layer.msg('请输入要发送的内容');
+                    layer.msg('请输入要发送的内容', {icon: 5});
                 }
                 return false;
             });
