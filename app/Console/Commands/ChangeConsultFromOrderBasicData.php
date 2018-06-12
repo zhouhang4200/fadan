@@ -44,6 +44,7 @@ class ChangeConsultFromOrderBasicData extends Command
     {
         $orderBasicDatas = OrderBasicData::whereIn('status', [19, 21])->get();
 
+        $count = 0;
         foreach ($orderBasicDatas as $orderBasicData) {
             try {
                 $consult = LevelingConsult::where('order_no', $orderBasicData->order_no)->first();
@@ -59,12 +60,13 @@ class ChangeConsultFromOrderBasicData extends Command
                         $orderBasicData->consult_deposit     = $consult->api_deposit;
                         $orderBasicData->consult_poundage    = $consult->api_service;
                     }
+                    $count ++;
                     $orderBasicData->save();
-                    echo 1;
                 }
             } catch (Exception $e) {
                 myLog('change-order-basic-datas-consult', ['message' => $e->getMessage()]);
             }
         }
+        echo $count;
     }
 }
