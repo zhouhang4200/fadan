@@ -765,6 +765,26 @@
                 </table>
             </div>
         </div>
+        @elseif($detail['gainer_primary_user_id'] == auth()->user()->getPrimaryUserId())
+        <div class="layui-card" style="margin-bottom: 72px;">
+            <div class="layui-card-header">淘宝数据</div>
+            <div class="layui-card-body qs-text">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="115">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>订单状态</td>
+                        <td>
+                            {{ isset($taobaoTrade->tid) ? config('order.taobao_trade_status')[$taobaoTrade->trade_status] : '' }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         @endif
     </div>
 @endsection
