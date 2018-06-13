@@ -67,7 +67,7 @@
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="qs-btn" lay-submit lay-filter="formDemo">确定</button>
-                        <button type="reset" class="qs-btn reset">重置</button>
+                        <a type="reset" class="qs-btn qs-btn-primary reset">重置</a>
                     </div>
                 </div>
             </form>

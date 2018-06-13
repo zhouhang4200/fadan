@@ -5,13 +5,17 @@
 @section('css')
     <style>
         .layui-input, .layui-textarea {
-            width: 350px;
+            width: 310px;
         }
         .layui-form-label {
-            width:140px;
+            width:110px;
+            height:24px;
+        }
+        .layui-input, .layui-select {
+            height:32px;
         }
         .layui-form-item .layui-input-inline {
-            width: 350px;
+            width: 310px;
         }
 
         .tips {

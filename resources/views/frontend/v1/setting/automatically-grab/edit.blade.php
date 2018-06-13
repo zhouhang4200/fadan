@@ -40,8 +40,8 @@
         <div class="layui-form-item">
 
             <div class="layui-input-block">
-            <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="goods-edit-save">确定</button>
-            <button  type="button" class="qs-btn layui-btn-danger cancel">取消</button>
+            <button class="qs-btn qs-btn-normal col-lg-12" lay-submit="" lay-filter="goods-edit-save">确定</button>
+            <a  type="button" class="qs-btn qs-btn-primary cancel">取消</a>
         </div></div>
     </form>
 </div>
