@@ -406,7 +406,7 @@ class Temp extends Command
         foreach ($order as $item) {
             // 查询我们的价格与91的价格与订单状态我们的状态与价格
             $orderInfo = \App\Models\Order::where('no', $item)->with(['detail'])->first();
-            $orderDetail = $item->detail->pluck('field_value', 'field_name');
+            $orderDetail = $orderInfo->detail->pluck('field_value', 'field_name');
 
             // 查询91订单状态与价格
             if (isset($orderDetail['show91_order_no'])) {
