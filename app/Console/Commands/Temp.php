@@ -414,7 +414,7 @@ class Temp extends Command
                     'show91_order_no' => $orderDetail['show91_order_no']
                 ]);
 
-                if ($show91Order) {
+                if ($show91Order && isset($show91Order['result'] ) && $show91Order['result'] == 0 ) {
                     // 写入并关闭资源
                     fputcsv($fp, [
                         $orderInfo->no . "\t",
