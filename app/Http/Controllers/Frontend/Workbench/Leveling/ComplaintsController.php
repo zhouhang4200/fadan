@@ -15,10 +15,10 @@ use App\Repositories\Frontend\GameRepository;
 
 /**
  * 商户投诉
- * Class ComplaintController
+ * Class ComplaintsController
  * @package App\Http\Controllers\Frontend\Workbench\Leveling
  */
-class ComplaintController extends Controller
+class ComplaintsController extends Controller
 {
     /**
      * @param GameRepository $gameRepository
@@ -102,38 +102,57 @@ class ComplaintController extends Controller
     }
 
     /**
+     * 创建投诉
      * @param Request $request
      * @return $this
      */
     public function store(Request $request)
     {
-        $amount = $request->amount; // 要求赔偿金额
-        $orderNo = $request->order_no; // 订单号
-        $complaintPrimaryUserId = $request->complaint_primary_user_id; // 投诉商户ID
-        $beComplaintPrimaryUserId = $request->be_complaint_primary_user_id; // 被投诉商户ID
-
         $this->validate($request, [
-            'complaint_primary_user_id' => 'bail|required|integer',
-            'be_complaint_primary_user_id' => 'bail|required|integer|different:complaint_primary_user_id',
             'order_no'    => 'bail|required|min:22|max:22',
             'amount'  => 'bail|required|numeric',
             'remark'  => 'bail|required|string|max:200',
         ],[],[
-            'complaint_primary_user_id' => '投诉人ID',
-            'be_complaint_primary_user_id' => '被投诉人ID',
             'order_no' => '订单号',
             'amount' => '要求赔偿金额',
             'remark' => '备注',
         ]);
+        // 查找订单
+        $orderInfo = Order::where('no', $request->order_no)->first();
+
+        $complaintPrimaryUserId = 0; // 投诉 userID
+        $beComplaintPrimaryUserId = 0; // 被投诉 userID
+
+        // 如果发单人主ID与当前登录账号主ID一样则投诉人是发单人,被投诉人就是接单人.
+        // 如果接单人主ID与当前登录账号主ID一样则投诉人是接单人,被投诉人就是发单人
+        if ($orderInfo && $orderInfo->creator_primary_user_id == auth()->user()->getPrimaryUserId()) {
+            $complaintPrimaryUserId = $orderInfo->creator_primary_user_id; // 投诉
+            $beComplaintPrimaryUserId = $orderInfo->gainer_primary_user_id; // 被投诉
+        } else if ($orderInfo && $orderInfo->gainer_primary_user_id == auth()->user()->getPrimaryUserId()) {
+            $complaintPrimaryUserId = $orderInfo->gainer_primary_user_id; // 投诉
+            $beComplaintPrimaryUserId = $orderInfo->creator_primary_user_id; // 被投诉
+        }
 
         DB::beginTransaction();
         try {
-            // 扣被商户投诉钱
-            Asset::handle(new Expend($amount, 9, $orderNo, '订单投诉支出', $beComplaintPrimaryUserId));
-            // 增加投诉商户钱
-            Asset::handle(new Income($amount, 17, $orderNo, '订单投诉收入', $complaintPrimaryUserId));
+            $complaintArr = [];
+            // 存储图片
+            if ( !empty($request->pic1)) {
+                $complaintArr['pic1'] = base64ToImg($request->pic1, 'complaints');
+            } else if(!empty($request->pic2)) {
+                $complaintArr['pic2'] = base64ToImg($request->pic2, 'complaints');
+            } else if(!empty($request->pic3)) {
+                $complaintArr['pic3'] = base64ToImg($request->pic3, 'complaints');
+            }
+            $complaintArr['amount'] = $request->amount;
+            $complaintArr['remark'] = $request->remark;
+            $complaintArr['order_no'] = $orderInfo->order_no;
+            $complaintArr['game_id'] = $orderInfo->game_id;
+            $complaintArr['foreign_order_no'] = $request->foreign_order_no;
+            $complaintArr['complaint_primary_user_id'] = $complaintPrimaryUserId;
+            $complaintArr['be_complaint_primary_user_id'] = $beComplaintPrimaryUserId;
             // 创建记录
-            BusinessmanComplaint::create($request->all());
+            BusinessmanComplaint::create($complaintArr);
         } catch (AssetException $exception)  {
             DB::rollBack();
             return redirect()->back()->withInput()->withErrors($exception->getMessage());
@@ -143,9 +162,7 @@ class ComplaintController extends Controller
         }
         DB::commit();
 
-        return redirect(route('frontend.user.complaint.index'))->withInput()->with([
-            'message' => '添加成功'
-        ]);
+        return response()->ajax(1, 'success');
     }
 
     /**

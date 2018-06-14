@@ -360,11 +360,13 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('sort', 'WaitController@sort')->name('frontend.workbench.leveling.wait-sort');
             });
             // 订单投诉
-            Route::prefix('complaint')->group(function(){
+            Route::prefix('complaints')->group(function(){
                 // 列表
-                Route::get('/', 'ComplaintController@index')->name('frontend.workbench.leveling.complaint');
+                Route::get('/', 'ComplaintsController@index')->name('frontend.workbench.leveling.complaints');
+                // 发起投诉
+                Route::post('/', 'ComplaintsController@store')->name('frontend.workbench.leveling.complaints');
                 // 数据
-                Route::post('list-data', 'ComplaintController@listData')->name('frontend.workbench.leveling.complaint-list-data');
+                Route::post('list-data', 'ComplaintsController@listData')->name('frontend.workbench.leveling.complaints-list-data');
             });
          });
         // 获取用户所有前台可显示的商品

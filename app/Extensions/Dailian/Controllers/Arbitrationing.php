@@ -99,36 +99,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
         }
 
         if ($this->runAfter) {
-
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-            // $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-            // if (! $consult) {
-            //     throw new DailianException('订单申诉或协商记录不存在!');
-            // }
-            // // 处理图片将前端的base64转为流
-            // $img['pic1'] = !empty($this->pic['pic1']) ? base64ToBlob($this->pic['pic1']) : '';
-            // $img['pic2'] = !empty($this->pic['pic2']) ? base64ToBlob($this->pic['pic2']) : '';
-            // $img['pic3'] = !empty($this->pic['pic3']) ? base64ToBlob($this->pic['pic3']) : '';
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         // 过滤空的数组
-            //         $finalPic = array_filter($img);
-            //         // 91申请仲裁接口
-            //         $options = [
-            //             'oid' => $orderDetails['show91_order_no'],
-            //             'appeal.title' => '申请仲裁',
-            //             'appeal.content' => $consult->complain_message,
-            //         ];
-            //         Show91::addappeal(array_merge($options, $finalPic));
-            //         break;
-            //     case 2:
-            //         // 代练妈妈申请仲裁接口
-            //         DailianMama::operationOrder($this->order, 20007);
-            //         break;
-            // }
-
             if (config('leveling.third_orders')) {
                  // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);

@@ -552,7 +552,7 @@
                                                 <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                                             @endif
 
-                                            @if ($detail['master'] && (in_array($detail['status'], [19, 20, 21])))
+                                            @if (!$detail['master'] && (in_array($detail['status'], [19, 20, 21])))
                                                 <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="complaints" data-no="{{ $detail['no'] }}"   data-amount="{{ $detail['amount'] }}">投诉</button>
                                             @endif
 
@@ -950,9 +950,9 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
+                <button class="qs-btn" id="submit" lay-submit lay-filter="complain">确认
                 </button>
-                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                <span cancel class="qs-btn cancel">取消</span>
             </div>
         </div>
     </form>
@@ -960,6 +960,12 @@
 <div class="complaints" style="display: none; padding: 20px">
     <form class="layui-form">
         <input type="hidden" id="order_no" name="order_no">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">要求赔偿金额</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="amount" placeholder="请输入要求赔偿金额">
+            </div>
+        </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">证据截图</label>
             <div class="layui-input-block">
@@ -1020,16 +1026,15 @@
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">仲裁理由</label>
+            <label class="layui-form-label">投诉原因</label>
             <div class="layui-input-block">
-                <textarea placeholder="请输入申请仲裁理由" name="complain_message"  class="layui-textarea"></textarea>
+                <textarea placeholder="请输入投诉原因" name="remark"  class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" id="submit" lay-submit lay-filter="complain">确认
-                </button>
-                <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                <button class="qs-btn" id="submit" lay-submit lay-filter="complaints">确认</button>
+                <span cancel class="qs-btn cancel">取消</span>
             </div>
         </div>
     </form>
@@ -1296,6 +1301,43 @@
                         return false;
                     });
 
+                } else if (opt == 'complaints') {
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '投诉',
+                        area: ['600px'],
+                        content: $('.complaints')
+                    });
+                    form.on('submit(complaints)', function (data) {
+                        var complainLoad = layer.load(2, {shade:[0.2, '#000']});
+                        var pic1 = $('.pic-1 img').attr('src');
+                        var pic2 = $('.pic-2 img').attr('src');
+                        var pic3 = $('.pic-3 img').attr('src');
+
+                        if (pic1 == undefined && pic2 == undefined && pic3 == undefined) {
+                            layer.alert('请至少上传一张图片');
+                        } else {
+                            $.post("{{ route('frontend.workbench.leveling.complaints') }}", {
+                                order_no: orderNo,
+                                amount: data.field.amount,
+                                remark: data.field.remark,
+                                pic1: pic1,
+                                pic2: pic2,
+                                pic3: pic3
+                            }, function (result) {
+                                layer.close(complainLoad);
+                                if (result.status == 1) {
+                                    layer.msg(result.message, {icon: 6}, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    layer.msg(result.message, {icon: 5});
+                                }
+                            });
+                        }
+                        return false;
+                    });
                 } else if (opt == 'applyArbitration') {
                     layer.open({
                         type: 1,
