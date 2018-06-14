@@ -12,6 +12,10 @@
         .layui-form-switch {
             margin-top: 0;
         }
+        .layui-form-onswitch {
+            border-color: #ff8500;
+            background-color: #ff8500;
+        }
     </style>
 @endsection
 
@@ -50,9 +54,9 @@
                     <textarea name="contents" placeholder="短信内容" class="layui-textarea" lay-verify="required"></textarea>
                 </div>
                 <div class="layui-form-item">
-                    <button class="qs-btn layui-bg-blue col-lg-12" lay-submit="" lay-filter="template-add-save">确定添加
+                    <button class="qs-btn qs-btn-normal col-lg-12" lay-submit="" lay-filter="template-add-save">确定添加
                     </button>
-                    <button type="button" class="qs-btn layui-btn-danger cancel">取消添加</button>
+                    <a type="button" class="qs-btn qs-btn-primary cancel">取消添加</a>
                 </div>
             </form>
         </div>

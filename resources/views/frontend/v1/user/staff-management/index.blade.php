@@ -8,6 +8,11 @@
         .layui-layer-btn{
             text-align:center !important;
         }
+        .layui-layer-btn .layui-layer-btn0 {
+            border-color: #ff8500;
+            background-color: #ff8500;
+            color: #fff;
+        }
     </style>
 @endsection
 

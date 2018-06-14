@@ -43,7 +43,7 @@
             <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="update" lay-id="{{ $hatchetManBlacklist->id }}">确认</button>
-                <button type="button" class="qs-btn layui-btn-normal cancel" >取消</button>
+                <a type="button" class="qs-btn qs-btn-primary cancel" >取消</a>
             </div>
             </div>
         </form>
