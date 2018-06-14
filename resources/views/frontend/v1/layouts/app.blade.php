@@ -427,8 +427,10 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                             </a>
                             <dl class="layui-nav-child">
                                 @if(Auth::user()->could('frontend.baby.index'))
-                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.baby.index' || Route::currentRouteName() == 'frontend.baby.show') layui-this  @endif">
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.baby.index') layui-this  @endif">
                                         <a href="{{ route('frontend.baby.index') }}">宝贝外包订单</a>
+                                    </dd>
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.baby.show') layui-this  @endif">
                                         <a href="{{ route('frontend.baby.show') }}">宝贝运营状况</a>
                                     </dd>
                                 @endif
