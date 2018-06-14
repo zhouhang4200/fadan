@@ -388,7 +388,7 @@ class Temp extends Command
 
     public function show91Order()
     {
-        $order = \App\Models\Order::where('gainer_primary_user_id', 8456)->with(['detail'])->get();
+        $order = \App\Models\Order::where('gainer_primary_user_id', 8456)->pluck('no')->toArray();
 
         // 打开文件资源，不存在则创建
         $fp = fopen(storage_path('logs/show91.csv'), 'a');
@@ -405,7 +405,7 @@ class Temp extends Command
         ]);
         foreach ($order as $item) {
             // 查询我们的价格与91的价格与订单状态我们的状态与价格
-//            $orderInfo = \App\Models\Order::where('no', $item)->with(['detail'])->first();
+            $orderInfo = \App\Models\Order::where('no', $item)->with(['detail'])->first();
             $orderDetail = $item->detail->pluck('field_value', 'field_name');
 
             // 查询91订单状态与价格
@@ -417,13 +417,13 @@ class Temp extends Command
                 if ($show91Order) {
                     // 写入并关闭资源
                     fputcsv($fp, [
-                        $item->no . "\t",
+                        $orderInfo->no . "\t",
                         $orderDetail['show91_order_no'],
-                        $item->amount,
+                        $orderInfo->amount,
                         $show91Order['data']['price'] + 0,
-                        config('order.status_leveling')[$item->status],
+                        config('order.status_leveling')[$orderInfo->status],
                         $this->show91Status[$show91Order['data']['order_status']],
-                        $item->created_at,
+                        $orderInfo->created_at,
                     ]);
 
                 }
