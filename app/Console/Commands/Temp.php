@@ -411,7 +411,8 @@ class Temp extends Command
             // 查询91订单状态与价格
             if (isset($orderDetail['show91_order_no'])) {
                 $show91Order = Show91Controller::orderDetail([
-                    'show91_order_no' => $orderDetail['show91_order_no']
+                    'show91_order_no' => $orderDetail['show91_order_no'],
+                    'order_no' => $orderInfo->no,
                 ]);
 
                 if ($show91Order && isset($show91Order['result'] ) && $show91Order['result'] == 0 ) {
