@@ -129,6 +129,7 @@ class OrderReportController extends Controller
             '淘宝退款',
             '支付金额',
             '获得金额',
+            '获得投诉金额',
             '手续费',
             '最终支付金额',
             '发单客服',
@@ -177,8 +178,17 @@ class OrderReportController extends Controller
                             }
                         }
                     }
+                    $complaintAmount = 0;
+                    $complaint = \App\Models\BusinessmanComplaint::where('order_no', $item->no)->first();
+                    if (isset($complaint) && ! empty($complaint)) {
+                        if ($complaint->complaint_primary_user_id == $item->creator_primary_user_id) {
+                            $complaintAmount = bcmul(-1, $complaint->amount)+0;
+                        } elseif ($complaint->be_complaint_primary_user_id == $item->creator_primary_user_id) {
+                            $complaintAmount = $complaint->amount+0;
+                        }
+                    }
                     // 计算利润
-                    $profit =   ($getAmount  - $paymentAmount  - $poundage) + 0;
+                    $profit =   ($getAmount  - $paymentAmount  - $poundage + $complaintAmount) + 0;
 
                     $sourceNo = '';
                     $sourceNo1 = '';
@@ -214,6 +224,7 @@ class OrderReportController extends Controller
                         (string)$taobaoRefund,
                         (string)$paymentAmount,
                         (string)$getAmount,
+                        (string)$complaintAmount,
                         (string)$poundage,
                         (string)$profit,
                         $detail['customer_service_name'] ?? '-',
