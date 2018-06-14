@@ -385,8 +385,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::post('clear-wait-handle-quantity', 'IndexController@waitHandleQuantityClear')->name('frontend.workbench.clear-wait-handle-quantity');
         // 修改当前账号状态
         Route::post('set-status', 'IndexController@setStatus')->name('frontend.workbench.set-status');
-
-	});
+    });
 
     Route::namespace('Data')->prefix('data')->group(function () {
         // 日常数据
@@ -482,7 +481,11 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         });
 
     });
-
+    // 宝贝参谋
+    Route::prefix('baby')->namespace('Baby')->group(function() {
+        Route::get('/', 'BabyAdviserController@index')->name('frontend.baby.index')->middleware('new.permission:frontend.baby.index');
+        Route::get('show', 'BabyAdviserController@show')->name('frontend.baby.show');
+    });
 });
 
 Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {

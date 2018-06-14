@@ -51,4 +51,32 @@ class OrderBasicData extends Model
         }
         return $query;
     }
+
+    /**
+     * 平台统计信息筛选
+     * @param  [type] $query   [description]
+     * @param  [type] $filters [description]
+     * @return [type]          [description]
+     */
+    public static function scopeFilterBaby($query, $filters = [])
+    {
+        if ($filters['gameId']) {
+            $query->where('game_id', $filters['gameId']);
+        }
+
+        if ($filters['startDate'] && empty($filters['endDate'])) {
+            $query->where('date', '>=', $filters['startDate']);
+        }
+
+        if ($filters['endDate'] && empty($filters['startDate'])) {
+            $query->where('date', '<=', $filters['endDate']);
+        }
+
+        if ($filters['endDate'] && $filters['startDate']) {
+            $addDate = Carbon::parse($filters['endDate'])->addDays(1)->toDateString();
+            
+            $query->where('date', '>=', $filters['startDate'])->where('date', '<', $addDate);
+        }
+        return $query;
+    }
 }
