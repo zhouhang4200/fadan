@@ -101,6 +101,7 @@
                     <th>淘宝退款</th>
                     <th>支付代练费用</th>
                     <th>获得赔偿金额</th>
+                    <th>获得投诉金额</th>
                     <th>手续费</th>
                     <th>最终支付金额</th>
                     <th>发单客服</th>
@@ -148,7 +149,16 @@
 
                             }
                         }
-                        $profit =  ($getAmount  - $paymentAmount  - $poundage) + 0;
+                        $complaintAmount = 0;
+                        $complaint = \App\Models\BusinessmanComplaint::where('order_no', $item->no)->first();
+                        if (isset($complaint) && ! empty($complaint)) {
+                            if ($complaint->complaint_primary_user_id == $item->creator_primary_user_id) {
+                                $complaintAmount = $complaint->amount+0;
+                            } elseif ($complaint->be_complaint_primary_user_id == $item->creator_primary_user_id) {
+                                $complaintAmount = bcmul(-1, $complaint->amount)+0;
+                            }
+                        }
+                        $profit =  ($getAmount  - $paymentAmount  - $poundage + $complaintAmount) + 0;
                     @endphp
                     <tr>
                         <td>{{ $item->no }}</td>
@@ -171,6 +181,7 @@
                         <td>{{ $taobaoRefund + 0  }}</td>
                         <td>{{ $paymentAmount + 0  }}</td>
                         <td>{{ $getAmount + 0  }}</td>
+                        <td>{{ $complaintAmount }}</td>
                         <td>{{ $poundage + 0  }}</td>
                         <td>{{ $profit + 0  }}</td>
                         <td>{{ $detail['customer_service_name'] ?? '' }}</td>
