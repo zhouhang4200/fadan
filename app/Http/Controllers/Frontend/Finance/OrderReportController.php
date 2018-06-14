@@ -182,9 +182,9 @@ class OrderReportController extends Controller
                     $complaint = \App\Models\BusinessmanComplaint::where('order_no', $item->no)->first();
                     if (isset($complaint) && ! empty($complaint)) {
                         if ($complaint->complaint_primary_user_id == $item->creator_primary_user_id) {
-                            $complaintAmount = bcmul(-1, $complaint->amount)+0;
-                        } elseif ($complaint->be_complaint_primary_user_id == $item->creator_primary_user_id) {
                             $complaintAmount = $complaint->amount+0;
+                        } elseif ($complaint->be_complaint_primary_user_id == $item->creator_primary_user_id) {
+                            $complaintAmount = bcmul(-1, $complaint->amount)+0;
                         }
                     }
                     // 计算利润
