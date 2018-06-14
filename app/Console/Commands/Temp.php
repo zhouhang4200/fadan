@@ -426,6 +426,8 @@ class Temp extends Command
                         $orderInfo->created_at,
                     ]);
 
+                } else {
+                    myLog('noFund', [$orderDetail['show91_order_no']]);
                 }
             }
         }
