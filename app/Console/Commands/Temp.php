@@ -410,26 +410,31 @@ class Temp extends Command
 
             // 查询91订单状态与价格
             if (isset($orderDetail['show91_order_no'])) {
-                $show91Order = Show91Controller::orderDetail([
-                    'show91_order_no' => $orderDetail['show91_order_no'],
-                    'order_no' => $orderInfo->no,
-                ]);
-
-                if ($show91Order && isset($show91Order['result'] ) && $show91Order['result'] == 0 ) {
-                    // 写入并关闭资源
-                    fputcsv($fp, [
-                        $orderInfo->no . "\t",
-                        $orderDetail['show91_order_no'],
-                        $orderInfo->amount,
-                        $show91Order['data']['price'] + 0,
-                        config('order.status_leveling')[$orderInfo->status],
-                        isset($this->show91Status[$show91Order['data']['order_status']]) ? $this->show91Status[$show91Order['data']['order_status']] : '',
-                        $orderInfo->created_at,
+                try {
+                    $show91Order = Show91Controller::orderDetail([
+                        'show91_order_no' => $orderDetail['show91_order_no'],
+                        'order_no' => $orderInfo->no,
                     ]);
 
-                } else {
+                    if ($show91Order && isset($show91Order['result'] ) && $show91Order['result'] == 0 ) {
+                        // 写入并关闭资源
+                        fputcsv($fp, [
+                            $orderInfo->no . "\t",
+                            $orderDetail['show91_order_no'],
+                            $orderInfo->amount,
+                            $show91Order['data']['price'] + 0,
+                            config('order.status_leveling')[$orderInfo->status],
+                            isset($this->show91Status[$show91Order['data']['order_status']]) ? $this->show91Status[$show91Order['data']['order_status']] : '',
+                            $orderInfo->created_at,
+                        ]);
+
+                    } else {
+                        myLog('noFund', [$orderDetail['show91_order_no']]);
+                    }
+                } catch (\Exception $exception) {
                     myLog('noFund', [$orderDetail['show91_order_no']]);
                 }
+
             }
         }
         fclose($fp);
