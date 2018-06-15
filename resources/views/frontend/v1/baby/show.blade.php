@@ -24,10 +24,20 @@
     <form class="layui-form" method="" action="">
         <div class="layui-input-inline">
             <div class="layui-form-item">
-                <label class="layui-form-label">宝贝名称</label> 
+                 <label class="layui-form-label">宝贝ID</label> 
+                    <div class="layui-input-inline">               
+                        <select name="goods_id" lay-verify="" lay-search="">
+                            <option value="">请输入或选择</option>
+                            @forelse($goodses as $goods)
+                                <option value="{{ $goods->goods_id }}" {{ $goods->goods_id == $goodsId ? 'selected' : '' }}>{{ $goods->goods_id }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
+                <label class="layui-form-label" style="width: 75px;">宝贝绑定游戏</label> 
                     <div class="layui-input-inline">               
                         <select name="game_id" lay-verify="" lay-search="">
-                            <option value="">请输入宝贝名称</option>
+                            <option value="">请输入或选择</option>
                             @forelse($games as $game)
                                 <option value="{{ $game->game_id }}" {{ $game->game_id == $gameId ? 'selected' : '' }}>{{ $game->game_name ?? '--' }}</option>
                             @empty
