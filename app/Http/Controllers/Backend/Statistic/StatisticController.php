@@ -244,7 +244,7 @@ class StatisticController extends Controller
         ->first();
 
         if ($request->export && $paginatePlatformStatistics->count() > 0) {
-            static::export($paginatePlatformStatistics->toArray()['data']);
+            static::export($paginatePlatformStatistics->toArray()['data'], $totalPlatformStatistics);
         }
         return view('backend.statistic.platform', compact('startDate', 'users', 'games', 'endDate', 
             'userId', 'third', 'gameId', 'fullUrl', 'paginatePlatformStatistics', 'totalPlatformStatistics'));
@@ -255,7 +255,7 @@ class StatisticController extends Controller
      * @param  [type] $datas [description]
      * @return [type]        [description]
      */
-    public static function export($datas)
+    public static function export($datas, $total)
     {
     	$title = [
     		'发布时间',
@@ -295,7 +295,7 @@ class StatisticController extends Controller
 
     	$chunkDatas = array_chunk($datas, 100);
 
-    	Excel::create('代练平台统计', function ($excel) use ($chunkDatas, $title) {
+    	Excel::create('代练平台统计', function ($excel) use ($chunkDatas, $title, $total) {
 
             foreach ($chunkDatas as $chunkData) {
                 // 内容
@@ -312,30 +312,65 @@ class StatisticController extends Controller
                         $data['count'] == 0 ? 0 : bcdiv($data['revoked_count'], $data['count'], 2),
                         $data['arbitrationed_count'],
                         $data['count'] == 0 ? 0 : bcdiv($data['arbitrationed_count'], $data['count'], 2),
-                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : sec2Time(bcdiv($data['total_use_time'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']))),
-                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_security_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
-                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_efficiency_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
-                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_original_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
-                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2),
-                        $data['total_price'],
-                        $data['completed_count'] == 0 ? 0 : bcdiv($data['total_completed_price'], $data['completed_count'], 2),
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : sec2Time(bcdiv($data['total_use_time'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'])))+0,
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_security_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2)+0,
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_efficiency_deposit'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2)+0,
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_original_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2)+0,
+                        $data['completed_count']+$data['revoked_count']+$data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_price'], ($data['completed_count']+$data['revoked_count']+$data['arbitrationed_count']), 2)+0,
+                        $data['total_price']+0,
+                        $data['completed_count'] == 0 ? 0 : bcdiv($data['total_completed_price'], $data['completed_count'], 2)+0,
                         $data['total_completed_price'],
-                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_payment'], $data['revoked_count'], 2),
-                        $data['total_revoked_payment'],
-                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_income'], $data['revoked_count'], 2),
-                        $data['total_revoked_income'],
-                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_payment'], $data['arbitrationed_count'], 2),
+                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_payment'], $data['revoked_count'], 2)+0,
+                        $data['total_revoked_payment']+0,
+                        $data['revoked_count'] == 0 ? 0 : bcdiv($data['total_revoked_income'], $data['revoked_count'], 2)+0,
+                        $data['total_revoked_income']+0,
+                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_payment'], $data['arbitrationed_count'], 2)+0,
                         $data['total_arbitrationed_payment'],
-                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_income'], $data['arbitrationed_count'], 2),
-                        $data['total_arbitrationed_income'],
-                        $data['arbitrationed_count']+$data['revoked_count'] == 0 ? 0 : bcdiv($data['total_poundage'], ($data['arbitrationed_count']+$data['revoked_count']), 2),
-                        $data['total_poundage'],
-                        $data['primary_creator_count'] == 0 ? 0 : bcdiv($data['total_creator_profit'], $data['primary_creator_count'], 2),
-                        $data['total_creator_profit'],
-                        $data['third_count'] == 0 ? 0 : bcdiv($data['total_gainer_profit'], $data['third_count'], 2),
-                        $data['total_gainer_profit'],
+                        $data['arbitrationed_count'] == 0 ? 0 : bcdiv($data['total_arbitrationed_income'], $data['arbitrationed_count'], 2)+0,
+                        $data['total_arbitrationed_income']+0,
+                        $data['arbitrationed_count']+$data['revoked_count'] == 0 ? 0 : bcdiv($data['total_poundage'], ($data['arbitrationed_count']+$data['revoked_count']), 2)+0,
+                        $data['total_poundage']+0,
+                        $data['primary_creator_count'] == 0 ? 0 : bcdiv($data['total_creator_profit'], $data['primary_creator_count'], 2)+0,
+                        $data['total_creator_profit']+0,
+                        $data['third_count'] == 0 ? 0 : bcdiv($data['total_gainer_profit'], $data['third_count'], 2)+0,
+                        $data['total_gainer_profit']+0,
                     ];
                 }
+                $totals = [
+                    '总计',
+                    $total['count'],
+                    $total['client_wang_wang_count'] == 0 ? 0 : bcdiv($total['count'], $total['client_wang_wang_count'], 2),
+                    $total['received_count'],
+                    $total['completed_count'],
+                    $total['count'] == 0 ? 0 : bcdiv($total['completed_count'], $total['count'], 2),
+                    $total['revoked_count'],
+                    $total['count'] == 0 ? 0 : bcdiv($total['revoked_count'], $total['count'], 2),
+                    $total['arbitrationed_count'],
+                    $total['count'] == 0 ? 0 : bcdiv($total['arbitrationed_count'], $total['count'], 2),
+                    $total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'] == 0 ? 0 : sec2Time(bcdiv($total['total_use_time'], ($total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'])))+0,
+                    $total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_security_deposit'], ($total['completed_count']+$total['revoked_count']+$total['arbitrationed_count']), 2)+0,
+                    $total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_efficiency_deposit'], ($total['completed_count']+$total['revoked_count']+$total['arbitrationed_count']), 2)+0,
+                    $total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_original_price'], ($total['completed_count']+$total['revoked_count']+$total['arbitrationed_count']), 2)+0,
+                    $total['completed_count']+$total['revoked_count']+$total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_price'], ($total['completed_count']+$total['revoked_count']+$total['arbitrationed_count']), 2)+0,
+                    $total['total_price']+0,
+                    $total['completed_count'] == 0 ? 0 : bcdiv($total['total_completed_price'], $total['completed_count'], 2)+0,
+                    $total['total_completed_price'],
+                    $total['revoked_count'] == 0 ? 0 : bcdiv($total['total_revoked_payment'], $total['revoked_count'], 2)+0,
+                    $total['total_revoked_payment']+0,
+                    $total['revoked_count'] == 0 ? 0 : bcdiv($total['total_revoked_income'], $total['revoked_count'], 2)+0,
+                    $total['total_revoked_income']+0,
+                    $total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_arbitrationed_payment'], $total['arbitrationed_count'], 2)+0,
+                    $total['total_arbitrationed_payment'],
+                    $total['arbitrationed_count'] == 0 ? 0 : bcdiv($total['total_arbitrationed_income'], $total['arbitrationed_count'], 2)+0,
+                    $total['total_arbitrationed_income']+0,
+                    $total['arbitrationed_count']+$total['revoked_count'] == 0 ? 0 : bcdiv($total['total_poundage'], ($total['arbitrationed_count']+$total['revoked_count']), 2)+0,
+                    $total['total_poundage']+0,
+                    $total['primary_creator_count'] == 0 ? 0 : bcdiv($total['total_creator_profit'], $total['primary_creator_count'], 2)+0,
+                    $total['total_creator_profit']+0,
+                    $total['third_count'] == 0 ? 0 : bcdiv($total['total_gainer_profit'], $total['third_count'], 2)+0,
+                    $total['total_gainer_profit']+0,
+                ];
+                array_push($arr, $totals);
                 // 将标题加入到数组
                 array_unshift($arr, $title);
                 // 每页多少数据
