@@ -29,7 +29,7 @@
                         <select name="game_id" lay-verify="" lay-search="">
                             <option value="">请输入宝贝名称</option>
                             @forelse($games as $game)
-                                <option value="{{ $game->id }}" {{ $game->id == $gameId ? 'selected' : '' }}>{{ $game->name ?? '--' }}</option>
+                                <option value="{{ $game->game_id }}" {{ $game->game_id == $gameId ? 'selected' : '' }}>{{ $game->game_name ?? '--' }}</option>
                             @empty
                             @endforelse
                         </select>
