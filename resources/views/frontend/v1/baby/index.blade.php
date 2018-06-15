@@ -17,7 +17,6 @@
 
 @section('main')
 <div class="layui-card qs-text">
-    <div class="layui-card-header">店铺参谋 -> 宝贝订单</div>
     <div class="layui-card-body">
     <blockquote class="layui-elem-quote">
         用途：此数据以代练订单为维度，统计宝贝相关联代练订单的交易数据，供卖家参考。
