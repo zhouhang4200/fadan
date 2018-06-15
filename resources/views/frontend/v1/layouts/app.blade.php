@@ -421,14 +421,14 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                     <?php $babyRoute = ['frontend.baby.index', 'frontend.baby.show']; ?>
                     @if(count(array_intersect($babyRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $babyRoute)) layui-nav-itemed @endif">
-                            <a href="javascript:;" lay-tips="宝贝运营状况" lay-direction="2">
-                                <i class="layui-icon  iconfont  icon-add-s"></i>
-                                <cite>宝贝运营状况</cite>
+                            <a href="javascript:;" lay-tips="店铺参谋" lay-direction="2">
+                                <i class="layui-icon  iconfont  icon-tianmao"></i>
+                                <cite>店铺参谋</cite>
                             </a>
                             <dl class="layui-nav-child">
                                 @if(Auth::user()->could('frontend.baby.index'))
                                     <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.baby.index') layui-this  @endif">
-                                        <a href="{{ route('frontend.baby.index') }}">宝贝外包订单</a>
+                                        <a href="{{ route('frontend.baby.index') }}">宝贝订单</a>
                                     </dd>
                                     <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.baby.show') layui-this  @endif">
                                         <a href="{{ route('frontend.baby.show') }}">宝贝运营状况</a>

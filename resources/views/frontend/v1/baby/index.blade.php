@@ -1,6 +1,6 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '宝贝运营状况 - 宝贝外包订单')
+@section('title', '店铺参谋 - 宝贝订单')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -17,7 +17,11 @@
 
 @section('main')
 <div class="layui-card qs-text">
+    <div class="layui-card-header">店铺参谋 -> 宝贝订单</div>
     <div class="layui-card-body">
+    <blockquote class="layui-elem-quote">
+        用途：此数据以代练订单为维度，统计宝贝相关联代练订单的交易数据，供卖家参考。
+    </blockquote>
     <form class="layui-form" method="" action="">
         <div class="layui-input-inline">
             <div class="layui-form-item">
@@ -31,7 +35,7 @@
                             @endforelse
                         </select>
                     </div>
-                <label class="layui-form-label" >下单时间</label>
+                <label class="layui-form-label" >发布时间</label>
                 <div class="layui-input-inline">  
                     <input type="text" id="start_date" lay-start_date="{{ $startDate }}" class="layui-input" value="{{ $startDate ?: null }}" name="start_date" placeholder="年-月-日">
                 </div>

@@ -63,6 +63,7 @@ class BabyAdviserController extends Controller
 					SUM(CASE WHEN STATUS IN (19, 21) THEN original_price-tm_income-consult_amount+consult_deposit+consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS profit
 				"))
 			->groupBy('date')
+            ->latest('date')
 			->paginate(15);
 
         // 总计
