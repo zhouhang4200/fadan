@@ -71,7 +71,7 @@
                             <td>{{ $data->game_name ?? '' }}</td>
                             <td>{{ $data->order_count ?? 0 }}</td>
                             <td>{{ $data->buyer_count ?? 0 }}</td>
-                            <td>{{ $data->order_payment ?? 0 }}</td>
+                            <td>{{ $data->order_payment+0 }}</td>
                             <td>{{ $data->success_buyer_count == 0 ? 0 : bcdiv($data->success_payment, $data->success_buyer_count, 2)+0 }}</td>
                             <td>{{ $data->success_order_count + 0 }}</td>
                             <td>{{ $data->success_goods_count + 0 }}</td>
@@ -95,7 +95,7 @@
                         <td>总计</td>
                         <td>{{ $total->order_count ?? 0 }}</td>
                         <td>{{ $total->buyer_count ?? 0 }}</td>
-                        <td>{{ $total->order_payment ?? 0 }}</td>
+                        <td>{{ $total->order_payment + 0 }}</td>
                         <td>{{ $total->success_buyer_count == 0 ? 0 : bcdiv($total->success_payment, $total->success_buyer_count, 2)+0 }}</td>
                         <td>{{ $total->success_order_count + 0 }}</td>
                         <td>{{ $total->success_goods_count + 0 }}</td>

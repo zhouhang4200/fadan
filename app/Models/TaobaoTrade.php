@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class TaobaoTrade extends Model
@@ -83,17 +84,15 @@ class TaobaoTrade extends Model
         }
 
         if ($filters['startDate'] && empty($filters['endDate'])) {
-            $query->where('date', '>=', $filters['startDate']);
+            $query->where('created_at', '>=', $filters['startDate']);
         }
 
         if ($filters['endDate'] && empty($filters['startDate'])) {
-            $query->where('date', '<=', $filters['endDate']);
+            $query->where('created_at', '<=', $filters['endDate']." 23:59:59");
         }
 
         if ($filters['endDate'] && $filters['startDate']) {
-            $addDate = Carbon::parse($filters['endDate'])->addDays(1)->toDateString();
-            
-            $query->where('date', '>=', $filters['startDate'])->where('date', '<', $addDate);
+            $query->whereBetween('created_at', [$filters['startDate'], $filters['endDate']." 23:59:59"]);
         }
         return $query;
     }
