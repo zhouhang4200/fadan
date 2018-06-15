@@ -35,7 +35,7 @@ class BabyAdviserController extends Controller
         if ($user->parent_id == 0) {
             $userId = $user->id;
         } else {
-            $userId = User::getPrimaryUserId($user->id);
+            $userId = Auth::user()->getPrimaryUserId($user->id);
         }
         // 所有宝贝
     	$games = DB::select("
@@ -201,7 +201,7 @@ class BabyAdviserController extends Controller
         if ($user->parent_id == 0) {
             $userId = $user->id;
         } else {
-            $userId = User::getPrimaryUserId($user->id);
+            $userId = Auth::user()->getPrimaryUserId($user->id);
         }
 
         // 所有宝贝
