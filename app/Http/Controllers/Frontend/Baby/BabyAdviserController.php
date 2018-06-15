@@ -14,8 +14,14 @@ use App\Http\Controllers\Controller;
 
 class BabyAdviserController extends Controller
 {
+    /**
+     * 宝贝外包订单
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function index(Request $request)
     {
+        // 所有宝贝
     	$games = DB::select("
     		SELECT b.id, b.name FROM goods_templates a
 			LEFT JOIN games b
@@ -31,13 +37,13 @@ class BabyAdviserController extends Controller
 		$filters = compact('gameId', 'startDate', 'endDate');
 
 		$user = Auth::user();
-
+        // 主账号下所有的用户
 		if ($user->parent_id == 0) {
 			$userId = $user->id;
 		} else {
 			$userId = User::getPrimaryUserId($user->id);
 		}
-
+        // 根据日期获取数据
 		$datas = OrderBasicData::filterBaby($filters)
 			->where('creator_primary_user_id', $userId)
 			->select(DB::raw("
@@ -58,6 +64,7 @@ class BabyAdviserController extends Controller
 			->groupBy('date')
 			->paginate(15);
 
+        // 总计
 		$total = OrderBasicData::filterBaby($filters)
 			->where('creator_primary_user_id', $userId)
 			->select(DB::raw("
@@ -76,6 +83,7 @@ class BabyAdviserController extends Controller
 				"))
 			->first();
 
+        // 导出
 		if ($request->export) {
 			$this->export($datas, $total);
 		}
@@ -83,6 +91,12 @@ class BabyAdviserController extends Controller
 		return view('frontend.v1.baby.index', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
     }
 
+    /**
+     * 宝贝外包订单导出
+     * @param  string $datas [description]
+     * @param  string $total [description]
+     * @return [type]        [description]
+     */
     public function export($datas = '', $total = '')
     {
 		if (empty($datas) || empty($total)) {
@@ -155,5 +169,64 @@ class BabyAdviserController extends Controller
                 });
             }
         })->export('xls');
+    }
+
+    /**
+     * 宝贝运营状况
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function show(Request $request)
+    {
+        //  // 所有宝贝
+        // $games = DB::select("
+        //     SELECT b.id, b.name FROM goods_templates a
+        //     LEFT JOIN games b
+        //     ON a.game_id = b.id
+        //     WHERE a.service_id = 4 AND a.status = 1
+        // ");
+
+        // $gameId = $request->game_id;
+        // $startDate = $request->start_date;
+        // $endDate = $request->end_date;
+        // $fullUrl = $request->fullUrl();
+
+        // $filters = compact('gameId', 'startDate', 'endDate');
+
+        // $user = Auth::user();
+        // // 主账号下所有的用户
+        // if ($user->parent_id == 0) {
+        //     $userId = $user->id;
+        // } else {
+        //     $userId = User::getPrimaryUserId($user->id);
+        // }
+        // // 根据游戏获取数据
+        // $datas = OrderBasicData::filterBaby($filters)
+        //     ->where('creator_primary_user_id', $userId)
+        //     ->select(DB::raw("
+        //             COUNT(DISTINCT client_wang_wang) AS count,
+        //             SUM(original_price) AS original_price,
+        //             SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS payment_count,
+        //             SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN price ELSE 0 END) AS payment_amount,
+
+        //             SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
+        //             SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
+        //             SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+        //             SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS completed_price,
+        //             SUM(CASE WHEN STATUS IN (19, 21) THEN consult_amount ELSE 0 END) AS consult_amount,
+        //             SUM(CASE WHEN STATUS IN (19, 21) THEN consult_deposit ELSE 0 END) AS consult_deposit,
+        //             SUM(CASE WHEN STATUS IN (19 ,21) THEN consult_poundage ELSE 0 END) AS consult_poundage,
+        //             SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
+        //             SUM(CASE WHEN STATUS IN (19, 21) THEN original_price-tm_income-consult_amount+consult_deposit+consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS profit
+        //         "))
+        //     ->groupBy('game_id')
+        //     ->paginate(15);
+
+        // // 导出
+        // if ($request->export) {
+        //     $this->export($datas, $total);
+        // }
+
+        // return view('frontend.v1.baby.index', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
     }
 }

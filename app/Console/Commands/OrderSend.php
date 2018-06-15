@@ -134,7 +134,7 @@ class OrderSend extends Command
                         }
                     }
                     // 写基础数据
-//                    event(new OrderBasicData($order));
+                   event(new OrderBasicData($order));
 
                 } catch (\Exception $e) {
                     myLog('order-send-ex', ['message' => $e->getMessage(), '行' => $e->getLine()]);
