@@ -418,7 +418,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                         </li>
                     @endif
                     
-                    <?php $babyRoute = ['frontend.baby.index']; ?>
+                    <?php $babyRoute = ['frontend.baby.index', 'frontend.baby.show']; ?>
                     @if(count(array_intersect($babyRoute, $userPermissions)))
                         <li data-name="home" class="layui-nav-item @if(in_array(Route::currentRouteName(), $babyRoute)) layui-nav-itemed @endif">
                             <a href="javascript:;" lay-tips="宝贝运营状况" lay-direction="2">

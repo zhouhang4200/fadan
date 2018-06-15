@@ -70,4 +70,32 @@ class TaobaoTrade extends Model
     {
         return isset($this->order->status) ? config('order.status_leveling')[$this->order->status] : '';
     }
+
+    /**
+     * 宝贝订单过滤
+     * @param $query
+     * @param array $filters
+     */
+    public static function scopeFilterBaby($query, $filters = [])
+    {
+        if ($filters['gameId']) {
+            $query->where('game_id', $filters['gameId']);
+        }
+
+        if ($filters['startDate'] && empty($filters['endDate'])) {
+            $query->where('date', '>=', $filters['startDate']);
+        }
+
+        if ($filters['endDate'] && empty($filters['startDate'])) {
+            $query->where('date', '<=', $filters['endDate']);
+        }
+
+        if ($filters['endDate'] && $filters['startDate']) {
+            $addDate = Carbon::parse($filters['endDate'])->addDays(1)->toDateString();
+            
+            $query->where('date', '>=', $filters['startDate'])->where('date', '<', $addDate);
+        }
+        return $query;
+    }
+
 }

@@ -8,6 +8,7 @@ use Excel;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\TaobaoTrade;
 use Illuminate\Http\Request;
 use App\Models\OrderBasicData;
 use App\Http\Controllers\Controller;
@@ -178,55 +179,141 @@ class BabyAdviserController extends Controller
      */
     public function show(Request $request)
     {
-        //  // 所有宝贝
-        // $games = DB::select("
-        //     SELECT b.id, b.name FROM goods_templates a
-        //     LEFT JOIN games b
-        //     ON a.game_id = b.id
-        //     WHERE a.service_id = 4 AND a.status = 1
-        // ");
+         // 所有宝贝
+        $games = DB::select("
+            SELECT b.id, b.name FROM goods_templates a
+            LEFT JOIN games b
+            ON a.game_id = b.id
+            WHERE a.service_id = 4 AND a.status = 1
+        ");
 
-        // $gameId = $request->game_id;
-        // $startDate = $request->start_date;
-        // $endDate = $request->end_date;
-        // $fullUrl = $request->fullUrl();
+        $gameId = $request->game_id;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $fullUrl = $request->fullUrl();
 
-        // $filters = compact('gameId', 'startDate', 'endDate');
+        $filters = compact('gameId', 'startDate', 'endDate');
 
-        // $user = Auth::user();
-        // // 主账号下所有的用户
-        // if ($user->parent_id == 0) {
-        //     $userId = $user->id;
-        // } else {
-        //     $userId = User::getPrimaryUserId($user->id);
-        // }
-        // // 根据游戏获取数据
-        // $datas = OrderBasicData::filterBaby($filters)
-        //     ->where('creator_primary_user_id', $userId)
-        //     ->select(DB::raw("
-        //             COUNT(DISTINCT client_wang_wang) AS count,
-        //             SUM(original_price) AS original_price,
-        //             SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS payment_count,
-        //             SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN price ELSE 0 END) AS payment_amount,
+        $user = Auth::user();
+        // 主账号下所有的用户
+        if ($user->parent_id == 0) {
+            $userId = $user->id;
+        } else {
+            $userId = User::getPrimaryUserId($user->id);
+        }
+        // 根据游戏获取数据
+        $datas = TaobaoTrade::filterBaby($filters)
+            ->where('user_id', $userId)
+            ->where('service_id', 4)
+            ->select(DB::raw("
+                    game_id,
+                    game_name,
+                    COUNT(tid) AS order_count,
+                    COUNT(DISTINCT buyer_nick) AS buyer_count,
+                    SUM(payment) AS order_payment,
+                    COUNT(DISTINCT CASE WHEN trade_status = 2 THEN buyer_nick ELSE NULL END) AS success_buyer_count,
+                    SUM(CASE WHEN trade_status = 2 THEN 1 ELSE 0 END) AS success_order_count,
+                    SUM(CASE WHEN trade_status = 2 THEN num ELSE 0 END) AS success_goods_count,
+                    SUM(CASE WHEN trade_status = 2 THEN payment ELSE 0 END) AS success_payment,
+                    SUM(CASE WHEN trade_status = 7 THEN 1 ELSE 0 END) AS close_order_count,
+                    SUM(CASE WHEN trade_status = 7 THEN num ELSE 0 END) AS close_goods_count,
+                    SUM(CASE WHEN trade_status = 7 THEN payment ELSE 0 END) AS close_payment
+                "))
+            ->groupBy('game_id')
+            ->paginate(15);
+// dd($datas);
+        $total = TaobaoTrade::filterBaby($filters)
+            ->where('user_id', $userId)
+            ->where('service_id', 4)
+            ->select(DB::raw("
+                    game_id,
+                    game_name,
+                    COUNT(tid) AS order_count,
+                    COUNT(DISTINCT buyer_nick) AS buyer_count,
+                    SUM(payment) AS order_payment,
+                    COUNT(DISTINCT CASE WHEN trade_status = 2 THEN buyer_nick ELSE NULL END) AS success_buyer_count,
+                    SUM(CASE WHEN trade_status = 2 THEN 1 ELSE 0 END) AS success_order_count,
+                    SUM(CASE WHEN trade_status = 2 THEN num ELSE 0 END) AS success_goods_count,
+                    SUM(CASE WHEN trade_status = 2 THEN payment ELSE 0 END) AS success_payment,
+                    SUM(CASE WHEN trade_status = 7 THEN 1 ELSE 0 END) AS close_order_count,
+                    SUM(CASE WHEN trade_status = 7 THEN num ELSE 0 END) AS close_goods_count,
+                    SUM(CASE WHEN trade_status = 7 THEN payment ELSE 0 END) AS close_payment
+                "))
+            ->first();
 
-        //             SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
-        //             SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
-        //             SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
-        //             SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS completed_price,
-        //             SUM(CASE WHEN STATUS IN (19, 21) THEN consult_amount ELSE 0 END) AS consult_amount,
-        //             SUM(CASE WHEN STATUS IN (19, 21) THEN consult_deposit ELSE 0 END) AS consult_deposit,
-        //             SUM(CASE WHEN STATUS IN (19 ,21) THEN consult_poundage ELSE 0 END) AS consult_poundage,
-        //             SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
-        //             SUM(CASE WHEN STATUS IN (19, 21) THEN original_price-tm_income-consult_amount+consult_deposit+consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS profit
-        //         "))
-        //     ->groupBy('game_id')
-        //     ->paginate(15);
+        // 导出
+        if ($request->export) {
+            $this->showExport($datas, $total);
+        }
 
-        // // 导出
-        // if ($request->export) {
-        //     $this->export($datas, $total);
-        // }
+        return view('frontend.v1.baby.show', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
+    }
 
-        // return view('frontend.v1.baby.index', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
+    public function showExport($datas = '', $total = '')
+    {
+        if (empty($datas) || empty($total)) {
+            return response()->ajax(0, '暂无数据');
+        }
+        $datas = $datas->toArray()['data'];
+        $total = $total->toArray();
+        // 标题
+        $title = [
+           '宝贝名称',
+           '下单单数',
+           '下单买家数',
+           '下单金额',
+           '客单价',
+           '交易成功订单',
+           '交易成功数量',
+           '交易成功金额',
+           '交易关闭订单',
+           '交易关闭数量',
+           '交易关闭金额',
+        ];
+        // 数组分割,反转
+        $chunkDatas = array_chunk($datas, 1000);
+
+        Excel::create('运营宝贝数据', function ($excel) use ($chunkDatas, $title, $total) {
+
+            foreach ($chunkDatas as $chunkData) {
+                // 内容
+                $arr = [];
+                foreach ($chunkData as $key => $data) {
+                    $arr[] = [
+                        $data['game_name'] ?? '',
+                        $data['order_count'] ?? 0,
+                        $data['buyer_count'] ?? 0,
+                        $data['order_payment'] ?? 0,
+                        $data['success_buyer_count'] == 0 ? 0 : bcdiv($data['success_payment'], $data['success_buyer_count'], 2)+0,
+                        $data['success_order_count'] + 0,
+                        $data['success_goods_count'] + 0,
+                        $data['success_payment'] + 0,
+                        $data['close_order_count'] + 0,
+                        $data['close_goods_count'] + 0,
+                        $data['close_payment'] + 0,
+                    ];
+                }
+                $arr1 = [
+                    '总计',
+                    $total['order_count'] ?? 0,
+                    $total['buyer_count'] ?? 0,
+                    $total['order_payment'] ?? 0,
+                    $total['success_buyer_count'] == 0 ? 0 : bcdiv($total['success_payment'], $total['success_buyer_count'], 2)+0,
+                    $total['success_order_count'] + 0,
+                    $total['success_goods_count'] + 0,
+                    $total['success_payment'] + 0,
+                    $total['close_order_count'] + 0,
+                    $total['close_goods_count'] + 0,
+                    $total['close_payment'] + 0,
+                ];
+                array_push($arr, $arr1);
+                // 将标题加入到数组
+                array_unshift($arr, $title);
+                // 每页多少数据
+                $excel->sheet("页数", function ($sheet) use ($arr) {
+                    $sheet->rows($arr);
+                });
+            }
+        })->export('xls');
     }
 }
