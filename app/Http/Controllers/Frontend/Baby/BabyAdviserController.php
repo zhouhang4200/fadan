@@ -22,28 +22,25 @@ class BabyAdviserController extends Controller
      */
     public function index(Request $request)
     {
+        $gameId = $request->game_id;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $fullUrl = $request->fullUrl();
+
+        $filters = compact('gameId', 'startDate', 'endDate');
+
+        $user = Auth::user();
+        // 主账号下所有的用户
+        if ($user->parent_id == 0) {
+            $userId = $user->id;
+        } else {
+            $userId = User::getPrimaryUserId($user->id);
+        }
         // 所有宝贝
     	$games = DB::select("
-    		SELECT b.id, b.name FROM goods_templates a
-			LEFT JOIN games b
-			ON a.game_id = b.id
-			WHERE a.service_id = 4 AND a.status = 1
+    		SELECT game_id, game_name from automatically_grab_goods where user_id = '$userId' group by game_id
 		");
 
-		$gameId = $request->game_id;
-		$startDate = $request->start_date;
-		$endDate = $request->end_date;
-		$fullUrl = $request->fullUrl();
-
-		$filters = compact('gameId', 'startDate', 'endDate');
-
-		$user = Auth::user();
-        // 主账号下所有的用户
-		if ($user->parent_id == 0) {
-			$userId = $user->id;
-		} else {
-			$userId = User::getPrimaryUserId($user->id);
-		}
         // 根据日期获取数据
 		$datas = OrderBasicData::filterBaby($filters)
 			->where('creator_primary_user_id', $userId)
@@ -180,14 +177,6 @@ class BabyAdviserController extends Controller
      */
     public function show(Request $request)
     {
-         // 所有宝贝
-        $games = DB::select("
-            SELECT b.id, b.name FROM goods_templates a
-            LEFT JOIN games b
-            ON a.game_id = b.id
-            WHERE a.service_id = 4 AND a.status = 1
-        ");
-
         $gameId = $request->game_id;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
@@ -202,6 +191,11 @@ class BabyAdviserController extends Controller
         } else {
             $userId = User::getPrimaryUserId($user->id);
         }
+
+        // 所有宝贝
+        $games = DB::select("
+            SELECT game_id, game_name from automatically_grab_goods where user_id = '$userId' group by game_id
+        ");
         // 根据游戏获取数据
         $datas = TaobaoTrade::filterBaby($filters)
             ->where('user_id', $userId)
