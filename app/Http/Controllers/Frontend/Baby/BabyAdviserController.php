@@ -50,7 +50,7 @@ class BabyAdviserController extends Controller
 			->select(DB::raw("
 					date,
 					COUNT(order_no) AS count,
-					SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+					SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
 					SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
 					SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
 					SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
@@ -71,7 +71,7 @@ class BabyAdviserController extends Controller
 			->where('creator_primary_user_id', $userId)
 			->select(DB::raw("
 					COUNT(order_no) AS count,
-					SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+					SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
 					SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
 					SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
 					SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
