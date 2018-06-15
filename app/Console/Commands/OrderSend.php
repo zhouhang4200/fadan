@@ -52,8 +52,8 @@ class OrderSend extends Command
                 myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s')]);
 
                 try {
-//                    $orderDatas = json_decode($orderData, true);
-//                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
+                   $orderDatas = json_decode($orderData, true);
+                   $order = OrderModel::where('no', $orderDatas['order_no'])->first();
 //
 //                    // 检测平台是否开启，
 //                    $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
