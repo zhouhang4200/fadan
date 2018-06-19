@@ -11,7 +11,7 @@ $workbenchRoute = [
    'frontend.workbench.leveling.wait',
    'frontend.workbench.leveling.create',
    'frontend.workbench.leveling.index',
-   'frontend.workbench.leveling.complaint',
+   'frontend.workbench.leveling.complaints',
 ];
 
 $accountRoute = [
