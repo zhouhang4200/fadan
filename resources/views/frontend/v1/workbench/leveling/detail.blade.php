@@ -356,7 +356,7 @@
                                     <div class="layui-input-block">
                                         <select name="game_leveling_day" lay-verify="required" lay-filter="game_leveling_day" lay-search="" display-name="代练时间(天)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                             <option value=""></option>
-                                            @for($i=0; $i<=30; $i++)
+                                            @for($i=0; $i<=90; $i++)
                                                 <option value="{{ $i }}" @if($detail['game_leveling_day'] == $i) selected  @endif>{{ $i }}天</option>
                                             @endfor
                                         </select>
@@ -372,7 +372,7 @@
                                     <div class="layui-input-block">
                                         <select name="game_leveling_hour" lay-verify="required" lay-filter="aihao" display-name="代练时间(小时)"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif>
                                             <option value=""></option>
-                                            @for($i=0; $i<=24; $i++)
+                                            @for($i=0; $i<=23; $i++)
                                                 <option value="{{ $i }}" @if($detail['game_leveling_hour'] == $i) selected  @endif>{{ $i }}小时</option>
                                             @endfor
                                         </select>
