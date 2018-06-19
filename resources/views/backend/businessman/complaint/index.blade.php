@@ -142,6 +142,7 @@
                 },function(value, index, elem){
                     $.post('{{ route('businessman.complaint.operation') }}', {id:id,action:action, result:value}, function (result) {
                         layer.msg(result.message);
+                        window.reload();
                     }, 'json');
                 });
             });
