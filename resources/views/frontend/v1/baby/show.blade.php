@@ -128,7 +128,8 @@
         </form>
         {{ $datas->appends([
             'game_id' => $gameId,
-            'start_date' =>$startDate,
+            'goods_id' => $goodsId,
+            'start_date' => $startDate,
             'end_date' => $endDate,
         ])->links() }}
 </div>

@@ -484,7 +484,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     // 宝贝参谋
     Route::prefix('baby')->namespace('Baby')->group(function() {
         Route::get('/', 'BabyAdviserController@index')->name('frontend.baby.index')->middleware('new.permission:frontend.baby.index');
-        Route::get('show', 'BabyAdviserController@show')->name('frontend.baby.show');
+        Route::get('show', 'BabyAdviserController@show')->name('frontend.baby.show')->middleware('new.permission:frontend.baby.show');
     });
 });
 
