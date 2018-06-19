@@ -762,9 +762,9 @@
                             data: data.field
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5},function () {
@@ -805,9 +805,9 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
+                                    reloadOrderList();
+                                    layer.closeAll();
                                     layer.msg(result.message, {icon: 6},function () {
-                                        reloadOrderList();
-                                        layer.closeAll();
                                     });
                                 } else {
                                     layer.msg(result.message, {icon: 5},function () {
@@ -826,9 +826,9 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
@@ -850,9 +850,9 @@
                             delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6},function () {
                                     reloadOrderList();
                                     layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
@@ -875,9 +875,9 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6}, function () {
                                     reloadOrderList();
                                     layer.closeAll();
+                                layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
@@ -893,9 +893,9 @@
                         no: orderNo
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.msg(result.message, {icon: 6}, function () {
                                 reloadOrderList();
                                 layer.closeAll();
+                            layer.msg(result.message, {icon: 6}, function () {
                             });
                         } else {
                             layer.msg(result.message, {icon: 5}, function () {
@@ -956,9 +956,9 @@
                         keyWord: opt
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.msg(result.message, {icon: 6}, function () {
                                 reloadOrderList();
                                 layer.closeAll();
+                            layer.msg(result.message, {icon: 6}, function () {
                             });
                         } else {
                             layer.msg(result.message, {icon: 5}, function () {

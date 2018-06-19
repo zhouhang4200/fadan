@@ -1,6 +1,6 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '宝贝运营状况 - 宝贝运营状况')
+@section('title', '店铺参谋 - 宝贝运营状况')
 
 @section('css')
     <link href="{{ asset('/css/index.css') }}" rel="stylesheet">
@@ -18,15 +18,28 @@
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
+    <blockquote class="layui-elem-quote">
+        用途：此数据以淘宝店铺宝贝为维度，统计宝贝相关淘宝订单的交易数据，供卖家参考。
+    </blockquote>
     <form class="layui-form" method="" action="">
         <div class="layui-input-inline">
             <div class="layui-form-item">
-                <label class="layui-form-label">宝贝名称</label> 
+                 <label class="layui-form-label">宝贝ID</label> 
+                    <div class="layui-input-inline">               
+                        <select name="goods_id" lay-verify="" lay-search="">
+                            <option value="">请输入或选择</option>
+                            @forelse($goodses as $goods)
+                                <option value="{{ $goods->goods_id }}" {{ $goods->goods_id == $goodsId ? 'selected' : '' }}>{{ $goods->goods_id }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </div>
+                <label class="layui-form-label" style="width: 75px;">宝贝绑定游戏</label> 
                     <div class="layui-input-inline">               
                         <select name="game_id" lay-verify="" lay-search="">
-                            <option value="">请输入宝贝名称</option>
+                            <option value="">请输入或选择</option>
                             @forelse($games as $game)
-                                <option value="{{ $game->id }}" {{ $game->id == $gameId ? 'selected' : '' }}>{{ $game->name ?? '--' }}</option>
+                                <option value="{{ $game->game_id }}" {{ $game->game_id == $gameId ? 'selected' : '' }}>{{ $game->game_name ?? '--' }}</option>
                             @empty
                             @endforelse
                         </select>
@@ -115,7 +128,8 @@
         </form>
         {{ $datas->appends([
             'game_id' => $gameId,
-            'start_date' =>$startDate,
+            'goods_id' => $goodsId,
+            'start_date' => $startDate,
             'end_date' => $endDate,
         ])->links() }}
 </div>

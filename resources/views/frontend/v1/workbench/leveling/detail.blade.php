@@ -1291,8 +1291,8 @@
                         }, function (result) {
                             if (result.status == 1) {
                                 layer.closeAll();
+                                location.reload();
                                 layer.msg(result.message, {icon: 6}, function () {
-                                    location.reload();
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5});
@@ -1373,8 +1373,8 @@
                                 pic3: pic3
                             }, function (result) {
                                 if (result.status == 1) {
-                                    layer.msg(result.message, {icon: 6}, function () {
                                         location.reload();
+                                    layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
                                     layer.msg(result.message, {icon: 5});
@@ -1413,8 +1413,8 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
-                                    layer.msg(result.message, {icon: 6}, function () {
                                         location.reload();
+                                    layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
                                     layer.msg(result.message, {icon: 5});
@@ -1431,8 +1431,8 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
+                                layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5});
@@ -1451,8 +1451,8 @@
                             delivery: delivery
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
+                                layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5});
@@ -1472,8 +1472,8 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6}, function () {
                                     location.reload();
+                                layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
@@ -1489,8 +1489,8 @@
                         keyWord: opt
                     }, function (result) {
                         if (result.status == 1) {
-                            layer.msg(result.message, {icon: 6}, function () {
                                 location.reload();
+                            layer.msg(result.message, {icon: 6}, function () {
                             });
 
                         } else {
@@ -1541,9 +1541,9 @@
                         } else {
                             $.post("{{ route('frontend.workbench.leveling.add-amount') }}", {no:'{{ $detail['no'] }}', amount:newAmount}, function (result) {
                                 if(result.status == 1) {
-                                    layer.msg(result.message, {icon: 6}, function () {
                                         layer.closeAll();
                                         location.reload();
+                                    layer.msg(result.message, {icon: 6}, function () {
                                     })
                                 } else {
                                     layer.msg(result.message, {icon: 5});
@@ -1574,9 +1574,9 @@
                             hour: hour
                         }, function (result) {
                             if (result.status == 1) {
-                                layer.msg(result.message, {icon: 6}, function () {
                                     layer.closeAll();
                                     location.reload();
+                                layer.msg(result.message, {icon: 6}, function () {
                                 })
                             } else {
                                 layer.msg(result.message, {icon: 5});

@@ -83,6 +83,10 @@ class TaobaoTrade extends Model
             $query->where('game_id', $filters['gameId']);
         }
 
+        if ($filters['goodsId']) {
+            $query->where('num_iid', $filters['goodsId']);
+        }
+
         if ($filters['startDate'] && empty($filters['endDate'])) {
             $query->where('created_at', '>=', $filters['startDate']);
         }

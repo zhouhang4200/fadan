@@ -22,35 +22,43 @@ class BabyAdviserController extends Controller
      */
     public function index(Request $request)
     {
+        $gameId = $request->game_id;
+        $goodsId = $request->goods_id;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $fullUrl = $request->fullUrl();
+
+        $filters = compact('gameId', 'startDate', 'endDate', 'goodsId');
+
+        $user = Auth::user();
+        // 主账号下所有的用户
+        if ($user->parent_id == 0) {
+            $userId = $user->id;
+        } else {
+            $userId = Auth::user()->getPrimaryUserId($user->id);
+        }
         // 所有宝贝
     	$games = DB::select("
-    		SELECT b.id, b.name FROM goods_templates a
-			LEFT JOIN games b
-			ON a.game_id = b.id
-			WHERE a.service_id = 4 AND a.status = 1
+    		SELECT game_id, game_name from automatically_grab_goods where user_id = '$userId' group by game_id
 		");
 
-		$gameId = $request->game_id;
-		$startDate = $request->start_date;
-		$endDate = $request->end_date;
-		$fullUrl = $request->fullUrl();
+        $goodses = DB::select("
+            SELECT foreign_goods_id as goods_id from automatically_grab_goods where user_id = '$userId' group by foreign_goods_id
+        ");
 
-		$filters = compact('gameId', 'startDate', 'endDate');
+        $groupBy = 'game_id';
 
-		$user = Auth::user();
-        // 主账号下所有的用户
-		if ($user->parent_id == 0) {
-			$userId = $user->id;
-		} else {
-			$userId = User::getPrimaryUserId($user->id);
-		}
+        // if (isset($goodsId) && ! empty($goodsId)) {
+        //     $groupBy = 'num_iid';
+        // }
+
         // 根据日期获取数据
 		$datas = OrderBasicData::filterBaby($filters)
 			->where('creator_primary_user_id', $userId)
 			->select(DB::raw("
 					date,
 					COUNT(order_no) AS count,
-					SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+					SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
 					SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
 					SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
 					SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
@@ -62,7 +70,8 @@ class BabyAdviserController extends Controller
 					SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
 					SUM(CASE WHEN STATUS IN (19, 21) THEN original_price-tm_income-consult_amount+consult_deposit+consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS profit
 				"))
-			->groupBy('date')
+			->groupBy($groupBy)
+            ->latest('date')
 			->paginate(15);
 
         // 总计
@@ -70,7 +79,7 @@ class BabyAdviserController extends Controller
 			->where('creator_primary_user_id', $userId)
 			->select(DB::raw("
 					COUNT(order_no) AS count,
-					SUM(CASE WHEN STATUS = 13 THEN 1 ELSE 0 END) AS received_count,
+					SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
 					SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
 					SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
 					SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
@@ -89,7 +98,7 @@ class BabyAdviserController extends Controller
 			$this->export($datas, $total);
 		}
 
-		return view('frontend.v1.baby.index', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
+		return view('frontend.v1.baby.index', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl', 'goodsId', 'goodses'));
     }
 
     /**
@@ -179,28 +188,36 @@ class BabyAdviserController extends Controller
      */
     public function show(Request $request)
     {
-         // 所有宝贝
-        $games = DB::select("
-            SELECT b.id, b.name FROM goods_templates a
-            LEFT JOIN games b
-            ON a.game_id = b.id
-            WHERE a.service_id = 4 AND a.status = 1
-        ");
-
         $gameId = $request->game_id;
+        $goodsId = $request->goods_id;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         $fullUrl = $request->fullUrl();
 
-        $filters = compact('gameId', 'startDate', 'endDate');
+        $filters = compact('gameId', 'startDate', 'endDate', 'goodsId');
 
         $user = Auth::user();
         // 主账号下所有的用户
         if ($user->parent_id == 0) {
             $userId = $user->id;
         } else {
-            $userId = User::getPrimaryUserId($user->id);
+            $userId = Auth::user()->getPrimaryUserId($user->id);
         }
+
+        // 所有宝贝
+        $games = DB::select("
+            SELECT game_id, game_name from automatically_grab_goods where user_id = '$userId' group by game_id
+        ");
+        $goodses = DB::select("
+            SELECT foreign_goods_id as goods_id from automatically_grab_goods where user_id = '$userId' group by foreign_goods_id
+        ");
+
+        $groupBy = 'game_id';
+
+        if (isset($goodsId) && ! empty($goodsId)) {
+            $groupBy = 'num_iid';
+        }
+
         // 根据游戏获取数据
         $datas = TaobaoTrade::filterBaby($filters)
             ->where('user_id', $userId)
@@ -219,7 +236,7 @@ class BabyAdviserController extends Controller
                     SUM(CASE WHEN trade_status = 7 THEN num ELSE 0 END) AS close_goods_count,
                     SUM(CASE WHEN trade_status = 7 THEN payment ELSE 0 END) AS close_payment
                 "))
-            ->groupBy('game_id')
+            ->groupBy($groupBy)
             ->paginate(15);
 // dd($datas);
         $total = TaobaoTrade::filterBaby($filters)
@@ -246,7 +263,7 @@ class BabyAdviserController extends Controller
             $this->showExport($datas, $total);
         }
 
-        return view('frontend.v1.baby.show', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl'));
+        return view('frontend.v1.baby.show', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl', 'goodsId', 'goodses'));
     }
 
     public function showExport($datas = '', $total = '')
