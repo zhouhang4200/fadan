@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
 use Carbon\Carbon;
 use App\Models\UserSetting;
 use App\Services\RedisConnect;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\Redis;
 use App\Models\UserReceivingUserControl;
 use App\Models\UserReceivingCategoryControl;
@@ -1159,6 +1160,27 @@ if (!function_exists('base64ToImg')) {
                 return $imgPath;
             }
         }
+    }
+}
+if (!function_exists('sendMail')) {
+
+    /**
+     * 自定义发送邮件
+     * @param $host
+     * @param $username
+     * @param $password
+     * @param string $port
+     * @param string $security
+     * @return Mailer
+     */
+    function sendMail($host, $username, $password, $port = '465', $security = 'ssl')
+    {
+        $transport = new Swift_SmtpTransport($host, $port, $security);
+        $transport->setUsername($username);
+        $transport->setPassword($password);
+        return new Mailer(
+            app('view'), new Swift_Mailer($transport)
+        );
     }
 }
 

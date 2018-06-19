@@ -13,6 +13,7 @@ use App\Models\BusinessmanComplaint;
 use App\Exceptions\AssetException;
 use \Exception;
 use App\Repositories\Frontend\GameRepository;
+use Illuminate\Mail\Mailer;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Mail;
 
@@ -178,7 +179,7 @@ class ComplaintsController extends Controller
 
                 $to = config('leveling.third_email')[$orderInfo->gainer_primary_user_id];
                 // 发送邮件通知接单平台
-                app('complainMailer')->send('frontend.emails.complaints',[
+                sendMail('smtp.mxhichina.com', 'liaorende@fulu.com', 'Wsade32d')->send('frontend.emails.complaints',[
                     'order' => $thirdOrder,
                     'amount' => $request->amount,
                     'remark' => $request->remark,

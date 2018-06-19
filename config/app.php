@@ -188,8 +188,6 @@ return [
         App\Extensions\Weight\WeightServiceProvider::class,
         // ajax 响应
         App\Providers\ResponseMacroServiceProvider::class,
-        // 投诉邮件发送
-        App\Providers\ComplaintsMailServiceProvider::class,
     ],
 
     /*

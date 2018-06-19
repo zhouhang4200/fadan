@@ -28,6 +28,8 @@ use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 use Illuminate\Mail\Mailer;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
 use App\Extensions\Order\Operations\Create;
@@ -67,6 +69,8 @@ use App\Models\ThirdServer;
 use App\Models\ThirdArea;
 use App\Models\ThirdGame;
 use App\Models\OrderDetail;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 
 class TestController extends Controller
 {
@@ -219,19 +223,18 @@ class TestController extends Controller
     }
 
 
+    protected function setGlobalAddress($mailer, array $config, $type)
+    {
+        $address = Arr::get($config, $type);
+
+        if (is_array($address) && isset($address['address'])) {
+            $mailer->{'always'.Str::studly($type)}($address['address'], $address['name']);
+        }
+    }
     public function index(Request $request)
     {
-        app('complainMailer')->send('frontend.emails.complaints',[
-            'order' => '11212',
-            'amount' => '50',
-            'remark' => '11',
-            'image1' => '',
-            'image2' => '',
-            'image3' => ''
-        ],function($message){
-            $to = '442962403@qq.com';
-            $message->to($to)->subject('邮件测试')->from('liaorende@fulu.com');
-        });
+
+
         die;
         // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();
         // $b = isset($a['checkout_time']);
