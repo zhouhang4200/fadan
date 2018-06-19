@@ -40,12 +40,13 @@ class ComplaintsController extends Controller
      */
     public function listData(Request $request)
     {
+        $status = $request->input('status', 1);
         $complaint = BusinessmanComplaint::filter([
             'orderNo' => $request->order_no,
             'gameId' => $request->game_id,
             'startDate' => $request->start_date,
             'endDate' => $request->end_date,
-            'status' => $request->status,
+            'status' => $status,
         ])
             ->with(['order', 'orderDetail', 'taobaoTrade'])
             ->where('complaint_primary_user_id', auth()->user()->getPrimaryUserId())

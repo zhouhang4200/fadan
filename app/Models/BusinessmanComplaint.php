@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BusinessmanComplaint extends Model
 {
     public  $statusText = [
-      1 => '投诉',
+      1 => '投诉中',
       2 => '已取消',
       3 => '投诉成功',
       4 => '投诉失败',
@@ -17,6 +17,7 @@ class BusinessmanComplaint extends Model
       'complaint_primary_user_id',
       'be_complaint_primary_user_id',
       'order_no',
+      'game_id',
       'amount',
       'remark',
       'result',
