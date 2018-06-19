@@ -371,6 +371,8 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::post('cancel', 'ComplaintsController@cancel')->name('frontend.workbench.leveling.complaints-cancel');
                 // 数据
                 Route::post('list-data', 'ComplaintsController@listData')->name('frontend.workbench.leveling.complaints-list-data');
+                // 投诉图片
+                Route::post('images', 'ComplaintsController@images')->name('frontend.workbench.leveling.complaints.images');
             });
          });
         // 获取用户所有前台可显示的商品

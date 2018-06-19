@@ -186,11 +186,12 @@ class IndexController extends Controller
                 // 当前订单数据
                 $orderCurrent = array_merge($item->detail->pluck('field_value', 'field_name')->toArray(), $orderInfo);
 
-                $orderCurrent['payment_amount'] = '';
-                $orderCurrent['get_amount'] = '';
-                $orderCurrent['poundage'] = '';
-                $orderCurrent['profit'] = '';
-                if (in_array($orderInfo['status'], [19, 20, 21])){
+                if (!in_array($orderInfo['status'], [19, 20, 21])){
+                    $orderCurrent['payment_amount'] = '';
+                    $orderCurrent['get_amount'] = '';
+                    $orderCurrent['poundage'] = '';
+                    $orderCurrent['profit'] = '';
+                } else {
                     // 支付金额
                     $amount = 0;
                     if (in_array($orderInfo['status'], [21, 19])) {
@@ -231,7 +232,7 @@ class IndexController extends Controller
                 $orderCurrent['status_time'] = '结束';
                 if ($orderInfo['status'] == 1) {
                     $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderInfo['created_at']));
-                }  elseif ($orderInfo['status'] == 13) {
+                }  elseif ($orderInfo['status'] == 13 && isset($orderCurrent['receiving_time'])) {
                     $orderCurrent['status_time'] =  sec2Time(time() - strtotime($orderCurrent['receiving_time']));
                 }
 

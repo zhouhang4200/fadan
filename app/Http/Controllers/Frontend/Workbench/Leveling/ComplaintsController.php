@@ -73,6 +73,8 @@ class ComplaintsController extends Controller
         foreach ($complaint as $item) {
             $orderDetail = $item->orderDetail->pluck('field_value', 'field_name');
             $complaintArr[] = [
+                'id' => $item->id,
+                'status' => $item->status,
                 'status_text' => $item->statusText(),
                 'amount' => $item->amount,
                 'order_status' => ! is_null(optional($item->order)->status) ? config('order.status_leveling')[optional($item->order)->status] : '',
@@ -213,6 +215,7 @@ class ComplaintsController extends Controller
 
         if ($businessmanComplaint) {
             return response()->ajax(1, '查到投诉数据', [
+                'id' => $businessmanComplaint->id,
                 'status' => $businessmanComplaint->status,
                 'amount' => $businessmanComplaint->amount,
                 'remark' => $businessmanComplaint->remark,
@@ -229,7 +232,7 @@ class ComplaintsController extends Controller
     public function cancel(Request $request)
     {
         // 查找投诉
-        $businessmanComplaint = BusinessmanComplaint::where('order_no', $request->order_no)
+        $businessmanComplaint = BusinessmanComplaint::where('id', $request->id)
             ->where('complaint_primary_user_id', auth()->user()->getPrimaryUserId())
             ->orderBy('id', 'desc')
             ->first();
@@ -239,5 +242,20 @@ class ComplaintsController extends Controller
             $businessmanComplaint->save();
         }
         return response()->ajax(1, '操作成功');
+    }
+
+    /**
+     * 图片
+     * @param Request $request
+     */
+    public function images(Request $request)
+    {
+        $complaint = BusinessmanComplaint::where('id', $request->id)->first();
+
+        if ($complaint) {
+            return response()->ajax(1, '获取成功', json_decode($complaint->images, true));
+        } else {
+            return response()->ajax(0, '没有图片');
+        }
     }
 }

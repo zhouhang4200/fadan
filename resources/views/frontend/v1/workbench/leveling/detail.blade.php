@@ -1330,7 +1330,7 @@
                                 layer.closeAll();
                             }, function () {
                                 if (buttonText == '取消投诉') {
-                                    $.post('{{ route('frontend.workbench.leveling.complaints-cancel') }}', {order_no:orderNo}, function () {
+                                    $.post('{{ route('frontend.workbench.leveling.complaints-cancel') }}', {id:result.content.id}, function () {
                                         layer.msg('取消成功', {icon: 6});
                                     }, 'json');
                                     layer.closeAll();
@@ -1373,11 +1373,13 @@
                                 pic3: pic3
                             }, function (result) {
                                 if (result.status == 1) {
-                                        location.reload();
                                     layer.msg(result.message, {icon: 6}, function () {
+                                        location.reload();
                                     });
                                 } else {
-                                    layer.msg(result.message, {icon: 5});
+                                    layer.msg(result.message, {icon: 5}, function () {
+                                        location.reload();
+                                    });
                                 }
                             });
                             layer.closeAll();
