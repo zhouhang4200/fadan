@@ -11,7 +11,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Services\Leveling\WanziController;
-use Auth;
+use Auth, Config, Mail;
 use App\Models\OrderBasicData;
 use Asset;
 use App\Models\TaobaoTrade;
@@ -27,6 +27,8 @@ use App\Extensions\Asset\Income;
 use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
+use Illuminate\Mail\Mailer;
+use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
 use App\Extensions\Order\Operations\Create;
 use App\Extensions\Order\Operations\GrabClose;
@@ -219,6 +221,18 @@ class TestController extends Controller
 
     public function index(Request $request)
     {
+        app('complainMailer')->send('frontend.emails.complaints',[
+            'order' => '11212',
+            'amount' => '50',
+            'remark' => '11',
+            'image1' => '',
+            'image2' => '',
+            'image3' => ''
+        ],function($message){
+            $to = '442962403@qq.com';
+            $message->to($to)->subject('邮件测试')->from('liaorende@fulu.com');
+        });
+        die;
         // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();
         // $b = isset($a['checkout_time']);
         // $c = $a['checkout_time'] ?? 1;

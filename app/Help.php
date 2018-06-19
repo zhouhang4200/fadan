@@ -1145,15 +1145,18 @@ if (!function_exists('base64ToImg')) {
      * 将base64图片存为图片到resources 指定目录
      * @param $base64Str string
      * @param $path string 指定的目录
-     * @return resource
+     * @return string
      */
     function base64ToImg($base64Str, $path)
     {
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64Str, $result)) {
-            $imgPath = tempnam(public_path('resources'), $path);
-            rename($imgPath, $imgPath .= '.png');
-            if (file_put_contents($imgPath, base64_decode(str_replace($result[1], '', $base64Str)))) {
-                return fopen($imgPath, 'r');
+            $imgDir = 'resources/' . $path . '/';
+            if (!is_dir($imgDir)) {
+                mkdir($imgDir, 0777);
+            }
+            $imgPath = $imgDir .  uniqid() . '.png';
+            if (file_put_contents(public_path($imgPath), base64_decode(str_replace($result[1], '', $base64Str)))) {
+                return $imgPath;
             }
         }
     }

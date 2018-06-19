@@ -169,7 +169,7 @@
             // 加载数据
             table.render({
                 elem: '#list-data',
-                url: '{{ route('frontend.workbench.leveling.complaint-list-data') }}',
+                url: '{{ route('frontend.workbench.leveling.complaints-list-data') }}',
                 method: 'post',
                 cols: [[
                     {field: 'no', title: '订单号', width: 150, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},

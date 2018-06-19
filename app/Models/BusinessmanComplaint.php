@@ -19,6 +19,8 @@ class BusinessmanComplaint extends Model
       'order_no',
       'amount',
       'remark',
+      'result',
+      'images',
     ];
 
     /**
@@ -34,7 +36,7 @@ class BusinessmanComplaint extends Model
                 ->value('order_no');
             $query->where('order_no', $no);
         }
-        if (isset($filters['status']) && $filters['status']) {
+        if (isset($filters['status']) && $filters['status'] > 0) {
             $query->where('status', $filters['status']);
         }
         if (isset($filters['gameId']) && $filters['gameId']) {
@@ -81,5 +83,23 @@ class BusinessmanComplaint extends Model
     public function taobaoTrade()
     {
         return $this->belongsTo(TaobaoTrade::class, 'foreign_order_no', 'tid');
+    }
+
+    /**
+     * 被投诉人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function beComplaintPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'be_complaint_primary_user', 'id');
+    }
+
+    /**
+     * 投诉人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function complaintPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'complaint_primary_user', 'id');
     }
 }

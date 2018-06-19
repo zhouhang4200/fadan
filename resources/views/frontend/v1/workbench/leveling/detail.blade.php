@@ -552,7 +552,7 @@
                                                 <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="delete" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">撤单</button>
                                             @endif
 
-                                            @if (!$detail['master'] && (in_array($detail['status'], [19, 20, 21])))
+                                            @if ($detail['master'] && (in_array($detail['status'], [19, 20, 21])))
                                                 <button  class="qs-btn opt-btn"  style="background-color: #ff5822;" data-operation="complaints" data-no="{{ $detail['no'] }}"   data-amount="{{ $detail['amount'] }}">投诉</button>
                                             @endif
 
@@ -963,7 +963,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">要求赔偿金额</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" name="amount" placeholder="请输入要求赔偿金额">
+                <input type="text" class="layui-input" name="amount" placeholder="请输入要求赔偿金额" lay-verify="required">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -1028,7 +1028,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">投诉原因</label>
             <div class="layui-input-block">
-                <textarea placeholder="请输入投诉原因" name="remark"  class="layui-textarea"></textarea>
+                <textarea placeholder="请输入投诉原因" name="remark"  class="layui-textarea" lay-verify="required"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -1302,22 +1302,68 @@
                     });
 
                 } else if (opt == 'complaints') {
-                    layer.open({
-                        type: 1,
-                        shade: 0.2,
-                        title: '投诉',
-                        area: ['600px'],
-                        content: $('.complaints')
-                    });
+                    // 查询订单
+                    $.post('{{ route('frontend.workbench.leveling.complaints-show') }}', {order_no:orderNo}, function (result) {
+                        if (result.status == 1) {
+                            var buttonText;
+                            var content = '';
+                            if (result.content.status == 1) {
+                                buttonText = '取消投诉';
+                                content = '<div style="text-align:center">投诉正在处理中，请耐心等待哦！</div>';
+                            } else if (result.content.status == 2) {
+                                buttonText = '再次投诉';
+                                content = '<div style="text-align:center">您已取消投诉！</div>';
+                            } else if (result.content.status == 3) {
+                                buttonText = '再次投诉';
+                                content = '<div style="text-align:center">投诉成功，赔偿金额已到账！</div>';
+                            } else if (result.content.status == 4) {
+                                buttonText = '再次投诉';
+                                content = '<div style="text-align:center">投诉失败，驳回原因：' + result.content.result + '！</div>';
+                            }
+                            content += "<br/>要求赔偿（元）：" + result.content.amount + "<br/> 投诉原因：" + result.content.remark;
+
+                            layer.confirm(content,{
+                                btnAlign: 'c',
+                                area: ['400px'],
+                                btn: ['确定', buttonText]
+                            }, function () {
+                                layer.closeAll();
+                            }, function () {
+                                if (buttonText == '取消投诉') {
+                                    $.post('{{ route('frontend.workbench.leveling.complaints-cancel') }}', {order_no:orderNo}, function () {
+                                        layer.msg('取消成功', {icon: 6});
+                                    }, 'json');
+                                    layer.closeAll();
+                                } else {
+                                    openComplaintsPop();
+                                }
+                            });
+                        } else {
+                            openComplaintsPop();
+                        }
+                    }, 'json');
+
+                    function openComplaintsPop() {
+                        layer.open({
+                            type: 1,
+                            shade: 0.2,
+                            title: '投诉',
+                            area: ['600px'],
+                            content: $('.complaints')
+                        });
+                    }
+
                     form.on('submit(complaints)', function (data) {
-                        var complainLoad = layer.load(2, {shade:[0.2, '#000']});
+
                         var pic1 = $('.pic-1 img').attr('src');
                         var pic2 = $('.pic-2 img').attr('src');
                         var pic3 = $('.pic-3 img').attr('src');
 
                         if (pic1 == undefined && pic2 == undefined && pic3 == undefined) {
                             layer.alert('请至少上传一张图片');
+
                         } else {
+                            layer.load(2, {shade:[0.2, '#000']});
                             $.post("{{ route('frontend.workbench.leveling.complaints') }}", {
                                 order_no: orderNo,
                                 amount: data.field.amount,
@@ -1326,7 +1372,6 @@
                                 pic2: pic2,
                                 pic3: pic3
                             }, function (result) {
-                                layer.close(complainLoad);
                                 if (result.status == 1) {
                                     layer.msg(result.message, {icon: 6}, function () {
                                         location.reload();
@@ -1335,9 +1380,11 @@
                                     layer.msg(result.message, {icon: 5});
                                 }
                             });
+                            layer.closeAll();
                         }
                         return false;
                     });
+                    return false;
                 } else if (opt == 'applyArbitration') {
                     layer.open({
                         type: 1,
