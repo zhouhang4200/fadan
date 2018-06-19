@@ -1374,11 +1374,9 @@
                             }, function (result) {
                                 if (result.status == 1) {
                                     layer.msg(result.message, {icon: 6}, function () {
-                                        location.reload();
                                     });
                                 } else {
                                     layer.msg(result.message, {icon: 5}, function () {
-                                        location.reload();
                                     });
                                 }
                             });
