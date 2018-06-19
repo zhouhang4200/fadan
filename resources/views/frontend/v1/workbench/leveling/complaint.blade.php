@@ -306,8 +306,8 @@
                 var id = $(this).attr('data-id');
                 $.post('{{ route('frontend.workbench.leveling.complaints-cancel') }}', {id:id}, function () {
                     layer.msg('取消成功', {icon: 6}, function () {
-                        reloadOrderList();
                     });
+                    reloadOrderList();
                 }, 'json');
                 layer.closeAll();
             });
