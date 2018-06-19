@@ -45,7 +45,7 @@ class ComplaintsController extends Controller
             'gameId' => $request->game_id,
             'startDate' => $request->start_date,
             'endDate' => $request->end_date,
-//            'status' => $request->status,
+            'status' => $request->status,
         ])
             ->with(['order', 'orderDetail', 'taobaoTrade'])
             ->where('complaint_primary_user_id', auth()->user()->getPrimaryUserId())
