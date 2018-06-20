@@ -103,6 +103,12 @@ class LevelingConfigureController extends Controller
     		return response()->ajax(0, '请选择游戏或代练类型');
     	}
 
+        $has = LevelingConfigure::where('game_id', $data['game_id'])->where('game_leveling_type', $data['game_leveling_type'])->first();
+
+        if ($has) {
+            return response()->ajax(0, '已存在相同类型配置');
+        }
+
     	if (isset($data) && ! empty($data)) {
     		$data['game_name'] = Game::find($data['game_id']) ? Game::find($data['game_id'])->name : '';
     	}
@@ -158,23 +164,54 @@ class LevelingConfigureController extends Controller
      */
     public function update(Request $request)
     {
-    	$levelingConfigure = LevelingConfigure::find($request->id);
+        DB::beginTransaction();
+        try{
+            $levelingConfigure = LevelingConfigure::find($request->id);
 
-    	if (! isset($request->data['game_leveling_type']) || ! isset($request->data['game_id'])) {
-    		return response()->ajax(0, '请选择游戏或代练类型');
-    	}
+            if (! isset($request->data['game_leveling_type']) || ! isset($request->data['game_id'])) {
+                return response()->ajax(0, '请选择游戏或代练类型');
+            }
 
-    	if ($levelingConfigure) {
-    		$levelingConfigure->game_id = $request->data['game_id'];
-    		$levelingConfigure->game_name = Game::find($request->data['game_id']) ? Game::find($request->data['game_id'])->name : '';
-    		$levelingConfigure->rebate = $request->data['rebate'];
-    		$levelingConfigure->game_leveling_type = $request->data['game_leveling_type'];
-    		$levelingConfigure->game_leveling_requirements = $request->data['game_leveling_requirements'];
-    		$levelingConfigure->game_leveling_instructions = $request->data['game_leveling_instructions'];
-    		$levelingConfigure->user_qq = $request->data['user_qq'];
-    		$levelingConfigure->save();
-    	}
-    	return response()->ajax('1', '修改成功');
+            $has = LevelingConfigure::where('game_id', $levelingConfigure->game_id)->where('game_leveling_type', $levelingConfigure->game_leveling_type)->count();
+
+            if ($has > 1) {
+                return response()->ajax(0, '已存在相同类型代练游戏以及代练类型配置');
+            }
+            $gameName = Game::find($request->data['game_id']) ? Game::find($request->data['game_id'])->name : '';
+
+            if ($levelingConfigure) {
+                // 其他的代练类型也变
+                LevelingPriceConfigure::where('game_id', $levelingConfigure->game_id)
+                    ->where('game_leveling_type', $levelingConfigure->game_leveling_type)
+                    ->update([
+                        'game_id' => $request->data['game_id'],
+                        'game_name' => $gameName,
+                        'game_leveling_type' => $request->data['game_leveling_type']
+                    ]);
+
+                LevelingRebateConfigure::where('game_id', $levelingConfigure->game_id)
+                    ->where('game_leveling_type', $levelingConfigure->game_leveling_type)
+                    ->update([
+                        'game_id' => $request->data['game_id'],
+                        'game_name' => $gameName,
+                        'game_leveling_type' => $request->data['game_leveling_type']
+                    ]);
+                $levelingConfigure->game_id = $request->data['game_id'];
+                $levelingConfigure->game_name = $gameName;
+                $levelingConfigure->rebate = $request->data['rebate'];
+                $levelingConfigure->game_leveling_type = $request->data['game_leveling_type'];
+                $levelingConfigure->game_leveling_requirements = $request->data['game_leveling_requirements'];
+                $levelingConfigure->game_leveling_instructions = $request->data['game_leveling_instructions'];
+                $levelingConfigure->user_qq = $request->data['user_qq'];
+                $levelingConfigure->save();
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '修改失败');
+        }
+        DB::commit();
+    	
+    	return response()->ajax(1, '修改成功');
     }
 
     /**

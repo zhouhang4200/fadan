@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 配置管理-标品下单-新增')
+@section('title', ' | 配置管理-标品下单-修改')
 
 @section('css')
 <style>
@@ -24,7 +24,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="">新增</li>
+                            <li class="layui-this" lay-id="">修改</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="" action="">
