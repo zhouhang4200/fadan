@@ -19,7 +19,7 @@ class LevelingConfigure extends Model
 	 */
     public static function scopeFilter($query, $filters = [])
     {
-    	if (isset($filters['gameId'])) {
+    	if (isset($filters['gameId']) && ! empty($filters['gameId'])) {
     		$query->where('leveling_configures.game_id', $filters['gameId']);
     	}
     	return $query;

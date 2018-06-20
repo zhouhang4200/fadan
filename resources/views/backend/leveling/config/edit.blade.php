@@ -3,6 +3,18 @@
 @section('title', ' | 配置管理-标品下单-新增')
 
 @section('css')
+<style>
+        .layui-form-label {
+            width:70px;
+        }
+
+        .layui-input, .layui-textarea {
+            display: block;
+            width:300px;
+            /* width: 100%; */
+            padding-left: 10px;
+        }
+    </style>
 @endsection
 
 @section('content')

@@ -12,9 +12,9 @@ use App\Models\LevelingRebateConfigure;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class LevelingConfigureController extends Controller
-{	
-	/**
+class LevelingPriceConfigureController extends Controller
+{
+    /**
 	 * 列表
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
@@ -22,40 +22,21 @@ class LevelingConfigureController extends Controller
     public function index(Request $request)
     {
     	$gameId = $request->game_id;
-    	$filters = compact('gameId');
-
-    	 // 所有宝贝
-        $games = GoodsTemplate::where('goods_templates.status', 1)
-        	->where('goods_templates.service_id', 4)
-        	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
-        	->select('games.id', 'games.name')
-        	->get();
-
-    	$datas = LevelingConfigure::filter($filters)
+    	$type = $request->type;
+    	$gameName = $request->game_name;
+    	$gameLevelingNumber = $request->game_leveling_number;
+    	$filters = compact('gameLevelingNumber');
+		// dd($gameId, $gameName, $type);
+    	$datas = LevelingPriceConfigure::filter($filters)
+    		->where('game_id', $gameId)
+    		->where('game_leveling_type', $type)
     		->paginate(10);
 
     	if ($request->ajax()) {
-    		return response()->json(view()->make('backend.leveling.config.list', compact('datas', 'gameId', 'games'))->render());
+    		return response()->json(view()->make('backend.leveling.price.list', compact('datas', 'gameId', 'type', 'gameName'))->render());
     	}
 
-    	return view('backend.leveling.config.index', compact('datas', 'gameId', 'games'));
-    }
-
-    /**
-     * 添加
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function create(Request $request)
-    {
-    	 // 所有宝贝
-        $games = GoodsTemplate::where('goods_templates.status', 1)
-        	->where('goods_templates.service_id', 4)
-        	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
-        	->select('games.id', 'games.name')
-        	->get();
-
-    	return view('backend.leveling.config.create', compact('games'));
+    	return view('backend.leveling.price.index', compact('datas', 'gameId', 'type', 'gameLevelingNumber', 'gameName'));
     }
 
     /**
@@ -93,20 +74,39 @@ class LevelingConfigureController extends Controller
 
     /**
      * 添加
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function create(Request $request)
+    {
+    	$gameId = $request->game_id;
+    	$type = $request->type;
+    	$gameName = $request->game_name;
+    	// dd($gameId, $type, $gameName);
+    	return view('backend.leveling.price.create', compact('gameId', 'gameName', 'type'));
+    }
+
+    /**
+     * 添加
      * @param Request $request [description]
      */
     public function store(Request $request)
     {
     	$data = $request->data;
-
-    	if (! isset($request->data['game_leveling_type']) || ! isset($request->data['game_id'])) {
-    		return response()->ajax(0, '请选择游戏或代练类型');
+    	$gameId = $request->game_id;
+    	$type = $request->type;
+    	$gameName = $request->game_name;
+		// dd($gameId, $gameName, $type);
+    	if (! isset($gameId) || ! isset($gameName) || ! isset($type) ) {
+    		return response()->ajax(0, '未知错误');
     	}
 
     	if (isset($data) && ! empty($data)) {
-    		$data['game_name'] = Game::find($data['game_id']) ? Game::find($data['game_id'])->name : '';
+    		$data['game_id'] = $gameId;
+    		$data['game_name'] = $gameName;
+    		$data['game_leveling_type'] = $type;
     	}
-    	LevelingConfigure::create($data);
+    	LevelingPriceConfigure::create($data);
     	
     	return response()->ajax(1, '添加成功');
     }
@@ -118,9 +118,8 @@ class LevelingConfigureController extends Controller
      */
     public function edit(Request $request)
     {
-    	$data = LevelingConfigure::find($request->id);
+    	$data = LevelingPriceConfigure::find($request->id);
 
-    	// 所有宝贝
         $games = GoodsTemplate::where('goods_templates.status', 1)
         	->where('goods_templates.service_id', 4)
         	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
@@ -148,7 +147,7 @@ class LevelingConfigureController extends Controller
         	$types = [];
         }
 
-    	return view('backend.leveling.config.edit', compact('data', 'types', 'games'));
+    	return view('backend.leveling.price.edit', compact('data', 'types', 'games'));
     }
 
     /**
@@ -158,23 +157,22 @@ class LevelingConfigureController extends Controller
      */
     public function update(Request $request)
     {
-    	$levelingConfigure = LevelingConfigure::find($request->id);
+    	try {
+	    	$levelingConfigure = LevelingPriceConfigure::find($request->id);
 
-    	if (! isset($request->data['game_leveling_type']) || ! isset($request->data['game_id'])) {
-    		return response()->ajax(0, '请选择游戏或代练类型');
+	    	if ($levelingConfigure) {
+	    		$levelingConfigure->game_leveling_number = $request->data['game_leveling_number'];
+	    		$levelingConfigure->game_leveling_level = $request->data['game_leveling_level'];
+	    		$levelingConfigure->level_price = $request->data['level_price'];
+	    		$levelingConfigure->level_hour = $request->data['level_hour'];
+	    		$levelingConfigure->level_security_deposit = $request->data['level_security_deposit'];
+	    		$levelingConfigure->level_efficiency_deposit = $request->data['level_efficiency_deposit'];
+	    		$levelingConfigure->save();
+	    	}
+	    	return response()->ajax(1, '修改成功');
+    	} catch (Exception $e) {
+    		return response()->ajax(0, '修改失败');
     	}
-
-    	if ($levelingConfigure) {
-    		$levelingConfigure->game_id = $request->data['game_id'];
-    		$levelingConfigure->game_name = Game::find($request->data['game_id']) ? Game::find($request->data['game_id'])->name : '';
-    		$levelingConfigure->rebate = $request->data['rebate'];
-    		$levelingConfigure->game_leveling_type = $request->data['game_leveling_type'];
-    		$levelingConfigure->game_leveling_requirements = $request->data['game_leveling_requirements'];
-    		$levelingConfigure->game_leveling_instructions = $request->data['game_leveling_instructions'];
-    		$levelingConfigure->user_qq = $request->data['user_qq'];
-    		$levelingConfigure->save();
-    	}
-    	return response()->ajax('1', '修改成功');
     }
 
     /**
@@ -186,17 +184,7 @@ class LevelingConfigureController extends Controller
     {
     	DB::beginTransaction();
     	try {
-	    	$levelingConfigure = LevelingConfigure::find($request->id);
-
-	    	$levelingConfigure->delete();
-	    	
-	    	LevelingPriceConfigure::where('game_id', $levelingConfigure->game_id)
-	    		->where('game_leveling_type', $levelingConfigure->game_leveling_type)
-	    		->delete();
-
-	    	LevelingRebateConfigure::where('game_id', $levelingConfigure->game_id)
-	    		->where('game_leveling_type', $levelingConfigure->game_leveling_type)
-	    		->delete();
+	    	LevelingPriceConfigure::destroy($request->id);
     	} catch (Exception $e) {
     		DB::rollback();
     		return response()->ajax(0, '删除失败');

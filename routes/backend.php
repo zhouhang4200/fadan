@@ -497,20 +497,20 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('update', 'LevelingConfigureController@update')->name('config.leveling.update');
             Route::post('delete', 'LevelingConfigureController@delete')->name('config.leveling.delete');
             Route::post('type', 'LevelingConfigureController@types')->name('config.leveling.type');
-            // // 价格配置
-            // Route::get('/', 'LevelingPriceConfigureController@index')->name('config.leveling.price.index');
-            // Route::get('create', 'LevelingPriceConfigureController@create')->name('config.leveling.price.create');
-            // Route::post('store', 'LevelingPriceConfigureController@store')->name('config.leveling.price.store');
-            // Route::get('edit', 'LevelingPriceConfigureController@edit')->name('config.leveling.price.edit');
-            // Route::post('update', 'LevelingPriceConfigureController@update')->name('config.leveling.price.update');
-            // Route::post('delete', 'LevelingPriceConfigureController@delete')->name('config.leveling.price.delete');
-            // // 折扣配置
-            // Route::get('/', 'LevelingRebateConfigureController@index')->name('config.leveling.rebate.index');
-            // Route::get('create', 'LevelingRebateConfigureController@create')->name('config.leveling.rebate.create');
-            // Route::post('store', 'LevelingRebateConfigureController@store')->name('config.leveling.rebate.store');
-            // Route::get('edit', 'LevelingRebateConfigureController@edit')->name('config.leveling.rebate.edit');
-            // Route::post('update', 'LevelingRebateConfigureController@update')->name('config.leveling.rebate.update');
-            // Route::post('delete', 'LevelingRebateConfigureController@delete')->name('config.leveling.rebate.delete');
+            // 价格配置
+            Route::get('price', 'LevelingPriceConfigureController@index')->name('config.leveling.price.index');
+            Route::get('price/create', 'LevelingPriceConfigureController@create')->name('config.leveling.price.create');
+            Route::post('price/store', 'LevelingPriceConfigureController@store')->name('config.leveling.price.store');
+            Route::get('price/edit/{id}', 'LevelingPriceConfigureController@edit')->name('config.leveling.price.edit');
+            Route::post('price/update', 'LevelingPriceConfigureController@update')->name('config.leveling.price.update');
+            Route::post('price/delete', 'LevelingPriceConfigureController@delete')->name('config.leveling.price.delete');
+            // 折扣配置
+            Route::get('rebate', 'LevelingRebateConfigureController@index')->name('config.leveling.rebate.index');
+            Route::get('rebate/create', 'LevelingRebateConfigureController@create')->name('config.leveling.rebate.create');
+            Route::post('rebate/store', 'LevelingRebateConfigureController@store')->name('config.leveling.rebate.store');
+            Route::get('rebate/edit/{id}', 'LevelingRebateConfigureController@edit')->name('config.leveling.rebate.edit');
+            Route::post('rebate/update', 'LevelingRebateConfigureController@update')->name('config.leveling.rebate.update');
+            Route::post('rebate/delete', 'LevelingRebateConfigureController@delete')->name('config.leveling.rebate.delete');
         });
     });
 
