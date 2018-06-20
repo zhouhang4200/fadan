@@ -495,13 +495,18 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </a>
                         <ul class="submenu">
                             <li>
-                                <a href="{{ route('config.game') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                <a href="{{ route('config.game') }}" @if($currentRouteName == 'config.game') class="active" @endif>
                                     游戏配置
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
+                                <a href="{{ route('config.export') }}" @if($currentRouteName == 'config.export') class="active" @endif>
                                     区服配置
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('config.leveling.index') }}" @if($currentRouteName == 'config.leveling.index') class="active" @endif>
+                                    标品下单
                                 </a>
                             </li>
                         </ul>

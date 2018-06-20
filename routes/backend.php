@@ -483,6 +483,31 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
 
         Route::get('export', 'ConfigController@export')->name('config.export');
         Route::post('import', 'ConfigController@import')->name('config.import');
+
+        // 代练配置
+        Route::prefix('leveling')->group(function () {
+            Route::get('/', 'LevelingConfigureController@index')->name('config.leveling.index');
+            Route::get('create', 'LevelingConfigureController@create')->name('config.leveling.create');
+            Route::post('store', 'LevelingConfigureController@store')->name('config.leveling.store');
+            Route::get('edit/{id}', 'LevelingConfigureController@edit')->name('config.leveling.edit');
+            Route::post('update', 'LevelingConfigureController@update')->name('config.leveling.update');
+            Route::post('delete', 'LevelingConfigureController@delete')->name('config.leveling.delete');
+            Route::post('type', 'LevelingConfigureController@types')->name('config.leveling.type');
+            // // 价格配置
+            // Route::get('/', 'LevelingPriceConfigureController@index')->name('config.leveling.price.index');
+            // Route::get('create', 'LevelingPriceConfigureController@create')->name('config.leveling.price.create');
+            // Route::post('store', 'LevelingPriceConfigureController@store')->name('config.leveling.price.store');
+            // Route::get('edit', 'LevelingPriceConfigureController@edit')->name('config.leveling.price.edit');
+            // Route::post('update', 'LevelingPriceConfigureController@update')->name('config.leveling.price.update');
+            // Route::post('delete', 'LevelingPriceConfigureController@delete')->name('config.leveling.price.delete');
+            // // 折扣配置
+            // Route::get('/', 'LevelingRebateConfigureController@index')->name('config.leveling.rebate.index');
+            // Route::get('create', 'LevelingRebateConfigureController@create')->name('config.leveling.rebate.create');
+            // Route::post('store', 'LevelingRebateConfigureController@store')->name('config.leveling.rebate.store');
+            // Route::get('edit', 'LevelingRebateConfigureController@edit')->name('config.leveling.rebate.edit');
+            // Route::post('update', 'LevelingRebateConfigureController@update')->name('config.leveling.rebate.update');
+            // Route::post('delete', 'LevelingRebateConfigureController@delete')->name('config.leveling.rebate.delete');
+        });
     });
 
     // 新的前台权限
