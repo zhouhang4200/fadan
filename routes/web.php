@@ -365,8 +365,14 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 Route::get('/', 'ComplaintsController@index')->name('frontend.workbench.leveling.complaints');
                 // 发起投诉
                 Route::post('/', 'ComplaintsController@store')->name('frontend.workbench.leveling.complaints');
+                // 查看
+                Route::post('show', 'ComplaintsController@show')->name('frontend.workbench.leveling.complaints-show');
+                // 取消投诉
+                Route::post('cancel', 'ComplaintsController@cancel')->name('frontend.workbench.leveling.complaints-cancel');
                 // 数据
                 Route::post('list-data', 'ComplaintsController@listData')->name('frontend.workbench.leveling.complaints-list-data');
+                // 投诉图片
+                Route::post('images', 'ComplaintsController@images')->name('frontend.workbench.leveling.complaints.images');
             });
          });
         // 获取用户所有前台可显示的商品

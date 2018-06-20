@@ -11,7 +11,7 @@ use App\Extensions\Dailian\Controllers\DailianFactory;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Services\Leveling\WanziController;
-use Auth;
+use Auth, Config, Mail;
 use App\Models\OrderBasicData;
 use Asset;
 use App\Models\TaobaoTrade;
@@ -27,6 +27,10 @@ use App\Extensions\Asset\Income;
 use App\Models\PlatformAsset;
 use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
+use Illuminate\Mail\Mailer;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
 use App\Extensions\Order\Operations\Create;
 use App\Extensions\Order\Operations\GrabClose;
@@ -65,6 +69,8 @@ use App\Models\ThirdServer;
 use App\Models\ThirdArea;
 use App\Models\ThirdGame;
 use App\Models\OrderDetail;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 
 class TestController extends Controller
 {
@@ -217,8 +223,19 @@ class TestController extends Controller
     }
 
 
+    protected function setGlobalAddress($mailer, array $config, $type)
+    {
+        $address = Arr::get($config, $type);
+
+        if (is_array($address) && isset($address['address'])) {
+            $mailer->{'always'.Str::studly($type)}($address['address'], $address['name']);
+        }
+    }
     public function index(Request $request)
     {
+
+
+        die;
         // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();
         // $b = isset($a['checkout_time']);
         // $c = $a['checkout_time'] ?? 1;

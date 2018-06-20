@@ -25,7 +25,9 @@ class ComplaintController extends Controller
      */
     public function index(Request $request)
     {
-        $complaint = BusinessmanComplaint::filter(['orderNo' => $request->order_no])->paginate(30);
+        $complaint = BusinessmanComplaint::filter(['orderNo' => $request->order_no, 'status' => $request->status])
+            ->with(['order', 'orderDetail', 'taobaoTrade', 'beComplaintPrimaryUser', 'complaintPrimaryUser'])
+            ->paginate(30);
 
         return view('backend.businessman.complaint.index')->with([
            'complaint' => $complaint,
@@ -94,10 +96,55 @@ class ComplaintController extends Controller
      */
     public function queryOrder(Request $request)
     {
-//        try {
+        try {
             return response()->ajax(1, 'success', Order::where('no', $request->no)->first());
-//        } catch (\Exception $exception) {
-//
-//        }
+        } catch (\Exception $exception) {
+
+        }
+    }
+
+    /**
+     * 操作订单
+     * @param Request $request
+     */
+    public function operation(Request $request)
+    {
+        $complaint = BusinessmanComplaint::where('status', 1)->where('id', $request->id)->first();
+
+        DB::beginTransaction();
+        try {
+            if ($complaint) {
+                if ($request->action == 'agree') {
+                    // 扣被商户投诉钱
+                    Asset::handle(new Expend($complaint->amount, 9, $complaint->order_no, '订单投诉支出', $complaint->be_complaint_primary_user_id));
+                    // 增加投诉商户钱
+                    Asset::handle(new Income($complaint->amount, 17, $complaint->order_no, '订单投诉收入', $complaint->complaint_primary_user_id));
+                }
+                $complaint->status = $request->action == 'agree' ? 3 : 4;
+                $complaint->result = $request->result;
+                $complaint->save();
+            } else {
+                return response()->ajax(0, '申诉不存在');
+            }
+        } catch (\Exception $exception) {
+            return response()->ajax(0, $exception->getMessage());
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功');
+    }
+
+    /**
+     * 图片
+     * @param Request $request
+     */
+    public function images(Request $request)
+    {
+        $complaint = BusinessmanComplaint::where('id', $request->id)->first();
+
+        if ($complaint) {
+            return response()->ajax(1, '获取成功', json_decode($complaint->images, true));
+        } else {
+            return response()->ajax(0, '没有图片');
+        }
     }
 }

@@ -11,7 +11,7 @@ $workbenchRoute = [
    'frontend.workbench.leveling.wait',
    'frontend.workbench.leveling.create',
    'frontend.workbench.leveling.index',
-   'frontend.workbench.leveling.complaint',
+   'frontend.workbench.leveling.complaints',
 ];
 
 $accountRoute = [
@@ -249,11 +249,11 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.workbench.leveling.index') }}">代练订单</a>
                                     </dd>
                                 @endif
-                                {{--@if(Auth::user()->could('frontend.workbench.leveling.index'))--}}
-                                    {{--<dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.complaint') layui-this  @endif">--}}
-                                        {{--<a href="{{ route('frontend.workbench.leveling.complaint') }}">订单投诉</a>--}}
-                                    {{--</dd>--}}
-                                {{--@endif--}}
+                                @if(Auth::user()->could('frontend.workbench.leveling.index'))
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.workbench.leveling.complaints') layui-this  @endif">
+                                        <a href="{{ route('frontend.workbench.leveling.complaints') }}">订单投诉</a>
+                                    </dd>
+                                @endif
                             </dl>
                         </li>
                     @endif

@@ -102,7 +102,7 @@
                         <li class="" lay-id="0">全部
                             <span  class="qs-badge quantity-9 layui-hide"></span>
                         </li>
-                        <li class="layui-this" lay-id="1">投诉
+                        <li class="layui-this" lay-id="1">投诉中
                             <span class="qs-badge quantity-1 layui-hide"></span>
                         </li>
                         <li class="" lay-id="2">已取消
@@ -121,6 +121,11 @@
             </div>
         </div>
     </div>
+
+@endsection
+
+@section('pop')
+    <div class="layui-carousel" id="carousel" style="display: none"></div>
 @endsection
 
 @section('js')
@@ -132,30 +137,36 @@
             @{{ d.third_name }}：<a style="color:#1f93ff" href="{{ route('frontend.workbench.leveling.detail') }}?no=@{{ d.no }}" target="_blank"> @{{  d.third_order_no }} </a>
         @{{#  } }}
     </script>
+    <script type="text/html" id="operationTemplate">
+        <button class="qs-btn qs-btn-sm screenshot" style="width: 80px;"  data-id="@{{ d.id }}">查看截图</button>
+        @{{# if(d.status == 1) { }}
+            <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table cancel" style="width: 80px;" data-id="@{{ d.id }}">取消投诉</button>
+        @{{#  } }}
+    </script>
+    <script id="images" type="text/html">
+        <div carousel-item="" id="">
+            @{{# var i = 0; layui.each(d, function(index, item){ }}
+            <div  style="background: url(/@{{ d[index]  }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+            </div>
+            @{{# if(i == 0){   i = 1;  } }}
+            @{{# }); }}
+        </div>
+    </script>
     <script type="text/html" id="changeStyleTemplate">
         <style>
             .layui-table-view .layui-table[lay-size=sm] td .laytable-cell-@{{ d  }}-no{
                 height: 40px;
                 line-height: 20px;
             }
-            .layui-table-view .layui-table[lay-size=sm] td  .laytable-cell-@{{ d  }}-button{
-                display: block;
-                height: 40px;
-                line-height: 40px;
-                word-break: break-all;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding-left: 15px;
-            }
+
             .layui-laypage .layui-laypage-curr .layui-laypage-em {
                 background-color: #ff8500;
             }
         </style>
     </script>
     <script>
-        layui.use(['table', 'form', 'layedit', 'laydate', 'laytpl', 'element'], function () {
-            var form = layui.form, layer = layui.layer, element = layui.element, layTpl = layui.laytpl, table = layui.table , tableIns;
+            layui.use(['table','form', 'layedit', 'laydate', 'laytpl', 'element', 'carousel'], function(){
+                var form = layui.form, layer = layui.layer, layTpl = layui.laytpl, element = layui.element, carousel =  layui.carousel, table = layui.table;
             // 状态切换
             element.on('tab(list-data)', function () {
                 $('[name=status]').val(this.getAttribute('lay-id'));
@@ -169,17 +180,17 @@
             // 加载数据
             table.render({
                 elem: '#list-data',
-                url: '{{ route('frontend.workbench.leveling.complaint-list-data') }}',
+                url: '{{ route('frontend.workbench.leveling.complaints-list-data') }}',
                 method: 'post',
                 cols: [[
-                    {field: 'no', title: '订单号', width: 150, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},
+                    {field: 'no', title: '订单号', width: 250, templet: '#noTemplate', style:"height: 40px;line-height: 20px;"},
                     {field: 'taobao_status', title: '淘宝订单状态', width: 200},
                     {field: 'order_status', title: '平台订单状态', width: 120},
                     {field: 'game_name', title: '游戏', width: 120},
                     {field: 'amount', title: '要求赔偿金额', width: 150},
                     {field: 'status_text', title: '投诉状态'},
                     {field: 'created_at', title: '投诉时间'},
-                    {field: 'button', title: '操作', width: 155,  toolbar: '#operation', fixed: 'right'},
+                    {field: 'button', title: '操作', width: 200,  toolbar: '#operationTemplate', fixed: 'right', style:"height: 28px;line-height: 40px;"}
                 ]],
                 height: 'full-235',
                 size: 'sm',
@@ -241,6 +252,65 @@
                     view.append(html);
                 });
             }
+            // 查看图片
+            var ins = carousel.render({
+                elem: '#carousel',
+                anim: 'fade',
+                width: '500px',
+                arrow: 'always',
+                autoplay: false,
+                height: '500px',
+                indicator: 'none'
+            });
+            $('body').on('click', '.screenshot', function () {
+                var id = $(this).attr('data-id');
+                $.post("{{ route('frontend.workbench.leveling.complaints.images') }}", {id:id}, function (result) {
+                    if (result.status === 1) {
+                        if (result.content.length > 0 ) {
+
+                            var getTpl = images.innerHTML, view = $('#carousel');
+                            layTpl(getTpl).render(result.content, function(html){
+                                view.html(html);
+                                layui.form.render();
+                            });
+
+                            layer.open({
+                                type: 1,
+                                title: false ,
+                                area: ['50%', '500px'],
+                                shade: 0.8,
+                                shadeClose: true,
+                                moveType: 1,
+                                content: $('#carousel'),
+                                success: function () {
+                                    //改变下时间间隔、动画类型、高度
+                                    ins.reload({
+                                        elem: '#carousel',
+                                        anim: 'fade',
+                                        width: '100%',
+                                        arrow: 'always',
+                                        autoplay: false,
+                                        height: '100%',
+                                        indicator: 'none'
+                                    });
+                                }
+                            });
+                        } else {
+                            layer.msg('暂时没有图片', {icon: 5});
+                        }
+                    }
+                });
+            });
+            // 取消投诉
+            $('body').on('click', '.cancel', function () {
+                var id = $(this).attr('data-id');
+                $.post('{{ route('frontend.workbench.leveling.complaints-cancel') }}', {id:id}, function () {
+                    layer.msg('取消成功', {icon: 6}, function () {
+                    });
+                    reloadOrderList();
+                }, 'json');
+                layer.closeAll();
+            });
         });
     </script>
 @endsection

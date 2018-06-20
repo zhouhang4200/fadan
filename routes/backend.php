@@ -162,6 +162,10 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('create', 'ComplaintController@create')->name('businessman.complaint.create');
             Route::post('/', 'ComplaintController@store')->name('businessman.complaint.store');
             Route::post('query-order', 'ComplaintController@queryOrder')->name('businessman.complaint.query-order');
+            // 申诉操作
+            Route::post('operation', 'ComplaintController@operation')->name('businessman.complaint.operation');
+            // 投诉图片
+            Route::post('images', 'ComplaintController@images')->name('businessman.complaint.images');
         });
 
         // 店铺授权管理

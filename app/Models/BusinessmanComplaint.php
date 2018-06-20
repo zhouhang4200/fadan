@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BusinessmanComplaint extends Model
 {
     public  $statusText = [
-      1 => '投诉',
+      1 => '投诉中',
       2 => '已取消',
       3 => '投诉成功',
       4 => '投诉失败',
@@ -17,8 +17,11 @@ class BusinessmanComplaint extends Model
       'complaint_primary_user_id',
       'be_complaint_primary_user_id',
       'order_no',
+      'game_id',
       'amount',
       'remark',
+      'result',
+      'images',
     ];
 
     /**
@@ -34,7 +37,7 @@ class BusinessmanComplaint extends Model
                 ->value('order_no');
             $query->where('order_no', $no);
         }
-        if (isset($filters['status']) && $filters['status']) {
+        if (isset($filters['status']) && $filters['status'] > 0) {
             $query->where('status', $filters['status']);
         }
         if (isset($filters['gameId']) && $filters['gameId']) {
@@ -81,5 +84,23 @@ class BusinessmanComplaint extends Model
     public function taobaoTrade()
     {
         return $this->belongsTo(TaobaoTrade::class, 'foreign_order_no', 'tid');
+    }
+
+    /**
+     * 被投诉人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function beComplaintPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'be_complaint_primary_user', 'id');
+    }
+
+    /**
+     * 投诉人
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function complaintPrimaryUser()
+    {
+        return $this->belongsTo(User::class, 'complaint_primary_user', 'id');
     }
 }
