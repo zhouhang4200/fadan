@@ -761,8 +761,8 @@ class IndexController extends Controller
                     }
                 }
             }
-        } catch (CustomException $e) {
-            return response()->ajax($e->getCode(), $e->getMessage());
+        } catch (Exception $e) {
+            return response()->ajax(1, $e->getMessage());
         }
         return response()->ajax(1, 'success', $dataList);
     }
