@@ -84,7 +84,7 @@ class OrderRepository
                 '原因',
                 '下单时间',
             ]);
-            $order->chunk(1000, function ($items) use ($out) {
+            $order->chunk(500, function ($items) use ($out) {
                 $orders = $items->toArray();
 
                 foreach ($orders as $k => $v) {
