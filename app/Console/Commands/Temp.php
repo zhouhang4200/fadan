@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Events\OrderApplyComplete;
 use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
+use App\Extensions\Asset\Facades\Asset;
+use App\Extensions\Asset\Income;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\DailianFactory;
 use App\Extensions\Dailian\Controllers\Delete;
@@ -22,6 +24,7 @@ use App\Services\Leveling\MayiDailianController;
 use App\Services\Leveling\Show91Controller;
 use App\Services\Show91;
 use App\Services\SmSApi;
+use App\Services\TmallOrderApi;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
@@ -78,24 +81,7 @@ class Temp extends Command
      */
     public function handle()
     {
-
-
-        Config::set('mail.username', 'liaorende@fulu.com');
-        Config::set('mail.password', 'Wsade32d');
-        Config::set('mail.host', 'smtp.mxhichina.com');
-//
-
-        Mail::send('frontend.emails.complaints',[
-            'order' => '11212',
-            'amount' => '50',
-            'remark' => '11',
-            'image1' => '',
-            'image2' => '',
-            'image3' => ''
-        ],function($message){
-            $to = '442962403@qq.com';
-            $message->to($to)->cc('yangfan@fulu.com')->subject('邮件测试')->from('liaorende@fulu.com');
-        });
+        Asset::handle(new Income(10, 7, '2018050710405800000469', '退回协商代练费', '8523'));
         die;
 
         $no = $this->argument('no');
