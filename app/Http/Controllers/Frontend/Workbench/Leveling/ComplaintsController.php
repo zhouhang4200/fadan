@@ -166,7 +166,7 @@ class ComplaintsController extends Controller
                 $complaintArr['remark'] = $request->remark;
                 $complaintArr['order_no'] = $orderInfo->no;
                 $complaintArr['game_id'] = $orderInfo->game_id;
-                $complaintArr['foreign_order_no'] = $request->foreign_order_no;
+                $complaintArr['foreign_order_no'] = $orderInfo->foreign_order_no;
                 $complaintArr['complaint_primary_user_id'] = $complaintPrimaryUserId;
                 $complaintArr['be_complaint_primary_user_id'] = $beComplaintPrimaryUserId;
                 $complaintArr['images'] = json_encode($complaintArr['img']);
@@ -180,7 +180,7 @@ class ComplaintsController extends Controller
 
                 $to = config('leveling.third_email')[$orderInfo->gainer_primary_user_id];
                 // 发送邮件通知接单平台
-                sendMail('smtp.mxhichina.com', 'liaorende@fulu.com', 'Wsade32d')->send('frontend.emails.complaints',[
+                sendMail('smtp.mxhichina.com', 'jinjian@fulu.com', '880203Vic')->send('frontend.emails.complaints',[
                     'order' => $thirdOrder,
                     'amount' => $request->amount,
                     'remark' => $request->remark,
@@ -188,7 +188,7 @@ class ComplaintsController extends Controller
                     'image2' => isset($complaintArr['img'][1]) ? asset($complaintArr['img'][1]) : '',
                     'image3' => isset($complaintArr['img'][2]) ? asset($complaintArr['img'][2]) : '',
                 ],function($message) use ($emailTitle, $to) {
-                    $message->from('liaorende@fulu.com', '淘宝发单平台');
+                    $message->from('jinjian@fulu.com', '淘宝发单平台');
                     $message->to($to)->cc('yangfan@fulu.com')->subject($emailTitle);
                 });
 

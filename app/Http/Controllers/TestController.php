@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 use Illuminate\Mail\Mailer;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
@@ -233,14 +234,7 @@ class TestController extends Controller
     }
     public function index(Request $request)
     {
-        // Asset::handle(new Recharge(5000.1234, Recharge::TRADE_SUBTYPE_AUTO, '2017101' . rand(1000, 9999), '自动充值', Auth::user()->id, 888));
-        // Asset::handle(new Freeze(1850.4312, Freeze::TRADE_SUBTYPE_WITHDRAW, '2017101' . rand(1000, 9999), '提现冻结', Auth::user()->id, 888));
-        // Asset::handle(new Withdraw(550.4565, Withdraw::TRADE_SUBTYPE_MANUAL, '2017101' . rand(1000, 9999), '提现成功', Auth::user()->id, 888));
-        // Asset::handle(new Unfreeze(310.2342, Unfreeze::TRADE_SUBTYPE_WITHDRAW, '2017101' . rand(1000, 9999), '解冻成功', Auth::user()->id, 888));
-        // Asset::handle(new Consume(220.4903, Consume::TRADE_SUBTYPE_BROKERAGE, '2017101' . rand(1000, 9999), '消费手续费', Auth::user()->id, 888));
-        // Asset::handle(new Refund(150.2348, Refund::TRADE_SUBTYPE_BROKERAGE, '2017101' . rand(1000, 9999), '手续费退款', Auth::user()->id, 888));
-        // Asset::handle(new Expend(10, Expend::TRADE_SUBTYPE_ORDER_MARKET, '2017101', '下订单', Auth::user()->id, 888));
-        // Asset::handle(new Income(10, Income::TRADE_SUBTYPE_ORDER_MARKET, '20171019177', '接单发货', Auth::user()->id, 888));
+
     }
 
     public function testAsset()

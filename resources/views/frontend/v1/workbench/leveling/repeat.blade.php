@@ -201,6 +201,7 @@
                     <input type="hidden" name="client_wang_wang" value="{{ $detail['client_wang_wang'] ?? '' }}">
                     <input type="hidden" name="seller_nick" value="{{ $detail['seller_nick'] ?? '' }}">
                     <input type="hidden" name="is_repeat" value="1">
+                    <input id="zh_no" type="hidden" name="zh_no" lay-id="{{ $detail['order_no'] ?? '' }}" value="{{ $detail['order_no'] ?? '' }}">
 
                     <div class="layui-row layui-col-space10 layui-form-item">
 
@@ -952,6 +953,76 @@
                         loadBusinessmanContactTemplate(gameId);
                     }
                 });
+            });
+
+            // 计算来源价格
+            $("body").on('blur', 'input[name=source_order_no]', function(){
+                var no = document.getElementById('zh_no').getAttribute('lay-id');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_order_no_1]', function(){
+               var no = document.getElementById('zh_no').getAttribute('lay-id');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_order_no_2]', function(){
+                var no = document.getElementById('zh_no').getAttribute('lay-id');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
+            });
+            $("body").on('blur', 'input[name=source_price]', function(){
+                var no = document.getElementById('zh_no').getAttribute('lay-id');
+                var source_price= $('input[name=source_price]').val();
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
+                    if (result.status == 1) {
+                        $('input[name=source_price]').val(result.message);
+                        $('input[name=source_price]').html(result.message);
+                    }
+                    layui.form.render();
+                }, 'json');
             });
         });
     </script>

@@ -1445,44 +1445,30 @@
                     });
                 } else if (opt == 'complete') {
 
-                    layer.alert("确定完成订单？<br/><input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
-                        btn: ['确定', '取消'],
-                        yes:function(index){
-                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                                orderNo: orderNo,
-                                keyWord: opt,
-                                delivery: delivery
-                            }, function (result) {
-                                if (result.status == 1) {
-                                    location.reload();
-                                    layer.closeAll();
-                                    layer.msg(result.message, {icon: 6},function () {
-                                    });
-                                } else {
-                                    layer.msg(result.message, {icon: 5}, function () {});
-                                }
-                            }, 'json');
-                        }
+                    layer.open({
+                        type:6,
+                        btn:false,
+                        content: '<div style="padding:20px 60px;font-size: 14px">确定完成订单？<br/><input type="checkbox" checked id="delivery"> 同时提交淘宝/天猫订单发货</div><div style="text-align: center;margin-bottom: 20px">' +
+                        '<button class="qs-btn delivery-confirm">确定</button>&nbsp;&nbsp;&nbsp;<button class="qs-btn qs-btn-primary  qs-btn-table cancel">取消</button></div>'
                     });
 
-                    {{--layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {--}}
-                        {{--title: '提示'--}}
-                    {{--}, function (index) {--}}
-                        {{--$.post("{{ route('frontend.workbench.leveling.status') }}", {--}}
-                            {{--orderNo: orderNo,--}}
-                            {{--keyWord: opt,--}}
-                            {{--delivery: delivery--}}
-                        {{--}, function (result) {--}}
-                            {{--if (result.status == 1) {--}}
-                                    {{--location.reload();--}}
-                                {{--layer.msg(result.message, {icon: 6}, function () {--}}
-                                {{--});--}}
-                            {{--} else {--}}
-                                {{--layer.msg(result.message, {icon: 5});--}}
-                            {{--}--}}
-                        {{--});--}}
-                        {{--layer.close(index);--}}
-                    {{--});--}}
+                    $('body').on('click', '.delivery-confirm', function () {
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt,
+                            delivery: delivery
+                        }, function (result) {
+                            if (result.status == 1) {
+                                location.reload();
+                                layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {});
+                            } else {
+                                layer.msg(result.message, {icon: 5});
+                            }
+                        }, 'json');
+                    });
+
+                    return false;
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
                         var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
@@ -1963,13 +1949,21 @@
                 }
             });
 
+            $('body').on('click', '.cancel', function () {
+                layer.closeAll();
+            });
+
             // 计算来源价格
             $("body").on('blur', 'input[name=source_order_no]', function(){
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
                 var source_no= $('input[name=source_order_no]').val();
                 var source_name = 'source_order_no';
-
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -1978,10 +1972,15 @@
                 }, 'json');
             });
             $("body").on('blur', 'input[name=source_order_no_1]', function(){
-                var no = document.getElementById('order_detail').getAttribute('lay-no');
-                var source_no= $('input[name=source_order_no_1]').val();
-                var source_name = 'source_order_no_1';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+               var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -1991,9 +1990,14 @@
             });
             $("body").on('blur', 'input[name=source_order_no_2]', function(){
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
-                var source_no= $('input[name=source_order_no_2]').val();
-                var source_name = 'source_order_no_2';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -2004,8 +2008,13 @@
             $("body").on('blur', 'input[name=source_price]', function(){
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
                 var source_price= $('input[name=source_price]').val();
-                var source_name = 'source_price';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_price:source_price, source_name:source_name}, function (result) {
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);

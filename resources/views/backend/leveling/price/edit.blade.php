@@ -102,7 +102,6 @@
             });
                 return false;
         });
-
     });
 </script>
 @endsection

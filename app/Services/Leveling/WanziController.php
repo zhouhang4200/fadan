@@ -653,23 +653,27 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	       	// 发送
 	       	$message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage'], 'getMessage', $orderDatas);
 
-	       	if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
-	       		$sortField = [];
-	            $messageArr = [];
-	            foreach ($message['data'] as $item) {
-	                if (isset($item['id'])) {
-	                    $sortField[] = $item['created_on'];
-	                } else {
-	                    $sortField[] = 0;
-	                }
-	                $messageArr[] = $item;
-	            }
-	            // 用ID倒序
-	            array_multisort($sortField, SORT_ASC, $messageArr);
+            if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
+                $sortField = [];
+                $messageArr = [];
+                foreach ($message['data'] as $item) {
+                    if (isset($item['id'])) {
+                        $sortField[] = $item['created_on'];
+                    } else {
+                        $sortField[] = 0;
+                    }
+                    $messageArr[] = [
+                        'sender' =>  isset($item['uid']) && $item['uid'] == config('leveling.wanzi.uid') ? '您': ($item['userNickname'] == '系统留言' ? '系统留言' :  '打手'),
+                        'send_content' => $item['mess'],
+                        'send_time' => $item['created_on'],
+                    ];
+                }
+                // 用ID倒序
+                array_multisort($sortField, SORT_ASC, $messageArr);
 
-	            return $messageArr;
-	       	}
-	       	return '';
+                return $messageArr;
+            }
+            return '';
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());

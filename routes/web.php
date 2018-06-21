@@ -494,6 +494,13 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     });
 });
 
+Route::middleware(['auth:web'])->namespace('Mobile')->group(function () {
+    // 手机端标品下单
+    Route::prefix('mobile')->group(function () {
+
+    });
+});
+
 Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {
     Route::get('/', 'ExchangeController@index')->name('exchange.index');
     // 兑换登录
