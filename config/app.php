@@ -188,6 +188,7 @@ return [
         App\Extensions\Weight\WeightServiceProvider::class,
         // ajax 响应
         App\Providers\ResponseMacroServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
     ],
 
     /*
@@ -245,6 +246,7 @@ return [
         'Order' => App\Extensions\Order\Operations\Facades\Order::class,
         // 权重
         'Weight' => App\Extensions\Weight\Facade::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
     'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php')

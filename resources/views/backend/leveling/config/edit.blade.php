@@ -14,6 +14,16 @@
             /* width: 100%; */
             padding-left: 10px;
         }
+        .layui-form-select dl {
+            position: relative; 
+            min-width: 0px; 
+            top:0px;
+            width: 300px;
+        }
+
+        .layui-edge {
+            display: none;
+        }
     </style>
 @endsection
 

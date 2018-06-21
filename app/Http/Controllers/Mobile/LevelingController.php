@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use Agent;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
@@ -24,11 +25,17 @@ class LevelingController extends Controller
 	 */
     public function getDemand(Request $request)
     {
-    	$games = GoodsTemplate::where('goods_templates.status', 1)
-        	->where('goods_templates.service_id', 4)
-        	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
-        	->select('games.id', 'games.name')
-        	->get();
+        if (Agent::isMobiale()) {
+        	$games = GoodsTemplate::where('goods_templates.status', 1)
+            	->where('goods_templates.service_id', 4)
+            	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
+            	->select('games.id', 'games.name')
+            	->get();
+
+            return view('mobile.demand', compact('games'));
+        } else {
+            abort(404);
+        }
     }
 
      /**
