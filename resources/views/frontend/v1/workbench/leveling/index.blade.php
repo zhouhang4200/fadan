@@ -854,7 +854,6 @@
                                 layer.msg(result.message, {icon: 5}, function () {});
                             }
                         });
-                        layer.close(index);
                     });
                     return false
                 } else if (opt == 'agreeRevoke') {
