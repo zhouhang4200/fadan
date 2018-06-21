@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 use Illuminate\Mail\Mailer;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
@@ -233,7 +234,11 @@ class TestController extends Controller
     }
     public function index(Request $request)
     {
+        dd(Cache::get('key2') ? 1 : 2);
+        $now = Carbon::now();
+        $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
 
+        dd($expiresAt,date('Y-m-d') . ' 12:59:59');
 
         die;
         // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();

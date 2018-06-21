@@ -17,6 +17,7 @@ use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * 接单操作
@@ -277,7 +278,14 @@ class Playing extends DailianAbstract implements DailianInterface
             // https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8 测试用
             $userInfo = User::find($this->order->creator_primary_user_id);
 
-            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+            $existCache = Cache::get($this->order->creator_primary_user_id);
+            if (!$existCache && in_array($this->order->creator_primary_user_id, [8803, 8790, 8785, 8711, 8523])) {
+                $now = Carbon::now();
+                $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
+                Cache::put($this->order->creator_primary_user_id, '1', $expiresAt);
+
+                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+            }
 
             $client = new Client();
             $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
@@ -297,7 +305,14 @@ class Playing extends DailianAbstract implements DailianInterface
         if (UserAsset::balance($this->order->gainer_primary_user_id) < $platformBalanceAlarm) {
             $userInfo = User::find($this->order->gainer_primary_user_id);
 
-            sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->gainer_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+            $existCache = Cache::get($this->order->gainer_primary_user_id);
+            if (!$existCache) {
+                $now = Carbon::now();
+                $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
+                Cache::put($this->order->gainer_primary_user_id, '1', $expiresAt);
+
+                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->gainer_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+            }
 
             $client = new Client();
             $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
