@@ -6,6 +6,7 @@ use App\Models\UserAsset;
 use App\Models\PlatformAsset;
 use App\Extensions\Asset\Traits\UserAmountFlowTrait;
 use App\Extensions\Asset\Traits\PlatformAmountFlowTrait;
+use App\Models\ProcessOrder;
 
 // 交易支出（资金内部流动）
 class Expend extends \App\Extensions\Asset\Base\Trade
@@ -24,6 +25,17 @@ class Expend extends \App\Extensions\Asset\Base\Trade
 
         // 指定交易类型
         $this->type = self::TRADE_TYPE_EXPEND;
+
+        // 维护处理中的订单表
+        $processOrder = ProcessOrder::where('order_no', $this->no)->lockForUpdate()->first();
+        if (empty($processOrder)) {
+            ProcessOrder::create(['order_no' => $this->no, 'amount' => $this->fee, 'user_id' => $this->userId]);
+        } else {
+            $processOrder->amount = bcadd($processOrder->amount, $this->fee);
+            if (!$processOrder->save()) {
+                throw new Exception('维护处理中的订单失败');
+            }
+        }
     }
 
     // 更新用户余额
