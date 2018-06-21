@@ -1373,6 +1373,7 @@
                                 pic3: pic3
                             }, function (result) {
                                 if (result.status == 1) {
+                                    layer.closeAll();
                                     layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
@@ -1380,7 +1381,7 @@
                                     });
                                 }
                             });
-                            layer.closeAll();
+
                         }
                         return false;
                     });
@@ -1413,7 +1414,7 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
-                                        location.reload();
+                                    location.reload();
                                     layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
@@ -1431,8 +1432,9 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                    location.reload();
+                                location.reload();
                                 layer.msg(result.message, {icon: 6}, function () {
+
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5});
@@ -1477,7 +1479,7 @@
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
+
                                 });
                             }
                         });

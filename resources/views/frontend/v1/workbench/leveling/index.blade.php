@@ -764,12 +764,10 @@
                             if (result.status == 1) {
                                     reloadOrderList();
                                     layer.closeAll();
-                                layer.msg(result.message, {icon: 6},function () {
-                                });
+                                    layer.msg(result.message, {icon: 6},function () {
+                                    });
                             } else {
-                                layer.msg(result.message, {icon: 5},function () {
-                                    layer.closeAll();
-                                });
+                                layer.msg(result.message, {icon: 5},function () {});
                             }
 
                         });
@@ -810,9 +808,7 @@
                                     layer.msg(result.message, {icon: 6},function () {
                                     });
                                 } else {
-                                    layer.msg(result.message, {icon: 5},function () {
-                                        layer.closeAll();
-                                    });
+                                    layer.msg(result.message, {icon: 5},function () {});
                                 }
                             });
                         }
@@ -855,9 +851,7 @@
                                 layer.msg(result.message, {icon: 6},function () {
                                 });
                             } else {
-                                layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
-                                });
+                                layer.msg(result.message, {icon: 5}, function () {});
                             }
                         });
                         layer.close(index);
@@ -880,9 +874,7 @@
                                 layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
-                                layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
-                                });
+                                layer.msg(result.message, {icon: 5}, function () {});
                             }
                         });
                         layer.close(index);
