@@ -217,8 +217,18 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                             ->update(['field_value' => $this->details['source_order_no_2']]);
                     }
                 }
-            }
 
+                // 将其他单的来源价格更新为此单的来源价格
+                foreach ($otherOrders as $otherOrder) {
+                    OrderDetail::where('order_no', $otherOrder->no)
+                        ->where('order_no', '!=', $this->order->no)
+                        ->where('field_name', 'source_price')
+                        ->update(['field_value' => $this->originalPrice]);
+                    Order::where('no', $otherOrder->no)
+                        ->where('no', '!=', $this->order->no)
+                        ->update(['original_price' =>  $this->originalPrice]);
+                }
+            }
         }
     }
 
