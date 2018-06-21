@@ -520,7 +520,7 @@
                                             @endif
 
                                             @if (in_array($detail['status'], [13, 14, 17, 18]))
-                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">协商撤销</button>
+                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount']+0 }}">协商撤销</button>
                                             @endif
 
                                             @if (in_array($detail['status'], [13,14,15]))
@@ -872,8 +872,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-block">
-                        <button class="layui-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
-                        <span cancel class="layui-btn  layui-btn-normal cancel">取消</span>
+                        <button class="qs-btn  qs-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                        <span cancel class="qs-btn  qs-btn-primary cancel">取消</span>
                     </div>
                 </div>
             </div>
@@ -1281,7 +1281,7 @@
                         type: 1,
                         shade: 0.2,
                         title: '协商撤销',
-                        area: ['650px', '550px'],
+                        area: ['650px', '620px'],
                         content: $('.consult')
                     });
                     form.on('submit(consult)', function (data) {
