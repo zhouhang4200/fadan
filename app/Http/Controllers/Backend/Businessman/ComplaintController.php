@@ -27,6 +27,7 @@ class ComplaintController extends Controller
     {
         $complaint = BusinessmanComplaint::filter(['orderNo' => $request->order_no, 'status' => $request->status])
             ->with(['order', 'orderDetail', 'taobaoTrade', 'beComplaintPrimaryUser', 'complaintPrimaryUser'])
+            ->orderBy('id', 'desc')
             ->paginate(30);
 
         return view('backend.businessman.complaint.index')->with([
