@@ -1578,9 +1578,9 @@ class IndexController extends Controller
                     $orderDetailSourcePrice = 0;
                 }
 
-                $orderDetail = OrderDetail::where('order_no', $request->no)
-                    ->where('field_name', $request->source_name)
-                    ->update(['field_value' => $request->source_no]);
+                // $orderDetail = OrderDetail::where('order_no', $request->no)
+                //     ->where('field_name', $request->source_name)
+                //     ->update(['field_value' => $request->source_no]);
 
                 $sourceOrders = OrderDetail::where('order_no', $request->no)
                     ->where('field_name_alias', 'source_order_no')
@@ -1597,9 +1597,9 @@ class IndexController extends Controller
                 }
 
                 if ($value > $orderDetailSourcePrice) {
-                    OrderDetail::where('order_no', $request->no)
-                        ->where('field_name', 'source_price')
-                        ->update(['field_value' => $value]);
+                    // OrderDetail::where('order_no', $request->no)
+                    //     ->where('field_name', 'source_price')
+                    //     ->update(['field_value' => $value]);
 
                     return response()->ajax(1, $value);
                 }

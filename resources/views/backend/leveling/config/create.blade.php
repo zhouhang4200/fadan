@@ -8,12 +8,24 @@
             width:140px;
         }
 
+        .layui-form-select dl {
+            position: relative; 
+            min-width: 0px; 
+            top:0px;
+            width: 300px;
+        }
+
+        .layui-edge {
+            display: none;
+        }
+
         .layui-input, .layui-textarea {
             display: block;
             width:300px;
             /* width: 100%; */
             padding-left: 10px;
         }
+
     </style>
 @endsection
 
