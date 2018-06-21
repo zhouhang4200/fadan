@@ -240,6 +240,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 </a>
                             </li>
 
+                            <li>
+                                <a href="{{ route('finance.process-order.index') }}" @if($currentRouteName == 'finance.process-order.index') class="active" @endif>
+                                    托管资金明细
+                                </a>
+                            </li>
+
 
                             <li>
                                 <a href="{{ route('finance.user-widthdraw-order') }}" @if($currentRouteName == 'finance.user-widthdraw-order') class="active" @endif>
