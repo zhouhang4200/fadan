@@ -504,6 +504,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::get('price/edit/{id}', 'LevelingPriceConfigureController@edit')->name('config.leveling.price.edit');
             Route::post('price/update', 'LevelingPriceConfigureController@update')->name('config.leveling.price.update');
             Route::post('price/delete', 'LevelingPriceConfigureController@delete')->name('config.leveling.price.delete');
+            Route::post('price/import', 'LevelingPriceConfigureController@import')->name('config.leveling.price.import');
             // 折扣配置
             Route::get('rebate', 'LevelingRebateConfigureController@index')->name('config.leveling.rebate.index');
             Route::get('rebate/create', 'LevelingRebateConfigureController@create')->name('config.leveling.rebate.create');

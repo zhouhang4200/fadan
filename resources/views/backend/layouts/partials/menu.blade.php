@@ -504,8 +504,19 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     区服配置
                                 </a>
                             </li>
+                            <?php $levelingConfigRoutes = [
+                                'config.leveling.index',
+                                'config.leveling.create',
+                                'config.leveling.edit',
+                                'config.leveling.price.index',
+                                'config.leveling.price.create',
+                                'config.leveling.price.edit',
+                                'config.leveling.rebate.index',
+                                'config.leveling.rebate.create',
+                                'config.leveling.rebate.edit',
+                            ]; ?>
                             <li>
-                                <a href="{{ route('config.leveling.index') }}" @if($currentRouteName == 'config.leveling.index') class="active" @endif>
+                                <a href="{{ route('config.leveling.index') }}" @if(in_array($currentRouteName, $levelingConfigRoutes)) class="active" @endif>
                                     标品下单
                                 </a>
                             </li>

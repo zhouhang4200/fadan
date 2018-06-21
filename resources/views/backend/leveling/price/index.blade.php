@@ -32,6 +32,7 @@
                                 </div>
                             <button lbuttony-submit="search"  lay-filter="search" class="layui-btn layui-btn-normal">查询</button>
                             <a lay-submit="add" href="{{ route('config.leveling.price.create', ['game_id' => $gameId, 'game_name' => $gameName, 'type' => $type]) }}" lay-filter="add" class="layui-btn layui-btn-normal">新增</a>
+                            <button type="button" class="layui-btn layui-btn-normal" id="test3">导入</button>
                         </div>
                     </form>
                 </header>
@@ -63,6 +64,20 @@
     layui.use(['form', 'layedit', 'laytpl', 'element', 'laydate', 'table', 'upload'], function(){
         var form = layui.form, layer = layui.layer, laydate = layui.laydate, layTpl = layui.laytpl,
                 element = layui.element, table=layui.table, upload = layui.upload;
+
+        upload.render({
+            elem: '#test3'
+            ,url: '{{ Route('config.leveling.price.import') }}'
+            ,accept: 'file' //普通文件
+            ,exts: 'xls'
+            ,done: function(res){
+                if (res.status == 1) {
+                    layer.alert(res.message);
+                } else {
+                    layer.alert(res.message);
+                }
+            }
+        });            
 
         // 删除单个
         form.on('submit(delete)', function (data) {

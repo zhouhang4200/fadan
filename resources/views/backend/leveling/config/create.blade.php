@@ -3,9 +3,9 @@
 @section('title', ' | 配置管理-标品下单-新增')
 
 @section('css')
-     <style>
+    <style>
         .layui-form-label {
-            width:70px;
+            width:140px;
         }
 
         .layui-input, .layui-textarea {
@@ -30,7 +30,7 @@
                             <form class="layui-form" method="" action="">
                                 {!! csrf_field() !!}
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">游戏</label>
+                                        <label class="layui-form-label">*游戏</label>
                                         <div class="layui-input-block">
                                             <select name="game_id" lay-filter="game" lay-verify="required" lay-search="">
                                                 <option value="">请选择</option>
@@ -43,32 +43,32 @@
                                     </div>
 
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">代练类型</label>
+                                        <label class="layui-form-label">*代练类型</label>
                                         <div class="layui-input-block">
                                             <select name="game_leveling_type" lay-filter="" lay-verify="" lay-search="" id="type">
                                             </select>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">代练说明</label>
+                                        <label class="layui-form-label">*代练说明</label>
                                         <div class="layui-input-block">
                                             <textarea placeholder="请输入内容" name="game_leveling_instructions" lay-verify="required" class="layui-textarea"></textarea>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">代练要求</label>
+                                        <label class="layui-form-label">*代练要求</label>
                                         <div class="layui-input-block">
                                             <textarea placeholder="请输入内容" name="game_leveling_requirements" lay-verify="required" class="layui-textarea"></textarea>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">商户QQ</label>
+                                        <label class="layui-form-label">*商户QQ</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="user_qq" lay-verify="required" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">发单价格固定比例</label>
+                                        <label class="layui-form-label">*发单价格固定比例</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="rebate" lay-verify="required" value="" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
