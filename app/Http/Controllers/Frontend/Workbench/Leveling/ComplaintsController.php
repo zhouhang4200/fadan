@@ -170,6 +170,7 @@ class ComplaintsController extends Controller
                 $complaintArr['complaint_primary_user_id'] = $complaintPrimaryUserId;
                 $complaintArr['be_complaint_primary_user_id'] = $beComplaintPrimaryUserId;
                 $complaintArr['images'] = json_encode($complaintArr['img']);
+                $complaintArr['status'] = 1;
                 // 创建记录
                 BusinessmanComplaint::create($complaintArr);
                 // 获取接单平台订单号

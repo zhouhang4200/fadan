@@ -21,6 +21,7 @@ class BusinessmanComplaint extends Model
       'amount',
       'remark',
       'result',
+      'status',
       'images',
     ];
 

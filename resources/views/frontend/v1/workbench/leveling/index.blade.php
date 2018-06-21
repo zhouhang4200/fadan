@@ -764,12 +764,10 @@
                             if (result.status == 1) {
                                     reloadOrderList();
                                     layer.closeAll();
-                                layer.msg(result.message, {icon: 6},function () {
-                                });
+                                    layer.msg(result.message, {icon: 6},function () {
+                                    });
                             } else {
-                                layer.msg(result.message, {icon: 5},function () {
-                                    layer.closeAll();
-                                });
+                                layer.msg(result.message, {icon: 5},function () {});
                             }
 
                         });
@@ -810,9 +808,7 @@
                                     layer.msg(result.message, {icon: 6},function () {
                                     });
                                 } else {
-                                    layer.msg(result.message, {icon: 5},function () {
-                                        layer.closeAll();
-                                    });
+                                    layer.msg(result.message, {icon: 5},function () {});
                                 }
                             });
                         }
@@ -841,27 +837,44 @@
                     });
                     return false
                 } else if (opt == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
-                        title: '提示'
-                    }, function (index) {
-                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo: orderNo,
-                            keyWord: opt,
-                            delivery: delivery
-                        }, function (result) {
-                            if (result.status == 1) {
+                    layer.alert("确定完成订单？<br/><input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
+                        btn: ['确定', '取消'],
+                        yes:function(index){
+                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                                orderNo: orderNo,
+                                keyWord: opt,
+                                delivery: delivery
+                            }, function (result) {
+                                if (result.status == 1) {
                                     reloadOrderList();
                                     layer.closeAll();
-                                layer.msg(result.message, {icon: 6},function () {
-                                });
-                            } else {
-                                layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
-                                });
-                            }
-                        });
-                        layer.close(index);
+                                    layer.msg(result.message, {icon: 6},function () {
+                                    });
+                                } else {
+                                    layer.msg(result.message, {icon: 5}, function () {});
+                                }
+                            }, 'json');
+                        }
                     });
+
+                    {{--layer.confirm("确定完成订单？<br/> <input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {--}}
+                        {{--title: '提示'--}}
+                    {{--}, function (index) {--}}
+                        {{--$.post("{{ route('frontend.workbench.leveling.status') }}", {--}}
+                            {{--orderNo: orderNo,--}}
+                            {{--keyWord: opt,--}}
+                            {{--delivery: delivery--}}
+                        {{--}, function (result) {--}}
+                            {{--if (result.status == 1) {--}}
+                                    {{--reloadOrderList();--}}
+                                    {{--layer.closeAll();--}}
+                                {{--layer.msg(result.message, {icon: 6},function () {--}}
+                                {{--});--}}
+                            {{--} else {--}}
+                                {{--layer.msg(result.message, {icon: 5}, function () {});--}}
+                            {{--}--}}
+                        {{--});--}}
+                    {{--});--}}
                     return false
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
@@ -880,9 +893,7 @@
                                 layer.msg(result.message, {icon: 6}, function () {
                                 });
                             } else {
-                                layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
-                                });
+                                layer.msg(result.message, {icon: 5}, function () {});
                             }
                         });
                         layer.close(index);

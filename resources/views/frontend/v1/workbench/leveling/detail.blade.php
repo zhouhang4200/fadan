@@ -1373,6 +1373,7 @@
                                 pic3: pic3
                             }, function (result) {
                                 if (result.status == 1) {
+                                    layer.closeAll();
                                     layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
@@ -1380,7 +1381,7 @@
                                     });
                                 }
                             });
-                            layer.closeAll();
+
                         }
                         return false;
                     });
@@ -1413,7 +1414,7 @@
                             }, function (result) {
                                 layer.close(complainLoad);
                                 if (result.status == 1) {
-                                        location.reload();
+                                    location.reload();
                                     layer.msg(result.message, {icon: 6}, function () {
                                     });
                                 } else {
@@ -1431,8 +1432,9 @@
                             keyWord: opt
                         }, function (result) {
                             if (result.status == 1) {
-                                    location.reload();
+                                location.reload();
                                 layer.msg(result.message, {icon: 6}, function () {
+
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5});
@@ -1442,24 +1444,45 @@
                         layer.close(index);
                     });
                 } else if (opt == 'complete') {
-                    layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {
-                        title: '提示'
-                    }, function (index) {
-                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                            orderNo: orderNo,
-                            keyWord: opt,
-                            delivery: delivery
-                        }, function (result) {
-                            if (result.status == 1) {
+
+                    layer.alert("确定完成订单？<br/><input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
+                        btn: ['确定', '取消'],
+                        yes:function(index){
+                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                                orderNo: orderNo,
+                                keyWord: opt,
+                                delivery: delivery
+                            }, function (result) {
+                                if (result.status == 1) {
                                     location.reload();
-                                layer.msg(result.message, {icon: 6}, function () {
-                                });
-                            } else {
-                                layer.msg(result.message, {icon: 5});
-                            }
-                        });
-                        layer.close(index);
+                                    layer.closeAll();
+                                    layer.msg(result.message, {icon: 6},function () {
+                                    });
+                                } else {
+                                    layer.msg(result.message, {icon: 5}, function () {});
+                                }
+                            }, 'json');
+                        }
                     });
+
+                    {{--layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {--}}
+                        {{--title: '提示'--}}
+                    {{--}, function (index) {--}}
+                        {{--$.post("{{ route('frontend.workbench.leveling.status') }}", {--}}
+                            {{--orderNo: orderNo,--}}
+                            {{--keyWord: opt,--}}
+                            {{--delivery: delivery--}}
+                        {{--}, function (result) {--}}
+                            {{--if (result.status == 1) {--}}
+                                    {{--location.reload();--}}
+                                {{--layer.msg(result.message, {icon: 6}, function () {--}}
+                                {{--});--}}
+                            {{--} else {--}}
+                                {{--layer.msg(result.message, {icon: 5});--}}
+                            {{--}--}}
+                        {{--});--}}
+                        {{--layer.close(index);--}}
+                    {{--});--}}
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
                         var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
@@ -1477,7 +1500,7 @@
                                 });
                             } else {
                                 layer.msg(result.message, {icon: 5}, function () {
-                                    layer.closeAll();
+
                                 });
                             }
                         });
