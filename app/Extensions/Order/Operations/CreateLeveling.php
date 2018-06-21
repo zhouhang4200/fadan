@@ -202,20 +202,18 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             if (isset($this->foreignOrderNO) && ! empty($this->foreignOrderNO)) {
                 $otherOrders = Order::where('foreign_order_no', $this->foreignOrderNO)->get();
                 
-                if (isset($this->details['source_order_no_1']) && ! empty($this->details['source_order_no_1'])) {
-                    foreach($otherOrders as $otherOrder) {
-                        OrderDetail::where('order_no', $otherOrder->no)
-                            ->where('field_name', 'source_order_no_1')
-                            ->update(['field_value' => $this->details['source_order_no_1']]);
-                    }
+                foreach($otherOrders as $otherOrder) {
+                    OrderDetail::where('order_no', $otherOrder->no)
+                        ->where('order_no', '!=', $this->order->no)
+                        ->where('field_name', 'source_order_no_1')
+                        ->update(['field_value' => $this->details['source_order_no_1']]);
                 }
 
-                if (isset($this->details['source_order_no_2']) && ! empty($this->details['source_order_no_2'])) {
-                    foreach($otherOrders as $otherOrder) {
-                        OrderDetail::where('order_no', $otherOrder->no)
-                            ->where('field_name', 'source_order_no_2')
-                            ->update(['field_value' => $this->details['source_order_no_2']]);
-                    }
+                foreach($otherOrders as $otherOrder) {
+                    OrderDetail::where('order_no', $otherOrder->no)
+                        ->where('order_no', '!=', $this->order->no)
+                        ->where('field_name', 'source_order_no_2')
+                        ->update(['field_value' => $this->details['source_order_no_2']]);
                 }
 
                 // 将其他单的来源价格更新为此单的来源价格

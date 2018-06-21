@@ -1200,7 +1200,6 @@ class IndexController extends Controller
                     \DB::table('order_histories')->insert($history);
                 }
             }
-            // 提示哪些平台下单成功，哪些平台下单失败
             $orderDetails = OrderDetail::where('order_no', $order->no)
                 ->pluck('field_value', 'field_name')
                 ->toArray();
@@ -1208,20 +1207,29 @@ class IndexController extends Controller
             // 如果有补款单号，那么更新此单关联订单的补款单号
             $otherOrders = OrderModel::where('foreign_order_no', $order->foreign_order_no)->get();
 
-            if (isset($orderDetails['source_order_no_1']) && ! empty($orderDetails['source_order_no_1'])) {
-                foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->no)
-                        ->where('field_name', 'source_order_no_1')
-                        ->update(['field_value' => $orderDetails['source_order_no_1']]);
-                }
+            foreach($otherOrders as $otherOrder) {
+                OrderDetail::where('order_no', $otherOrder->no)
+                    ->where('field_name', 'source_order_no_1')
+                    ->where('order_no', '!=', $order->no)
+                    ->update(['field_value' => $orderDetails['source_order_no_1']]);
             }
 
-            if (isset($orderDetails['source_order_no_2']) && ! empty($orderDetails['source_order_no_2'])) {
-                foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->no)
-                        ->where('field_name', 'source_order_no_2')
-                        ->update(['field_value' => $orderDetails['source_order_no_2']]);
-                }
+            foreach($otherOrders as $otherOrder) {
+                OrderDetail::where('order_no', $otherOrder->no)
+                    ->where('field_name', 'source_order_no_2')
+                    ->where('order_no', '!=', $order->no)
+                    ->update(['field_value' => $orderDetails['source_order_no_2']]);
+            }
+
+            // 将其他单的来源价格更新为此单的来源价格
+            foreach ($otherOrders as $otherOrder) {
+                OrderDetail::where('order_no', $otherOrder->no)
+                    ->where('order_no', '!=', $order->no)
+                    ->where('field_name', 'source_price')
+                    ->update(['field_value' => $orderDetails['source_price']]);
+                OrderModel::where('no', $otherOrder->no)
+                    ->where('no', '!=', $order->no)
+                    ->update(['original_price' =>  $orderDetails['source_price']]);
             }
 
             // 将来源价格同步到订单表
@@ -1537,73 +1545,37 @@ class IndexController extends Controller
     public function sourcePrice(Request $request)
     {
         try {
+            $value = 0;
+            $sourceArr = [];
+            if (isset($request->source_no) && ! empty($request->source_no) && is_numeric($request->source_no)) {
+                $sourceArr[] = $request->source_no;
+            }
+            if (isset($request->source_no1) && ! empty($request->source_no1) && is_numeric($request->source_no1)) {
+                $sourceArr[] = $request->source_no1;
+            }
+            if (isset($request->source_no2) && ! empty($request->source_no2) && is_numeric($request->source_no2)) {
+                $sourceArr[] = $request->source_no2;
+            }
+            $orderDetails = OrderDetail::where('order_no', $request->no)
+                ->pluck('field_value', 'field_name')
+                ->toArray();
+
+            if (isset($orderDetails['source_order_no']) && ! empty($orderDetails['source_order_no'])) {
+                $sourceArr[] = $orderDetails['source_order_no'];
+            }
+            $value = TaobaoTrade::whereIn('tid', $sourceArr)->sum('payment'); // 自动计算的价格
+
+            if (empty($value)) {
+                $value = 0;
+            }
+            // dd($value, $sourceArr);
+            // 如果用户手写了来源价格,谁大就返回谁
             if (isset($request->source_price) && ! empty($request->source_price) && is_numeric($request->source_price)) {
-                $sourceOrders = OrderDetail::where('order_no', $request->no)
-                    ->where('field_name_alias', 'source_order_no')
-                    ->where('field_value', '!=', '')
-                    ->pluck('field_value', 'field_name')
-                    ->unique()
-                    ->toArray();
-
-                $value = 0;
-                $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
-
-                if (empty($value)) {
-                    $value = 0;
-                }
-
-                if (isset($value) && ! empty($value) && is_numeric($request->source_price)) {
-                    if ($request->source_price > $value) {
-                        $orderDetail = OrderDetail::where('order_no', $request->no)
-                            ->where('field_name', 'source_price')
-                            ->update(['field_value' => $request->source_price]);
-
-                        if ($orderDetail) {
-                            return response()->ajax(1, $request->source_price);
-                        }
-                    } else {
-                        return response()->ajax(1, $value);
-                    }
-                }
-
-                return response()->ajax(0, 0);
+                if ($request->source_price > $value) {
+                    return response()->ajax(1, $request->source_price);
+                } 
             }
-             // 获取订单详情里面的来源订单号和补款订单号
-            if (isset($request->source_no) && ! empty($request->source_no) && isset($request->source_name) && ! empty($request->source_name) && isset($request->no) && ! empty($request->no)) {
-                $orderDetailSourcePrice = OrderDetail::where('order_no', $request->no)
-                    ->where('field_name', 'source_price')
-                    ->value('field_value');
-
-                if (! isset($orderDetailSourcePrice) || empty($orderDetailSourcePrice)) {
-                    $orderDetailSourcePrice = 0;
-                }
-
-                // $orderDetail = OrderDetail::where('order_no', $request->no)
-                //     ->where('field_name', $request->source_name)
-                //     ->update(['field_value' => $request->source_no]);
-
-                $sourceOrders = OrderDetail::where('order_no', $request->no)
-                    ->where('field_name_alias', 'source_order_no')
-                    ->where('field_value', '!=', '')
-                    ->pluck('field_value', 'field_name')
-                    ->unique()
-                    ->toArray();
-
-                $value = 0;
-                $value = TaobaoTrade::whereIn('tid', $sourceOrders)->sum('payment');
-
-                if (! isset($value) || empty($value)) {
-                    $value = 0;
-                }
-
-                if ($value > $orderDetailSourcePrice) {
-                    // OrderDetail::where('order_no', $request->no)
-                    //     ->where('field_name', 'source_price')
-                    //     ->update(['field_value' => $value]);
-
-                    return response()->ajax(1, $value);
-                }
-            }
+            return response()->ajax(1, $value);
         } catch (Exception $e) {
             return response()->ajax(0, 0);
         }

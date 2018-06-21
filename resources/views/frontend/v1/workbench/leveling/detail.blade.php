@@ -1968,8 +1968,12 @@
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
                 var source_no= $('input[name=source_order_no]').val();
                 var source_name = 'source_order_no';
-
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -1978,10 +1982,15 @@
                 }, 'json');
             });
             $("body").on('blur', 'input[name=source_order_no_1]', function(){
-                var no = document.getElementById('order_detail').getAttribute('lay-no');
-                var source_no= $('input[name=source_order_no_1]').val();
-                var source_name = 'source_order_no_1';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+               var no = document.getElementById('order_detail').getAttribute('lay-no');
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -1991,9 +2000,14 @@
             });
             $("body").on('blur', 'input[name=source_order_no_2]', function(){
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
-                var source_no= $('input[name=source_order_no_2]').val();
-                var source_name = 'source_order_no_2';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name}, function (result) {
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                var source_price= $('input[name=source_price]').val();
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
@@ -2004,8 +2018,13 @@
             $("body").on('blur', 'input[name=source_price]', function(){
                 var no = document.getElementById('order_detail').getAttribute('lay-no');
                 var source_price= $('input[name=source_price]').val();
-                var source_name = 'source_price';
-                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_price:source_price, source_name:source_name}, function (result) {
+                var source_no= $('input[name=source_order_no]').val();
+                var source_name = 'source_order_no';
+                var source_no1= $('input[name=source_order_no_1]').val();
+                var source_name1 = 'source_order_no_1';
+                var source_no2= $('input[name=source_order_no_2]').val();
+                var source_name2 = 'source_order_no_2';
+                $.post('{{ route('frontend.workbench.leveling.source-price') }}', {no:no, source_no:source_no, source_name:source_name, source_no1:source_no1, source_name1:source_name1, source_no2:source_no2, source_name2:source_name2, source_price:source_price}, function (result) {
                     if (result.status == 1) {
                         $('input[name=source_price]').val(result.message);
                         $('input[name=source_price]').html(result.message);
