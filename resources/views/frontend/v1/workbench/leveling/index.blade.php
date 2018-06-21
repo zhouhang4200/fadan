@@ -853,7 +853,7 @@
                                 } else {
                                     layer.msg(result.message, {icon: 5}, function () {});
                                 }
-                            });
+                            }, 'json');
                         }
                     });
 
