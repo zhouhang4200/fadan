@@ -1445,44 +1445,30 @@
                     });
                 } else if (opt == 'complete') {
 
-                    layer.alert("确定完成订单？<br/><input type='checkbox' checked id='delivery'> 同时提交淘宝/天猫订单发货", {
-                        btn: ['确定', '取消'],
-                        yes:function(index){
-                            $.post("{{ route('frontend.workbench.leveling.status') }}", {
-                                orderNo: orderNo,
-                                keyWord: opt,
-                                delivery: delivery
-                            }, function (result) {
-                                if (result.status == 1) {
-                                    location.reload();
-                                    layer.closeAll();
-                                    layer.msg(result.message, {icon: 6},function () {
-                                    });
-                                } else {
-                                    layer.msg(result.message, {icon: 5}, function () {});
-                                }
-                            }, 'json');
-                        }
+                    layer.open({
+                        type:6,
+                        btn:false,
+                        content: '<div style="padding:20px 60px;font-size: 14px">确定完成订单？<br/><input type="checkbox" checked id="delivery"> 同时提交淘宝/天猫订单发货</div><div style="text-align: center;margin-bottom: 20px">' +
+                        '<button class="qs-btn delivery-confirm">确定</button>&nbsp;&nbsp;&nbsp;<button class="qs-btn qs-btn-primary  qs-btn-table cancel">取消</button></div>'
                     });
 
-                    {{--layer.confirm("确定完成订单？<br/> <input type='checkbox' id='delivery'> 同时提交淘宝/天猫订单发货", {--}}
-                        {{--title: '提示'--}}
-                    {{--}, function (index) {--}}
-                        {{--$.post("{{ route('frontend.workbench.leveling.status') }}", {--}}
-                            {{--orderNo: orderNo,--}}
-                            {{--keyWord: opt,--}}
-                            {{--delivery: delivery--}}
-                        {{--}, function (result) {--}}
-                            {{--if (result.status == 1) {--}}
-                                    {{--location.reload();--}}
-                                {{--layer.msg(result.message, {icon: 6}, function () {--}}
-                                {{--});--}}
-                            {{--} else {--}}
-                                {{--layer.msg(result.message, {icon: 5});--}}
-                            {{--}--}}
-                        {{--});--}}
-                        {{--layer.close(index);--}}
-                    {{--});--}}
+                    $('body').on('click', '.delivery-confirm', function () {
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt,
+                            delivery: delivery
+                        }, function (result) {
+                            if (result.status == 1) {
+                                location.reload();
+                                layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {});
+                            } else {
+                                layer.msg(result.message, {icon: 5});
+                            }
+                        }, 'json');
+                    });
+
+                    return false;
                 } else if (opt == 'agreeRevoke') {
                     if (who == 1) {
                         var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
@@ -1961,6 +1947,10 @@
                 } else {
                     delivery = 0;
                 }
+            });
+
+            $('body').on('click', '.cancel', function () {
+                layer.closeAll();
             });
 
             // 计算来源价格
