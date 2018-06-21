@@ -32,13 +32,13 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*提升层级</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="level_count" lay-verify="required|number" value="{{ $data->level_count+0 }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <input type="text" name="level_count" lay-verify="required|number" value="{{ $data->level_count }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练价格折扣</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="rebate" lay-verify="required|number" value="{{ $data->rebate+0 }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <input type="text" name="rebate" lay-verify="required|number" value="{{ $data->rebate }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">

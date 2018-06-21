@@ -15,7 +15,7 @@
         @forelse($datas as $data)
             <tr>
                 <td>{{ $data->game_leveling_number+0 }}</td>
-                <td>{{ $data->game_leveling_level+0 }}</td>
+                <td>{{ $data->game_leveling_level }}</td>
                 <td>{{ $data->level_price+0 }} </td>
                 <td>{{ $data->level_hour+0 }} </td>
                 <td>{{ $data->level_security_deposit+0 }} </td>

@@ -24,7 +24,6 @@ class LevelingConfigureController extends Controller
     	$gameId = $request->game_id;
     	$filters = compact('gameId');
 
-    	 // 所有宝贝
         $games = GoodsTemplate::where('goods_templates.status', 1)
         	->where('goods_templates.service_id', 4)
         	->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')

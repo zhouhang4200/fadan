@@ -23,6 +23,26 @@ class LevelingPriceConfigureController extends Controller
 	 */
     public function index(Request $request)
     {
+//         $data = LevelingPriceConfigure::where('game_id', 81)
+//             ->where('game_leveling_type', '排位')
+//             ->where('game_leveling_number', '>', 1)
+//             ->where('game_leveling_number', '<=', 2)
+//             ->sum('level_price');
+//         $count = LevelingPriceConfigure::where('game_id', 81)
+//             ->where('game_leveling_type', '排位')
+//             ->where('game_leveling_number', '>', 5)
+//             ->where('game_leveling_number', '<=', 10)
+//             ->count() ?? 0;
+
+//         $rebate = LevelingRebateConfigure::where('game_id', 81)
+//             ->where('game_leveling_type', '排位')
+//             ->where('level_count', 1)
+//             ->value('rebate') ?? 100;
+
+//         $staticRebate = LevelingConfigure::where('game_id', 81)
+//             ->where('game_leveling_type', '排位')
+//             ->value('rebate') ?? 100;
+// dd($data, $count, $rebate, $staticRebate);
     	$gameId = $request->game_id;
     	$type = $request->type;
     	$gameName = $request->game_name;

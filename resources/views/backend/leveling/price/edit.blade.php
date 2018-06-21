@@ -32,13 +32,13 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*序号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="game_leveling_number" lay-verify="required|number" value="{{ $data->game_leveling_number+0 }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <input type="text" name="game_leveling_number" lay-verify="required|number" value="{{ $data->game_leveling_number }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练层级</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="game_leveling_level" lay-verify="required|number" value="{{ $data->game_leveling_level+0 }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <input type="text" name="game_leveling_level" lay-verify="required" value="{{ $data->game_leveling_level }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -50,7 +50,7 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*到下一层级耗时</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="level_hour" lay-verify="required|number" value="{{ $data->level_hour+0 }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <input type="text" name="level_hour" lay-verify="required|number" value="{{ $data->level_hour }}" autocomplete="off" placeholder="请输入" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
