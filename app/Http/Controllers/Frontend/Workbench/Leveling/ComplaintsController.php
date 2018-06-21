@@ -166,7 +166,7 @@ class ComplaintsController extends Controller
                 $complaintArr['remark'] = $request->remark;
                 $complaintArr['order_no'] = $orderInfo->no;
                 $complaintArr['game_id'] = $orderInfo->game_id;
-                $complaintArr['foreign_order_no'] = $request->foreign_order_no;
+                $complaintArr['foreign_order_no'] = $orderInfo->foreign_order_no;
                 $complaintArr['complaint_primary_user_id'] = $complaintPrimaryUserId;
                 $complaintArr['be_complaint_primary_user_id'] = $beComplaintPrimaryUserId;
                 $complaintArr['images'] = json_encode($complaintArr['img']);

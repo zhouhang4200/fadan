@@ -16,6 +16,7 @@ class BusinessmanComplaint extends Model
     public $fillable = [
       'complaint_primary_user_id',
       'be_complaint_primary_user_id',
+      'foreign_order_no',
       'order_no',
       'game_id',
       'amount',
