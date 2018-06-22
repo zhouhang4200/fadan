@@ -94,7 +94,7 @@ class BusinessmanComplaint extends Model
      */
     public function beComplaintPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'be_complaint_primary_user', 'id');
+        return $this->belongsTo(User::class, 'be_complaint_primary_user_id', 'id');
     }
 
     /**
@@ -103,6 +103,6 @@ class BusinessmanComplaint extends Model
      */
     public function complaintPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'complaint_primary_user', 'id');
+        return $this->belongsTo(User::class, 'complaint_primary_user_id', 'id');
     }
 }
