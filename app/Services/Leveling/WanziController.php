@@ -792,7 +792,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                     $arr['info'][$k]['who'] = config('leveling.wanzi.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
                     $arr['info'][$k]['created_at'] = $detail['created_on'];
                     $arr['info'][$k]['content'] = $detail['content'];
-                    $arr['info'][$k]['pic'] = env('WANZI_API_URL').'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'];
+                    $arr['info'][$k]['pic'] = isset($detail['pic']) ? config('leveling.wanzi.api_url') .'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'] : '';
                 }
             }
             return $arr;
