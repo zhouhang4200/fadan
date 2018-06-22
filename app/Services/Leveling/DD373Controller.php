@@ -732,12 +732,14 @@ class DD373Controller extends LevelingAbstract implements LevelingInterface
 	       	$result =  static::normalRequest($datas, config('leveling.dd373.url')['getMessage'], 'getMessage', $orderDatas);
 
             $message = [];
-            foreach ($result['data'] as  $item) {
-                $message[] = [
-                    'sender' => $item['senderType'] == 1 ? '您': '打手',
-                    'send_content' => $item['content'],
-                    'send_time' => $item['sendTime'],
-                ];
+            if (isset($result['data'])) {
+                foreach ($result['data'] as  $item) {
+                    $message[] = [
+                        'sender' => $item['senderType'] == 1 ? '您': '打手',
+                        'send_content' => $item['content'],
+                        'send_time' => $item['sendTime'],
+                    ];
+                }
             }
             return $message;
     	} catch (Exception $e) {
