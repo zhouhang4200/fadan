@@ -494,11 +494,20 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
     });
 });
 
-Route::middleware(['auth:web'])->namespace('Mobile')->group(function () {
+//  手机端
+Route::namespace('Mobile')->prefix('mobile')->group(function () {
     // 手机端标品下单
-    Route::prefix('mobile')->group(function () {
-
-    });
+    Route::prefix('leveling')->group(function () {
+        Route::get('demand', 'LevelingController@demand')->name('mobile.leveling.demand');
+        Route::post('games', 'LevelingController@games')->name('mobile.leveling.games');
+        Route::post('types', 'LevelingController@types')->name('mobile.leveling.types');
+        Route::post('targets', 'LevelingController@targets')->name('mobile.leveling.targets');
+        Route::post('compute', 'LevelingController@compute')->name('mobile.leveling.compute');
+        Route::post('go', 'LevelingController@go')->name('mobile.leveling.go');
+        Route::get('place-order', 'LevelingController@placeOrder')->name('mobile.leveling.place-order');
+        Route::post('regions', 'LevelingController@regions')->name('mobile.leveling.regions');
+        Route::post('servers', 'LevelingController@servers')->name('mobile.leveling.servers');
+    }); 
 });
 
 Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {
