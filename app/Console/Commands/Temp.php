@@ -81,7 +81,7 @@ class Temp extends Command
      */
     public function handle()
     {
-        (new Revoked())->run($this->argument('no'), 8739);
+        (new Revoked())->run($this->argument('no'), 8739, 0);
         die;
 
         $no = $this->argument('no');
