@@ -486,7 +486,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
 <script src="/frontend/js/helper.js"></script>
 <script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
-    var socket = io('http://s.market.com:9090');
+    var socket = io('http://js.qsios.com:90');
     layui.use(['element', 'form', 'laydate', 'layer'], function () {
         var element = layui.element,
                 form = layui.form,
