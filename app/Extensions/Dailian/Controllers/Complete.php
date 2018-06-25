@@ -49,7 +49,7 @@ class Complete extends DailianAbstract implements DailianInterface
     		// 赋值
     		$this->orderNo = $orderNo;
         	$this->userId  = $userId;
-            $this->runAfter = 0;
+            $this->runAfter = $runAfter;
             $this->delivery = $delivery;
             // 获取订单对象
             $this->getObject();
