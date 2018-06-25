@@ -336,7 +336,6 @@ abstract class DailianAbstract
     {
         try {
             $classNameArr = explode('\\', get_class($this));
-            myLog('run-event', [end($classNameArr), __CLASS__]);
             $class = 'App\Events\Order' . end($classNameArr);
             event(new $class($this->order));
         } catch (\Exception $exception) {
