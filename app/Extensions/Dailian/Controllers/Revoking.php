@@ -85,13 +85,6 @@ class Revoking extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        // 调用事件
-        try {
-            event(new OrderRevoking($this->order));
-        } catch (Exception $errorException) {
-            myLog('ex', ['申请撤销 事件',  $errorException->getMessage()]);
-        }
-
         if ($this->runAfter) {
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
