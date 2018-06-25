@@ -54,6 +54,7 @@ abstract class DailianAbstract
             throw new DailianException('订单状态不允许更改');
         }
     }
+
     // 创建操作前的订单
     public function createLogObject()
     {

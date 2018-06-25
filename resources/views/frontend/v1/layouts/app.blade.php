@@ -42,6 +42,7 @@ $financeRoute = [
     'frontend.statistic.order',
     'frontend.statistic.sms',
     'frontend.finance.order-report.index',
+    'frontend.finance.month-settlement-orders.index',
 ];
 
 $settingRoute = [
@@ -350,6 +351,9 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
                                     </dd>
                                 @endif
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.month-settlement-orders.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.finance.month-settlement-orders.index') }}">内部欠款订单</a>
+                                    </dd>
                             </dl>
                         </li>
                     @endif
@@ -491,11 +495,6 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         var insStart = laydate.render({
             elem: '#test-laydate-start',
             done: function (value, date) {
-                //更新结束日期的最小日期
-//                insEnd.config.min = lay.extend({}, date, {
-//                    month: date.month - 1
-//                });
-                //自动弹出结束日期的选择器
                 insEnd.config.elem[0].focus();
             }
         });

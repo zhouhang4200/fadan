@@ -97,20 +97,6 @@ class NoReceive extends DailianAbstract implements DailianInterface
                     }
                 }
             }
-
-            /**
-             * 以下只适用于  91  和 代练妈妈
-             */
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // // 上架91订单
-            // if ($orderDetails['show91_order_no']) {
-            //     Show91::grounding(['oid' => $orderDetails['show91_order_no']]);
-            // }
-            // // 代练妈妈上架
-            // if ($orderDetails['dailianmama_order_no']) {
-            //     DailianMama::upOrder($this->order);
-            // }
         }
     }
 }

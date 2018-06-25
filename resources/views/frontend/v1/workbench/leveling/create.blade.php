@@ -421,8 +421,15 @@
                             <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-col-lg6">
-                        </div>
+                        {{--<div class="layui-col-lg6">--}}
+                            {{--<label class="layui-form-label">指定内部打手</label>--}}
+                            {{--<div class="layui-input-block">--}}
+                                {{--<input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">--}}
+                                {{--<div class="tips"  id="user_qq">--}}
+                                    {{--<i class="iconfont icon-add-r"></i>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">

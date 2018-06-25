@@ -21,16 +21,13 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
 	protected $beforeHandleStatus; // 操作之前的状态:14待验收
     protected $handledStatus    = 14; // 状态：14 待验收
     protected $type             = 28; // 操作：28申请验收
-    
-	/**
-     * [run 完成 -> 已结算]
-     * @param  [type] $orderNo     [订单号]
-     * @param  [type] $userId      [操作人]
-     * @param  [type] $apiAmount   [回传代练费]
-     * @param  [type] $apiDeposit  [回传双金]
-     * @param  [type] $apiService  [回传代练手续费]
-     * @param  [type] $writeAmount [协商代练费]
-     * @return [type]              [true or exception]
+
+    /**
+     * @param $orderNo
+     * @param $userId
+     * @param int $runAfter
+     * @return bool
+     * @throws DailianException
      */
     public function run($orderNo, $userId, $runAfter = 1)
     {	
@@ -65,6 +62,7 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             // 操作成功，删除redis里面以前存在的订单报警
             $this->deleteOperateSuccessOrderFromRedis($this->orderNo);
             $this->runEvent();
+            $this->taobaoAutoDelivery();
         } catch (DailianException $exception) {
             DB::rollBack();
             myLog('opt-ex',  ['操作' => '申请验收',  '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
@@ -87,15 +85,6 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             $now = Carbon::now()->toDateTimeString();
             $key = $this->orderNo;
             Redis::hSet('complete_orders', $key, $now);
-
-            $this->taobaoAutoDelivery();
-
-            // 调用事件
-            try {
-                event(new OrderApplyComplete($this->order));
-            } catch (Exception $errorException) {
-                myLog('ex', ['申请验收', $errorException->getMessage()]);
-            }
         }
     }
 
@@ -120,8 +109,5 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
         } catch (\Exception $exception) {
             myLog('apply-complete-error', [$exception->getFile(), $exception->getMessage(), $exception->getLine()]);
         }
-
     }
-
-
 }

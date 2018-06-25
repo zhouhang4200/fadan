@@ -32,7 +32,6 @@ class EventServiceProvider extends ServiceProvider
         // 订单完成事件
         'App\Events\OrderFinish' => [
             'App\Listeners\OrderFinish\SendSms',
-            'App\Listeners\WriteOrderBasicData',
         ],
         // 订单被接单事件
         'App\Events\OrderReceiving' => [
@@ -69,9 +68,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderCancelComplete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
         ],
-        //
+        // 订单完成事件
         'App\Events\OrderComplete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\WriteOrderBasicData',
         ],
         //
         'App\Events\OrderLock' => [

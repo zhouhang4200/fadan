@@ -54,39 +54,36 @@ class OrderSend extends Command
                 try {
                    $orderDatas = json_decode($orderData, true);
                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
-//
-//                    // 检测平台是否开启，
-//                    $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
-//                        ->where('game_id', $order->game_id)
-//                        ->first();
-//
-//                    $managerSetChannel = OrderSendChannel::where('user_id', 0)
-//                        ->where('game_id', $order->game_id)
-//                        ->first();
-//
-//                    $blackThirds = [];
-//                    $managerBlackThirds = [];
-//                    if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
-//                        $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
-//                    }
-//
-//                    if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
-//                        $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
-//                    }
+
+                    // 检测平台是否开启，
+                    $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
+                        ->where('game_id', $order->game_id)
+                        ->first();
+
+                    $managerSetChannel = OrderSendChannel::where('user_id', 0)
+                        ->where('game_id', $order->game_id)
+                        ->first();
+
+                    $blackThirds = [];
+                    $managerBlackThirds = [];
+                    if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
+                        $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
+                    }
+
+                    if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
+                        $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                    }
                     $client = new Client();
                     foreach (config('partner.platform') as $third => $platform) {
-//                        if (in_array($third, $blackThirds) || in_array($third, $managerBlackThirds)) {
+                        if (!in_array($third, $blackThirds) && !in_array($third, $managerBlackThirds)) {
 //                            continue;
-//                        }
-                        $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
-                        try {
+                            $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
                             $response = $client->request('POST', $platform['receive'], [
                                 'form_params' => [
                                     'data' => $decrypt
                                 ]
                             ]);
                             $result = $response->getBody()->getContents();
-
 //                            if (isset($result) && ! empty($result)) {
 //                                $arrResult = json_decode($result, true);
 //
@@ -125,17 +122,14 @@ class OrderSend extends Command
 //                                    }
 //                                }
 //                            }
-
                             myLog('order-send-result-des', [ $platform['name'], $result]);
                             myLog('order-send-result', [$orderData, $platform['name'], $result, $decrypt]);
+                        } else {
 
-                        } catch (\Exception $exception) {
-                            myLog('order-send-ex', [$platform['name'],   'message' => $exception->getMessage(), '行' => $exception->getLine()]);
                         }
                     }
                     // 写基础数据
                    event(new OrderBasicData($order));
-
                 } catch (\Exception $e) {
                     myLog('order-send-ex', ['message' => $e->getMessage(), '行' => $e->getLine()]);
                 }

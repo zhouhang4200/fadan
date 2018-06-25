@@ -167,27 +167,6 @@ class RefuseRevoke extends DailianAbstract implements DailianInterface
                     }
                 }
             }
-
-            /**
-             * 以下只适用于  91  和 代练妈妈
-             */
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         // 91 同意撤销 接口
-            //         $options = [
-            //             'oid' => $orderDetails['show91_order_no'],
-            //             'v' => 2,
-            //             'p' => config('show91.password'),
-            //         ];
-
-            //         Show91::confirmSc($options);
-            //         break;
-            //     case 2:
-            //         throw new DailianException('该订单被代练妈妈平台接单，该平台没有【不同意撤销】操作!');
-            //         break;
-            // }
             return true;
         }
     }
