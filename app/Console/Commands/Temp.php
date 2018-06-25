@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\NotificationEvent;
 use App\Events\OrderApplyComplete;
 use App\Events\OrderArbitrationing;
 use App\Events\OrderRevoking;
@@ -81,7 +82,19 @@ class Temp extends Command
      */
     public function handle()
     {
-        (new Revoked())->run($this->argument('no'), 8739, 0);
+        $order = [
+            "2018052415461800004194"	=>"165714650766647690",
+            "2018052419173000007708"	=>"164960619761799611",
+            "2018052419273300007794"	=>"164749834053378507",
+            "2018052419385000007894"	=>"148996657640070744",
+            "2018052419391100007899"	=>"164591297118847014",
+            "2018052419482400008015"	=>"148997469357536855",
+            "2018052512182200002159"	=>"149103253329419355",
+        ];
+        foreach ($order as $key => $item) {
+            $this->forceRevoke($key, 1);
+        }
+
         die;
 
         $no = $this->argument('no');

@@ -272,31 +272,6 @@
             </div>
         </form>
 </div>
-<div class="layui-form" id="charge-pop" style="display: none;padding: 20px">
-    <div class="layui-form-item">
-        <label class="layui-form-label" style="width: 60px;padding:10px;text-align: left">充值方式</label>
-        <div class="layui-input-block" style="margin-left:0">
-            <input type="radio" name="chargeMode" value="支付宝" title="支付宝" checked>
-            <input type="radio" name="chargeMode" value="银行卡" title="银行卡" >
-        </div>
-    </div>
-    <div style="line-height: 22px;" id="bank" class="layui-hide">
-        <span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span>
-        <br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
-        账号：{{ optional($transferInfo)->bank_card  }}<br/>
-        户名：{{ optional($transferInfo)->name }}<br/>
-        开户行：{{ optional($transferInfo)->bank_name }}<br/>
-        转账备注：{{ optional($transferInfo)->user_id }}<br/>
-    </div>
-    <div style="line-height: 22px;" id="alipay">
-        <p style="color:#e51c23">1. 请先联系运营人员开通“自动加款”功能。</p>
-        <p style="color:#e51c23">2. 请用您的支付宝往以下支付宝账号转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</p>
-        转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
-        账号：{{ optional($transferInfo)->alipay  }}<br/>
-        户名：{{ optional($transferInfo)->name }}<br/>
-        转账备注：{{ optional($transferInfo)->user_id }}<br/>
-    </div>
-</div>
 @endsection
 
 @section('js')

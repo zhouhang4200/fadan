@@ -2,6 +2,7 @@
 
 namespace App\Extensions\Dailian\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use DB;
 use Asset;
@@ -118,8 +119,13 @@ class Playing extends DailianAbstract implements DailianInterface
                      // 发送短信通知发单人
                      $phone = User::where('id', $this->order->creator_primary_user_id)->value('phone');
                      if ($phone) {
-                         sendSms(0, $this->order->no, $phone, '您在淘宝发单平台的账户余额不足，打手接单失败，请立刻充值，保证业务正常运行。',
-                             '', $foreignOrderNo = '', $thirdOrderNo = '', $third = 0);
+                         // 发送通知
+                         event((new NotificationEvent('balanceNotice', [
+                             'type' => 1, // 1 资金 2 短信
+                             'user_id' => $this->order->creator_primary_user_id,
+                             'title' => '打手接单失败',
+                             'message' => '您在淘宝发单平台的账户余额不足，打手接单失败，请立刻充值，保证业务正常运行。'
+                         ])));
                      }
                  }
                  throw new Exception($exception->getMessage());
@@ -283,6 +289,14 @@ class Playing extends DailianAbstract implements DailianInterface
                 $now = Carbon::now();
                 $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
                 Cache::put($this->order->creator_primary_user_id, '1', $expiresAt);
+
+                // 发送通知
+                event((new NotificationEvent('balanceNotice', [
+                    'type' => 1, // 1 资金 2 短信
+                    'user_id' => $this->order->creator_primary_user_id,
+                    'title' => '余额不足',
+                    'message' => '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。'
+                ])));
 
                 sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
             }
