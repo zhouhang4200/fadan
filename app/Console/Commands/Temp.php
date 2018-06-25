@@ -81,7 +81,7 @@ class Temp extends Command
      */
     public function handle()
     {
-        Asset::handle(new Income(10, 7, '2018050710405800000469', '退回协商代练费', '8523'));
+        (new Revoked())->run($this->argument('no'), 8739);
         die;
 
         $no = $this->argument('no');
