@@ -81,7 +81,7 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->runEvent();
     	} catch (DailianException $exception) {
     		DB::rollBack();
-            myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '订单完成',  '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             DB::rollBack();
@@ -93,7 +93,7 @@ class Complete extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '订单完成',  '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
         DB::commit();
