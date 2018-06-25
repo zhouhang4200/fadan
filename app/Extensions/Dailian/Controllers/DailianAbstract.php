@@ -50,7 +50,7 @@ abstract class DailianAbstract
         $this->orderDetail = $this->order->detail->pluck('field_value', 'field_name');
 
         if (!in_array($this->order->status, $this->acceptableStatus)) {
-            \Log::alert('订单：' .$this->order->no . '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus);
+            myLog('opt-ex',   ['订单号' => $this->order->no, '错误' => '订单状态不允许,原状态：' . $this->order->status . ' 更改为：' . $this->handledStatus]);
             throw new DailianException('订单状态不允许更改');
         }
     }
