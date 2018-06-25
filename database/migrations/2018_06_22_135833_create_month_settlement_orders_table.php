@@ -21,6 +21,7 @@ class CreateMonthSettlementOrdersTable extends Migration
             $table->string('creator_primary_user_name')->comment('发单方名字');
             $table->integer('gainer_primary_user_id')->comment('接单方主ID');
             $table->string('gainer_primary_user_name')->comment('接单方名字');
+            $table->decimal('amount', 14, 2)->comment('结算金额');
             $table->integer('game_id')->comment('游戏ID');
             $table->tinyInteger('status')->comment('状态 1 没结算 2 已结算');
             $table->dateTime('finish_time')->comment('订单完结时间');
