@@ -126,7 +126,7 @@ class OrderSend extends Command
                             myLog('order-send-result-des', [ $platform['name'], $result]);
                             myLog('order-send-result', [$orderData, $platform['name'], $result, $decrypt]);
                         } else {
-
+                            myLog('send-blacklist', [$third, $orderDatas]);
                         }
                     }
                     // 写基础数据
