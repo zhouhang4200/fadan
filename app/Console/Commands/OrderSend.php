@@ -39,10 +39,8 @@ class OrderSend extends Command
 
     protected $redis;
 
-
     public function handle()
     {
-        
         $this->redis = RedisConnect::order();
 
         while (1) {

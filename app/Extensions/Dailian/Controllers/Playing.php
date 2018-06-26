@@ -285,7 +285,7 @@ class Playing extends DailianAbstract implements DailianInterface
             $userInfo = User::find($this->order->creator_primary_user_id);
 
             $existCache = Cache::get($this->order->creator_primary_user_id);
-            if (!$existCache && in_array($this->order->creator_primary_user_id, [8803, 8790, 8785, 8711, 8523])) {
+            if (!$existCache && in_array($this->order->creator_primary_user_id, [8317, 8803, 8790, 8785, 8711, 8523])) {
                 $now = Carbon::now();
                 $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
                 Cache::put($this->order->creator_primary_user_id, '1', $expiresAt);
