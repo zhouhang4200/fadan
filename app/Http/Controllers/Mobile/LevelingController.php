@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Game;
 use App\Models\Order;
+use Illuminate\Http\Response;
 use Order as OrderFacade;
 use App\Extensions\Order\Operations\CreateLeveling;
 use App\Models\OrderDetail;
@@ -402,7 +403,7 @@ class LevelingController extends Controller
             $data['creator_user_name'] = User::find(8317) ? User::find(8317)->useranme : '';
             $data['client_qq'] = '';
             $data['user_qq'] = $levelingConfigure->user_qq;
-            $data['out_trade_no'] = '';
+            $data['order_no'] = '';
             $data['game_leveling_requirements'] = $levelingConfigure->game_leveling_requirements;
             $data['game_leveling_instructions'] = $levelingConfigure->game_leveling_instructions;
             $data['game_leveling_title'] = $data['game_name'].'-'.$data['game_leveling_type'].'-'.$data['startLevel'].'-'.$data['endLevel'];
@@ -590,7 +591,7 @@ class LevelingController extends Controller
                 ];
                 $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, $mobileOrder->no, $mobileOrder->price+0, $mobileOrder->original_price+0, $orderDetailArr, $mobileOrder->remark, 7));
 
-                $mobileOrder->out_trade_no = $order->no;
+                $mobileOrder->order_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付
                 $mobileOrder->save();
 
@@ -619,7 +620,7 @@ class LevelingController extends Controller
     {
         $mobileOrder = MobileOrder::find($request->id);
 
-        $order = Order::where('no', $mobileOrder->out_trade_no)->first();
+        $order = Order::where('no', $mobileOrder->order_no)->first();
 
         $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
@@ -747,7 +748,7 @@ class LevelingController extends Controller
                 ];
                 $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, '', $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
 
-                $mobileOrder->out_trade_no = $order->no;
+                $mobileOrder->order_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付
                 $mobileOrder->save();
 
@@ -760,10 +761,10 @@ class LevelingController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             myLog('wechat-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-
+            return Response::create('fail');
             // echo 'fail';
         }
         DB::commit();
-        return $wechat->success();
+        return Response::create('success');
     }
 }

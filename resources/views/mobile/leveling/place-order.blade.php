@@ -80,7 +80,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <div class="trigger5 operation operation2" id="server">请选择</div>
-                        <select class="weui-select f-dn" name="server">
+                        <select class="weui-select f-dn" name="server" >
                             <option selected="" value=""></option>
                         </select>
                     </div>
@@ -92,7 +92,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="role" placeholder="请输入">
+                        <input class="weui-input" type="text" name="role" placeholder="请输入" required>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -102,7 +102,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account" placeholder="请输入">
+                        <input class="weui-input" type="text" name="account" placeholder="请输入" required>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -112,7 +112,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="password" placeholder="请输入">
+                        <input class="weui-input" type="text" name="password" placeholder="请输入" required>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -122,7 +122,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="client_phone" placeholder="请输入">
+                        <input class="weui-input" type="text" name="client_phone" placeholder="请输入" required>
                     </div>
                 </div>
                 <p style="text-indent: 20px;margin-top:20px;background-color: #fff;height: 30px;line-height: 30px;border-bottom: 1px solid #eee;">支付方式</p>
@@ -155,22 +155,13 @@
     <script src="/mobile/lib/js/fastclick.js"></script>
     <script src="/mobile/lib/js/mobileSelect.js"></script>
     <script src="/mobile/lib/js/jquery-weui.js"></script>
-    <script src="/mobile/lib/js/swiper.js"></script>
     <script>
         $(function () {
             FastClick.attach(document.body);
         });
     </script>
-    <script>
-        $(".swiper-container").swiper({
-            loop: true,
-            autoplay: 3000
-        });
-    </script>
-    <script>
-        var max_h = $(window).height() / 3 * 2 + 'px';
-        var max_menu = $(window).height() / 3 * 2 - 115 + 'px';
-    </script>
+
+
     <script>
         var game_name=$("input[name='game_name']").val();
         var type=$("input[name='type']").val();
@@ -184,7 +175,11 @@
         if (session) {
             $.toast("请填写完整的代练信息", 'text');
         }
-
+        $('input[name="role"]').click(function(){
+            if ( $('select[name="region"] option:selected').val() == '' || $('select[name="server"] option:selected').val() == '' ) {
+                $.toast("请先选择区服信息",'text');
+            }
+        })
         var mobileSelect1 = new MobileSelect({
             trigger: '#region',
             title: '区',
