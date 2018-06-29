@@ -53,9 +53,9 @@
                 </div>
 
                 <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">{{ $type == 1 ? '联系电话' : '联系QQ' }}</label>
+                    <label class="layui-form-label">{{ $type == 1 ? '联系电话' : ($type == 2 ? '联系QQ'  : '账号ID') }}</label>
                     <div class="layui-input-block">
-                        <textarea name="content" placeholder="请输入{{ $type == 1 ? '联系电话' : '联系QQ' }}" class="layui-textarea"  lay-verify="required|{{ $type == 1 ? 'phone' : 'number' }}"></textarea>
+                        <textarea name="content" placeholder="请输入{{ $type == 1 ? '联系电话' : ($type == 2 ? '联系QQ'  : '账号ID') }}" class="layui-textarea"  lay-verify="required|{{ $type == 1 ? 'phone' : 'number' }}"></textarea>
                     </div>
                 </div>
                 <div class="layui-form-item">

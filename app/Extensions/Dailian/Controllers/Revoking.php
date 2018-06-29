@@ -85,41 +85,7 @@ class Revoking extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        // 调用事件
-        try {
-            event(new OrderRevoking($this->order));
-        } catch (Exception $errorException) {
-            myLog('ex', ['申请撤销 事件',  $errorException->getMessage()]);
-        }
-
         if ($this->runAfter) {
-
-                // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-                // $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-                // if (! $consult) {
-                //     throw new DailianException('不存在申诉和协商记录');
-                // }
-
-                // switch ($orderDetails['third']) {
-                //     case 1:
-                //         // 91 申请协商接口
-                //         $options = [
-                //             'oid' => $orderDetails['show91_order_no'],
-                //             'selfCancel.pay_price' => $consult->amount,
-                //             'selfCancel.pay_bond' => $consult->deposit,
-                //             'selfCancel.content' => $consult->revoke_message,
-                //         ];
-
-                //         Show91::addCancelOrder($options);
-                //         break;
-                //     case 2:
-                //         // 代练妈妈协商接口
-                //         DailianMama::operationOrder($this->order, 20006);
-                //         break;
-                // }
-
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);

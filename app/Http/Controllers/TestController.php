@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use App\Repositories\Commands\PlatformAssetDailyRepository;
 use Illuminate\Mail\Mailer;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\MailFake;
 use Order as OrderFacede;
@@ -81,7 +82,7 @@ class TestController extends Controller
             'aid' => 1,
         ];
         die;
-        
+
         $res = Show91::getServer($options);
 
         $goodsTemplateId = GoodsTemplate::where('game_id', 78)->value('id');
@@ -113,7 +114,7 @@ class TestController extends Controller
         $options1 = [
             'aid' => 2,
         ];
-        
+
         $res1 = Show91::getServer($options1);
 
         $arr1 = [];
@@ -148,7 +149,7 @@ class TestController extends Controller
         $thirdArrs = array_merge($threeArr, $arr3);
 
         // dd($thirdArrs);
-        // 
+        //
         $keyArr = [];
         foreach ($thirdArrs as $key => $thirdArr) {
             foreach ($serves as $key1 => $serve) {
@@ -178,7 +179,7 @@ class TestController extends Controller
         $options = [
             'gid' => 1,
         ];
-        
+
         $res = Show91::getAreas($options);
         $thirdRegions = [];
         foreach ($res['areas'] as $key => $value) {
@@ -234,207 +235,6 @@ class TestController extends Controller
     public function index(Request $request)
     {
 
-
-        die;
-        // $a = OrderDetail::where('order_no', '2018060616520100000019')->pluck('field_value', 'field_name')->toArray();
-        // $b = isset($a['checkout_time']);
-        // $c = $a['checkout_time'] ?? 1;
-        // dd($a, $b, $c);
-
-        $orderNo = $request->order_no;
-        $operate = $request->operate;
-        $thirdUserId = $request->uid;
-        $bool = $request->bool;
-
-        if (! empty($operate) && ! empty($orderNo)) {
-            DailianFactory::choose($operate)->run($orderNo, $thirdUserId, $bool);
-        }
-dd('OK');
-        // 更新天猫返回总金额
-        $all = OrderBasicData::get();
-
-        foreach ($all as $dataOrder) {
-
-            $sourceOrderNos = OrderDetail::where('order_no', $dataOrder->order_no)
-                ->where('field_name_alias', 'source_order_no')
-                ->where('field_value', '!=', '')
-                ->pluck('field_value')
-                ->unique()
-                ->toArray();
-
-            $tmIncome = 0;
-            if (isset($sourceOrderNos) && ! empty($sourceOrderNos) && is_array($sourceOrderNos) && count($sourceOrderNos) > 0) {
-                foreach ($sourceOrderNos as $sourceOrderNo) {
-                    $tmOrder = TaobaoTrade::where('tid', $sourceOrderNo)->first();
-                    if (isset($tmOrder) && ! empty($tmOrder) && $tmOrder->trade_status == 7) {
-                        $tmIncome += $tmOrder->payment;
-                    }
-                }
-            }
-
-            $dataOrder->tm_income = $tmIncome;
-            $dataOrder->save();
-        }
-
-        // 更新date
-        foreach ($all as $dataOrder) {
-            $date = $dataOrder->updated_at->toDateString();
-            if ($dataOrder->order_finished_at != '0000-00-00 00:00:00') {
-                $date = Carbon::parse($dataOrder->order_finished_at)->toDateString();
-            } 
-            $dataOrder->date = $date;
-            $dataOrder->save();
-        }
-
-        // 更新第三方
-        $thirdOrders = OrderBasicData::where('third', '0')->get();
-
-        foreach ($thirdOrders as $thirdOrder) {
-            $model = OrderDetail::where('order_no', $thirdOrder->order_no)->where('field_name', 'third')->first();
-            if ($model->field_value) {
-                $thirdOrder->third = $model->field_value;
-                $thirdOrder->save();
-            }
-        }
-
-        // $datas = OrderBasicData::get();
-
-        // foreach ($datas as $data) {
-        //     $ord = OrderModel::where('no', $data->order_no)->first();
-        //     if ($ord->created_at->toDateTimeString() != $data->order_created_at) {
-        //         $data->order_created_at = $ord->created_at->toDateTimeString();
-        //         $data->save();
-        //     }
-        // }
-dd('OK');
-
-
-        $order = OrderModel::where('no', '2018060409274600000002')->first();
-        dd($order->created_at->toDateTimeString());
-
-        $client = new Client();
-        $res = $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
-            'json' => [
-                'msgtype' => 'text',
-                'text' => [
-                    'content' => '订单双金必须大于0元'
-                ],
-                'at' => [
-                    'isAtAll' => true
-                ]
-            ]
-        ]);
-
-        dd(3, $res->getBody()->getContents());
-
-
-        $data = "bbuz\/0T\/HzAQ+ZFWscOAprjyPn6CZBuYQthl6wI5Dqx17vtLiozA9zDd6yqb800VxOzRc6xENvBKMUGNDgJFJyv8tXsSWr86fDvi3HmKKut\/9oLrRegK1KKkSwWPpceHM1kpgYYJnVDXu39YbsMPmW+\/kwDb0j\/N7p16fm1HpnHx+wXHUANrO31ieIQK1pnuZByaRSwEcL15RaUM5EfktcOm8IzRfxDNEdW6Xc584heOYhfme+pj1uT5L8kmRQWCuvuCEVlkvdJq5BxmWGcBeiIZijTDJbXzxAlJ9WqgXI8fYDTgkgn7lB28mynQB7dUKaPos1PaKyQkN45mjZyY42stJRQ9EFPxVa72oJJPDfGEmgMy69LGIvv8OZXcIbnVdLEOdX+1\/u4K6eP17M9GIVxJ6RSyStWjomXBy9SAr6IrqQYNTcH2vjoCwworE1hzPptinF2RimSOCetYGV0jFbMHjGyXCVPBGtJv9d997Id88kusgmvcKCpfaYqhMNN9rEs1AIYHe5V9aq6rY89A49iqyXGjW8XvFJKZic8SeF4ImVfSHZnWU1zwo7haAHHfPYk1l9+T+IYRgeDqocrl\/u99EtWCCMMhjk0N1ExAMLijDNzRZHuADS6u0kIMhuLwyDb5WAFWA4MS8vBwiDoBDyRzpNEXQLla5Y3drJugMgnYm3MoJQOYKnxonouj3VpfcA3jIY0lv7zlMDZj45ynM18XF99vtrQWJvkhxWUMgpLhIFYtIoDo\/sP5+9EGFCwnVBj9CNSMZPjIhf0fIbVDweapZbf3Wn8CAuFbWiRpzqGrT\/2xFABKaIt9Cg4B+K2I9V9wnAmakeno5deMeORCLgmqVZlY8sL3YdggL50osFunxSz54c2NgfWG4G2jM0mXbcxIM65dj2CEDJcXQWIyF4D8RFJlWmRJwwPhsLk0raB3K+LAPjcxuBehWYKM0UC+YLvi0XXESkjNxdFKN\/\/fg99WWgjJ9NHVzBgEjxmwx2c9F3jKauvNHatqhPnp6BaEmvlzzz99D1DklfGUL9IvHBhuzV4eX9B56wLI107xXFKWIgsKwQM2jZ3NFu7WYAiFrJgDo\/29XuKnzNgpYKHYG44t8yYXr985mVgKyflUd6Gm2y8+7ahoxBcW4Wyc9TZXlk+o\/rI9wk\/amDZ1wrU2uYmBcZjzpZFcvWG4n1qVim4hNzsMhA4eZHbYaojfOFRCuaeIuQWaHGcaLwYmbUfQRfEDm2c0ABAIW5PfDxQyymMrG1pXEIpyxMGyILsX+X63dw\/wNgALQmL5bD8uHkbedXaA94C0mwGvIlcjjHJZlhlHb71ihg3Ec3PFLa3pg84hDnQVnxy\/G19UdVpdkbVwnO3WJ8KhFE+UiU3xSSr6tGgTnneZ6bk1nlD9dUADEUnS6R4bRzaH8fmSJbalb6YOKry4nQqRLwr1CTfgRvaljm+dpdkR6phxw\/pHiXJioJNDokkDPbdzfsjYU7Teewm2ww7KKFi6LMzpPXCWcmOZwmPuBXVM3njP1iL\/8RDdRjTApW6xN5eM0iGPZwISXCJOp5CKQ+8O46yNlKPQiV\/4tFecieA6UqiTn+MHp5g\/9z5ZN9JCUDWFWGwMClPybIlTCA==";
-        $iv = '1234567891111152';
-        $key = '45584685d8e4f5e8';
-
-        $datas = openssl_decrypt($data, 'aes-128-cbc', $key, 0, $iv);
-
-dd($datas);
-
-
-
-
-
-        $datas['wanzi_order_no'] = 'ORD180521165250247826';
-        $info = WanziController::getArbitrationInfo($datas);
-
-
-        $infos['arbitration_id'] = 35;
-        $infos['content'] = '添加的证据';
-        $infos['pic'] = '';
-        $data = WanziController::addArbitrationInfo($infos);
-        // dd($data);
-dd($info);
-
-
-
-
-        $orderDetail = OrderDetail::where('order_no', '2018051418371000000004')
-        ->pluck('field_value', 'field_name')
-            ->toArray();
-
-        $detail = call_user_func_array([config('leveling.controller')[3], config('leveling.action')['orderDetail']], [$orderDetail]);
-dd($detail);
-
-        event(new OrderReceiving(Order::where('no', '2018041821030200000926')->first()));;die;
-        $this->testReceiveOrder();
-        return $this->addPrice();
-        return $this->getDailianmamaInfo();
-        return $this->testSwitch('hang', 10);
-        $this->testClone();
-        try {
-            $order = Order::find(9);
-            throw new Exception('我是错误信息');
-        } catch (Exception $e) {
-            dd($e->getMessage(), $order);
-
-        }
-        dd(4);
-//        return (new SmSApi())->send(2, 18500132452, '您的订单已经被打接单，请不要登号', 1);
-//        $client = new Client();
-//        $result = $client->post('www.show91.com/oauth/addOrder', [
-//            'headers' => [
-//                'Content-type' => 'multipart/form-data',
-//            ],
-//            'form_params' => [
-//                'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
-//                'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
-//            ]
-//        ]);
-
-        $res = $client->post('www.show91.com/oauth/addOrder',[
-            'headers' => ['Content-Type' => 'multipart/form-data'],
-            'body' => [
-                    'account' => 'EFAE2BC69B8D4E16A3649992F031BDDB',
-                    'sign' => '89abb1dfef56cdf21c315b3bc3670c5d',
-            ]
-        ]);
-        dd($res->getStatusCode());
-
-dd(1);
-        $order = Order::where('no', '2017122715401700000011')->first();
-
-        dd($order->levelingConsult->first()->toArray());
-        $this->encrypt();
-        return $this->decrypt();
-
-        event(new NotificationEvent('orderRefund', ['amount' => '500.00', 'user_id' => 3]));
-        exit("1234");
-    }
-
-    public function testReceiveOrder() 
-    {
-        $request = new HttpRequest();
-        $request->setUrl('http://www.test.com/api/partner/order/receive');
-        $request->setMethod(HTTP_METH_POST);
-
-        $request->setQueryData(array(
-          'sign' => 'd3e8dfceb794d8dbd771ee4db6573cf7',
-          'order_no' => 'XQ20180503002810-13107',
-          'app_id' => 'fPHUSGXWN461NRb5VGeFp0xoYYaGOAc0rXIqnMxRwAvCpYcQKR0xhFIJdSTI',
-          'timestamp' => '2136127316',
-          'hatchet_man_qq' => '',
-          'hatchet_man_phone' => '13343450907111',
-          'hatchet_man_name' => 'DD373打手'
-        ));
-
-        $request->setHeaders(array(
-          'postman-token' => '11e65c70-58c6-e396-fdae-333bfc74253b',
-          'cache-control' => 'no-cache'
-        ));
-
-        try {
-          $response = $request->send();
-
-          echo $response->getBody();
-        } catch (HttpException $ex) {
-          echo $ex;
-        }
     }
 
     public function testAsset()
@@ -681,7 +481,7 @@ Iuli3G2IJNYc9Cwu
                 if ($key == 0) {
                     continue;
                 }
-                $thirdAreas[$area['name']][$server['id']] = $server['name']; 
+                $thirdAreas[$area['name']][$server['id']] = $server['name'];
             }
             // $thirdAreas[$area['name']] = $area['list'];
         }

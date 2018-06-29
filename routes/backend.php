@@ -359,6 +359,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse')->middleware('permission:finance.user-widthdraw-order.refuse');
         // 用户加款列表
         Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');
+        // 托管资金明细
+        Route::get('process-order', 'ProcessOrderController@index')->name('finance.process-order.index')->middleware('permission:finance.process-order.index');
 
         // 押金
         Route::get('deposit', 'DepositController@index')->name('finance.deposit.index')->middleware('permission:finance.deposit.index');

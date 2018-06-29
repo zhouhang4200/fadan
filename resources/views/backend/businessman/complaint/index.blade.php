@@ -83,7 +83,7 @@
                                 <tr>
                                     <td>{{ optional($item->complaintPrimaryUser)->nickname }}<br/>{{ $item->complaint_primary_user_id }}</td>
                                     <td>{{ optional($item->beComplaintPrimaryUser)->nickname }}<br/>{{ $item->be_complaint_primary_user_id }}</td>
-                                    <td>天猫:{{$item->foreign_order_no }}<br/>{{ (isset($detail['third_order_no']) && $detail['third_order_no'] > 0 ) ? config('order.third')[(int)$detail['third']]  : '' }}:{{ $detail['third_order_no'] ?? '' }}</td>
+                                    <td>天猫:{{$item->foreign_order_no }}<br/>{{ config('order.third')[(int)$detail['third']] }}:{{ $detail['third_order_no'] ?? '' }}</td>
                                     <td>{{ $item->amount }}</td>
                                     <td>{{ $item->remark }}</td>
                                     <td>{{ $item->result }}</td>

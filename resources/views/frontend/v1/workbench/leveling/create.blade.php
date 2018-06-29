@@ -421,8 +421,17 @@
                             <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-col-lg6">
-                        </div>
+                        {{--<div class="layui-col-lg6">--}}
+                            {{--<label class="layui-form-label">指定内部打手</label>--}}
+                            {{--<div class="layui-input-block">--}}
+                                {{--<select name="gainer_primary_user_id" lay-verify="required" lay-filter="aihao">--}}
+                                    {{--<option value=""></option>--}}
+                                {{--</select>--}}
+                                {{--<div class="tips"  id="gainer_primary_user_id">--}}
+                                    {{--<i class="iconfont icon-add-r"></i>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
@@ -830,6 +839,7 @@
                 $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
                     var phoneTemplate = '<option value="">请选择</option>';
+                    var gainerUserTemplate = '<option value="">请选择</option>';
                     var chose = 0;
                     $.each(result, function (index, value) {
                         if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
@@ -853,11 +863,21 @@
                             } else {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
                             }
+                        } else if (value.type == 3 && (value.game_id == 0 || gameId == value.game_id)) {
+                            if (gameId == value.game_id && value.status == 1) {
+                                chose = 1;
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
                         }
                     });
                     chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
+                    $('select[name=gainer_primary_user_id]').html(gainerUserTemplate);
                     layui.form.render();
                 }, 'json');
             }
@@ -957,6 +977,17 @@
                     type: 2,
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 2]) }}',
+                    cancel: function(index, layero){
+                        loadBusinessmanContactTemplate(gameId);
+                    }
+                });
+            });
+            // 添加内部打手
+            $('.layui-form').on('click', '#gainer_primary_user_id', function () {
+                layer.open({
+                    type: 2,
+                    area: ['700px', '400px'],
+                    content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 3]) }}',
                     cancel: function(index, layero){
                         loadBusinessmanContactTemplate(gameId);
                     }

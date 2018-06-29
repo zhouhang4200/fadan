@@ -6,6 +6,7 @@ use App\Events\OrderFinish;
 use App\Exceptions\AssetException;
 use App\Exceptions\CustomException;
 use App\Exceptions\RequestTimeoutException;
+use App\Models\MonthSettlementOrders;
 use App\Models\TaobaoTrade;
 use DB;
 use Asset;
@@ -41,7 +42,7 @@ class Complete extends DailianAbstract implements DailianInterface
      * @param  [type] $writeAmount [协商代练费]
      * @return [type]              [true or exception]
      */
-    public function run($orderNo, $userId, $runAfter = 1, $delivery = 0)
+    public function run($orderNo, $userId, $runAfter = 0, $delivery = 0)
     {
     	DB::beginTransaction();
         try {
@@ -80,7 +81,7 @@ class Complete extends DailianAbstract implements DailianInterface
             $this->runEvent();
     	} catch (DailianException $exception) {
     		DB::rollBack();
-            myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '订单完成',  '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException($exception->getMessage());
     	} catch (AssetException $exception) {
             DB::rollBack();
@@ -92,7 +93,7 @@ class Complete extends DailianAbstract implements DailianInterface
             throw new DailianException($exception->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
-            myLog('opt-ex',  ['操作' => '订单完成', $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
+            myLog('opt-ex',  ['操作' => '订单完成',  '订单号' => $this->orderNo, 'user' => $this->userId, $exception->getFile(), $exception->getLine(), $exception->getMessage()]);
             throw new DailianException('订单异常');
         }
         DB::commit();
@@ -106,33 +107,21 @@ class Complete extends DailianAbstract implements DailianInterface
      */
     public function updateAsset()
     {
-        // 接单 代练收入
-        Asset::handle(new Income($this->order->amount, 12, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
-
-        if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-            throw new DailianException('流水记录写入失败');
-        }
-
-        if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-            throw new DailianException('流水记录写入失败');
-        }
-
-        if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {
-            // 接单 退回安全保证金
-            Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
-
-            if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
-                throw new DailianException('流水记录写入失败');
-            }
-
-            if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
-                throw new DailianException('流水记录写入失败');
-            }
-        }
-
-        if ($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value')) {
-            // 接单 退效率保证金
-            Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
+        // 判断是否为平台内部转单订单,是则写入待结算表
+        if (isset($this->orderDetail['gainer_primary_user_id']) && $this->orderDetail['gainer_primary_user_id'] == $this->order->gainer_primary_user_id) {
+            // 创建待结算记录
+            MonthSettlementOrders::create([
+                'order_no' => $this->order->no,
+                'foreign_order_no' => $this->order->foreign_order_no,
+                'creator_primary_user_id' => $this->order->creator_primary_user_id,
+                'gainer_primary_user_id' => $this->order->gainer_primary_user_id,
+                'game_id' => $this->order->game_id,
+                'status' => 1,
+                'finish_time' => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            // 接单 代练收入
+            Asset::handle(new Income($this->order->amount, 12, $this->order->no, '代练订单完成收入', $this->order->gainer_primary_user_id));
 
             if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
                 throw new DailianException('流水记录写入失败');
@@ -140,11 +129,36 @@ class Complete extends DailianAbstract implements DailianInterface
 
             if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
                 throw new DailianException('流水记录写入失败');
+            }
+
+            if ($this->order->detail()->where('field_name', 'security_deposit')->value('field_value')) {
+                // 接单 退回安全保证金
+                Asset::handle(new Income($this->order->detail()->where('field_name', 'security_deposit')->value('field_value'), 8, $this->order->no, '退回安全保证金', $this->order->gainer_primary_user_id));
+
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
+
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
+            }
+
+            if ($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value')) {
+                // 接单 退效率保证金
+                Asset::handle(new Income($this->order->detail()->where('field_name', 'efficiency_deposit')->value('field_value'), 9, $this->order->no, '退回效率保证金', $this->order->gainer_primary_user_id));
+
+                if (!$this->order->userAmountFlows()->save(Asset::getUserAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
+
+                if (!$this->order->platformAmountFlows()->save(Asset::getPlatformAmountFlow())) {
+                    throw new DailianException('流水记录写入失败');
+                }
             }
         }
         // 写入结算时间
         OrderDetailRepository::updateByOrderNo($this->orderNo, 'checkout_time', date('Y-m-d H:i:s'));
-
     }
 
     /**

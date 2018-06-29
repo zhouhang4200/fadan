@@ -91,13 +91,6 @@ class Arbitrationing extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        // 调用事件
-        try {
-            event(new OrderArbitrationing($this->order));
-        }  catch (Exception $exception) {
-            myLog('ex', ['OrderArbitrationing 事件',$exception->getMessage()]);
-        }
-
         if ($this->runAfter) {
             if (config('leveling.third_orders')) {
                  // 获取订单和订单详情以及仲裁协商信息

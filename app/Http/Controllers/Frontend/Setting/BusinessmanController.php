@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Setting;
 
+use App\Models\User;
 use App\Repositories\Frontend\GameRepository;
 use Auth;
 use Illuminate\Http\Request;
@@ -54,40 +55,50 @@ class BusinessmanController extends Controller
         $type = $request->type;
         $content = $request->content;
 
-        if ($id == 0) {
-            if ($status) {
-                BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
-                    ->where('game_id', $gameId)
-                    ->update(['status' => 0]);
+        if (in_array($type, [1,2,3])) {
+
+            if ($type == 3) {
+                $exist = User::find($content);
+                if (!$exist) {
+                    return response()->ajax(0, '用户ID不存在');
+                }
             }
-            BusinessmanContactTemplate::create([
-                'user_id' => auth()->user()->getPrimaryUserId(),
-                'name' => $name,
-                'type' => $type,
-                'status' => $status,
-                'game_id' => $gameId,
-                'content' => $content
-            ]);
-            return response()->ajax(1, '添加成功');
-        } else {
 
-            $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
-                ->where('id', $id)
-                ->first();
-            $template->name = $name;
-            $template->type = $type;
-            $template->status = $status;
-            $template->game_id = $gameId;
-            $template->content = $content;
-            $template->save();
+            if ($id == 0) {
+                if ($status) {
+                    BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                        ->where('game_id', $gameId)
+                        ->update(['status' => 0]);
+                }
+                BusinessmanContactTemplate::create([
+                    'user_id' => auth()->user()->getPrimaryUserId(),
+                    'name' => $name,
+                    'type' => $type,
+                    'status' => $status,
+                    'game_id' => $gameId,
+                    'content' => $content
+                ]);
+                return response()->ajax(1, '添加成功');
+            } else {
 
-            if ($status) {
-                BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
-                    ->where('id', '!=', $template->id)
-                    ->where('game_id',  $template->game_id)
-                    ->update(['status' => 0]);
+                $template = BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                    ->where('id', $id)
+                    ->first();
+                $template->name = $name;
+                $template->type = $type;
+                $template->status = $status;
+                $template->game_id = $gameId;
+                $template->content = $content;
+                $template->save();
 
-                return response()->ajax(1, '修改成功');
+                if ($status) {
+                    BusinessmanContactTemplate::where('user_id', auth()->user()->getPrimaryUserId())
+                        ->where('id', '!=', $template->id)
+                        ->where('game_id',  $template->game_id)
+                        ->update(['status' => 0]);
+
+                    return response()->ajax(1, '修改成功');
+                }
             }
         }
     }

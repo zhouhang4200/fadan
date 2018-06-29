@@ -56,7 +56,7 @@ class Partner
         ksort($par);
         $str = '';
         foreach ($par  as $key => $value) {
-            if ($key != 'sign') {
+            if ($key != 'sign' && $value != '') {
                 $str .= $key . '=' . $value . '&';
             }
         }
@@ -64,7 +64,16 @@ class Partner
         $sign = md5(rtrim($str,  '&') . $request->user->app_secret);
 
         if ($sign != $request->sign) {
-            return false;
+            $str2 = '';
+            foreach ($par  as $key => $value) {
+                if ($key != 'sign') {
+                    $str2 .= $key . '=' . $value . '&';
+                }
+            }
+            $sign2 = md5(rtrim($str2,  '&') . $request->user->app_secret);
+            if ($sign2 != $request->sign) {
+                return false;
+            }
         }
         return true;
     }

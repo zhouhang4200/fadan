@@ -70,5 +70,4 @@ class Abnormal extends DailianAbstract implements DailianInterface
     	DB::commit();
         return true;
     }
-
 }

@@ -16,6 +16,7 @@ class BusinessmanComplaint extends Model
     public $fillable = [
       'complaint_primary_user_id',
       'be_complaint_primary_user_id',
+      'foreign_order_no',
       'order_no',
       'game_id',
       'amount',
@@ -93,7 +94,7 @@ class BusinessmanComplaint extends Model
      */
     public function beComplaintPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'be_complaint_primary_user', 'id');
+        return $this->belongsTo(User::class, 'be_complaint_primary_user_id', 'id');
     }
 
     /**
@@ -102,6 +103,6 @@ class BusinessmanComplaint extends Model
      */
     public function complaintPrimaryUser()
     {
-        return $this->belongsTo(User::class, 'complaint_primary_user', 'id');
+        return $this->belongsTo(User::class, 'complaint_primary_user_id', 'id');
     }
 }

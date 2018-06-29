@@ -40,7 +40,7 @@ class OrderConfirm extends Command
                     Order::handle(new Complete($orderNo, 0));
                 } catch (CustomException $exception) {
                     waitConfirmDel($orderNo);
-                    Log::alert([$orderNo, '自动确认收货失败，原因：' . $exception->getMessage()]);
+                    myLog('order-confirm', ['订单号' => $orderNo, '自动确认收货失败，原因：' . $exception->getMessage()]);
                 }
                 // 删除
                 waitConfirmDel($orderNo);

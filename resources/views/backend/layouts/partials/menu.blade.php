@@ -50,11 +50,6 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('order.leveling.abnormal') }}" @if($currentRouteName == 'order.leveling.abnormal') class="active" @endif>
-                                        报警订单
-                                    </a>
-                                </li>
-                                <li>
                                     <a href="{{ route('order.notice.index') }}" @if($currentRouteName == 'order.notice.index') class="active" @endif>
                                         接口失败报警
                                     </a>
@@ -237,6 +232,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <li>
                                 <a href="{{ route('finance.user-amount-flow') }}" @if($currentRouteName == 'finance.user-amount-flow') class="active" @endif>
                                     商户资金流水
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('finance.process-order.index') }}" @if($currentRouteName == 'finance.process-order.index') class="active" @endif>
+                                    托管资金明细
                                 </a>
                             </li>
 

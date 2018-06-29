@@ -269,6 +269,8 @@ class OrderController extends Controller
                     ->first();
 
                 $orderDetail = $orderRepository->levelingDetail($no->order_no);
+                $orderDetail['order_no'] = $no->order_no;
+
                 // 询用查询接口
                 $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDetail]);
                 // 对比价格是否一样

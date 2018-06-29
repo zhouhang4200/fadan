@@ -121,25 +121,6 @@ class CancelArbitration extends DailianAbstract implements DailianInterface
     public function after()
     {
         if ($this->runAfter) {
-
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-            // $consult = LevelingConsult::where('order_no', $this->order->no)->first();
-
-            // if (! $consult) {
-            //     throw new DailianException('订单申诉或协商记录不存在!');
-            // }
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         // 91 取消申诉接口
-            //         Show91::cancelAppeal(['aid' => $orderDetails['show91_order_no']]);
-            //         break;
-            //     case 2:
-            //         // 代练妈妈取消申诉接口
-            //         DailianMama::operationOrder($this->order, 20008);
-            //         break;
-            // }
-
             if (config('leveling.third_orders')) {
                 // 获取订单和订单详情以及仲裁协商信息
                 $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);

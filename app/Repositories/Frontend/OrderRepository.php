@@ -694,7 +694,7 @@ class OrderRepository
                     }
 
                     $data = [
-                        $orderCurrent['seller_nick'],
+                        $orderCurrent['seller_nick'] ?? '-',
                         $orderCurrent['source_order_no'] . "\t",
                         $orderCurrent['third_name'] ? $orderCurrent['third_name'] . ':' . $orderCurrent['third_order_no'] . "\t": '',
                         $orderCurrent['status_text'] ?? '-',

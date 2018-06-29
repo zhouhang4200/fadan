@@ -236,6 +236,9 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 财务订单报表
         Route::get('order-report', 'OrderReportController@index')->name('frontend.finance.order-report.index');
         Route::get('order-report/export', 'OrderReportController@export')->name('frontend.finance.order-report.export');
+        // 内部欠款订单
+        Route::get('month-settlement-orders', 'MonthSettlementOrdersController@index')->name('frontend.finance.month-settlement-orders.index');
+        Route::get('month-settlement-orders/export', 'MonthSettlementOrdersController@export')->name('frontend.finance.month-settlement-orders.export');
 
 	});
 

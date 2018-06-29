@@ -143,7 +143,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        User::where('id', Auth::user()->id)->update(['online' => 0]);
+//        User::where('id', Auth::user()->id)->update(['online' => 0]);
 
         $this->guard()->logout();
         $request->session()->invalidate();

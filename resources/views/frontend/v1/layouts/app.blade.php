@@ -42,6 +42,7 @@ $financeRoute = [
     'frontend.statistic.order',
     'frontend.statistic.sms',
     'frontend.finance.order-report.index',
+    'frontend.finance.month-settlement-orders.index',
 ];
 
 $settingRoute = [
@@ -350,6 +351,9 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.finance.order-report.index') }}">财务订单列表</a>
                                     </dd>
                                 @endif
+                                    <dd data-name="console" class="@if( Route::currentRouteName() == 'frontend.finance.month-settlement-orders.index') layui-this  @endif">
+                                        <a href="{{ route('frontend.finance.month-settlement-orders.index') }}">内部欠款订单</a>
+                                    </dd>
                             </dl>
                         </li>
                     @endif
@@ -497,18 +501,13 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         var insStart = laydate.render({
             elem: '#test-laydate-start',
             done: function (value, date) {
-                //更新结束日期的最小日期
-//                insEnd.config.min = lay.extend({}, date, {
-//                    month: date.month - 1
-//                });
-                //自动弹出结束日期的选择器
                 insEnd.config.elem[0].focus();
             }
         });
 
         //结束日期
         var insEnd = laydate.render({
-            elem: '#test-laydate-end',
+            elem: '#test-laydate-end'
         });
 
         $('#logout').click(function () {
@@ -518,6 +517,16 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                 });
                 layer.close(index);
             });
+        });
+
+        form.on('radio()', function(data){
+            if (data.value == '支付宝') {
+                $('#bank').addClass('layui-hide');
+                $('#alipay').removeClass('layui-hide');
+            } else {
+                $('#alipay').addClass('layui-hide');
+                $('#bank').removeClass('layui-hide');
+            }
         });
     });
     layui.config({
@@ -580,6 +589,25 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
             }
         });
     });
+
+    // 退款通知
+    socket.on('notification:balanceNotice', function (data) {
+        if (data.user_id == '{{ auth()->user()->getPrimaryUserId()}}') {
+            layer.alert(data.message,{
+                title:data.title,
+                btnAlign:'c',
+                btn: ['余额充值']
+            }, function(index){
+                layer.open({
+                    type: 1,
+                    title: '提示',
+                    area: '400px;',
+                    shade: 0.2,
+                    content: $('#charge-pop')
+                });
+            });
+        }
+    });
 </script>
 @yield('js')
 </body>
@@ -602,6 +630,31 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         <div class="layui-input-block">
             <button id="withdraw-submit" class="qs-btn qs-bg-blue" type="button">提交</button>
         </div>
+    </div>
+</div>
+<div class="layui-form" id="charge-pop" style="display: none;padding: 20px">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 60px;padding:10px;text-align: left">充值方式</label>
+        <div class="layui-input-block" style="margin-left:0">
+            <input type="radio" name="chargeMode" value="支付宝" title="支付宝" checked>
+            <input type="radio" name="chargeMode" value="银行卡" title="银行卡" >
+        </div>
+    </div>
+    <div style="line-height: 22px;" id="bank" class="layui-hide">
+        <span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span>
+        <br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
+        账号：{{ optional($transferInfo)->bank_card  }}<br/>
+        户名：{{ optional($transferInfo)->name }}<br/>
+        开户行：{{ optional($transferInfo)->bank_name }}<br/>
+        转账备注：{{ optional($transferInfo)->user_id }}<br/>
+    </div>
+    <div style="line-height: 22px;" id="alipay">
+        <p style="color:#e51c23">1. 请先联系运营人员开通“自动加款”功能。</p>
+        <p style="color:#e51c23">2. 请用您的支付宝往以下支付宝账号转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</p>
+        转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
+        账号：{{ optional($transferInfo)->alipay  }}<br/>
+        户名：{{ optional($transferInfo)->name }}<br/>
+        转账备注：{{ optional($transferInfo)->user_id }}<br/>
     </div>
 </div>
 @yield('pop')

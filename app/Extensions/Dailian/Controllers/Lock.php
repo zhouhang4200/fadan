@@ -109,21 +109,6 @@ class Lock extends DailianAbstract implements DailianInterface
                     }
                 }
             }
-
-            /**
-             * 以下只适用于  91  和 代练妈妈
-             */
-            // $orderDetails = $this->checkThirdClientOrder($this->order);
-
-            // switch ($orderDetails['third']) {
-            //     case 1:
-            //         throw new DailianException('该订单被91平台接单，91平台无此操作!');
-            //         break;
-            //     case 2:
-            //         // 代练妈妈锁定接口
-            //         DailianMama::operationOrder($this->order, 20002);
-            //         break;
-            // }
             return true;
 
         }

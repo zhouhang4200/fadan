@@ -653,23 +653,27 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	       	// 发送
 	       	$message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage'], 'getMessage', $orderDatas);
 
-	       	if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
-	       		$sortField = [];
-	            $messageArr = [];
-	            foreach ($message['data'] as $item) {
-	                if (isset($item['id'])) {
-	                    $sortField[] = $item['created_on'];
-	                } else {
-	                    $sortField[] = 0;
-	                }
-	                $messageArr[] = $item;
-	            }
-	            // 用ID倒序
-	            array_multisort($sortField, SORT_ASC, $messageArr);
+            if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
+                $sortField = [];
+                $messageArr = [];
+                foreach ($message['data'] as $item) {
+                    if (isset($item['id'])) {
+                        $sortField[] = $item['created_on'];
+                    } else {
+                        $sortField[] = 0;
+                    }
+                    $messageArr[] = [
+                        'sender' =>  isset($item['uid']) && $item['uid'] == config('leveling.wanzi.uid') ? '您': ($item['userNickname'] == '系统留言' ? '系统留言' :  '打手'),
+                        'send_content' => $item['mess'],
+                        'send_time' => $item['created_on'],
+                    ];
+                }
+                // 用ID倒序
+                array_multisort($sortField, SORT_ASC, $messageArr);
 
-	            return $messageArr;
-	       	}
-	       	return '';
+                return $messageArr;
+            }
+            return '';
     	} catch (Exception $e) {
     		myLog('wanzi-local-error', ['方法' => '订单获取留言', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
@@ -788,7 +792,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                     $arr['info'][$k]['who'] = config('leveling.wanzi.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
                     $arr['info'][$k]['created_at'] = $detail['created_on'];
                     $arr['info'][$k]['content'] = $detail['content'];
-                    $arr['info'][$k]['pic'] = env('WANZI_API_URL').'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'];
+                    $arr['info'][$k]['pic'] = isset($detail['pic']) ? config('leveling.wanzi.api_url') .'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'] : '';
                 }
             }
             return $arr;
