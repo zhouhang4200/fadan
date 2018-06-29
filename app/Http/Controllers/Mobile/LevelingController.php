@@ -465,7 +465,7 @@ class LevelingController extends Controller
                 return back()->with(['miss' => '请填写完成的代练信息']);
             }
         } catch (Exception $e) {
-            myLog('pay-error', ['message' => $e->getMessage(), 'no' => $data['no'] ?? '']);
+            myLog('pay-error', ['message' => $e->getMessage(), 'no' => $data['no'] ?? '', 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return back()->with(['miss' => '请填写完成的代练信息']);
         }
     }
@@ -588,7 +588,7 @@ class LevelingController extends Controller
                     "customer_service_name"               => "",
                     "order_source"                        => "",
                 ];
-                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, '', $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
+                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, $mobileOrder->no, $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
 
                 $mobileOrder->out_trade_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付
