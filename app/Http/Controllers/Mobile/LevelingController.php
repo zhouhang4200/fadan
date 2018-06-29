@@ -425,10 +425,10 @@ class LevelingController extends Controller
                         'return_url'     => route('mobile.leveling.alipay.return'),
                         'ali_public_key' => config('alipay.alipay_public_key'),
                         'private_key'    => config('alipay.merchant_private_key'),
-                        // 'log'            => [
-                        //     'file'       => './logs/alipay.log',
-                        //     'level'      => 'debug',
-                        // ],
+                        'log'            => [
+                            'file'       => storage_path('logs/alipay.log'),
+                            'level'      => 'debug',
+                        ],
                         'mode'           => 'dev',
                     ];
 
@@ -450,7 +450,7 @@ class LevelingController extends Controller
                         'ali_public_key' => config('wechat.wechat_public_key'),
                         'private_key'    => config('wechat.merchant_private_key'),
                         // 'log'            => [
-                        //     'file'       => './logs/wechat.log',
+                        //     'file'       => storage_path('logs/wechat.log'),
                         //     'level'      => 'debug',
                         // ],
                         'mode'           => 'dev',
@@ -485,7 +485,7 @@ class LevelingController extends Controller
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
                 // 'log'            => [
-                //     'file'       => './logs/alipay.log',
+                //     'file'       => storage_path('logs/alipay.log'),
                 //     'level'      => 'debug',
                 // ],
                 'mode'           => 'dev',
@@ -521,7 +521,7 @@ class LevelingController extends Controller
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
                 // 'log'            => [
-                //     'file'       => './logs/alipay.log',
+                //     'file'       => storage_path('logs/alipay.log'),
                 //     'level'      => 'debug',
                 // ],
                 'mode'           => 'dev',
@@ -642,7 +642,7 @@ class LevelingController extends Controller
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
                 // 'log'            => [
-                //     'file'       => './logs/wechat.log',
+                //     'file'       => storage_path('logs/wechat.log'),
                 //     'level'      => 'debug',
                 // ],
                 'mode'           => 'dev',
@@ -678,7 +678,7 @@ class LevelingController extends Controller
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
                 // 'log'            => [
-                //     'file'       => './logs/wechat.log',
+                //     'file'       => storage_path('logs/wechat.log'),
                 //     'level'      => 'debug',
                 // ],
                 'mode'           => 'dev',
