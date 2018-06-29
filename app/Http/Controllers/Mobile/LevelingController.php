@@ -570,9 +570,9 @@ class LevelingController extends Controller
                     "game_leveling_requirements_template" => "",
                     "game_leveling_instructions"          => $mobileOrder->game_leveling_instructions,
                     "game_leveling_requirements"          => $mobileOrder->game_leveling_requirements,
-                    "game_leveling_amount"                => $mobileOrder->price,
-                    "security_deposit"                    => $mobileOrder->security_deposit,
-                    "efficiency_deposit"                  => $mobileOrder->efficiency_deposit,
+                    "game_leveling_amount"                => $mobileOrder->price+0,
+                    "security_deposit"                    => $mobileOrder->security_deposit+0,
+                    "efficiency_deposit"                  => $mobileOrder->efficiency_deposit+0,
                     "game_leveling_day"                   => $mobileOrder->game_leveling_day,
                     "game_leveling_hour"                  => $mobileOrder->game_leveling_hour,
                     "client_phone"                        => $mobileOrder->client_phone,
@@ -582,13 +582,13 @@ class LevelingController extends Controller
                     "order_password"                      => '',
                     "source_order_no_1"                   => '',
                     "source_order_no_2"                   => '',
-                    "source_price"                        => $mobileOrder->original_price,
+                    "source_price"                        => $mobileOrder->original_price+0,
                     "customer_service_remark"             => '',
                     "urgent_order"                        => 0,
                     "customer_service_name"               => "",
                     "order_source"                        => "",
                 ];
-                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, $mobileOrder->no, $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
+                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, $mobileOrder->no, $mobileOrder->price+0, $mobileOrder->original_price+0, $orderDetailArr, $mobileOrder->remark, 7));
 
                 $mobileOrder->out_trade_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付

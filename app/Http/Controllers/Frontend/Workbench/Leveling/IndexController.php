@@ -246,7 +246,7 @@ class IndexController extends Controller
                 $orderTime = $currentTime->parse($orderCurrent['created_at']);
                 $orderCurrent['day'] = $orderTime->diffInDays($currentTime, false);
                 $orderCurrent['password'] = str_replace(substr($orderCurrent['password'], -4, 4), '****', $orderCurrent['password']);
-                $orderCurrent['amount'] = intval($orderCurrent['amount']) == $orderCurrent['amount'] ? intval($orderCurrent['amount']) : $orderCurrent['amount'];
+                $orderCurrent['amount'] = $orderCurrent['amount'] + 0;
 
 
                 // 如果是接单账号则隐藏:玩家旺旺、客服备注、来源价格、利润 等字段数据
