@@ -1157,9 +1157,9 @@ if (!function_exists('base64ToImg')) {
     function base64ToImg($base64Str, $path)
     {
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64Str, $result)) {
-            $imgDir = 'resources/' . $path . '/';
-            if (!is_dir($imgDir)) {
-                mkdir($imgDir, 0777);
+            $imgDir = '/resources/' . $path . '/';
+            if (!is_dir(public_path($imgDir))) {
+                mkdir(public_path($imgDir), 0777);
             }
             $imgPath = $imgDir .  uniqid() . '.png';
             if (file_put_contents(public_path($imgPath), base64_decode(str_replace($result[1], '', $base64Str)))) {

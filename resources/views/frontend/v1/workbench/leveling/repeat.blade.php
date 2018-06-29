@@ -331,7 +331,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 安全保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金" value="{{ $detail['security_deposit'] }}">
+                                <input type="text" name="security_deposit" @if($detail['gainer_primary_user_id']) lay-verify="required|number|gt5" @endif placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金" value="{{ $detail['security_deposit'] }}">
                                 <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -340,7 +340,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 效率保证金</label>
                             <div class="layui-input-block">
-                                <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金" value="{{ $detail['efficiency_deposit'] }}">
+                                <input type="text" name="efficiency_deposit" @if($detail['gainer_primary_user_id']) lay-verify="required|number|gt5" @endif placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金" value="{{ $detail['efficiency_deposit'] }}">
                                 <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
                                     <i class="iconfont icon-exclamatory-mark-r"></i>
                                 </div>
@@ -430,6 +430,15 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
+                            <label class="layui-form-label">指定内部打手</label>
+                            <div class="layui-input-block">
+                                <select name="gainer_primary_user_id" lay-verify="" lay-filter="gainer-primary-user-id">
+                                    <option value=""></option>
+                                </select>
+                                <div class="tips"  id="gainer_primary_user_id">
+                                    <i class="iconfont icon-add-r"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -606,10 +615,8 @@
                     btn: ['首次发单客服', '当前发单客服'] //可以无限个按钮
                 }, function(){
                     order(data, 1);
-                    layer.closeAll();
                 }, function() {
                     order(data, 0);
-                    layer.closeAll();
                 });
                 return false;
             });
@@ -632,6 +639,16 @@
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
             });
+            // 选择内部接单商户
+            form.on('select(gainer-primary-user-id)', function(data){
+                if (data.value == '') {
+                    $('input[name=security_deposit]').attr('lay-verify', 'required|number|gt5');
+                    $('input[name=efficiency_deposit]').attr('lay-verify', 'required|number|gt5');
+                } else {
+                    $('input[name=security_deposit]').attr('lay-verify', '').val(0);
+                    $('input[name=efficiency_deposit]').attr('lay-verify', '').val(0);
+                }
+            });
             // 按游戏加载区\代练类型\代练模版\商户QQ
             loadGameInfo();
             // 下单
@@ -648,15 +665,14 @@
                     shade: [0.2, '#000000']
                 });
                 $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field, value: value}, function (result) {
-
                     if (result.status == 1) {
                         layer.open({
                             content: result.message,
                             btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
+                            btn1: function(){
                                 window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
-                            btn2: function(index, layero){
+                            btn2: function(){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });
@@ -664,19 +680,17 @@
                         layer.open({
                             content: result.message,
                             btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
+                            btn1: function(){
                                 window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
                             },
-                            btn2: function(index, layero){
+                            btn2: function(){
                                 window.location.href="{{ route('frontend.workbench.leveling.index') }}";
                             }
                         });
                     }
-
                 }, 'json');
             }
             // 加载下单必要的信息
-
             function loadGameInfo() {
                 loadRegionType();
                 loadGameLevelingTemplate();
@@ -793,6 +807,7 @@
                 $('select[name=user_phone]').val('{{ $detail['user_phone']}}');
                 $('select[name=user_qq]').val('{{ $detail['user_qq'] }}');
                 $('select[name=region]').val('{{ $detail['region'] }}');
+                $('select[name=gainer_primary_user_id]').val('{{ $detail['gainer_primary_user_id'] }}');
 
                 @if(isset($taobaoTrade->tid))
                     $('input[name=source_order_no]').val('{{ $taobaoTrade->tid }}');
@@ -820,14 +835,16 @@
             }
             // 商户联系方式
             function loadBusinessmanContactTemplate() {
+                $.ajaxSettings.async = false;
                 $.get('{{ route("frontend.setting.setting.businessman-contact.index") }}', {id:gameId}, function (result) {
                     var qqTemplate = '<option value="">请选择</option>';
                     var phoneTemplate = '<option value="">请选择</option>';
+                    var gainerUserTemplate = '<option value="">请选择</option>';
                     var chose = 0;
+                    var gainerUserChose = 0;
                     $.each(result, function (index, value) {
-                        if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
-
-                            if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                        if (value.type == 1) {
+                            if (value.status == 1) {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else if (gameId == value.game_id && value.status == 1) {
                                 chose = 1;
@@ -836,7 +853,7 @@
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
                             }
 
-                        } else if (value.type == 2 && (value.game_id == 0 || gameId == value.game_id)) {
+                        } else if (value.type == 2) {
 
                             if (gameId == value.game_id && value.status == 1) {
                                 chose = 1;
@@ -846,11 +863,21 @@
                             } else {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
                             }
+                        } else if (value.type == 3) {
+                            if (gameId == value.game_id && value.status == 1) {
+                                gainerUserChose = 1;
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else if (value.status == 1 && value.game_id == 0 && gainerUserChose == 0) {
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
+                            } else {
+                                gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
+                            }
                         }
                     });
                     chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
+                    $('select[name=gainer_primary_user_id]').html(gainerUserTemplate);
                     layui.form.render();
                 }, 'json');
             }
@@ -949,6 +976,17 @@
                     type: 2,
                     area: ['700px', '400px'],
                     content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 2]) }}',
+                    cancel: function(index, layero){
+                        loadBusinessmanContactTemplate(gameId);
+                    }
+                });
+            });
+            // 添加内部打手
+            $('.layui-form').on('click', '#gainer_primary_user_id', function () {
+                layer.open({
+                    type: 2,
+                    area: ['700px', '400px'],
+                    content: '{{ route('frontend.setting.setting.businessman-contact.index', ['type' => 3]) }}',
                     cancel: function(index, layero){
                         loadBusinessmanContactTemplate(gameId);
                     }

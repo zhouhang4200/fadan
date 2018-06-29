@@ -590,6 +590,10 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         });
     });
 
+    $('body').on('click', '.cancel', function () {
+        layer.closeAll();
+    });
+
     // 退款通知
     socket.on('notification:balanceNotice', function (data) {
         if (data.user_id == '{{ auth()->user()->getPrimaryUserId()}}') {

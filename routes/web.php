@@ -239,6 +239,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         // 内部欠款订单
         Route::get('month-settlement-orders', 'MonthSettlementOrdersController@index')->name('frontend.finance.month-settlement-orders.index');
         Route::get('month-settlement-orders/export', 'MonthSettlementOrdersController@export')->name('frontend.finance.month-settlement-orders.export');
+        Route::post('month-settlement-orders/settlement', 'MonthSettlementOrdersController@settlement')->name('frontend.finance.month-settlement-orders.settlement');
 
 	});
 

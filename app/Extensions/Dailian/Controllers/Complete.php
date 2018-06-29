@@ -6,8 +6,10 @@ use App\Events\OrderFinish;
 use App\Exceptions\AssetException;
 use App\Exceptions\CustomException;
 use App\Exceptions\RequestTimeoutException;
+use App\Models\BusinessmanContactTemplate;
 use App\Models\MonthSettlementOrders;
 use App\Models\TaobaoTrade;
+use App\Models\User;
 use DB;
 use Asset;
 use TopClient;
@@ -110,12 +112,18 @@ class Complete extends DailianAbstract implements DailianInterface
         // 判断是否为平台内部转单订单,是则写入待结算表
         if (isset($this->orderDetail['gainer_primary_user_id']) && $this->orderDetail['gainer_primary_user_id'] == $this->order->gainer_primary_user_id) {
             // 创建待结算记录
+            $creatorUser = User::find($this->order->creator_primary_user_id);
+            $gainerUser = BusinessmanContactTemplate::where('user_id', $this->order->creator_primary_user_id)
+                ->where('content', $this->order->gainer_primary_user_id)->first();
             MonthSettlementOrders::create([
                 'order_no' => $this->order->no,
                 'foreign_order_no' => $this->order->foreign_order_no,
                 'creator_primary_user_id' => $this->order->creator_primary_user_id,
+                'creator_primary_user_name' => $creatorUser->username,
                 'gainer_primary_user_id' => $this->order->gainer_primary_user_id,
+                'gainer_primary_user_name' => $gainerUser->name ?? '',
                 'game_id' => $this->order->game_id,
+                'amount' => $this->order->amount,
                 'status' => 1,
                 'finish_time' => date('Y-m-d H:i:s'),
             ]);

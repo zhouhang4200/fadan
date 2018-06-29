@@ -378,6 +378,77 @@
             </div>
         </form>
     </div>
+    <div class="complete-upload" style="display: none; padding: 20px">
+        <form class="layui-form">
+            <input type="hidden" id="order_no" name="order_no">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">完成截图</label>
+                <div class="layui-input-block">
+                    <div class="fileinput-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-1" style="width: 100px;height: 100px;"></div>
+                            <div style="height: 0;">
+                                <span class=" btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fileinput-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-2" style="width: 100px;height: 100px;"></div>
+                            <div>
+                                <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                                </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fileinput-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                            <div class="fileinput-new thumbnail" style="width: 100px;height: 100px;">
+                                <img id='picImg' style="width: 60px;height:60px;margin:auto;margin-top:20px;" src="/frontend/images/upload-btn-bg.png" alt="" />
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail pic-3" style="width: 100px;height: 100px;"></div>
+                            <div>
+                               <span class="btn-file" style="padding: 0;">
+                                    <span class="fileinput-new"></span>
+                                    <span class="fileinput-exists"></span>
+                                    <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png" />
+                               </span>
+                                <a href="javascript:;" class="fileinput-exists" data-dismiss="fileinput" style="padding: 0;">
+                                    <i class="iconfont icon-shanchu4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="qs-btn layui-btn-normal" id="submit" lay-submit lay-filter="complete-upload">确认
+                    </button>
+                    <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="layui-carousel" id="carousel" style="display: none"></div>
 @endsection
 
@@ -440,6 +511,44 @@
             @{{# }  }}
         @{{# } else {  }}
 
+            @{{# if (d.status == 1) {  }}
+            {{--<button class="qs-btn qs-btn-sm" style="width: 80px;" data-opt="offSale" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">下架</button>--}}
+
+            @{{# } else if (d.status == 13) {  }}
+                <button  class="qs-btn opt-btn"  data-opt="applyComplete" data-no="@{{ d.no }}" data-image-upload="@{{ d.gainer_primary_user_id != 0 ? 1 : 0 }}">申请完成</button>
+                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">协商撤销</button>
+            @{{# } else if (d.status == 14) {  }}
+                <button  class="qs-btn opt-btn"  data-opt="cancelComplete" data-no="@{{ d.no }}">取消验收</button>
+                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">协商撤销</button>
+            @{{# } else if (d.status == 15) {  }}
+
+                @{{# if (d.consult == 1) {  }}
+                    <button  class="qs-btn opt-btn"  data-opt="agreeRevoke" data-no="@{{ d.no }}"  data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="2" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
+                @{{# } else if (d.consult == 2) {  }}
+                    <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
+                @{{# } }}
+
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="applyArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">申请仲裁</button>
+
+            @{{# } else if (d.status == 16) {  }}
+
+                @{{# if (d.complain == 1) {  }}
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"   data-opt="cancelArbitration" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消仲裁</button>
+                @{{# } }}
+
+                @{{# if (d.consult == 2) {  }}
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="2" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
+                @{{# }   }}
+
+            @{{# } else if (d.status == 17) {  }}
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="lock" data-no="@{{ d.no }}">锁定</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+            @{{# } else if (d.status == 18) {  }}
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelLock" data-no="@{{ d.no }}">取消锁定</button>
+                <button class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">撤销</button>
+            @{{# } else if (d.status == 19 || d.status == 20 || d.status == 21) {  }}
+                <button class="qs-btn qs-btn-sm" data-opt="repeat" style="width: 80px;"  data-no="@{{ d.no }}">重发</button>
+            @{{# }  }}
 
         @{{# }  }}
     </script>
@@ -945,6 +1054,41 @@
                             }
                         }
                     });
+                } else if (opt == 'applyComplete'){
+                    layer.open({
+                        type: 1,
+                        shade: 0.2,
+                        title: '上传完成图片',
+                        area: ['600px'],
+                        content: $('.complete-upload')
+                    });
+                    form.on('submit(complete-upload)', function (data) {
+
+                        var complainLoad = layer.load(2, {shade:[0.2, '#000']});
+                        var pic1 = $('.pic-1 img').attr('src');
+                        var pic2 = $('.pic-2 img').attr('src');
+                        var pic3 = $('.pic-3 img').attr('src');
+
+                        $.post("{{ route('frontend.workbench.leveling.status') }}", {
+                            orderNo: orderNo,
+                            keyWord: opt,
+                            pic1: pic1,
+                            pic2: pic2,
+                            pic3: pic3
+                        }, function (result) {
+                            layer.close(complainLoad);
+                            if (result.status == 1) {
+                                reloadOrderList();
+                                layer.closeAll();
+                                layer.msg(result.message, {icon: 6},function () {
+                                });
+                            } else {
+                                layer.msg(result.message, {icon: 5},function () {});
+                            }
+                        });
+                        return false;
+                    });
+                    return false;
                 } else {
                     $.post("{{ route('frontend.workbench.leveling.status') }}", {
                         orderNo: orderNo,

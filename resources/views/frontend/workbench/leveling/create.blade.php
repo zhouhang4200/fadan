@@ -490,7 +490,13 @@
             }
             // 设置默认选中填充的值
             function setDefaultValueOption() {
-                $("select[name=game_leveling_type]").val('排位');
+                var all = [];
+                $("select[name=game_leveling_type] option").each(function() {
+                    all.push($(this).attr("value"));
+                });
+                if ($.inArray("排位", all) == 1) {
+                    $("select[name=game_leveling_type]").val('排位');
+                }
                 $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
                 $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 @if(isset($taobaoTrade->tid))
