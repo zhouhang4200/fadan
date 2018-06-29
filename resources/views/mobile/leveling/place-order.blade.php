@@ -177,8 +177,8 @@
 
         var newPrice = $("input[name='payment']").val();
         var oldPrice = $("input[name='show_price']").val();
-        $(".new_pic").html(formatterPrecision2(newPrice));
-        $(".old_pic s").html(formatterPrecision2(oldPrice));
+        $(".new_pic").html(formatterPrecision2(newPrice)+'元');
+        $(".old_pic s").html(formatterPrecision2(oldPrice)+'元');
 
         var session = "{{ session('miss') }}";
         if (session) {

@@ -398,8 +398,8 @@ class LevelingController extends Controller
             $data['game_id'] = $gameId;
             $data['status'] = 0; // 未支付
             $data['original_price'] = $data['payment']+0;
-            $data['creator_user_id'] = 84573;
-            $data['creator_user_name'] = User::find(84573)->useranme;
+            $data['creator_user_id'] = 8317;
+            $data['creator_user_name'] = User::find(8317) ? User::find(8317)->useranme : '';
             $data['client_qq'] = '';
             $data['user_qq'] = $levelingConfigure->user_qq;
             $data['out_trade_no'] = '';
