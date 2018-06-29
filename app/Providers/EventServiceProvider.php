@@ -42,86 +42,105 @@ class EventServiceProvider extends ServiceProvider
         // 订单撤销中事件
         'App\Events\OrderRevoking' => [
             'App\Listeners\OrderRevoking\SendSms',
+            'App\Listeners\ChangeStatus',
         ],
         // 订单仲裁中事件
         'App\Events\OrderArbitrationing' => [
             'App\Listeners\OrderArbitrationing\SendSms',
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
         // 订单申请验收事件
         'App\Events\OrderApplyComplete' => [
             'App\Listeners\OrderApplyComplete\SendSms',
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 异常
         'App\Events\OrderAbnormal' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 取消异常
         'App\Events\OrderCancelAbnormal' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 取消申诉
         'App\Events\OrderCancelArbitration' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 取消完成
         'App\Events\OrderCancelComplete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 完成
         'App\Events\OrderComplete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 锁定
         'App\Events\OrderLock' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 未接单
         'App\Events\OrderNoReceive' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 下架
         'App\Events\OrderOffSaled' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 接单
         'App\Events\OrderPlaying' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 不同意撤销
         'App\Events\OrderRefuseRevoke' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 取消锁定
         'App\Events\OrderUnLock' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
-        //
+        // 取消撤销
         'App\Events\OrderUnRevoke' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
+            'App\Listeners\ChangeStatus',
         ],
 
         // 订单仲裁后事件
         'App\Events\OrderArbitrationed' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
+            'App\Listeners\ChangeStatus',
         ],
         // 订单撤销后事件
         'App\Events\OrderRevoked' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
+            'App\Listeners\ChangeStatus',
         ],
         // 订单撤单后事件
         'App\Events\OrderDelete' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
+            'App\Listeners\ChangeStatus',
         ],
         // 订单强制撤销后事件
         'App\Events\OrderForceRevoke' => [
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
+            'App\Listeners\ChangeStatus',
         ],
         // 创建或修改订单基础数据
         'App\Events\OrderBasicData' => [

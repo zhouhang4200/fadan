@@ -92,7 +92,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
      * @param array $details 订单详细参数 例：['version' => '版本','account' => '账号','region'  => '区服']
      * @param string $remark  订单备注
      */
-    public function __construct($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $details, $remark = '')
+    public function __construct($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $details, $remark = '', $source = 1)
     {
         $this->userId = $userId;
         $this->foreignOrderNO = $foreignOrderNO;
@@ -103,6 +103,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->templateId = $templateId;
         $this->game = Game::find($gameId);
         $this->runAfter = 1;
+        $this->source = $source;
     }
 
     // 获取订单
@@ -115,7 +116,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
     {
         $this->order->no = generateOrderNo();
         $this->order->foreign_order_no = $this->foreignOrderNO;
-        $this->order->source = 1;
+        $this->order->source = $this->source;
         $this->order->goods_id = 0; // 商品ID无
         $this->order->goods_name = ''; // 商品名为下单标题
         $this->order->service_id = 4;// 服务类型;
@@ -128,7 +129,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->original_amount =  $this->originalPrice;
         $this->order->amount = $this->price;
         $this->order->creator_user_id = $this->userId;
-        $this->order->creator_primary_user_id = Auth::user()->getPrimaryUserId();
+        $this->order->creator_primary_user_id = $this->source != 7 ? Auth::user()->getPrimaryUserId() : (User::find($this->userId) ? User::find($this->userId)->getPrimaryUserId() : 0);
         $this->order->remark = $this->remark;
 
         // 记录订单详情
@@ -136,7 +137,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             $widget = GoodsTemplateWidget::where('goods_template_id', $this->templateId)->get();
 
             foreach ($widget as $item) {
-
                 $orderDetail = new OrderDetail;
                 $orderDetail->order_no = $this->order->no;
                 $orderDetail->field_name = $item->field_name;

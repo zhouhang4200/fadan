@@ -179,13 +179,28 @@ body{
             }
         }
     }
+    .footer{
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+       .tb-bg{
+            flex: 1;
+            margin-top: 15px;
+            border-radius: 0;
+            background-color: #bbb;
+            font-size: 18px;
+            color: #fff;
+        }
+
+    }
     #showTooltips{
         position: fixed;
         bottom: 0;
         border-radius: 0;
         background-color: #bbb;
         font-size: 18px;
-        color: #fff;
+            color: #fff;
     }
     #showTooltips::after{
         content: none;

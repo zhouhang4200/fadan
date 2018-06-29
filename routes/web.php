@@ -498,15 +498,22 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
 Route::namespace('Mobile')->prefix('mobile')->group(function () {
     // 手机端标品下单
     Route::prefix('leveling')->group(function () {
-        Route::get('demand', 'LevelingController@demand')->name('mobile.leveling.demand');
-        Route::post('games', 'LevelingController@games')->name('mobile.leveling.games');
-        Route::post('types', 'LevelingController@types')->name('mobile.leveling.types');
-        Route::post('targets', 'LevelingController@targets')->name('mobile.leveling.targets');
-        Route::post('compute', 'LevelingController@compute')->name('mobile.leveling.compute');
-        Route::post('go', 'LevelingController@go')->name('mobile.leveling.go');
-        Route::get('place-order', 'LevelingController@placeOrder')->name('mobile.leveling.place-order');
-        Route::post('regions', 'LevelingController@regions')->name('mobile.leveling.regions');
-        Route::post('servers', 'LevelingController@servers')->name('mobile.leveling.servers');
+        Route::get('demand', 'LevelingController@demand')->name('mobile.leveling.demand'); // 代练下单配置
+        Route::post('games', 'LevelingController@games')->name('mobile.leveling.games'); // 代练游戏
+        Route::post('types', 'LevelingController@types')->name('mobile.leveling.types'); // 代练类型
+        Route::post('targets', 'LevelingController@targets')->name('mobile.leveling.targets'); // 代练目标
+        Route::post('compute', 'LevelingController@compute')->name('mobile.leveling.compute'); // 计算价格和时间
+        Route::post('go', 'LevelingController@go')->name('mobile.leveling.go'); 
+
+        Route::get('place-order', 'LevelingController@placeOrder')->name('mobile.leveling.place-order'); // 下单配置界面
+        Route::post('regions', 'LevelingController@regions')->name('mobile.leveling.regions'); // 区
+        Route::post('servers', 'LevelingController@servers')->name('mobile.leveling.servers'); // 服
+        Route::post('pay', 'LevelingController@pay')->name('mobile.leveling.pay'); // 支付
+        Route::any('alipay/notify', 'LevelingController@alipayNotify')->name('mobile.leveling.alipay.notify'); // 支付异步回调
+        Route::get('alipay/return', 'LevelingController@alipayReturn')->name('mobile.leveling.alipay.return'); // 支付同步回调
+        Route::any('wechat/notify', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify'); // 支付异步回调
+        Route::get('wechat/return', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return'); // 支付同步回调
+        Route::get('show/{id}', 'LevelingController@show')->name('mobile.leveling.show'); // 详情页
     }); 
 });
 

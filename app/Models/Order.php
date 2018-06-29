@@ -16,6 +16,13 @@ use App\Extensions\Dailian\Controllers\PublicController;
  */
 class Order extends Model
 {
+    protected $fillable = [
+        'no', 'foreign_order_no', 'source', 'status', 'goods_id', 'goods_name', 'service_id',
+        'service_name', 'game_id', 'game_name', 'original_price', 'price', 'quantity', 
+        'original_amount', 'amount', 'real_amount', 'remark', 'creator_user_id', 'creator_primary_user_id',
+        'gainer_user_id', 'gainer_primary_user_id', 'created_at', 'updated_at'
+    ];
+    
     /**
      * 订单详情
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

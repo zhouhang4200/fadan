@@ -21,7 +21,6 @@
     <div class="header">
         <div class="weui-flex">
             <div class="weui-flex__item">游戏代练</div>
-            <a href="./index.html" class="back iconfont icon-back"></a>
         </div>
     </div>
     <!-- header -->
@@ -33,12 +32,6 @@
                 <!-- Slides -->
                 <div class="swiper-slide">
                     <img src="/mobile/lib/images/banner.jpg" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="/mobile/lib/images/game_1.jpg" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="/mobile/lib/images/game_2.jpg" />
                 </div>
             </div>
             <!-- If we need pagination -->
@@ -55,6 +48,10 @@
             <input type="hidden" name="payment" value=""></input>
             <input type="hidden" name="showPrice" value=""></input>
             <input type="hidden" name="showTime" value=""></input>
+            <input type="hidden" name="security_deposit" value=""></input>
+            <input type="hidden" name="efficiency_deposit" value=""></input>
+            <input type="hidden" name="game_leveling_day" value=""></input>
+            <input type="hidden" name="game_leveling_hour" value=""></input>
 
             <div class="weui-cells weui-cells_form ">
                 <div class="weui-cell weui-cell_select">
@@ -64,7 +61,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <div class="trigger5 operation operation1" style="cursor: pointer;" id="trigger1">选择游戏</div>
+                        <div class="trigger5 operation operation1" style="cursor: pointer;" id="trigger1">必选</div>
                         <select class="weui-select f-dn" name="game_name">
                             <option selected="" value=""></option>
                         </select>
@@ -99,14 +96,14 @@
                 <div class="pic_box">
                     <div class="pic">
                         <img src="/mobile/lib/images/pic.png" alt="">
-                        <div class="new_pic"></div>
-                        <div class="old_pic">代练价格
-                            <s></s>
+                        <div class="new_pic">待评估</div>
+                        <div class="old_pic a">代练价格
+                            
                         </div>
                     </div>
                     <div class="time">
                         <img src="/mobile/lib/images/time.png" alt="">
-                        <div class="time_"></div>
+                        <div class="time_">待评估</div>
                         <div class="old_pic">预计耗时</div>
                     </div>
                 </div>
@@ -126,12 +123,12 @@
     </script>
     <script src="/mobile/lib/js/jquery-weui.js"></script>
     <script src="/mobile/lib/js/swiper.js"></script>
-    <script>
+   <!--  <script>
         $(".swiper-container").swiper({
             loop: true,
             autoplay: 3000
         });
-    </script>
+    </script> -->
     <script>
         var mobileSelect1 = new MobileSelect({
             trigger: '#trigger1',
@@ -158,7 +155,6 @@
             if(res.status == 1) {
                mobileSelect1.updateWheel(0,res.message) //更改第1个轮子
             }
-
         })
           
         // select2
@@ -202,43 +198,66 @@
                 //console.log(data);
             },
             callback: function (indexArr, data) {
-                $('select[name="game_leveling_level"] option:selected').text( data).val( data);
-                $('#showTooltips').addClass('tb-bg').attr('disabled',false)
-                var game_name=$("select[name='game_name']").val();
-                var type=$("select[name='game_leveling_type']").val();
-                var level=$("select[name='game_leveling_level']").val();
-                $.post("{{ route('mobile.leveling.compute') }}", {game_name:game_name,type:type,level:level}, function(res) {
-                    if(res.status == 1) {
-                        $("input[name='price']").val(res.message.price);
-                        $("input[name='payment']").val(res.message.payment);
-                        $("input[name='time']").val(res.message.time);
+                console.log(data);
+                if(data[0] == data[1]) {
+                    $.toast('代练目标不能相同', "text");
+                    $('.operation3').text('')
+                } else {
+                    $('select[name="game_leveling_level"] option:selected').text( data).val( data);
+                    var game_name=$("select[name='game_name']").val();
+                    var type=$("select[name='game_leveling_type']").val();
+                    var level=$("select[name='game_leveling_level']").val();
+                    $.post("{{ route('mobile.leveling.compute') }}", {game_name:game_name,type:type,level:level}, function(res) {
+                        if(res.status == 1) {
+                            $("input[name='price']").val(res.message.price);
+                            $("input[name='payment']").val(res.message.payment);
+                            $("input[name='time']").val(res.message.time);
 
-                        $("input[name='startNumber']").val(res.message.startNumber);
-                        $("input[name='endNumber']").val(res.message.endNumber);
-                        $("input[name='startLevel']").val(res.message.startLevel);
-                        $("input[name='endLevel']").val(res.message.endLevel);
-                        $("input[name='showPrice']").val(res.message.showPrice);
-                        $("input[name='showTime']").val(res.message.showTime);
+                            $("input[name='startNumber']").val(res.message.startNumber);
+                            $("input[name='endNumber']").val(res.message.endNumber);
+                            $("input[name='startLevel']").val(res.message.startLevel);
+                            $("input[name='endLevel']").val(res.message.endLevel);
+                            $("input[name='showPrice']").val(res.message.showPrice);
+                            $("input[name='showTime']").val(res.message.showTime);
 
-                        $(".time_").html(res.message.showTime);
-                        $(".new_pic").html(res.message.payment);
-                        $(".old_pic s").html(res.message.showPrice);
-                    }
-                });
+                            $("input[name='security_deposit']").val(res.message.securityDeposit);
+                            $("input[name='efficiency_deposit']").val(res.message.efficiencyDeposit);
+                            $("input[name='game_leveling_day']").val(res.message.day);
+                            $("input[name='game_leveling_hour']").val(res.message.hour);
+
+                            $(".time_").html(res.message.showTime);
+                            $(".new_pic").html(formatterPrecision2(res.message.payment)+'元');
+                            $(".pic .a").html("原价<s>"+formatterPrecision2(res.message.showPrice)+"元</s>");
+                            $('#showTooltips').addClass('tb-bg').attr('disabled',false)
+                        } else {
+                            $.toast(res.message, "text");
+                        }
+                    });
+                }
             }
         });
+
+        function formatterPrecision2(value) {
+            var number = Number(value);
+            if (isNaN(number) || number == 0) {
+                return '';
+            } else {
+                return number.toFixed(2);
+            }
+        }
+
 
         //上级select未选择的toast 
         $(document).on("click", ".operation2", function () {
             if ($('select[name="game_name"] option:selected').text() === '') {
-                $.toast("请先选择代练游戏", "cancel");
+                $.toast("请选择代练游戏", "text");
                 $('.mobileSelect').removeClass('mobileSelect-show');
             }
         })
         //上级select未选择的toast
         $(document).on("click", ".operation3", function () {
             if ($('select[name="game_leveling_type"] option:selected').text() === '') {
-                $.toast("请先选择代练类型", "cancel");
+                $.toast("请选择代练类型", "text");
                 $('.mobileSelect').removeClass('mobileSelect-show');
             }
         })
@@ -254,16 +273,18 @@
             var endNumber=$("input[name='endNumber']").val();
             var startLevel=$("input[name='startLevel']").val();
             var endLevel=$("input[name='endLevel']").val();
+            var securityDeposit = $("input[name='security_deposit']").val();
+            var efficiencyDeposit = $("input[name='efficiency_deposit']").val();
+            var day = $("input[name='game_leveling_day']").val();
+            var hour = $("input[name='game_leveling_hour']").val();
 
-            $.post("{{ route('mobile.leveling.go') }}", {gameName:gameName, type:type, startLevel:startLevel, endLevel:endLevel, startNumber:startNumber, endNumber:endNumber, endLevel:endLevel, price:price, payment:payment, time:time}, function (res) {
+            $.post("{{ route('mobile.leveling.go') }}", {gameName:gameName, type:type, startLevel:startLevel, endLevel:endLevel, startNumber:startNumber, endNumber:endNumber, endLevel:endLevel, price:price, payment:payment, time:time, securityDeposit:securityDeposit, efficiencyDeposit:efficiencyDeposit, day:day, hour:hour}, function (res) {
                 if (res.status != 1) {
                     // 弹出错误
                 } else {
 
                 }
-
             });
-
         }
     </script> 
 </body>
