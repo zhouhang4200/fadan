@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Game;
 use App\Models\Order;
+use Illuminate\Http\Response;
 use Order as OrderFacade;
 use App\Extensions\Order\Operations\CreateLeveling;
 use App\Models\OrderDetail;
@@ -398,11 +399,11 @@ class LevelingController extends Controller
             $data['game_id'] = $gameId;
             $data['status'] = 0; // 未支付
             $data['original_price'] = $data['payment']+0;
-            $data['creator_user_id'] = 84573;
-            $data['creator_user_name'] = User::find(84573)->useranme;
+            $data['creator_user_id'] = 8317;
+            $data['creator_user_name'] = User::find(8317) ? User::find(8317)->useranme : '';
             $data['client_qq'] = '';
             $data['user_qq'] = $levelingConfigure->user_qq;
-            $data['out_trade_no'] = '';
+            $data['order_no'] = '';
             $data['game_leveling_requirements'] = $levelingConfigure->game_leveling_requirements;
             $data['game_leveling_instructions'] = $levelingConfigure->game_leveling_instructions;
             $data['game_leveling_title'] = $data['game_name'].'-'.$data['game_leveling_type'].'-'.$data['startLevel'].'-'.$data['endLevel'];
@@ -426,7 +427,7 @@ class LevelingController extends Controller
                         'ali_public_key' => config('alipay.alipay_public_key'),
                         'private_key'    => config('alipay.merchant_private_key'),
                         'log'            => [
-                            'file'       => './logs/alipay.log',
+                            'file'       => storage_path('logs/alipay.log'),
                             'level'      => 'debug',
                         ],
                         'mode'           => 'dev',
@@ -449,10 +450,10 @@ class LevelingController extends Controller
                         'return_url'     => route('mobile.leveling.return'),
                         'ali_public_key' => config('wechat.wechat_public_key'),
                         'private_key'    => config('wechat.merchant_private_key'),
-                        'log'            => [
-                            'file'       => './logs/wechat.log',
-                            'level'      => 'debug',
-                        ],
+                        // 'log'            => [
+                        //     'file'       => storage_path('logs/wechat.log'),
+                        //     'level'      => 'debug',
+                        // ],
                         'mode'           => 'dev',
                     ];
 
@@ -465,7 +466,7 @@ class LevelingController extends Controller
                 return back()->with(['miss' => '请填写完成的代练信息']);
             }
         } catch (Exception $e) {
-            myLog('pay-error', ['message' => $e->getMessage(), 'no' => $data['no'] ?? '']);
+            myLog('pay-error', ['message' => $e->getMessage(), 'no' => $data['no'] ?? '', 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return back()->with(['miss' => '请填写完成的代练信息']);
         }
     }
@@ -484,10 +485,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.alipay.return'),
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
-                'log'            => [
-                    'file'       => './logs/alipay.log',
-                    'level'      => 'debug',
-                ],
+                // 'log'            => [
+                //     'file'       => storage_path('logs/alipay.log'),
+                //     'level'      => 'debug',
+                // ],
                 'mode'           => 'dev',
             ];
 
@@ -520,10 +521,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.alipay.return'),
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
-                'log'            => [
-                    'file'       => './logs/alipay.log',
-                    'level'      => 'debug',
-                ],
+                // 'log'            => [
+                //     'file'       => storage_path('logs/alipay.log'),
+                //     'level'      => 'debug',
+                // ],
                 'mode'           => 'dev',
             ];
             $alipay = Pay::alipay($basicConfig);
@@ -570,9 +571,9 @@ class LevelingController extends Controller
                     "game_leveling_requirements_template" => "",
                     "game_leveling_instructions"          => $mobileOrder->game_leveling_instructions,
                     "game_leveling_requirements"          => $mobileOrder->game_leveling_requirements,
-                    "game_leveling_amount"                => $mobileOrder->price,
-                    "security_deposit"                    => $mobileOrder->security_deposit,
-                    "efficiency_deposit"                  => $mobileOrder->efficiency_deposit,
+                    "game_leveling_amount"                => $mobileOrder->price+0,
+                    "security_deposit"                    => $mobileOrder->security_deposit+0,
+                    "efficiency_deposit"                  => $mobileOrder->efficiency_deposit+0,
                     "game_leveling_day"                   => $mobileOrder->game_leveling_day,
                     "game_leveling_hour"                  => $mobileOrder->game_leveling_hour,
                     "client_phone"                        => $mobileOrder->client_phone,
@@ -582,15 +583,15 @@ class LevelingController extends Controller
                     "order_password"                      => '',
                     "source_order_no_1"                   => '',
                     "source_order_no_2"                   => '',
-                    "source_price"                        => $mobileOrder->original_price,
+                    "source_price"                        => $mobileOrder->original_price+0,
                     "customer_service_remark"             => '',
                     "urgent_order"                        => 0,
                     "customer_service_name"               => "",
                     "order_source"                        => "",
                 ];
-                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, '', $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
+                $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, $mobileOrder->no, $mobileOrder->price+0, $mobileOrder->original_price+0, $orderDetailArr, $mobileOrder->remark, 7));
 
-                $mobileOrder->out_trade_no = $order->no;
+                $mobileOrder->order_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付
                 $mobileOrder->save();
 
@@ -619,7 +620,7 @@ class LevelingController extends Controller
     {
         $mobileOrder = MobileOrder::find($request->id);
 
-        $order = Order::where('no', $mobileOrder->out_trade_no)->first();
+        $order = Order::where('no', $mobileOrder->order_no)->first();
 
         $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
 
@@ -641,10 +642,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.wechat.return'),
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
-                'log'            => [
-                    'file'       => './logs/wechat.log',
-                    'level'      => 'debug',
-                ],
+                // 'log'            => [
+                //     'file'       => storage_path('logs/wechat.log'),
+                //     'level'      => 'debug',
+                // ],
                 'mode'           => 'dev',
             ];
 
@@ -677,10 +678,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.wechat.return'),
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
-                'log'            => [
-                    'file'       => './logs/wechat.log',
-                    'level'      => 'debug',
-                ],
+                // 'log'            => [
+                //     'file'       => storage_path('logs/wechat.log'),
+                //     'level'      => 'debug',
+                // ],
                 'mode'           => 'dev',
             ];
             $wechat = Pay::wechat($basicConfig);
@@ -747,7 +748,7 @@ class LevelingController extends Controller
                 ];
                 $order = OrderFacade::handle(new CreateLeveling($mobileOrder->game_id, $goodsTemplateId, $mobileOrder->creator_user_id, '', $mobileOrder->price, $mobileOrder->original_price, $orderDetailArr, $mobileOrder->remark, 7));
 
-                $mobileOrder->out_trade_no = $order->no;
+                $mobileOrder->order_no = $order->no;
                 $mobileOrder->status = 1; // （未接单）已支付
                 $mobileOrder->save();
 
@@ -760,10 +761,10 @@ class LevelingController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             myLog('wechat-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-
+            return Response::create('fail');
             // echo 'fail';
         }
         DB::commit();
-        return $wechat->success();
+        return Response::create('success');
     }
 }

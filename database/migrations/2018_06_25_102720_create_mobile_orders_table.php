@@ -16,7 +16,7 @@ class CreateMobileOrdersTable extends Migration
         Schema::create('mobile_orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('no')->comment('订单号');
-            $table->string('out_trade_no')->comment('外部订单号');
+            $table->string('order_no')->comment('外部订单号');
             $table->tinyInteger('channel')->comment('渠道:1-咸鱼,2-转转');
             $table->tinyInteger('status')->unsigned()->comment('订单状态:0-未付款，其他与订单表一致');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
