@@ -425,10 +425,10 @@ class LevelingController extends Controller
                         'return_url'     => route('mobile.leveling.alipay.return'),
                         'ali_public_key' => config('alipay.alipay_public_key'),
                         'private_key'    => config('alipay.merchant_private_key'),
-                        'log'            => [
-                            'file'       => './logs/alipay.log',
-                            'level'      => 'debug',
-                        ],
+                        // 'log'            => [
+                        //     'file'       => './logs/alipay.log',
+                        //     'level'      => 'debug',
+                        // ],
                         'mode'           => 'dev',
                     ];
 
