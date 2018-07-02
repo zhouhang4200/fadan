@@ -142,7 +142,7 @@ class MonthSettlementOrdersController extends Controller
                 'finishTimeEnd' => $request->time_end,
             ])->get()->toArray();
 
-            return response()->ajax($orders[0]['count'] == 0 ? 0 : 1, 'success', ['count' =>  (int)$orders[0]['count'], 'total' => (int)$orders[0]['total']]);
+            return response()->ajax($orders[0]['count'] == 0 ? 0 : 1, 'success', ['count' =>  (float)$orders[0]['count'], 'total' => (float)$orders[0]['total']]);
         } else {
             \DB::beginTransaction();
             $orders = MonthSettlementOrders::where(function ($query) use ($accountType, $currentPrimaryUserId){
