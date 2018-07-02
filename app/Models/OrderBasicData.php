@@ -13,7 +13,7 @@ class OrderBasicData extends Model
 		'order_no', 'status', 'client_wang_wang', 'customer_service_name', 'game_id',
 		'game_name', 'creator_user_id', 'creator_primary_user_id', 'gainer_user_id', 'gainer_primary_user_id',
 		'price', 'security_deposit', 'efficiency_deposit', 'original_price', 'order_created_at', 'is_repeat',
-		'third', 'date'
+		'third', 'date', 'foreign_order_no', 'pay_amount'
 	];
 
 	/**
