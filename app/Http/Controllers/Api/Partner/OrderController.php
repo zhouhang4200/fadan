@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Partner;
 
 use App\Console\Commands\AutoMarkupOrderEveryHour;
+use App\Extensions\Dailian\Controllers\Revoking;
 use App\Models\HatchetManBlacklist;
 use App\Repositories\Frontend\OrderRepository;
 use App\Services\Show91;
@@ -403,9 +404,10 @@ class OrderController extends Controller
                 'revoke_message' => $content,
             ];
             // 更新协商信息到协商表
-            LevelingConsult::updateOrCreate(['order_no' => $orderData->no], $data);
+//            LevelingConsult::updateOrCreate(['order_no' => $orderData->no], $data);
             // 调用工厂模式协商操作
-            DailianFactory::choose('revoke')->run($orderData->no, $request->user->id, false);
+//            DailianFactory::choose('revoke')->run($orderData->no, $request->user->id, false);
+            (new Revoking())->run($orderData->no, $request->user->id, $data, false);
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->partner(0, $e->getMessage());

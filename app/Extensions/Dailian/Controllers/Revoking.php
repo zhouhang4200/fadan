@@ -20,7 +20,7 @@ class Revoking extends DailianAbstract implements DailianInterface
     protected $beforeHandleStatus; // 操作之前的状态:
     protected $handledStatus    = 15; // 状态：15撤销中
     protected $type             = 18; // 操作：18撤销
-
+    protected $LevelingConsultData = [];
     /**
      * [run 撤销 -> 撤销中]
      * @internal param $ [type] $orderNo     [订单号]
@@ -30,7 +30,7 @@ class Revoking extends DailianAbstract implements DailianInterface
      * @internal param $ [type] $apiService  [回传代练手续费]
      * @internal param $ [type] $writeAmount [协商代练费]
      */
-    public function run($orderNo, $userId, $runAfter = 1)
+    public function run($orderNo, $userId, $LevelingConsultData, $runAfter = 1)
     {	
     	DB::beginTransaction();
     	try {
@@ -38,10 +38,14 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->orderNo = $orderNo;
             $this->userId  = $userId;
             $this->runAfter = $runAfter;
+            $this->LevelingConsultData = $LevelingConsultData;
+            // 创建撤销信息
+            $this->saveLevelingConsult();
             // 获取订单对象
             $this->getObject();
             // 获取撤销前的状态
             $this->beforeHandleStatus = $this->getOrder()->status;
+
             // 创建操作前的订单日志详情
             $this->createLogObject();
             // 设置订单属性
@@ -55,6 +59,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
+
             $this->orderCount();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
@@ -85,7 +90,7 @@ class Revoking extends DailianAbstract implements DailianInterface
      */
     public function after()
     {
-        if ($this->runAfter) {
+        if ($this->runAfter && (!isset($this->orderDetail['gainer_primary_user_id']) || empty($this->orderDetail['gainer_primary_user_id']))) {
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
                     $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($this->orderNo);
@@ -103,5 +108,13 @@ class Revoking extends DailianAbstract implements DailianInterface
                     }
                 }
         }
+    }
+
+    /**
+     * 创建撤销信息
+     */
+    private function saveLevelingConsult()
+    {
+       LevelingConsult::updateOrCreate(['order_no' => $this->orderNo], $this->LevelingConsultData);
     }
 }

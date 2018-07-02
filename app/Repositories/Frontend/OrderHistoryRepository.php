@@ -15,7 +15,7 @@ class OrderHistoryRepository
     {
         $primaryUserId = Auth::user()->getPrimaryUserId();
         $dataList = OrderHistory::where('order_no', $orderNo)
-            ->where('creator_primary_user_id', $primaryUserId)
+            ->where('user_id', $primaryUserId)
             ->with('user')
             ->get();
 

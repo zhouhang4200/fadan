@@ -132,6 +132,25 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
         $this->order->creator_primary_user_id = $this->source != 7 ? Auth::user()->getPrimaryUserId() : (User::find($this->userId) ? User::find($this->userId)->getPrimaryUserId() : 0);
         $this->order->remark = $this->remark;
 
+
+        // 如果设置了接单人则直接写入接单人ID
+        if (isset($this->details['gainer_primary_user_id']) && $this->details['gainer_primary_user_id']) {
+            $this->handledStatus = 13;
+            $this->order->gainer_user_id = $this->details['gainer_primary_user_id'];
+            $this->order->gainer_primary_user_id = $this->details['gainer_primary_user_id'];
+            $this->details['receiving_time'] = date('Y-m-d H:i:s');
+            $this->runAfter = false;
+
+            $taobaoOrderNo = new OrderDetail;
+            $taobaoOrderNo->order_no = $this->order->no;
+            $taobaoOrderNo->field_name = 'gainer_primary_user_id';
+            $taobaoOrderNo->field_name_alias = 'gainer_primary_user_id';
+            $taobaoOrderNo->field_display_name = '内部接单商户ID';
+            $taobaoOrderNo->field_value = $this->details['gainer_primary_user_id'] ?? '';
+            $taobaoOrderNo->creator_primary_user_id = $this->order->creator_primary_user_id;
+            $taobaoOrderNo->save();
+        }
+
         // 记录订单详情
         if (!empty($this->details)) {
             $widget = GoodsTemplateWidget::where('goods_template_id', $this->templateId)->get();
@@ -144,15 +163,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 $orderDetail->field_display_name = $item->field_display_name;
                 $orderDetail->field_value = $this->details[$item->field_name] ?? '';
                 $orderDetail->creator_primary_user_id = $this->order->creator_primary_user_id;
-
-                // 如果设置了接单人则直接写入接单人ID
-                if (isset($this->details['gainer_primary_user_id']) && $this->details['gainer_primary_user_id']) {
-                    $this->handledStatus = 13;
-                    $this->order->gainer_user_id = $this->details['gainer_primary_user_id'];
-                    $this->order->gainer_primary_user_id = $this->details['gainer_primary_user_id'];
-                    $this->details['receiving_time'] = date('Y-m-d H:i:s');
-                    $this->runAfter = false;
-                }
 
                 // 写入关联淘宝订单号
                 if ($item->field_name == 'source_order_no' && !empty($this->details[$item->field_name])) {

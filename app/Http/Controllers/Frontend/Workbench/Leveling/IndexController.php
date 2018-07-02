@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
+use App\Extensions\Dailian\Controllers\Revoking;
 use App\Models\AutomaticallyGrabGoods;
 use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\GoodsTemplateWidget;
+use App\Models\OrderAttachment;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
@@ -195,6 +197,7 @@ class IndexController extends Controller
                     $amount = 0;
                     if (in_array($orderInfo['status'], [21, 19])) {
                         $amount = $orderInfo['leveling_consult']['api_amount'];
+                        $orderCurrent['get_amount'] = $orderInfo['leveling_consult']['api_deposit'];
                     } else {
                         $amount = $orderInfo['amount'];
                     }
@@ -532,6 +535,7 @@ class IndexController extends Controller
             $amount = 0;
             if (in_array($detail['status'], [21, 19])) {
                 $amount = $detail['leveling_consult']['api_amount'];
+                $detail['get_amount'] = $detail['leveling_consult']['api_deposit'];
             } else {
                 $amount = $detail['amount'];
             }
@@ -562,21 +566,24 @@ class IndexController extends Controller
         if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
             if ($detail['leveling_consult']['complete'] != 2) {
                 //发起人的主ID 与 当前主ID一样则撤销发起人
-                $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
 
-                if ($detail['leveling_consult']['consult'] == 1) {
+                if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
                     $text = '你发起协商撤销。';
-                } else {
-                    $text = '对方发起协商撤销。';
-                }
-
-                if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
                     $text .= '你支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
                     $text .= '对方支付保证金' . ($detail['leveling_consult']['deposit'] + 0). '元。原因：' . $detail['leveling_consult']['revoke_message'];
                 } else {
+                    $text = '对方发起协商撤销。';
                     $text .= '对方支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
                     $text .= '你支付保证金' . ($detail['leveling_consult']['deposit'] + 0) . '元。原因：' . $detail['leveling_consult']['revoke_message'];
                 }
+
+//                if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId()) {
+//                    $text .= '你支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
+//                    $text .= '对方支付保证金' . ($detail['leveling_consult']['deposit'] + 0). '元。原因：' . $detail['leveling_consult']['revoke_message'];
+//                } else {
+//                    $text .= '对方支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
+//                    $text .= '你支付保证金' . ($detail['leveling_consult']['deposit'] + 0) . '元。原因：' . $detail['leveling_consult']['revoke_message'];
+//                }
                 $detail['consult_desc'] = $text;
             }
         }
@@ -747,18 +754,31 @@ class IndexController extends Controller
     {
         $dataList = [];
         try {
-            // $dataList = OrderAttachmentRepository::dataList($order_no);
-            // 其他通用平台
-            if (config('leveling.third_orders')) {
-                // 获取订单和订单详情以及仲裁协商信息
-                $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($request->order_no);
-               // 遍历代练平台
-                foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                    if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                        // 控制器-》方法-》参数
-                        $dataList =  call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getScreenshot']], [$orderDatas]);
+             // 查看是否有图片
+            $dataList = OrderAttachment::where('order_no', $request->order_no)->get();
+
+            if (!$dataList) {
+                // 其他通用平台
+                if (config('leveling.third_orders')) {
+                    // 获取订单和订单详情以及仲裁协商信息
+                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($request->order_no);
+                    // 遍历代练平台
+                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
+                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
+                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
+                            // 控制器-》方法-》参数
+                            $dataList =  call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getScreenshot']], [$orderDatas]);
+                        }
                     }
+                }
+            } else {
+                foreach ($dataList as $item) {
+                    $dataList[] = [
+                      'url' => asset($item->url),
+                      'username' => '',
+                      'created_at' => $item->created_at,
+                      'description' => $item->description,
+                    ];
                 }
             }
         } catch (Exception $e) {
@@ -771,7 +791,7 @@ class IndexController extends Controller
      * 上传截图后，推送到show91
      * @param Request $request
      * @return mixed
-     * @internal param $order_no
+     * @internal param $order_nor
      */
     public function uploadImage(Request $request)
     {
@@ -1284,8 +1304,73 @@ class IndexController extends Controller
                 $bool = true;
             } else if ($keyWord == 'complete') { // 订单完成操作
                 (new Complete())->run($orderNo, auth()->user()->id, 1, (int)$delivery);
-            }  else {
-                $bool = DailianFactory::choose($keyWord)->run($orderNo, $userId);
+            } else if ($keyWord == 'applyComplete') { // 申请完成
+                // 如果有图片则存储图片
+                $pic = [];
+                if (isBase64($request->pic1)) {
+                    $pic[]  = [
+                        'order_no' => $orderNo,
+                        'channel_name' => '',
+                        'third_order_no' => '',
+                        'file_name' => '',
+                        'third_file_name' => '',
+                        'third_file_url' => '',
+                        'size' => '',
+                        'mime_type' => '',
+                        'md5' => '',
+                        'description' => '',
+                        'url' => base64ToImg($request->pic1, 'apply_complete'),
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ];
+                }
+                if (isBase64($request->pic2)) {
+                    $pic[]  = [
+                        'order_no' => $orderNo,
+                        'channel_name' => '',
+                        'third_order_no' => '',
+                        'file_name' => '',
+                        'third_file_name' => '',
+                        'third_file_url' => '',
+                        'size' => '',
+                        'mime_type' => '',
+                        'md5' => '',
+                        'description' => '',
+                        'url' => base64ToImg($request->pic2, 'apply_complete'),
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ];
+                }
+                if (isBase64($request->pic3)) {
+                    $pic[]  = [
+                        'order_no' => $orderNo,
+                        'channel_name' => '',
+                        'third_order_no' => '',
+                        'file_name' => '',
+                        'third_file_name' => '',
+                        'third_file_url' => '',
+                        'size' => '',
+                        'mime_type' => '',
+                        'md5' => '',
+                        'description' => '',
+                        'url' => base64ToImg($request->pic3, 'apply_complete'),
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ];
+                }
+                OrderAttachment::insert($pic);
+                DailianFactory::choose($keyWord)->run($orderNo, $userId);
+            } else if ($keyWord == 'cancelComplete') {
+                // 查找订单相关图片删除
+                $orderAttachment = OrderAttachment::where('order_no', $orderNo)->get();
+                foreach ($orderAttachment as $item) {
+                    // 删除图片
+                    unlink(public_path($item->url));
+                    $item->delete();
+                }
+                DailianFactory::choose($keyWord)->run($orderNo, $userId);
+            } else {
+                DailianFactory::choose($keyWord)->run($orderNo, $userId);
             }
         } catch (DailianException $e) {
             DB::rollback();
@@ -1304,13 +1389,22 @@ class IndexController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单数据
+            $order = OrderModel::where('no', $request->orderNo)->first();
+
             $data['order_no'] = $request->orderNo;
             $data['amount'] = $request->data['amount'];
             $data['deposit'] = $request->data['deposit'];
             $data['user_id'] = Auth::id();
             $data['revoke_message'] = $request->data['revoke_message'];
-            // 订单数据
-            $order = OrderModel::where('no', $data['order_no'])->first();
+
+            // 如果是接单账号则写将值写入 api_amount 与 api_deposit
+            if (auth()->user()->getPrimaryUserId() == $order->gainer_primary_user_id) {
+                $data['api_amount'] =  $request->data['amount'];
+                $data['api_deposit'] =  $request->data['deposit'];
+                $data['consult'] = 2;
+            }
+
             // 订单双金
             $safeDeposit = $order->detail()->where('field_name', 'security_deposit')->value('field_value');
             $effectDeposit = $order->detail()->where('field_name', 'efficiency_deposit')->value('field_value');
@@ -1334,9 +1428,10 @@ class IndexController extends Controller
                 return response()->ajax(0, '找不到订单对应的接单或发单人!');
             }
             // 存信息
-            LevelingConsult::updateOrCreate(['order_no' => $data['order_no']], $data);
+//            LevelingConsult::updateOrCreate(['order_no' => $data['order_no']], $data);
             // 改状态
-            DailianFactory::choose('revoke')->run($data['order_no'], Auth::id());
+            (new Revoking())->run($data['order_no'], Auth::id(), $data);
+//            DailianFactory::choose('revoke')->run($data['order_no'], Auth::id());
         } catch (DailianException $e) {
             DB::rollBack();
             return response()->ajax(0, $e->getMessage());

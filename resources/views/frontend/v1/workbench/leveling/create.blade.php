@@ -265,8 +265,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 代练类型</label>
                             <div class="layui-input-block">
-                                <select name="game_leveling_type" lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型">
-                                    <option value=""></option>
+                                <select name="game_leveling_type" lay-verify="required"  lay-filter="game_leveling_type" class="leveling_type" display-name="代练类型">
                                 </select>
                             </div>
                         </div>
@@ -421,17 +420,17 @@
                             <input type="text" name="order_password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        {{--<div class="layui-col-lg6">--}}
-                            {{--<label class="layui-form-label">指定内部打手</label>--}}
-                            {{--<div class="layui-input-block">--}}
-                                {{--<select name="gainer_primary_user_id" lay-verify="required" lay-filter="aihao">--}}
-                                    {{--<option value=""></option>--}}
-                                {{--</select>--}}
-                                {{--<div class="tips"  id="gainer_primary_user_id">--}}
-                                    {{--<i class="iconfont icon-add-r"></i>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">指定内部打手</label>
+                            <div class="layui-input-block">
+                                <select name="gainer_primary_user_id" lay-verify="" lay-filter="gainer-primary-user-id">
+                                    <option value=""></option>
+                                </select>
+                                <div class="tips"  id="gainer_primary_user_id">
+                                    <i class="iconfont icon-add-r"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="layui-row layui-col-space10 layui-form-item">
@@ -675,6 +674,16 @@
                     $('textarea[name=game_leveling_requirements]').val(data.value);
                 }
             });
+            // 选择内部接单商户
+            form.on('select(gainer-primary-user-id)', function(data){
+                if (data.value == '') {
+                    $('input[name=security_deposit]').attr('lay-verify', 'required|number|gt5');
+                    $('input[name=efficiency_deposit]').attr('lay-verify', 'required|number|gt5');
+                } else {
+                    $('input[name=security_deposit]').attr('lay-verify', '').val(0);
+                    $('input[name=efficiency_deposit]').attr('lay-verify', '').val(0);
+                }
+            });
             // 按游戏加载区\代练类型\代练模版\商户QQ
             loadGameInfo();
             // 加载下单必要的信息
@@ -784,7 +793,7 @@
                     async: false,
                     success: function (result) {
                         var region = '<option value="">请选择</option>';
-                        var type = '';
+                        var type = '<option value="">请选择</option>';
                         $.each(result.content, function (index, value) {
                             if (value.field_name  == 'game_leveling_type') {
                                 type += '<option value="'  + value.field_value + '" data-content="' + value.field_value +  ' " data-id=' + value.id  +'> ' + value.field_value  + '</option>';
@@ -800,7 +809,13 @@
             }
             // 设置默认选中填充的值
             function setDefaultValueOption() {
-                $("select[name=game_leveling_type]").val('排位');
+                var all = [];
+                $("select[name=game_leveling_type] option").each(function() {
+                    all.push($(this).attr("value"));
+                });
+                if ($.inArray("排位", all) == 1) {
+                    $("select[name=game_leveling_type]").val('排位');
+                }
                 $('select[name=user_phone]').val('{{ $businessmanInfo->phone }}');
                 $('select[name=user_qq]').val('{{ $businessmanInfo->qq }}');
                 @if(isset($taobaoTrade->tid))
@@ -841,10 +856,11 @@
                     var phoneTemplate = '<option value="">请选择</option>';
                     var gainerUserTemplate = '<option value="">请选择</option>';
                     var chose = 0;
+                    var gainerUserChose = 0;
                     $.each(result, function (index, value) {
-                        if (value.type == 1 && (value.game_id == 0 || gameId == value.game_id)) {
+                        if (value.type == 1) {
 
-                            if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                            if (value.status == 1) {
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected> ' + value.name + '-' + value.content  +'</option>';
                             } else if (gameId == value.game_id && value.status == 1) {
                                 chose = 1;
@@ -853,7 +869,7 @@
                                 phoneTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '"> ' + value.name + '-' + value.content  +'</option>';
                             }
 
-                        } else if (value.type == 2 && (value.game_id == 0 || gameId == value.game_id)) {
+                        } else if (value.type == 2) {
 
                             if (gameId == value.game_id && value.status == 1) {
                                 chose = 1;
@@ -863,11 +879,11 @@
                             } else {
                                 qqTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';
                             }
-                        } else if (value.type == 3 && (value.game_id == 0 || gameId == value.game_id)) {
+                        } else if (value.type == 3) {
                             if (gameId == value.game_id && value.status == 1) {
-                                chose = 1;
+                                gainerUserChose = 1;
                                 gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
-                            } else if (value.status == 1 && value.game_id == 0 && chose == 0) {
+                            } else if (value.status == 1 && value.game_id == 0 && gainerUserChose == 0) {
                                 gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" selected>' + value.name + '-' + value.content  +'</option>';
                             } else {
                                 gainerUserTemplate += '<option value="'  + value.content + '" data-content="' + value.content +  '" >' + value.name + '-' + value.content  +'</option>';

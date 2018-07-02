@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 
 use App\Services\RedisConnect;
 
+use GuzzleHttp\Exception\ConnectException;
 use Redis;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -14,8 +15,7 @@ use Log, Config, Weight, Order;
 use App\Models\Order as OrderModel;
 use App\Models\OrderDetail;
 use App\Models\OrderSendChannel;
-use Symfony\Component\Console\Helper\Helper;
-
+use \Exception;
 /**
  * 订单发送
  * Class OrderAssign
@@ -123,8 +123,10 @@ class OrderSend extends Command
                                 }
                                 myLog('order-send-result-des', [ $platform['name'], $result]);
                                 myLog('order-send-result', [$orderData, $platform['name'], $result, $decrypt]);
-                            } catch (\Exception $exception) {
-                                myLog('order-send-ex', ['message' => $exception->getMessage(), '行' => $exception->getLine()]);
+                            } catch (ConnectException $exception) {
+                                myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $exception->getMessage(), '行' => $exception->getLine()]);
+                            } catch (Exception $exception) {
+                                myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $exception->getMessage(), '行' => $exception->getLine()]);
                             }
 
                         } else {
@@ -134,7 +136,7 @@ class OrderSend extends Command
                     // 写基础数据
                    event(new OrderBasicData($order));
                 } catch (\Exception $e) {
-                    myLog('order-send-ex', ['message' => $e->getMessage(), '行' => $e->getLine()]);
+                    myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $e->getMessage(), '行' => $e->getLine()]);
                 }
             }
         }
