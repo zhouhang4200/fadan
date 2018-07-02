@@ -109,8 +109,15 @@ class WriteOrderBasicData
                     $data['creator_judge_payment']        = $complaint->amount;
                 }
             }
+            
+            // 订单完成支付价格
+            $payAmount = 0;
+            if ($order->status == 20) {
+                $payAmount = $order->price;
+            }
 
             $data['order_no']                = $order->no;
+            $data['foreign_order_no']        = $order->foreign_order_no ?? '';
             $data['date']                    = $order->created_at->toDateString();
             $data['third']                   = $orderDetail['third'];
             $data['status']                  = $order->status;
@@ -123,6 +130,7 @@ class WriteOrderBasicData
             $data['gainer_user_id']          = $order->gainer_user_id;
             $data['gainer_primary_user_id']  = $order->gainer_primary_user_id;
             $data['price']                   = $order->price;
+            $data['pay_amount']              = $payAmount;
             $data['security_deposit']        = $orderDetail['security_deposit'];
             $data['efficiency_deposit']      = $orderDetail['efficiency_deposit'];
             $data['original_price']          = $order->original_price;
