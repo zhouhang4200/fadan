@@ -586,10 +586,10 @@ class IndexController extends Controller
             // 支付金额
             $amount = 0;
             if (!in_array($detail['status'], [21, 19])) {
-                $amount = $detail['amount'];
+                $detail['payment_amount'] = $detail['amount'];
             }
             // 支付金额
-            $detail['payment_amount'] = $detail['payment_amount'] !=0 ?  $detail['payment_amount'] + 0:  $amount;
+//            $detail['payment_amount'] = $detail['payment_amount'] !=0 ?  $detail['payment_amount'] + 0:  $amount;
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
