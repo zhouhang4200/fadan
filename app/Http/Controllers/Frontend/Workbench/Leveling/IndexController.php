@@ -566,9 +566,8 @@ class IndexController extends Controller
         if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
             if ($detail['leveling_consult']['complete'] != 2) {
                 //发起人的主ID 与 当前主ID一样则撤销发起人
-                $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
 
-                if ($detail['leveling_consult']['consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
+                if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
                     $text = '你发起协商撤销。';
                     $text .= '你支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
                     $text .= '对方支付保证金' . ($detail['leveling_consult']['deposit'] + 0). '元。原因：' . $detail['leveling_consult']['revoke_message'];

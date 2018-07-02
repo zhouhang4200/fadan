@@ -39,10 +39,13 @@ class Revoking extends DailianAbstract implements DailianInterface
             $this->userId  = $userId;
             $this->runAfter = $runAfter;
             $this->LevelingConsultData = $LevelingConsultData;
+            // 创建撤销信息
+            $this->saveLevelingConsult();
             // 获取订单对象
             $this->getObject();
             // 获取撤销前的状态
             $this->beforeHandleStatus = $this->getOrder()->status;
+
             // 创建操作前的订单日志详情
             $this->createLogObject();
             // 设置订单属性
@@ -56,7 +59,7 @@ class Revoking extends DailianAbstract implements DailianInterface
             // 保存操作日志
             $this->saveLog();
             $this->after();
-            $this->saveLevelingConsult();
+
             $this->orderCount();
             // 删除状态不是 申请验收 的 redis 订单
             delRedisCompleteOrders($this->orderNo);
