@@ -568,17 +568,12 @@ class IndexController extends Controller
             if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
                 $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
                 $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
-
-                $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
-                $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
-
             } else {
                 $text .= '对方支付代练费' . ($detail['leveling_consult']['api_amount'] + 0) . '元，';
                 $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
-
-                $detail['payment_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
-                $detail['get_amount'] = $detail['leveling_consult']['api_amount'] + 0;
             }
+            $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
+            $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
             $detail['complain_desc'] .= $text;
         }
 
