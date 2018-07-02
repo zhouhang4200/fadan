@@ -40,21 +40,21 @@ class AddPayAmountToOrderBasicData extends Command
      */
     public function handle()
     {
-        $orderBasicDatas = OrderBasicData::get();
+        $orderBasicDatas = OrderBasicData::chunk(5000, function ($chunk) {
+            foreach ($chunk as $orderBasicData) {
+                try {
+                    $order = Order::where('no', $orderBasicData->order_no)->first();
 
-        foreach ($orderBasicDatas as $orderBasicData) {
-            try {
-                $order = Order::where('no', $orderBasicData->order_no)->first();
-
-                if ($order->status == 20) {
-                    $orderBasicData->pay_amount = $order->price;
-                } else {
-                    $orderBasicData->pay_amount = 0;
+                    if ($order->status == 20) {
+                        $orderBasicData->pay_amount = $order->price;
+                    } else {
+                        $orderBasicData->pay_amount = 0;
+                    }
+                    $orderBasicData->save();
+                } catch (Exception $e) {
+                    myLog('order-basic-datas-pay_amount', ['order_no' => $orderBasicData->order_no ?? '', '失败原因' => $e->getMessage()]);
                 }
-                $orderBasicData->save();
-            } catch (Exception $e) {
-                myLog('order-basic-datas-pay_amount', ['order_no' => $orderBasicData->order_no ?? '', '失败原因' => $e->getMessage()]);
             }
-        }
+        });
     }
 }
