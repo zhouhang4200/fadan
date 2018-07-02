@@ -593,7 +593,7 @@ class IndexController extends Controller
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
-            $detail['profit'] = ($detail['payment_amount']  - $detail['get_amount']  - $detail['poundage']) + 0;
+            $detail['profit'] = ($detail['get_amount']  - $detail['payment_amount']  - $detail['poundage']) + 0;
         }
 
         $days = $detail['game_leveling_day'] ?? 0;
