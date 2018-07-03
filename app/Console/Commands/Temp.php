@@ -175,57 +175,14 @@ class Temp extends Command
      */
     public function handle()
     {
-        $orderNo = '2018070215573600000383';
-        $dataList = [];
-        try {
-            // 查看是否有图片
-            $existImage = OrderAttachment::where('order_no', $orderNo)->get()->toArray();
-
-            if (!count($existImage)) {
-
-                // 其他通用平台
-                if (config('leveling.third_orders')) {
-                    // 获取订单和订单详情以及仲裁协商信息
-                    $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
-                    // 遍历代练平台
-                    foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                        // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                        if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                            // 控制器-》方法-》参数
-                            $dataList =  call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getScreenshot']], [$orderDatas]);
-                        }
-                    }
-                }
-            } else {
-                foreach ($existImage as $item) {
-                    $dataList[] = [
-                        'url' => asset($item['url']),
-                        'username' => '',
-                        'created_at' => $item['created_at'],
-                        'description' => $item['description'],
-                    ];
-                }
-            }
-        } catch (\Exception $e) {
-            return response()->ajax(1, $e->getMessage());
-        }
-        dd($dataList);
-
-       dd( Show91Controller::getScreenshot([
-           'show91_order_no' => 'ORD180702155736998719'
-       ]));
         $order = [
-//            "2018052415461800004194"	=>"165714650766647690",
-//            "2018052419173000007708"	=>"164960619761799611",
-//            "2018052419273300007794"	=>"164749834053378507",
-//            "2018052419385000007894"	=>"148996657640070744",
-//            "2018052419391100007899"	=>"164591297118847014",
-//            "2018052419482400008015"	=>"148997469357536855",
-//            "2018052512182200002159"	=>"149103253329419355",
-            "2018052422241600009765"	=>"164473481381988225",
+            '2018070302195800000033',
+            '2018070313020300000175',
+            '2018070313093000000184',
+            '2018070313195500000193'
         ];
         foreach ($order as $key => $item) {
-            $this->forceRevoke($key, 1);
+            $this->forceRevoke($item, 1);
         }
 
         die;
