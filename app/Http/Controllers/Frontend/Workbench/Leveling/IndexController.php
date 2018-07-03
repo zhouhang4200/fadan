@@ -758,9 +758,10 @@ class IndexController extends Controller
         $dataList = [];
         try {
              // 查看是否有图片
-            $dataList = OrderAttachment::where('order_no', $request->order_no)->get();
+            $existImage = OrderAttachment::where('order_no', $request->order_no)->get()->toArray();
 
-            if (!$dataList) {
+            if (!count($existImage)) {
+
                 // 其他通用平台
                 if (config('leveling.third_orders')) {
                     // 获取订单和订单详情以及仲裁协商信息
@@ -775,12 +776,12 @@ class IndexController extends Controller
                     }
                 }
             } else {
-                foreach ($dataList as $item) {
+                foreach ($existImage as $item) {
                     $dataList[] = [
-                      'url' => asset($item->url),
-                      'username' => '',
-                      'created_at' => $item->created_at,
-                      'description' => $item->description,
+                        'url' => asset($item['url']),
+                        'username' => '',
+                        'created_at' => $item['created_at'],
+                        'description' => $item['description'],
                     ];
                 }
             }
