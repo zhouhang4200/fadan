@@ -44,7 +44,7 @@ abstract class DailianAbstract
 
         $user = User::find($this->userId);
 
-        if (!in_array($user->id, [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
+        if ($this->order->gainer_primary_user_id != 0 && !in_array($user->id, [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
             throw new DailianException('无权操作订单!');
         }
 
