@@ -14,6 +14,19 @@
             /* width: 100%; */
             padding-left: 10px;
         }
+        .tips {
+            position: absolute;
+            width: 10%;
+            height: 30px;
+            right: -130px;
+            top: 5px;
+            text-align: center
+        }
+
+        .tips .iconfont {
+            left: -5px;
+            font-size: 25px;
+        }
     </style>
 @endsection
 
@@ -31,19 +44,25 @@
                                 {!! csrf_field() !!}
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*提升层级</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <input type="text" name="level_count" lay-verify="required|number" value="{{ $data->level_count }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <div class="tips" lay-tips="用户选择的代练目标距离当前提升的层级 举例：层级1为“青铜5”，层级2为“青铜4，层级3为”青铜3“用户选择“青铜5-青铜4”视为提升层级1用户选择“青铜4-青铜3”视为提升层级2以此类推">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练价格折扣</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <input type="text" name="rebate" lay-verify="required|number" value="{{ $data->rebate }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <div class="tips" lay-tips="用户选择代练目标大于等于该层级时，代练价格需要乘以该折扣，该字段填写值为百分比，填90则视为90%">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label"></label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <button class="layui-btn layui-btn-normal" lay-submit="update" lay-filter="update" lay-id="{{ $data->id }}" game-id="{{ $data->game_id }}" game-name="{{ $data->game_name }}" type="{{ $data->game_leveling_type }}">立即提交</button>
                                         </div>
                                     </div>
@@ -79,6 +98,25 @@
                 return false;
         });
 
+    });
+    // 提示
+    $(document).on("mouseenter", "*[lay-tips]", function () {
+        var e = $(this);
+        if (!e.parent().hasClass("layui-nav-item") || u.hasClass(g)) {
+            var t = e.attr("lay-tips"),
+                i = e.attr("lay-offset"),
+                n = e.attr("lay-direction"),
+                s = layer.tips(t, this, {
+                    tips: n || 1,
+                    time: -1,
+                    success: function (e, a) {
+                        i && e.css("margin-left", i + "px")
+                    }
+                });
+            e.data("index", s)
+        }
+    }).on("mouseleave", "*[lay-tips]", function () {
+        layer.close($(this).data("index"))
     });
 </script>
 @endsection
