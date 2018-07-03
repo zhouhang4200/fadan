@@ -3,7 +3,7 @@
 return [
     'platform' =>[
         1 => [
-            'name' => '91代练', // 平台名称
+            'name' => '91平台', // 平台名称
             'user_id' => 8456, // 千手用户ID
             'receive' => env('SHOW91_API_URL', 'http://www.show91.com').'/oauth/qs/receiveOrder', // 接收订单地址
             'aes_key' => '45584685d8e4f5e8',
