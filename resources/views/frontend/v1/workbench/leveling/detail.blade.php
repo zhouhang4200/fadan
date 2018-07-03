@@ -604,7 +604,7 @@
                                 <td>接单平台{{ $i }}</td>
                                 <td style="{{ $send->status == 2 ? 'color:green;' : 'color:red;' }}">
                                     @if($send->status == 2 && $send->third_name == '91平台')
-                                        <a style="color:green;"  href="http://show91.com/dl/?searchContent={{ $send->third_order_no }}">{{ $send->third_name . '发布成功' }}</a>
+                                        <a style="color:green;" target="_blank"  href="http://show91.com/dl/?searchContent={{ $send->third_order_no }}">{{ $send->third_name . '发布成功' }}</a>
                                     @endif
 
                                     @if($send->status == 2 && $send->third_name == '蚂蚁代练')
@@ -613,7 +613,7 @@
                                     @endif
 
                                     @if($send->status == 2 && $send->third_name == 'dd373')
-                                        <a style="color:green;" href="https://dl.dd373.com/NeedDetail-{{ $send->third_order_no }}.html">{{ $send->third_name . '发布成功' }}</a>
+                                        <a style="color:green;" target="_blank" href="https://dl.dd373.com/NeedDetail-{{ $send->third_order_no }}.html">{{ $send->third_name . '发布成功' }}</a>
                                     @endif
                                     @if($send->status == 1)
                                         {{ $send->third_name . '发布失败' }}
