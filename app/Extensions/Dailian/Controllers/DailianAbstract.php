@@ -42,6 +42,11 @@ abstract class DailianAbstract
         // 获取订单
         $this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
 
+        $user = User::find($this->userId);
+
+        if (!in_array($user->id, [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
+            throw new DailianException('无权操作订单!');
+        }
 
         if (empty($this->order)) {
             throw new DailianException('订单不存在!');

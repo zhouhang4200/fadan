@@ -201,6 +201,7 @@
                     </div>
                     <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
                     <button id="withdraw" class="qs-btn qs-btn-normal qs-btn-custom-mini" type="button" >余额提现</button>
+                    <button id="sms-recharge" class="qs-btn qs-btn-normal qs-btn-custom-mini" type="button" >短信充值</button>
                 </div>
             </div>
         </div>

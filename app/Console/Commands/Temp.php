@@ -175,6 +175,9 @@ class Temp extends Command
      */
     public function handle()
     {
+        dd(Show91Controller::orderDetail([
+            'show91_order_no' => 'ORD180703131312436741'
+        ]));
         $order = [
             '2018070302195800000033',
             '2018070313020300000175',
