@@ -440,12 +440,6 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                                         <a href="{{ route('frontend.baby.show') }}">宝贝运营状况</a>
                                     </dd>
                                 @endif
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'mobile.leveling.demand') layui-this  @endif">
-                                    <a href="{{ route('mobile.leveling.demand') }}">游戏代练</a>
-                                </dd>
-                                <dd data-name="console" class="@if( Route::currentRouteName() == 'mobile.leveling.place-order') layui-this  @endif">
-                                    <a href="{{ route('mobile.leveling.place-order') }}">下单</a>
-                                </dd>
                             </dl>
                         </li>
                     @endif

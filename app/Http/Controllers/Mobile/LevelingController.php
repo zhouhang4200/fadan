@@ -605,7 +605,7 @@ class LevelingController extends Controller
             DB::rollback();
             myLog('alipay-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
 
-            // echo 'fail';
+            echo 'fail';
         }
         DB::commit();
         return $alipay->success();
@@ -622,7 +622,11 @@ class LevelingController extends Controller
 
         $order = Order::where('no', $mobileOrder->order_no)->first();
 
-        $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+        if ($order) {
+            $orderDetail = OrderDetail::where('order_no', $order->no)->pluck('field_value', 'field_name')->toArray();
+        } else {
+            return '暂无相关详情';
+        }
 
         return view('mobile.leveling.show', compact('mobileOrder', 'order', 'orderDetail'));
     }
