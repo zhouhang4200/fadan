@@ -25,7 +25,19 @@
             /* width: 100%; */
             padding-left: 10px;
         }
+        .tips {
+            position: absolute;
+            width: 10%;
+            height: 30px;
+            right: -35px;
+            top: 5px;
+            text-align: center
+        }
 
+        .tips .iconfont {
+            left: -5px;
+            font-size: 25px;
+        }
     </style>
 @endsection
 

@@ -169,9 +169,9 @@
                                     <td>{{ bcadd($paginatePlatformStatistic->total_arbitrationed_income, 0, 2)+0 }}</td>
                                     <td>{{ $paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_poundage, ($paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count), 2)+0 }}</td>
                                     <td>{{ bcadd($paginatePlatformStatistic->total_poundage, 0, 2)+0 }}</td>
-                                    <td>{{ $paginatePlatformStatistic->primary_creator_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_creator_profit, $paginatePlatformStatistic->primary_creator_count, 2)+0 }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_creator_profit, $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count, 2)+0 }}</td>
                                     <td>{{ bcadd($paginatePlatformStatistic->total_creator_profit, 0, 2)+0 }}</td>
-                                    <td>{{ $paginatePlatformStatistic->third_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_gainer_profit, $paginatePlatformStatistic->third_count, 2)+0 }}</td>
+                                    <td>{{ $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count == 0 ? 0 : bcdiv($paginatePlatformStatistic->total_gainer_profit, $paginatePlatformStatistic->completed_count+$paginatePlatformStatistic->arbitrationed_count+$paginatePlatformStatistic->revoked_count, 2)+0 }}</td>
                                     <td>{{ bcadd($paginatePlatformStatistic->total_gainer_profit, 0, 2)+0 }}</td>
                                 </tr>
                             @empty

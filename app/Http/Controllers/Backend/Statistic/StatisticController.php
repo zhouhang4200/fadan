@@ -175,35 +175,33 @@ class StatisticController extends Controller
 
         $paginatePlatformStatistics = OrderBasicData::filter($filters)
             ->select(DB::raw("
-                    date,
-                    COUNT(order_no) AS count,
-                    COUNT(DISTINCT client_wang_wang) AS client_wang_wang_count,
-                    COUNT(DISTINCT creator_primary_user_id) AS primary_creator_count,
-                    COUNT(DISTINCT third) AS third_count,
-                    SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
-                    SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
-                    SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
-                    SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
-                    SUM(CASE WHEN STATUS = 23 THEN 1 ELSE 0 END) AS forced_count,
-                    SUM(CASE WHEN STATUS = 24 THEN 1 ELSE 0 END) AS deleted_count,
-                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(order_finished_at)-UNIX_TIMESTAMP(order_created_at) ELSE 0 END) AS total_use_time,
-                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN security_deposit ELSE 0 END) AS total_security_deposit,
-                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN efficiency_deposit ELSE 0 END) AS total_efficiency_deposit,
-                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN original_price ELSE 0 END) AS total_original_price,
-                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN price ELSE 0 END) AS total_price,
-                    SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS total_completed_price,
-                    SUM(CASE WHEN STATUS = 19 THEN consult_amount ELSE 0 END) AS total_revoked_payment,
-                    SUM(CASE WHEN STATUS = 21 THEN consult_amount ELSE 0 END) AS total_arbitrationed_payment,
-                    SUM(CASE WHEN STATUS = 19 THEN consult_deposit ELSE 0 END) AS total_revoked_income,
-                    SUM(CASE WHEN STATUS = 21 THEN consult_deposit ELSE 0 END) AS total_arbitrationed_income,
-                    SUM(CASE WHEN STATUS IN (19, 21) THEN consult_poundage ELSE 0 END) AS total_poundage,
-                    SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 19 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 21 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
-                    SUM(CASE WHEN STATUS = 20 THEN price-creator_judge_income+creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 19 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 21 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
-                "))
+                date,
+                COUNT(order_no) AS count,
+                COUNT(DISTINCT client_wang_wang) AS client_wang_wang_count,
+                COUNT(DISTINCT creator_primary_user_id) AS primary_creator_count,
+                COUNT(DISTINCT third) AS third_count,
+                SUM(CASE WHEN STATUS IN (13, 19, 20, 21) THEN 1 ELSE 0 END) AS received_count,
+                SUM(CASE WHEN STATUS = 20 THEN 1 ELSE 0 END) AS completed_count,
+                SUM(CASE WHEN STATUS = 19 THEN 1 ELSE 0 END) AS revoked_count,
+                SUM(CASE WHEN STATUS = 21 THEN 1 ELSE 0 END) AS arbitrationed_count,
+                SUM(CASE WHEN STATUS = 23 THEN 1 ELSE 0 END) AS forced_count,
+                SUM(CASE WHEN STATUS = 24 THEN 1 ELSE 0 END) AS deleted_count,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN UNIX_TIMESTAMP(order_finished_at)-UNIX_TIMESTAMP(order_created_at) ELSE 0 END) AS total_use_time,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN security_deposit ELSE 0 END) AS total_security_deposit,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN efficiency_deposit ELSE 0 END) AS total_efficiency_deposit,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) AND is_repeat != 1 THEN original_price ELSE 0 END) AS total_original_price,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN price ELSE 0 END) AS total_price,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN pay_amount ELSE 0 END) AS pay_amount,
+                SUM(CASE WHEN STATUS = 20 THEN price ELSE 0 END) AS total_completed_price,
+                SUM(CASE WHEN STATUS = 19 THEN consult_amount ELSE 0 END) AS total_revoked_payment,
+                SUM(CASE WHEN STATUS = 21 THEN consult_amount ELSE 0 END) AS total_arbitrationed_payment,
+                SUM(CASE WHEN STATUS = 19 THEN consult_deposit ELSE 0 END) AS total_revoked_income,
+                SUM(CASE WHEN STATUS = 21 THEN consult_deposit ELSE 0 END) AS total_arbitrationed_income,
+                SUM(CASE WHEN STATUS IN (19, 21) THEN consult_poundage ELSE 0 END) AS total_poundage,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) AND is_repeat != 1 THEN tm_income ELSE 0 END) AS tm_income,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) AND is_repeat != 1 THEN original_price+tm_income ELSE 0 END) + SUM(CASE WHEN STATUS IN (19, 20, 21) THEN -pay_amount-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
+                SUM(CASE WHEN STATUS IN (19, 20, 21) THEN pay_amount+consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
+            "))
         ->groupBy('date')
         ->latest('date')
         ->paginate(15);
@@ -234,12 +232,8 @@ class StatisticController extends Controller
                     SUM(CASE WHEN STATUS = 19 THEN consult_deposit ELSE 0 END) AS total_revoked_income,
                     SUM(CASE WHEN STATUS = 21 THEN consult_deposit ELSE 0 END) AS total_arbitrationed_income,
                     SUM(CASE WHEN STATUS IN (19, 21) THEN consult_poundage ELSE 0 END) AS total_poundage,
-                    SUM(CASE WHEN STATUS = 20 THEN original_price-tm_income-price+creator_judge_income-creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 19 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 21 THEN original_price-tm_income-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
-                    SUM(CASE WHEN STATUS = 20 THEN price-creator_judge_income+creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 19 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) +
-                    SUM(CASE WHEN STATUS = 21 THEN consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) AND is_repeat != 1 THEN original_price+tm_income ELSE 0 END) + SUM(CASE WHEN STATUS IN (19, 20, 21) THEN -pay_amount-consult_amount+consult_deposit-consult_poundage+creator_judge_income-creator_judge_payment ELSE 0 END) AS total_creator_profit,
+                    SUM(CASE WHEN STATUS IN (19, 20, 21) THEN pay_amount+consult_amount-consult_deposit+consult_poundage-creator_judge_income+creator_judge_payment ELSE 0 END) AS total_gainer_profit
                 "))
         ->first();
 
