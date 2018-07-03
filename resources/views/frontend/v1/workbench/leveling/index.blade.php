@@ -258,7 +258,7 @@
                         <label class="layui-form-label">我已支付代练费（元）</label>
                         <div class="layui-input-block">
                             <input type="text" name="order_amount" id="order_amount" lay-verify="" data-opt=""
-                                   autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                                   autocomplete="off" placeholder="" class="layui-input order_amount" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -273,14 +273,74 @@
                         <label class="layui-form-label">对方已预付安全保证金（元）</label>
                         <div class="layui-input-block">
                             <input type="text" name="safe" id="safe" lay-verify="" data-opt="" autocomplete="off"
-                                   placeholder="" class="layui-input" style="width:400px" disabled>
+                                   placeholder="" class="layui-input safe" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">对方已预付效率保证金（元）</label>
                         <div class="layui-input-block">
                             <input type="text" name="effect" id="effect" lay-verify="" data-opt="" autocomplete="off"
-                                   placeholder="" class="layui-input" style="width:400px" disabled>
+                                   placeholder="" class="layui-input effect" style="width:400px" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">撤销理由</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required"
+                                      class="layui-textarea" style="width:400px"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <button class="qs-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                            <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="consult2" style="display: none; padding:  0 20px">
+        <div class="layui-tab-content">
+            <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
+            <form class="layui-form" method="POST" action="">
+                {!! csrf_field() !!}
+                <div style="width: 80%" id="info">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">*需要对方支付代练费（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="amount" lay-verify="required|number" data-opt="" autocomplete="off"
+                                   placeholder="请输入代练费" class="layui-input" style="width:400px">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">对方已支付代练费（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="order_amount" id="order_amount" lay-verify="" data-opt=""
+                                   autocomplete="off" placeholder="" class="layui-input order_amount" style="width:400px" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">*我原意赔付保证金</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="deposit" lay-verify="required|number" data-opt=""
+                                   autocomplete="off"
+                                   placeholder="请输入保证金" class="layui-input" style="width:400px">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">我已预付安全保证金（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="safe" id="safe" lay-verify="" data-opt="" autocomplete="off"
+                                   placeholder="" class="layui-input safe" style="width:400px" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">我已预付效率保证金（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="effect" id="effect" lay-verify="" data-opt="" autocomplete="off"
+                                   placeholder="" class="layui-input effect" style="width:400px" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -516,14 +576,14 @@
 
             @{{# } else if (d.status == 13) {  }}
                 <button  class="qs-btn opt-btn"  data-opt="applyComplete" data-no="@{{ d.no }}" data-image-upload="@{{ d.gainer_primary_user_id != 0 ? 1 : 0 }}">申请完成</button>
-                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">协商撤销</button>
+                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table" style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-who="2">协商撤销</button>
             @{{# } else if (d.status == 14) {  }}
                 <button  class="qs-btn opt-btn"  data-opt="cancelComplete" data-no="@{{ d.no }}">取消验收</button>
-                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">协商撤销</button>
+                <button  class="qs-btn qs-btn-primary qs-btn-sm qs-btn-table"  style="width: 80px;"  data-opt="revoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-who="2">协商撤销</button>
             @{{# } else if (d.status == 15) {  }}
 
                 @{{# if (d.consult == 1) {  }}
-                    <button  class="qs-btn opt-btn"  data-opt="agreeRevoke" data-no="@{{ d.no }}"  data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="2" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
+                    <button  class="qs-btn opt-btn"  data-opt="agreeRevoke" data-no="@{{ d.no }}"  data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="1" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
                 @{{# } else if (d.consult == 2) {  }}
                     <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="cancelRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}">取消撤销</button>
                 @{{# } }}
@@ -537,7 +597,7 @@
                 @{{# } }}
 
                 @{{# if (d.consult == 2) {  }}
-                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="2" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
+                <button class="qs-btn qs-btn-sm" style="width: 80px;"  data-opt="agreeRevoke" data-no="@{{ d.no }}" data-safe="@{{ d.security_deposit }}" data-effect="@{{ d.efficiency_deposit }}" data-amount="@{{ d.amount }}" data-api_amount="@{{ d.leveling_consult.api_amount }}" data-api_deposit="@{{ d.leveling_consult.api_deposit }}" data-api_service="@{{ d.leveling_consult.api_service }}" data-who="1" data-reason="@{{ d.leveling_consult.revoke_message  }}">同意撤销</button>
                 @{{# }   }}
 
             @{{# } else if (d.status == 17) {  }}
@@ -813,9 +873,9 @@
                 if (!orderEffect) {
                     orderEffect = 0;
                 }
-                $('#order_amount').val(orderAmount);
-                $('#safe').val(orderSafe);
-                $('#effect').val(orderEffect);
+                $('.order_amount').val(orderAmount);
+                $('.safe').val(orderSafe);
+                $('.effect').val(orderEffect);
 
                 if (!opt) {
                     return false;
@@ -863,7 +923,7 @@
                         shade: 0.2,
                         title: '协商撤销',
                         area: ['650px', '550px'],
-                        content: $('.consult')
+                        content: who == 2 ? $('.consult2') : $('.consult')
                     });
                     form.on('submit(consult)', function (data) {
                         $.post("{{ route('frontend.workbench.leveling.consult') }}", {

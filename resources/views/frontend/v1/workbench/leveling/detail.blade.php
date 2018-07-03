@@ -507,38 +507,40 @@
                                                 @if ($detail['consult'] == 1 && $detail['status'] == 15)
                                                     <button  class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                                                 @elseif ($detail['consult'] == 2 && ($detail['status'] == 15))
-                                                    <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" data-who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                                     <button class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                                                 @endif
                                             @else
                                                 @if ($detail['consult'] == 2 && $detail['status'] == 15)
                                                     <button class="qs-btn opt-btn"  data-operation="cancelRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消撤销</button>
                                                 @elseif ($detail['consult'] == 1 && ($detail['status'] == 15))
-                                                    <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                    <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" data-who="1" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                                     <button  class="qs-btn opt-btn"  data-operation="refuseRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">不同意撤销</button>
                                                 @endif
                                             @endif
 
-                                            @if (in_array($detail['status'], [13, 14, 17, 18]))
-                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount']+0 }}">协商撤销</button>
+                                            @if($detail['master'] && in_array($detail['status'], [13, 14, 17, 18]))
+                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount']+0 }}" data-who="1">协商撤销</button>
+                                            @elseif(!$detail['master'] && in_array($detail['status'], [13, 14, 17, 18]))
+                                                <button  class="qs-btn opt-btn"  data-operation="revoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount']+0 }}" data-who="2">协商撤销</button>
                                             @endif
 
                                             @if (in_array($detail['status'], [13,14,15]))
-                                                <button class="qs-btn opt-btn"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >申请仲裁</button>
+                                                <button class="qs-btn qs-btn-primary qs-btn-table opt-btn"   data-operation="applyArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">申请仲裁</button>
                                             @endif
 
                                             @if ($detail['master'])
                                                 @if ($detail['complain'] == 1 && $detail['status'] == 16)
                                                     <button class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}" class="qs-btn qs-btn-primary qs-btn-table" >取消仲裁</button>
                                                     @if($detail['consult'] == 2)
-                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" data-who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                                     @endif
                                                 @endif
                                             @else
                                                 @if ($detail['complain'] == 2 && $detail['status'] == 16)
                                                     <button  class="qs-btn opt-btn"  data-operation="cancelArbitration" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}">取消仲裁</button>
                                                     @if($detail['consult'] == 1)
-                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" who="2" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
+                                                        <button  class="qs-btn opt-btn"  data-operation="agreeRevoke" data-no="{{ $detail['no'] }}" data-safe="{{ $detail['security_deposit'] ?? '' }}" data-effect="{{ $detail['efficiency_deposit'] ?? '' }}" data-amount="{{ $detail['amount'] }}"  api_amount="{{ $detail['leveling_consult']['api_amount'] == intval($detail['leveling_consult']['api_amount']) ? intval($detail['leveling_consult']['api_amount']) : $detail['leveling_consult']['api_amount'] }}" api_deposit="{{ $detail['leveling_consult']['api_deposit'] == intval($detail['leveling_consult']['api_deposit']) ? intval($detail['leveling_consult']['api_deposit']) : $detail['leveling_consult']['api_deposit'] }}" api_service="{{ intval($detail['leveling_consult']['api_service']) == $detail['leveling_consult']['api_service'] ? intval($detail['leveling_consult']['api_service']) : $detail['leveling_consult']['api_service'] }}" data-who="1" reason="{{ $detail['leveling_consult']['revoke_message'] ?? '' }}">同意撤销</button>
                                                     @endif
                                                 @endif
                                             @endif
@@ -892,44 +894,111 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">*我愿意支付代练费（元）</label>
                     <div class="layui-input-block">
-                        <input type="text" name="amount" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入代练费" class="layui-input" style="width:400px">
+                        <input type="text" name="amount" lay-verify="required|number" data-opt="" autocomplete="off"
+                               placeholder="请输入代练费" class="layui-input" style="width:400px">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">我已支付代练费（元）</label>
                     <div class="layui-input-block">
-                        <input type="text" name="order_amount" id="order_amount" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                        <input type="text" name="order_amount" id="order_amount" lay-verify="" data-opt=""
+                               autocomplete="off" placeholder="" class="layui-input order_amount" style="width:400px" disabled>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">*需要对方赔付保证金</label>
                     <div class="layui-input-block">
-                        <input type="text" name="deposit" lay-verify="required|number" value="" autocomplete="off" placeholder="请输入保证金" class="layui-input" style="width:400px">
+                        <input type="text" name="deposit" lay-verify="required|number" data-opt=""
+                               autocomplete="off"
+                               placeholder="请输入保证金" class="layui-input" style="width:400px">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">对方已预付安全保证金（元）</label>
                     <div class="layui-input-block">
-                        <input type="text" name="safe" id="safe" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                        <input type="text" name="safe" id="safe" lay-verify="" data-opt="" autocomplete="off"
+                               placeholder="" class="layui-input safe" style="width:400px" disabled>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">对方已预付效率保证金（元）</label>
                     <div class="layui-input-block">
-                        <input type="text" name="effect" id="effect" lay-verify="" value="" autocomplete="off" placeholder="" class="layui-input" style="width:400px" disabled>
+                        <input type="text" name="effect" id="effect" lay-verify="" data-opt="" autocomplete="off"
+                               placeholder="" class="layui-input effect" style="width:400px" disabled>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">撤销理由</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required" class="layui-textarea" style="width:400px"></textarea>
+                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required"
+                                      class="layui-textarea" style="width:400px"></textarea>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label"></label>
                     <div class="layui-input-block">
-                        <button class="qs-btn  qs-btn-normal" lay-submit lay-filter="consult">立即提交</button>
-                        <span cancel class="qs-btn  qs-btn-primary cancel">取消</span>
+                        <button class="qs-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                        <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="consult2" style="display: none; padding:  0 20px">
+    <div class="layui-tab-content">
+        <span style="color:red;margin-right:15px;">双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。<br/></span>
+        <form class="layui-form" method="POST" action="">
+            {!! csrf_field() !!}
+            <div style="width: 80%" id="info">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">*需要对方支付代练费（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="amount" lay-verify="required|number" data-opt="" autocomplete="off"
+                               placeholder="请输入代练费" class="layui-input" style="width:400px">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">对方已支付代练费（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="order_amount" id="order_amount" lay-verify="" data-opt=""
+                               autocomplete="off" placeholder="" class="layui-input order_amount" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">*我原意赔付保证金</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="deposit" lay-verify="required|number" data-opt=""
+                               autocomplete="off"
+                               placeholder="请输入保证金" class="layui-input" style="width:400px">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">我已预付安全保证金（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="safe" id="safe" lay-verify="" data-opt="" autocomplete="off"
+                               placeholder="" class="layui-input safe" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">我已预付效率保证金（元）</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="effect" id="effect" lay-verify="" data-opt="" autocomplete="off"
+                               placeholder="" class="layui-input effect" style="width:400px" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">撤销理由</label>
+                    <div class="layui-input-block">
+                            <textarea placeholder="请输入撤销理由" name="revoke_message" lay-verify="required"
+                                      class="layui-textarea" style="width:400px"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <button class="qs-btn  layui-btn-normal" lay-submit lay-filter="consult">立即提交</button>
+                        <span cancel class="qs-btn  layui-btn-normal cancel">取消</span>
                     </div>
                 </div>
             </div>
@@ -1277,8 +1346,8 @@
                 var apiAmount = $(this).attr("api_amount");
                 var apiDeposit = $(this).attr("api_deposit");
                 var apiService = $(this).attr("api_service");
-                var who=$(this).attr("who");
-                var reason=$(this).attr("reason");
+                var who = $(this).attr("data-who");
+                var reason = $(this).attr("reason");
 
                 if (!orderAmount) {
                     orderAmount = 0;
@@ -1289,9 +1358,9 @@
                 if (!orderEffect) {
                     orderEffect = 0;
                 }
-                $('#order_amount').val(orderAmount);
-                $('#safe').val(orderSafe);
-                $('#effect').val(orderEffect);
+                $('.order_amount').val(orderAmount);
+                $('.safe').val(orderSafe);
+                $('.effect').val(orderEffect);
 
                 if (!opt) {
                     return false;
@@ -1338,7 +1407,7 @@
                         shade: 0.2,
                         title: '协商撤销',
                         area: ['650px', '620px'],
-                        content: $('.consult')
+                        content: who == 2 ? $('.consult2') : $('.consult')
                     });
                     form.on('submit(consult)', function (data) {
                         $.post("{{ route('frontend.workbench.leveling.consult') }}", {
@@ -1526,10 +1595,11 @@
 
                     return false;
                 } else if (opt == 'agreeRevoke') {
+                    var message = '';
                     if (who == 1) {
-                        var message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
+                        message = "对方发起协商撤销。 对方支付代练费"+apiAmount+"元，你支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     } else {
-                        var message = "对方发起协商撤销。 你支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
+                        message = "对方发起协商撤销。 你支付代练费"+apiAmount+"元，对方支付保证金"+apiDeposit+"元。原因："+reason+"，确定同意撤销？";
                     }
                     layer.confirm(message, {icon: 3, title: '提示'}, function (index) {
                         $.post("{{ route('frontend.workbench.leveling.status') }}", {
