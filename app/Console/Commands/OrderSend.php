@@ -142,7 +142,7 @@ class OrderSend extends Command
                                     myLog('order-send-result-des', [ $platform['name'], $result]);
                                     myLog('order-send-result', [$orderData, $platform['name'], $result, $decrypt]);
                                 } catch (ConnectException $exception) {
-                                    $this->sendResultRecord($orderDatas['order_no'], $platform['name'], '', 2, $platform['name'] . '服务器异常');
+                                    $this->sendResultRecord($orderDatas['order_no'], $platform['name'], '', 1, $platform['name'] . '服务器异常');
 
                                     myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $exception->getMessage(), '行' => $exception->getLine()]);
                                 } catch (Exception $exception) {
