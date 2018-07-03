@@ -10,6 +10,7 @@ use App\Models\BusinessmanContactTemplate;
 use App\Models\GameLevelingRequirementsTemplate;
 use App\Models\GoodsTemplateWidget;
 use App\Models\OrderAttachment;
+use App\Models\OrderSendResult;
 use App\Models\UserSetting;
 use App\Exceptions\AssetException;
 use App\Extensions\Asset\Expend;
@@ -530,7 +531,6 @@ class IndexController extends Controller
         $detail['consult'] = $detail['leveling_consult']['consult'] ?? '';
         $detail['complain'] = $detail['leveling_consult']['complain'] ?? '';
 
-
         // 撤销说明
         if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
             if ($detail['leveling_consult']['complete'] != 2) {
@@ -570,13 +570,9 @@ class IndexController extends Controller
         if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2) {
             $text = '。客服进行了仲裁。';
 
-//            if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
-                $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
-                $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
-//            } else {
-//                $text .= '对方支付代练费' . ($detail['leveling_consult']['api_amount'] + 0) . '元，';
-//                $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
-//            }
+            $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+            $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+
             $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
             $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
             $detail['complain_desc'] .= $text;
@@ -594,7 +590,6 @@ class IndexController extends Controller
                 $detail['payment_amount'] = $detail['amount'];
             }
             // 支付金额
-//            $detail['payment_amount'] = $detail['payment_amount'] !=0 ?  $detail['payment_amount'] + 0:  $amount;
             $detail['get_amount'] = (float)$detail['get_amount'] + 0;
             $detail['poundage'] = (float)$detail['poundage'] + 0;
             // 利润
@@ -624,8 +619,13 @@ class IndexController extends Controller
             $detail['source_price'] = '';
             $detail['customer_service_remark'] = '';
         }
+        // 如果是未接单状态则查询订单发送情况
+        $sendResult = '';
+        if ($detail['status'] == 1) {
+            $sendResult = OrderSendResult::where('order_no', $detail['no'])->get();
+        }
 
-        return view('frontend.v1.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo'));
+        return view('frontend.v1.workbench.leveling.detail', compact('detail', 'template', 'game', 'smsTemplate', 'taobaoTrade', 'contact', 'fixedInfo', 'sendResult'));
     }
 
     /**

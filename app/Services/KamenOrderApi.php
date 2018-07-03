@@ -68,7 +68,7 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 //        return $response->getBody()->getContents();
-
+            myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
@@ -78,7 +78,9 @@ class KamenOrderApi
 
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-        return $response->getBody()->getContents();
+
+            myLog('km-api', ['107560', $kmOrderId, $response->getBody()->getContents()]);
+
         } catch (\Exception $exception) {
 
         }

@@ -589,98 +589,143 @@
     <div class="layui-col-md4">
         <div class="layui-card" style="">
             <div class="layui-card-header">平台数据</div>
-            <div class="layui-card-body qs-text">
-                <table class="layui-table">
-                    <colgroup>
-                        <col width="115">
-                        <col>
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <td>平台单号</td>
-                        <td>{{ $detail['third_order_no']  }}</td>
-                    </tr>
-                    <tr>
-                        <td>订单状态</td>
-                        <td>{{ config('order.status_leveling')[$detail['status']] }}</td>
-                    </tr>
-                    <tr>
-                        <td>接单平台</td>
-                        <td>{{ config('order.third')[$detail['third']] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>打手呢称</td>
-                        <td>{{ $detail['hatchet_man_name'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>打手电话</td>
-                        <td>{{ $detail['hatchet_man_phone'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>打手QQ</td>
-                        <td>{{ $detail['hatchet_man_qq'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>剩余代练时间</td>
-                        <td>{{ $detail['left_time'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>发布时间</td>
-                        <td> {{ $detail['created_at'] ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>接单时间</td>
-                        <td>{{ $detail['receiving_time'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>提验时间</td>
-                        <td>{{ $detail['check_time'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>结算时间</td>
-                        <td>{{ $detail['checkout_time'] ?? ''  }}</td>
-                    </tr>
+            @if($detail['status'] == 1)
+                <div class="layui-card-body qs-text">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="115">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        @php $i = 1 @endphp
+                        @forelse($sendResult as $send)
+                            @if($send->third_name != '丸子代练')
+                            <tr>
+                                <td>接单平台{{ $i }}</td>
+                                <td style="{{ $send->status == 2 ? 'color:green;' : 'color:red;' }}">
+                                    @if($send->status == 2 && $send->third_name == '91平台')
+                                        <a href="http://show91.com/dl/?searchContent={{ $send->third_order_no }}">{{ $send->third_name . '发布成功' }}</a>
+                                    @endif
 
-                    <tr>
-                        <td>发单客服</td>
-                        <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
-                    </tr>
-                    <tr>
-                        <td>撤销说明</td>
-                        <td>{{ $detail['consult_desc'] ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>仲裁说明</td>
-                        <td>{{ $detail['complain_desc'] ?? '无' }}
-                            <br>
-                            <span style="color:red">提示：客服将根据订单留言和截图的情况进行仲裁，仲裁中有新的情况和证据，请提交留言和截图。</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>支付代练费用</td>
-                        <td>
-                            @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
-                                {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
-                            @else
+                                    @if($send->status == 2 && $send->third_name == '蚂蚁代练')
+                                        {{--<a href="https://dl.dd373.com/NeedDetail-{{ $send->third_order_no }}.html"></a>--}}
+                                        {{ $send->third_name . '发布成功' }}
+                                    @endif
 
+                                    @if($send->status == 2 && $send->third_name == 'dd373')
+                                        <a href="https://dl.dd373.com/NeedDetail-{{ $send->third_order_no }}.html">{{ $send->third_name . '发布成功' }}</a>
+                                    @endif
+                                    @if($send->status == 1)
+                                        {{ $send->third_name . '发布失败' }}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ $send->status == 2 ?  '订单号' : '失败原因' }}</td>
+                                <td>{{ $send->status == 2 ?  $send->third_order_no : $send->result }}</td>
+                            </tr>
+                            @php $i++; @endphp
                             @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>获得赔偿金额</td>
-                        <td>{{ $detail['get_amount'] ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>手续费</td>
-                        <td>{{ $detail['poundage'] ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td>最终支付金额</td>
-                        <td>{{ $detail['profit'] ?? ''  }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                        @empty
+                        @endforelse
+
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="layui-card-body qs-text">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="115">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>平台单号</td>
+                            <td>{{ $detail['third_order_no']  }}</td>
+                        </tr>
+                        <tr>
+                            <td>订单状态</td>
+                            <td>{{ config('order.status_leveling')[$detail['status']] }}</td>
+                        </tr>
+                        <tr>
+                            <td>接单平台</td>
+                            <td>{{ config('order.third')[$detail['third']] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>打手呢称</td>
+                            <td>{{ $detail['hatchet_man_name'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>打手电话</td>
+                            <td>{{ $detail['hatchet_man_phone'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>打手QQ</td>
+                            <td>{{ $detail['hatchet_man_qq'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>剩余代练时间</td>
+                            <td>{{ $detail['left_time'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>发布时间</td>
+                            <td> {{ $detail['created_at'] ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <td>接单时间</td>
+                            <td>{{ $detail['receiving_time'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>提验时间</td>
+                            <td>{{ $detail['check_time'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>结算时间</td>
+                            <td>{{ $detail['checkout_time'] ?? ''  }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>发单客服</td>
+                            <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
+                        </tr>
+                        <tr>
+                            <td>撤销说明</td>
+                            <td>{{ $detail['consult_desc'] ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <td>仲裁说明</td>
+                            <td>{{ $detail['complain_desc'] ?? '无' }}
+                                <br>
+                                <span style="color:red">提示：客服将根据订单留言和截图的情况进行仲裁，仲裁中有新的情况和证据，请提交留言和截图。</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>支付代练费用</td>
+                            <td>
+                                @if(isset($detail['payment_amount']) && in_array($detail['status'], [19, 20, 21, 23 ,24]))
+                                    {{ intval($detail['payment_amount']) == $detail['payment_amount'] ? intval($detail['payment_amount']) : $detail['payment_amount'] }}
+                                @else
+
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>获得赔偿金额</td>
+                            <td>{{ $detail['get_amount'] ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <td>手续费</td>
+                            <td>{{ $detail['poundage'] ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <td>最终支付金额</td>
+                            <td>{{ $detail['profit'] ?? ''  }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
         @if ($detail['creator_primary_user_id'] == auth()->user()->getPrimaryUserId())
         <div class="layui-card" style="margin-bottom: 72px;">
