@@ -29,7 +29,7 @@
             position: absolute;
             width: 10%;
             height: 30px;
-            right: -35px;
+            right: -130px;
             top: 5px;
             text-align: center
         }
@@ -55,7 +55,7 @@
                                 {!! csrf_field() !!}
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*游戏</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <select name="game_id" lay-filter="game" lay-verify="required" lay-search="">
                                                 <option value="">请选择</option>
                                                     @forelse($games as $game)
@@ -68,7 +68,7 @@
 
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练类型</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <select name="game_leveling_type" lay-filter="" lay-verify="required" lay-search="" id="type">
                                                 <option value="">请选择</option>
                                                 @forelse($types as $type)
@@ -80,30 +80,43 @@
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练说明</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <textarea placeholder="请输入内容" name="game_leveling_instructions" lay-verify="required" class="layui-textarea">{{ $data->game_leveling_instructions }}</textarea>
+                                            <div class="tips" lay-tips="用户选择该游戏代练类型下单时，使用此代练说明发单到接单平台">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*代练要求</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <textarea placeholder="请输入内容" name="game_leveling_requirements" lay-verify="required" class="layui-textarea">{{ $data->game_leveling_requirements }}</textarea>
+                                            <div class="tips" lay-tips="用户选择该游戏代练类型下单时，使用此代练要求发单到接单平台">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*商户QQ</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <input type="text" name="user_qq" lay-verify="required" value="{{ $data->user_qq }}" autocomplete="off" placeholder="请输入qq" class="layui-input">
+                                            <div class="tips" lay-tips="用户选择该游戏代练类型下单时，使用此商户QQ发单到接单平台">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">*发单价格固定比例</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-inline">
                                             <input type="text" name="rebate" lay-verify="required" value="{{ $data->rebate }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                            <div class="tips" lay-tips="用户选择该游戏代练类型下单时，使用用户支付金额乘以该比例作为代练价格发单到代练平台，该字段填写值为百分比，填90则视为90%">
+                                                <i class="iconfont icon-exclamatory-mark-r"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <div class="layui-input-block">
+                                        <label class="layui-form-label"></label>
+                                        <div class="layui-input-inline">
                                             <button class="layui-btn layui-btn-normal" lay-id="{{ $data->id }}" lay-submit="update" lay-filter="update">立即提交</button>
                                         </div>
                                     </div>
@@ -136,6 +149,25 @@
                 return false;
         });
 
+    });
+    // 提示
+    $(document).on("mouseenter", "*[lay-tips]", function () {
+        var e = $(this);
+        if (!e.parent().hasClass("layui-nav-item") || u.hasClass(g)) {
+            var t = e.attr("lay-tips"),
+                i = e.attr("lay-offset"),
+                n = e.attr("lay-direction"),
+                s = layer.tips(t, this, {
+                    tips: n || 1,
+                    time: -1,
+                    success: function (e, a) {
+                        i && e.css("margin-left", i + "px")
+                    }
+                });
+            e.data("index", s)
+        }
+    }).on("mouseleave", "*[lay-tips]", function () {
+        layer.close($(this).data("index"))
     });
 </script>
 @endsection
