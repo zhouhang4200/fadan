@@ -143,7 +143,6 @@ class OrderSend extends Command
                                     myLog('order-send-result', [$orderData, $platform['name'], $result, $decrypt]);
                                 } catch (ConnectException $exception) {
                                     $this->sendResultRecord($orderDatas['order_no'], $platform['name'], '', 1, $platform['name'] . '服务器异常');
-
                                     myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $exception->getMessage(), '行' => $exception->getLine()]);
                                 } catch (Exception $exception) {
                                     myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $exception->getMessage(), '行' => $exception->getLine()]);
@@ -151,7 +150,7 @@ class OrderSend extends Command
 
                             } else {
                                 // 写入发送记录
-                                $this->sendResultRecord($orderData['order_no'], $platform['name'], '', 1, '该发布渠道已被您关闭');
+                                $this->sendResultRecord($orderDatas['order_no'], $platform['name'], '', 1, '该发布渠道已被您关闭');
 //                                myLog('send-blacklist', [$third, $orderDatas]);
                             }
                         }

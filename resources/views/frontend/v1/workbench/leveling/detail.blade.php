@@ -628,7 +628,18 @@
                             @endif
                         @empty
                         @endforelse
-
+                        <tr>
+                            <td>订单状态</td>
+                            <td>{{ config('order.status_leveling')[$detail['status']] }}</td>
+                        </tr>
+                        <tr>
+                            <td>发布时间</td>
+                            <td> {{ $detail['created_at'] ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <td>发单客服</td>
+                            <td>{{ $detail['customer_service_name'] ?? ''  }}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
