@@ -50,7 +50,7 @@
             </div>
             <div class="layui-form-item layui-layout-admin">
                 <div class="layui-input-block">
-                        <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="update">确定</button>
+                        <button class="qs-btn" style="width: 92px;" lay-submit="" lay-filter="update"> 确定</button>
                 </div>
             </div>
         </form>

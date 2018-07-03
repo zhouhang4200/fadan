@@ -11,6 +11,9 @@
         .layui-table th, .layui-table td {
             text-align:center;
         }
+        td a:hover{
+            color:#fff;
+        }
     </style>
 @endsection
 

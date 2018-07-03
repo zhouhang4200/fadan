@@ -31,7 +31,7 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->created_at }}</td>
                     <td>
-                        <a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini edit">修改账号信息</a>
+                        <a href="{{ route('home-accounts.edit', ['id' => $user->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini edit" ><i class="iconfont icon-edit"></i></a>
                     </td>
                 </tr>
             </tbody>
@@ -40,6 +40,11 @@
 </div>
 @endsection
 <!--START 底部-->
+<style>
+    .user-td td a:hover{
+        color:#fff;
+    }
+</style>
 @section('js')
     <script>
         layui.use('form', function(){
