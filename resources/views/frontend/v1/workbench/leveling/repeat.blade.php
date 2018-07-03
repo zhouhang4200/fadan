@@ -710,8 +710,8 @@
                         options += '<option value="'  + value.field_value + '" data-content="' + value.field_value +  '">' + value.field_value  + '</option>';
 //                        $('.serve').append('<option value="' + value.field_value + '">' + value.field_value + '</option>');
                     });
-                    console.log(options);
                     $('.serve').html(options);
+                    $('select[name=serve]').val('{{ $detail['serve'] }}');
                     layui.form.render();
                 }, 'json');
             }
