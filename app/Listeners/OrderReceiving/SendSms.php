@@ -31,7 +31,7 @@ class SendSms
                 ->where('status', 1)
                 ->where('purpose', 1)
                 ->first();
-myLog('11', [$template]);
+
             if ($template) {
                 $detail = $event->order->detail->pluck('field_value', 'field_name');
                 if (isset($detail['client_phone']) && $detail['client_phone']) {
