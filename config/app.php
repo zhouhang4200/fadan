@@ -249,5 +249,7 @@ return [
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
-    'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php')
+    'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php'),
+
+    'socket_url' => env('http://js.qsios.com:90', 'http://js.qsios.com:90'),
 ];

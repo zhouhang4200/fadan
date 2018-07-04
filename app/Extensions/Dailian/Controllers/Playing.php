@@ -246,12 +246,6 @@ class Playing extends DailianAbstract implements DailianInterface
                 ->where('field_name', 'receiving_time')
                 ->update(['field_value' => $now]);
 
-            // 调用事件
-            try {
-                event(new OrderReceiving($this->order));
-            }  catch (\Exception $exception) {
-                myLog('receiving', [$exception->getMessage()]);
-            }
             // 写入留言获取
             $updateAfterOrderDetail = $this->checkThirdClientOrder($this->order);
             levelingMessageAdd($this->order->creator_primary_user_id,

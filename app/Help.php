@@ -786,7 +786,7 @@ if (!function_exists('sendSms')){
         try {
             $decrementAmount = \App\Models\SmsBalance::where('user_id', $sendUserId)->decrement('amount');
 
-            if ($decrementAmount) {
+            if ($decrementAmount || $sendUserId == 0) {
                 $sendResult = (new SmSApi())->send(2, $phone, $content);
 
                 myLog('sms-send', [$sendResult, $phone, $content]);
