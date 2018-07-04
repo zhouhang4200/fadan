@@ -654,7 +654,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
 </div>
 <div id="sms-recharge-pop" style="display: none;padding: 20px;" class="layui-form">
     <div class="" style="padding: 15px">
-        <label class="">当前账户余额：<span class="balance">{{ $user->userAsset->balance + 0  }}</span>元，短信费0.1元/条，最多可充值 <span id="sms-rechargeable">{{ bcdiv($user->userAsset->balance, 0.1, 0) }}</span> 条</label>
+        <label class="">当前账户余额：<span class="balance">{{ $userInfo->userAsset->balance + 0  }}</span>元，短信费0.1元/条，最多可充值 <span id="sms-rechargeable">{{ bcdiv($userInfo->userAsset->balance, 0.1, 0) }}</span> 条</label>
     </div>
     <div class="layui-form-item" style="margin-bottom: 15px">
         <label class="layui-form-label">充值短信(条)</label>
