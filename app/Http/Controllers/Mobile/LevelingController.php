@@ -115,7 +115,7 @@ class LevelingController extends Controller
         $level = $request->level;
 
         if (empty($gameName) || empty($type) || empty($level)) {
-            return response()->ajax(0, '参数缺失');
+            return response()->ajax(0, '游戏或类型缺失');
         }
 
         $arrTarget = explode(',', $level);

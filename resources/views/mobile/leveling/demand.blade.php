@@ -130,6 +130,7 @@
         });
     </script> -->
     <script>
+        $.toast.prototype.defaults.duration = 500;
         var mobileSelect1 = new MobileSelect({
             trigger: '#trigger1',
             title: '选择游戏',

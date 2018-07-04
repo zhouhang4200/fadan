@@ -146,7 +146,7 @@
                         <i class="weui-icon-checked"></i>
                     </div>
                 </label>
-                <button type="submit" class="weui-btn weui-btn_default tb-bg" href="javascript:" id="showTooltips">我要代练</a>
+                <button type="submit" disabled class="weui-btn weui-btn_default" id="showTooltips">我要代练</a>
             </div>
         </form>
     </div>
@@ -163,6 +163,7 @@
 
 
     <script>
+        $.toast.prototype.defaults.duration = 500;
         var game_name=$("input[name='game_name']").val();
         var type=$("input[name='type']").val();
 
@@ -196,7 +197,6 @@
                 
                     $.post("{{ route('mobile.leveling.servers') }}",{region:region, game_name:game_name},function(res) {
                         if(res.status == 1) {
-                            console.log(res.message);
                             mobileSelect2.updateWheel(0,res.message) //更改第1个轮子
                         }
                     })
@@ -224,7 +224,7 @@
             callback: function (indexArr, data) {
                 $('select[name="server"] option:selected').text(data).val(data);
                 var server = $("select[name='server']").val();
-
+                $('#showTooltips').addClass('tb-bg').attr('disabled',false)
             }
         });
 
@@ -237,6 +237,13 @@
             }
         }
         
+        $(document).on("click", ".operation2", function () {
+            if ($('select[name="region"] option:selected').text() === '') {
+
+                $.toast("请选择大区", "text");
+                $('.mobileSelect').removeClass('mobileSelect-show');
+            }
+        })
     </script>
 </body>
 
