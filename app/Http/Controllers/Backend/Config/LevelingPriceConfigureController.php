@@ -120,7 +120,7 @@ class LevelingPriceConfigureController extends Controller
     	$gameName = $request->game_name;
 		// dd($gameId, $gameName, $type);
     	if (! isset($gameId) || ! isset($gameName) || ! isset($type) ) {
-    		return response()->ajax(0, '未知错误');
+    		return response()->ajax(0, '游戏或类型不存在，请重新添加');
     	}
 
         // 序号是否已经存在

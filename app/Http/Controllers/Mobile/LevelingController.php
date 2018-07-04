@@ -34,13 +34,9 @@ class LevelingController extends Controller
 	 */
     public function demand(Request $request)
     {
-        // if (Agent::isMobile()) {
-        	
 
-            return view('mobile.leveling.demand', compact('games'));
-        // } else {
-        //     abort(404);
-        // }
+        return view('mobile.leveling.demand');
+
     }
 
     /**
@@ -49,12 +45,7 @@ class LevelingController extends Controller
      * @return [type]           [description]
      */
     public function games(Request $request)
-    {
-        // $games = GoodsTemplate::where('goods_templates.status', 1)
-        //     ->where('goods_templates.service_id', 4)
-        //     ->leftJoin('games', 'games.id', '=', 'goods_templates.game_id')
-        //     ->pluck('games.name');
-        
+    {  
         $games = LevelingConfigure::pluck('game_name')->unique();
 
         if (isset($games) && ! empty($games)) {
@@ -78,29 +69,6 @@ class LevelingController extends Controller
         if (isset($gameName) && ! empty($gameName)) {
             $gameId = Game::where('name', $gameName)->value('id');
         }
-        // dd($gameId);
-    	// 代练类型
-    	// $types = DB::select("
-     //        SELECT a.field_value as name FROM goods_template_widget_values a
-     //        LEFT JOIN goods_template_widgets b
-     //        ON a.goods_template_widget_id=b.id
-     //        WHERE a.field_name='game_leveling_type' 
-     //        AND a.goods_template_widget_id=
-     //            (SELECT id FROM goods_template_widgets WHERE goods_template_id=
-     //                (SELECT id FROM goods_templates WHERE game_id='$gameId' AND service_id=4 AND STATUS=1 LIMIT 1)
-     //            AND field_name='game_leveling_type' LIMIT 1)
-     //    ");
-
-    	// $arr = [];
-     //    if (isset($types) && ! empty($types)) {
-     //    	foreach ($types as $type) {
-     //    		$arr[] = $type->name;
-     //    	}
-     //    	$types = $arr;
-     //    } else {
-     //    	$types = [];
-     //    }
-    // dd($types);
 
         $types = LevelingConfigure::pluck('game_leveling_type')->unique();
 
@@ -378,9 +346,6 @@ class LevelingController extends Controller
      */
     public static function pay(Request $request)
     {
-        // $aliAppid = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7Dq65aKIvY/hPxPBt+14lWv3Bt8GJMifOlqRnGb78Mx5oMv17o9iC7JLNV0HodrIsBYVpdJQoQiQ6rRe9wIdAV0OXUIir3fQxKo6whvCyGecnDQGYXpac7zBMFaoVa256q/uSTidFJIFnLvajJuRXwWZBYXujy+mZ9AUZbmNax8RDytqKEv6E+AUuPrwNMW7BkI4f67j0BEgc4qhas347fnQ1yxQ0bMp9C9NuKboWlFJ+bVz6SImdVcfwBnLQ+DyILwPcSiVoNySskJx6XyKAYzCDd04+dXHzuerAGBFp88gbOM+mTqgPOMYkvW2LhQdqkAw+btLJ+gdHcK8xUuXqQIDAQAB';
-
-        // $aesSecret = 'fZkOgJ6sbOFn439F/6cSDg==';
         try {
             $data = $request->all();
             $gameId = Game::where('name', $data['game_name'])->value('id');
@@ -435,7 +400,6 @@ class LevelingController extends Controller
 
                     $alipay = Pay::alipay($basicConfig)->wap($orderConfig);
                     // dd($alipay);
-                    // return $alipay->send();
                     return $alipay;
                 } elseif ($data['pay_type'] == 2) {
                     $orderConfig = [
@@ -450,16 +414,15 @@ class LevelingController extends Controller
                         'return_url'     => route('mobile.leveling.return'),
                         'ali_public_key' => config('wechat.wechat_public_key'),
                         'private_key'    => config('wechat.merchant_private_key'),
-                        // 'log'            => [
-                        //     'file'       => storage_path('logs/wechat.log'),
-                        //     'level'      => 'debug',
-                        // ],
+                        'log'            => [
+                            'file'       => storage_path('logs/wechat.log'),
+                            'level'      => 'debug',
+                        ],
                         'mode'           => 'dev',
                     ];
 
                     $wechat = Pay::wechat($basicConfig)->wap($orderConfig);
                     // dd($wechat);
-                    // return $wechat->send();
                     return $wechat;
                 }
             } else {
@@ -485,10 +448,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.alipay.return'),
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
-                // 'log'            => [
-                //     'file'       => storage_path('logs/alipay.log'),
-                //     'level'      => 'debug',
-                // ],
+                'log'            => [
+                    'file'       => storage_path('logs/alipay.log'),
+                    'level'      => 'debug',
+                ],
                 'mode'           => 'dev',
             ];
 
@@ -521,10 +484,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.alipay.return'),
                 'ali_public_key' => config('alipay.alipay_public_key'),
                 'private_key'    => config('alipay.merchant_private_key'),
-                // 'log'            => [
-                //     'file'       => storage_path('logs/alipay.log'),
-                //     'level'      => 'debug',
-                // ],
+                'log'            => [
+                    'file'       => storage_path('logs/alipay.log'),
+                    'level'      => 'debug',
+                ],
                 'mode'           => 'dev',
             ];
             $alipay = Pay::alipay($basicConfig);
@@ -596,19 +559,18 @@ class LevelingController extends Controller
                 $mobileOrder->save();
 
                 myLog('alipay-notify-data', ['data' => $data, $goodsTemplateId]);
-
-                // echo 'success';
             } else {
                 throw new Exception('订单状态不正确');
             }
         } catch (Exception $e) {
             DB::rollback();
+
             myLog('alipay-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
 
-            echo 'fail';
+            return Response::create('fail');
         }
         DB::commit();
-        return $alipay->success();
+        return Response::create('success');
     }
 
     /**
@@ -646,10 +608,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.wechat.return'),
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
-                // 'log'            => [
-                //     'file'       => storage_path('logs/wechat.log'),
-                //     'level'      => 'debug',
-                // ],
+                'log'            => [
+                    'file'       => storage_path('logs/wechat.log'),
+                    'level'      => 'debug',
+                ],
                 'mode'           => 'dev',
             ];
 
@@ -682,10 +644,10 @@ class LevelingController extends Controller
                 'return_url'     => route('mobile.leveling.wechat.return'),
                 'ali_public_key' => config('wechat.wechat_public_key'),
                 'private_key'    => config('wechat.merchant_private_key'),
-                // 'log'            => [
-                //     'file'       => storage_path('logs/wechat.log'),
-                //     'level'      => 'debug',
-                // ],
+                'log'            => [
+                    'file'       => storage_path('logs/wechat.log'),
+                    'level'      => 'debug',
+                ],
                 'mode'           => 'dev',
             ];
             $wechat = Pay::wechat($basicConfig);
@@ -757,8 +719,6 @@ class LevelingController extends Controller
                 $mobileOrder->save();
 
                 myLog('wechat-notify-data', ['data' => $data, $goodsTemplateId]);
-
-                // echo 'success';
             } else {
                 throw new Exception('订单状态不正确');
             }
@@ -766,7 +726,6 @@ class LevelingController extends Controller
             DB::rollback();
             myLog('wechat-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return Response::create('fail');
-            // echo 'fail';
         }
         DB::commit();
         return Response::create('success');
