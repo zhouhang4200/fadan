@@ -299,7 +299,7 @@ class LevelingController extends Controller
         $hour = $request->hour;
 
         if (empty($gameName) || empty($type) || empty($price) || empty($payment) || empty($time) || empty($startNumber) || empty($endNumber) || empty($startLevel) || empty($endLevel)) {
-            return response()->ajax(0, '请先完善填写信息');
+            return response()->ajax(0, '请完善页面信息');
         }
         return redirect(route('mobile.leveling.place-order'))->with(compact('gameName', 'type', 'price', 'payment', 'time', 'startLevel', 'endLevel', 'startNumber', 'endNumber', 'securityDeposit', 'efficiencyDeposit', 'day', 'hour'));
     }

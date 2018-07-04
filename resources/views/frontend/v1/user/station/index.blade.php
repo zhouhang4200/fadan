@@ -21,7 +21,7 @@
 <div class="layui-card qs-text">
     <div class="layui-card-body">
         <div style="padding-top:5px; padding-bottom:10px; float:right">
-            <a href="{{ route('station.create') }}" style="color:#fff"><button class="qs-btn layui-btn-normal layui-btn-small">添加岗位</button></a>
+            <a href="{{ route('station.create') }}" style="color:#fff"><button class="qs-btn layui-btn-normal layui-btn-small"><i class="iconfont icon-add"></i><span style="padding-left: 3px">添加</span></button></a>
         </div>
         <form class="layui-form" method="" action="" id="role">
             @include('frontend.v1.user.station.list', ['userRoles' => $userRoles])

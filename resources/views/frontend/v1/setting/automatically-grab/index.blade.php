@@ -23,8 +23,8 @@
                     <input type="text" class="layui-input" name="foreign_goods_id" placeholder="淘宝商品ID" value="{{ $foreignGoodsId  }}">
                 </div>
                 <div class="layui-input-inline" style="width: 200px;">
-                    <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="category-search">查询</button>
-                    <button class="qs-btn layui-btn-normal fr" lay-submit lay-filter="goods-add">添加商品</button>
+                    <button class="qs-btn layui-btn-normal" lay-submit="" lay-filter="category-search"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
+                    <button class="qs-btn layui-btn-normal fr" lay-submit lay-filter="goods-add"><i class="iconfont icon-add"></i><span style="padding-left: 3px">添加商品</span></button>
                 </div>
 
             </div>

@@ -18,7 +18,7 @@
                         $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
                         $url = 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
                     @endphp
-                    <a href="{{ $url }}" class="qs-btn" lay-submit="" lay-filter="auth">授权</a>
+                    <a href="{{ $url }}" class="qs-btn" lay-submit="" lay-filter="auth"><i class="iconfont icon-security"></i><span style="padding-left: 3px">授权</span></a>
                 </div>
             </form>
 

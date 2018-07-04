@@ -31,7 +31,7 @@
                     <form class="layui-form" action="" lay-filter="component-form-group" id="form-order">
                         <div style="float: left">
                             <div class="layui-inline">
-                                <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                                <a href="{{ route('frontend.setting.sending-assist.auto-markup.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small"><i class="iconfont icon-add"></i><span style="padding-left: 3px">新增</span></a>
                             </div>
                         </div>                     
                     </form>

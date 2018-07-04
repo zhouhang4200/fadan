@@ -19,7 +19,7 @@
             </td>
 
             <td  width="5%">
-                <button class="qs-btn qs-btn-normal qs-btn-mini template-edit" data-id="{{ $item->id }}">编辑</button>
+                <button class="qs-btn qs-btn-normal qs-btn-mini template-edit" data-id="{{ $item->id }}"><i class="iconfont icon-edit"></i></button>
             </td>
         </tr>
     @empty

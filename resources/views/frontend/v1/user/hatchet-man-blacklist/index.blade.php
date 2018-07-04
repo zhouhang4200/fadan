@@ -39,9 +39,9 @@
             </div>
             <div style="float: left">
                 <div class="layui-inline" >
-                    <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
+                    <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
                     &nbsp;
-                    <a href="{{ route('hatchet-man-blacklist.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small">新增</a>
+                    <a href="{{ route('hatchet-man-blacklist.create') }}" style="color:#fff; float:right;" class="qs-btn layui-btn-normal layui-btn-small"><i class="iconfont icon-add"></i><span style="padding-left: 3px">新增</span></a>
                 </div>
             </div>                     
         </form>

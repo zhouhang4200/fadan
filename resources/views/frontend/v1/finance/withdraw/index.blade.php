@@ -2,6 +2,12 @@
 
 @section('title', '财务 - 我的提现')
 
+@section('css')
+    <style>
+
+    </style>
+@endsection
+
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
@@ -23,11 +29,11 @@
                 </select>
             </div>
             <div class="layui-input-inline" style="width: 200px;">
-                <button class="qs-btn layui-btn-normal" type="submit">查询</button>
+                <button class="qs-btn layui-btn-normal" type="submit"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
             </div>
         
             {{--@inject('withdraw', 'App\Services\Views\WithdrawService')--}}
-            <button id="withdraw" class="qs-btn qs-btn-normal qs-btn-custom-mini" type="button" >余额提现</button>
+            <button id="withdraw" class="qs-btn qs-btn-normal qs-btn-custom-mini" type="button"  >余额提现</button>
         </div>
     </form>
 

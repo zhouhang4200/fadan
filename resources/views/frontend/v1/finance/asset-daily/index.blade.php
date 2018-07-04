@@ -2,6 +2,12 @@
 
 @section('title', '财务 - 资产日报')
 
+@section('css')
+    <style>
+
+    </style>
+@endsection
+
 @section('main')
 <div class="layui-card qs-text">
     <div class="layui-card-body">
@@ -15,7 +21,7 @@
                     <input type="text" class="layui-input" id="date-end" name="date_end" value="{{ $dateEnd }}" placeholder="结束时间">
                 </div>
                 <div class="layui-input-inline" style="width: 200px;">
-                    <button class="qs-btn layui-btn-normal" type="submit">查询</button>
+                    <button class="qs-btn layui-btn-normal" type="submit"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
                 </div>
             </div>
         </form>

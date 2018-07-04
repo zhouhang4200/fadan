@@ -74,10 +74,10 @@
                         <div class="layui-input-inline" style="">
                             <input type="text" class="layui-input" id="time-end" name="time_end" value="{{ Request::input('time_end') }}" placeholder="结束时间">
                         </div>
-                        <button class="qs-btn layui-btn-normal" type="submit">查询</button>
-                        <button class="qs-btn layui-btn-normal" type="button" id="export">导出</button>
+                        <button class="qs-btn layui-btn-normal" type="submit"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
+                        <button class="qs-btn layui-btn-normal" type="button" id="export"><i class="iconfont icon-logout"></i><span style="padding-left: 3px">导出</span></button>
                         @if ($accountType == 2)
-                            <button class="qs-btn layui-btn-normal" type="button" id="settlement">批量结算</button>
+                            <button class="qs-btn layui-btn-normal" type="button" id="settlement"><i class="iconfont icon-finance-o"></i><span style="padding-left: 3px">批量结算</span></button>
                         @endif
                     </div>
                 </div>

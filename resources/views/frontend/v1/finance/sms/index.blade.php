@@ -30,8 +30,8 @@
                             <input type="text" class="layui-input" value="{{ $endDate ?: null }}"  name="end_date" id="test2" placeholder="年-月-日">
                         </div>
                         <div class="layui-inline" >
-                            <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
-                            <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="qs-btn layui-btn-normal layui-btn-small" >导出</a>
+                            <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
+                            <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="qs-btn layui-btn-normal layui-btn-small" ><i class="iconfont icon-logout"></i><span style="padding-left: 3px">导出</span></a>
                         </div>                 
                 </div>
             </div>

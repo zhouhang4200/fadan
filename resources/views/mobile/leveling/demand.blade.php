@@ -123,14 +123,8 @@
     </script>
     <script src="/mobile/lib/js/jquery-weui.js"></script>
     <script src="/mobile/lib/js/swiper.js"></script>
-   <!--  <script>
-        $(".swiper-container").swiper({
-            loop: true,
-            autoplay: 3000
-        });
-    </script> -->
     <script>
-        $.toast.prototype.defaults.duration = 500;
+        $.toast.prototype.defaults.duration = 800;
         var mobileSelect1 = new MobileSelect({
             trigger: '#trigger1',
             title: '选择游戏',

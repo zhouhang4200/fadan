@@ -122,7 +122,7 @@
                         </label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="client_phone" placeholder="请输入" required>
+                        <input class="weui-input" type="number" pattern="[0-9]*" name="client_phone" placeholder="请输入" required>
                     </div>
                 </div>
                 <p style="text-indent: 20px;margin-top:20px;background-color: #fff;height: 30px;line-height: 30px;border-bottom: 1px solid #eee;">支付方式</p>
@@ -163,7 +163,7 @@
 
 
     <script>
-        $.toast.prototype.defaults.duration = 500;
+        $.toast.prototype.defaults.duration = 800;
         var game_name=$("input[name='game_name']").val();
         var type=$("input[name='type']").val();
 
