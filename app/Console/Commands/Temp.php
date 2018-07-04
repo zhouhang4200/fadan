@@ -175,9 +175,7 @@ class Temp extends Command
      */
     public function handle()
     {
-        dd(Show91Controller::orderDetail([
-            'show91_order_no' => 'ORD180703131312436741'
-        ]));
+        dd(sendSms(8456, '111', '18500132452', 'ss', '22','2'));
         $order = [
             '2018070302195800000033',
             '2018070313020300000175',

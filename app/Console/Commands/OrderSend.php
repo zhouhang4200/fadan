@@ -152,7 +152,6 @@ class OrderSend extends Command
                             } else {
                                 // 写入发送记录
                                 $this->sendResultRecord($orderDatas['order_no'], $platform['name'], '', 1, '该发布渠道已被您关闭');
-//                                myLog('send-blacklist', [$third, $orderDatas]);
                             }
                         }
                         // 写基础数据

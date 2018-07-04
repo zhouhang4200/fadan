@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Events\NotificationEvent;
 use App\Exceptions\CustomException;
 use App\Extensions\Asset\Consume;
@@ -781,30 +782,55 @@ if (!function_exists('sendSms')){
 //        } catch (CustomException $exception) {
 //            return ['status' => 0, 'message' => $exception->getMessage()];
 //        }
-
+        \DB::beginTransaction();
         try {
-            $sendResult = (new SmSApi())->send(2, $phone, $content);
+            $decrementAmount = \App\Models\SmsBalance::where('user_id', $sendUserId)->decrement('amount');
 
-            myLog('sms-send', [$sendResult, $phone, $content]);
-            if ((bool)strpos($sendResult, "mterrcode=000")) {
-                // 发送成功写发送记录
-                SmsSendRecord::create([
-                    'foreign_order_no' => $foreignOrderNo,
-                    'third_order_no' => $thirdOrderNo,
-                    'third' => $third,
-                    'user_id' => $sendUserId,
-                    'order_no' => $orderNo,
-                    'client_phone' => $phone,
-                    'contents' => $content,
-                    'date' => date('Y-m-d'),
-                ]);
-                return ['status' => 1, 'message' => '发送成功'];
+            if ($decrementAmount) {
+                $sendResult = (new SmSApi())->send(2, $phone, $content);
+
+                myLog('sms-send', [$sendResult, $phone, $content]);
+                if ((bool)strpos($sendResult, "mterrcode=000")) {
+                    // 发送成功写发送记录
+                    SmsSendRecord::create([
+                        'foreign_order_no' => $foreignOrderNo,
+                        'third_order_no' => $thirdOrderNo,
+                        'third' => $third,
+                        'user_id' => $sendUserId,
+                        'order_no' => $orderNo,
+                        'client_phone' => $phone,
+                        'contents' => $content,
+                        'date' => date('Y-m-d'),
+                    ]);
+
+                } else {
+                    \DB::rollback();
+                    return ['status' => 0, 'message' => '发送失败'];
+                }
+            } else {
+                \DB::rollback();
+                // 发送通知
+                if (! cache()->get($sendUserId) ) {
+                    $now = Carbon::now();
+                    $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
+                    cache()->put($sendUserId, '1', $expiresAt);
+
+                    // 发送通知
+                    event((new NotificationEvent('balanceNotice', [
+                        'type' => 2, // 1 资金 2 短信
+                        'user_id' => $sendUserId,
+                        'title' => '短信不足',
+                        'message' => '您在淘宝发单平台的剩余短信0条，导致短信功能无法使用，发短信失败，请立刻充值，保证业务正常运行。'
+                    ])));
+                }
+                return ['status' => 0, 'message' => '发送失败,短信余额不足'];
             }
-
-            return ['status' => 0, 'message' => '发送失败'];
         } catch (\Exception $exception) {
-
+            \DB::rollback();
+            return ['status' => 0, 'message' => '发送失败'];
         }
+        \DB::commit();
+        return ['status' => 1, 'message' => '发送成功'];
     }
 }
 

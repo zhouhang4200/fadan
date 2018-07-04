@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Models\UserTransferAccountInfo;
 use Session;
 use Illuminate\Support\Facades\Blade;
@@ -43,8 +44,8 @@ class AppServiceProvider extends ServiceProvider
     public function share()
     {
         view()->composer('frontend/v1/layouts/app', function ($view) {
-            $transferInfo = UserTransferAccountInfo::where('user_id', auth()->user()->getPrimaryUserId())->first();
-            $view->with('transferInfo', $transferInfo);
+            $userInfo = User::where('id', auth()->user()->getPrimaryUserId())->first();
+            $view->with('userInfo', $userInfo);
         });
     }
 }

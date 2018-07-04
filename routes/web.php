@@ -240,7 +240,10 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
         Route::get('month-settlement-orders', 'MonthSettlementOrdersController@index')->name('frontend.finance.month-settlement-orders.index');
         Route::get('month-settlement-orders/export', 'MonthSettlementOrdersController@export')->name('frontend.finance.month-settlement-orders.export');
         Route::post('month-settlement-orders/settlement', 'MonthSettlementOrdersController@settlement')->name('frontend.finance.month-settlement-orders.settlement');
-
+        // 短信充值
+        Route::prefix('sms')->group(function () {
+            Route::post('recharge', 'SmsController@recharge')->name('frontend.finance.sms.recharge');
+        });
 	});
 
 	// 工作台

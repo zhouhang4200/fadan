@@ -222,6 +222,13 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function smsBalance()
+    {
+        return $this->hasOne(SmsBalance::class, 'user_id');
+    }
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token

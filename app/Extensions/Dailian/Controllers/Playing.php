@@ -231,16 +231,6 @@ class Playing extends DailianAbstract implements DailianInterface
                                 ->where('field_name', 'third_order_no')
                                 ->update(['field_value' => $orderDatas[$thirdOrderNoName]]);
                         }
-                        // if ($orderDetails['dailianmama_order_no']) {                     
-                        //     // 代练妈妈删除订单
-                        //     DailianMama::deleteOrder($this->order);
-                        // }
-                        // if ($orderDetails['show91_order_no']) {
-                        //     // 撤单91平台订单
-                        //     $options = ['oid' => $orderDetails['show91_order_no']]; 
-                        //     // 91代练下单
-                        //     Show91::chedan($options);
-                        // }
                     // 其他平台订单撤单
                     } else {
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
