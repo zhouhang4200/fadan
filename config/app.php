@@ -251,5 +251,5 @@ return [
 
     'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php'),
 
-    'socket_url' => env('http://js.qsios.com:90', 'http://js.qsios.com:90'),
+    'socket_url' => env('SOCKET_URL', 'http://js.qsios.com:90'),
 ];
