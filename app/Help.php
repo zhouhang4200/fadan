@@ -784,12 +784,15 @@ if (!function_exists('sendSms')){
 //        }
         \DB::beginTransaction();
         try {
-            $decrementAmount = \App\Models\SmsBalance::where('user_id', $sendUserId)->decrement('amount');
+            $balance = \App\Models\SmsBalance::where('user_id', $sendUserId)->lockForUpdate()->first();
 
-            if ($decrementAmount || $sendUserId == 0) {
+            if ($balance->amount > 0 || $sendUserId == 0) {
                 $sendResult = (new SmSApi())->send(2, $phone, $content);
+                $balance->amount = $balance->amount - 1;
+                $balance->save();
 
                 myLog('sms-send', [$sendResult, $phone, $content]);
+
                 if ((bool)strpos($sendResult, "mterrcode=000")) {
                     // 发送成功写发送记录
                     SmsSendRecord::create([
@@ -827,7 +830,7 @@ if (!function_exists('sendSms')){
             }
         } catch (\Exception $exception) {
             \DB::rollback();
-            return ['status' => 0, 'message' => '发送失败'];
+            return ['status' => 0, 'message' => '发送失败' . $exception->getMessage()];
         }
         \DB::commit();
         return ['status' => 1, 'message' => '发送成功'];

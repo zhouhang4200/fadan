@@ -616,14 +616,14 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
             layer.alert(data.message,{
                 title:data.title,
                 btnAlign:'c',
-                btn: ['余额充值']
+                btn: [data.type == 1 ? '余额充值': '短信充值']
             }, function(index){
                 layer.open({
                     type: 1,
                     title: '提示',
                     area: '400px;',
                     shade: 0.2,
-                    content: $('#charge-pop')
+                    content: data.type == 1 ? $('#charge-pop') : $('#sms-recharge-pop')
                 });
             });
         }

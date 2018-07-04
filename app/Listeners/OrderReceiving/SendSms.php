@@ -20,7 +20,7 @@ class SendSms
      * @param  OrderReceiving  $event
      * @return void
      */
-    public function handle(OrderReceiving $event)
+    public function handle($event)
     {
 
         // 如果订单类型为代练，则找出订单客户订单号找出商户设置的模版发送短信
@@ -31,7 +31,7 @@ class SendSms
                 ->where('status', 1)
                 ->where('purpose', 1)
                 ->first();
-
+myLog('11', [$template]);
             if ($template) {
                 $detail = $event->order->detail->pluck('field_value', 'field_name');
                 if (isset($detail['client_phone']) && $detail['client_phone']) {
