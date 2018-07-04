@@ -42,10 +42,12 @@ abstract class DailianAbstract
         // 获取订单
         $this->order = Order::where('no', $this->orderNo)->lockForUpdate()->first();
 
-        $user = User::find($this->userId);
+        if (php_sapi_name() != 'cli') { // 如果不是命令行模式
+            $user = User::find($this->userId);
 
-        if ($this->order->gainer_primary_user_id != 0 && !in_array($user->getPrimaryUserId(), [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
-            throw new DailianException('无权操作订单!');
+            if ($this->order->gainer_primary_user_id != 0 && !in_array($user->getPrimaryUserId(), [$this->order->creator_primary_user_id, $this->order->gainer_primary_user_id])) {
+                throw new DailianException('无权操作订单!');
+            }
         }
 
         if (empty($this->order)) {
