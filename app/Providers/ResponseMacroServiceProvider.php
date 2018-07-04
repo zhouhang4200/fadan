@@ -55,6 +55,8 @@ class ResponseMacroServiceProvider extends ServiceProvider
                 try {
                     if ($code == 0) {
                         myLog('partner-response', [$data, request('order_no')]);
+                    } else {
+                        myLog('partner-response-success', [$data, request('order_no')]);
                     }
                 } catch (\Exception $exception) {
                     myLog('partner-response', [$exception->getMessage()]);
