@@ -1,6 +1,6 @@
 @extends('frontend.v1.layouts.app')
 
-@section('title', '账号 - 登录记录1')
+@section('title', '账号 - 登录记录')
 
 @section('css')
     <style>
@@ -16,13 +16,13 @@
                 @if($user->parent_id == 0)
                 <div class="layui-inline">
                     <div class="layui-input-inline">
-                    <select name="name" lay-verify="" lay-search="">
-                        <option value="">输入子账号名字或直接选择</option>
-                        @forelse($users as $user)
-                        <option value="{{ $user->id }}" {{ $name && $name == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                        @empty
-                        @endforelse
-                    </select>
+                        <select name="name" lay-verify="" lay-search="">
+                            <option value="">输入子账号名字或直接选择</option>
+                            @forelse($users as $user)
+                            <option value="{{ $user->id }}" {{ $name && $name == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                            @empty
+                            @endforelse
+                        </select>
                     </div>
                 </div>
                 @endif

@@ -123,6 +123,16 @@ class LevelingPriceConfigureController extends Controller
     		return response()->ajax(0, '未知错误');
     	}
 
+        // 序号是否已经存在
+        $hasNumber = LevelingPriceConfigure::where('game_name', $gameName)
+            ->where('game_leveling_type', $type)
+            ->where('game_leveling_number', $data['game_leveling_number'])
+            ->first();
+
+        if (isset($hasNumber) &&  ! empty($hasNumber)) {
+            return response()->ajax(0, '序号已经存在');
+        }
+
     	if (isset($data) && ! empty($data)) {
     		$data['game_id'] = $gameId;
     		$data['game_name'] = $gameName;
