@@ -1269,34 +1269,34 @@ class IndexController extends Controller
                 ->toArray();
 
             // 如果有补款单号，那么更新此单关联订单的补款单号
-            $otherOrders = OrderModel::where('foreign_order_no', $order->foreign_order_no)
-                ->where('foreign_order_no', '!=', '')
-                ->get();
+            if (isset($order->foreign_order_no) && ! empty($order->foreign_order_no)) {
+                $otherOrders = OrderModel::where('foreign_order_no', $order->foreign_order_no)->get();
 
-            if (isset($otherOrders) && ! empty($otherOrders)) {
-                foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->no)
-                        ->where('field_name', 'source_order_no_1')
-                        ->where('order_no', '!=', $order->no)
-                        ->update(['field_value' => $orderDetails['source_order_no_1']]);
-                }
+                if (isset($otherOrders) && ! empty($otherOrders)) {
+                    foreach($otherOrders as $otherOrder) {
+                        OrderDetail::where('order_no', $otherOrder->no)
+                            ->where('field_name', 'source_order_no_1')
+                            ->where('order_no', '!=', $order->no)
+                            ->update(['field_value' => $orderDetails['source_order_no_1']]);
+                    }
 
-                foreach($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->no)
-                        ->where('field_name', 'source_order_no_2')
-                        ->where('order_no', '!=', $order->no)
-                        ->update(['field_value' => $orderDetails['source_order_no_2']]);
-                }
+                    foreach($otherOrders as $otherOrder) {
+                        OrderDetail::where('order_no', $otherOrder->no)
+                            ->where('field_name', 'source_order_no_2')
+                            ->where('order_no', '!=', $order->no)
+                            ->update(['field_value' => $orderDetails['source_order_no_2']]);
+                    }
 
-                // 将其他单的来源价格更新为此单的来源价格
-                foreach ($otherOrders as $otherOrder) {
-                    OrderDetail::where('order_no', $otherOrder->no)
-                        ->where('order_no', '!=', $order->no)
-                        ->where('field_name', 'source_price')
-                        ->update(['field_value' => $orderDetails['source_price']]);
-                    OrderModel::where('no', $otherOrder->no)
-                        ->where('no', '!=', $order->no)
-                        ->update(['original_price' =>  $orderDetails['source_price']]);
+                    // 将其他单的来源价格更新为此单的来源价格
+                    foreach ($otherOrders as $otherOrder) {
+                        OrderDetail::where('order_no', $otherOrder->no)
+                            ->where('order_no', '!=', $order->no)
+                            ->where('field_name', 'source_price')
+                            ->update(['field_value' => $orderDetails['source_price']]);
+                        OrderModel::where('no', $otherOrder->no)
+                            ->where('no', '!=', $order->no)
+                            ->update(['original_price' =>  $orderDetails['source_price']]);
+                    }
                 }
             }
 
