@@ -333,16 +333,17 @@
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">安全保证金</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="security_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['security_deposit'] ?? '' }}">
+                                        <input type="text" name="security_deposit" @if(!$detail['gainer_user_id'] != 0) lay-verify="required|number|gt5" @endif placeholder="" autocomplete="off" class="layui-input" display-name="安全保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['security_deposit'] ?? '' }}">
                                         <div class="tips" lay-tips="安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）">
                                             <i class="iconfont icon-exclamatory-mark-r"></i>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">效率保证金</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="efficiency_deposit" lay-verify="required|number|gt5" placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['efficiency_deposit'] ?? '' }}">
+                                        <input type="text" name="efficiency_deposit" @if(!$detail['gainer_user_id']) lay-verify="required|number|gt5" @endif placeholder="" autocomplete="off" class="layui-input" display-name="效率保证金"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['efficiency_deposit'] ?? '' }}">
                                         <div class="tips" lay-tips="效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）">
                                             <i class="iconfont icon-exclamatory-mark-r"></i>
                                         </div>
@@ -432,12 +433,14 @@
                                     </div>
                                 </div>
                                 <div class="layui-col-lg6">
+                                    @if($detail['gainer_user_id'])
                                     <label class="layui-form-label">指定内部打手</label>
                                     <div class="layui-input-block">
-                                        <select name="gainer_primary_user_id"   lay-filter="gainer-primary-user-id">
+                                        <select name="gainer_user_id" disabled  lay-filter="gainer-primary-user-id">
                                             <option value=""></option>
                                         </select>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
 
@@ -1870,7 +1873,7 @@
                     chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
-                    $('select[name=gainer_primary_user_id]').html(gainerUserTemplate);
+                    $('select[name=gainer_user_id]').html(gainerUserTemplate);
                     layui.form.render();
                 }, 'json');
             }
@@ -1882,7 +1885,7 @@
                 $("select[name=serve]").val('{{  $detail['serve']  }}');
                 $("select[name=game_leveling_type]").val('{{  $detail['game_leveling_type']  }}');
                 $("select[name=user_qq]").val('{{  $detail['user_qq']  }}');
-                $('select[name=gainer_primary_user_id]').val('{{ $detail['gainer_primary_user_id'] }}');
+                $('select[name=gainer_user_id]').val('{{ $detail['gainer_user_id'] }}');
                 layui.form.render();
             }
             // 加载留言

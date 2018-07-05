@@ -923,9 +923,9 @@ class IndexController extends Controller
         $requestData = $request->data;
         $orderNo = $requestData['no'];
 
-//        if (isset($requestData['gainer_primary_user_id'])) {
-//            unset($requestData['gainer_primary_user_id']);
-//        }
+        if (isset($requestData['gainer_primary_user_id'])) {
+            unset($requestData['gainer_primary_user_id']);
+        }
 
         $history = [];
         DB::beginTransaction();
