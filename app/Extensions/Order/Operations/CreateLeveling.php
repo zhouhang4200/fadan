@@ -134,19 +134,19 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
 
 
         // 如果设置了接单人则直接写入接单人ID
-        if (isset($this->details['gainer_primary_user_id']) && $this->details['gainer_primary_user_id']) {
+        if (isset($this->details['gainer_user_id']) && $this->details['gainer_user_id']) {
             $this->handledStatus = 13;
-            $this->order->gainer_user_id = $this->details['gainer_primary_user_id'];
-            $this->order->gainer_primary_user_id = $this->details['gainer_primary_user_id'];
+            $this->order->gainer_user_id = $this->details['gainer_user_id'];
+            $this->order->gainer_primary_user_id = $this->details['gainer_user_id'];
             $this->details['receiving_time'] = date('Y-m-d H:i:s');
             $this->runAfter = false;
 
             $taobaoOrderNo = new OrderDetail;
             $taobaoOrderNo->order_no = $this->order->no;
-            $taobaoOrderNo->field_name = 'gainer_primary_user_id';
-            $taobaoOrderNo->field_name_alias = 'gainer_primary_user_id';
+            $taobaoOrderNo->field_name = 'gainer_user_id';
+            $taobaoOrderNo->field_name_alias = 'gainer_user_id';
             $taobaoOrderNo->field_display_name = '内部接单商户ID';
-            $taobaoOrderNo->field_value = $this->details['gainer_primary_user_id'] ?? '';
+            $taobaoOrderNo->field_value = $this->details['gainer_user_id'] ?? '';
             $taobaoOrderNo->creator_primary_user_id = $this->order->creator_primary_user_id;
             $taobaoOrderNo->save();
         }

@@ -423,10 +423,10 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">指定内部打手</label>
                             <div class="layui-input-block">
-                                <select name="gainer_primary_user_id" lay-verify="" lay-filter="gainer-primary-user-id">
+                                <select name="gainer_user_id" lay-verify="" lay-filter="gainer-primary-user-id">
                                     <option value=""></option>
                                 </select>
-                                <div class="tips"  id="gainer_primary_user_id">
+                                <div class="tips"  id="gainer_user_id">
                                     <i class="iconfont icon-add-r"></i>
                                 </div>
                             </div>
@@ -893,7 +893,7 @@
                     chose = 0;
                     $('select[name=user_qq]').html(qqTemplate);
                     $('select[name=user_phone]').html(phoneTemplate);
-                    $('select[name=gainer_primary_user_id]').html(gainerUserTemplate);
+                    $('select[name=gainer_user_id]').html(gainerUserTemplate);
                     layui.form.render();
                 }, 'json');
             }
@@ -999,7 +999,7 @@
                 });
             });
             // 添加内部打手
-            $('.layui-form').on('click', '#gainer_primary_user_id', function () {
+            $('.layui-form').on('click', '#gainer_user_id', function () {
                 layer.open({
                     type: 2,
                     area: ['700px', '400px'],
