@@ -534,15 +534,31 @@ class IndexController extends Controller
         // 撤销说明
         if(isset($detail['leveling_consult']['consult']) && $detail['leveling_consult']['consult'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
             if ($detail['leveling_consult']['complete'] != 2) {
-                //发起人的主ID 与 当前主ID一样则撤销发起人
-                if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
+                //发起人的发单主ID 与 当前主ID一样则撤销发起人为发单人
+                if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['consult'] == 1) {
                     $text = '你发起协商撤销。';
                     $text .= '你支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
                     $text .= '对方支付保证金' . ($detail['leveling_consult']['deposit'] + 0). '元。原因：' . $detail['leveling_consult']['revoke_message'];
 
                     $detail['payment_amount'] = $detail['leveling_consult']['amount'] + 0;
                     $detail['get_amount'] = $detail['leveling_consult']['deposit'] + 0;
-                } else {
+                } elseif ($detail['creator_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['consult'] == 1) {
+                    $text = '对方发起协商撤销。';
+                    $text .= '对方支付代练费' . ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+                    $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元。原因：' . $detail['leveling_consult']['revoke_message'];
+
+                    $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
+                    $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
+                }
+
+                if ($detail['gainer_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['consult'] == 2) {
+                    $text = '你发起协商撤销。';
+                    $text .= '对方支付代练费' . ($detail['leveling_consult']['amount'] + 0) . '元，';
+                    $text .= '你方支付保证金' . ($detail['leveling_consult']['deposit'] + 0). '元。原因：' . $detail['leveling_consult']['revoke_message'];
+
+                    $detail['payment_amount'] = $detail['leveling_consult']['amount'] + 0;
+                    $detail['get_amount'] = $detail['leveling_consult']['deposit'] + 0;
+                } elseif ($detail['gainer_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['consult'] == 2) {
                     $text = '对方发起协商撤销。';
                     $text .= '你支付代练费' . ($detail['leveling_consult']['api_amount'] + 0) . '元，';
                     $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元。原因：' . $detail['leveling_consult']['revoke_message'];
@@ -550,19 +566,26 @@ class IndexController extends Controller
                     $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
                     $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
                 }
+
                 $detail['consult_desc'] = $text;
             }
         }
         // 仲裁说明
-        if(isset($detail['leveling_consult']['complain']) && $detail['leveling_consult']['complain'] != 0 && $detail['leveling_consult']['user_id'] != 0) {
+        if(isset($detail['leveling_consult']['complain']) && $detail['leveling_consult']['complain'] != 0) {
             if ($detail['leveling_consult']['complete'] != 1) {
                 //发起人的主ID 与 当前主ID一样则仲裁发起人
-//                $user = User::where('id', $detail['leveling_consult']['user_id'])->first();
-                if ($detail['leveling_consult']['user_id'] == Auth::user()->getPrimaryUserId()) {
+                if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 1) {
                     $text = '你发起申请仲裁。原因：' . $detail['leveling_consult']['complain_message'];
-                } else {
+                } elseif ($detail['creator_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 1) {
                     $text = '对方发起申请仲裁。 原因：' . $detail['leveling_consult']['complain_message'];
                 }
+
+                if ($detail['gainer_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 2) {
+                    $text = '你发起申请仲裁。原因：' . $detail['leveling_consult']['complain_message'];
+                } elseif ($detail['gainer_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 2) {
+                    $text = '对方发起申请仲裁。 原因：' . $detail['leveling_consult']['complain_message'];
+                }
+
                 $detail['complain_desc'] = $text;
             }
         }
@@ -570,8 +593,21 @@ class IndexController extends Controller
         if(isset($detail['leveling_consult']['complete']) && $detail['leveling_consult']['complete'] == 2) {
             $text = '。客服进行了仲裁。';
 
-            $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
-            $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+            if ($detail['creator_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 1) {
+                $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+                $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+            } elseif ($detail['creator_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 1) {
+                $text .= '对方支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+                $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+            }
+
+            if ($detail['gainer_primary_user_id'] == Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 2) {
+                $text .= '对方支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+                $text .= '你支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+            } elseif ($detail['gainer_primary_user_id'] != Auth::user()->getPrimaryUserId() && $detail['leveling_consult']['complain'] == 2) {
+                $text .= '你支付代练费' .  ($detail['leveling_consult']['api_amount'] + 0) . '元，';
+                $text .= '对方支付保证金' . ($detail['leveling_consult']['api_deposit'] + 0) . '元';
+            }
 
             $detail['payment_amount'] = $detail['leveling_consult']['api_amount'] + 0;
             $detail['get_amount'] = $detail['leveling_consult']['api_deposit'] + 0;
@@ -886,6 +922,10 @@ class IndexController extends Controller
     {
         $requestData = $request->data;
         $orderNo = $requestData['no'];
+
+//        if (isset($requestData['gainer_primary_user_id'])) {
+//            unset($requestData['gainer_primary_user_id']);
+//        }
 
         $history = [];
         DB::beginTransaction();
@@ -1264,10 +1304,10 @@ class IndexController extends Controller
             $order->original_amount = $orderDetails['source_price'];
             $order->original_price = $orderDetails['source_price'];
             $order->save();
-                    
+
             // 写入基础数据表
             event(new OrderBasicData($order));
-            
+
             $this->checkIfAutoMarkup($order, $orderDetails);
         } catch (CustomException $customException) {
             DB::rollBack();
