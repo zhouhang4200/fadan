@@ -1058,23 +1058,19 @@ class IndexController extends Controller
                             }
                         }
                     }
-                    // 手动触发调用外部接口时间
-                    $order = OrderModel::where('no', $order->no)->first();
 
                     /** 修改订单, 其他平台通用 **/
+                    $order = OrderModel::where('no', $order->no)->first();
+
                     if (config('leveling.third_orders')) {
                         // 获取订单和订单详情以及仲裁协商信息
                         $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                        // 遍历代练平台
                         foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                            // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                             if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                                // 控制器-》方法-》参数
                                 call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$orderDatas]);
                             }
                         }
                     }
-                    /**修改订单**/
                 }
 
                 // 已接单  异常 更新部分信息 （加价 加时间天 加时间小时 修改密码 ）
@@ -1121,11 +1117,8 @@ class IndexController extends Controller
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
                             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                            // 遍历代练平台
                                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                                     if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                                    // 控制器-》方法-》参数
                                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateAccountAndPassword']], [$orderDatas]);
                                 }
                             }
@@ -1136,17 +1129,13 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'account')->update([
                             'field_value' => $requestData['password']
                         ]);
-                        // 账号密码修改，91和代练妈妈通用
-                        // event(new AutoRequestInterface($order, 'editOrderAccPwd', false));
+
                         // 其他平台通用
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
                             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                            // 遍历代练平台
                                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                                     if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                                    // 控制器-》方法-》参数
                                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateAccountAndPassword']], [$orderDatas]);
                                 }
                             }
@@ -1157,25 +1146,26 @@ class IndexController extends Controller
                          // 接口增加的天数
                         $addDays = bcsub($request->data['game_leveling_day'], $order->detail()->where('field_name', 'game_leveling_day')->value('field_value'), 0);
                         // 更新值
-                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_day')->update([
-                            'field_value' => $requestData['game_leveling_day']
-                        ]);
+                        OrderDetail::where('order_no', $orderNo)
+                            ->where('field_name', 'game_leveling_day')
+                            ->update([
+                                'field_value' => $requestData['game_leveling_day']
+                            ]);
                         // 增加的小时数
                         $addHours = bcsub($request->data['game_leveling_hour'], $order->detail()->where('field_name', 'game_leveling_hour')->value('field_value'), 0);
                         // 更新值
-                        OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_hour')->update([
-                            'field_value' => $requestData['game_leveling_hour']
-                        ]);
+                        OrderDetail::where('order_no', $orderNo)
+                            ->where('field_name', 'game_leveling_hour')
+                            ->update([
+                                'field_value' => $requestData['game_leveling_hour']
+                            ]);
 
                          // 其他平台通用加时
                         if (config('leveling.third_orders')) {
                              // 获取订单和订单详情以及仲裁协商信息
                             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                            // 遍历代练平台
                                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                                    // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                                     if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                                    // 控制器-》方法-》参数
                                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addTime']], [$orderDatas]);
                                 }
                             }
@@ -1202,18 +1192,13 @@ class IndexController extends Controller
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'game_leveling_amount')->update([
                             'field_value' => $requestData['game_leveling_amount']
                         ]);
-                        // 接口加价
-                        // $order->addAmount = $addAmount;
-                        // event(new AutoRequestInterface($order, 'addPrice'));
+
                         // 加价 其他平台通用
                         if (config('leveling.third_orders')) {
                             // 获取订单和订单详情以及仲裁协商信息
                             $orderDatas = $this->getOrderAndOrderDetailAndLevelingConsult($order->no);
-                           // 遍历代练平台
                             foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                                 if ($third == $orderDatas['third'] && isset($orderDatas['third_order_no']) && ! empty($orderDatas['third_order_no'])) {
-                                    // 控制器-》方法-》参数
                                     call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['addMoney']], [$orderDatas]);
                                 }
                             }
@@ -1223,10 +1208,7 @@ class IndexController extends Controller
 
                 // 状态锁定 可改密码
                 if ($order->status == 18) {
-
-                    // 修改密码
                     if ($requestData['password'] != $orderDetail['password']) {
-                        // 更新值
                         OrderDetail::where('order_no', $orderNo)->where('field_name', 'password')->update([
                             'field_value' => $requestData['password']
                         ]);
@@ -1234,7 +1216,6 @@ class IndexController extends Controller
                 }
                 // 其它信息只需改订单详情表
                 foreach ($requestData as $key => $value) {
-
                     if (isset($orderDetail[$key])) {
                         if ($orderDetail[$key] != $value) {
                             // 更新值
@@ -1273,20 +1254,24 @@ class IndexController extends Controller
                 $otherOrders = OrderModel::where('foreign_order_no', $order->foreign_order_no)->get();
 
                 if (isset($otherOrders) && ! empty($otherOrders)) {
-                    foreach($otherOrders as $otherOrder) {
-                        OrderDetail::where('order_no', $otherOrder->no)
-                            ->where('field_name', 'source_order_no_1')
-                            ->where('order_no', '!=', $order->no)
-                            ->update(['field_value' => $orderDetails['source_order_no_1']]);
+                    // 如果有补款单号1
+                    if (isset($orderDetails['source_order_no_1']) && ! empty($orderDetails['source_order_no_1'])) {
+                        foreach($otherOrders as $otherOrder) {
+                            OrderDetail::where('order_no', $otherOrder->no)
+                                ->where('field_name', 'source_order_no_1')
+                                ->where('order_no', '!=', $order->no)
+                                ->update(['field_value' => $orderDetails['source_order_no_1']]);
+                        }
                     }
-
-                    foreach($otherOrders as $otherOrder) {
-                        OrderDetail::where('order_no', $otherOrder->no)
-                            ->where('field_name', 'source_order_no_2')
-                            ->where('order_no', '!=', $order->no)
-                            ->update(['field_value' => $orderDetails['source_order_no_2']]);
+                    // 如果有补款单号2
+                    if (isset($orderDetails['source_order_no_2']) && ! empty($orderDetails['source_order_no_2'])) {
+                        foreach($otherOrders as $otherOrder) {
+                            OrderDetail::where('order_no', $otherOrder->no)
+                                ->where('field_name', 'source_order_no_2')
+                                ->where('order_no', '!=', $order->no)
+                                ->update(['field_value' => $orderDetails['source_order_no_2']]);
+                        }
                     }
-
                     // 将其他单的来源价格更新为此单的来源价格
                     foreach ($otherOrders as $otherOrder) {
                         OrderDetail::where('order_no', $otherOrder->no)
