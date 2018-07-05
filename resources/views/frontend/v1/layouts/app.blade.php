@@ -486,7 +486,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
 <script src="/frontend/js/helper.js"></script>
 <script src="//cdn.bootcss.com/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
-    var socket = io('http://js.qsios.com:90');
+    var socket = io('{{ config('app.socket_url') }}');
     layui.use(['element', 'form', 'laydate', 'layer'], function () {
         var element = layui.element,
                 form = layui.form,
@@ -522,6 +522,21 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
                 $('#bank').removeClass('layui-hide');
             }
         });
+        // 充值短信
+        form.on('submit(sms-recharge)', function(data){
+            $.post('{{ route('frontend.finance.sms.recharge') }}', {amount:data.field.amount}, function(result){
+                if (result.status == 0) {
+                    layer.msg(result.message);
+                } else {
+                    layer.closeAll();
+                    layer.msg(result.message);
+
+                    $('.balance').html(result.content.balance);
+                    $('#sms-balance').html(result.content.sms_balance);
+                    $('#sms-rechargeable').html(Math.round(result.content.balance / 0.1));
+                }
+            }, 'json');
+        });
     });
     layui.config({
         base: '/frontend/v1/' //静态资源所在路径
@@ -552,9 +567,7 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
     });
 
     $('body').on('click', '#withdraw-submit', function () {
-
         var loading = layer.load(2, {shade: [0.1, '#000']});
-
         $.ajax({
             url: "{{ route('frontend.finance.withdraw-order.store') }}",
             type: 'POST',
@@ -584,6 +597,15 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         });
     });
 
+    $('body').on('click', '#sms-recharge', function () {
+        layer.open({
+            type: 1,
+            title: '短信充值',
+            area: ['430px'],
+            content: $('#sms-recharge-pop')
+        });
+    });
+
     $('body').on('click', '.cancel', function () {
         layer.closeAll();
     });
@@ -594,14 +616,14 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
             layer.alert(data.message,{
                 title:data.title,
                 btnAlign:'c',
-                btn: ['余额充值']
+                btn: [data.type == 1 ? '余额充值': '短信充值']
             }, function(index){
                 layer.open({
                     type: 1,
                     title: '提示',
                     area: '400px;',
                     shade: 0.2,
-                    content: $('#charge-pop')
+                    content: data.type == 1 ? $('#charge-pop') : $('#sms-recharge-pop')
                 });
             });
         }
@@ -630,6 +652,25 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
         </div>
     </div>
 </div>
+<div id="sms-recharge-pop" style="display: none;padding: 20px;" class="layui-form">
+    <div class="" style="padding: 15px">
+        <label class="">当前账户余额：<span class="balance">{{ $userInfo->userAsset->balance + 0  }}</span>元，短信费0.1元/条，最多可充值 <span id="sms-rechargeable">{{ bcdiv($userInfo->userAsset->balance, 0.1, 0) }}</span> 条</label>
+    </div>
+    <div class="layui-form-item" style="margin-bottom: 15px">
+        <label class="layui-form-label">充值短信(条)</label>
+        <div class="layui-input-inline">
+            <input type="text" name="amount" required lay-verify="required|number" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div id="template"></div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button id="" class="qs-btn qs-bg-blue" type="button" lay-submit lay-filter="sms-recharge">提交</button>
+            <button id="" class="qs-btn qs-btn-primary qs-btn-table cancel" type="button" style="">取消</button>
+        </div>
+    </div>
+</div>
 <div class="layui-form" id="charge-pop" style="display: none;padding: 20px">
     <div class="layui-form-item">
         <label class="layui-form-label" style="width: 60px;padding:10px;text-align: left">充值方式</label>
@@ -641,18 +682,18 @@ $finance = ['frontend.finance.asset', 'frontend.finance.amount-flow', 'frontend.
     <div style="line-height: 22px;" id="bank" class="layui-hide">
         <span style="color:#e51c23">请用您账号绑定的银行卡往以下银行卡转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</span>
         <br/>转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
-        账号：{{ optional($transferInfo)->bank_card  }}<br/>
-        户名：{{ optional($transferInfo)->name }}<br/>
-        开户行：{{ optional($transferInfo)->bank_name }}<br/>
-        转账备注：{{ optional($transferInfo)->user_id }}<br/>
+        账号：{{ optional($userInfo->transferAccountInfo)->bank_card  }}<br/>
+        户名：{{ optional($userInfo->transferAccountInfo)->name }}<br/>
+        开户行：{{ optional($userInfo->transferAccountInfo)->bank_name }}<br/>
+        转账备注：{{ optional($userInfo->transferAccountInfo)->user_id }}<br/>
     </div>
     <div style="line-height: 22px;" id="alipay">
         <p style="color:#e51c23">1. 请先联系运营人员开通“自动加款”功能。</p>
         <p style="color:#e51c23">2. 请用您的支付宝往以下支付宝账号转账完成充值，转账金额即充值金额，转账时需要填写“备注”，请保证与下方“转账备注”相同，否则会出现充值失败！</p>
         转账后可能需要等待几分钟才能充值成功，请耐心等待！<br/><br/>
-        账号：{{ optional($transferInfo)->alipay  }}<br/>
-        户名：{{ optional($transferInfo)->name }}<br/>
-        转账备注：{{ optional($transferInfo)->user_id }}<br/>
+        账号：{{ optional($userInfo->transferAccountInfo)->alipay  }}<br/>
+        户名：{{ optional($userInfo->transferAccountInfo)->name }}<br/>
+        转账备注：{{ optional($userInfo->transferAccountInfo)->user_id }}<br/>
     </div>
 </div>
 @yield('pop')

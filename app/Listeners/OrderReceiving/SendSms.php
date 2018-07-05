@@ -20,7 +20,7 @@ class SendSms
      * @param  OrderReceiving  $event
      * @return void
      */
-    public function handle(OrderReceiving $event)
+    public function handle($event)
     {
 
         // 如果订单类型为代练，则找出订单客户订单号找出商户设置的模版发送短信

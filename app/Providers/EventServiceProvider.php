@@ -102,6 +102,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\ChangeTaobaoTradeStatus',
             'App\Listeners\WriteOrderBasicData',
             'App\Listeners\ChangeStatus',
+            'App\Listeners\OrderReceiving\SendSms',
         ],
         // 不同意撤销
         'App\Events\OrderRefuseRevoke' => [

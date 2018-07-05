@@ -191,13 +191,16 @@
                 </div>
                 <div class="info-balance ">
                     <div class="available-balance">可用余额：
-                        {{ $user->userAsset->balance + 0 }}
+                        <span class="balance">{{ $user->userAsset->balance + 0 }}</span>
                     </div>
                     <div class="blocked-balances">冻结金额：
                         {{ $user->userAsset->frozen + 0 }}
                     </div>
                     <div class="blocked-balances">代练金额：
                         {{ \App\Models\Order::ingOrderAmount() + 0 }}
+                    </div>
+                    <div class="blocked-balances">剩余短信：
+                        <span id="sms-balance">{{ optional($user->smsBalance)->amount + 0 }}</span>
                     </div>
                     <button class="qs-btn layui-btn-normal layui-btn-custom-mini charge" lay-filter="charge" lay-submit="">余额充值</button>
                     <button id="withdraw" class="qs-btn qs-btn-normal qs-btn-custom-mini" type="button" >余额提现</button>
