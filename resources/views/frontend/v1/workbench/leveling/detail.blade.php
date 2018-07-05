@@ -1655,10 +1655,11 @@
                 loadGameLevelingTemplate();
                 loadBusinessmanContactTemplate();
                 setDefault();
-                $('.serve').html('');
+//                $('.serve').html('');
             }
             // 加载下拉框的下级选项
             function loadSelectChild(choseId) {
+                $.ajaxSettings.async = false;
                 $.post('{{ route('frontend.workbench.get-select-child') }}', {parent_id:choseId}, function (result) {
                     $('.serve').html(result);
                     $(result).each(function (index, value) {
@@ -1790,6 +1791,7 @@
             }
             // 加载区代练类型
             function loadRegionType() {
+                $.ajaxSettings.async = false;
                 $.ajax({
                     type: 'POST',
                     url: '{{ route("frontend.workbench.leveling.get-region-type") }}',
