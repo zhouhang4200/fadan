@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="layui-inline" >
-                <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查找</span></button>
+                <button class="qs-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1"><i class="iconfont icon-search"></i><span style="padding-left: 3px">查询</span></button>
             </div>
         </form>
 

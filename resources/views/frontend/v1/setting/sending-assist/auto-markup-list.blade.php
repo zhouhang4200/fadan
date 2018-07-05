@@ -33,7 +33,7 @@
                 <td>
                     <div style="text-align: center">
                     <a href="{{ route('frontend.setting.sending-assist.auto-markup.edit', ['id' => $orderAutoMarkup->id]) }}" class="qs-btn layui-btn-normal layui-btn-mini">编辑</a>
-                    <a class="qs-btn qs-btn-primary qs-btn-mini" lay-submit="" lay-del-id="{{ $orderAutoMarkup->id }}" lay-filter="delete">删除</a>
+                    <a class="qs-btn qs-btn-normal qs-btn-mini" lay-submit="" lay-del-id="{{ $orderAutoMarkup->id }}" lay-filter="delete">删除</a>
                     </div>
                 </td>
             </tr>
