@@ -794,7 +794,7 @@ if (!function_exists('sendSms')){
                     $balance->save();
                 }
 
-                myLog('sms-send', [$sendResult, $phone, $content]);
+                myLog('sms-send', [$sendUserId, $sendResult, $phone, $content]);
 
                 if ((bool)strpos($sendResult, "mterrcode=000")) {
                     // 发送成功写发送记录
