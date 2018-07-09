@@ -789,7 +789,7 @@ if (!function_exists('sendSms')){
             if ((isset($balance->amount) && $balance->amount > 0) || $sendUserId == 0) {
                 $sendResult = (new SmSApi())->send(2, $phone, $content);
 
-                if ($sendUserId == 0) {
+                if ($sendUserId != 0) {
                     $balance->amount = $balance->amount - 1;
                     $balance->save();
                 }
