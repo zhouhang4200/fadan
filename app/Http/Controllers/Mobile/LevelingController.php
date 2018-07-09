@@ -385,53 +385,44 @@ class LevelingController extends Controller
                         'subject'      => '代练订单支付',
                     ];
 
-                    $basicConfig = [
-                        'app_id'         => config('alipay.app_id'),
-                        'notify_url'     => route('mobile.leveling.alipay.notify'),
-                        'return_url'     => route('mobile.leveling.alipay.return'),
-                        'ali_public_key' => config('alipay.alipay_public_key'),
-                        'private_key'    => config('alipay.merchant_private_key'),
-                        'log'            => [
-                            'file'       => storage_path('logs/alipay.log'),
-                            'level'      => 'debug',
-                        ],
-                        'mode'           => 'dev',
-                    ];
+                    $basicConfig = config('alipay.base_config');
 
-                    $alipay = Pay::alipay($basicConfig)->wap($orderConfig);
-                    // dd($alipay);
-                    return $alipay;
+                    return Pay::alipay($basicConfig)->wap($orderConfig);
                 } elseif ($data['pay_type'] == 2) {
                     $orderConfig = [
-                        'out_trade_no' => $data['no'],
-                        'total_amount' => $data['original_price'],
-                        'subject'      => '代练订单支付',
+                        'out_trade_no'     => $data['no'],
+                        'total_fee'        => $data['original_price']*100, // 单位分
+                        'body'             => '代练订单支付',
+                        'spbill_create_ip' => static::getIp(),
                     ];
 
-                    $basicConfig = [
-                        'app_id'         => config('wechat.app_id'),
-                        'notify_url'     => route('mobile.leveling.notify'),
-                        'return_url'     => route('mobile.leveling.return'),
-                        'ali_public_key' => config('wechat.wechat_public_key'),
-                        'private_key'    => config('wechat.merchant_private_key'),
-                        'log'            => [
-                            'file'       => storage_path('logs/wechat.log'),
-                            'level'      => 'debug',
-                        ],
-                        'mode'           => 'dev',
-                    ];
-
+                    $basicConfig = config('wechat.base_config');
+                    // dd($basicConfig);
                     $wechat = Pay::wechat($basicConfig)->wap($orderConfig);
-                    // dd($wechat);
+
                     return $wechat;
                 }
             } else {
-                return back()->with(['miss' => '请填写完成的代练信息']);
+                return back()->with(['miss' => '请完善代练信息']);
             }
         } catch (Exception $e) {
             myLog('pay-error', ['message' => $e->getMessage(), 'no' => $data['no'] ?? '', 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            return back()->with(['miss' => '请填写完成的代练信息']);
+            return back()->with(['miss' => '网络异常，请重试']);
         }
+    }
+
+    public static function getIp()
+    {
+        if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
+            $ip = getenv('HTTP_CLIENT_IP');
+        } elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
+            $ip = getenv('HTTP_X_FORWARDED_FOR');
+        } elseif(getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
+            $ip = getenv('REMOTE_ADDR');
+        } elseif(isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return preg_match ( '/[\d\.]{7,15}/', $ip, $matches ) ? $matches [0] : '';
     }
 
     /**
@@ -442,18 +433,7 @@ class LevelingController extends Controller
     public function alipayReturn(Request $request)
     {
         try {
-            $basicConfig = [
-                'app_id'         => config('alipay.app_id'),
-                'notify_url'     => route('mobile.leveling.alipay.notify'),
-                'return_url'     => route('mobile.leveling.alipay.return'),
-                'ali_public_key' => config('alipay.alipay_public_key'),
-                'private_key'    => config('alipay.merchant_private_key'),
-                'log'            => [
-                    'file'       => storage_path('logs/alipay.log'),
-                    'level'      => 'debug',
-                ],
-                'mode'           => 'dev',
-            ];
+            $basicConfig = config('alipay.base_config');
 
             $data = Pay::alipay($basicConfig)->verify();
 
@@ -478,18 +458,8 @@ class LevelingController extends Controller
     {
         DB::beginTransaction();
         try {
-            $basicConfig = [
-                'app_id'         => config('alipay.app_id'),
-                'notify_url'     => route('mobile.leveling.alipay.notify'),
-                'return_url'     => route('mobile.leveling.alipay.return'),
-                'ali_public_key' => config('alipay.alipay_public_key'),
-                'private_key'    => config('alipay.merchant_private_key'),
-                'log'            => [
-                    'file'       => storage_path('logs/alipay.log'),
-                    'level'      => 'debug',
-                ],
-                'mode'           => 'dev',
-            ];
+            $basicConfig = config('alipay.base_config');
+
             $alipay = Pay::alipay($basicConfig);
 
             $data = $alipay->verify(); // 是的，验签就这么简单！
@@ -599,34 +569,10 @@ class LevelingController extends Controller
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function wecahtReturn(Request $request)
+    public function wechatReturn(Request $request)
     {
-        try {
-            $basicConfig = [
-                'app_id'         => config('wechat.app_id'),
-                'notify_url'     => route('mobile.leveling.wechat.notify'),
-                'return_url'     => route('mobile.leveling.wechat.return'),
-                'ali_public_key' => config('wechat.wechat_public_key'),
-                'private_key'    => config('wechat.merchant_private_key'),
-                'log'            => [
-                    'file'       => storage_path('logs/wechat.log'),
-                    'level'      => 'debug',
-                ],
-                'mode'           => 'dev',
-            ];
-
-            $data = Pay::wechat($basicConfig)->verify();
-
-            $mobileOrder = MobileOrder::where('no', $data->out_trade_no)->first();
-            if ($data) {
-                return view('mobile.leveling.success', compact('mobileOrder'));
-            } else {
-                return view('mobile.leveling.demand');
-            }
-        } catch (Exception $e) {
-            myLog('wechat-return-error', ['message' => $e->getMessage()]);
-            return view('mobile.leveling.demand');
-        }
+        myLog('aaa', ['sss']);
+        return view('mobile.leveling.success');
     }
 
     /**
@@ -638,24 +584,13 @@ class LevelingController extends Controller
     {
         DB::beginTransaction();
         try {
-            $basicConfig = [
-                'app_id'         => config('wechat.app_id'),
-                'notify_url'     => route('mobile.leveling.wechat.notify'),
-                'return_url'     => route('mobile.leveling.wechat.return'),
-                'ali_public_key' => config('wechat.wechat_public_key'),
-                'private_key'    => config('wechat.merchant_private_key'),
-                'log'            => [
-                    'file'       => storage_path('logs/wechat.log'),
-                    'level'      => 'debug',
-                ],
-                'mode'           => 'dev',
-            ];
+            $basicConfig = config('wechat.base_config');
             $wechat = Pay::wechat($basicConfig);
 
             $data = $wechat->verify(); // 是的，验签就这么简单！
-
+            myLog('wechat-notify-data', ['data' => $data]);
             // 成功更新订单状态
-            if (isset($data) && ($data->trade_status == 'TRADE_SUCCESS' || $data->trade_status == 'TRADE_FINISHED')) {
+            if (isset($data) && $data->return_code == 'SUCCESS') {
                 $mobileOrder = MobileOrder::where('no', $data->out_trade_no)->first();
                 // 验证订单号
                 if (! isset($mobileOrder) || empty($mobileOrder)) {
@@ -663,13 +598,8 @@ class LevelingController extends Controller
                 }
 
                 // 验证appid
-                if ($data->app_id != $basicConfig['app_id']) {
+                if ($data->appid != $basicConfig['app_id']) {
                     throw new Exception('APPID错误');
-                }
-
-                // 验证价格
-                if ($data->total_amount != $mobileOrder->original_price) {
-                    throw new Exception('支付价格不一致');
                 }
 
                 // 创建 detail
@@ -728,6 +658,7 @@ class LevelingController extends Controller
             return Response::create('fail');
         }
         DB::commit();
-        return Response::create('success');
+        redirect(route('mobile.leveling.wechat.return'));
+        return $wechat->success();
     }
 }

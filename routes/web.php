@@ -516,10 +516,11 @@ Route::namespace('Mobile')->prefix('mobile')->group(function () {
         Route::post('regions', 'LevelingController@regions')->name('mobile.leveling.regions'); // 区
         Route::post('servers', 'LevelingController@servers')->name('mobile.leveling.servers'); // 服
         Route::post('pay', 'LevelingController@pay')->name('mobile.leveling.pay'); // 支付
-        Route::any('alipay/notify', 'LevelingController@alipayNotify')->name('mobile.leveling.alipay.notify'); // 支付异步回调
-        Route::get('alipay/return', 'LevelingController@alipayReturn')->name('mobile.leveling.alipay.return'); // 支付同步回调
-        Route::any('wechat/notify', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify'); // 支付异步回调
-        Route::get('wechat/return', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return'); // 支付同步回调
+
+        Route::any('alipay/notify', 'LevelingController@alipayNotify')->name('mobile.leveling.alipay.notify');
+        Route::get('alipay/return', 'LevelingController@alipayReturn')->name('mobile.leveling.alipay.return');
+        Route::any('wechat/notify', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify');
+        Route::get('wechat/return', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return');
         Route::get('show/{id}', 'LevelingController@show')->name('mobile.leveling.show'); // 详情页
     }); 
 });

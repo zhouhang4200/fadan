@@ -174,7 +174,7 @@
 
         var session = "{{ session('miss') }}";
         if (session) {
-            $.toast("请填写完整的代练信息", 'text');
+            $.toast(session, 'text');
         }
         $('input[name="role"]').click(function(){
             if ( $('select[name="region"] option:selected').val() == '' || $('select[name="server"] option:selected').val() == '' ) {
