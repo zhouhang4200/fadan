@@ -1810,6 +1810,9 @@
                         });
                         $('.leveling_type').html(type);
                         $('.region').html(region);
+                        $('select[name=region]').val('{{ $detail['region'] }}');
+                        var choseId = $('select[name=region]').find("option:selected").attr("data-id");
+                        loadSelectChild(choseId);
                         layui.form.render();
                     }
                 });
