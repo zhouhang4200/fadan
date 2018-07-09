@@ -786,12 +786,15 @@ if (!function_exists('sendSms')){
         try {
             $balance = \App\Models\SmsBalance::where('user_id', $sendUserId)->lockForUpdate()->first();
 
-            if ($balance->amount > 0 || $sendUserId == 0) {
+            if ((isset($balance->amount) && $balance->amount > 0) || $sendUserId == 0) {
                 $sendResult = (new SmSApi())->send(2, $phone, $content);
-                $balance->amount = $balance->amount - 1;
-                $balance->save();
 
-                myLog('sms-send', [$sendResult, $phone, $content]);
+                if ($sendUserId != 0) {
+                    $balance->amount = $balance->amount - 1;
+                    $balance->save();
+                }
+
+                myLog('sms-send', [$sendUserId, $sendResult, $phone, $content]);
 
                 if ((bool)strpos($sendResult, "mterrcode=000")) {
                     // 发送成功写发送记录

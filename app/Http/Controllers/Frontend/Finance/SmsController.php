@@ -25,7 +25,7 @@ class SmsController extends Controller
         $orderNO = generateOrderNo();
 
         try {
-            Asset::handle(new Consume(bcmul($request->amount, 0.1), 4, $orderNO, '购买短信', auth()->user()->id));
+            Asset::handle(new Consume(bcmul($request->amount, 0.03), 4, $orderNO, '购买短信', auth()->user()->id));
 
             if (!$smsBalance) {
                 $beforeAmount = 0;
