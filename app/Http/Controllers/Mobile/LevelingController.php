@@ -571,8 +571,22 @@ class LevelingController extends Controller
      */
     public function wechatReturn(Request $request)
     {
-        myLog('aaa', ['sss']);
-        return view('mobile.leveling.success');
+        try {
+            $basicConfig = config('wechat.base_config');
+
+            $data = Pay::wechat($basicConfig)->verify();
+
+            $mobileOrder = MobileOrder::where('no', $data->out_trade_no)->first();
+
+            if ($data) {
+                return view('mobile.leveling.success', compact('mobileOrder'));
+            } else {
+                return view('mobile.leveling.demand');
+            }
+        } catch (Exception $e) {
+            myLog('alipay-return-error', ['message' => $e->getMessage()]);
+            return view('mobile.leveling.demand');
+        }
     }
 
     /**
@@ -658,7 +672,6 @@ class LevelingController extends Controller
             return Response::create('fail');
         }
         DB::commit();
-        redirect(route('mobile.leveling.wechat.return'));
         return $wechat->success();
     }
 }
