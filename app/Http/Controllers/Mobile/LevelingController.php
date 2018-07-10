@@ -397,6 +397,8 @@ class LevelingController extends Controller
                     ];
 
                     $basicConfig = config('wechat.base_config');
+                    $basicConfig['notify_url'] = config('wechat.base_config.notify_url').'/'.$data['no'] ?? '';
+                    $basicConfig['return_url'] = config('wechat.return_url').'/'.$data['no'] ?? '';
                     // dd($basicConfig);
                     $wechat = Pay::wechat($basicConfig)->wap($orderConfig);
 
@@ -572,11 +574,12 @@ class LevelingController extends Controller
     public function wechatReturn(Request $request)
     {
         try {
-            $basicConfig = config('wechat.base_config');
+            $basicConfig = config('wechat.find_config');
+            $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
 
-            $data = Pay::wechat($basicConfig)->verify();
+            myLog('alipay-return-data', ['data' => $data]);
 
-            $mobileOrder = MobileOrder::where('no', $data->out_trade_no)->first();
+            $mobileOrder = MobileOrder::where('no', $request->no)->first();
 
             if ($data) {
                 return view('mobile.leveling.success', compact('mobileOrder'));
@@ -599,6 +602,10 @@ class LevelingController extends Controller
         DB::beginTransaction();
         try {
             $basicConfig = config('wechat.base_config');
+            $basicConfig['notify_url'] = config('wechat.base_config.notify_url').'/'.$request->no ?? '';
+            $basicConfig['return_url'] = config('wechat.return_url').'/'.$request->no ?? '';
+            myLog('wechat-notify-config', ['data' => $basicConfig]);
+            // dd($basicConfig);
             $wechat = Pay::wechat($basicConfig);
 
             $data = $wechat->verify(); // 是的，验签就这么简单！

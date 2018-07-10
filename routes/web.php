@@ -519,8 +519,9 @@ Route::namespace('Mobile')->prefix('mobile')->group(function () {
 
         Route::any('alipay/notify', 'LevelingController@alipayNotify')->name('mobile.leveling.alipay.notify');
         Route::any('alipay/return', 'LevelingController@alipayReturn')->name('mobile.leveling.alipay.return');
-        Route::any('wechat/notify', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify');
-        Route::any('wechat/return', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return');
+        
+        Route::any('wechat/notify/{no}', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify');
+        Route::any('wechat/return/{no}', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return');
         Route::get('show/{id}', 'LevelingController@show')->name('mobile.leveling.show'); // 详情页
     }); 
 });
