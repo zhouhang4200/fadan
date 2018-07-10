@@ -574,14 +574,14 @@ class LevelingController extends Controller
     public function wechatReturn(Request $request)
     {
         try {
-            $basicConfig = config('wechat.find_config');
-            $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
+            // $basicConfig = config('wechat.find_config');
+            // $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
 
-            myLog('alipay-return-data', ['data' => $data]);
+            // myLog('alipay-return-data', ['data' => $data]);
 
             $mobileOrder = MobileOrder::where('no', $request->no)->first();
 
-            if ($data) {
+            if (isset($mobileOrder) && $mobileOrder->order_no != '') {
                 return view('mobile.leveling.success', compact('mobileOrder'));
             } else {
                 return view('mobile.leveling.demand');
