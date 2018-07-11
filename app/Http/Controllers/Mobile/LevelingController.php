@@ -573,28 +573,28 @@ class LevelingController extends Controller
      */
     public function wechatReturn(Request $request)
     {
-        $mobileOrder = MobileOrder::where('no', $request->no)->first();
-        return view('mobile.leveling.success', compact('mobileOrder'));
-        // try {
-        //     sleep(2);
-            
-        //     $basicConfig = config('wechat.find_config');
+        // $mobileOrder = MobileOrder::where('no', $request->no)->first();
+        // return view('mobile.leveling.success', compact('mobileOrder'));
+        try {
+            sleep(5);
 
-        //     $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
+            $basicConfig = config('wechat.find_config');
 
-        //     $mobileOrder = MobileOrder::where('no', $request->no)->first();
+            $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
 
-        //     myLog('wechat-return-data', ['data' => $data]);
+            $mobileOrder = MobileOrder::where('no', $request->no)->first();
 
-        //     if (isset($mobileOrder) && ! empty($mobileOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
-        //         return view('mobile.leveling.success', compact('mobileOrder'));
-        //     } else {
-        //         return view('mobile.leveling.demand');
-        //     }
-        // } catch (Exception $e) {
-        //     myLog('wechat-return-error', ['message' => $e->getMessage()]);
-        //     return view('mobile.leveling.demand');
-        // }
+            if (isset($mobileOrder) && ! empty($mobileOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
+                myLog('wechat-return-success', ['data' => $data]);
+                return view('mobile.leveling.success', compact('mobileOrder'));
+            } else {
+                myLog('wechat-return-fail', ['data' => $data]);
+                return view('mobile.leveling.demand');
+            }
+        } catch (Exception $e) {
+            myLog('wechat-return-error', ['message' => $e->getMessage()]);
+            return view('mobile.leveling.demand');
+        }
     }
 
     /**
