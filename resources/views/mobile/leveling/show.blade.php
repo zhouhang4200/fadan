@@ -1,31 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>订单详情</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
-    <link rel="stylesheet" href="/mobile/lib/css/weui.min.css">
-    <link rel="stylesheet" href="/mobile/lib/css/jquery-weui.css">
-    <link rel="stylesheet" href="/mobile/lib/css/font.css">
-    <link rel="stylesheet" href="/mobile/lib/css/reset.css">
-    <link rel="stylesheet" href="/mobile/lib/css/common.css">
+@extends('mobile.layouts.app')
+
+@section('title')
+    订单详情
+@endsection
+@section('css')
     <link rel="stylesheet" href="/mobile/lib/css/function.css">
     <link rel="stylesheet" href="/mobile/css/order-info.css">
-</head>
+@endsection
 
-<body ontouchstart>
-    <!-- header -->
+@section('header')
     <div class="header">
         <div class="weui-flex">
             <div class="weui-flex__item">订单详情</div>
             <a href="{{ route('mobile.leveling.demand') }}" class="back iconfont icon-back"></a>
         </div>
     </div>
-    <!-- header -->
-    <!-- main -->
-    <div class="main">
+@endsection
+@section('content')
         <div class="order-info">
             <div class="padding-20-30">
                 <form>
@@ -176,10 +167,8 @@
             </div>
         </div>
     </form>
-    </div>
-    <!-- main -->
-    <script src="/mobile/lib/js/jquery-2.1.4.js"></script>
-    <script src="/mobile/lib/js/fastclick.js"></script>
+@endsection
+@section('js')
     <script>
         $(function () {
             FastClick.attach(document.body);
@@ -200,7 +189,4 @@
 
     </script>
     <script src="/mobile/lib/js/layer.js"></script>
-    <script src="/mobile/lib/js/jquery-weui.js"></script>
-</body>
-
-</html>
+@endsection

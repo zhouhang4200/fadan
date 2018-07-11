@@ -1,31 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>我要代练</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
-    <link rel="stylesheet" href="/mobile/lib/css/weui.min.css">
-    <link rel="stylesheet" href="/mobile/lib/css/jquery-weui.css">
-    <link rel="stylesheet" href="/mobile/lib/css/font.css">
-    <link rel="stylesheet" href="/mobile/lib/css/reset.css">
-    <link rel="stylesheet" href="/mobile/lib/css/common.css">
+@extends('mobile.layouts.app')
+
+@section('title')
+    我要代练
+@endsection
+@section('css')
     <link rel="stylesheet" href="/mobile/lib/css/mobileSelect.css">
     <link rel="stylesheet" href="/mobile/css/withdrawls.css">
 </head>
-
-<body ontouchstart>
-    <!-- header -->
+@endsection
+@section('header')
     <div class="header">
         <div class="weui-flex">
             <div class="weui-flex__item">填写代练订单</div>
             <a href="{{ route('mobile.leveling.demand') }}" class="back iconfont icon-back"></a>
         </div>
     </div>
-    <!-- header -->
-    <!-- main -->
-    <div class="main">
+@endsection
+@section('content')
         <form action="{{ route('mobile.leveling.pay') }}" method="POST">
             {{ csrf_field() }}
             <input type="hidden" name="game_name" value="{{ $gameName }}"></input>
@@ -149,18 +140,14 @@
                 <button type="submit" disabled class="weui-btn weui-btn_default" id="showTooltips">我要代练</a>
             </div>
         </form>
-    </div>
-    <!-- main -->
-    <script src="/mobile/lib/js/jquery-2.1.4.js"></script>
-    <script src="/mobile/lib/js/fastclick.js"></script>
+@endsection
+@section('js')
     <script src="/mobile/lib/js/mobileSelect.js"></script>
-    <script src="/mobile/lib/js/jquery-weui.js"></script>
     <script>
         $(function () {
             FastClick.attach(document.body);
         });
     </script>
-
 
     <script>
         $.toast.prototype.defaults.duration = 800;
@@ -205,10 +192,8 @@
         
         $.post("{{ route('mobile.leveling.regions') }}",{game_name:game_name, type:type},function(res) {
             if(res.status == 1) {
-             
                mobileSelect1.updateWheel(0,res.message) //更改第1个轮子
             }
-
         })
 
         var mobileSelect2 = new MobileSelect({
@@ -245,6 +230,4 @@
             }
         })
     </script>
-</body>
-
-</html>
+@endsection

@@ -573,23 +573,28 @@ class LevelingController extends Controller
      */
     public function wechatReturn(Request $request)
     {
-        try {
-            // $basicConfig = config('wechat.find_config');
-            // $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
+        $mobileOrder = MobileOrder::where('no', $request->no)->first();
+        return view('mobile.leveling.success', compact('mobileOrder'));
+        // try {
+        //     sleep(2);
+            
+        //     $basicConfig = config('wechat.find_config');
 
-            // myLog('alipay-return-data', ['data' => $data]);
+        //     $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
 
-            $mobileOrder = MobileOrder::where('no', $request->no)->first();
+        //     $mobileOrder = MobileOrder::where('no', $request->no)->first();
 
-            if (isset($mobileOrder) && $mobileOrder->order_no != '') {
-                return view('mobile.leveling.success', compact('mobileOrder'));
-            } else {
-                return view('mobile.leveling.demand');
-            }
-        } catch (Exception $e) {
-            myLog('alipay-return-error', ['message' => $e->getMessage()]);
-            return view('mobile.leveling.demand');
-        }
+        //     myLog('wechat-return-data', ['data' => $data]);
+
+        //     if (isset($mobileOrder) && ! empty($mobileOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
+        //         return view('mobile.leveling.success', compact('mobileOrder'));
+        //     } else {
+        //         return view('mobile.leveling.demand');
+        //     }
+        // } catch (Exception $e) {
+        //     myLog('wechat-return-error', ['message' => $e->getMessage()]);
+        //     return view('mobile.leveling.demand');
+        // }
     }
 
     /**
@@ -603,12 +608,12 @@ class LevelingController extends Controller
         try {
             $basicConfig = config('wechat.base_config');
             $basicConfig['notify_url'] = config('wechat.base_config.notify_url').'/'.$request->no ?? '';
-            $basicConfig['return_url'] = config('wechat.return_url').'/'.$request->no ?? '';
-            myLog('wechat-notify-config', ['data' => $basicConfig]);
-            // dd($basicConfig);
+            // $basicConfig['return_url'] = config('wechat.return_url').'/'.$request->no ?? '';
+
             $wechat = Pay::wechat($basicConfig);
 
-            $data = $wechat->verify(); // 是的，验签就这么简单！
+            $data = $wechat->verify(); 
+
             myLog('wechat-notify-data', ['data' => $data]);
             // 成功更新订单状态
             if (isset($data) && $data->return_code == 'SUCCESS') {
