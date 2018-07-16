@@ -1189,11 +1189,11 @@
             <div class="layui-inline">
                 <label class="layui-form-label">增加时间</label>
                 <div class="layui-input-inline" style="width: 100px;">
-                    <input type="text" name="day"   autocomplete="off" class="layui-input" lay-verify="required|number">
+                    <input type="text" name="day"   autocomplete="off" class="layui-input" lay-verify="required|number" value="0">
                 </div>
                 <div class="layui-form-mid">天</div>
                 <div class="layui-input-inline" style="width: 100px;">
-                    <input type="text" name="hour"  autocomplete="off" class="layui-input" lay-verify="required|number">
+                    <input type="text" name="hour"  autocomplete="off" class="layui-input" lay-verify="required|number" value="0">
                 </div>
                 <div class="layui-form-mid">小时</div>
             </div>

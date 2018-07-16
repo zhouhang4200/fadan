@@ -131,7 +131,7 @@ return [
         'cancelComplete'    => CancelComplete::class, // 取消验收 
         'abnormal'          => Abnormal::class, // 异常 
         'cancelAbnormal'    => CancelAbnormal::class, // 取消异常
-        'complete'          => Complete::class, // 完成 
+        'complete'          => Complete::class, // 完成
     ],
 
     // 91平台订单状态
