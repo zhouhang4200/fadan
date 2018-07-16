@@ -61,7 +61,7 @@ class KamenOrderApi
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . $sign;
 
@@ -72,7 +72,7 @@ class KamenOrderApi
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . $sign;
 
@@ -97,7 +97,7 @@ class KamenOrderApi
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
 
@@ -109,7 +109,7 @@ class KamenOrderApi
             $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
 
@@ -135,7 +135,7 @@ class KamenOrderApi
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('处理中'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode(generateUuid())) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url = $this->apiUrl[rand(0, 11)] .  'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
 
@@ -147,7 +147,7 @@ class KamenOrderApi
             $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('处理中'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode(generateUuid())) . '&ChargeUse=';
 
-            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . '123456'));
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
             $url = $this->apiUrl[rand(0, 11)] .  'API/Order/ModifyOrderStatus.aspx?' . $param . $sign;
 
