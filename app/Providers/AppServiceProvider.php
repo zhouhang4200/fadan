@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\UserTransferAccountInfo;
 use Session;
 use Illuminate\Support\Facades\Blade;
-use App\Observers\ModelObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
