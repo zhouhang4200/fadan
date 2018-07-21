@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="/vendor/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/globale.css">
     <link rel="stylesheet" type="text/css" href="/backend/css/layui-rewrit.css">
-    <link rel="stylesheet" href="/frontend/v1/lib/css/new.css">
+    {{--<link rel="stylesheet" href="/frontend/v1/lib/css/new.css">--}}
     <link id="layuicss-layer" rel="stylesheet" href="/frontend/v1/lib/js/layui/css/modules/layer/default/layer.css" media="all">
     @yield('css')
 
