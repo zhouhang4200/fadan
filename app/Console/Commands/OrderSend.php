@@ -48,7 +48,7 @@ class OrderSend extends Command
             $orderData = $this->redis->lpop('order:send');
 
             if($orderData) {
-                myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s')]);
+                myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s') , $orderData]);
 
                 try {
                    $orderDatas = json_decode($orderData, true);

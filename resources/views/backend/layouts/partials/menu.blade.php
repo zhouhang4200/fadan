@@ -16,15 +16,15 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     </li>
 
                         <li @if(in_array($currentRouteName, [
-                        'order.platform.index',
-                        'order.platform.content',
-                        'order.platform.record',
-                        'order.foreign.index',
-                        'order.after-service.index',
-                        'order.leveling.index',
-                        'order.leveling.abnormal',
-                        'frontend.user.oriented.index',
-                        'order.notice.index',
+                            'order.platform.index',
+                            'order.platform.content',
+                            'order.platform.record',
+                            'order.foreign.index',
+                            'order.after-service.index',
+                            'order.leveling.index',
+                            'order.leveling.abnormal',
+                            'frontend.user.oriented.index',
+                            'order.notice.index',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
