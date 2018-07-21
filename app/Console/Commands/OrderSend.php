@@ -44,6 +44,8 @@ class OrderSend extends Command
     {
         $this->redis = RedisConnect::order();
 
+        $client = new Client();
+
         while (1) {
             $orderData = $this->redis->lpop('order:send');
 
@@ -54,28 +56,42 @@ class OrderSend extends Command
                    $orderDatas = json_decode($orderData, true);
                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
 
+                    myLog('send-order-setup', ['2' => $order->no ?? '']);
                     if ($order) {
                         // 检测平台是否开启，
                         $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
                             ->where('game_id', $order->game_id)
                             ->first();
 
+                        myLog('send-order-setup', ['3' => $order->no]);
+
                         $managerSetChannel = OrderSendChannel::where('user_id', 0)
                             ->where('game_id', $order->game_id)
                             ->first();
+
+                        myLog('send-order-setup', ['4' => $order->no]);
+
 
                         $blackThirds = [];
                         $managerBlackThirds = [];
                         if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
                             $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
+                            myLog('send-order-setup', ['5' => $order->no]);
+
                         }
 
                         if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
                             $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
+                            myLog('send-order-setup', ['6' => $order->no]);
+
                         }
-                        $client = new Client();
+
                         foreach (config('partner.platform') as $third => $platform) {
+                            myLog('send-order-setup', ['7' => $order->no]);
+
                             if (!in_array($third, $blackThirds) && !in_array($third, $managerBlackThirds)) {
+
+                                myLog('send-order-setup', ['8' => $order->no]);
 
                                 try {
                                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
@@ -85,6 +101,8 @@ class OrderSend extends Command
                                         ]
                                     ]);
                                     $result = $response->getBody()->getContents();
+                                    myLog('send-order-setup', ['9' => $order->no]);
+
                                     if (isset($result) && ! empty($result)) {
                                         $arrResult = json_decode($result, true);
 
@@ -156,6 +174,8 @@ class OrderSend extends Command
                         }
                         // 写基础数据
                         event(new OrderBasicData($order));
+                    } else {
+                        myLog('send-order-setup', ['10' => $orderDatas['order_no']]);
                     }
                 } catch (\Exception $e) {
                     myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $e->getMessage(), '行' => $e->getLine()]);

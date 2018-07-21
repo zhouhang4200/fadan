@@ -310,7 +310,6 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
             ];
             $redis = RedisConnect::order();
             $result = $redis->lpush('order:send', json_encode($sendOrder));
-            myLog('in-list', [$this->order->no, $result]);
         }
         return $this->order;
     }
