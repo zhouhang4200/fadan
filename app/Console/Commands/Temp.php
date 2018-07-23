@@ -169,13 +169,15 @@ class Temp extends Command
         return (array) $collection;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
+
     public function handle()
     {
+
+        $order  = \App\Models\Order::where('no', $this->argument('no'))->first();
+        if ($order) {
+            (new Complete())->run($order->no, $order->creator_primary_user_id);
+        }
+die;
        dd(DD373Controller::delete([
            'dd373_order_no' => 'XQ20180710112105-80435'
        ]));
