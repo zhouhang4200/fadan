@@ -167,7 +167,7 @@ class OrderSend extends Command
                         event(new OrderBasicData($order));
                     } else {
                         // 没有查到订单则再次丢入队列
-                        $client->lpush('order:send', json_encode($orderData));
+                        $this->redis->lpush('order:send', json_encode($orderData));
                         myLog('send-order-setup', ['10' => $orderDatas['order_no']]);
                     }
                 } catch (\Exception $e) {
