@@ -63,27 +63,19 @@ class OrderSend extends Command
                             ->where('game_id', $order->game_id)
                             ->first();
 
-                        myLog('send-order-setup', ['3' => $order->no]);
 
                         $managerSetChannel = OrderSendChannel::where('user_id', 0)
                             ->where('game_id', $order->game_id)
                             ->first();
 
-                        myLog('send-order-setup', ['4' => $order->no]);
-
-
                         $blackThirds = [];
                         $managerBlackThirds = [];
                         if (isset($orderSendChannel) && isset($orderSendChannel->third)) {
                             $blackThirds = explode('-', $orderSendChannel->third); // 黑名单
-                            myLog('send-order-setup', ['5' => $order->no]);
-
                         }
 
                         if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
                             $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
-                            myLog('send-order-setup', ['6' => $order->no]);
-
                         }
 
                         foreach (config('partner.platform') as $third => $platform) {
@@ -91,7 +83,7 @@ class OrderSend extends Command
 
                             if (!in_array($third, $blackThirds) && !in_array($third, $managerBlackThirds)) {
 
-                                myLog('send-order-setup', ['8' => $order->no]);
+                                    myLog('send-order-setup', ['8' => $order->no]);
 
                                 try {
                                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
@@ -101,7 +93,6 @@ class OrderSend extends Command
                                         ]
                                     ]);
                                     $result = $response->getBody()->getContents();
-                                    myLog('send-order-setup', ['9' => $order->no]);
 
                                     if (isset($result) && ! empty($result)) {
                                         $arrResult = json_decode($result, true);
@@ -175,6 +166,8 @@ class OrderSend extends Command
                         // 写基础数据
                         event(new OrderBasicData($order));
                     } else {
+                        // 没有查到订单则再次丢入队列
+                        $client->lpush('order:send', json_encode($orderData));
                         myLog('send-order-setup', ['10' => $orderDatas['order_no']]);
                     }
                 } catch (\Exception $e) {
