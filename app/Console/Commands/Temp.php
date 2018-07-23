@@ -175,7 +175,8 @@ class Temp extends Command
 
         $order  = \App\Models\Order::where('no', $this->argument('no'))->first();
         if ($order) {
-            (new Complete())->run($order->no, $order->creator_primary_user_id);
+            (new ForceRevoke())->run($order->no, $order->gainer_primary_user_id);
+//            (new Complete())->run($order->no, $order->creator_primary_user_id);
         }
 die;
        dd(DD373Controller::delete([
