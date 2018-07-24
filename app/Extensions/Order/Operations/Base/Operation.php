@@ -49,7 +49,7 @@ abstract class Operation
         $this->orderHistory->admin_user_id = $this->adminUserId;
         $this->orderHistory->type          = $this->type;
         $this->orderHistory->name          = config('order.operation_type')[$this->type];
-        $this->orderHistory->before        = serialize($this->order->toArray());
+        $this->orderHistory->before        = '';
         $this->orderHistory->created_at    = date('Y-m-d H:i:s');
     }
 

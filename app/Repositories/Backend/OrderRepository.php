@@ -4,6 +4,7 @@ namespace App\Repositories\Backend;
 use DB, Auth, Excel;
 use Carbon\Carbon;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -137,5 +138,18 @@ class OrderRepository
             'Content-Disposition' => 'attachment; filename="平台订单导出.csv"',
         ]);
         $response->send();
+    }
+
+    public static function history($startDate, $endDate, $type)
+    {
+        $defaultDate = date('Y-m-d');
+        $dataList = OrderHistory::orderBy('id', 'desc')
+            ->where('created_at', '>=', $startDate ?: $defaultDate)
+            ->where('created_at', '<=', Carbon::parse($endDate ?: $defaultDate)->endOfDay())
+            ->where('type', $type ?: 1)
+            ->select('order_no', 'user_id', 'admin_user_id', 'type', 'name', 'description', 'created_at', 'creator_primary_user_id')
+            ->paginate(20);
+
+        return $dataList;
     }
 }

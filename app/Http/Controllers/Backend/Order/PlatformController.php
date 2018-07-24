@@ -217,4 +217,13 @@ class PlatformController extends Controller
             return response()->ajax(0, $exception->getMessage());
         }
     }
+
+    // 操作记录
+    public function history(Request $request)
+    {
+        $dataList = OrderRepository::history($request->start_date, $request->end_date, $request->type);
+        $operationType = config('order.operation_type');
+
+        return view('backend.order.platform.history', compact('dataList', 'operationType'));
+    }
 }
