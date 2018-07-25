@@ -293,6 +293,8 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             Route::post('apply-after-service', 'PlatformController@applyAfterService')->name('order.platform.apply-after-service')->middleware('permission:order.platform.apply-after-service');;
             // 售后完成
             Route::post('after-service-complete', 'PlatformController@afterServiceComplete')->name('order.after-service.after-service-complete')->middleware('permission:order.platform.after-service-complete');
+            // 操作记录
+            Route::get('history', 'PlatformController@history')->name('order.platform.history');
         });
         // 外部订单
         Route::prefix('foreign')->group( function () {
@@ -310,6 +312,7 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
             // 确认售后
             Route::post('confirm', 'AfterServiceController@confirm')->name('order.after-service.confirm')->middleware('permission:order.after-service.confirm');
         });
+
 
         // 代练订单报警
         Route::prefix('leveling')->group(function () {
