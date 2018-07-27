@@ -210,8 +210,9 @@ abstract class DailianAbstract
 
     /**
      * 获取订单，订单详情，协商仲裁信息
-     * @param  [type] $orderNo [description]
-     * @return [type]          [description]
+     * @param $orderNo
+     * @return array
+     * @throws DailianException
      */
     public function getOrderAndOrderDetailAndLevelingConsult($orderNo)
     {

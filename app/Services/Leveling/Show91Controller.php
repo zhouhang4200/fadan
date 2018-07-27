@@ -107,10 +107,13 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 
     /**
      * 普通提交
-     * @param  [type] $url     [description]
-     * @param  [type] $options [description]
-     * @param  string $method  [description]
-     * @return [type]          [description]
+     * @param array $options
+     * @param string $url
+     * @param string $functionName
+     * @param array $datas
+     * @param string $method
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function normalRequest($options = [], $url= '', $functionName = '', $datas = [], $method = 'POST')
     {
