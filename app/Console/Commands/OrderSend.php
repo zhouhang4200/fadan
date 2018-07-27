@@ -171,7 +171,7 @@ class OrderSend extends Command
                         myLog('send-order-setup', ['10' => $orderDatas['order_no']]);
                     }
                 } catch (\Exception $e) {
-                    myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $e->getMessage(), '行' => $e->getLine()]);
+                    myLog('order-send-ex', ['订单' => $orderData, 'message' => $e->getMessage(), '行' => $e->getLine()]);
                 }
             }
         }
