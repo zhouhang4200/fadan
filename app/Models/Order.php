@@ -338,7 +338,7 @@ class Order extends Model
      */
     public static function ingOrderAmount()
     {
-        if (auth()->user()->leveling_type == 1) {
+        if (auth()->user()->leveling_type == 2) {
             return self::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->where('service_id', 4)
                 ->whereIn('status', [13, 14, 15, 16, 17, 18])->sum('amount');
         } else {
