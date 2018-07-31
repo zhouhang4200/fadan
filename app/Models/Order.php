@@ -338,8 +338,14 @@ class Order extends Model
      */
     public static function ingOrderAmount()
     {
-        return self::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->where('service_id', 4)
-            ->whereIn('status', [13, 14, 15, 16, 17, 18])->sum('amount');
+        if (Auth::user()->type == 1) {
+            return self::where('creator_primary_user_id', auth()->user()->getPrimaryUserId())->where('service_id', 4)
+                ->whereIn('status', [13, 14, 15, 16, 17, 18])->sum('amount');
+        } else {
+            return self::where('gainer_primary_user_id', auth()->user()->getPrimaryUserId())->where('service_id', 4)
+                ->whereIn('status', [13, 14, 15, 16, 17, 18])->sum('amount');
+        }
+
     }
 
     public static function orderAndDetailAndConsult($orderNo)
