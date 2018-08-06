@@ -1057,7 +1057,8 @@ if(!function_exists('taobaoAccessToken')){
         return $token;
     }
 
-    if (!function_exists('hasEmployees')) {
+}
+if (!function_exists('hasEmployees')) {
     /**
      * 获取某个岗位有哪些员工
      * @param string $prefix
@@ -1072,7 +1073,6 @@ if(!function_exists('taobaoAccessToken')){
         }
         return '';
     }
-}
 }
 
 if(!function_exists('clientRSADecrypt')){
