@@ -16,15 +16,16 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                     </li>
 
                         <li @if(in_array($currentRouteName, [
-                        'order.platform.index',
-                        'order.platform.content',
-                        'order.platform.record',
-                        'order.foreign.index',
-                        'order.after-service.index',
-                        'order.leveling.index',
-                        'order.leveling.abnormal',
-                        'frontend.user.oriented.index',
-                        'order.notice.index',
+                            'order.platform.index',
+                            'order.platform.content',
+                            'order.platform.record',
+                            'order.foreign.index',
+                            'order.after-service.index',
+                            'order.leveling.index',
+                            'order.leveling.abnormal',
+                            'frontend.user.oriented.index',
+                            'order.notice.index',
+                            'order.platform.history',
                         ])) class="open active" @endif>
                             <a href="#" class="dropdown-toggle">
                                 <i class="fa fa-shopping-cart"></i>
@@ -47,6 +48,11 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <li>
                                     <a href="{{ route('order.leveling.index') }}" @if($currentRouteName == 'order.leveling.index') class="active" @endif>
                                         代练订单
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.platform.history') }}" @if($currentRouteName == 'order.platform.history') class="active" @endif>
+                                        订单操作记录
                                     </a>
                                 </li>
                                 <li>

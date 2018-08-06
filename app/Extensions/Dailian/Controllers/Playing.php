@@ -234,8 +234,12 @@ class Playing extends DailianAbstract implements DailianInterface
                     // 其他平台订单撤单
                     } else {
                         if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                            // 控制器-》方法-》参数
-                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                            try {
+                                // 控制器-》方法-》参数
+                                call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                            } catch (Exception $exception) {
+
+                            }
                         }
                     }
                 }

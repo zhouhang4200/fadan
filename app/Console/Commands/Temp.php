@@ -25,6 +25,7 @@ use App\Services\KamenOrderApi;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Leveling\Show91Controller;
+use App\Services\Leveling\WanziController;
 use App\Services\Show91;
 use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
@@ -168,13 +169,19 @@ class Temp extends Command
         return (array) $collection;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
+
     public function handle()
     {
+
+        $order  = \App\Models\Order::where('no', $this->argument('no'))->first();
+        if ($order) {
+            (new ForceRevoke())->run($order->no, $order->gainer_primary_user_id);
+//            (new Complete())->run($order->no, $order->creator_primary_user_id);
+        }
+die;
+       dd(DD373Controller::delete([
+           'dd373_order_no' => 'XQ20180710112105-80435'
+       ]));
         dd(sendSms(1, '111', '18500132452', 'ss', '22','2'));
         $order = [
             '2018070302195800000033',

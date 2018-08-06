@@ -129,8 +129,13 @@ class Delete extends DailianAbstract implements DailianInterface
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
                     if (isset($orderDatas[$thirdOrderNoName]) && ! empty($orderDatas[$thirdOrderNoName])) {
-                        // 控制器-》方法-》参数
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                        try {
+                            // 控制器-》方法-》参数
+                            call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$orderDatas]);
+                        } catch (Exception $exception) {
+                            myLog('delete-order', [$this->order->no]);
+                        }
+
                     }
                 }
             }

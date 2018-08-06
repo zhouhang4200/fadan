@@ -309,7 +309,7 @@ class CreateLeveling extends \App\Extensions\Order\Operations\Base\Operation
                 'creator_username' => User::find($this->order->creator_primary_user_id)->username ?? '',
             ];
             $redis = RedisConnect::order();
-            $redis->lpush('order:send', json_encode($sendOrder));
+            $result = $redis->lpush('order:send', json_encode($sendOrder));
         }
         return $this->order;
     }

@@ -134,7 +134,7 @@
             });
 
             // 修改
-            $('.content').on('click', '.template-edit', function () {
+            $('body').on('click', '.template-edit', function () {
                 var id  = $(this).attr('data-id');
                 $.post('{{ route("frontend.setting.sms.show") }}', {id:id}, function (result) {
                     if (result) {

@@ -44,21 +44,25 @@ class OrderSend extends Command
     {
         $this->redis = RedisConnect::order();
 
+        $client = new Client();
+
         while (1) {
             $orderData = $this->redis->lpop('order:send');
 
             if($orderData) {
-                myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s')]);
+                myLog('send-order-run', ['2', '时间' =>date('Y-m-d H:i:s') , $orderData]);
 
                 try {
                    $orderDatas = json_decode($orderData, true);
                    $order = OrderModel::where('no', $orderDatas['order_no'])->first();
 
+                    myLog('send-order-setup', ['2' => $order->no ?? '']);
                     if ($order) {
                         // 检测平台是否开启，
                         $orderSendChannel = OrderSendChannel::where('user_id', $order->creator_primary_user_id)
                             ->where('game_id', $order->game_id)
                             ->first();
+
 
                         $managerSetChannel = OrderSendChannel::where('user_id', 0)
                             ->where('game_id', $order->game_id)
@@ -73,9 +77,13 @@ class OrderSend extends Command
                         if (isset($managerSetChannel) && isset($managerSetChannel->third)) {
                             $managerBlackThirds = explode('-', $managerSetChannel->third); // 全局黑名单
                         }
-                        $client = new Client();
+
                         foreach (config('partner.platform') as $third => $platform) {
+                            myLog('send-order-setup', ['7' => $order->no]);
+
                             if (!in_array($third, $blackThirds) && !in_array($third, $managerBlackThirds)) {
+
+                                    myLog('send-order-setup', ['8' => $order->no]);
 
                                 try {
                                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));
@@ -85,6 +93,7 @@ class OrderSend extends Command
                                         ]
                                     ]);
                                     $result = $response->getBody()->getContents();
+
                                     if (isset($result) && ! empty($result)) {
                                         $arrResult = json_decode($result, true);
 
@@ -156,9 +165,13 @@ class OrderSend extends Command
                         }
                         // 写基础数据
                         event(new OrderBasicData($order));
+                    } else {
+                        // 没有查到订单则再次丢入队列
+                        $this->redis->lpush('order:send', json_encode($orderData));
+                        myLog('send-order-setup', ['10' => $orderDatas['order_no']]);
                     }
                 } catch (\Exception $e) {
-                    myLog('order-send-ex', ['订单' => $orderDatas['order_no'], 'message' => $e->getMessage(), '行' => $e->getLine()]);
+                    myLog('order-send-ex', ['订单' => $orderData, 'message' => $e->getMessage(), '行' => $e->getLine()]);
                 }
             }
         }

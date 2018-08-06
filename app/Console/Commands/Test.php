@@ -80,6 +80,9 @@ class Test extends Command
      */
     public function handle()
     {
+      dd(  Show91Controller::delete([
+          'show91_order_no' => 'ORD180723143905497765'
+      ]));
         // 查询所有代练订单
         $query = Order::where('service_id', 4)->groupBy('foreign_order_no');
 
