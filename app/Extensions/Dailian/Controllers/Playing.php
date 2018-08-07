@@ -286,7 +286,7 @@ class Playing extends DailianAbstract implements DailianInterface
                     'message' => '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。'
                 ])));
 
-                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->creator_primary_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
             }
 
             $client = new Client();
@@ -313,7 +313,7 @@ class Playing extends DailianAbstract implements DailianInterface
                 $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
                 Cache::put($this->order->gainer_primary_user_id, '1', $expiresAt);
 
-                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->gainer_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $this->order->gainer_primary_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
             }
 
             $client = new Client();
