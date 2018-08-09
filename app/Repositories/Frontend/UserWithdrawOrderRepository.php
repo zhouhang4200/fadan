@@ -61,6 +61,15 @@ class UserWithdrawOrderRepository
         $withdraw->creator_primary_user_id = $primaryUserId;
         $withdraw->remark                  = $remark;
 
+        // 找用户的结算账号
+        $realNameIdent = Auth::user()->realNameIdent;
+        if (empty($realNameIdent)) throw new Exception('请完善结算账号信息后再提现。');
+        if ($realNameIdent->status != 1) throw new Exception('请等待实名认证审核完成。');
+
+        $withdraw->account_name = $realNameIdent->name;
+        $withdraw->bank_name    = $realNameIdent->bank_name;
+        $withdraw->bank_card    = $realNameIdent->bank_number;
+
         if (!$withdraw->save()) {
             DB::rollback();
             throw new Exception('申请失败');

@@ -15,21 +15,31 @@ class UserWithdrawOrderController extends Controller
 {
     public function index(Request $request, UserWithdrawOrderRepository $userWithdrawRepository)
     {
-        $userId    = $request->user_id;
-        $timeStart = $request->time_start;
-        $timeEnd   = $request->time_end;
-        $no        = $request->no;
-        $type      = $request->type;
-        $status    = $request->status;
-        $adminRemark    = $request->admin_remark;
-
         if ($request->export == 1) {
-            $userWithdrawRepository->export($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark);
+            $userWithdrawRepository->export(
+                $request->time_start,
+                $request->time_end,
+                $request->user_id,
+                $request->no,
+                $request->type,
+                $request->status,
+                $request->admin_remark
+            );
         }
 
-        $dataList = $userWithdrawRepository->getList($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark);
+        $dataList = $userWithdrawRepository->getList(
+            $request->time_start,
+            $request->time_end,
+            $request->user_id,
+            $request->no,
+            $request->type,
+            $request->status,
+            $request->admin_remark
+        );
 
-        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'userId', 'timeStart', 'timeEnd', 'no', 'type', 'status', 'adminRemark'));
+        $config = config('withdraw');
+
+        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'config'));
     }
 
     public function complete(UserWithdrawOrder $userWithdrawOrder, Request $request)
@@ -50,6 +60,18 @@ class UserWithdrawOrderController extends Controller
             $userWithdrawOrder->refuse();
         }
         catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
+    }
+
+    // 自动办款
+    public function auto(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::auto($request->id, $request->remark);
+        } catch (Exception $e) {
             return response()->ajax(0, $e->getMessage());
         }
 
