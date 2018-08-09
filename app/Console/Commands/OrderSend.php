@@ -124,14 +124,25 @@ class OrderSend extends Command
                                             }
 
                                             // wanzi
+                                            // if ($third == 5) {
+                                            //     if (isset($arrResult['result']) && $arrResult['result'] != 0) {
+                                            //         $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                            //         $this->writeNotice($third, $orderDatas);
+                                            //     }
+
+                                            //     if (isset($arrResult['result']) && $arrResult['result'] == 0) {
+                                            //         $this->sendResultRecord($orderDatas['order_no'], $platform['name'], $arrResult['data'], 2, $platform['name'] . '发布成功');
+                                            //     }
+                                            // }
+
                                             if ($third == 5) {
-                                                if (isset($arrResult['result']) && $arrResult['result'] != 0) {
-                                                    $orderDatas['notice_reason'] = $arrResult['reason'] ?? '';
+                                                if (isset($arrResult['code']) && $arrResult['code'] != 1) {
+                                                    $orderDatas['notice_reason'] = $arrResult['message'] ?? '';
                                                     $this->writeNotice($third, $orderDatas);
                                                 }
 
-                                                if (isset($arrResult['result']) && $arrResult['result'] == 0) {
-                                                    $this->sendResultRecord($orderDatas['order_no'], $platform['name'], $arrResult['data'], 2, $platform['name'] . '发布成功');
+                                                if (isset($arrResult['code']) && $arrResult['code'] == 1) {
+                                                    $this->sendResultRecord($orderDatas['order_no'], $platform['name'], $arrResult['data']['order_no'], 2, $platform['name'] . '发布成功');
                                                 }
                                             }
 

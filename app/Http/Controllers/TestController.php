@@ -234,7 +234,17 @@ class TestController extends Controller
     }
     public function index(Request $request)
     {
-
+        $orders = OrderModel::where('created_at', '>', '2018-08-08 10:00:50')->get();
+        foreach ($orders as $order) {
+            $order->status = 13;
+            $order->gainer_user_id = 8880;
+            $order->gainer_primary_user_id = 8880;
+            $order->save();
+            $orderDetail = OrderDetail::where('order_no', $order->no)->where('field_name', 'wanzi_order_no')->first();
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'third_order_no')->update(['field_value' => $orderDetail->field_value]);
+            OrderDetail::where('order_no', $order->no)->where('field_name', 'third')->update(['field_value' => 5]);
+        }
+        return 123;
     }
 
     public function testAsset()
