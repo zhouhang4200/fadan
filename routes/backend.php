@@ -360,8 +360,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('user-widthdraw-order/complete/{userWithdrawOrder}', 'UserWithdrawOrderController@complete')->name('finance.user-widthdraw-order.complete')->middleware('permission:finance.user-widthdraw-order.complete');
         // 用户提现拒绝
         Route::post('user-widthdraw-order/refuse/{userWithdrawOrder}', 'UserWithdrawOrderController@refuse')->name('finance.user-widthdraw-order.refuse')->middleware('permission:finance.user-widthdraw-order.refuse');
+        // 发审核邮件标记
+        Route::post('user-widthdraw-order/set-send-email', 'UserWithdrawOrderController@setSendEmail')->name('finance.user-widthdraw-order.set-send-email')->middleware('permission:finance.user-widthdraw-order.set-send-email');
+        // 上传凭证
+        Route::post('user-widthdraw-order/upload', 'UserWithdrawOrderController@upload')->name('finance.user-widthdraw-order.upload')->middleware('permission:finance.user-widthdraw-order.upload');
+        // 查看文件
+        Route::get('user-widthdraw-order/attach', 'UserWithdrawOrderController@attach')->name('finance.user-widthdraw-order.attach')->middleware('permission:finance.user-widthdraw-order.attach');
         // 自动办款
-        Route::post('user-widthdraw-order/aotu', 'UserWithdrawOrderController@auto')->name('finance.user-widthdraw-order.auto')->middleware('permission:finance.user-widthdraw-order.auto');
+        Route::post('user-widthdraw-order/auto', 'UserWithdrawOrderController@auto')->name('finance.user-widthdraw-order.auto')->middleware('permission:finance.user-widthdraw-order.auto');
 
         // 用户加款列表
         Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');

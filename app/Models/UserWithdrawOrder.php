@@ -44,6 +44,8 @@ class UserWithdrawOrder extends Model
     {
         DB::beginTransaction();
 
+        $this->lockForUpdate()->find($this->id);
+
         // 提现
         try {
             Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, Auth::user()->id));
@@ -78,6 +80,8 @@ class UserWithdrawOrder extends Model
     public function refuse()
     {
         DB::beginTransaction();
+
+        $this->lockForUpdate()->find($this->id);
 
         // 解冻
         try {

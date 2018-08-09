@@ -74,6 +74,7 @@
                             <th>管理员备注</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
+                            <th>详情</th>
                             <th style="width: 152px;">操作</th>
                         </tr>
                         </thead>
@@ -95,12 +96,21 @@
                                     <td>{{ $data->created_at}}</td>
                                     <td>{{ $data->updated_at}}</td>
                                     <td>
+                                        @if ($data->attach)
+                                            <a href="{{ route('finance.user-widthdraw-order.attach', ['attach' => $data->attach]) }}" target="about;blank;">查看</a>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if ($data->status == 1)
-                                        <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">同意</button>
-                                        <button type="button" class="layui-btn layui-btn-normal layui-btn-mini complete" data-id="{{ $data->id }}">完成</button>
-                                        <button type="button" class="layui-btn layui-btn-mini layui-btn-danger refuse" data-id="{{ $data->id }}">拒绝</button>
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini send-email" data-id="{{ $data->id }}">邮件</button>
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">同意</button>
+                                            <button type="button" class="layui-btn layui-btn-mini layui-btn-danger refuse" data-id="{{ $data->id }}">拒绝</button>
+                                        @elseif ($data->status == 4)
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini upload" lay-data="{data:{id:{{ $data->id }}}}">上传附件</button>
+                                        @elseif ($data->status == 5)
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">办款</button>
                                         @else
-                                        ---
+                                            --
                                         @endif
                                     </td>
                                 </tr>
@@ -126,7 +136,8 @@ $('#export').click(function () {
     window.location.href = url;
 });
 
-layui.use(['layer'], function () {
+layui.use(['layer', 'upload'], function () {
+    var upload = layui.upload;
 
     // 完成
     $('.complete').click(function () {
@@ -168,6 +179,55 @@ layui.use(['layer'], function () {
                 }
             }, 'json');
         });
+    });
+
+    // 发邮件标记
+    $('.send-email').click(function () {
+        var id = $(this).data('id');
+        layer.confirm('已发送审核邮件，打标记。' , function (layerConfirm) {
+
+            layer.close(layerConfirm);
+
+            $.post("{{ route('finance.user-widthdraw-order.set-send-email') }}", {
+                id: id
+            },function (data) {
+
+                if (data.status === 1) {
+                    layer.alert('操作成功', function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.alert(data.message, function (index) {
+                        layer.close(index);
+                    });
+                }
+                layer.close(promptIndex);
+            }, 'json');
+        });
+    });
+
+    // 上传
+    upload.render({
+        elem: '.upload',
+        url: "{{ route('finance.user-widthdraw-order.upload') }}",
+        accept: 'images',
+        field: 'image',
+        size: 500,
+        before: function (obj) {
+            load = layer.load(4, {shade:0.3});
+        },
+        done: function (res, index, upload) {
+            layer.close(load);
+            if (res.status === 1) {
+                layer.alert('操作成功', function () {
+                    location.reload();
+                });
+            } else {
+                layer.alert(res.message, function (index) {
+                    layer.close(index);
+                });
+            }
+        }
     });
 
     // 同意

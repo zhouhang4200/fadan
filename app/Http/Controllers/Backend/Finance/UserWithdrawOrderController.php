@@ -10,6 +10,7 @@ use Asset;
 use Auth;
 use App\Exceptions\CustomException as Exception;
 use App\Extensions\Asset\Unfreeze;
+use Storage;
 
 class UserWithdrawOrderController extends Controller
 {
@@ -64,6 +65,49 @@ class UserWithdrawOrderController extends Controller
         }
 
         return response()->ajax();
+    }
+
+    // 设置已发邮件
+    public function setSendEmail(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::setStatus($request->id, 1, 4);
+        }
+        catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
+    }
+
+    // 上传附件
+    public function upload(Request $request)
+    {
+        if (!$request->file('image')->isValid()) {
+            return response()->ajax(0, '上传失败');
+        }
+
+        $diskPath = $request->file('image')->store('withdraw');
+
+        try {
+            \DB::beginTransaction();
+            UserWithdrawOrderRepository::setStatus($request->id, 4, 5);
+            UserWithdrawOrderRepository::setAttach($request->id, $diskPath);
+            \DB::commit();
+        }
+        catch (CustomException $e) {
+            Storage::delete($diskPath); // 删除图片
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
+    }
+
+    // 获取图片
+    public function attach(Request $request)
+    {
+        $path = Storage::path($request->attach);
+        return response()->file($path);
     }
 
     // 自动办款
