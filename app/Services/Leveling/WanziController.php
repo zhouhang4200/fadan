@@ -714,26 +714,29 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     public static function getMessage($orderDatas) {
         try {
 	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-	        ];
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+            ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	$message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage'], 'getMessage', $orderDatas);
 
-            if (isset($message) && isset($message['result']) && $message['result'] == 0 && isset($message['data'])) {
+            if (isset($message) && isset($message['code']) && $message['code'] == 1 && isset($message['data'])) {
                 $sortField = [];
                 $messageArr = [];
                 foreach ($message['data'] as $item) {
                     if (isset($item['id'])) {
-                        $sortField[] = $item['created_on'];
+                        $sortField[] = $item['send_time'];
                     } else {
                         $sortField[] = 0;
                     }
                     $messageArr[] = [
-                        'sender' =>  isset($item['uid']) && $item['uid'] == config('leveling.wanzi.uid') ? '您': ($item['userNickname'] == '系统留言' ? '系统留言' :  '打手'),
-                        'send_content' => $item['mess'],
-                        'send_time' => $item['created_on'],
+                        'sender' =>  $item['sender'] == '接单方' ? '打手' : ($item['sender'] == '工作人员' ? '系统留言' :  '您'),
+                        'send_content' => $item['send_content'],
+                        'send_time' => $item['send_time'],
                     ];
                 }
                 // 用ID倒序
@@ -754,12 +757,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      */
     public static function replyMessage($orderDatas) {
         try {
-	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'mess'    => $orderDatas['message'],
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+                'message' => $orderDatas['message'],
+            ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['replyMessage'], 'replyMessage', $orderDatas);
     	} catch (Exception $e) {
@@ -882,12 +888,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     {
         try {
             $options = [
-                'account'           => config('leveling.wanzi.account'),
-                'sign'              => config('leveling.wanzi.sign'),
-                'appealEvi.aid'     => $orderDatas['arbitration_id'],
-                'appealEvi.content' => $orderDatas['add_content'],
-                'pic1'              => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+                'image'     => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
+                'reason'    => $orderDatas['add_content'],
             ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 
             // 发送
             return static::formDataRequest($options, config('leveling.wanzi.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);

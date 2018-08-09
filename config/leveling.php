@@ -265,14 +265,14 @@ return [
 			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/update-account-password', // 修改账号密码
 			'updateOrder'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/update', // 修改订单
 			'getScreenshot'            => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/apply-complete-image', // 订单截图
+			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/complain_message', // 添加仲裁证据
+			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/get-message', //获取留言
+			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/send-message', // 回复留言
 
 			// 以下是新丸子缺少的
-			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/messageList', //获取留言
-			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/addMess', // 回复留言
 			'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/getPlays', // 获取代练类型
 			'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/setTop', // 置顶
 			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/seeappeal2', // 查看仲裁详情
-			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/addevidence', // 添加仲裁证据
 			'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/appeals', // 仲裁列表
 			
     	],
