@@ -325,13 +325,14 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      */
     public static function agreeRevoke($orderDatas) {
         try {
-	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'v'       => 1,
-				'p'       => config('leveling.wanzi.password'),
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['third_order_no'],
+                'timestamp' => time(),
+            ];
+
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	$result = static::normalRequest($options, config('leveling.wanzi.url')['agreeRevoke'], 'agreeRevoke', $orderDatas);
     	} catch (Exception $e) {
@@ -355,12 +356,13 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     public static function refuseRevoke($orderDatas) {
     	try {
 	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'v'       => 2,
-				'p'       => config('leveling.wanzi.password'),
-	        ];
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['third_order_no'],
+                'timestamp' => time(),
+            ];
+
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['refuseRevoke'], 'refuseRevoke', $orderDatas);
     	} catch (Exception $e) {
@@ -586,8 +588,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
 	        $client = new Client();
             $response = $client->request('POST', config('leveling.wanzi.url')['updateOrder'], [
             	'form_params' => [
-	            	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv'))),
-	            	"platformSign" => config('leveling.wanzi.platform-sign'),
+	            	'data' => base64_encode(openssl_encrypt($datas, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv')))
             	],
 	            'body' => 'x-www-form-urlencoded',
             ]);
@@ -606,13 +607,16 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      */
     public static function addTime($orderDatas) {
         try {
-	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'day'     => $orderDatas['game_leveling_day'],
-				'hour'    => $orderDatas['game_leveling_hour'],
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+                'day'     => $orderDatas['game_leveling_day'],
+                'hour'    => $orderDatas['game_leveling_hour'],
+            ];
+
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['addTime'], 'addTime', $orderDatas);
@@ -628,13 +632,15 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      */
     public static function addMoney($orderDatas) {
         try {
-	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'appwd'   => config('leveling.wanzi.password'),
-				'cash'    => $orderDatas['game_leveling_amount'],
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+                'amount'    => $orderDatas['game_leveling_amount'],
+            ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['addMoney'], 'addMoney', $orderDatas);
     	} catch (Exception $e) {
@@ -666,34 +672,37 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     }
 
     /**
-     * 获取订单截图
+     * 获取订单完成截图
      * @return [type] [description]
      */
     public static function getScreenshot($orderDatas) {
         try {
 	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-	        ];
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+            ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	$dataList = static::normalRequest($options, config('leveling.wanzi.url')['getScreenshot'], 'getScreenshot', $orderDatas);
 
-	       	if (isset($dataList) && $dataList['result'] == 0 && !empty($dataList['data'])) {
-		       	foreach ($dataList['data'] as $key => $value) {
-	                $imageList[] = [
-	                    'url' => $value['url'],
-	                    'username' => $value['userName'],
-	                    'created_at' => $value['created_on'],
-	                    'description' => '',
-	                ];
-		        }
-	     		return $imageList;
-	       	} else {
-	       		return [];
-	       	}
+            if (isset($dataList) && $dataList['code'] == 1 && !empty($dataList['data'])) {
+                foreach ($dataList['data'] as $key => $value) {
+                    $imageList[] = [
+                        'url' => $value['url'],
+                        'username' => $value['username'],
+                        'created_at' => $value['created_at'],
+                        'description' => '',
+                    ];
+                }
+                return $imageList;
+            } else {
+                return [];
+            }
     	} catch (Exception $e) {
-    		myLog('wanzi-local-error', ['方法' => '订单详情', '原因' => $e->getMessage()]);
+    		myLog('wanzi-local-error', ['方法' => '获取订单完成截图', '原因' => $e->getMessage()]);
     		throw new DailianException($e->getMessage());
     	}
     }
@@ -765,13 +774,17 @@ class WanziController extends LevelingAbstract implements LevelingInterface
      */
     public static function updateAccountAndPassword($orderDatas) {
         try {
-	        $options = [
-				'account'   => config('leveling.wanzi.account'),
-				'sign'      => config('leveling.wanzi.sign'),
-				'oid'       => $orderDatas['wanzi_order_no'],
-				'newAcc'    => $orderDatas['account'],
-				'newAccPwd' => $orderDatas['password'],
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+                'amount'    => $orderDatas['game_leveling_amount'],
+                'account'   => $orderDatas['account'],
+                'password'  => $orderDatas['password'],
+            ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['updateAccountAndPassword'], 'updateAccountAndPassword', $orderDatas);
     	} catch (Exception $e) {
