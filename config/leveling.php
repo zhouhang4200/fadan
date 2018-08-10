@@ -271,9 +271,9 @@ return [
 			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/order/get-complain-info', // 查看仲裁详情
 
 			// 以下是新丸子缺少的
-			'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/getPlays', // 获取代练类型
-			'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/setTop', // 置顶
-			'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/appeals', // 仲裁列表
+			// 'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/getPlays', // 获取代练类型
+			// 'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/setTop', // 置顶
+			// 'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/appeals', // 仲裁列表
 			
     	],
     ],

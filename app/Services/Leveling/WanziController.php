@@ -72,23 +72,23 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                         Redis::hSet($name, $key, $value);
 
                          // 往群里发消息
-                        $client = new Client();
-                        $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
-                            'json' => [
-                                'msgtype' => 'text',
-                                'text' => [
-                                    'content' => '订单（内部单号：'.$datas['order_no']. '）调用【'.config('order.third')[5].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
-                                ],
-                                'at' => [
-                                    'isAtAll' => false,
-                                    "atMobiles" =>  [
-                                        "18500132452",
-                                        "13437284998",
-                                        "13343450907"
-                                    ]
-                                ]
-                            ]
-                        ]);
+                        // $client = new Client();
+                        // $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                        //     'json' => [
+                        //         'msgtype' => 'text',
+                        //         'text' => [
+                        //             'content' => '订单（内部单号：'.$datas['order_no']. '）调用【'.config('order.third')[5].'】【'.$datas['operate'].'】接口失败:'.$datas['notice_reason']
+                        //         ],
+                        //         'at' => [
+                        //             'isAtAll' => false,
+                        //             "atMobiles" =>  [
+                        //                 "18500132452",
+                        //                 "13437284998",
+                        //                 "13343450907"
+                        //             ]
+                        //         ]
+                        //     ]
+                        // ]);
 
         				if ($url != config('leveling.wanzi.url')['delete']) {
                             throw new DailianException($message);
