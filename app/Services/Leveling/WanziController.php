@@ -829,48 +829,48 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     {
         try {
             $options = [
-                'account' => config('leveling.wanzi.account'),
-                'sign'    => config('leveling.wanzi.sign'),
-                'oid'     => $orderDatas['wanzi_order_no'],
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
             ];
+            
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 
-            // 获取详情
+            // 发送
             $result = static::normalRequest($options, config('leveling.wanzi.url')['getArbitrationInfo'], 'getArbitrationInfo', $orderDatas);
-
             $details = [];
-            if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {
+            if (isset($result) && $result['code'] == 1 && isset($result['data'])) {
                 $details = $result['data'];
             }
 
-            if (isset($details['appeal']['pic1'])) {
-                $details['appeal']['pic1'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic1'];
-            }
-
-            if (isset($details['appeal']['pic2'])) {
-                $details['appeal']['pic2'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic2'];
-            }
-
-            if (isset($details['appeal']['pic3'])) {
-                $details['appeal']['pic3'] = config('leveling.wanzi.api_url').'/gameupload/appeal/'.$details['appeal']['uid'].'/'.$details['appeal']['pic3'];
-            }
-            if (! isset($details) || ! is_array($details) || ! isset($details['appeal']) || count($details) < 1) {
+            if (! isset($details) || ! is_array($details) || count($details) < 1) {
                 return '暂无相关信息';
             }
-            $arr = [];
-            $arr['detail']['who'] = config('leveling.wanzi.uid') == $details['appeal']['uid'] ? '我方' : ($details['appeal']['uid'] == 0 ? '系统留言' : '对方');
-            $arr['detail']['created_at'] = $details['appeal']['created_on'];
-            $arr['detail']['content'] = $details['appeal']['content'];
-            $arr['detail']['arbitration_id'] = $details['appeal']['id'];
-            $arr['detail']['pic1'] = $details['appeal']['pic1'];
-            $arr['detail']['pic2'] = $details['appeal']['pic2'];
-            $arr['detail']['pic3'] = $details['appeal']['pic3'];
 
-            if (isset($details['evis'])) {
-                foreach($details['evis'] as $k => $detail) {
-                    $arr['info'][$k]['who'] = config('leveling.wanzi.uid') == $detail['uid'] ? '我方' : ($detail['uid'] == 0 ? '系统留言' : '对方');
-                    $arr['info'][$k]['created_at'] = $detail['created_on'];
-                    $arr['info'][$k]['content'] = $detail['content'];
-                    $arr['info'][$k]['pic'] = isset($detail['pic']) ? config('leveling.wanzi.api_url') .'/gameupload/appeal/'.$detail['uid'].'/'.$detail['pic'] : '';
+
+            $arr = [];
+            $arr['detail']['who'] = $details['who'] == 1 ? '我方' : ($details['who'] == 2 ? '对方' : '系统留言');
+            $arr['detail']['created_at'] = $details['created_at'];
+            $arr['detail']['content'] = $details['content'];
+            $arr['detail']['arbitration_id'] = $details['arbitration_id'];
+            $arr['detail']['pic1'] = '';
+            $arr['detail']['pic2'] = '';
+            $arr['detail']['pic3'] = '';
+
+            if ($details['image']) {
+                $arr['detail']['pic1'] = $details['image']['pic1'];
+                $arr['detail']['pic2'] = $details['image']['pic2'];
+                $arr['detail']['pic3'] = $details['image']['pic3'];
+            }
+            
+
+            if (isset($details['message'])) {
+                foreach($details['message'] as $k => $message) {
+                    $arr['info'][$k]['who'] = $message['who'] == 1 ? '我方' : ($message['who'] == 2 ? '对方' : '系统留言');
+                    $arr['info'][$k]['created_at'] = $message['created_at'];
+                    $arr['info'][$k]['content'] = $message['content'];
+                    $arr['info'][$k]['pic'] = $message['pic'] ?? '';
                 }
             }
             return $arr;
@@ -891,12 +891,12 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                 'app_id'    => config('leveling.wanzi.app_id'),
                 'order_no'  => $orderDatas['wanzi_order_no'],
                 'timestamp' => time(),
-                'image'     => !empty($orderDatas['pic']) ? base64ToBlob($orderDatas['pic']) : '',
                 'reason'    => $orderDatas['add_content'],
             ];
             
             $sign = static::getSign($options);
             $options['sign'] = $sign;
+            $options['image'] = !empty($orderDatas['pic']) ? $orderDatas['pic'] : '';
 
             // 发送
             return static::formDataRequest($options, config('leveling.wanzi.url')['addArbitrationInfo'], 'addArbitrationInfo', $orderDatas);
