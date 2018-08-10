@@ -69,7 +69,15 @@
             <th>转款明细</th>
         </tr>
         <tr>
-            <td>{{ $data->bill_status == 0 ? '失败' : '成功' }}</td>
+            <td>
+                @if ($data->bill_status === 1)
+                    成功
+                @elseif ($data->bill_status === 0)
+                    失败
+                @else
+                    --
+                @endif
+            </td>
             <td>{{ $data->bill_user_name }}</td>
             <td>{{ $data->pay_account }}</td>
             <td>{{ $data->pay_bank_full_name }}</td>

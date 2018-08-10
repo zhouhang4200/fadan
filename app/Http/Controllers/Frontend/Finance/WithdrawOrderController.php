@@ -31,7 +31,7 @@ class WithdrawOrderController extends Controller
         }
 
         $this->validate($request, [
-            'fee'    => 'bail|required|numeric|min:1',
+            'fee'    => 'bail|required|numeric|min:0.1',
             'remark' => 'string|nullable|max:100',
         ], [
             'fee.required' => '请填写金额',
