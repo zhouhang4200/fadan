@@ -47,7 +47,7 @@ class CreateUserWithdrawOrdersTable extends Migration
             ADD COLUMN `pay_bank_full_name`  varchar(100) NULL DEFAULT NULL COMMENT '付款银行全称' AFTER `pay_account`,
             ADD COLUMN `transfer_detail`  varchar(1000) NULL DEFAULT NULL COMMENT '转款明细(json)' AFTER `pay_bank_full_name`,
 
-            ADD UNIQUE INDEX `user_withdraw_orders_bill_id_index` (`bill_id`) USING BTREE ,;
+            ADD UNIQUE INDEX `user_withdraw_orders_bill_id_index` (`bill_id`) USING BTREE;
         */
     }
 

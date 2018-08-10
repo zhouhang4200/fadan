@@ -176,4 +176,4 @@ Route::prefix('uplay')->group(function (){
 });
 
 // 财务提现回调
-Route::post('fulu-pay/withdraw-notify', 'FuluPayController@withdrawNotify');
+Route::post('fulu-pay/withdraw-notify', 'FuluPayController@withdrawNotify')->name('api.fulu-pay.withdraw-notify');

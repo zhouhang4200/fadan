@@ -9,12 +9,11 @@ class FuluPay
 {
     protected $token;
 
-    protected $authTokenApi = 'http://10.0.0.138:8090/oauth/token'; // 获取token接口
-    // protected $authTokenApi = 'https://passport.fulu.com/oauth/token'; // 获取token接口
+    // protected $authTokenApi = 'http://10.0.0.138:8090/oauth/token'; // 获取token接口
+    protected $authTokenApi = 'https://passport.fulu.com/oauth/token'; // 获取token接口
 
-    protected $withdrawApi = 'http://10.0.1.199:11113/api/PushBillStatementOther'; // 提现请求接口
-
-    protected $noticeUrl = 'http://latest.38sd.com/api/test/p'; // 回调地址
+    // protected $withdrawApi = 'http://10.0.1.199:11113/api/PushBillStatementOther'; // 提现请求接口
+    protected $withdrawApi = 'http://47.98.88.126:11113/api/PushBillStatementOther'; // 提现请求接口
 
     protected static $md5Scramble = 'r85dCuLznlcG0Oho'; // md5 扰码
 
@@ -78,7 +77,7 @@ class FuluPay
             'SiteID'           => '',
             'CreateDate'       => date('Y/m/d H:i:s'),
             'Remark'           => '',
-            'NoticeUrl'        => $this->noticeUrl,
+            'NoticeUrl'        => route('api.fulu-pay.withdraw-notify'),
         ];
 
         myLog('finance-api-withdraw', $data);

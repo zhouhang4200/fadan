@@ -216,16 +216,16 @@ class UserWithdrawOrderRepository
         $order->save();
 
         // 通知接口
-        // $fuluPay = new FuluPay;
-        // $order->bill_id = $fuluPay->withdraw(
-        //     $order->id,
-        //     $order->fee,
-        //     $order->type == 1 ? 2 : 1,
-        //     2,
-        //     $order->bank_card,
-        //     $order->account_name,
-        //     $order->bank_name
-        // );
+        $fuluPay = new FuluPay;
+        $order->bill_id = $fuluPay->withdraw(
+            $order->id,
+            $order->fee,
+            $order->type == 1 ? 2 : 1,
+            2,
+            $order->bank_card,
+            $order->account_name,
+            $order->bank_name
+        );
 
         $order->save();
 
