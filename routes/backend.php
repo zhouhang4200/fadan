@@ -364,10 +364,14 @@ Route::middleware(['auth:admin'])->namespace('Backend')->group(function () {
         Route::post('user-widthdraw-order/set-send-email', 'UserWithdrawOrderController@setSendEmail')->name('finance.user-widthdraw-order.set-send-email')->middleware('permission:finance.user-widthdraw-order.set-send-email');
         // 上传凭证
         Route::post('user-widthdraw-order/upload', 'UserWithdrawOrderController@upload')->name('finance.user-widthdraw-order.upload')->middleware('permission:finance.user-widthdraw-order.upload');
+        // 上传完成
+        Route::post('user-widthdraw-order/upload-confirm', 'UserWithdrawOrderController@uploadConfirm')->name('finance.user-widthdraw-order.upload-confirm')->middleware('permission:finance.user-widthdraw-order.upload-confirm');
         // 查看文件
         Route::get('user-widthdraw-order/attach', 'UserWithdrawOrderController@attach')->name('finance.user-widthdraw-order.attach')->middleware('permission:finance.user-widthdraw-order.attach');
         // 自动办款
         Route::post('user-widthdraw-order/auto', 'UserWithdrawOrderController@auto')->name('finance.user-widthdraw-order.auto')->middleware('permission:finance.user-widthdraw-order.auto');
+        // 详情
+        Route::get('user-widthdraw-order/{id}', 'UserWithdrawOrderController@show')->name('finance.user-widthdraw-order.show')->middleware('permission:finance.user-widthdraw-order.show');
 
         // 用户加款列表
         Route::get('user-recharge-order', 'UserRechargeOrderController@index')->name('finance.user-recharge-order.index')->middleware('permission:finance.user-recharge-order.index');

@@ -65,13 +65,9 @@
                             <th>原千手ID</th>
                             <th>当前余额</th>
                             <th>当前冻结</th>
-                            <th>姓名</th>
-                            <th>开户行</th>
-                            <th>卡号</th>
                             <th>提现金额</th>
                             <th>类型</th>
                             <th>状态</th>
-                            <th>管理员备注</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>详情</th>
@@ -86,27 +82,20 @@
                                     <td>{{ $data->user->nickname ?? '' }}</td>
                                     <td>{{ $data->user->asset->balance ?? '' }}</td>
                                     <td>{{ $data->user->asset->frozen ?? '' }}</td>
-                                    <td>{{ $data->account_name ?: ($data->user->realNameIdent->name ?? '') }}</td>
-                                    <td>{{ $data->bank_name ?: ($data->user->realNameIdent->bank_name ?? '') }}</td>
-                                    <td>{{ $data->bank_card ?: ($data->user->realNameIdent->bank_number ?? '') }}</td>
                                     <td>{{ $data->fee + 0 }}</td>
                                     <td>{{ config('withdraw.type')[$data->type] }}</td>
                                     <td>{{ config('withdraw.status')[$data->status] }}</td>
-                                    <td>{{ $data->admin_remark }}</td>
                                     <td>{{ $data->created_at}}</td>
                                     <td>{{ $data->updated_at}}</td>
-                                    <td>
-                                        @if ($data->attach)
-                                            <a href="{{ route('finance.user-widthdraw-order.attach', ['attach' => $data->attach]) }}" target="about;blank;">查看</a>
-                                        @endif
-                                    </td>
+                                    <td><a href="javascript:void(0)" class="show" data-url="{{ route('finance.user-widthdraw-order.show', ['id' => $data->id]) }}">查看</a></td>
                                     <td>
                                         @if ($data->status == 1)
-                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini send-email" data-id="{{ $data->id }}">邮件</button>
+                                            <button type="button" class="layui-btn layui-btn-warm layui-btn-mini send-email" data-id="{{ $data->id }}">邮件</button>
                                             <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">同意</button>
                                             <button type="button" class="layui-btn layui-btn-mini layui-btn-danger refuse" data-id="{{ $data->id }}">拒绝</button>
                                         @elseif ($data->status == 4)
                                             <button type="button" class="layui-btn layui-btn-normal layui-btn-mini upload" lay-data="{data:{id:{{ $data->id }}}}">上传附件</button>
+                                            <button type="button" class="layui-btn layui-btn-danger layui-btn-mini upload-confirm" data-id="{{ $data->id }}">上传确认</button>
                                         @elseif ($data->status == 5)
                                             <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">办款</button>
                                         @else
@@ -230,6 +219,27 @@ layui.use(['layer', 'upload'], function () {
         }
     });
 
+    // 上传完成
+    $('.upload-confirm').click(function () {
+        var id = $(this).data('id');
+        layer.confirm('确认后附件不可修改。' , function (layerConfirm) {
+            layer.close(layerConfirm);
+
+            $.post("{{ route('finance.user-widthdraw-order.upload-confirm') }}", {id: id}, function (data) {
+                if (data.status === 1) {
+                    layer.alert('操作成功', function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.alert(data.message, function (index) {
+                        layer.close(index);
+                    });
+                }
+                layer.close(promptIndex);
+            }, 'json');
+        });
+    });
+
     // 同意
     $('.agree').click(function () {
         var id = $(this).data('id');
@@ -255,6 +265,19 @@ layui.use(['layer', 'upload'], function () {
                     layer.close(promptIndex);
                 }, 'json');
             });
+        });
+    });
+
+    // 详情
+    $('.show').click(function () {
+        $(this).parents('tr').css('background-color', '#89cdff');
+        $(this).parents('tr').siblings().removeAttr('style');
+
+        layer.open({
+            type: 2,
+            title: '详情',
+            area: ['80%', '80%'],
+            content: $(this).data('url')
         });
     });
 });

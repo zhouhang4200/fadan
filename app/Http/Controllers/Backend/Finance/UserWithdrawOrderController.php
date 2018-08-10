@@ -91,7 +91,6 @@ class UserWithdrawOrderController extends Controller
 
         try {
             \DB::beginTransaction();
-            UserWithdrawOrderRepository::setStatus($request->id, 4, 5);
             UserWithdrawOrderRepository::setAttach($request->id, $diskPath);
             \DB::commit();
         }
@@ -101,6 +100,19 @@ class UserWithdrawOrderController extends Controller
         }
 
         return response()->ajax(1);
+    }
+
+    // 设置已发邮件
+    public function uploadConfirm(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::setStatus($request->id, 4, 5);
+        }
+        catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
     }
 
     // 获取图片
@@ -120,5 +132,12 @@ class UserWithdrawOrderController extends Controller
         }
 
         return response()->ajax();
+    }
+
+    public function show($id)
+    {
+        $data = UserWithdrawOrderRepository::find($id);
+
+        return view('backend.finance.user-withdraw-order.show', compact('data'));
     }
 }

@@ -176,6 +176,10 @@ class UserWithdrawOrderRepository
             throw new CustomException('记录不存在');
         }
 
+        if ($order->status != 4) {
+            throw new CustomException('状态不正确');
+        }
+
         if ($order->attach) {
             Storage::delete($order->attach); // 删除图片
         }
@@ -227,5 +231,11 @@ class UserWithdrawOrderRepository
 
         DB::commit();
         return true;
+    }
+
+    public static function find($id)
+    {
+        $order = UserWithdrawOrder::find($id);
+        return $order;
     }
 }
