@@ -155,7 +155,7 @@ Route::namespace('App')->middleware('api.decode')->group(function () {
 
     // 充值结果回调
     Route::post('order-charge/notify', 'OrderChargeController@notify');
-    
+
 });
 
 /**
@@ -174,3 +174,6 @@ Route::middleware('internal.api')->prefix('user-info')->namespace('Fulu')->group
 Route::prefix('uplay')->group(function (){
     Route::any('account-verification', 'UplayController@accountVerification');
 });
+
+// 财务提现回调
+Route::post('fulu-pay/withdraw-notify', 'FuluPayController@withdrawNotify')->name('api.fulu-pay.withdraw-notify');

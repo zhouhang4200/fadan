@@ -65,5 +65,14 @@ class ResponseMacroServiceProvider extends ServiceProvider
             return response()->json($data);
         });
 
+        // 财务接口响应
+        Response::macro('finance', function ($code, $message = '成功', $data = '') {
+            return response()->json(
+                ['data' => $data, 'code' => $code, 'message' => $message, 'messageType' => $code == 0 ? 'success' : 'error'],
+                200,
+                ["Content-type" => "application/json;charset=utf-8"],
+                JSON_UNESCAPED_UNICODE
+            );
+        });
     }
 }

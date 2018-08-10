@@ -8,6 +8,8 @@ use App\Extensions\Asset\Freeze;
 use DB;
 use Asset;
 use Auth;
+use App\Services\FuluPay;
+use Storage;
 
 class UserWithdrawOrderRepository
 {
@@ -139,5 +141,101 @@ class UserWithdrawOrderRepository
         $withdraw->complete($remark, 2);
 
         DB::commit();
+    }
+
+    // 更新状态
+    public static function setStatus($id, $before, $after)
+    {
+        DB::beginTransaction();
+
+        // 查询订单
+        $order = UserWithdrawOrder::lockForUpdate()->find($id);
+        if (empty($order)) {
+            throw new CustomException('记录不存在');
+        }
+
+        if ($order->status != $before) {
+            throw new CustomException('状态不正确');
+        }
+
+        $order->status = $after;
+        $order->save();
+
+        DB::commit();
+        return true;
+    }
+
+    // 更新附件
+    public static function setAttach($id, $path)
+    {
+        DB::beginTransaction();
+
+        // 查询订单
+        $order = UserWithdrawOrder::lockForUpdate()->find($id);
+        if (empty($order)) {
+            throw new CustomException('记录不存在');
+        }
+
+        if ($order->status != 4) {
+            throw new CustomException('状态不正确');
+        }
+
+        if ($order->attach) {
+            Storage::delete($order->attach); // 删除图片
+        }
+
+        $order->attach = $path;
+        $order->save();
+
+        DB::commit();
+        return true;
+    }
+
+    // 自动办款
+    public static function auto($id)
+    {
+        DB::beginTransaction();
+
+        // 查询订单
+        $order = UserWithdrawOrder::lockForUpdate()->find($id);
+        if (empty($order)) {
+            throw new CustomException('记录不存在');
+        }
+
+        if ($order->status != 5) {
+            throw new CustomException('只有待确认状态才能操作');
+        }
+
+        if (empty($order->bank_name)) {
+            $order->account_name = $order->user->realNameIdent->name;
+            $order->bank_name    = $order->user->realNameIdent->bank_name;
+            $order->bank_card    = $order->user->realNameIdent->bank_number;
+        }
+
+        $order->status = 6; // 6.办款中
+        $order->save();
+
+        // 通知接口
+        $fuluPay = new FuluPay;
+        $order->bill_id = $fuluPay->withdraw(
+            $order->id,
+            $order->fee,
+            $order->type == 1 ? 2 : 1,
+            2,
+            $order->bank_card,
+            $order->account_name,
+            $order->bank_name
+        );
+
+        $order->save();
+
+        DB::commit();
+        return true;
+    }
+
+    public static function find($id)
+    {
+        $order = UserWithdrawOrder::find($id);
+        return $order;
     }
 }

@@ -10,26 +10,37 @@ use Asset;
 use Auth;
 use App\Exceptions\CustomException as Exception;
 use App\Extensions\Asset\Unfreeze;
+use Storage;
 
 class UserWithdrawOrderController extends Controller
 {
     public function index(Request $request, UserWithdrawOrderRepository $userWithdrawRepository)
     {
-        $userId    = $request->user_id;
-        $timeStart = $request->time_start;
-        $timeEnd   = $request->time_end;
-        $no        = $request->no;
-        $type      = $request->type;
-        $status    = $request->status;
-        $adminRemark    = $request->admin_remark;
-
         if ($request->export == 1) {
-            $userWithdrawRepository->export($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark);
+            $userWithdrawRepository->export(
+                $request->time_start,
+                $request->time_end,
+                $request->user_id,
+                $request->no,
+                $request->type,
+                $request->status,
+                $request->admin_remark
+            );
         }
 
-        $dataList = $userWithdrawRepository->getList($timeStart, $timeEnd, $userId, $no, $type, $status, $adminRemark);
+        $dataList = $userWithdrawRepository->getList(
+            $request->time_start,
+            $request->time_end,
+            $request->user_id,
+            $request->no,
+            $request->type,
+            $request->status,
+            $request->admin_remark
+        );
 
-        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'userId', 'timeStart', 'timeEnd', 'no', 'type', 'status', 'adminRemark'));
+        $config = config('withdraw');
+
+        return view('backend.finance.user-withdraw-order.index', compact('dataList', 'config'));
     }
 
     public function complete(UserWithdrawOrder $userWithdrawOrder, Request $request)
@@ -54,5 +65,79 @@ class UserWithdrawOrderController extends Controller
         }
 
         return response()->ajax();
+    }
+
+    // 设置已发邮件
+    public function setSendEmail(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::setStatus($request->id, 1, 4);
+        }
+        catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
+    }
+
+    // 上传附件
+    public function upload(Request $request)
+    {
+        if (!$request->file('image')->isValid()) {
+            return response()->ajax(0, '上传失败');
+        }
+
+        $diskPath = $request->file('image')->store('withdraw');
+
+        try {
+            \DB::beginTransaction();
+            UserWithdrawOrderRepository::setAttach($request->id, $diskPath);
+            \DB::commit();
+        }
+        catch (CustomException $e) {
+            Storage::delete($diskPath); // 删除图片
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax(1);
+    }
+
+    // 设置已发邮件
+    public function uploadConfirm(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::setStatus($request->id, 4, 5);
+        }
+        catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
+    }
+
+    // 获取图片
+    public function attach(Request $request)
+    {
+        $path = Storage::path($request->attach);
+        return response()->file($path);
+    }
+
+    // 自动办款
+    public function auto(Request $request)
+    {
+        try {
+            UserWithdrawOrderRepository::auto($request->id, $request->remark);
+        } catch (Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+
+        return response()->ajax();
+    }
+
+    public function show($id)
+    {
+        $data = UserWithdrawOrderRepository::find($id);
+
+        return view('backend.finance.user-withdraw-order.show', compact('data'));
     }
 }
