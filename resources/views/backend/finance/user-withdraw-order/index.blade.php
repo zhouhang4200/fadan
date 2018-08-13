@@ -91,7 +91,7 @@
                                     <td>
                                         @if ($data->status == 1)
                                             <button type="button" class="layui-btn layui-btn-warm layui-btn-mini send-email" data-id="{{ $data->id }}">邮件</button>
-                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini agree" data-id="{{ $data->id }}">同意</button>
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-mini complete" data-id="{{ $data->id }}">同意</button>
                                             <button type="button" class="layui-btn layui-btn-mini layui-btn-danger refuse" data-id="{{ $data->id }}">拒绝</button>
                                         @elseif ($data->status == 4)
                                             <button type="button" class="layui-btn layui-btn-normal layui-btn-mini upload" lay-data="{data:{id:{{ $data->id }}}}">上传附件</button>
