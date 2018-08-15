@@ -199,6 +199,9 @@
                     <div class="blocked-balances">代练金额：
                         {{ \App\Models\Order::ingOrderAmount() + 0 }}
                     </div>
+                    <div class="blocked-balances">代练双金：
+                        {{ \App\Models\Order::ingOrderDeposit() + 0 }}
+                    </div>
                     <div class="blocked-balances">剩余短信：
                         <span id="sms-balance">{{ optional($user->smsBalance)->amount + 0 }}</span>
                     </div>

@@ -348,6 +348,32 @@ class Order extends Model
 
     }
 
+    /**
+     * 获取进行中的订单保证金
+     * @return mixed
+     */
+    public static function ingOrderDeposit()
+    {
+        if (auth()->user()->leveling_type == 2) {
+
+            return OrderDetail::where('order_no', function ($query) {
+                $query->select('no')
+                    ->from(with(new Order())->getTable())
+                    ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
+                    ->whereIn('status', [13, 14, 15, 16, 17, 18]);
+            })->whereIn('field_name', ['security_deposit', 'efficiency_deposit'])->sum('field_value');
+
+        } else {
+            return OrderDetail::where('order_no', function ($query) {
+                $query->select('no')
+                    ->from(with(new Order())->getTable())
+                    ->where('gainer_primary_user_id', auth()->user()->getPrimaryUserId())
+                    ->whereIn('status', [13, 14, 15, 16, 17, 18]);
+            })->whereIn('field_name', ['security_deposit', 'efficiency_deposit'])->sum('field_value');
+        }
+    }
+
+
     public static function orderAndDetailAndConsult($orderNo)
     {
         $collectionArr =  DB::select("
