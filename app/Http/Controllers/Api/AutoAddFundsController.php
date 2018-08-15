@@ -62,6 +62,16 @@ class AutoAddFundsController
         if (!$userInfo) {
             return response()->ajax(0, '不存在的用户');
         }
+        try {
+            // 创建加款订单
+            Recharge::create([
+                'foreign_order_no' => $requestData->order_id,
+                'amount' => $requestData->money,
+                'user_id' => $requestData->user_id,
+            ]);
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '该订单号已经成功自动加款');
+        }
 
         // 是否存在 加款记录
         $exist = UserAmountFlow::where('user_id', $requestData->user_id)
