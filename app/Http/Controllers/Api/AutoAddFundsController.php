@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\AssetException;
+use App\Models\Recharge as RechargeModel;
 use App\Extensions\Asset\Recharge;
 use App\Models\User;
 use App\Models\UserAmountFlow;
@@ -64,7 +65,7 @@ class AutoAddFundsController
         }
         try {
             // 创建加款订单
-            Recharge::create([
+            RechargeModel::create([
                 'foreign_order_no' => $requestData->order_id,
                 'amount' => $requestData->money,
                 'user_id' => $requestData->user_id,
