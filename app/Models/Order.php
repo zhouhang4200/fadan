@@ -356,7 +356,7 @@ class Order extends Model
     {
         if (auth()->user()->leveling_type == 2) {
 
-            return OrderDetail::where('order_no', function ($query) {
+            return OrderDetail::whereIn('order_no', function ($query) {
                 $query->select('no')
                     ->from(with(new Order())->getTable())
                     ->where('creator_primary_user_id', auth()->user()->getPrimaryUserId())
@@ -364,7 +364,7 @@ class Order extends Model
             })->whereIn('field_name', ['security_deposit', 'efficiency_deposit'])->sum('field_value');
 
         } else {
-            return OrderDetail::where('order_no', function ($query) {
+            return OrderDetail::whereIn('order_no', function ($query) {
                 $query->select('no')
                     ->from(with(new Order())->getTable())
                     ->where('gainer_primary_user_id', auth()->user()->getPrimaryUserId())
