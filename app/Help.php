@@ -52,7 +52,9 @@ if (!function_exists('loginDetail')) {
         try {
             $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip;
 
-            $client = new Client();
+            $client = new Client([
+                'timeout' => 2,
+            ]);
 
             $res = $client->request('GET', $url);
             $res = $res->getBody();
