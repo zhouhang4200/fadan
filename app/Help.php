@@ -50,15 +50,17 @@ if (!function_exists('loginDetail')) {
     function loginDetail($ip)
     {
         try {
+            myLog('ip', [1, date('Y-m-d H:i:s')]);
             $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip;
 
             $client = new Client([
-                'timeout' => 2,
+                'timeout' => 1,
             ]);
 
             $res = $client->request('GET', $url);
             $res = $res->getBody();
             $res = json_decode($res);
+            myLog('ip', [ 2, date('Y-m-d H:i:s')]);
 
             if (isset($res->code) && $res->code == 0) {
 
@@ -72,7 +74,11 @@ if (!function_exists('loginDetail')) {
                     'ip'       => ip2long($ip),
                 ];
             }
+            myLog('ip', [ 3, date('Y-m-d H:i:s')]);
+
         } catch (\Exception $exception) {
+            myLog('ip', [ 4, date('Y-m-d H:i:s')]);
+
             return [
                 'country'  => '',
                 'province' => '',
@@ -81,6 +87,7 @@ if (!function_exists('loginDetail')) {
                 'ip'       => ip2long($ip),
             ];
         }
+        myLog('ip', [ 5, date('Y-m-d H:i:s')]);
 
         return [
             'country'  => '',
