@@ -49,45 +49,45 @@ if (!function_exists('loginDetail')) {
      */
     function loginDetail($ip)
     {
-        try {
-            myLog('ipde', [1, date('Y-m-d H:i:s')]);
-            $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip;
-
-            $client = new Client([
-                'timeout' => 1,
-            ]);
-
-            $res = $client->request('GET', $url);
-            $res = $res->getBody();
-            $res = json_decode($res);
-            myLog('ipde', [ 2, date('Y-m-d H:i:s')]);
-
-            if (isset($res->code) && $res->code == 0) {
-
-                $city = City::where('name', $res->data->city)->first();
-
-                return [
-                    'country'  => $res->data->country,
-                    'province' => $res->data->region,
-                    'city'     => empty($res->data->city) ? $res->data->region : $res->data->city,
-                    'city_id'  => $city ? $city->id : 0,
-                    'ip'       => ip2long($ip),
-                ];
-            }
-            myLog('ipde', [ 3, date('Y-m-d H:i:s')]);
-
-        } catch (\Exception $exception) {
-            myLog('ipde', [ 4, date('Y-m-d H:i:s')]);
-
-            return [
-                'country'  => '',
-                'province' => '',
-                'city'     => '',
-                'city_id'  => 0,
-                'ip'       => ip2long($ip),
-            ];
-        }
-        myLog('ipde', [ 5, date('Y-m-d H:i:s')]);
+//        try {
+//            myLog('ipde', [1, date('Y-m-d H:i:s')]);
+//            $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip;
+//
+//            $client = new Client([
+//                'timeout' => 1,
+//            ]);
+//
+//            $res = $client->request('GET', $url);
+//            $res = $res->getBody();
+//            $res = json_decode($res);
+//            myLog('ipde', [ 2, date('Y-m-d H:i:s')]);
+//
+//            if (isset($res->code) && $res->code == 0) {
+//
+//                $city = City::where('name', $res->data->city)->first();
+//
+//                return [
+//                    'country'  => $res->data->country,
+//                    'province' => $res->data->region,
+//                    'city'     => empty($res->data->city) ? $res->data->region : $res->data->city,
+//                    'city_id'  => $city ? $city->id : 0,
+//                    'ip'       => ip2long($ip),
+//                ];
+//            }
+//            myLog('ipde', [ 3, date('Y-m-d H:i:s')]);
+//
+//        } catch (\Exception $exception) {
+//            myLog('ipde', [ 4, date('Y-m-d H:i:s')]);
+//
+//            return [
+//                'country'  => '',
+//                'province' => '',
+//                'city'     => '',
+//                'city_id'  => 0,
+//                'ip'       => ip2long($ip),
+//            ];
+//        }
+//        myLog('ipde', [ 5, date('Y-m-d H:i:s')]);
 
         return [
             'country'  => '',
