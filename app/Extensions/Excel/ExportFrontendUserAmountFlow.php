@@ -29,6 +29,7 @@ class ExportFrontendUserAmountFlow extends \Maatwebsite\Excel\Files\NewExcelFile
             $sheet->row(1, array(
                 '流水号',
                 '相关单号',
+                '天猫单号',
                 '类型',
                 '金额',
                 '说明',

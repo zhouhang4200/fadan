@@ -59,12 +59,14 @@ class ComplaintController extends Controller
             'complaint_primary_user_id' => 'bail|required|integer',
             'be_complaint_primary_user_id' => 'bail|required|integer|different:complaint_primary_user_id',
             'order_no'    => 'bail|required|min:22|max:22|unique:businessman_complaints',
+            'foreign_order_no' => 'required',
             'amount'  => 'bail|required|numeric',
             'remark'  => 'bail|required|string|max:200',
         ],[],[
             'complaint_primary_user_id' => '投诉人ID',
             'be_complaint_primary_user_id' => '被投诉人ID',
             'order_no' => '订单号',
+            'foreign_order_no' => '天猫订单号',
             'amount' => '要求赔偿金额',
             'remark' => '备注',
         ]);

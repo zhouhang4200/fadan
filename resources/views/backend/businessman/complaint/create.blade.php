@@ -68,6 +68,12 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
+                            <label class="layui-form-label">*天猫订单号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="foreign_order_no" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ old('foreign_order_no') }}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label">*被投诉赔偿金额</label>
                             <div class="layui-input-block">
                                 <input type="text" name="amount" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ old('amount')  }}">
@@ -110,6 +116,7 @@
                 $.post('{{ route('businessman.complaint.query-order') }}', {no:$(this).val()}, function (result) {
                     $('input[name=complaint_primary_user_id]').val(result.content.creator_primary_user_id);
                     $('input[name=be_complaint_primary_user_id]').val(result.content.gainer_primary_user_id);
+                    $('input[name=foreign_order_no]').val(result.content.foreign_order_no);
                     $('input[name=amount]').val(result.content.amount);
                     layui.form.render();
                 }, 'json');

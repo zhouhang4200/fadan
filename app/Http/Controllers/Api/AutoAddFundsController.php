@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\AssetException;
+use App\Models\Recharge as RechargeModel;
 use App\Extensions\Asset\Recharge;
 use App\Models\User;
 use App\Models\UserAmountFlow;
@@ -22,7 +23,7 @@ class AutoAddFundsController
      */
     public function member(Request $request)
     {
-        if (!in_array(getClientIp(), ['113.57.118.50', '120.202.26.95', '113.57.130.18', '116.205.13.50', '120.76.129.109', '120.25.253.208', '116.205.11.26', '116.205.11.27'])) {
+        if (!in_array(getClientIp(), ['113.57.118.58', '113.57.118.50', '120.202.26.95', '113.57.130.18', '116.205.13.50', '120.76.129.109', '120.25.253.208', '116.205.11.26', '116.205.11.27'])) {
             myLog('auto-funds', ['ip' => getClientIp(), 'IP不在白名单']);
             return response()->ajax(0, 'IP不在白名单');
         }
@@ -61,6 +62,16 @@ class AutoAddFundsController
 
         if (!$userInfo) {
             return response()->ajax(0, '不存在的用户');
+        }
+        try {
+            // 创建加款订单
+            RechargeModel::create([
+                'foreign_order_no' => $requestData->order_id,
+                'amount' => $requestData->money,
+                'user_id' => $requestData->user_id,
+            ]);
+        } catch (\Exception $exception) {
+            return response()->ajax(0, '该订单号已经成功自动加款');
         }
 
         // 是否存在 加款记录
