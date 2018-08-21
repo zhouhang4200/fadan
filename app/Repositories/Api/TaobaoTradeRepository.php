@@ -15,8 +15,8 @@ class TaobaoTradeRepository
     // 创建
     public static function create($trade, $order)
     {
-        if (!empty(TaobaoTrade::where('tid', $trade['tid'])->first())) {
-            throw new Exception('tid已存在');
+        if (!empty(TaobaoTrade::where('tid', (string)$trade['tid'])->first())) {
+            throw new \Exception('tid已存在');
         }
 
         // 查找商品ID是否存在配置表中，如果有就存储订单否则就不管
@@ -55,7 +55,7 @@ class TaobaoTradeRepository
     public static function update($trade, $order)
     {
         // 创建交易数据
-        $TaobaoTrade = TaobaoTrade::where('tid', $trade['tid'])->first();
+        $TaobaoTrade = TaobaoTrade::where('tid', (string)$trade['tid'])->first();
         if (empty($TaobaoTrade)) {
             throw new Exception('数据不存在');
         }
@@ -84,7 +84,7 @@ class TaobaoTradeRepository
     public static function updateTradeStatus($updateData)
     {
         // 创建交易数据
-        $taobaoTrade = TaobaoTrade::where('tid', $updateData['tid'])->first();
+        $taobaoTrade = TaobaoTrade::where('tid', (string)$updateData['tid'])->first();
 
         if (empty($taobaoTrade)) {
             throw new Exception('数据不存在');
@@ -200,6 +200,6 @@ class TaobaoTradeRepository
      */
     public static function detail($tid)
     {
-        return TaobaoTrade::where('tid', $tid)->first();
+        return TaobaoTrade::where('tid', (string)$tid)->first();
     }
 }

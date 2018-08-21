@@ -7,6 +7,7 @@ use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Recharge;
+use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderRepository;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
@@ -81,7 +82,15 @@ class Test extends Command
      */
     public function handle()
     {
+        $updateData['tid'] = 132184583048396707;
+        \DB::connection()->enableQueryLog();
+        TaobaoTrade::where('tid', $updateData['tid'])->first();
 
+
+dd(
+    \DB::getQueryLog()
+);
+die;
       dd(  Show91Controller::delete([
           'show91_order_no' => 'ORD180723143905497765'
       ]));
