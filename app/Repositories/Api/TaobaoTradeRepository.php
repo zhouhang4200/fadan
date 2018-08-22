@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories\Api;
 
-use App\Exceptions\CustomException as Exception;
+use Exception;
 use App\Models\AutomaticallyGrabGoods;
 use App\Models\TaobaoShopAuthorization;
 use App\Models\TaobaoTrade;
@@ -57,7 +57,7 @@ class TaobaoTradeRepository
         // 创建交易数据
         $TaobaoTrade = TaobaoTrade::where('tid', (string)$trade['tid'])->first();
         if (empty($TaobaoTrade)) {
-            throw new Exception('数据不存在');
+            throw new \Exception('数据不存在');
         }
 
         // 更新交易

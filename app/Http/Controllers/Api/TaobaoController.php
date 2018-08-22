@@ -35,7 +35,7 @@ class TaobaoController extends Controller
             }
             TaobaoTradeRepository::create($data['trade'], $data['order']);
         } catch (Exception $e) {
-            myLog('tb-ex', [$e->getMessage()]);
+            myLog('tb-ex', [$data['trade']['tid'],$e->getMessage()]);
             return response()->tb(0, $e->getMessage());
         }
 
