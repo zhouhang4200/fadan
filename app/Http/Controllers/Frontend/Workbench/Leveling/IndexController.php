@@ -2093,7 +2093,6 @@ class IndexController extends Controller
                 if (! isset($datas['order_status']) || ! in_array($datas['order_status'], [16, 21])) {
                     return '暂无相关信息';
                 }
-
                 foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
                     if ($third == $datas['third'] && isset($datas['third_order_no']) && ! empty($datas['third_order_no'])) {
                         $arbitrationInfos = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['getArbitrationInfo']], [$datas]);
@@ -2114,9 +2113,9 @@ class IndexController extends Controller
                 ]);
             }
         } catch (DailianException $e) {
-            myLog('get-arbitration-advence', ['单号 DailianException' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
+            myLog('get-arbitration-getArbitrationInfo', ['单号' => $datas->order_no ?? '', '失败' => $e->getMessage()]);
         } catch (\Exception $exception) {
-            myLog('get-arbitration-advence', ['单号 Exception' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
+            myLog('get-arbitration-getArbitrationInfo', ['单号' => $datas->order_no ?? '', '失败' => $exception->getMessage()]);
         } 
     }
 

@@ -274,6 +274,7 @@ class OrderController extends Controller
 
                 // 询用查询接口
                 $queryResult = call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['orderDetail']], [$orderDetail]);
+
                 // 对比价格是否一样
                 if ($queryResult[config('leveling.third_orders_price')[$third]['data']][config('leveling.third_orders_price')[$third]['price']] != $orderDetail['game_leveling_amount']) {
                     // 同步价格
@@ -306,7 +307,7 @@ class OrderController extends Controller
             return response()->partner(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order.operate.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
+            myLog('order.operate.local.receive', ['订单号' => $request->order_no ?? '', '结果' => '失败', '原因' => $e->getMessage()]);
             return response()->partner(0, '接口异常');
         } 
         DB::commit();
