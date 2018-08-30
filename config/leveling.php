@@ -247,33 +247,33 @@ return [
     	],
         'api_url' => env('WANZI_API_URL', 'http://www.fulugou.net'),
     	'url' => [
-			'onSale'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/onsale', // 上架
-			'offSale'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/offsale', // 下架
-			'applyRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/apply-consult', // 申请撤销
-			'cancelRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/cancel-consult', // 取消撤销
-			'agreeRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/agree-consult', // 同意撤销
-			'refuseRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/reject-consult', // 不同意撤销
-			'applyArbitration'         => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/apply-complain', // 申请仲裁
-			'cancelArbitration'        => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/cancel-complain', // 取消仲裁
-			'complete'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/complete', // 订单完成
-			'lock'                     => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/lock', // 锁定
-			'cancelLock'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/cancel-lock',// 取消锁定
-			'delete'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/delete', // 删除订单
-			'orderDetail'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/detail', // 订单详情
-			'addTime'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/add-time', // 加时
-			'addMoney'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/add-money', // 加款
-			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/update-account-password', // 修改账号密码
-			'updateOrder'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/update', // 修改订单
-			'getScreenshot'            => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/apply-complete-image', // 订单截图
-			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/complain-message', // 添加仲裁证据
-			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/get-message', //获取留言
-			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/send-message', // 回复留言
-			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/tm/get-complain-info', // 查看仲裁详情
+			'onSale'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/onsale', // 上架
+			'offSale'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/offsale', // 下架
+			'applyRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/apply-consult', // 申请撤销
+			'cancelRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/cancel-consult', // 取消撤销
+			'agreeRevoke'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/agree-consult', // 同意撤销
+			'refuseRevoke'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/reject-consult', // 不同意撤销
+			'applyArbitration'         => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/apply-complain', // 申请仲裁
+			'cancelArbitration'        => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/cancel-complain', // 取消仲裁
+			'complete'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/complete', // 订单完成
+			'lock'                     => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/lock', // 锁定
+			'cancelLock'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/cancel-lock',// 取消锁定
+			'delete'                   => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/delete', // 删除订单
+			'orderDetail'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/detail', // 订单详情
+			'addTime'                  => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/add-time', // 加时
+			'addMoney'                 => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/add-money', // 加款
+			'updateAccountAndPassword' => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/update-account-password', // 修改账号密码
+			'updateOrder'              => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/update', // 修改订单
+			'getScreenshot'            => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/apply-complete-image', // 订单截图
+			'addArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/complain-message', // 添加仲裁证据
+			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/get-message', //获取留言
+			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/send-message', // 回复留言
+			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/get-complain-info', // 查看仲裁详情
 
 			// 以下是新丸子缺少的
-			// 'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/getPlays', // 获取代练类型
-			// 'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/setTop', // 置顶
-			// 'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/api/appeals', // 仲裁列表
+			// 'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/getPlays', // 获取代练类型
+			// 'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/setTop', // 置顶
+			// 'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/appeals', // 仲裁列表
 			
     	],
     ],
