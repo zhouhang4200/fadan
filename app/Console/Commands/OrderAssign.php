@@ -59,7 +59,7 @@ class OrderAssign extends Command
                 $orderInfo = OrderModel::where('no', $orderNo)->first();
 
                 $sendUser = $data->creator_primary_user_id ?? 0;
-                if ($minutes >= 40 && !in_array($sendUser, [8311, 8111])) {
+                if ($minutes >= 40 && !in_array($sendUser, [8311, 8111, 8307])) {
                     try {
                         Order::handle(new Cancel($orderNo, 0));
                     } catch (CustomException $exception) {

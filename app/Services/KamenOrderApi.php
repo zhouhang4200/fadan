@@ -68,6 +68,18 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 //        return $response->getBody()->getContents();
+
+            //
+            $chargeUser = [
+                "channel_list" => [
+                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
+                    "channel_account" =>  "订单集市",
+                    "time" =>  time(),
+                    "amount" =>  "",
+                    "amount_type" =>  "RMB",
+                ]
+            ];
+
             myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
                 . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
