@@ -366,7 +366,7 @@ class OrderController extends Controller
             $apiAmount  = $request->api_amount ?? '';  // 回传代练费
             $apiDeposit = $request->api_deposit ?? ''; // 回传双金
             $apiService = $request->api_service ?? ''; // 回传手续费
-            $content    = $request->content ?? '无'; 
+            $content    = request('content') ?? '无';
             // 回传的撤销说明
 
             // 判断传入的金额是否合法
