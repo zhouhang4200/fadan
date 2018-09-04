@@ -53,13 +53,26 @@ class KamenOrderApi
     /**
      * 更新订单状态 为成功
      * @param int $kmOrderId
+     * @param int $amount
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function success($kmOrderId)
+    public function success($kmOrderId, $amount = 0)
     {
         try {
+
+            $chargeUser = [
+                "channel_list" => [
+                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
+                    "channel_account" =>  "订单集市",
+                    "time" =>  time(),
+                    "amount" =>  $amount,
+                    "amount_type" =>  "RMB",
+                ]
+            ];
+
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . json_encode($chargeUser);
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -67,22 +80,11 @@ class KamenOrderApi
 
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-//        return $response->getBody()->getContents();
-
-            //
-            $chargeUser = [
-                "channel_list" => [
-                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
-                    "channel_account" =>  "订单集市",
-                    "time" =>  time(),
-                    "amount" =>  "",
-                    "amount_type" =>  "RMB",
-                ]
-            ];
 
             myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
+
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . json_encode($chargeUser);
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -94,20 +96,32 @@ class KamenOrderApi
             myLog('km-api', ['107560', $kmOrderId, $response->getBody()->getContents()]);
 
         } catch (\Exception $exception) {
-
+            myLog('km-api-ex', $exception->getMessage());
         }
     }
 
     /**
      * 更新订单状态 失败
+     * @param $amount integer 卡门订单号
      * @param $kmOrderId integer 卡门订单号
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public  function fail($kmOrderId)
+    public  function fail($kmOrderId, $amount = 0)
     {
         try {
+            $chargeUser = [
+                "channel_list" => [
+                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
+                    "channel_account" =>  "订单集市",
+                    "time" =>  time(),
+                    "amount" =>  $amount,
+                    "amount_type" =>  "RMB",
+                ]
+            ];
+
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . json_encode($chargeUser);
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -116,10 +130,11 @@ class KamenOrderApi
             // 发送请求
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-            $result1 =  $response->getBody()->getContents();
+
+            myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
 
             $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . json_encode($chargeUser);
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -128,10 +143,10 @@ class KamenOrderApi
             // 发送请求
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
-            $result2 =  $response->getBody()->getContents();
 
-//            return $result2;
+            myLog('km-api', ['107560', $kmOrderId, $response->getBody()->getContents()]);
         } catch(\Exception $e){
+            myLog('km-api-ex', $e->getMessage());
             return false;
         }
     }

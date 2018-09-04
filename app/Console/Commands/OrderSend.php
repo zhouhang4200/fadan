@@ -83,7 +83,7 @@ class OrderSend extends Command
 
                             if (!in_array($third, $blackThirds) && !in_array($third, $managerBlackThirds)) {
 
-                                    myLog('send-order-setup', ['8' => $order->no]);
+                                    myLog('send-order-setup', ['8' => $order->no, $platform['receive']]);
 
                                 try {
                                     $decrypt = base64_encode(openssl_encrypt($orderData, 'aes-128-cbc', $platform['aes_key'], true, $platform['aes_iv']));

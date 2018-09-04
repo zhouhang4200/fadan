@@ -42,7 +42,7 @@ class Delivery extends \App\Extensions\Order\Operations\Base\Operation
         // 向卡门发送通知
         $has = SiteInfo::where('user_id', $this->order->creator_primary_user_id)->first();
         if ($this->order->foreignOrder && $has) {
-            KamenOrderApi::share()->success($this->order->foreignOrder->kamen_order_no);
+            KamenOrderApi::share()->success($this->order->foreignOrder->kamen_order_no, $this->order->amount);
         }
 
         // 发送推广短信
