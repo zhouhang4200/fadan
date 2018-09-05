@@ -317,7 +317,7 @@ abstract class DailianAbstract
             throw new DailianException('订单不存在');
         }
         
-        if (in_array($order->status, [13, 14, 15, 18])) {
+        if (in_array($order->status, [13, 14, 15, 17, 18])) {
             if ($order->status == 15 || $order->status == 18) {
                 $orderDetail = OrderDetail::where('order_no', $order->no)
                     ->where('field_name', 'order_previous_status')
