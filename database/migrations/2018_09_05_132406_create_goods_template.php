@@ -20,7 +20,7 @@ class CreateGoodsTemplate extends Migration
             $table->unsignedInteger('game_id')->comment('组件定义的英文名');
             $table->unsignedInteger('created_admin_user_id')->comment('组件的值');
             $table->unsignedInteger('updated_admin_user_id')->comment('组件的值');
-            $table->unsignedInteger('level');
+            $table->unsignedInteger('level')->default('0');
             $table->timestamps();
         });
     }

@@ -16,8 +16,10 @@ class CreateOrderDetailsTable extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_no')->comment('订单号：orders.no');
+            $table->unsignedInteger('creator_primary_user_id')->comment('order_details');
             $table->string('field_name', 80)->comment('字段名称');
             $table->string('field_display_name', 80)->comment('字段显示名称');
+            $table->string('field_name_alias', 80)->comment('字段显示名称');
             $table->string('field_value', 600)->comment('字段值');
         });
     }
