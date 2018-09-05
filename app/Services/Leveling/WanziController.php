@@ -806,12 +806,14 @@ class WanziController extends LevelingAbstract implements LevelingInterface
     public static function setTop($orderDatas)
     {
     	try {
-	        $options = [
-				'account' => config('leveling.wanzi.account'),
-				'sign'    => config('leveling.wanzi.sign'),
-				'oid'     => $orderDatas['wanzi_order_no'],
-				'isTop'   => 1,
-	        ];
+            $options = [
+                'app_id'    => config('leveling.wanzi.app_id'),
+                'order_no'  => $orderDatas['wanzi_order_no'],
+                'timestamp' => time(),
+            ];
+
+            $sign = static::getSign($options);
+            $options['sign'] = $sign;
 	       	// 发送
 	       	static::normalRequest($options, config('leveling.wanzi.url')['setTop'], 'setTop', $orderDatas);
     	} catch (Exception $e) {

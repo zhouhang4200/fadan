@@ -269,10 +269,10 @@ return [
 			'getMessage'               => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/get-message', //获取留言
 			'replyMessage'             => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/send-message', // 回复留言
 			'getArbitrationInfo'       => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/get-complain-info', // 查看仲裁详情
+             'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/top', // 置顶
 
-			// 以下是新丸子缺少的
-			// 'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/getPlays', // 获取代练类型
-			// 'setTop'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/setTop', // 置顶
+            // 以下是新丸子缺少的
+            // 'getPlays'				   => env('WANZI_API_URL', 'http://www.fulugou.net').'/getPlays', // 获取代练类型
 			// 'getArbitrationList'	   => env('WANZI_API_URL', 'http://www.fulugou.net').'/appeals', // 仲裁列表
 			
     	],
