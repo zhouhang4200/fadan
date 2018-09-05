@@ -26,8 +26,8 @@ class AddDefaultPermission
      */
     public function handle(Registered $event)
     {
-        if ($event->user->parent_id == 0 && $event->user->getTable() == 'users') {
-            $event->user->assignRole('game_leveling');
-        }
+//        if ($event->user->parent_id == 0 && $event->user->getTable() == 'users') {
+//            $event->user->assignRole('game_leveling');
+//        }
     }
 }
