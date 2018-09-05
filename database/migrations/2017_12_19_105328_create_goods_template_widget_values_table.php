@@ -20,6 +20,7 @@ class CreateGoodsTemplateWidgetValuesTable extends Migration
             $table->integer('parent_id', false, true)->comment('组件的父级ID,只有在下拉组件时有意义');
             $table->string('field_name', 60)->comment('组件定义的英文名');
             $table->string('field_value', 60)->comment('组件的值');
+            $table->unsignedInteger('level');
             $table->string('field_content', 600)->comment('组件值对应的内容');
             $table->timestamps();
         });

@@ -15,10 +15,10 @@ class CreateThirdAreasTable extends Migration
     {
         Schema::create('third_areas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('game_id')->unsigned()->comment('我们的游戏id');
-            $table->tinyInteger('third_id')->unsigned()->comment('第三方平台id，1：91代练');
-            $table->integer('area_id')->unsigned()->comment('我们的区id');
-            $table->string('third_area_id')->unsigned()->comment('第三方区id');
+            $table->unsignedInteger('game_id')->comment('我们的游戏id');
+            $table->unsignedTinyInteger('third_id')->comment('第三方平台id，1：91代练');
+            $table->unsignedInteger('area_id')->comment('我们的区id');
+            $table->string('third_area_id')->comment('第三方区id');
             $table->timestamps();
         });
     }

@@ -15,10 +15,10 @@ class CreateThirdServersTable extends Migration
     {
         Schema::create('third_servers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('game_id')->unsigned()->comment('我们的游戏id');
-            $table->tinyInteger('third_id')->unsigned()->comment('第三方平台id，1：91代练');
-            $table->integer('server_id')->unsigned()->comment('我们的服务器id');
-            $table->string('third_server_id')->unsigned()->comment('第三方服务器id');
+            $table->unsignedInteger('game_id')->comment('我们的游戏id');
+            $table->unsignedTinyInteger('third_id')->comment('第三方平台id，1：91代练');
+            $table->unsignedInteger('server_id')->comment('我们的服务器id');
+            $table->string('third_server_id')->comment('第三方服务器id');
             $table->timestamps();
         });
     }
