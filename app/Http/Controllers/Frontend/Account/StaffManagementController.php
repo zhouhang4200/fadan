@@ -163,7 +163,7 @@ class StaffManagementController extends Controller
         $data['api_token'] = Str::random(25);
         $data['password'] = bcrypt(clientRSADecrypt($request->password));
         $data['parent_id'] = Auth::user()->getPrimaryUserId();
-        $data['email'] = mt_rand(5, 15)."@qq.com";
+        $data['email'] = mt_rand()."@qq.com";
         $data['app_id'] = str_random(60);
         $data['app_secret'] = str_random(60);
         $data['voucher'] = "/frontend/v1/images/default-avatar.png";
