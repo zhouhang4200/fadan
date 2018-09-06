@@ -72,7 +72,7 @@ class KamenOrderApi
             ];
 
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . json_encode($chargeUser);
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -84,7 +84,7 @@ class KamenOrderApi
             myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
 
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . json_encode($chargeUser);
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -121,7 +121,7 @@ class KamenOrderApi
             ];
 
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . json_encode($chargeUser);
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -134,7 +134,7 @@ class KamenOrderApi
             myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
 
             $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . json_encode($chargeUser);
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
