@@ -28,6 +28,7 @@ class OrderController extends Controller
 
             $orderData = ForeignOrderFactory::choose('kamen')->outputOrder($request->data);
 
+            myLog('km-data', $orderData);
             if (isset($orderData['price'])) {
                 // 单价用支付金额计算
                 $price = bcdiv($orderData['total'], $orderData['quantity']);
