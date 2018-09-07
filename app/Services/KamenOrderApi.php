@@ -76,7 +76,7 @@ class KamenOrderApi
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
-            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param . json_encode($chargeUser) . $sign;
+            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param .  $sign;
 
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
@@ -88,7 +88,7 @@ class KamenOrderApi
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
-            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param  . json_encode($chargeUser) .  $sign;
+            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param  .  $sign;
 
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
@@ -125,7 +125,7 @@ class KamenOrderApi
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
-            $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param  . json_encode($chargeUser) .  $sign;
+            $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param  .  $sign;
 
             // 发送请求
             $client = new Client();
@@ -138,7 +138,7 @@ class KamenOrderApi
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
-            $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param  . json_encode($chargeUser) .  $sign;
+            $url = $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' . $param  . $sign;
 
             // 发送请求
             $client = new Client();
