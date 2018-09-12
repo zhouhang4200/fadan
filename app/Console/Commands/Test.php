@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\Recharge;
 use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderRepository;
+use App\Services\KamenOrderApi;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Leveling\Show91Controller;
@@ -76,12 +77,84 @@ class Test extends Command
     ];
 
     /**
+     * @var array
+     */
+    private $apiUrl = [
+        "http://ls.kamennet.com/",
+        "http://api1.kabaling.com/",
+        "http://ls1.kabaling.com/",
+        "http://api2.kabaling.com/",
+        "http://ls.kabaling.com/",
+        "http://api3.kamennet.com/",
+        "http://api4.kabaling.com/",
+        "http://api1.kamennet.com/",
+        "http://ls1.kamennet.com/",
+        "http://ls2.kamennet.com/",
+        "http://api2.kamennet.com/",
+        "http://ls2.kabaling.com/"
+    ];
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
+
+        $a = [
+
+            1439121077,
+            1439068525,
+            1439035548,
+            1439008543,
+            1439002667,
+            1438996311,
+            1438973853,
+            1438961679,
+            1438943578,
+            1438940676,
+            1438933511,
+            1438932409,
+            1438928329,
+            1438927485,
+            1438888443,
+            1438869888,
+            1438863998,
+            1438842680,
+            1438706095,
+            1438693579,
+            1438682873,
+            1438681890,
+            1438670273,
+            1438662933,
+            1438640130,
+            1438559405,
+            1438552844,
+            1438550904,
+            1438511436,
+            1438271131,
+            1438256449,
+            1438179625,
+        ];
+
+        foreach ($a as $item) {
+            $param =  'SiteId=107560&OrderNo=' . $item. '&OrderStatus=' . strtolower(urlencode('成功'))
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+
+            $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
+
+            $url =  $this->apiUrl[rand(0, 11)] . 'API/Order/ModifyOrderStatus.aspx?' .  $param  .  $sign;
+
+            $client = new Client();
+            $response = $client->request('GET', str_replace(' ', '+', $url));
+
+            myLog('km-api', ['107560', $item, $response->getBody()->getContents()]);
+        }
+
+die;
+
+
         $updateData['tid'] = 132184583048396707;
         \DB::connection()->enableQueryLog();
         TaobaoTrade::where('tid', $updateData['tid'])->first();

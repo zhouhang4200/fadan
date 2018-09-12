@@ -44,7 +44,7 @@ class OrderSend extends Command
     {
         $this->redis = RedisConnect::order();
 
-        $client = new Client();
+        $client = new Client(['verify' => false]);
 
         while (1) {
             $orderData = $this->redis->lpop('order:send');
