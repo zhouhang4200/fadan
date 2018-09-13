@@ -30,6 +30,7 @@ use App\Services\Show91;
 use App\Services\SmSApi;
 use App\Services\TmallOrderApi;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
 use LogisticsDummySendRequest;
@@ -172,7 +173,11 @@ class Temp extends Command
 
     public function handle()
     {
-
+        try {
+            dd(KamenOrderApi::share()->fail('1443097204', '5.8'));
+        } catch (GuzzleException $e) {
+        }
+        dd(json_decode(json_encode($chargeUser), true));
         $order  = \App\Models\Order::where('no', $this->argument('no'))->first();
         if ($order) {
             (new ForceRevoke())->run($order->no, $order->gainer_primary_user_id);

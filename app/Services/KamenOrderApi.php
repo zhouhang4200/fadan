@@ -61,18 +61,20 @@ class KamenOrderApi
     {
         try {
 
-            $chargeUser = [
+            $chargeUser = json_encode([
                 "channel_list" => [
-                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
-                    "channel_account" =>  "订单集市",
-                    "time" =>  time(),
-                    "amount" =>  $amount,
-                    "amount_type" =>  "RMB",
+                    [
+                        "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
+                        "channel_account" =>  "订单集市",
+                        "time" =>  time(),
+                        "amount" =>  $amount,
+                        "amount_type" =>  "RMB",
+                    ]
                 ]
-            ];
+            ]);
 
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . $chargeUser;
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -110,18 +112,20 @@ class KamenOrderApi
     public  function fail($kmOrderId, $amount = 0)
     {
         try {
-            $chargeUser = [
+            $chargeUser = json_encode([
                 "channel_list" => [
-                    "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
-                    "channel_account" =>  "订单集市",
-                    "time" =>  time(),
-                    "amount" =>  $amount,
-                    "amount_type" =>  "RMB",
+                    [
+                        "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
+                        "channel_account" =>  "订单集市",
+                        "time" =>  time(),
+                        "amount" =>  $amount,
+                        "amount_type" =>  "RMB",
+                    ]
                 ]
-            ];
+            ]);
 
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . $chargeUser;
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
