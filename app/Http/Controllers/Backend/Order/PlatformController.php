@@ -135,7 +135,7 @@ class PlatformController extends Controller
      */
     public function changeStatus(Request $request)
     {
-        $order = OrderModel::where('trade_no', $request->data['no'])->first();
+        $order = OrderModel::where('no', $request->data['no'])->first();
         switch ($request->data['type']) {
             case 'cancel' :
                 try {
