@@ -89,6 +89,7 @@
                                                                             <select name="type" lay-verify="required">
                                                                                 <option value="">操作类型</option>
                                                                                 <option value="cancel">取消转单</option>
+                                                                                <option value="fail">失败订单</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-xs-6">

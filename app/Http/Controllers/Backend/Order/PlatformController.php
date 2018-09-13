@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Order;
 
+use App\Extensions\Order\Operations\DeliveryFailure;
 use App\Models\User;
 use App\Extensions\Order\Operations\AskForAfterService;
 use App\Models\AfterService;
@@ -134,11 +135,21 @@ class PlatformController extends Controller
      */
     public function changeStatus(Request $request)
     {
+        $order = OrderModel::where('trade_no', $request->data['no'])->first();
         switch ($request->data['type']) {
             case 'cancel' :
                 try {
                     // 调用取消
                     Order::handle(new Cancel($request->data['no'], 0, Auth::user()->id));
+                    return response()->ajax(1, '操作成功');
+                } catch (CustomException $exception) {
+                    return response()->ajax(1, $exception->getMessage());
+                }
+                break;
+            case 'fail' :
+                try {
+                    // 调用失败
+                    Order::handle(new DeliveryFailure($request->data['no'], $order->gainer_primary_user_id, '后台失败'));
                     return response()->ajax(1, '操作成功');
                 } catch (CustomException $exception) {
                     return response()->ajax(1, $exception->getMessage());
