@@ -74,7 +74,7 @@ class KamenOrderApi
             ]);
 
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=' . $chargeUser;
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -117,7 +117,7 @@ class KamenOrderApi
                     [
                         "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
                         "channel_account" =>  "订单集市",
-                        "time" =>  time(),
+                        "time" =>  date('Y-m-d H:i:s'),
                         "amount" =>  $amount,
                         "amount_type" =>  "RMB",
                     ]
@@ -125,7 +125,7 @@ class KamenOrderApi
             ]);
 
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=' . $chargeUser;
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 

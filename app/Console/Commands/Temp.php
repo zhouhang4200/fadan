@@ -173,11 +173,35 @@ class Temp extends Command
 
     public function handle()
     {
+
+        $chargeUser = json_encode([
+            "channel_list" => [
+                [
+                    "channel_id" =>  "DED6D0C9-3D5A-44BA-95D5-7BC5F6CD812B",
+                    "channel_account" =>  "gaiya",
+                    "time" =>  "2018-09-13 18:00:21",
+                    "amount" =>  "1944.00",
+                    "amount_type" =>  "RMB",
+                ]
+            ]
+        ]);
+        // {"channel_list": [{"channel_id": "DED6D0C9-3D5A-44BA-95D5-7BC5F6CD812B","channel_account": "gaiya","time": "2018-09-13 18:00:21","amount": "1944.00","amount_type": "RMB"}]}
+        // {"channel_list": [{"channel_id": "","channel_account": "","time": "2018-09-12 15:01:19","amount": "0","amount_type": "RMB"}]}
+
+$a ='SiteId=107921&OrderNo=1443140488&OrderStatus=成功&Charger=vipqd_5---iZz86rx1oypwnkZ---&Description=||||||&ChargeUse=&Sign=39C4F06521F780307DEF2BD7CB8E86C0';
+
+        $param = 'SiteId=107921&OrderNo=1443140488&OrderStatus=' . strtolower(urlencode('成功'))
+            . '&Charger=vipqd_5---iZz86rx1oypwnkZ---&Description=' . strtolower(urlencode('||||||')) . '&ChargeUse=' . str_replace('ded6d0c9-3d5a-44ba-95d5-7bc5f6cd812b', 'DED6D0C9-3D5A-44BA-95D5-7BC5F6CD812B', strtolower(urlencode($chargeUser)));
+
+        $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
+
+            dd($param.  $sign);
+
         try {
             dd(KamenOrderApi::share()->fail('1443097204', '5.8'));
         } catch (GuzzleException $e) {
         }
-        dd(json_decode(json_encode($chargeUser), true));
+
         $order  = \App\Models\Order::where('no', $this->argument('no'))->first();
         if ($order) {
             (new ForceRevoke())->run($order->no, $order->gainer_primary_user_id);
