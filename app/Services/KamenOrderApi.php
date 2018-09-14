@@ -74,7 +74,7 @@ class KamenOrderApi
             ]);
 
             $param =  'SiteId=105714&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse='.  strtolower(urlencode($chargeUser));
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -83,10 +83,10 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 
-            myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
+            myLog('km-api-success', ['105714', $kmOrderId, $response->getBody()->getContents()]);
 
             $param =  'SiteId=107560&OrderNo=' . $kmOrderId. '&OrderStatus=' . strtolower(urlencode('成功'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('充值成功')) . '&ChargeUse='.  strtolower(urlencode($chargeUser));
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -95,7 +95,7 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 
-            myLog('km-api', ['107560', $kmOrderId, $response->getBody()->getContents()]);
+            myLog('km-api-success', ['107560', $kmOrderId, $response->getBody()->getContents()]);
 
         } catch (\Exception $exception) {
             myLog('km-api-ex', $exception->getMessage());
@@ -125,7 +125,7 @@ class KamenOrderApi
             ]);
 
             $param = 'SiteId=105714&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse='  .  strtolower(urlencode($chargeUser));
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -135,10 +135,10 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 
-            myLog('km-api', ['105714', $kmOrderId, $response->getBody()->getContents()]);
+            myLog('km-api-fail', ['105714', $kmOrderId, $response->getBody()->getContents()]);
 
             $param = 'SiteId=107560&OrderNo=' . $kmOrderId . '&OrderStatus=' . strtolower(urlencode('失败'))
-                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse=';
+                . '&Charger=vipqd_10---marekt&Description=' . strtolower(urlencode('失败')) . '&ChargeUse='  .  strtolower(urlencode($chargeUser));
 
             $sign = '&Sign=' . strtoupper(md5(str_replace('&', '', $param) . 'B8F75DCE91E6486F9729E19EB762664E'));
 
@@ -148,7 +148,7 @@ class KamenOrderApi
             $client = new Client();
             $response = $client->request('GET', str_replace(' ', '+', $url));
 
-            myLog('km-api', ['107560', $kmOrderId, $response->getBody()->getContents()]);
+            myLog('km-api-fail', ['107560', $kmOrderId, $response->getBody()->getContents()]);
         } catch(\Exception $e){
             myLog('km-api-ex', $e->getMessage());
             return false;
