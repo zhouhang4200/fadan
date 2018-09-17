@@ -66,7 +66,7 @@ class KamenOrderApi
                     [
                         "channel_id" =>  "a022d754-2e40-4835-b1f6-8bc70f77e83d",
                         "channel_account" =>  "订单集市",
-                        "time" =>  time(),
+                        "time" =>  date('Y-m-d H:i:s'),
                         "amount" =>  $amount,
                         "amount_type" =>  "RMB",
                     ]
