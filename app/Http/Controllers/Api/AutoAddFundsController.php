@@ -106,6 +106,6 @@ class AutoAddFundsController
         $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
         $encryptData = $crypt->encrypt($memberInfo);
 
-        return response()->ajax(1, '加款成功', $encryptData);
+        return response()->ajax(1, '获取成功', $encryptData);
     }
 }
