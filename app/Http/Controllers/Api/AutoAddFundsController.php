@@ -97,8 +97,14 @@ class AutoAddFundsController
     /**
      * @param Request $request
      */
-    public function self(Request $request)
+    public function memberInfo(Request $request)
     {
+        $memberInfo = RealNameIdent::where('status', 1)->pluck('name', 'user_id')->toJson();
 
+
+        $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
+        $encryptData = $crypt->encrypt($memberInfo);
+
+        return response()->ajax(1, '加款成功', $encryptData);
     }
 }

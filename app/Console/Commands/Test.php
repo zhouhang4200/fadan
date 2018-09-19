@@ -6,6 +6,7 @@ use App\Extensions\Dailian\Controllers\Arbitrationed;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\RealNameIdent;
 use App\Models\Recharge;
 use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\OrderRepository;
@@ -13,6 +14,7 @@ use App\Services\KamenOrderApi;
 use App\Services\Leveling\DD373Controller;
 use App\Services\Leveling\MayiDailianController;
 use App\Services\Leveling\Show91Controller;
+use App\Services\Mcrypt3Des;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
 
@@ -20,6 +22,7 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
+use User;
 
 class Test extends Command
 {
@@ -101,6 +104,16 @@ class Test extends Command
      */
     public function handle()
     {
+        $memberInfo = RealNameIdent::where('status', 1)->pluck('name', 'user_id')->toJson();
+
+
+        $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
+        $encryptData = $crypt->encrypt($memberInfo);
+
+        $d = $crypt->decrypt($encryptData);
+
+        dd($d);
+        return response()->ajax(1, '加款成功', $encryptData);
 
         $a = [
 

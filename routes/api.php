@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::prefix('auto-add-funds')->group(function (){
     Route::any('member', 'AutoAddFundsController@member');
-    Route::post('self', 'AutoAddFundsController@self');
+    Route::any('member-info', 'AutoAddFundsController@memberInfo');
 });
 
 Route::post('kamen', 'OrderController@KamenOrder');
