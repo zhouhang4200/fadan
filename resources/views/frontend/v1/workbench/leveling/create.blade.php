@@ -254,7 +254,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span class="font-color-orange">*</span> 密码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码">
+                                <input type="text" name="password" lay-verify="required|pwd" placeholder="" autocomplete="off" class="layui-input" display-name="密码">
                             </div>
                         </div>
                     </div>
@@ -589,6 +589,11 @@
                 zero: function(value){
                     if(value <= 0){
                         return '该数值需大于0';
+                    }
+                },
+                pwd: function(value){
+                    if (value.length > 30) {
+                        return '密码长度过长';
                     }
                 },
                 money:function (value) {
