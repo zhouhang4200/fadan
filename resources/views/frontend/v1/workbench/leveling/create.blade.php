@@ -592,7 +592,7 @@
                     }
                 },
                 pwd: function(value){
-                    if (value.length > 30) {
+                    if (value.length > 10) {
                         return '密码长度过长';
                     }
                 },
