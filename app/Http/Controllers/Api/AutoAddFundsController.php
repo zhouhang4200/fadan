@@ -100,7 +100,7 @@ class AutoAddFundsController
      */
     public function memberInfo(Request $request)
     {
-        $memberInfo = RealNameIdent::where('status', 1)->pluck('name', 'user_id')->toJson();
+        $memberInfo = RealNameIdent::select(['name', 'user_id'])->where('status', 1)->get()->toJson();
 
 
         $crypt = new Mcrypt3Des('4RnN9Lr7', '4RnN9Lr7');
