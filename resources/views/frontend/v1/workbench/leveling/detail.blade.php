@@ -255,7 +255,7 @@
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">密码</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="password" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['password'] ?? '' }}">
+                                        <input type="text" name="password" lay-verify="required|pwd" placeholder="" autocomplete="off" class="layui-input" display-name="密码"  @if(!in_array($detail['status'], [1, 22]))  disabled="disabled"  @endif value="{{ $detail['password'] ?? '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -1264,6 +1264,11 @@
                         if (temp[1].length > 2) {
                             return '输入的小数请不要大于两位';
                         }
+                    }
+                },
+                pwd: function(value){
+                    if (value.length > 30) {
+                        return '密码长度过长';
                     }
                 },
                 gt5:function (value) { // 大于1
