@@ -56,8 +56,9 @@ class GenerateOrderJsonCommand extends Command
             // 查找订单获取价格
             $foreignOrderNo = ForeignOrder::where('kamen_order_no', $kamenOrderId)->value('foreign_order_no');
 
+            $amount = 0;
             if ($foreignOrderNo) {
-                $amount =   Order::where('foreign_order_no', $foreignOrderNo)->value('amount');
+                $amount =  Order::where('foreign_order_no', $foreignOrderNo)->value('amount');
             }
 
             if ($amount) {
