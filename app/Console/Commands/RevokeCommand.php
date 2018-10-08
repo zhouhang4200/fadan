@@ -13,14 +13,14 @@ class RevokeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'Revoke {no}{type}{amount?}{deposit?}{service?}';
+    protected $signature = 'order:revoke {no}{type}{amount?}{deposit?}{service?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '接单方发起撤销，不调用接口';
+    protected $description = '订单操作：接单方发起撤销，不调用接口';
 
     /**
      * Create a new command instance.
