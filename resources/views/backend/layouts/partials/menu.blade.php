@@ -389,62 +389,62 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
-                    <li @if($currentOneLevelMenu == 'app') class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>App管理</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
+                    {{--<li @if($currentOneLevelMenu == 'app') class="open active" @endif>--}}
+                        {{--<a href="#" class="dropdown-toggle">--}}
+                            {{--<i class="fa fa-shopping-cart"></i>--}}
+                            {{--<span>App管理</span>--}}
+                            {{--<i class="fa fa-chevron-circle-right drop-icon"></i>--}}
+                        {{--</a>--}}
+                        {{--<ul class="submenu">--}}
 
-                            <li>
-                                <a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>
-                                    版本管理
-                                </a>
-                            </li>
+                            {{--<li>--}}
+                                {{--<a href="{{ route('app.version.index') }}" @if($currentRouteName == 'app.version.index') class="active" @endif>--}}
+                                    {{--版本管理--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
 
 
-                            <li>
-                                <a href="{{ route('app.order-charge.index') }}" @if(substr($currentRouteName, 0, 16) == 'app.order-charge') class="active" @endif>
-                                    充值记录
-                                </a>
-                            </li>
+                            {{--<li>--}}
+                                {{--<a href="{{ route('app.order-charge.index') }}" @if(substr($currentRouteName, 0, 16) == 'app.order-charge') class="active" @endif>--}}
+                                    {{--充值记录--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
 
-                        </ul>
-                    </li>
+                        {{--</ul>--}}
+                    {{--</li>--}}
 
-                    <li @if($currentOneLevelMenu == 'backend') class="open active" @endif>
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>Steam管理</span>
-                            <i class="fa fa-chevron-circle-right drop-icon"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="{{ route('backend.steam.goods.index') }}" @if($currentRouteName == 'backend.steam.goods.index') class="active" @endif>
-                                    商品列表
-                                </a>
-                            </li>
+                    {{--<li @if($currentOneLevelMenu == 'backend') class="open active" @endif>--}}
+                        {{--<a href="#" class="dropdown-toggle">--}}
+                            {{--<i class="fa fa-shopping-cart"></i>--}}
+                            {{--<span>Steam管理</span>--}}
+                            {{--<i class="fa fa-chevron-circle-right drop-icon"></i>--}}
+                        {{--</a>--}}
+                        {{--<ul class="submenu">--}}
+                            {{--<li>--}}
+                                {{--<a href="{{ route('backend.steam.goods.index') }}" @if($currentRouteName == 'backend.steam.goods.index') class="active" @endif>--}}
+                                    {{--商品列表--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
 
-                            <li>
-                                <a href="{{ route('backend.steam.goods.getGameNameList') }}" @if($currentRouteName == 'backend.steam.goods.getGameNameList') class="active" @endif>
-                                    Steam直充游戏名
-                                </a>
-                            </li>
+                            {{--<li>--}}
+                                {{--<a href="{{ route('backend.steam.goods.getGameNameList') }}" @if($currentRouteName == 'backend.steam.goods.getGameNameList') class="active" @endif>--}}
+                                    {{--Steam直充游戏名--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
 
-                            <li>
-                                <a href="{{ route('backend.steam.store-price.index') }}" @if($currentRouteName == 'backend.steam.store-price.index') class="active" @endif>
-                                    商户密价
-                                </a>
-                            </li>
+                            {{--<li>--}}
+                                {{--<a href="{{ route('backend.steam.store-price.index') }}" @if($currentRouteName == 'backend.steam.store-price.index') class="active" @endif>--}}
+                                    {{--商户密价--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
 
-                            <li>
-                                <a href="{{ route('backend.steam.order.index') }}" @if($currentRouteName == 'backend.steam.order.index') class="active" @endif>
-                                    订单列表
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            {{--<li>--}}
+                                {{--<a href="{{ route('backend.steam.order.index') }}" @if($currentRouteName == 'backend.steam.order.index') class="active" @endif>--}}
+                                    {{--订单列表--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
+                        {{--</ul>--}}
+                    {{--</li>--}}
 
                     <li>
                         <a href="#" class="dropdown-toggle">
