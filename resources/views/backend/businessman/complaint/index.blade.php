@@ -117,7 +117,7 @@
     <script id="images" type="text/html">
         <div carousel-item="" id="">
             @{{# var i = 0; layui.each(d, function(index, item){ }}
-            <div  style="background: url(/@{{ d[index]  }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
+            <div  style="background: url(@{{ d[index]  }}) no-repeat center/contain;"  @{{# if(i == 0){ }} class="layui-this" @{{# } }} >
             </div>
             @{{# if(i == 0){   i = 1;  } }}
             @{{# }); }}
