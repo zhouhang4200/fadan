@@ -12,7 +12,8 @@ class GameLevelingPlatform extends Model
      * 多对一，订单表
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gameLevelingOrder() {
+    public function gameLevelingOrder()
+    {
         return $this->belongsTo(GameLevelingOrder::class, 'trade_no', 'trade_no');
     }
 }

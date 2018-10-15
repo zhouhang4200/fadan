@@ -381,6 +381,12 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
                 // 投诉图片
                 Route::post('images', 'ComplaintsController@images')->name('frontend.workbench.leveling.complaints.images');
             });
+
+            // 通过游戏获取区/服/代练类型
+            Route::post('regions', 'IndexController@regions')->name('frontend.workbench.regions');
+            Route::post('servers', 'IndexController@servers')->name('frontend.workbench.servers');
+            // 新的下单
+            Route::get('new-create', 'IndexController@newCreate')->name('frontend.workbench.leveling.new-create');
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');

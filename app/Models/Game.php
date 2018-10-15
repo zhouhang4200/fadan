@@ -69,4 +69,22 @@ class Game extends Model
     {
         return $this->hasMany(UserReceivingCategoryControl::class);
     }
+
+    /**
+     *  一对多，区
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function regions()
+    {
+        return $this->hasMany(Region::class);
+    }
+
+    /**
+     * 一对多，代练类型
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function gameLevelingTypes()
+    {
+        return $this->hasMany(GameLevelingType::class);
+    }
 }

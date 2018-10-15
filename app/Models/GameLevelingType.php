@@ -16,7 +16,8 @@ class GameLevelingType extends Model
      *  多对一，游戏
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function game() {
+    public function game()
+    {
         return $this->belongsTo(Game::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Models\Region;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\Revoking;
@@ -2129,7 +2130,7 @@ class IndexController extends Controller
         $orderNo = $request->no;
         $datas = $this->getOrderAndOrderDetailAndLevelingConsult($orderNo);
         $datas['arbitration_id'] = $request->arbitration_id;
-        $datas['add_content'] = $request->content;
+        $datas['add_content'] = $request->input('content');
         $datas['pic'] = $request->pic;
         try {
             // 调用接口更新值
@@ -2195,6 +2196,101 @@ class IndexController extends Controller
         $statusCount[100] = $orderRepository->levelingTaobaoRefundOrderCount($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $levelingType);
 
         return response()->ajax('1', 'success', $statusCount);
+    }
+
+    /**
+     * 获取游戏下面的区
+     * @return string
+     */
+    public function regions()
+    {
+        try {
+            $regions = request('game_id') ?
+                Game::find(request('game_id'))->regions()->pluck('name', 'id')->toArray()
+                : '';
+
+            $gameLevelingTypes = request('game_id') ?
+                Game::find(request('game_id'))->gameLevelingTypes()->pluck('name', 'id')->toArray()
+                : '';
+
+            return ['code' => 1, 'regions' => $regions, 'gameLevelingTypes' => $gameLevelingTypes];
+        } catch (Exception $e) {
+            return ['code' => 0];
+        }
+    }
+
+    /**
+     * 获取区下面的服
+     * @return string
+     */
+    public function servers()
+    {
+        try {
+            return request('region_id') ?
+                Region::find(request('region_id'))->servers()->pluck('name', 'id')->toArray()
+                : '';
+        } catch (Exception $e) {
+            return '';
+        }
+    }
+
+    /**
+     *  新的下单界面
+     * @param Request $request
+     * @param GameRepository $gameRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function newCreate(Request $request, GameRepository $gameRepository)
+    {
+        $game = $this->game;
+        $tid = $request->tid;
+        $gameId = $request->game_id ? $request->game_id : 1;
+        $businessmanInfo = auth()->user()->getPrimaryInfo();
+
+        // 拆分淘宝订单号
+        $tidArr = explode(',', $tid);
+        $filterTidArr = array_filter($tidArr);
+        // 获取所有淘宝订单
+        $allTaobaoTrade = TaobaoTrade::whereIn('tid', $filterTidArr)->orderBy('id')->get()->toArray();
+
+        // 有淘宝订单则更新淘宝订单卖家备注
+        $fixedInfo = [];
+        $taobaoTrade = null;
+        if ($allTaobaoTrade) {
+            $taobaoTrade = TaobaoTrade::where('tid', $allTaobaoTrade[0]['tid'])->first();
+        }
+
+        if ($taobaoTrade) {
+            if (empty($taobaoTrade->seller_memo)) {
+                // 获取备注并更新
+                $client = new TopClient;
+                $client->format = 'json';
+                $client->appkey = '12141884';
+                $client->secretKey = 'fd6d9b9f6ff6f4050a2d4457d578fa09';
+
+                $req = new TradeFullinfoGetRequest;
+                $req->setFields("tid, type, status, payment, orders, seller_memo");
+                $req->setTid($tid);
+                $resp = $client->execute($req, taobaoAccessToken($taobaoTrade->seller_nick));
+
+                if (!empty($resp->trade->seller_memo)) {
+                    $taobaoTrade->seller_memo = $resp->trade->seller_memo;
+                    $taobaoTrade->save();
+                }
+            }
+            // 从收货地址中拆分区服角色信息
+            $receiverAddress = explode("\r\n", trim($taobaoTrade->receiver_address));
+            // 获取抓取商品配置
+            $goodsConfig = AutomaticallyGrabGoods::where('foreign_goods_id', $taobaoTrade->num_iid)->first();
+
+            // 如果游戏为DNF并且是推荐号则生成固定填入的订单数据
+            if ($goodsConfig && $goodsConfig->game_id == 86 && $goodsConfig->type == 1) { //  && $goodsConfig->type == 1
+                $fixedInfo = $this->dnfFixedInfo($receiverAddress, $taobaoTrade);
+            }
+        }
+
+        return view('frontend.v1.workbench.leveling.new', compact(
+            'game', 'tid', 'gameId', 'taobaoTrade', 'businessmanInfo', 'receiverAddress', 'fixedInfo', 'allTaobaoTrade'));
     }
 }
 
