@@ -33,7 +33,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <i class="fa fa-chevron-circle-right drop-icon"></i>
                             </a>
                             <ul class="submenu">
-                                @if(auth()->user()->name != '淘宝发单平台')
+                                @if(auth("admin")->user()->name != '淘宝发单平台')
                                 <li>
                                     <a href="{{ route('order.platform.index') }}" @if($currentRouteName == 'order.platform.index') class="active" @endif>
                                         平台订单
@@ -79,7 +79,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                         商户列表
                                     </a>
                                 </li>
-@if(auth()->user()->name != '淘宝发单平台')
+@if(auth("admin")->user()->name != '淘宝发单平台')
 
                                 <li>
                                     <a href="{{ route('frontend.user.weight.index') }}" @if($currentRouteName == 'frontend.user.weight.index') class="active" @endif>
@@ -107,7 +107,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
-                    @if(auth()->user()->name != '淘宝发单平台')
+                    @if(auth("admin")->user()->name != '淘宝发单平台')
 
                     <li @if($currentOneLevelMenu == 'home') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
@@ -479,7 +479,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                             <i class="fa fa-chevron-circle-right drop-icon"></i>
                         </a>
                         <ul class="submenu">
-                            @if(auth()->user()->name != '淘宝发单平台')
+                            @if(auth("admin")->user()->name != '淘宝发单平台')
                             <li>
                                 <a href="{{ route('datas.index') }}" @if($currentRouteName == 'datas.index') class="active" @endif>
                                     代充平台数据
