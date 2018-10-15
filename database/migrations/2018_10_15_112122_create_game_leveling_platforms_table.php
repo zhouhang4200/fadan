@@ -17,7 +17,7 @@ class CreateGameLevelingPlatformsTable extends Migration
             $table->increments('id');
             $table->string('trade_no', 22)->comment('订单号');
             $table->string('platform_no')->comment('外部平台订单号');
-            $table->tinyInteger('platform_id')->unsigned()->comment('外部平台号：1-show91;3-蚂蚁；4-dd373;5-丸子');
+            $table->tinyInteger('platform_id')->unsigned()->comment('外部接单平台号：1-show91;3-蚂蚁；4-dd373;5-丸子');
             $table->timestamps();
         });
     }

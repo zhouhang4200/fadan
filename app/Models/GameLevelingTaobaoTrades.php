@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameLevelingForeignOrder extends Model
+class GameLevelingTaobaoTrades extends Model
 {
     public $fillable = ['trade_no', 'taobao_trade_no', 'payment'];
 
@@ -15,5 +15,4 @@ class GameLevelingForeignOrder extends Model
     public function gameLevelingOrder() {
         return $this->belongsTo(GameLevelingOrder::class, 'trade_no', 'trade_no');
     }
-
 }
