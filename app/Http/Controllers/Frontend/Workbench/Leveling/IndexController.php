@@ -2316,16 +2316,16 @@ class IndexController extends Controller
             // 设置了自动加价,则开启加价
             if (! isset($order->price_increase_step) || empty($order->price_increase_step)
                 || ! isset($order->price_ceiling) || empty($order->price_ceiling)) {
-                Redis::hDel('order:automarkup-every-hour', $order->trade_no); // 没有设置或设置取消了，清除redis
+                Redis::hDel('order:price-markup', $order->trade_no); // 没有设置或设置取消了，清除redis
             } elseif (isset($order->price_increase_step) && ! empty($order->price_increase_step)
                 && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
                 $bool = bcsub($order->amount, $order->price_ceiling) < 0 ? true : false;
 
                 if (bcsub($order->amount, $order->price_ceiling) >= 0) {
-                    Redis::hDel('order:automarkup-every-hour', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
+                    Redis::hDel('order:price-markup', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
                 } else {
                     $key = $order->trade_no;
-                    $name = "order:automarkup-every-hour";
+                    $name = "order:price-markup";
                     $value = "0@".$order->amount."@".$order->updated_at;
 
                     Redis::hSet($name, $key, $value);
