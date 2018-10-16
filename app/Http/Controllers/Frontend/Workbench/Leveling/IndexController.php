@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingTaobaoTrade;
 use App\Models\Region;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
@@ -2243,6 +2244,18 @@ class IndexController extends Controller
      */
     public function newCreate(Request $request, GameRepository $gameRepository)
     {
+
+        $s = GameLevelingTaobaoTrade::where('taobao_trade_no', '213')
+            ->where('trade_no', '!=', '12312')
+            ->pluck('trade_no')
+            ->unique();
+
+        if ($s->count() > 1) {
+            dd(2);
+        } else {
+            dd(3);
+        }
+        dd($s);
         $game = $this->game;
         $tid = $request->tid;
         $gameId = $request->game_id ? $request->game_id : 1;
@@ -2311,6 +2324,7 @@ class IndexController extends Controller
             }
             // 下单
             $order = GameLevelingOrder::placeOrder($orderData, $user);
+
             dd($order, $orderData);
 
 

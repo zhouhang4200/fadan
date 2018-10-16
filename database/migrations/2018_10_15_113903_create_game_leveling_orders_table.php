@@ -17,12 +17,13 @@ class CreateGameLevelingOrdersTable extends Migration
             $table->increments('id');
             $table->string('trade_no', 22)->comment('交易单号');
             $table->integer('status')->unsigned()->default(1)->comment('订单状态');
+            $table->string('source_order_no')->comment('淘宝主订单号');
             $table->integer('taobao_status')->unsigned()->default(1)->comment('淘宝订单状态');
             $table->tinyInteger('platform_id')->unsigned()->default(0)->comment('外部接单平台号:1-show91;3-蚂蚁；4-dd373;5-丸子');
             $table->string('platform_no')->default('')->comment('外部接单平台订单号');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->decimal('amount', 17, 4)->comment('代练价格');
-            $table->decimal('source_price', 17, 4)->comment('来源价格');
+            $table->decimal('source_price', 17, 4)->default(0)->comment('来源价格');
             $table->decimal('security_deposit', 17, 4)->default(0)->comment('安全保证金');
             $table->decimal('efficiency_deposit', 17, 4)->default(0)->comment('效率保证金');
             $table->decimal('poundage', 17, 4)->default(0)->comment('手续费');
