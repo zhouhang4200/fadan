@@ -671,25 +671,48 @@
                 }, 'json');
             });
 
-            // 选择代练类型
-            {{--form.on('select(game)', function (data) {--}}
-            {{--$.post('{{ route('frontend.workbench.game_leveling_types') }}', {game_id:data.value}, function(result){--}}
-            {{--if (result) {--}}
-            {{--var game_leveling_type = '';--}}
-            {{--$.each(result, function (i, item) {--}}
-            {{--itemvalue = item.replace(/[a-zA-Z0-9]+\-/i, '');--}}
-            {{--game_leveling_type += "<option value='"+i+"'>"+itemvalue+"</option>";--}}
-            {{--})--}}
+            // 新的下单
+        form.on('submit(order)', function (data) {
 
-            {{--$('#game_leveling_type').html('<option value="请选择"></option>' + game_leveling_type);--}}
-            {{--form.render('select');--}}
-            {{--} else {--}}
-            {{--$('#game_leveling_type').html('');--}}
-            {{--form.render('select');--}}
-            {{--}--}}
-            {{--}, 'json');--}}
-            {{--});--}}
-
+            if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
+                layer.msg('代练时间不能都为0');
+                return false;
+            }
+            if(data.field.game_leveling_hour > 24) {
+                layer.msg('代练小时不能大于24小时');
+                return false;
+            }
+            var load = layer.load(0, {
+                shade: [0.2, '#000000']
+            });
+            $.post('{{ route('frontend.workbench.leveling.new-order') }}', {data: data.field}, function (result) {
+                if (result.status == 1) {
+                    layer.open({
+                        content: result.message,
+                        btn: ['继续发布', '订单列表'],
+                        btn1: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                        },
+                        btn2: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        }
+                    });
+                } else {
+                    layer.open({
+                        content: result.message,
+                        btn: ['继续发布', '订单列表'],
+                        btn1: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
+                        },
+                        btn2: function(index, layero){
+                            window.location.href="{{ route('frontend.workbench.leveling.index') }}";
+                        }
+                    });
+                }
+                layer.close(load);
+            }, 'json');
+            return false;
+        });
 
 
 
@@ -753,47 +776,47 @@
 
 
             // 下单
-            form.on('submit(order)', function (data) {
-                if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {
-                    layer.msg('代练时间不能都为0');
-                    return false;
-                }
-                if(data.field.game_leveling_hour > 24) {
-                    layer.msg('代练小时不能大于24小时');
-                    return false;
-                }
-                var load = layer.load(0, {
-                    shade: [0.2, '#000000']
-                });
+            {{--form.on('submit(order)', function (data) {--}}
+                {{--if(data.field.game_leveling_day == 0 && data.field.game_leveling_hour == 0) {--}}
+                    {{--layer.msg('代练时间不能都为0');--}}
+                    {{--return false;--}}
+                {{--}--}}
+                {{--if(data.field.game_leveling_hour > 24) {--}}
+                    {{--layer.msg('代练小时不能大于24小时');--}}
+                    {{--return false;--}}
+                {{--}--}}
+                {{--var load = layer.load(0, {--}}
+                    {{--shade: [0.2, '#000000']--}}
+                {{--});--}}
 
-                $.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {
-                    if (result.status == 1) {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            content: result.message,
-                            btn: ['继续发布', '订单列表'],
-                            btn1: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.wait') }}";
-                            },
-                            btn2: function(index, layero){
-                                window.location.href="{{ route('frontend.workbench.leveling.index') }}";
-                            }
-                        });
-                    }
-                    layer.close(load);
-                }, 'json');
-                return false;
-            });
+                {{--$.post('{{ route('frontend.workbench.leveling.create') }}', {data: data.field}, function (result) {--}}
+                    {{--if (result.status == 1) {--}}
+                        {{--layer.open({--}}
+                            {{--content: result.message,--}}
+                            {{--btn: ['继续发布', '订单列表'],--}}
+                            {{--btn1: function(index, layero){--}}
+                                {{--window.location.href="{{ route('frontend.workbench.leveling.wait') }}";--}}
+                            {{--},--}}
+                            {{--btn2: function(index, layero){--}}
+                                {{--window.location.href="{{ route('frontend.workbench.leveling.index') }}";--}}
+                            {{--}--}}
+                        {{--});--}}
+                    {{--} else {--}}
+                        {{--layer.open({--}}
+                            {{--content: result.message,--}}
+                            {{--btn: ['继续发布', '订单列表'],--}}
+                            {{--btn1: function(index, layero){--}}
+                                {{--window.location.href="{{ route('frontend.workbench.leveling.wait') }}";--}}
+                            {{--},--}}
+                            {{--btn2: function(index, layero){--}}
+                                {{--window.location.href="{{ route('frontend.workbench.leveling.index') }}";--}}
+                            {{--}--}}
+                        {{--});--}}
+                    {{--}--}}
+                    {{--layer.close(load);--}}
+                {{--}, 'json');--}}
+                {{--return false;--}}
+            {{--});--}}
             /**
              // 切换游戏时加截新的模版
              form.on('select(game_id)', function (data) {

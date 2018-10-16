@@ -387,6 +387,7 @@ Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
             Route::post('servers', 'IndexController@servers')->name('frontend.workbench.servers');
             // 新的下单
             Route::get('new-create', 'IndexController@newCreate')->name('frontend.workbench.leveling.new-create');
+            Route::post('new-order', 'IndexController@newOrder')->name('frontend.workbench.leveling.new-order');
          });
         // 获取用户所有前台可显示的商品
         Route::post('goods', 'IndexController@goods')->name('frontend.workbench.goods');
