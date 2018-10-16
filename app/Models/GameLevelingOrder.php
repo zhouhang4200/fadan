@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Auth;
-use Carbon\Carbon;
 use App\Services\RedisConnect;
 use Illuminate\Database\Eloquent\Model;
 
@@ -73,82 +72,103 @@ class GameLevelingOrder extends Model
         'updated_at',
     ];
 
-    public static function placeOrder($data = [])
+    /**
+     * 一对一，订单详情
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function gameLevelingOrderDetail()
+    {
+        return $this->hasOne(GameLevelingOrderDetail::class, 'trade_no', 'trade_no');
+    }
+
+    /**
+     * 下单
+     * @param $data
+     * @param $user
+     * @return mixed
+     */
+    public static function placeOrder(User $user, $data = [])
     {
         $game = Game::find($data['game_id']);
         $region = Region::find($data['region']);
         $server = Server::find($data['serve']);
         $gameLevelingType = GameLevelingType::find($data['game_leveling_type']);
-        $user = Auth::user();
         $parent = $user->getPrimaryInfo();
 
         $data = [
             'trade_no' => generateOrderNo(),
             'status' => 1,
+            'taobao_status' => 1,
             'platform_id' => 0,
             'platform_no' => '',
             'game_id' => $game->id,
-            'game_name' => $game->name,
+            'user_id' => $user->id,
+            'parent_user_id' => $parent->id,
+            'take_user_id' => 0,
+            'take_parent_user_id' => 0,
             'amount' => $data['game_leveling_amount'],
             'source_price' => $data['source_price'],
             'security_deposit' => $data['security_deposit'],
             'efficiency_deposit' => $data['efficiency_deposit'],
+            'source' => 1,
+            'top' => 0,
             'poundage' => 0,
-            'get_amount' => 0,
-            'user_id' => $user->id,
-            'username' => $user->name,
-            'parent_user_id' => $parent->id,
-            'parent_username' => $parent->name,
-            'take_user_id' => 0,
-            'take_username' => '',
-            'take_parent_user_id' => 0,
-            'take_parent_username' => '',
-            'order_type_id' => 1,
-            'game_type_id' => 0,
-            'game_class_id' => 0,
             'region_id' => $region->id,
-            'region_name' => $region->name,
             'server_id' => $server->id,
-            'server_name' => $server->name,
             'game_leveling_type_id' => $gameLevelingType->id,
-            'game_leveling_type_name' => $gameLevelingType->name,
             'title' => $data['game_leveling_title'],
             'day' => $data['game_leveling_day'],
             'hour' => $data['game_leveling_hour'],
             'game_account' => $data['account'],
             'game_password' => $data['password'],
             'game_role' => $data['role'],
-            'user_phone' => $data['client_phone'] ?? '',
-            'user_qq' => $data['user_qq'] ?? '',
-            'customer_service_name' => $user->name,
+            'customer_service_name' => $user->username,
             'seller_nick' => $data['seller_nick'] ?? '',
             'buyer_nick' => $data['client_wang_wang'],
-            'pre_sale' => '',
-            'explain' => $data['game_leveling_instructions'] ?? '',
-            'requirement' => $data['game_leveling_requirements'] ?? '',
+            'price_increase_step' => $data['markup_range'] ?? '',
+            'price_ceiling' => $data['markup_top_limit'] ?? '',
             'take_order_password' => '',
+            'pre_sale' => '', // 接单客服
+            'take_at' => null,
+            'apply_complete_at' => null,
+            'complete_at' => null,
+            'top_at' => null,
+        ];
+
+        $order = static::create($data);
+
+        // 存到订单详情表
+        $details = [
+            'trade_no' => $order->trade_no,
+            'region_name' => $region->name,
+            'server_name' => $server->name,
+            'game_leveling_type_name' => $gameLevelingType->name,
+            'game_name' => $game->name,
+            'username' => $user->username,
+            'parent_username' => $parent->username,
+            'take_username' => '',
+            'take_parent_username' => '',
+            'user_phone' => $data['client_phone'] ?? '',
+            'user_qq' => $data['user_qq'] ?? '',
             'player_name' => '',
             'player_phone' => '',
             'player_qq' => '',
-            'take_at' => null,
-            'price_increase_step' => $data['markup_range'] ?? '',
-            'price_ceiling' => $data['markup_top_limit'] ?? '',
-            'apply_complete_at' => null,
-            'complete_at' => null,
-            'source' => 1,
-            'top' => 0,
-            'top_at' => null,
             'parent_user_phone' => $parent->phone ?? '',
             'parent_user_qq' => $parent->qq ?? '',
             'take_user_qq' => '',
             'take_user_phone' => '',
             'take_parent_phone' => '',
             'take_parent_qq' => '',
-            'created_at' => Carbon::now()->toDateTimeString(),
-            'updated_at' => Carbon::now()->toDateTimeString(),
+            'explain' => $data['game_leveling_instructions'] ?? '',
+            'requirement' => $data['game_leveling_requirements'] ?? '',
         ];
 
-        $order =  static::create($data);
+        GameLevelingOrderDetail::create($details);
+
+        // 添加补款单号
+        if (isset($data['source_order_no']) && ! empty($data['source_order_no'])) {
+            $otherOrders = Order::where('foreign_order_no', '')->get();
+        }
 
         // 加到redis发单队列
         $redis = RedisConnect::order();

@@ -2301,10 +2301,16 @@ class IndexController extends Controller
     public function newOrder(Request $request)
     {
         try {
-            $orderData = $request->data; // 表单所有数据
+            // 表单所有数据
+            $orderData = $request->data;
+            $user = Auth::user();
+            // 重发订单选择是原始发单人还是当前发单人
+            if (isset($request->value) && ! empty($request->value) && isset($orderData['creator_user_id'])) {
+                // 原始发单人
+                $user = User::find($orderData['creator_user_id']);
+            }
             // 下单
-            $order = GameLevelingOrder::placeOrder($orderData);
-
+            $order = GameLevelingOrder::placeOrder($orderData, $user);
             dd($order, $orderData);
 
 
