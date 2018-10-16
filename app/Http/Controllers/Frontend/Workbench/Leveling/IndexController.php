@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
 use App\Models\GameLevelingOrder;
-use App\Models\GameLevelingTaobaoTrade;
 use App\Models\Region;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
@@ -2244,18 +2243,6 @@ class IndexController extends Controller
      */
     public function newCreate(Request $request, GameRepository $gameRepository)
     {
-
-        $s = GameLevelingTaobaoTrade::where('taobao_trade_no', '213')
-            ->where('trade_no', '!=', '12312')
-            ->pluck('trade_no')
-            ->unique();
-
-        if ($s->count() > 1) {
-            dd(2);
-        } else {
-            dd(3);
-        }
-        dd($s);
         $game = $this->game;
         $tid = $request->tid;
         $gameId = $request->game_id ? $request->game_id : 1;
@@ -2316,61 +2303,87 @@ class IndexController extends Controller
         try {
             // 表单所有数据
             $orderData = $request->data;
-            $user = Auth::user();
+
             // 重发订单选择是原始发单人还是当前发单人
+            $user = Auth::user();
             if (isset($request->value) && ! empty($request->value) && isset($orderData['creator_user_id'])) {
-                // 原始发单人
-                $user = User::find($orderData['creator_user_id']);
+                $user = User::find($orderData['creator_user_id']); // 原始发单人
             }
+
             // 下单
-            $order = GameLevelingOrder::placeOrder($orderData, $user);
+            $order = GameLevelingOrder::placeOrder($user, $orderData);
 
-            dd($order, $orderData);
+            // 设置了自动加价,则开启加价
+            if (! isset($order->price_increase_step) || empty($order->price_increase_step)
+                || ! isset($order->price_ceiling) || empty($order->price_ceiling)) {
+                Redis::hDel('order:automarkup-every-hour', $order->trade_no); // 没有设置或设置取消了，清除redis
+            }
+            // 如果这笔订单存在加价幅度和加价上限，
+            if (isset($order->price_increase_step) && ! empty($order->price_increase_step)
+                && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
+                $bool = bcsub($order->amount, $order->price_ceiling) < 0 ? true : false;
 
-
-
-            $gameId = $orderData['game_id']; // 游戏ID
-            $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
-            $originalPrice = $orderData['source_price']; // 原价
-            $price = $orderData['game_leveling_amount']; // 代练价格
-            $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
-            $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
-
-            $userId = Auth::user()->id; // 下单用户ID
-            $orderData['customer_service_name'] = Auth::user()->username; // 下单人名字
-            $orderData['order_source'] = '天猫'; // 订单来源
-
-            if (isset($request->value) && ! empty($request->value)) {
-                // 原始发单人
-                if (isset($orderData['creator_user_id'])) {
-                    $originalUser = User::where('id', $orderData['creator_user_id'])->first();
-                    $orderData['customer_service_name'] = $originalUser->username;
-                    $userId = $originalUser->id;
+                if (! $bool) {
+                    Redis::hDel('order:automarkup-every-hour', $order->trade_no);
+                    return response()->ajax(1, '下单成功！');
                 }
+                // 将此订单存入哈希
+                $key = $order->trade_no;
+                $name = "order:automarkup-every-hour";
+                $value = "0@".$order->amount."@".$order->updated_at;
+
+                Redis::hSet($name, $key, $value);
             }
 
-            try {
-                $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
-
-                // 提示哪些平台下单成功，哪些平台下单失败
-                $orderDetails = OrderDetail::where('order_no', $order->no)
-                    ->pluck('field_value', 'field_name')
-                    ->toArray();
-
-                // 下单成功之后，查看此订单是否设置了每小时自动加价
-                $this->checkIfAutoMarkup($order, $orderDetails);
-
-                return response()->ajax(1, '下单成功！');
-            } catch (CustomException $exception) {
-                return response()->ajax(0, $exception->getMessage());
-            } catch (DailianException $dailianException) {
-                return response()->ajax(0, $dailianException->getMessage());
-            } catch (AssetException $assetException) {
-                return response()->ajax(0, $assetException->getMessage());
-            }
-        } catch (CustomException $customException) {
+            return response()->ajax(1, '下单成功！');
+        } catch (Exception $e) {
             return response()->ajax(0, '下单失败请联系平台工作人员');
         }
+
+
+
+//            $gameId = $orderData['game_id']; // 游戏ID
+//            $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
+//            $originalPrice = $orderData['source_price']; // 原价
+//            $price = $orderData['game_leveling_amount']; // 代练价格
+//            $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
+//            $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
+//
+//            $userId = Auth::user()->id; // 下单用户ID
+//            $orderData['customer_service_name'] = Auth::user()->username; // 下单人名字
+//            $orderData['order_source'] = '天猫'; // 订单来源
+//
+//            if (isset($request->value) && ! empty($request->value)) {
+//                // 原始发单人
+//                if (isset($orderData['creator_user_id'])) {
+//                    $originalUser = User::where('id', $orderData['creator_user_id'])->first();
+//                    $orderData['customer_service_name'] = $originalUser->username;
+//                    $userId = $originalUser->id;
+//                }
+//            }
+
+//            try {
+//                $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
+//
+//                // 提示哪些平台下单成功，哪些平台下单失败
+//                $orderDetails = OrderDetail::where('order_no', $order->no)
+//                    ->pluck('field_value', 'field_name')
+//                    ->toArray();
+//
+//                // 下单成功之后，查看此订单是否设置了每小时自动加价
+//                $this->checkIfAutoMarkup($order, $orderDetails);
+//
+//                return response()->ajax(1, '下单成功！');
+//            } catch (CustomException $exception) {
+//                return response()->ajax(0, $exception->getMessage());
+//            } catch (DailianException $dailianException) {
+//                return response()->ajax(0, $dailianException->getMessage());
+//            } catch (AssetException $assetException) {
+//                return response()->ajax(0, $assetException->getMessage());
+//            }
+//        } catch (CustomException $customException) {
+//            return response()->ajax(0, '下单失败请联系平台工作人员');
+//        }
     }
 }
 

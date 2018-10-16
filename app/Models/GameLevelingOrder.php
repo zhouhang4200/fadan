@@ -5,6 +5,7 @@ namespace App\Models;
 use DB;
 use Auth;
 use Exception;
+use Carbon\Carbon;
 use App\Services\RedisConnect;
 use Illuminate\Database\Eloquent\Model;
 
@@ -108,6 +109,7 @@ class GameLevelingOrder extends Model
             $sourceOrderNo = '';
             $sourcePrice = 0;
             $source = 1; // 人工
+            $taobaoStatus = '';
             /****************存在来源单号则订单的来源单号和来源价格为淘宝相应单号与价格***********************/
             if (isset($data['source_order_no']) && ! empty($data['source_order_no'])) {
                 $source = 2; // 淘宝
@@ -124,16 +126,17 @@ class GameLevelingOrder extends Model
                 } else if ($taobaoTrade) {
                     $taobaoTrade->handle_status = 1;
                     $taobaoTrade->save();
+                    $taobaoStatus = 1;
                 }
             }
 
             /*****创建订单*******/
-            $data = [
+            $orderData = [
                 'trade_no' => generateOrderNo(),
                 'status' => 1,
-                'taobao_status' => 1,
+                'taobao_status' => $taobaoStatus,
                 'source_order_no' => $sourceOrderNo,
-                'platform_id' => 0,
+                'platform_id' => '',
                 'platform_no' => '',
                 'game_id' => $game->id,
                 'user_id' => $user->id,
@@ -169,7 +172,7 @@ class GameLevelingOrder extends Model
                 'top_at' => null,
             ];
 
-            $order = static::create($data);
+            $order = static::create($orderData);
 
             /***存到订单详情表***/
             $details = [
@@ -293,33 +296,6 @@ class GameLevelingOrder extends Model
 
             OrderHistory::create($historyData);
 
-            /************加到redis发单队列************/
-            $redis = RedisConnect::order();
-
-            $sendOrder = [
-                'order_no' => $order->trade_no,
-                'game_name' => $order->game_name,
-                'game_region' => $order->region_name,
-                'game_serve' => $order->server_name,
-                'game_role' => $order->game_role,
-                'game_account' => $order->game_account,
-                'game_password' => $order->game_password,
-                'game_leveling_type' => $order->game_leveling_type_name,
-                'game_leveling_title' => $order->title,
-                'game_leveling_price' => $order->amount,
-                'game_leveling_day' => $order->day,
-                'game_leveling_hour' => $order->hour,
-                'game_leveling_security_deposit' => $order->security_deposit,
-                'game_leveling_efficiency_deposit' => $order->efficiency_deposit,
-                'game_leveling_requirements' => $order->requirement,
-                'game_leveling_instructions' => $order->explain,
-                'businessman_phone' => $order->user_phone,
-                'businessman_qq' => $order->user_qq,
-                'order_password' => $order->game_password,
-                'creator_username' => $order->username,
-            ];
-            $redis->lpush('order:send', json_encode($sendOrder));
-
             /************* 如果设置了接单人则直接变为接单*************************/
             if (isset($data['gainer_user_id']) && $data['gainer_user_id']) {
                 $takeUser = User::find($data['gainer_user_id']);
@@ -338,7 +314,36 @@ class GameLevelingOrder extends Model
                 $gameLevelingOrderDetail->take_parent_phone = $takeParentUser->phone ?? '';
                 $gameLevelingOrderDetail->take_parent_qq = $takeParentUser->qq ?? '';
                 $gameLevelingOrderDetail->save();
+
+                return $order;
             }
+
+            /************加到redis发单队列************/
+            $redis = RedisConnect::order();
+
+            $sendOrder = [
+                'order_no' => $order->trade_no,
+                'game_name' => $gameLevelingOrderDetail->game_name,
+                'game_region' => $gameLevelingOrderDetail->region_name,
+                'game_serve' => $gameLevelingOrderDetail->server_name,
+                'game_role' => $order->game_role,
+                'game_account' => $order->game_account,
+                'game_password' => $order->game_password,
+                'game_leveling_type' => $gameLevelingOrderDetail->game_leveling_type_name,
+                'game_leveling_title' => $order->title,
+                'game_leveling_price' => $order->amount,
+                'game_leveling_day' => $order->day,
+                'game_leveling_hour' => $order->hour,
+                'game_leveling_security_deposit' => $order->security_deposit,
+                'game_leveling_efficiency_deposit' => $order->efficiency_deposit,
+                'game_leveling_requirements' => $gameLevelingOrderDetail->requirement,
+                'game_leveling_instructions' => $gameLevelingOrderDetail->explain,
+                'businessman_phone' => $gameLevelingOrderDetail->user_phone,
+                'businessman_qq' => $gameLevelingOrderDetail->user_qq,
+                'order_password' => $order->game_password,
+                'creator_username' => $gameLevelingOrderDetail->username,
+            ];
+            $redis->lpush('order:send', json_encode($sendOrder));
         } catch (Exception $e) {
             DB::rollback();
             throw new Exception('服务器异常，下单失败！');
