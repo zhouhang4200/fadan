@@ -74,5 +74,9 @@ class Kernel extends HttpKernel
         'taobao.api' => \App\Http\Middleware\TaobaoApi::class,
         'internal.api' => \App\Http\Middleware\InternalApi::class,
         'new.permission' => \App\Http\Middleware\NewPermissionMiddleware::class,
+
+        // 后台访问中间件
+        'guest.admin' => \App\Http\Middleware\GuestAdmin::class,
+        'auth.admin' => \App\Http\Middleware\AuthAdmin::class,
     ];
 }

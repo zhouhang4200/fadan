@@ -11,7 +11,7 @@
 |
 */
 
-Route::middleware(['auth:web'])->namespace('Frontend')->group(function () {
+Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
     // 代练留言

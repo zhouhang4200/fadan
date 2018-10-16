@@ -136,17 +136,16 @@ class LoginController extends Controller
     }
 
     /**
-     * Log the user out of the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function logout(Request $request)
     {
-//        User::where('id', Auth::user()->id)->update(['online' => 0]);
-
         $this->guard()->logout();
-        $request->session()->invalidate();
+
+        $request->session()->forget($this->guard()->getName());
+
+        $request->session()->regenerate();
 
         return redirect('/login');
     }

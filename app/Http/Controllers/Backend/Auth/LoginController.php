@@ -29,7 +29,14 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'admin';
+//    protected $redirectTo = 'admin';
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/admin';
 
     /**
      * Create a new controller instance.
@@ -38,7 +45,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest:admin')->except('logout');
+        $this->middleware('guest.admin')->except('logout');
     }
 
     /**
@@ -87,18 +94,31 @@ class LoginController extends Controller
     }  
 
     /**
-     * Log the user out of the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function logout(Request $request)
     {
         $this->guard()->logout();
 
-        $request->session()->invalidate();
+        $request->session()->forget($this->guard()->getName());
+
+        $request->session()->regenerate();
 
         return redirect('/admin/login');
     }
 
+    /**
+     * Get the post register / login redirect path.
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/admin';
+    }
 }

@@ -23,19 +23,15 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+
         if ($guard == 'web' && $request->isMethod('post') && $this->checkLoginError($request)) {
             return redirect('/login')->withInput()->with('loginError', '异地登录!');
         }
 
         if (Auth::guard('web')->check()) {
-            if (Auth::user()->could('frontend.workbench.leveling.index')) {
+//            if (Auth::user()->could('frontend.workbench.leveling.index')) {
                 return redirect('/workbench/leveling');
-            }
-            return redirect('/');
-        }
-
-        if (Auth::guard('admin')->check()) {
-            return redirect('/admin');
+//            }
         }
         return $next($request);
     }
