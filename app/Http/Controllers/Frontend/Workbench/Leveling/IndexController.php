@@ -2317,22 +2317,19 @@ class IndexController extends Controller
             if (! isset($order->price_increase_step) || empty($order->price_increase_step)
                 || ! isset($order->price_ceiling) || empty($order->price_ceiling)) {
                 Redis::hDel('order:automarkup-every-hour', $order->trade_no); // 没有设置或设置取消了，清除redis
-            }
-            // 如果这笔订单存在加价幅度和加价上限，
-            if (isset($order->price_increase_step) && ! empty($order->price_increase_step)
+            } elseif (isset($order->price_increase_step) && ! empty($order->price_increase_step)
                 && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
                 $bool = bcsub($order->amount, $order->price_ceiling) < 0 ? true : false;
 
-                if (! $bool) {
-                    Redis::hDel('order:automarkup-every-hour', $order->trade_no);
-                    return response()->ajax(1, '下单成功！');
-                }
-                // 将此订单存入哈希
-                $key = $order->trade_no;
-                $name = "order:automarkup-every-hour";
-                $value = "0@".$order->amount."@".$order->updated_at;
+                if (bcsub($order->amount, $order->price_ceiling) >= 0) {
+                    Redis::hDel('order:automarkup-every-hour', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
+                } else {
+                    $key = $order->trade_no;
+                    $name = "order:automarkup-every-hour";
+                    $value = "0@".$order->amount."@".$order->updated_at;
 
-                Redis::hSet($name, $key, $value);
+                    Redis::hSet($name, $key, $value);
+                }
             }
 
             return response()->ajax(1, '下单成功！');
