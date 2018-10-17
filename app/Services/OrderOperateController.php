@@ -511,4 +511,97 @@ class OrderOperateController extends Controller
         }
         DB::commit();
     }
+
+    /**
+     * 申请验收
+     * @throws Exception
+     */
+    public function applyComplete()
+    {
+        DB::beginTransaction();
+        try {
+            // 记录订单前一个状态
+            GameLevelingOrderPreviousStatus::create([
+                'game_leveling_order_trade_no' => static::$order->trade_no,
+                'status' => static::$order->status,
+            ]);
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[待验收]状态！";
+
+            static::$order->status = 14;
+            static::$order->save();
+            static::createOrderHistory(28, $description);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 取消验收
+     * @throws Exception
+     */
+    public function cancelComplete()
+    {
+        DB::beginTransaction();
+        try {
+            // 获取订单前一个状态
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->latest('id')
+                ->first();
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[".config('order.status_leveling')[$gameLevelingOrderPreviousStatus->status]."]状态！";
+
+            static::$order->status = $gameLevelingOrderPreviousStatus->status;
+            static::$order->save();
+            static::createOrderHistory(29, $description);
+
+            // 删除最后一条状态数据
+            $gameLevelingOrderPreviousStatus->delete();
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 完成验收
+     * @throws Exception
+     */
+    public function complete()
+    {
+        DB::beginTransaction();
+        try {
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已结算]状态！";
+
+            static::$order->status = 20;
+            static::$order->save();
+            static::createOrderHistory(12, $description);
+
+            // 流水
+            if (static::$order->amount > 0) {
+                Asset::handle(new Income(static::$order->amount, 12, static::$order->trade_no, '代练订单完成收入', static::$order->take_parent_user_id));
+            }
+
+            if (static::$order->security_deposit > 0) {
+                Asset::handle(new Income(static::$order->security_deposit, 8, static::$order->trade_no, '订单完成退回安全保证金', static::$order->take_parent_user_id));
+            }
+
+            if (static::$order->efficiency_deposit > 0) {
+                Asset::handle(new Income(static::$order->efficiency_deposit, 9, static::$order->trade_no, '订单完成退回效率保证金', static::$order->take_parent_user_id));
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
 }
