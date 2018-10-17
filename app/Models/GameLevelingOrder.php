@@ -84,16 +84,49 @@ class GameLevelingOrder extends Model
         return $this->hasOne(GameLevelingOrderDetail::class, 'trade_no', 'trade_no');
     }
 
+    /**
+     * 多对多，淘宝订单
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function gameLevelingTaobaoTrades()
     {
         return $this->hasMany(GameLevelingTaobaoTrade::class, 'trade_no', 'taobao_trade_no');
     }
 
     /**
-     * 下单
-     * @param $data
-     * @param $user
+     * 一对多，前一个状态
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function gameLevelingOrderPreviousStatuses()
+    {
+        return $this->hasMany(GameLevelingOrderPreviousStatus::class);
+    }
+
+    /**
+     * 订单前一个状态
      * @return mixed
+     */
+    public function previousStatus()
+    {
+        return $this->gameLevelingOrderPreviousStatuses()->latest('id')->value('status');
+    }
+
+    public function userAmountFlows()
+    {
+        return $this->morphMany(UserAmountFlow::class, 'flowable');
+    }
+
+    public function platformAmountFlows()
+    {
+        return $this->morphMany(PlatformAmountFlow::class, 'flowable');
+    }
+
+    /**
+     * 下单
+     * @param User $user
+     * @param array $data
+     * @return mixed
+     * @throws Exception
      */
     public static function placeOrder(User $user, $data = [])
     {

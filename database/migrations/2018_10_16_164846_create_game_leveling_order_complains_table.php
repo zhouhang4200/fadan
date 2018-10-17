@@ -19,8 +19,9 @@ class CreateGameLevelingOrderComplainsTable extends Migration
             $table->integer('parent_user_id')->unsigned()->comment('用户父ID');
             $table->string('game_leveling_order_trade_no', 22)->comment('代练订单交易号');
             $table->decimal('amount', 17)->default(0.00)->comment('代练费');
-            $table->decimal('security_deposit', 17)->default(0.00)->comment('安全保证金');
-            $table->decimal('efficiency_deposit', 17)->default(0.00)->comment('效率保证金');
+            $table->decimal('security_deposit', 17, 4)->default(0.00)->comment('安全保证金');
+            $table->decimal('efficiency_deposit', 17, 4)->default(0.00)->comment('效率保证金');
+            $table->decimal('poundage', 17, 4)->default(0.00)->comment('手续费');
             $table->string('reason', 500)->comment('申请仲裁原因');
             $table->string('result', 500)->nullable()->comment('处理结果');
             $table->string('remark', 500)->nullable()->comment('客服备注');

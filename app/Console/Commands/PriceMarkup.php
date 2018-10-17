@@ -7,7 +7,6 @@ use Redis;
 use Asset;
 use Exception;
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\OrderHistory;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
