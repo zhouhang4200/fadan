@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\GameLevelingOrderComplain;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
@@ -46,7 +47,7 @@ class OrderOperateController extends Controller
      * @param $type
      * @param string $description
      */
-    public static function orderHistory($type, $description = '')
+    public static function createOrderHistory($type, $description = '')
     {
         $data = [
             'order_no' => static::$order->trade_no,
@@ -122,7 +123,7 @@ class OrderOperateController extends Controller
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[已下架]设置为[待接单]状态！";
-            static::orderHistory(14, $description);
+            static::createOrderHistory(14, $description);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -144,7 +145,7 @@ class OrderOperateController extends Controller
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[待接单]设置为[已下架]状态！";
-            static::orderHistory(15, $description);
+            static::createOrderHistory(15, $description);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -166,7 +167,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = 24;
             static::$order->save();
-            static::orderHistory(23, $description);
+            static::createOrderHistory(23, $description);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -194,7 +195,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = 18;
             static::$order->save();
-            static::orderHistory(16, $description);
+            static::createOrderHistory(16, $description);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -221,7 +222,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::orderHistory(17, $description);
+            static::createOrderHistory(17, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -255,7 +256,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = 15;
             static::$order->save();
-            static::orderHistory(18, $description);
+            static::createOrderHistory(18, $description);
 
             // 将协商数据写入协商表
             $handleDeposit = static::handleDeposit($amount, $deposit);
@@ -268,6 +269,7 @@ class OrderOperateController extends Controller
                 'amount' => $amount,
                 'security_deposit' => $handleDeposit['security_deposit'],
                 'efficiency_deposit' => $handleDeposit['efficiency_deposit'],
+                'poundage' => 0,
                 'reason' => $reason,
                 'status' => 1,
                 'initiator' => $initiator,
@@ -298,7 +300,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::orderHistory(19, $description);
+            static::createOrderHistory(19, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -306,7 +308,7 @@ class OrderOperateController extends Controller
             // 更改协商表状态
             GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
-                ->update(['status' => 2]);
+                ->update(['status' => 3]);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -333,7 +335,7 @@ class OrderOperateController extends Controller
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::orderHistory(33, $description);
+            static::createOrderHistory(33, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -341,7 +343,7 @@ class OrderOperateController extends Controller
             // 更改协商表状态
             GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
-                ->update(['status' => 2]);
+                ->update(['status' => 3]);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -352,9 +354,10 @@ class OrderOperateController extends Controller
 
     /**
      * 同意协商
+     * @param $poundage
      * @throws Exception
      */
-    public function agreeConsult()
+    public function agreeConsult($poundage = 0)
     {
         DB::beginTransaction();
         try {
@@ -363,17 +366,18 @@ class OrderOperateController extends Controller
 
             static::$order->status = 19;
             static::$order->save();
-            static::orderHistory(24, $description);
+            static::createOrderHistory(24, $description);
 
-            // 更改协商表状态
+            // 更改协商表状态和手续费
             $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
                 ->first();
 
+            $gameLevelingOrderConsult->poundage = $poundage;
             $gameLevelingOrderConsult->status = 2;
             $gameLevelingOrderConsult->save();
 
-            /******************发单流水************************/
+            /******************流水************************/
             // 当前操作人 == 订单拥有者
             $orderParentUserId = $gameLevelingOrderConsult->initiator == 2 ? static::$order->parent_user_id : static::$order->take_parent_user_id;
             $ids = User::find($orderParentUserId)->children->pluck('id')->merge($orderParentUserId)->toArray();
@@ -418,6 +422,88 @@ class OrderOperateController extends Controller
             if ($gameLevelingOrderConsult->poundage > 0) {
                 Asset::handle(new Income($gameLevelingOrderConsult->poundage, 6, static::$order->trade_no, '协商手续费收入', static::$order->parent_take_user_id));
             }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 申请仲裁
+     * @param string $reason
+     * @throws Exception
+     */
+    public function applyComplain($reason = '')
+    {
+        DB::beginTransaction();
+        try {
+            // 记录订单前一个状态
+            GameLevelingOrderPreviousStatus::create([
+                'game_leveling_order_trade_no' => static::$order->trade_no,
+                'status' => static::$order->status,
+            ]);
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[仲裁中]状态！";
+
+            static::$order->status = 16;
+            static::$order->save();
+            static::createOrderHistory(20, $description);
+
+            // 将仲裁数据写入仲裁表
+            $initiator = static::initiator();
+
+            GameLevelingOrderComplain::create([
+                'user_id' => static::$user->id,
+                'parent_user_id' => static::$user->parentInfo()->id,
+                'game_leveling_order_trade_no' => static::$order->trade_no,
+                'amount' => 0,
+                'security_deposit' => 0,
+                'efficiency_deposit' => 0,
+                'poundage' => 0,
+                'reason' => $reason,
+                'result' => '',
+                'remark' => '',
+                'status' => 1,
+                'initiator' => $initiator,
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 取消仲裁
+     * @throws Exception
+     */
+    public function cancelComplain()
+    {
+        DB::beginTransaction();
+        try {
+            // 获取订单前一个状态
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->latest('id')
+                ->first();
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[".config('order.status_leveling')[$gameLevelingOrderPreviousStatus->status]."]状态！";
+
+            static::$order->status = $gameLevelingOrderPreviousStatus->status;
+            static::$order->save();
+            static::createOrderHistory(21, $description);
+
+            // 删除最后一条状态数据
+            $gameLevelingOrderPreviousStatus->delete();
+
+            // 更改仲裁表状态
+            GameLevelingOrderComplain::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->where('status', 1)
+                ->update(['status' => 3]);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
