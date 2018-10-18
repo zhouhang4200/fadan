@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
+use App\Models\GameLevelingRegion;
+use App\Models\OrderBasicData as OrderBasicDataModel;
 use App\Models\GameLevelingOrder;
-use App\Models\Region;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
 use App\Extensions\Dailian\Controllers\Complete;
 use App\Extensions\Dailian\Controllers\Revoking;
@@ -2207,7 +2208,7 @@ class IndexController extends Controller
     {
         try {
             $regions = request('game_id') ?
-                Game::find(request('game_id'))->regions()->pluck('name', 'id')->toArray()
+                Game::find(request('game_id'))->gameLevelingRegions()->pluck('name', 'id')->toArray()
                 : '';
 
             $gameLevelingTypes = request('game_id') ?
@@ -2228,7 +2229,7 @@ class IndexController extends Controller
     {
         try {
             return request('region_id') ?
-                Region::find(request('region_id'))->servers()->pluck('name', 'id')->toArray()
+                GameLevelingRegion::find(request('region_id'))->gameLevelingServers()->pluck('name', 'id')->toArray()
                 : '';
         } catch (Exception $e) {
             return '';
@@ -2303,7 +2304,7 @@ class IndexController extends Controller
         try {
             // 表单所有数据
             $orderData = $request->data;
-
+//            dd($orderData);
             // 重发订单选择是原始发单人还是当前发单人
             $user = Auth::user();
             if (isset($request->value) && ! empty($request->value) && isset($orderData['creator_user_id'])) {
@@ -2312,6 +2313,9 @@ class IndexController extends Controller
 
             // 下单
             $order = GameLevelingOrder::placeOrder($user, $orderData);
+
+            // 写基础数据
+//            OrderBasicDataModel::createData($order);
 
             // 设置了自动加价,则开启加价
             if (! isset($order->price_increase_step) || empty($order->price_increase_step)

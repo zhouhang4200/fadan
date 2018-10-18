@@ -179,7 +179,7 @@ class OrderBasicData extends Model
             $data['order_finished_at']       = $order->complete_at;
             $data['is_repeat']               = $order->repeat;
 
-            OrderBasicDataModel::updateOrCreate(['order_no' => $order->trade_no], $data);
+            static::updateOrCreate(['order_no' => $order->trade_no], $data);
         } catch (\Exception $exception) {
             myLog('base-data-error', [$exception->getMessage(), $exception->getFile(), $exception->getLine()]);
         }

@@ -182,9 +182,9 @@ class GameLevelingOrder extends Model
                 'game_account' => $data['account'],
                 'game_password' => $data['password'],
                 'game_role' => $data['role'],
-                'customer_service_name' => $user->username,
+                'customer_service_name' => $user->username ?? '',
                 'seller_nick' => $data['seller_nick'] ?? '',
-                'buyer_nick' => $data['client_wang_wang'],
+                'buyer_nick' => $data['client_wang_wang'] ?? '',
                 'price_increase_step' => $data['markup_range'] ?? '',
                 'price_ceiling' => $data['markup_top_limit'] ?? '',
                 'take_order_password' => '',
@@ -199,7 +199,7 @@ class GameLevelingOrder extends Model
 
             /***存到订单详情表***/
             $details = [
-                'trade_no' => $order->trade_no,
+                'game_leveling_order_trade_no' => $order->trade_no,
                 'game_leveling_region_name' => $region->name,
                 'game_leveling_server_name' => $server->name,
                 'game_leveling_type_name' => $gameLevelingType->name,
@@ -374,6 +374,7 @@ class GameLevelingOrder extends Model
             $redis->lpush('order:send', json_encode($sendOrder));
         } catch (Exception $e) {
             DB::rollback();
+            myLog('place-order-error', ['trade_no' => $order->trade_no ?? '', 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('服务器异常，下单失败！');
         }
         DB::commit();

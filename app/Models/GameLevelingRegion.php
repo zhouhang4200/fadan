@@ -25,7 +25,7 @@ class GameLevelingRegion extends Model
      * 区下面的服
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function servers()
+    public function gameLevelingServers()
     {
         return $this->hasMany(GameLevelingServer::class);
     }
