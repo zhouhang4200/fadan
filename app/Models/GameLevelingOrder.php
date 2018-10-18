@@ -141,7 +141,7 @@ class GameLevelingOrder extends Model
                 $sourcePrice = $taobaoTrade->payment;
 
                 /*************查询是否有进行中的淘宝单号*******************/
-                $existOrder = GameLevelingOrderRelationChannel::where('taobao_trade_no', $sourceOrderNo)
+                $existOrder = GameLevelingOrderRelationChannel::where('game_leveling_channel_order_trade_no', $sourceOrderNo)
                     ->first();
 
                 if ($existOrder && ! in_array($existOrder->status, [15, 16, 19, 20, 21, 22, 23, 24])) {

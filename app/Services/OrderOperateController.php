@@ -13,6 +13,7 @@ use App\Models\SmsTemplate;
 use App\Models\OrderHistory;
 use App\Extensions\Asset\Income;
 use App\Exceptions\CustomException;
+use App\Models\OrderBasicData;
 use App\Extensions\Asset\Expend;
 use App\Events\NotificationEvent;
 use App\Models\GameLevelingOrder;
@@ -335,6 +336,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -667,6 +671,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -871,6 +878,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1016,6 +1026,9 @@ class OrderOperateController
 
             // 发送短信
             static::sendMessage(2);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1136,6 +1149,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1217,6 +1233,9 @@ class OrderOperateController
 
             // 发送短信
             static::sendMessage(1);
+
+            // 写入基础数据
+            OrderBasicData::createData(static::$order);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
