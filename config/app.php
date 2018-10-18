@@ -189,6 +189,7 @@ return [
         // ajax 响应
         App\Providers\ResponseMacroServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*

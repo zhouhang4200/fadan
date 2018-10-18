@@ -175,6 +175,8 @@ class Temp extends Command
     {
 
 
+//        OrderOperateController::handleDeposit();
+
         die;
 $a ='SiteId=107921&OrderNo=1443140488&OrderStatus=成功&Charger=vipqd_5---iZz86rx1oypwnkZ---&Description=||||||&ChargeUse=&Sign=39C4F06521F780307DEF2BD7CB8E86C0';
 

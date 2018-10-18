@@ -37,6 +37,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
+        $this->mapOpenApiRoutes();
+
         $this->mapWebRoutes();
 
         $this->mapBackendRoutes();
@@ -54,6 +56,20 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapOpenApiRoutes()
+    {
+        Route::prefix('open-api')
+            ->namespace($this->namespace . '\OpenApi')
+            ->group(base_path('routes/open-api.php'));
     }
 
     /**

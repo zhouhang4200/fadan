@@ -78,5 +78,7 @@ class Kernel extends HttpKernel
         // 后台访问中间件
         'guest.admin' => \App\Http\Middleware\GuestAdmin::class,
         'auth.admin' => \App\Http\Middleware\AuthAdmin::class,
+        // open api
+        'open.api' => \App\Http\Middleware\OpenApi::class,
     ];
 }

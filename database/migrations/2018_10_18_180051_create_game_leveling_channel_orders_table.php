@@ -15,10 +15,13 @@ class CreateGameLevelingChannelOrdersTable extends Migration
     {
         Schema::create('game_leveling_channel_orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedTinyInteger('channel')->comment('渠道类型');
-            $table->string('trade_no')->comment('渠道表订单号');
-            $table->string('game_leveling_order_trade_no')->comment('订单表订单号');
-            $table->decimal('payment', 10, 4)->default(0)->comment('实付金额');
+            $table->string('trade_no')->comment('订单号');
+            $table->string('channel_user_id')->default('0')->comment('渠道用户ID');
+            $table->decimal('amount', 2)->default(0)->comment('订单金额');
+            $table->decimal('discount_amount', 2)->default(0)->comment('优惠金额');
+            $table->decimal('payment_amount', 2)->default(0)->comment('实际支付金额');
+            $table->decimal('refund_amount', 2)->default(0)->comment('退款金额');
+            $table->unsignedInteger('status')->default(1)->comment('订单状态 1 待付款 2 进行中 3 待收货 4 完成 6 退款中 7 已退款');
             $table->timestamps();
         });
     }
