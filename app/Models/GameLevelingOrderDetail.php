@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class GameLevelingOrderDetail extends Model
 {
     public $fillable = [
-        'trade_no',
+        'game_leveling_order_trade_no',
         'game_leveling_region_name',
         'game_leveling_server_name',
         'game_leveling_type_name',

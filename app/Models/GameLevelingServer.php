@@ -16,7 +16,7 @@ class GameLevelingServer extends Model
      * 多对一，区
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function region() {
+    public function gameLevelingRegion() {
         return $this->belongsTo(GameLevelingRegion::class);
     }
 }
