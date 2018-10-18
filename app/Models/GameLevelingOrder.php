@@ -270,7 +270,7 @@ class GameLevelingOrder extends Model
                     $order->save();
                 }
 
-                /********更新来源价格（相同淘宝单号）的所有订单*********/
+                /********更新相同淘宝单号的所有订单来源价格*********/
                 $otherGameLevelingOrders = GameLevelingTaobaoTrade::where('taobao_trade_no', $data['source_order_no'])
                     ->where('trade_no', '!=', $order->trade_no)
                     ->pluck('trade_no')

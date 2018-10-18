@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Cache;
+use Redis;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
@@ -185,6 +186,21 @@ class OrderOperateController
     }
 
     /**
+     * 写入订单数量角标
+     * @param $previousStatus
+     * @param $handleStatus
+     */
+    public static function orderCount($previousStatus, $handleStatus)
+    {
+        // 接单人
+        orderStatusCount(static::$order->take_parent_user_id, $handleStatus);
+        orderStatusCount(static::$order->take_parent_user_id, $previousStatus, 4);
+        // 发单人
+        orderStatusCount(static::$order->parent_user_id, $handleStatus);
+        orderStatusCount(static::$order->parent_user_id, $previousStatus, 4);
+    }
+
+    /**
      * 上架
      */
     public function onSale()
@@ -201,9 +217,12 @@ class OrderOperateController
 
             $description = "用户[".static::$user->username."]将订单从[已下架]设置为[待接单]状态！";
             static::createOrderHistory(14, $description);
+
+            // 订单数量角标
+            static::orderCount(22, 13);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -231,9 +250,12 @@ class OrderOperateController
 
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
+
+            // 订单数量角标
+            static::orderCount(1, 22);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -261,9 +283,12 @@ class OrderOperateController
 
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
+
+            // 订单数量角标
+            static::orderCount(1, 24);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -283,7 +308,7 @@ class OrderOperateController
             }
 
             // 记录订单前一个状态
-            GameLevelingOrderPreviousStatus::create([
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
                 'status' => static::$order->status
             ]);
@@ -294,9 +319,12 @@ class OrderOperateController
             static::$order->status = 18;
             static::$order->save();
             static::createOrderHistory(16, $description);
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 18);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -329,9 +357,12 @@ class OrderOperateController
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
+
+            // 订单数量角标
+            static::orderCount(18, static::$order->status);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -354,7 +385,7 @@ class OrderOperateController
             }
 
             // 记录订单前一个状态
-            GameLevelingOrderPreviousStatus::create([
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
                 'status' => static::$order->status,
             ]);
@@ -382,9 +413,12 @@ class OrderOperateController
                 'status' => 1,
                 'initiator' => $initiator,
             ]);
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 15);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -422,9 +456,12 @@ class OrderOperateController
             GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
                 ->update(['status' => 3]);
+
+            // 订单数量角标
+            static::orderCount(15, static::$order->status);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -462,9 +499,12 @@ class OrderOperateController
             GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
                 ->update(['status' => 3]);
+
+            // 订单数量角标
+            static::orderCount(15, static::$order->status);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -545,9 +585,17 @@ class OrderOperateController
             if ($gameLevelingOrderConsult->poundage > 0) {
                 Asset::handle(new Income($gameLevelingOrderConsult->poundage, 6, static::$order->trade_no, '协商手续费收入', static::$order->parent_take_user_id));
             }
+
+            // 获取订单前一个状态
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->latest('id')
+                ->first();
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 19);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -568,7 +616,7 @@ class OrderOperateController
             }
 
             // 记录订单前一个状态
-            GameLevelingOrderPreviousStatus::create([
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
                 'status' => static::$order->status,
             ]);
@@ -597,9 +645,12 @@ class OrderOperateController
                 'status' => 1,
                 'initiator' => $initiator,
             ]);
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 16);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -637,9 +688,12 @@ class OrderOperateController
             GameLevelingOrderComplain::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
                 ->update(['status' => 3]);
+
+            // 订单数量角标
+            static::orderCount(16, $gameLevelingOrderPreviousStatus->status);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -659,7 +713,7 @@ class OrderOperateController
             }
 
             // 记录订单前一个状态
-            GameLevelingOrderPreviousStatus::create([
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
                 'status' => static::$order->status,
             ]);
@@ -671,9 +725,17 @@ class OrderOperateController
             static::$order->apply_complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
             static::createOrderHistory(28, $description);
+
+            // 写入 redis 24H自动验收
+            $now = Carbon::now()->toDateTimeString();
+            $key = static::$order->trade_no;
+            Redis::hSet('complete_orders', $key, $now);
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 14);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -706,9 +768,12 @@ class OrderOperateController
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
+
+            // 订单数量角标
+            static::orderCount(14, $gameLevelingOrderPreviousStatus->status);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -747,9 +812,12 @@ class OrderOperateController
             if (static::$order->efficiency_deposit > 0) {
                 Asset::handle(new Income(static::$order->efficiency_deposit, 9, static::$order->trade_no, '订单完成退回效率保证金', static::$order->take_parent_user_id));
             }
+
+            // 订单数量角标
+            static::orderCount(14, 20);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -774,9 +842,12 @@ class OrderOperateController
             static::$order->status = 17;
             static::$order->save();
             static::createOrderHistory(30, $description);
+
+            // 订单数量角标
+            static::orderCount(13, 17);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -801,9 +872,12 @@ class OrderOperateController
             static::$order->status = 13;
             static::$order->save();
             static::createOrderHistory(31, $description);
+
+            // 订单数量角标
+            static::orderCount(17, 13);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -841,9 +915,17 @@ class OrderOperateController
             if (static::$order->efficiency_deposit > 0) {
                 Asset::handle(new Income(static::$order->efficiency_deposit, 9, static::$order->trade_no, '强制撤单效率保证金退回', static::$order->take_parent_user_id));
             }
+
+            // 获取订单前一个状态
+            $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->latest('id')
+                ->first();
+
+            // 订单数量角标
+            static::orderCount($gameLevelingOrderPreviousStatus->status, 23);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
@@ -913,9 +995,12 @@ class OrderOperateController
 
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
+
+            // 订单数量角标
+            static::orderCount(1, 13);
         } catch (Exception $e) {
             DB::rollback();
-            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             throw new Exception('订单操作异常!');
         }
         DB::commit();
