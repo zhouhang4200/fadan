@@ -528,6 +528,7 @@ class OrderOperateController
             $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已协商]状态！";
 
             static::$order->status = 19;
+            static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
             static::createOrderHistory(24, $description);
 
@@ -549,7 +550,7 @@ class OrderOperateController
             }
             // 手续费 <= 协商双金
             if ($gameLevelingOrderConsult->poundage > bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit)) {
-                throw new Exception('手续费超出了协商双金!');
+                throw new Exception('协商手续费超出了协商双金!');
             }
 
             //（发单剩余代练费收入，支出手续费，收入双金)
@@ -593,6 +594,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 19);
+
+            // 删除24小时自动验收队列
+            Redis::hDel('complete_orders',  static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -700,6 +704,100 @@ class OrderOperateController
     }
 
     /**
+     * 客服仲裁
+     * @param int $amount 支付代练费
+     * @param int $deposit
+     * @param int $poundage
+     * @throws Exception
+     */
+    public function arbitration($amount = 0, $deposit = 0, $poundage = 0)
+    {
+        DB::beginTransaction();
+        try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 16) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已仲裁]状态！";
+
+            static::$order->status = 21;
+            static::$order->complete_at = Carbon::now()->toDateTimeString();
+            static::$order->save();
+            static::createOrderHistory(26, $description);
+
+            // 更改仲裁表状态和手续费等数据
+            $handleDeposit = static::handleDeposit($amount, $deposit);
+            $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->where('status', 1)
+                ->first();
+
+            $gameLevelingOrderComplain->amount = $amount;
+            $gameLevelingOrderComplain->security_deposit = $handleDeposit['security_deposit'];
+            $gameLevelingOrderComplain->efficiency_deposit = $handleDeposit['efficiency_deposit'];
+            $gameLevelingOrderComplain->poundage = $poundage;
+            $gameLevelingOrderComplain->status = 2;
+            $gameLevelingOrderComplain->save();
+
+            // 当前操作人是否是该平台
+            if (! config('leveling.third')[static::$user->parentInfo()->id] || config('leveling.third')[static::$user->parentInfo()->id] != static::$order->platform_id) {
+                throw new Exception('当前操作人不是该订单所有者!');
+            }
+
+            // 手续费 <= 协商双金
+            if ($gameLevelingOrderComplain->poundage > bcadd($gameLevelingOrderComplain->security_deposit, $gameLevelingOrderComplain->efficiency_deposit)) {
+                throw new Exception('仲裁手续费超出了协商双金!');
+            }
+
+            //（发单剩余代练费收入，支出手续费，收入双金)
+            if ($userAmount = bcsub(static::$order->amount, $gameLevelingOrderComplain->amount) > 0) {
+                Asset::handle(new Income($userAmount, 7, static::$order->trade_no, '退回仲裁代练费', static::$order->parent_user_id));
+            }
+
+            if ($gameLevelingOrderComplain->security_deposit > 0) {
+                Asset::handle(new Income($gameLevelingOrderComplain->security_deposit, 10, static::$order->trade_no, '仲裁安全保证金收入', static::$order->parent_user_id));
+            }
+
+            if ($gameLevelingOrderComplain->efficiency_deposit > 0) {
+                Asset::handle(new Income($gameLevelingOrderComplain->efficiency_deposit, 11, static::$order->trade_no, '仲裁效率保证金收入', static::$order->parent_user_id));
+            }
+
+            if ($gameLevelingOrderComplain->poundage > 0) {
+                Asset::handle(new Expend($gameLevelingOrderComplain->poundage, 3, static::$order->trade_no, '仲裁手续费支出', static::$order->parent_user_id));
+            }
+
+            // (接单收入代练费，收入退回双金，收入手续费)
+            if ($gameLevelingOrderComplain->amount > 0) {
+                Asset::handle(new Income($gameLevelingOrderComplain->amount, 12, static::$order->trade_no, '仲裁代练费收入', static::$order->parent_take_user_id));
+            }
+
+            if ($backSecurityDeposit = bcsub(static::$order->security_deposit, $gameLevelingOrderComplain->security_deposit) > 0) {
+                Asset::handle(new Income($backSecurityDeposit, 8, static::$order->trade_no, '仲裁安全保证金退回', static::$order->parent_take_user_id));
+            }
+
+            if ($backEfficiencyDeposit = bcsub(static::$order->efficiency_deposit, $gameLevelingOrderComplain->efficiency_deposit) > 0) {
+                Asset::handle(new Income($backEfficiencyDeposit, 9, static::$order->trade_no, '仲裁效率保证金退回', static::$order->parent_take_user_id));
+            }
+
+            if ($gameLevelingOrderComplain->poundage > 0) {
+                Asset::handle(new Income($gameLevelingOrderComplain->poundage, 6, static::$order->trade_no, '仲裁手续费收入', static::$order->parent_take_user_id));
+            }
+
+            // 订单数量角标
+            static::orderCount(16, 21);
+
+            // 删除24小时自动验收队列
+            Redis::hDel('complete_orders',  static::$order->trade_no);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
      * 申请验收
      * @throws Exception
      */
@@ -771,6 +869,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(14, $gameLevelingOrderPreviousStatus->status);
+
+            // 删除24小时自动验收队列
+            Redis::hDel('complete_orders',  static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -815,6 +916,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(14, 20);
+
+            // 删除24小时自动验收队列
+            Redis::hDel('complete_orders',  static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -923,6 +1027,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 23);
+
+            // 删除24小时自动验收队列
+            Redis::hDel('complete_orders',  static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
