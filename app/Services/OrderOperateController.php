@@ -2,19 +2,23 @@
 
 namespace App\Services;
 
-use App\Models\GameLevelingOrderComplain;
+use Cache;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
+use GuzzleHttp\Client;
+use App\Models\UserAsset;
 use App\Models\OrderHistory;
 use App\Extensions\Asset\Income;
+use App\Exceptions\CustomException;
 use App\Extensions\Asset\Expend;
+use App\Events\NotificationEvent;
 use App\Models\GameLevelingOrder;
-use App\Http\Controllers\Controller;
+use App\Models\GameLevelingOrderComplain;
 use App\Models\GameLevelingOrderConsult;
 use App\Models\GameLevelingOrderPreviousStatus;
 
-class OrderOperateController extends Controller
+class OrderOperateController
 {
     protected static $user;
     protected static $order;
@@ -47,7 +51,7 @@ class OrderOperateController extends Controller
      * @param $type
      * @param string $description
      */
-    public static function createOrderHistory($type, $description = '')
+    private static function createOrderHistory($type, $description = '')
     {
         $data = [
             'order_no' => static::$order->trade_no,
@@ -72,7 +76,7 @@ class OrderOperateController extends Controller
      * @return array
      * @throws Exception
      */
-    public static function handleDeposit($amount = 0, $deposit = 0)
+    private static function handleDeposit($amount = 0, $deposit = 0)
     {
         if ($amount < 0 || $amount > static::$order->amount) {
             throw new Exception('协商代练金额超出代练订单金额!');
@@ -100,7 +104,7 @@ class OrderOperateController extends Controller
      * @return int
      * @throws Exception
      */
-    public static function initiator()
+    private static function initiator()
     {
         if (static::$user->id == static::$order->user_id) {
             return 1;
@@ -112,12 +116,85 @@ class OrderOperateController extends Controller
     }
 
     /**
+     * 检测发单人和平台余额
+     */
+    public static function checkUserAndPlatformBalance()
+    {
+        if(UserAsset::balance(static::$order->parent_user_id) < 2000) {
+            // https://oapi.dingtalk.com/robot/send?access_token=b5c71a94ecaba68b9fec8055100324c06b1d98a6cd3447c5d05e224efebe5285 代练小组
+            // https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8 测试用
+            $userInfo = User::find(static::$order->parent_user_id);
+
+            $existCache = Cache::get(static::$order->parent_user_id);
+            if (!$existCache && in_array(static::$order->parent_user_id, [8317, 8803, 8790, 8785, 8711, 8523])) {
+                $now = Carbon::now();
+                $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
+                Cache::put(static::$order->parent_user_id, '1', $expiresAt);
+
+                // 发送通知
+                event((new NotificationEvent('balanceNotice', [
+                    'type' => 1, // 1 资金 2 短信
+                    'user_id' => static::$order->parent_user_id,
+                    'title' => '余额不足',
+                    'message' => '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。'
+                ])));
+
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+            }
+
+            $client = new Client();
+            $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                'json' => [
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => '发单商户ID: ' . static::$order->parent_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于2000元, 已发送短信通知, 请运营同事及时跟进。'
+                    ],
+                    'at' => [
+                        'isAtAll' => true
+                    ]
+                ]
+            ]);
+        }
+        // 发单平台余额检测
+        $platformBalanceAlarm = config('leveling.balance_alarm')[static::$order->take_parent_id];
+        if (UserAsset::balance(static::$order->take_parent_id) < $platformBalanceAlarm) {
+            $userInfo = User::find(static::$order->take_parent_id);
+
+            $existCache = Cache::get(static::$order->take_parent_id);
+            if (!$existCache) {
+                $now = Carbon::now();
+                $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
+                Cache::put(static::$order->take_parent_id, '1', $expiresAt);
+
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->take_parent_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+            }
+
+            $client = new Client();
+            $client->request('POST', 'https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8', [
+                'json' => [
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => '接单平台ID: ' . static::$order->take_parent_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
+                    ],
+                    'at' => [
+                        'isAtAll' => true
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    /**
      * 上架
      */
     public function onSale()
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 22) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
             // 修改订单状态和记录订单日志
             static::$order->status = 13;
             static::$order->save();
@@ -140,12 +217,20 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 1) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 修改订单状态和记录订单日志
             static::$order->status = 22;
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[待接单]设置为[已下架]状态！";
             static::createOrderHistory(15, $description);
+
+            // 从自动下架任务中删除
+            autoUnShelveDel(static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -162,12 +247,20 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 1) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 修改订单状态和记录订单日志
             $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已撤单]状态！";
 
             static::$order->status = 24;
             static::$order->save();
             static::createOrderHistory(23, $description);
+
+            // 从自动下架任务中删除
+            autoUnShelveDel(static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -184,6 +277,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (! in_array(static::$order->status, [13, 14, 17])) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 记录订单前一个状态
             GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
@@ -212,6 +310,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 18) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 获取订单前一个状态
             $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->latest('id')
@@ -245,6 +348,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (! in_array(static::$order->status, [13, 14, 17, 18])) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 记录订单前一个状态
             GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
@@ -290,6 +398,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 15) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 获取订单前一个状态
             $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->latest('id')
@@ -325,6 +438,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 15) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 获取订单前一个状态
             $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->latest('id')
@@ -361,6 +479,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (! in_array(static::$order->status, [15, 16])) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 修改订单状态和记录订单日志
             $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已协商]状态！";
 
@@ -439,6 +562,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (! in_array(static::$order->status, [13, 14, 15])) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 记录订单前一个状态
             GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
@@ -485,6 +613,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 16) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 获取订单前一个状态
             $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->latest('id')
@@ -520,6 +653,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 13) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 记录订单前一个状态
             GameLevelingOrderPreviousStatus::create([
                 'game_leveling_order_trade_no' => static::$order->trade_no,
@@ -530,6 +668,7 @@ class OrderOperateController extends Controller
             $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[待验收]状态！";
 
             static::$order->status = 14;
+            static::$order->apply_complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
             static::createOrderHistory(28, $description);
         } catch (Exception $e) {
@@ -548,6 +687,11 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 14) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 获取订单前一个状态
             $gameLevelingOrderPreviousStatus = GameLevelingOrderPreviousStatus::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->latest('id')
@@ -578,10 +722,16 @@ class OrderOperateController extends Controller
     {
         DB::beginTransaction();
         try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 14) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
             // 修改订单状态和记录订单日志
             $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[已结算]状态！";
 
             static::$order->status = 20;
+            static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
             static::createOrderHistory(12, $description);
 
@@ -597,6 +747,172 @@ class OrderOperateController extends Controller
             if (static::$order->efficiency_deposit > 0) {
                 Asset::handle(new Income(static::$order->efficiency_deposit, 9, static::$order->trade_no, '订单完成退回效率保证金', static::$order->take_parent_user_id));
             }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 异常
+     * @throws Exception
+     */
+    public function anomaly()
+    {
+        DB::beginTransaction();
+        try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 13) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[代练中]设置为[异常中]状态！";
+
+            static::$order->status = 17;
+            static::$order->save();
+            static::createOrderHistory(30, $description);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 取消异常
+     * @throws Exception
+     */
+    public function cancelAnomaly()
+    {
+        DB::beginTransaction();
+        try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 17) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[异常中]设置为[代练中]状态！";
+
+            static::$order->status = 13;
+            static::$order->save();
+            static::createOrderHistory(31, $description);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 强制撤销
+     * @throws Exception
+     */
+    public function forceDelete()
+    {
+        DB::beginTransaction();
+        try {
+            // 订单当前状态是否可以修改
+            if (! in_array(static::$order->status, [13, 14, 15, 16, 17, 18])) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[".config('order.status_leveling')[static::$order->status]."]设置为[强制撤单]状态！";
+
+            static::$order->status = 23;
+            static::$order->save();
+            static::createOrderHistory(25, $description);
+
+            // 流水
+            if (static::$order->amount > 0) {
+                Asset::handle(new Income(static::$order->amount, 7, static::$order->trade_no, '强制撤单退回代练费', static::$order->parent_user_id));
+            }
+
+            if (static::$order->security_deposit > 0) {
+                Asset::handle(new Income(static::$order->security_deposit, 8, static::$order->trade_no, '强制撤单安全保证金退回', static::$order->take_parent_user_id));
+            }
+
+            if (static::$order->efficiency_deposit > 0) {
+                Asset::handle(new Income(static::$order->efficiency_deposit, 9, static::$order->trade_no, '强制撤单效率保证金退回', static::$order->take_parent_user_id));
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new Exception('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 接单
+     * @throws Exception
+     */
+    public function take()
+    {
+        DB::beginTransaction();
+        try {
+            // 订单当前状态是否可以修改
+            if (static::$order->status != 1) {
+                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 修改订单状态和记录订单日志
+            $description = "用户[".static::$user->username."]将订单从[待接单]设置为[代练中]状态！";
+
+            static::$order->status = 13;
+            static::$order->take_at = Carbon::now()->toDateTimeString();
+            static::$order->save();
+            static::createOrderHistory(27, $description);
+
+            // 发单流水
+            try {
+                Asset::handle(new Expend(static::$order->amount, 6, static::$order->trade_no, '接单代练费支出', static::$order->parent_user_id));
+            } catch (CustomException $exception) {
+                if ($exception->getMessage() == '您的账号余额不足') {
+                    // 发送短信通知发单人
+                    $phone = User::where('id', static::$order->parent_user_id)->value('phone');
+                    if ($phone) {
+                        // 发送通知
+                        event((new NotificationEvent('balanceNotice', [
+                            'type' => 1, // 1 资金 2 短信
+                            'user_id' => static::$order->parent_user_id,
+                            'title' => '打手接单失败',
+                            'message' => '您在淘宝发单平台的账户余额不足，打手接单失败，请立刻充值，保证业务正常运行。'
+                        ])));
+                    }
+                    throw new Exception("您的账号余额不足!");
+                } else {
+                    throw new Exception("发单流水扣除异常!");
+                }
+            }
+            // 接单流水
+            $leftAmount = UserAsset::where('user_id', static::$order->take_parent_user_id)->value('balance');
+
+            $deposit = bcadd(static::$order->security_deposit, static::$order->efficiency_deposit);
+
+            if ($leftAmount <= 0 || $leftAmount < $deposit) {
+                throw new Exception('接单商户余额不足!');
+            }
+
+            if (static::$order->security_deposit > 0) {
+                Asset::handle(new Expend(static::$order->security_deposit, 4, static::$order->trade_no, '接单安全保证金支出', static::$order->take_parent_user_id));
+            }
+
+            if (static::$order->efficiency_deposit > 0) {
+                Asset::handle(new Expend(static::$order->efficiency_deposit, 5, static::$order->trade_no, '接单效率保证金支出', static::$order->take_parent_user_id));
+            }
+
+            // 检测发单人和平台余额
+            static::checkUserAndPlatformBalance();
+
+            // 从自动下架任务中删除
+            autoUnShelveDel(static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
