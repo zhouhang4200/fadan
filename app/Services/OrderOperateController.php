@@ -207,8 +207,9 @@ class OrderOperateController
     /**
      * 找出订单客户订单号找出商户设置的模版发送短信
      * @param $purpose
+     * @param $message
      */
-    public static function sendMessage($purpose)
+    public static function sendMessage($purpose, $message = '')
     {
         try {
             // 获取商户设置的模板
@@ -230,7 +231,7 @@ class OrderOperateController
                         static::$order->trade_no,
                         static::$order->gameLevelingOrderDetail->player_phone,
                         $smsContent,
-                        '代练订单申请验收短信',
+                        $message,
                         static::$order->channel_order_trade_no,
                         static::$order->platform_trade_no,
                         static::$order->platform_id
@@ -244,6 +245,7 @@ class OrderOperateController
 
     /**
      * 上架
+     * @throws Exception
      */
     public function onSale()
     {
@@ -481,7 +483,7 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
-            static::sendMessage(4);
+            static::sendMessage(4, '代练订单申请协商短信');
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -735,7 +737,7 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
-            static::sendMessage(5);
+            static::sendMessage(5, '代练订单申请仲裁短信');
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -929,7 +931,7 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
-            static::sendMessage(3);
+            static::sendMessage(3, '代练订单申请验收短信');
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1026,7 +1028,7 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
-            static::sendMessage(2);
+            static::sendMessage(2, '代练订单完成短信');
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
@@ -1245,7 +1247,7 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
-            static::sendMessage(1);
+            static::sendMessage(1, '代练订单被接短信');
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
