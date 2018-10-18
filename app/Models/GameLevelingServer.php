@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Server extends Model
+class GameLevelingServer extends Model
 {
     public $fillable = [
         'name',
@@ -17,6 +17,6 @@ class Server extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function region() {
-        return $this->belongsTo(Region::class);
+        return $this->belongsTo(GameLevelingRegion::class);
     }
 }

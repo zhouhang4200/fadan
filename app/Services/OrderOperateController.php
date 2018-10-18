@@ -229,8 +229,8 @@ class OrderOperateController
                         static::$order->gameLevelingOrderDetail->player_phone,
                         $smsContent,
                         '代练订单申请验收短信',
-                        static::$order->source_order_no,
-                        static::$order->platform_no,
+                        static::$order->channel_order_trade_no,
+                        static::$order->platform_trade_no,
                         static::$order->platform_id
                     );
                 }

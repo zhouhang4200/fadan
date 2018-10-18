@@ -14,63 +14,43 @@ class GameLevelingOrder extends Model
     public $fillable = [
         'trade_no',
         'status',
+        'channel_order_trade_no',
+        'channel_order_status',
         'platform_id',
-        'platform_no',
+        'platform_trade_no',
         'game_id',
-        'game_name',
+        'repeat',
         'amount',
+        'source_price',
         'security_deposit',
         'efficiency_deposit',
         'poundage',
-        'get_amount',
+        'source',
         'user_id',
-        'username',
         'parent_user_id',
-        'parent_username',
         'take_user_id',
-        'take_username',
         'take_parent_user_id',
-        'take_parent_username',
-        'order_type_id',
-        'game_type_id',
-        'game_class_id',
+        'top',
         'region_id',
-        'region_name',
         'server_id',
-        'server_name',
         'game_leveling_type_id',
-        'game_leveling_type_name',
-        'title',
         'day',
         'hour',
+        'title',
         'game_account',
         'game_password',
         'game_role',
-        'user_phone',
-        'user_qq',
         'customer_service_name',
         'seller_nick',
+        'buyer_nick',
         'pre_sale',
-        'explain',
-        'requirement',
         'take_order_password',
-        'player_name',
-        'player_phone',
-        'player_qq',
-        'take_at',
         'price_increase_step',
         'price_ceiling',
+        'take_at',
+        'top_at',
         'apply_complete_at',
         'complete_at',
-        'source',
-        'top',
-        'top_at',
-        'parent_user_phone',
-        'parent_user_qq',
-        'take_user_qq',
-        'take_user_phone',
-        'take_parent_phone',
-        'take_parent_qq',
         'created_at',
         'updated_at',
     ];
@@ -81,16 +61,16 @@ class GameLevelingOrder extends Model
      */
     public function gameLevelingOrderDetail()
     {
-        return $this->hasOne(GameLevelingOrderDetail::class, 'trade_no', 'trade_no');
+        return $this->hasOne(GameLevelingOrderDetail::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
     /**
-     * 多对多，淘宝订单
+     * 多对多，渠道表
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function gameLevelingTaobaoTrades()
+    public function gameLevelingOrderRelationChannels()
     {
-        return $this->hasMany(GameLevelingTaobaoTrade::class, 'trade_no', 'taobao_trade_no');
+        return $this->hasMany(GameLevelingOrderRelationChannel::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
     /**
@@ -99,7 +79,7 @@ class GameLevelingOrder extends Model
      */
     public function gameLevelingOrderPreviousStatuses()
     {
-        return $this->hasMany(GameLevelingOrderPreviousStatus::class);
+        return $this->hasMany(GameLevelingOrderPreviousStatus::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
     /**
@@ -121,6 +101,16 @@ class GameLevelingOrder extends Model
         return $this->morphMany(PlatformAmountFlow::class, 'flowable');
     }
 
+    public function gameLevelingOrderConsult()
+    {
+        return $this->hasMany(GameLevelingOrderConsult::class, 'game_leveling_order_trade_no', 'trade_no');
+    }
+
+    public function gameLevelingOrderComplain()
+    {
+        return $this->hasMany(GameLevelingOrderComplain::class, 'game_leveling_order_trade_no', 'trade_no');
+    }
+
     /**
      * 下单
      * @param User $user
@@ -133,8 +123,8 @@ class GameLevelingOrder extends Model
         DB::beginTransaction();
         try {
             $game = Game::find($data['game_id']);
-            $region = Region::find($data['region']);
-            $server = Server::find($data['serve']);
+            $region = GameLevelingRegion::find($data['region']);
+            $server = GameLevelingServer::find($data['serve']);
             $gameLevelingType = GameLevelingType::find($data['game_leveling_type']);
             $parent = $user->getPrimaryInfo();
 
@@ -151,7 +141,7 @@ class GameLevelingOrder extends Model
                 $sourcePrice = $taobaoTrade->payment;
 
                 /*************查询是否有进行中的淘宝单号*******************/
-                $existOrder = GameLevelingTaobaoTrade::where('taobao_trade_no', $sourceOrderNo)
+                $existOrder = GameLevelingOrderRelationChannel::where('taobao_trade_no', $sourceOrderNo)
                     ->first();
 
                 if ($existOrder && ! in_array($existOrder->status, [15, 16, 19, 20, 21, 22, 23, 24])) {
@@ -167,10 +157,10 @@ class GameLevelingOrder extends Model
             $orderData = [
                 'trade_no' => generateOrderNo(),
                 'status' => 1,
-                'taobao_status' => $taobaoStatus,
-                'source_order_no' => $sourceOrderNo,
+                'channel_order_status' => $taobaoStatus,
+                'channel_order_trade_no' => $sourceOrderNo,
                 'platform_id' => '',
-                'platform_no' => '',
+                'platform_trade_no' => '',
                 'game_id' => $game->id,
                 'user_id' => $user->id,
                 'parent_user_id' => $parent->id,
@@ -210,8 +200,8 @@ class GameLevelingOrder extends Model
             /***存到订单详情表***/
             $details = [
                 'trade_no' => $order->trade_no,
-                'region_name' => $region->name,
-                'server_name' => $server->name,
+                'game_leveling_region_name' => $region->name,
+                'game_leveling_server_name' => $server->name,
                 'game_leveling_type_name' => $gameLevelingType->name,
                 'game_name' => $game->name,
                 'username' => $user->username,
@@ -238,32 +228,35 @@ class GameLevelingOrder extends Model
             /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
             if ($order->source_order_no) {
                 // 将淘宝主订单号写入关联的淘宝订单表
-                GameLevelingTaobaoTrade::create([
-                    'trade_no' => $order->trade_no,
-                    'taobao_trade_no' => $order->source_order_no,
+                GameLevelingOrderRelationChannel::create([
+                    'channel' => 1,
+                    'game_leveling_order_trade_no' => $order->trade_no,
+                    'game_leveling_channel_order_trade_no' => $order->source_order_no,
                     'payment' => $sourcePrice,
                 ]);
                 // 是否存在不同的补款单号1
                 if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
                     $payment1 = TaobaoTrade::where('tid', $data['source_order_no_1'])->value('payment');
-                    GameLevelingTaobaoTrade::create([
-                        'trade_no' => $order->trade_no,
-                        'taobao_trade_no' => $data['source_order_no_1'],
+                    GameLevelingOrderRelationChannel::create([
+                        'channel' => 1,
+                        'game_leveling_order_trade_no' => $order->trade_no,
+                        'game_leveling_channel_order_trade_no' => $data['source_order_no_1'],
                         'payment' => $payment1,
                     ]);
                 }
                 // 是否存在不同的补款单号2
                 if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
                     $payment2 = TaobaoTrade::where('tid', $data['source_order_no_2'])->value('payment');
-                    GameLevelingTaobaoTrade::create([
-                        'trade_no' => $order->trade_no,
-                        'taobao_trade_no' => $data['source_order_no_2'],
+                    GameLevelingOrderRelationChannel::create([
+                        'channel' => 1,
+                        'game_leveling_order_trade_no' => $order->trade_no,
+                        'game_leveling_channel_order_trade_no' => $data['source_order_no_2'],
                         'payment' => $payment2,
                     ]);
                 }
 
                 /*****更新订单的来源价格*********/
-                $totalSourcePrice = GameLevelingTaobaoTrade::where('trade_no', $order->trade_no)->sum('payment');
+                $totalSourcePrice = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)->sum('payment');
 
                 if ($totalSourcePrice != $order->source_price) {
                     $order->source_price = $totalSourcePrice;
@@ -271,9 +264,9 @@ class GameLevelingOrder extends Model
                 }
 
                 /********更新相同淘宝单号的所有订单来源价格*********/
-                $otherGameLevelingOrders = GameLevelingTaobaoTrade::where('taobao_trade_no', $data['source_order_no'])
-                    ->where('trade_no', '!=', $order->trade_no)
-                    ->pluck('trade_no')
+                $otherGameLevelingOrders = GameLevelingOrderRelationChannel::where('taobao_trade_no', $data['source_order_no'])
+                    ->where('game_leveling_order_trade_no', '!=', $order->trade_no)
+                    ->pluck('game_leveling_order_trade_no')
                     ->unique();
 
                 if ($otherGameLevelingOrders->count() > 1) {
@@ -281,31 +274,33 @@ class GameLevelingOrder extends Model
                         $otherGameLevelingOrder->source_price = $totalSourcePrice;
                         // 关联表的订单也随着修改或新增
                         if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
-                            $issetRecord1 = GameLevelingTaobaoTrade::where('trade_no', $order->trade_no)
-                                ->where('taobao_trade_no', $data['source_order_no_1'])
+                            $issetRecord1 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                                ->where('game_leveling_channel_order_trade_no', $data['source_order_no_1'])
                                 ->first();
 
-                            GameLevelingTaobaoTrade::updateOrCreate([
-                                'trade_no' => $otherGameLevelingOrder->trade_no,
-                                'taobao_trade_no' =>  $data['source_order_no_1'],
+                            GameLevelingOrderRelationChannel::updateOrCreate([
+                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
                             ],[
-                                'trade_no' => $otherGameLevelingOrder->trade_no,
-                                'taobao_trade_no' =>  $data['source_order_no_1'],
+                                'channel' => 1,
+                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
                                 'payment' => $issetRecord1->payment,
                             ]);
                         }
                         // 关联表的订单也随着修改或新增
                         if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
-                            $issetRecord2 = GameLevelingTaobaoTrade::where('trade_no', $order->trade_no)
-                                ->where('taobao_trade_no', $data['source_order_no_2'])
+                            $issetRecord2 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                                ->where('game_leveling_channel_order_trade_no', $data['source_order_no_2'])
                                 ->first();
 
-                            GameLevelingTaobaoTrade::updateOrCreate([
-                                'trade_no' => $otherGameLevelingOrder->trade_no,
-                                'taobao_trade_no' =>  $data['source_order_no_2'],
+                            GameLevelingOrderRelationChannel::updateOrCreate([
+                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
                             ],[
-                                'trade_no' => $otherGameLevelingOrder->trade_no,
-                                'taobao_trade_no' =>  $data['source_order_no_2'],
+                                'channel' => 1,
+                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
                                 'payment' => $issetRecord2->payment,
                             ]);
                         }
@@ -357,8 +352,8 @@ class GameLevelingOrder extends Model
             $sendOrder = [
                 'order_no' => $order->trade_no,
                 'game_name' => $gameLevelingOrderDetail->game_name,
-                'game_region' => $gameLevelingOrderDetail->region_name,
-                'game_serve' => $gameLevelingOrderDetail->server_name,
+                'game_region' => $gameLevelingOrderDetail->game_leveling_region_name,
+                'game_serve' => $gameLevelingOrderDetail->game_leveling_server_name,
                 'game_role' => $order->game_role,
                 'game_account' => $order->game_account,
                 'game_password' => $order->game_password,

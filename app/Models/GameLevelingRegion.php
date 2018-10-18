@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Region extends Model
+class GameLevelingRegion extends Model
 {
     public $fillable = [
         'name',
@@ -27,6 +27,6 @@ class Region extends Model
      */
     public function servers()
     {
-        return $this->hasMany(Server::class);
+        return $this->hasMany(GameLevelingServer::class);
     }
 }

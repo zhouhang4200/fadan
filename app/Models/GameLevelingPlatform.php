@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GameLevelingPlatform extends Model
 {
-    public $fillable = ['trade_no', 'platform_id', 'platform_no'];
+    public $fillable = ['game_leveling_order_trade_no', 'platform_id', 'platform_trade_no'];
 
     /**
      * 多对一，订单表

@@ -15,9 +15,9 @@ class CreateGameLevelingOrderDetailsTable extends Migration
     {
         Schema::create('game_leveling_order_details', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('trade_no', 22)->comment('代练订单号');
-            $table->string('region_name', 60)->comment('游戏区名称');
-            $table->string('server_name', 60)->comment('游戏服务器名称');
+            $table->string('game_leveling_order_trade_no', 22)->comment('代练订单号');
+            $table->string('game_leveling_region_name', 60)->comment('游戏区名称');
+            $table->string('game_leveling_server_name', 60)->comment('游戏服务器名称');
             $table->string('game_leveling_type_name', 191)->comment('游戏代练类型名称');
             $table->string('game_name', 60)->comment('游戏名称');
             $table->string('username', 191)->comment('创建订单用户');
