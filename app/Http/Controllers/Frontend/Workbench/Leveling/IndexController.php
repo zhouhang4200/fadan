@@ -2295,8 +2295,8 @@ class IndexController extends Controller
     }
 
     /**
-     * 新的下单
      * @param Request $request
+     * @return mixed
      */
     public function newOrder(Request $request)
     {

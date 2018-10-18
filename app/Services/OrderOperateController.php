@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use GuzzleHttp\Client;
 use App\Models\UserAsset;
+use App\Models\SmsTemplate;
 use App\Models\OrderHistory;
 use App\Extensions\Asset\Income;
 use App\Exceptions\CustomException;
@@ -156,6 +157,7 @@ class OrderOperateController
                 ]
             ]);
         }
+
         // 发单平台余额检测
         $platformBalanceAlarm = config('leveling.balance_alarm')[static::$order->take_parent_id];
         if (UserAsset::balance(static::$order->take_parent_id) < $platformBalanceAlarm) {
@@ -198,6 +200,44 @@ class OrderOperateController
         // 发单人
         orderStatusCount(static::$order->parent_user_id, $handleStatus);
         orderStatusCount(static::$order->parent_user_id, $previousStatus, 4);
+    }
+
+    /**
+     * 找出订单客户订单号找出商户设置的模版发送短信
+     * @param $purpose
+     */
+    public static function sendMessage($purpose)
+    {
+        try {
+            // 获取商户设置的模板
+            $template = SmsTemplate::where('user_id', static::$order->parent_user_id)
+                ->where('status', 1)
+                ->where('purpose', $purpose)
+                ->first();
+
+            if ($template) {
+                if (isset(static::$order->gameLevelingOrderDetail->player_phone) && static::$order->gameLevelingOrderDetail->player_phone) {
+                    $smsContent = '';
+                    if (isset(static::$order->seller_nick) && !empty(static::$order->seller_nick)) {
+                        $smsContent = '[' . static::$order->seller_nick . '] 提醒您,' .  $template->contents;
+                    } else {
+                        $smsContent = $template->contents;
+                    }
+                    // 发送短信
+                    sendSms(static::$order->parent_user_id,
+                        static::$order->trade_no,
+                        static::$order->gameLevelingOrderDetail->player_phone,
+                        $smsContent,
+                        '代练订单申请验收短信',
+                        static::$order->source_order_no,
+                        static::$order->platform_no,
+                        static::$order->platform_id
+                    );
+                }
+            }
+        } catch (Exception $e) {
+            myLog('order-operate-send-message', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+        }
     }
 
     /**
@@ -434,6 +474,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 发送短信
+            static::sendMessage(4);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -682,6 +725,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 发送短信
+            static::sendMessage(5);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -870,6 +916,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 发送短信
+            static::sendMessage(3);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -964,6 +1013,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 发送短信
+            static::sendMessage(2);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1162,6 +1214,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+
+            // 发送短信
+            static::sendMessage(1);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
