@@ -220,6 +220,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(22, 13);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -253,6 +256,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(1, 22);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -286,6 +292,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(1, 24);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -322,6 +331,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 18);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -360,6 +372,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(18, static::$order->status);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -416,6 +431,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 15);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -459,6 +477,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(15, static::$order->status);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -502,6 +523,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(15, static::$order->status);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -597,6 +621,9 @@ class OrderOperateController
 
             // 删除24小时自动验收队列
             Redis::hDel('complete_orders',  static::$order->trade_no);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -652,6 +679,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 16);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -695,6 +725,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(16, $gameLevelingOrderPreviousStatus->status);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -789,6 +822,9 @@ class OrderOperateController
 
             // 删除24小时自动验收队列
             Redis::hDel('complete_orders',  static::$order->trade_no);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -831,6 +867,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 14);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -872,6 +911,9 @@ class OrderOperateController
 
             // 删除24小时自动验收队列
             Redis::hDel('complete_orders',  static::$order->trade_no);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -919,6 +961,9 @@ class OrderOperateController
 
             // 删除24小时自动验收队列
             Redis::hDel('complete_orders',  static::$order->trade_no);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -949,6 +994,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(13, 17);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -979,6 +1027,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(17, 13);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1030,6 +1081,9 @@ class OrderOperateController
 
             // 删除24小时自动验收队列
             Redis::hDel('complete_orders',  static::$order->trade_no);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1105,6 +1159,9 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount(1, 13);
+
+            // 删除存在的订单报警
+            Redis::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
