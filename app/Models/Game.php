@@ -76,7 +76,7 @@ class Game extends Model
      */
     public function gameLevelingRegions()
     {
-        return $this->hasMany(GameLevelingRegion::class);
+        return $this->hasMany(GameRegion::class);
     }
 
     /**

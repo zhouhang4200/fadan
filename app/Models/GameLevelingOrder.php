@@ -123,8 +123,8 @@ class GameLevelingOrder extends Model
         DB::beginTransaction();
         try {
             $game = Game::find($data['game_id']);
-            $region = GameLevelingRegion::find($data['region']);
-            $server = GameLevelingServer::find($data['serve']);
+            $region = GameRegion::find($data['region']);
+            $server = GameServer::find($data['serve']);
             $gameLevelingType = GameLevelingType::find($data['game_leveling_type']);
             $parent = $user->getPrimaryInfo();
 
@@ -200,8 +200,8 @@ class GameLevelingOrder extends Model
             /***存到订单详情表***/
             $details = [
                 'game_leveling_order_trade_no' => $order->trade_no,
-                'game_leveling_region_name' => $region->name,
-                'game_leveling_server_name' => $server->name,
+                'game_region_name' => $region->name,
+                'game_server_name' => $server->name,
                 'game_leveling_type_name' => $gameLevelingType->name,
                 'game_name' => $game->name,
                 'username' => $user->username,
@@ -352,8 +352,8 @@ class GameLevelingOrder extends Model
             $sendOrder = [
                 'order_no' => $order->trade_no,
                 'game_name' => $gameLevelingOrderDetail->game_name,
-                'game_region' => $gameLevelingOrderDetail->game_leveling_region_name,
-                'game_serve' => $gameLevelingOrderDetail->game_leveling_server_name,
+                'game_region' => $gameLevelingOrderDetail->game_region_name,
+                'game_serve' => $gameLevelingOrderDetail->game_server_name,
                 'game_role' => $order->game_role,
                 'game_account' => $order->game_account,
                 'game_password' => $order->game_password,

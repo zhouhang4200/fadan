@@ -8,8 +8,8 @@ class GameLevelingOrderDetail extends Model
 {
     public $fillable = [
         'game_leveling_order_trade_no',
-        'game_leveling_region_name',
-        'game_leveling_server_name',
+        'game_region_name',
+        'game_server_name',
         'game_leveling_type_name',
         'game_name',
         'username',
