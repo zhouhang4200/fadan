@@ -19,7 +19,7 @@ class RedisConnect
         return Redis::connection('order');
     }
 
-        /**
+    /**
      * 订单相关
      * @return mixed
      */

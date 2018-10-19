@@ -31,8 +31,8 @@ class GameLevelingOrder extends Model
         'take_user_id',
         'take_parent_user_id',
         'top',
-        'region_id',
-        'server_id',
+        'game_region_id',
+        'game_server_id',
         'game_leveling_type_id',
         'day',
         'hour',
@@ -123,8 +123,8 @@ class GameLevelingOrder extends Model
         DB::beginTransaction();
         try {
             $game = Game::find($data['game_id']);
-            $region = GameLevelingRegion::find($data['region']);
-            $server = GameLevelingServer::find($data['serve']);
+            $region = GameRegion::find($data['region']);
+            $server = GameServer::find($data['serve']);
             $gameLevelingType = GameLevelingType::find($data['game_leveling_type']);
             $parent = $user->getPrimaryInfo();
 
@@ -173,8 +173,8 @@ class GameLevelingOrder extends Model
                 'source' => $source,
                 'top' => 0,
                 'poundage' => 0,
-                'region_id' => $region->id,
-                'server_id' => $server->id,
+                'game_region_id' => $region->id,
+                'game_server_id' => $server->id,
                 'game_leveling_type_id' => $gameLevelingType->id,
                 'title' => $data['game_leveling_title'],
                 'day' => $data['game_leveling_day'],
@@ -200,8 +200,8 @@ class GameLevelingOrder extends Model
             /***存到订单详情表***/
             $details = [
                 'game_leveling_order_trade_no' => $order->trade_no,
-                'game_leveling_region_name' => $region->name,
-                'game_leveling_server_name' => $server->name,
+                'game_region_name' => $region->name,
+                'game_server_name' => $server->name,
                 'game_leveling_type_name' => $gameLevelingType->name,
                 'game_name' => $game->name,
                 'username' => $user->username,
@@ -352,8 +352,8 @@ class GameLevelingOrder extends Model
             $sendOrder = [
                 'order_no' => $order->trade_no,
                 'game_name' => $gameLevelingOrderDetail->game_name,
-                'game_region' => $gameLevelingOrderDetail->game_leveling_region_name,
-                'game_serve' => $gameLevelingOrderDetail->game_leveling_server_name,
+                'game_region' => $gameLevelingOrderDetail->game_region_name,
+                'game_serve' => $gameLevelingOrderDetail->game_server_name,
                 'game_role' => $order->game_role,
                 'game_account' => $order->game_account,
                 'game_password' => $order->game_password,

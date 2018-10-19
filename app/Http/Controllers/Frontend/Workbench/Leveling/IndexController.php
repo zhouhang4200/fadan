@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Workbench\Leveling;
 
-use App\Models\GameLevelingRegion;
+use App\Models\GameRegion;
 use App\Models\OrderBasicData as OrderBasicDataModel;
 use App\Models\GameLevelingOrder;
 use App\Extensions\Dailian\Controllers\Arbitrationing;
@@ -2229,7 +2229,7 @@ class IndexController extends Controller
     {
         try {
             return request('region_id') ?
-                GameLevelingRegion::find(request('region_id'))->gameLevelingServers()->pluck('name', 'id')->toArray()
+                GameRegion::find(request('region_id'))->gameLevelingServers()->pluck('name', 'id')->toArray()
                 : '';
         } catch (Exception $e) {
             return '';

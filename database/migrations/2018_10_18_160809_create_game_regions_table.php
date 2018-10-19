@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGameLevelingRegionsTable extends Migration
+class CreateGameRegionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateGameLevelingRegionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('game_leveling_regions', function (Blueprint $table) {
+        Schema::create('game_regions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->string('name', 60)->comment('游戏名称');

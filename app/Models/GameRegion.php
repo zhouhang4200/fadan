@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameLevelingRegion extends Model
+class GameRegion extends Model
 {
     public $fillable = [
         'name',
@@ -25,8 +25,8 @@ class GameLevelingRegion extends Model
      * 区下面的服
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function gameLevelingServers()
+    public function gameServers()
     {
-        return $this->hasMany(GameLevelingServer::class);
+        return $this->hasMany(GameServer::class);
     }
 }
