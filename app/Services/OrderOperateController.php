@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\GameLevelingOrderDetail;
+use App\Models\GameLevelingPlatform;
+use App\Models\HatchetManBlacklist;
+use App\Models\LevelingMessage;
 use Cache;
 use Redis;
 use Exception;
@@ -21,6 +24,7 @@ use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingOrderComplain;
 use App\Models\GameLevelingOrderConsult;
 use App\Models\GameLevelingOrderPreviousStatus;
+use App\Exceptions\GameLevelingOrderOperateException;
 
 class OrderOperateController
 {
@@ -83,11 +87,11 @@ class OrderOperateController
     private static function handleDeposit($amount = 0, $deposit = 0)
     {
         if ($amount < 0 || $amount > static::$order->amount) {
-            throw new Exception('协商代练金额超出代练订单金额!');
+            throw new GameLevelingOrderOperateException('协商代练金额超出代练订单金额!');
         }
 
         if ($deposit < 0 || $deposit > bcadd(static::$order->security_deposit, static::$order->efficiency_deposit)) {
-            throw new Exception('协商双金超出代练订单双金!');
+            throw new GameLevelingOrderOperateException('协商双金超出代练订单双金!');
         }
 
         if ($deposit <= static::$order->security_deposit) {
@@ -115,7 +119,7 @@ class OrderOperateController
         } elseif (static::$user->id == static::$order->take_user_id) {
             return 2;
         } else {
-            throw new Exception('当前操作用户不存在!');
+            throw new GameLevelingOrderOperateException('当前操作用户不存在!');
         }
     }
 
@@ -253,7 +257,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 22) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
             // 修改订单状态和记录订单日志
             static::$order->status = 13;
@@ -270,7 +274,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -285,7 +289,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 1) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -306,7 +310,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -321,7 +325,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 1) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -345,7 +349,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -360,7 +364,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (! in_array(static::$order->status, [13, 14, 17])) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 记录订单前一个状态
@@ -384,7 +388,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -399,7 +403,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 18) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 获取订单前一个状态
@@ -425,7 +429,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -434,16 +438,21 @@ class OrderOperateController
      * 申请协商
      * @param $amount
      * @param $deposit
-     * @param $reason
-     * @throws Exception
+     * @param int $poundage
+     * @param string $reason
+     * @throws GameLevelingOrderOperateException
      */
-    public function applyConsult($amount, $deposit, $reason)
+    public function applyConsult($amount, $deposit, $poundage = 0, $reason = '无协商原因')
     {
         DB::beginTransaction();
         try {
             // 订单当前状态是否可以修改
             if (! in_array(static::$order->status, [13, 14, 17, 18])) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            if (!is_numeric($amount) || !is_numeric($deposit) || !is_numeric($poundage)) {
+                throw new GameLevelingOrderOperateException("参数类型不合法！");
             }
 
             // 记录订单前一个状态
@@ -470,7 +479,7 @@ class OrderOperateController
                 'amount' => $amount,
                 'security_deposit' => $handleDeposit['security_deposit'],
                 'efficiency_deposit' => $handleDeposit['efficiency_deposit'],
-                'poundage' => 0,
+                'poundage' => $poundage,
                 'reason' => $reason,
                 'status' => 1,
                 'initiator' => $initiator,
@@ -487,7 +496,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -502,7 +511,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 15) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 获取订单前一个状态
@@ -533,7 +542,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -548,7 +557,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 15) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 获取订单前一个状态
@@ -579,7 +588,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -595,7 +604,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (! in_array(static::$order->status, [15, 16])) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -620,11 +629,11 @@ class OrderOperateController
             $orderParentUserId = $gameLevelingOrderConsult->initiator == 2 ? static::$order->parent_user_id : static::$order->take_parent_user_id;
             $ids = User::find($orderParentUserId)->children->pluck('id')->merge($orderParentUserId)->toArray();
             if (! in_array(static::$user->id, $ids)) {
-                throw new Exception('当前操作人不是该订单拥有者!');
+                throw new GameLevelingOrderOperateException('当前操作人不是该订单拥有者!');
             }
             // 手续费 <= 协商双金
             if ($gameLevelingOrderConsult->poundage > bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit)) {
-                throw new Exception('协商手续费超出了协商双金!');
+                throw new GameLevelingOrderOperateException('协商手续费超出了协商双金!');
             }
 
             //（发单剩余代练费收入，支出手续费，收入双金)
@@ -680,7 +689,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -690,13 +699,13 @@ class OrderOperateController
      * @param string $reason
      * @throws Exception
      */
-    public function applyComplain($reason = '')
+    public function applyComplain($reason = '无申请仲裁原因')
     {
         DB::beginTransaction();
         try {
             // 订单当前状态是否可以修改
             if (! in_array(static::$order->status, [13, 14, 15])) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 记录订单前一个状态
@@ -741,7 +750,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -756,7 +765,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 16) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 获取订单前一个状态
@@ -787,7 +796,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -805,7 +814,11 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 16) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            if (!is_numeric($amount) || !is_numeric($deposit) || !is_numeric($poundage)) {
+                throw new GameLevelingOrderOperateException('参数类型不合法!');
             }
 
             // 修改订单状态和记录订单日志
@@ -831,12 +844,12 @@ class OrderOperateController
 
             // 当前操作人是否是该平台
             if (! config('leveling.third')[static::$user->parentInfo()->id] || config('leveling.third')[static::$user->parentInfo()->id] != static::$order->platform_id) {
-                throw new Exception('当前操作人不是该订单所有者!');
+                throw new GameLevelingOrderOperateException('当前操作人不是该订单所有者!');
             }
 
             // 手续费 <= 协商双金
             if ($gameLevelingOrderComplain->poundage > bcadd($gameLevelingOrderComplain->security_deposit, $gameLevelingOrderComplain->efficiency_deposit)) {
-                throw new Exception('仲裁手续费超出了协商双金!');
+                throw new GameLevelingOrderOperateException('仲裁手续费超出了协商双金!');
             }
 
             //（发单剩余代练费收入，支出手续费，收入双金)
@@ -887,7 +900,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -902,7 +915,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 13) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 记录订单前一个状态
@@ -935,7 +948,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -950,7 +963,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 14) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 获取订单前一个状态
@@ -979,7 +992,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -994,7 +1007,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 14) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -1035,7 +1048,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -1050,7 +1063,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 13) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -1068,7 +1081,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -1083,7 +1096,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 17) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -1101,7 +1114,7 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
@@ -1116,7 +1129,7 @@ class OrderOperateController
         try {
             // 订单当前状态是否可以修改
             if (! in_array(static::$order->status, [13, 14, 15, 16, 17, 18])) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
             // 修改订单状态和记录订单日志
@@ -1158,22 +1171,45 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }
 
     /**
      * 接单
+     * @param $hatchetManName
+     * @param $hatchetManQq
+     * @param $hatchetManPhone
+     * @return mixed
      * @throws Exception
      */
-    public function take()
+    public function take($hatchetManName, $hatchetManQq = '', $hatchetManPhone = '')
     {
         DB::beginTransaction();
         try {
             // 订单当前状态是否可以修改
             if (static::$order->status != 1) {
-                throw new Exception("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+                throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
+            }
+
+            // 获取该商户下面的黑名单打手
+            $hatchetManBlacklist = HatchetManBlacklist::whereIn('user_id', [static::$order->parent_user_id, 0])
+                ->first();
+
+            if (isset($hatchetManBlacklist) && ! empty($hatchetManBlacklist)) {
+                $blacklistQqs = HatchetManBlacklist::whereIn('user_id', [static::$order->parent_user_id, 0])
+                    ->pluck('hatchet_man_qq')->toArray();
+
+                $blacklistPhones = HatchetManBlacklist::whereIn('user_id', [static::$order->parent_user_id, 0])
+                    ->pluck('hatchet_man_phone')->toArray();
+
+                if (isset($blacklistQqs) && in_array($hatchetManQq, $blacklistQqs)) {
+                    return response()->partner(0, '打手已被商户拉入黑名单');
+                }
+                if (isset($blacklistPhones) && in_array($hatchetManPhone, $blacklistPhones)) {
+                    return response()->partner(0, '打手已被商户拉入黑名单');
+                }
             }
 
             // 修改订单状态和记录订单日志
@@ -1205,9 +1241,9 @@ class OrderOperateController
                             'message' => '您在淘宝发单平台的账户余额不足，打手接单失败，请立刻充值，保证业务正常运行。'
                         ])));
                     }
-                    throw new Exception("您的账号余额不足!");
+                    throw new GameLevelingOrderOperateException("您的账号余额不足!");
                 } else {
-                    throw new Exception("发单流水扣除异常!");
+                    throw new GameLevelingOrderOperateException("发单流水扣除异常!");
                 }
             }
             // 接单流水
@@ -1216,7 +1252,7 @@ class OrderOperateController
             $deposit = bcadd(static::$order->security_deposit, static::$order->efficiency_deposit);
 
             if ($leftAmount <= 0 || $leftAmount < $deposit) {
-                throw new Exception('接单商户余额不足!');
+                throw new GameLevelingOrderOperateException('接单商户余额不足!');
             }
 
             if (static::$order->security_deposit > 0) {
@@ -1236,6 +1272,9 @@ class OrderOperateController
             $gameLevelingOrderDetail->take_user_phone = static::$user->phone;
             $gameLevelingOrderDetail->take_parent_qq = static::$user->parentInfo()->qq;
             $gameLevelingOrderDetail->take_parent_phone = static::$user->parentInfo()->phone;
+            $gameLevelingOrderDetail->hatchet_man_name = $hatchetManName;
+            $gameLevelingOrderDetail->hatchet_man_phone = $hatchetManPhone;
+            $gameLevelingOrderDetail->hatchet_man_qq = $hatchetManQq;
             $gameLevelingOrderDetail->save();
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
@@ -1254,7 +1293,66 @@ class OrderOperateController
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('订单操作异常!');
+            throw new GameLevelingOrderOperateException('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 回传
+     * @param $platformTradeNo
+     * @throws GameLevelingOrderOperateException
+     */
+    public function callback($platformTradeNo)
+    {
+        DB::beginTransaction();
+        try {
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->where('platform_id', config('leveling.third')[static::$user->id])
+                ->first();
+
+            if (! $gameLevelingPlatform) {
+                GameLevelingPlatform::create([
+                    'game_leveling_order_trade_no' => static::$order->trade_no,
+                    'platform_id' => config('leveling.third')[static::$user->id],
+                    'platform_trade_no' => $platformTradeNo,
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new GameLevelingOrderOperateException('订单操作异常!');
+        }
+        DB::commit();
+    }
+
+    /**
+     * 留言
+     * @param $date
+     * @param $message
+     * @throws GameLevelingOrderOperateException
+     */
+    public function leaveMessage($date, $message = '')
+    {
+        DB::beginTransaction();
+        try {
+            $data = [
+                'user_id' => static::$order->parent_user_id, // 发单用户ID
+                'third' => static::$order->platform_id,
+                'third_order_no' => static::$order->platform_trade_no, // 第三方平台单号
+                'foreign_order_no' => static::$order->channel_order_trade_no, // 天猫单号
+                'order_no' => static::$order->trade_no, // 我们平台单号
+                'date' => $date, // 第三方平台单号留言时间
+                'contents' => $message, // 第三方平台单号留言内容
+            ];
+
+            LevelingMessage::create($data);
+
+            levelingMessageCount(static::$order->parent_user_id, 1, 1);
+        } catch (Exception $e) {
+            DB::rollback();
+            myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            throw new GameLevelingOrderOperateException('订单操作异常!');
         }
         DB::commit();
     }

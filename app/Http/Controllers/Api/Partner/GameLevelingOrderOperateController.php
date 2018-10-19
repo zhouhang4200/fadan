@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Models\GameLevelingOrderComplain;
+use App\Models\GameLevelingOrderConsult;
 use DB;
 use Exception;
 use App\Models\LevelingMessage;
@@ -23,6 +25,49 @@ class GameLevelingOrderOperateController
                 return response()->partner(0, '参数缺失!');
             }
             $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            if (! $order) {
+                throw new GameLevelingOrderOperateException("订单不存在!");
+            }
+
+            // 协商/仲裁信息
+            $consult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)->latest('id')->first();
+            $complain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)->latest('id')->first();
+
+            // 如果存在接单时间
+            if (isset($order->take_at) && !empty($order->take_at)) {
+                // 计算到期的时间戳
+                $expirationTimestamp = strtotime($order->take_at) + $order->day * 86400 + $order->hour * 3600;
+                // 计算剩余时间
+                $leftSecond = $expirationTimestamp - time();
+                $leftTime = Sec2Time($leftSecond); // 剩余时间
+            } else {
+                $leftTime = '';
+            }
+
+            // 计算利润、手续费、获得金额等
+            if (!in_array($order->status, [19, 20, 21])) {
+                $paymentAmount = '';
+                $getAmount = '';
+                $poundage = '';
+                $profit = '';
+            } else {
+                // 支付金额
+                if ($order->status == 19) {
+                    $amount = $consult->amount;
+                } elseif ($order->status == 21) {
+                    $amount = $complain->amount;
+                } else {
+                    $amount = $order->amount;
+                }
+                // 支付金额
+                $paymentAmount = $amount !=0 ?  $amount + 0:  $amount;
+
+                $getAmount = (float)0 + 0;
+                $poundage = (float)0 + 0;
+
+                // 利润
+                $profit = ((float)$order->source_price - $paymentAmount + $getAmount - $poundage) + 0;
+            }
 
             $orderInfo = [
                 'order_no'                         => $order->trade_no,
@@ -48,28 +93,32 @@ class GameLevelingOrderOperateController
                 'order_password'                   => $order->take_order_password ?? '',
                 'third'                            => $order->platform_id ?? '',
                 'third_order_no'                   => $order->platform_trade_no ?? '',
-                'hatchet_man_name'                 => $order->hatchet_man_name ?? '',
-                'hatchet_man_phone'                => $order->hatchet_man_phone ?? '',
-                'hatchet_man_qq'                   => $order->hatchet_man_qq ?? '',
-                'left_time'                        => $detail['left_time'],
-                'created_at'                       => $detail['created_at'],
-                'receiving_time'                   => $detail['receiving_time'],
-                'check_time'                       => $detail['check_time'],
-                'checkout_time'                    => $detail['checkout_time'],
-                'pre_sale'                         => $detail['pre_sale'],
-                'customer_service_name'            => $detail['customer_service_name'],
-                'consult_desc'                     => $detail['consult'],
-                'complain_desc'                    => $detail['complain'],
-                'payment_amount'                   => $detail['payment_amount'],
-                'get_amount'                       => $detail['get_amount'],
-                'poundage'                         => $detail['poundage'],
-                'profit'                           => $detail['profit'],
-                'tm_status'                        => $tmStatus,
+                'hatchet_man_name'                 => $order->gameLevelingOrderDetail->hatchet_man_name ?? '',
+                'hatchet_man_phone'                => $order->gameLevelingOrderDetail->hatchet_man_phone ?? '',
+                'hatchet_man_qq'                   => $order->gameLevelingOrderDetail->hatchet_man_qq ?? '',
+                'left_time'                        => $leftTime,
+                'created_at'                       => $order->created_at ?? '',
+                'receiving_time'                   => $order->take_at ?? '',
+                'check_time'                       => $order->apply_complete_at ?? '',
+                'checkout_time'                    => $order->complete_at ?? '',
+                'pre_sale'                         => $order->pre_sale ?? '',
+                'customer_service_name'            => $order->customer_service_name ?? '',
+                'consult_desc'                     => $consult->reason,
+                'complain_desc'                    => $complain->reason,
+                'payment_amount'                   => $paymentAmount,
+                'get_amount'                       => $getAmount,
+                'poundage'                         => $poundage,
+                'profit'                           => $profit,
+                'tm_status'                        => $order->channel_order_status ?? '',
             ];
 
-            if (! $order) {
-                throw new GameLevelingOrderOperateException("订单不存在!");
-            }
+            myLog('game-leveling-order-operate-query-success', [$order->platform_id, $orderInfo]);
+
+            return response()->ajax(1, '查询成功', [
+                'order_info' => base64_encode(openssl_encrypt(json_encode($orderInfo),
+                    'aes-128-cbc', config('partner.platform')[$order->platform_id]['aes_key'],
+                    true, config('partner.platform')[$order->platform_id]['aes_iv'])),
+            ]);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '查询订单接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -87,18 +136,34 @@ class GameLevelingOrderOperateController
      * 接单接口
      * @return mixed
      */
-    public function receive()
+    public function take()
     {
         DB::beginTransaction();
         try {
-            if (!request('order_no') || !request('hatchet_man_qq') || !request('hatchet_man_phone') || !request('hatchet_man_name')) {
+            if (!request('order_no') || !request('hatchet_man_name')) {
                 return response()->partner(0, '参数缺失!');
+            }
+
+            if (!request('hatchet_man_qq') && !request('hatchet_man_phone')) {
+                return response()->partner(0, '打手电话和打手QQ必须存在一个!');
             }
             $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
 
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 询用查询接口
+            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['orderDetail']], $order);
+
+            // 同步价格
+            if ($queryResult[config('leveling.third_orders_price')[$order->platform_id]['data']][config('leveling.third_orders_price')[$order->platform_id]['price']] != $order->amount) {
+                AutoMarkupOrderEveryHour::deleteRedisHashKey($order->trade_no);
+                return response()->partner(0, '接单失败, 订单价格不一致' . $order->trade_no);
+            }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->take(request('hatchet_man_name'), request('hatchet_man_qq'), request('hatchet_man_phone'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '接单接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -128,6 +193,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->applyComplete();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '申请验收接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -157,6 +225,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->cancelComplete();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '取消验收接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -186,6 +257,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->applyConsult(request('api_amount'), request('api_deposit'), request('api_service'), request('content'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '申请协商接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -215,6 +289,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->cancelConsult();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '取消协商接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -244,6 +321,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->refuseConsult();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '不同意协商接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -273,6 +353,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->agreeConsult();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '同意协商接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -302,6 +384,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->forceDelete();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '强制撤单接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -331,6 +415,9 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->applyComplain(request('content', '接口没有回传申请仲裁信息'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '申请仲裁接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -360,6 +447,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->cancelComplain();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '取消仲裁接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -389,6 +478,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->arbitration(request('api_amount'), request('api_deposit'), request('api_service'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '客服仲裁接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -418,6 +509,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->anomaly();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '异常接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -447,6 +540,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->cancelAnomaly();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '取消异常失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -476,6 +571,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->callback(request('no'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '回调失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -505,6 +602,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->complete();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '完成失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -526,7 +625,7 @@ class GameLevelingOrderOperateController
     {
         DB::beginTransaction();
         try {
-            if (!request('order_no') || !request('data') || !request('message')) {
+            if (!request('order_no') || !request('date') || !request('message')) {
                 return response()->partner(0, '参数缺失!');
             }
 
@@ -535,20 +634,8 @@ class GameLevelingOrderOperateController
             if (! $order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
-
-            $data = [
-                'user_id' => $order->parent_user_id, // 发单用户ID
-                'third' => $order->platform_id,
-                'third_order_no' => $order->platform_trade_no, // 第三方平台单号
-                'foreign_order_no' => $order->channel_order_trade_no, // 天猫单号
-                'order_no' => $order->trade_no, // 我们平台单号
-                'date' => request('data'), // 第三方平台单号留言时间
-                'contents' => request('message'), // 第三方平台单号留言内容
-            ];
-
-            LevelingMessage::create($data);
-
-            levelingMessageCount($order->parent_user_id, 1, 1);
+            // 开始调用
+            OrderOperateController::init($order, request('user'))->leaveMessage(request('date'), request('message'));
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '留言失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);

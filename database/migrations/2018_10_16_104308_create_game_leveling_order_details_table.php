@@ -20,6 +20,9 @@ class CreateGameLevelingOrderDetailsTable extends Migration
             $table->string('game_server_name', 60)->comment('游戏服务器名称');
             $table->string('game_leveling_type_name', 191)->comment('游戏代练类型名称');
             $table->string('game_name', 60)->comment('游戏名称');
+            $table->string('hatchet_man_name')->comment('打手姓名');
+            $table->string('hatchet_man_phone')->comment('打手电话');
+            $table->string('hatchet_man_qq')->comment('打手QQ');
             $table->string('username', 191)->comment('创建订单用户');
             $table->string('parent_username', 191)->comment('创建订单用户父');
             $table->string('take_username', 191)->nullable()->comment('接单用户名');
