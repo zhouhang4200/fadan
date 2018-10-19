@@ -828,7 +828,7 @@ class Dd373Platform implements GameLevelingPlatformInterface
             $arr['detail']['pic2'] = $result['data']['ImageList'][1] ?? '';
             $arr['detail']['pic3'] = $result['data']['ImageList'][2] ?? '';
 
-            $res = static::formDataRequest($options, config('leveling.dd373.url')['getArbitrationList'], 'getArbitrationInfo', $orderDatas);
+            $res = static::formDataRequest($options, config('leveling.dd373.url')['getArbitrationList'], $order, 'getComplainDetail');
 
             if (isset($res['data']) && $res['code'] == 0) {
                 foreach($res['data'] as $k => $detail) {
