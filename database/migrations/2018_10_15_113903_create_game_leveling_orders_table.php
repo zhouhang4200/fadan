@@ -34,8 +34,8 @@ class CreateGameLevelingOrdersTable extends Migration
             $table->integer('take_user_id')->unsigned()->default(0)->comment('接单用户ID');
             $table->integer('take_parent_user_id')->unsigned()->default(0)->comment('接单用户父ID');
             $table->tinyInteger('top')->default(0)->comment('置顶 0 没有置 1 置顶');
-            $table->integer('region_id')->unsigned()->comment('游戏区ID');
-            $table->integer('server_id')->unsigned()->comment('游戏服务器ID');
+            $table->integer('game_region_id')->unsigned()->comment('游戏区ID');
+            $table->integer('game_server_id')->unsigned()->comment('游戏服务器ID');
             $table->integer('game_leveling_type_id')->unsigned()->comment('游戏代练类型');
             $table->integer('day')->unsigned()->default(0)->comment('代练天数');
             $table->integer('hour')->unsigned()->default(0)->comment('代练小时');

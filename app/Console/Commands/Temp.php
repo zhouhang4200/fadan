@@ -32,6 +32,7 @@ use App\Services\TmallOrderApi;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 use Log, Config, Weight, Order;
 use LogisticsDummySendRequest;
 use OSS\Core\OssException;
