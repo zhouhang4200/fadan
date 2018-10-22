@@ -8,7 +8,7 @@ use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingPlatform;
 use App\Exceptions\GameLevelingOrderOperateException;
 
-class Show91Platform implements GameLevelingPlatformInterface
+class Show91PlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 表单请求

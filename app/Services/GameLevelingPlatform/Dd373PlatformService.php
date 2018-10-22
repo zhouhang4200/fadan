@@ -7,7 +7,7 @@ use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingPlatform;
 use App\Exceptions\GameLevelingOrderOperateException;
 
-class Dd373Platform implements GameLevelingPlatformInterface
+class Dd373PlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 表单发送模式

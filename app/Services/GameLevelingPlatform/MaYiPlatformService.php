@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
 use App\Exceptions\GameLevelingOrderOperateException;
 
-class MaYiPlatform implements GameLevelingPlatformInterface
+class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 成功状态

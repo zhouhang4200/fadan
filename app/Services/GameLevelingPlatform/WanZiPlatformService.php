@@ -5,7 +5,7 @@ namespace App\Services\GameLevelingPlatform;
 use App\Models\GameLevelingOrder;
 use App\Exceptions\GameLevelingOrderOperateException;
 
-class WanZiPlatform implements GameLevelingPlatformInterface
+class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 表单发送

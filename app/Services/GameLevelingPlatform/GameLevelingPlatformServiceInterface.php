@@ -7,7 +7,7 @@ use App\Models\GameLevelingOrder;
 /**
  * 第三方平台操作接口
  */
-interface GameLevelingPlatformInterface
+interface GameLevelingPlatformServiceInterface
 {
     public static function onSale(GameLevelingOrder $order); // 上架
     public static function offSale(GameLevelingOrder $order); // 下架
