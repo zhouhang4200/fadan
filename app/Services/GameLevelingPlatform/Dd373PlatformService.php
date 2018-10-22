@@ -36,7 +36,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
 
             // 空结果
             if (! isset($result) || empty($result)) {
-                if ($url != config('leveling.dd373.url')['delete']) {
+                if ($url != config('gameleveling.dd373.url')['delete']) {
                     throw new GameLevelingOrderOperateException('调用dd373的multipart请求，返回结果不存在!');
                 }
             }
@@ -49,7 +49,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
                     // 失败
                     if (isset($arrResult['code']) && $arrResult['code'] != 0) {
                         $errorMessage = $arrResult['msg'];
-                        $operateName = config('leveling.operate')[$functionName];
+                        $operateName = config('gameleveling.operate')[$functionName];
 
                         // 往钉钉群里发消息
                         $client = new Client();
@@ -70,7 +70,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
                             ]
                         ]);
 
-                        if ($url != config('leveling.dd373.url')['delete']) {
+                        if ($url != config('gameleveling.dd373.url')['delete']) {
                             throw new GameLevelingOrderOperateException($errorMessage);
                         }
                     }
@@ -105,7 +105,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             $result = $response->getBody()->getContents();
 
             if (! isset($result) || empty($result)) {
-                if ($url != config('leveling.dd373.url')['delete']) {
+                if ($url != config('gameleveling.dd373.url')['delete']) {
                     throw new GameLevelingOrderOperateException('调用dd373的normal请求，返回结果不存在!');
                 }
             }
@@ -119,7 +119,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
                     // 失败
                     if (isset($arrResult['code']) && $arrResult['code'] != 0) {
                         $errorMessage = $arrResult['msg'];
-                        $operateName = config('leveling.operate')[$functionName];
+                        $operateName = config('gameleveling.operate')[$functionName];
 
                         // 往群里发消息
                         $client = new Client();
@@ -140,7 +140,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
                             ]
                         ]);
 
-                        if ($url != config('leveling.dd373.url')['delete']) {
+                        if ($url != config('gameleveling.dd373.url')['delete']) {
                             throw new GameLevelingOrderOperateException($errorMessage);
                         }
                     }
@@ -160,11 +160,11 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
      */
     public static function handleOptions($options)
     {
-        $sign = md5("JsonData=".json_encode($options)."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key'));
+        $sign = md5("JsonData=".json_encode($options)."&platformSign=".config('gameleveling.dd373.platform-sign').config('gameleveling.dd373.key'));
 
         return [
             'JsonData'     => json_encode($options),
-            'platformSign' => config('leveling.dd373.platform-sign'),
+            'platformSign' => config('gameleveling.dd373.platform-sign'),
             'Sign'         => $sign,
         ];
     }
@@ -193,7 +193,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['onSale'], $order,'onSale');
+            static::normalRequest($options, config('gameleveling.dd373.url')['onSale'], $order,'onSale');
             return true;
         } catch (GameLevelingOrderOperateException $e) {
             myLog('dd373-platform-error', ['方法' => '上架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -230,7 +230,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['offSale'], $order, 'offSale');
+            static::normalRequest($options, config('gameleveling.dd373.url')['offSale'], $order, 'offSale');
             return true;
         } catch (GameLevelingOrderOperateException $e) {
             myLog('dd373-platform-error', ['方法' => '下架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -269,7 +269,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['applyConsult'], $order,'applyConsult');
+            static::normalRequest($options, config('gameleveling.dd373.url')['applyConsult'], $order,'applyConsult');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '申请撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -293,7 +293,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['cancelConsult'], $order, 'cancelConsult');
+            static::normalRequest($options, config('gameleveling.dd373.url')['cancelConsult'], $order, 'cancelConsult');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '取消撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -317,7 +317,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            $result = static::normalRequest($options, config('leveling.dd373.url')['agreeConsult'],  $order,'agreeConsult');
+            $result = static::normalRequest($options, config('gameleveling.dd373.url')['agreeConsult'],  $order,'agreeConsult');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '同意撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -341,7 +341,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['refuseConsult'], $order, 'refuseConsult');
+            static::normalRequest($options, config('gameleveling.dd373.url')['refuseConsult'], $order, 'refuseConsult');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '不同意撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -372,7 +372,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::formDataRequest(array_merge($options, array_filter($finalPic)), config('leveling.dd373.url')['applyComplain'], $order, 'applyComplain');
+            static::formDataRequest(array_merge($options, array_filter($finalPic)), config('gameleveling.dd373.url')['applyComplain'], $order, 'applyComplain');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '申请仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -395,7 +395,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['cancelComplain'], $order, 'cancelComplain');
+            static::normalRequest($options, config('gameleveling.dd373.url')['cancelComplain'], $order, 'cancelComplain');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '申请仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -421,7 +421,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['complete'], $order, 'complete');
+            static::normalRequest($options, config('gameleveling.dd373.url')['complete'], $order, 'complete');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单完成', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -443,7 +443,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['lock'], $order, 'lock');
+            static::normalRequest($options, config('gameleveling.dd373.url')['lock'], $order, 'lock');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -465,7 +465,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['cancelLock'], $order, 'cancelLock');
+            static::normalRequest($options, config('gameleveling.dd373.url')['cancelLock'], $order, 'cancelLock');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '解除锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -495,7 +495,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['delete'], $order, 'delete');
+            static::normalRequest($options, config('gameleveling.dd373.url')['delete'], $order, 'delete');
             return true;
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '删除订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
@@ -541,10 +541,10 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             $options = json_encode($options);
 
             $client = new Client();
-            $response = $client->request('POST', config('leveling.dd373.url')['modifyOrder'], [
+            $response = $client->request('POST', config('gameleveling.dd373.url')['modifyOrder'], [
                 'form_params' => [
-                    'data' => base64_encode(openssl_encrypt($options, 'aes-128-cbc', config('leveling.dd373.aes_key'), true, config('leveling.dd373.aes_iv'))),
-                    "platformSign" => config('leveling.dd373.platform-sign'),
+                    'data' => base64_encode(openssl_encrypt($options, 'aes-128-cbc', config('gameleveling.dd373.aes_key'), true, config('gameleveling.dd373.aes_iv'))),
+                    "platformSign" => config('gameleveling.dd373.platform-sign'),
                 ],
                 'body' => 'x-www-form-urlencoded',
             ]);
@@ -587,7 +587,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['addTime'], $order, 'addTime');
+            static::normalRequest($options, config('gameleveling.dd373.url')['addTime'], $order, 'addTime');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单加时', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -619,7 +619,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['addAmount'],  $order, 'addAmount');
+            static::normalRequest($options, config('gameleveling.dd373.url')['addAmount'],  $order, 'addAmount');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单加款', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -645,13 +645,13 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
 
             $options = [
                 'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
-                'platformSign' => config('leveling.dd373.platform-sign'),
+                'platformSign' => config('gameleveling.dd373.platform-sign'),
             ];
-            $str = "platformOrderNo=".$gameLevelingPlatform->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+            $str = "platformOrderNo=".$gameLevelingPlatform->platform_trade_no."&platformSign=".config('gameleveling.dd373.platform-sign').config('gameleveling.dd373.key');
 
             $options['Sign'] = md5($str);
             // 发送
-            return static::normalRequest($options, config('leveling.dd373.url')['getOrderDetail'], $order, 'getOrderDetail');
+            return static::normalRequest($options, config('gameleveling.dd373.url')['getOrderDetail'], $order, 'getOrderDetail');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -669,13 +669,13 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         try {
             $options = [
                 'platformOrderNo' => $order->platform_trade_no,
-                'platformSign' => config('leveling.dd373.platform-sign'),
+                'platformSign' => config('gameleveling.dd373.platform-sign'),
             ];
-            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('gameleveling.dd373.platform-sign').config('gameleveling.dd373.key');
 
             $options['Sign'] = md5($str);
             // 发送
-            $result = static::normalRequest($options, config('leveling.dd373.url')['getScreenShot'], $order, 'getScreenShot');
+            $result = static::normalRequest($options, config('gameleveling.dd373.url')['getScreenShot'], $order, 'getScreenShot');
 
             $images = [];
             if (isset($result['data']) && count($result['data']) > 0) {
@@ -707,13 +707,13 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         try {
             $options = [
                 'platformOrderNo' => $order->platform_trade_no,
-                'platformSign' => config('leveling.dd373.platform-sign'),
+                'platformSign' => config('gameleveling.dd373.platform-sign'),
             ];
-            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('gameleveling.dd373.platform-sign').config('gameleveling.dd373.key');
 
             $options['Sign'] = md5($str);
             // 发送
-            $result =  static::normalRequest($options, config('leveling.dd373.url')['getMessage'], $order, 'getMessage');
+            $result =  static::normalRequest($options, config('gameleveling.dd373.url')['getMessage'], $order, 'getMessage');
 
             $message = [];
             if (isset($result['data'])) {
@@ -749,7 +749,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['replyMessage'], $order, 'replyMessage');
+            static::normalRequest($options, config('gameleveling.dd373.url')['replyMessage'], $order, 'replyMessage');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -773,7 +773,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('leveling.dd373.url')['modifyGamePassword'], $order,'modifyGamePassword');
+            static::normalRequest($options, config('gameleveling.dd373.url')['modifyGamePassword'], $order,'modifyGamePassword');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -797,7 +797,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::formDataRequest(array_merge($options, ['fileBase' => $pic]), config('leveling.dd373.url')['sendImage'], $order, 'sendImage');
+            static::formDataRequest(array_merge($options, ['fileBase' => $pic]), config('gameleveling.dd373.url')['sendImage'], $order, 'sendImage');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '发送截图', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -815,14 +815,14 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         try {
             $options = [
                 'platformOrderNo' => $order->platform_trade_no,
-                'platformSign' => config('leveling.dd373.platform-sign'),
+                'platformSign' => config('gameleveling.dd373.platform-sign'),
             ];
 
-            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+            $str = "platformOrderNo=".$order->platform_trade_no."&platformSign=".config('gameleveling.dd373.platform-sign').config('gameleveling.dd373.key');
 
             $options['Sign'] = md5($str);
             // 发送
-            $result = static::formDataRequest($options, config('leveling.dd373.url')['getComplainDetail'], $order, 'getComplainDetail');
+            $result = static::formDataRequest($options, config('gameleveling.dd373.url')['getComplainDetail'], $order, 'getComplainDetail');
 
             if (! isset($result) || $result['code'] != 0) {
                 return '接口无相关信息';
@@ -836,7 +836,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             $arr['detail']['pic2'] = $result['data']['ImageList'][1] ?? '';
             $arr['detail']['pic3'] = $result['data']['ImageList'][2] ?? '';
 
-            $res = static::formDataRequest($options, config('leveling.dd373.url')['getArbitrationList'], $order, 'getComplainDetail');
+            $res = static::formDataRequest($options, config('gameleveling.dd373.url')['getArbitrationList'], $order, 'getComplainDetail');
 
             if (isset($res['data']) && $res['code'] == 0) {
                 foreach($res['data'] as $k => $detail) {
@@ -871,7 +871,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::formDataRequest(array_merge($options, ['fileBase' => base64ToBlob($pic)]), config('leveling.dd373.url')['addComplainDetail'], $order, 'addComplainDetail');
+            static::formDataRequest(array_merge($options, ['fileBase' => base64ToBlob($pic)]), config('gameleveling.dd373.url')['addComplainDetail'], $order, 'addComplainDetail');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());

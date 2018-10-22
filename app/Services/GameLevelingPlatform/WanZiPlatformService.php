@@ -51,7 +51,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                         //     'json' => [
                         //         'msgtype' => 'text',
                         //         'text' => [
-                        //             'content' => '订单（内部单号：'.$order->trade_no. '）调用【丸子平台】【'.config('leveling.operate')[$functionName.'】接口失败:'.$errorMessage
+                        //             'content' => '订单（内部单号：'.$order->trade_no. '）调用【丸子平台】【'.config('gameleveling.operate')[$functionName.'】接口失败:'.$errorMessage
                         //         ],
                         //         'at' => [
                         //             'isAtAll' => false,
@@ -64,7 +64,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                         //     ]
                         // ]);
 
-                        if ($url != config('leveling.wanzi.url')['delete']) {
+                        if ($url != config('gameleveling.wanzi.url')['delete']) {
                             throw new GameLevelingOrderOperateException($errorMessage);
                         }
                     }
@@ -114,7 +114,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                         //     'json' => [
                         //         'msgtype' => 'text',
                         //         'text' => [
-                        //             'content' => '订单（内部单号：'.$order->trade_no. '）调用【丸子平台】【'.config('leveling.operate')[$functionName].'】接口失败:'.$errorMessage
+                        //             'content' => '订单（内部单号：'.$order->trade_no. '）调用【丸子平台】【'.config('gameleveling.operate')[$functionName].'】接口失败:'.$errorMessage
                         //         ],
                         //         'at' => [
                         //             'isAtAll' => false,
@@ -127,7 +127,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                         //     ]
                         // ]);
 
-                        if ($url != config('leveling.wanzi.url')['delete']) {
+                        if ($url != config('gameleveling.wanzi.url')['delete']) {
                             throw new GameLevelingOrderOperateException($errorMessage);
                         }
                     }
@@ -152,7 +152,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         foreach ($options as $key => $value) {
             $str .= $key . '=' . $value . '&';
         }
-        return md5(rtrim($str,  '&') . config('leveling.wanzi.app_secret'));
+        return md5(rtrim($str,  '&') . config('gameleveling.wanzi.app_secret'));
     }
 
     /**
@@ -173,7 +173,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -181,7 +181,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['onSale'], 'onSale', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['onSale'], 'onSale', $order);
 
             return true;
         } catch (GameLevelingOrderOperateException $e) {
@@ -213,7 +213,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -221,7 +221,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['offSale'], 'offSale', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['offSale'], 'offSale', $order);
 
             return true;
         } catch (GameLevelingOrderOperateException $e) {
@@ -247,7 +247,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'         => config('leveling.wanzi.app_id'),
+                'app_id'         => config('gameleveling.wanzi.app_id'),
                 'order_no'       => $order->platform_trade_no,
                 'amount'         => $order->gameLevelingOrderConsult->amount,
                 'double_deposit' => bcadd($order->gameLevelingOrderConsult->security_deposit, $order->gameLevelingOrderConsult->efficiency_deposit),
@@ -258,7 +258,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['applyConsult'], 'applyConsult', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['applyConsult'], 'applyConsult', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '申请协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -274,7 +274,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -282,7 +282,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['cancelConsult'], 'cancelConsult', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['cancelConsult'], 'cancelConsult', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '取消协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -298,7 +298,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -306,7 +306,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            $result = static::normalRequest($options, config('leveling.wanzi.url')['agreeConsult'], 'agreeConsult', $order);
+            $result = static::normalRequest($options, config('gameleveling.wanzi.url')['agreeConsult'], 'agreeConsult', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -322,7 +322,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -330,7 +330,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['refuseConsult'], 'refuseConsult', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['refuseConsult'], 'refuseConsult', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -350,7 +350,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
                 'reason' => $order->gameLevelingOrderComplain->reason ?? '无',
@@ -363,7 +363,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options['pic3'] = $pic['pic3'] ?? null;
 
             // 发送
-            static::formDataRequest($options, config('leveling.wanzi.url')['applyComplain'], 'applyComplain', $order);
+            static::formDataRequest($options, config('gameleveling.wanzi.url')['applyComplain'], 'applyComplain', $order);
         } catch (Exception $e) {
             myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -375,7 +375,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -383,7 +383,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['cancelComplain'], 'cancelComplain', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['cancelComplain'], 'cancelComplain', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '取消仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -404,7 +404,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -412,7 +412,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['complete'], 'complete', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['complete'], 'complete', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单完成', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -428,7 +428,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -436,7 +436,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['lock'], 'lock', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['lock'], 'lock', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -452,7 +452,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -460,7 +460,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['cancelLock'], 'cancelLock', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['cancelLock'], 'cancelLock', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '取消锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -489,7 +489,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -497,7 +497,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['delete'], 'delete', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['delete'], 'delete', $order);
 
             return true;
         } catch (Exception $e) {
@@ -548,15 +548,15 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options = json_encode($options);
 
             $client = new Client();
-            $response = $client->request('POST', config('leveling.wanzi.url')['modifyOrder'], [
+            $response = $client->request('POST', config('gameleveling.wanzi.url')['modifyOrder'], [
                 'form_params' => [
-                    'data' => base64_encode(openssl_encrypt($options, 'aes-128-cbc', config('leveling.wanzi.aes_key'), true, config('leveling.wanzi.aes_iv')))
+                    'data' => base64_encode(openssl_encrypt($options, 'aes-128-cbc', config('gameleveling.wanzi.aes_key'), true, config('gameleveling.wanzi.aes_iv')))
                 ],
                 'body' => 'x-www-form-urlencoded',
             ]);
             $result = $response->getBody()->getContents();
 
-            myLog('wanzi-modify-order-result', ['请求参数' => $options, '地址' => config('leveling.wanzi.url')['modifyOrder'], '结果' => $result ?? '']);
+            myLog('wanzi-modify-order-result', ['请求参数' => $options, '地址' => config('gameleveling.wanzi.url')['modifyOrder'], '结果' => $result ?? '']);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '修改订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -581,7 +581,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
                 'day'     => $order->day,
@@ -592,7 +592,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options['sign'] = $sign;
 
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['addTime'], 'addTime', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['addTime'], 'addTime', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单加时', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -617,7 +617,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
                 'amount'    => $order->amount,
@@ -626,7 +626,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['addAmount'], 'addAmount', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['addAmount'], 'addAmount', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单加款', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -651,7 +651,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -659,7 +659,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            return static::normalRequest($options, config('leveling.wanzi.url')['getOrderDetail'], 'getOrderDetail', $order);
+            return static::normalRequest($options, config('gameleveling.wanzi.url')['getOrderDetail'], 'getOrderDetail', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -676,7 +676,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -684,7 +684,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            $dataList = static::normalRequest($options, config('leveling.wanzi.url')['getScreenShot'], 'getScreenShot', $order);
+            $dataList = static::normalRequest($options, config('gameleveling.wanzi.url')['getScreenShot'], 'getScreenShot', $order);
 
             if (isset($dataList) && $dataList['code'] == 1 && !empty($dataList['data'])) {
                 foreach ($dataList['data'] as $key => $value) {
@@ -715,7 +715,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -723,7 +723,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            $message = static::normalRequest($options, config('leveling.wanzi.url')['getMessage'], 'getMessage', $order);
+            $message = static::normalRequest($options, config('gameleveling.wanzi.url')['getMessage'], 'getMessage', $order);
 
             if (isset($message) && isset($message['code']) && $message['code'] == 1 && isset($message['data'])) {
                 $sortField = [];
@@ -762,7 +762,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
                 'message' => $message,
@@ -771,7 +771,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['replyMessage'], 'replyMessage', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['replyMessage'], 'replyMessage', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -787,7 +787,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
                 'amount'    => $order->amount,
@@ -798,7 +798,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['modifyGamePassword'], 'modifyGamePassword', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['modifyGamePassword'], 'modifyGamePassword', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -814,7 +814,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @return bool
      * @throws GameLevelingOrderOperateException
      */
-    public static function setTop($orderDatas)
+    public static function setTop($order)
     {
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -826,7 +826,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -834,7 +834,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('leveling.wanzi.url')['setTop'], 'setTop', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['setTop'], 'setTop', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单置顶', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -851,7 +851,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
             ];
@@ -860,7 +860,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options['sign'] = $sign;
 
             // 发送
-            $result = static::normalRequest($options, config('leveling.wanzi.url')['getComplainDetail'], 'getComplainDetail', $order);
+            $result = static::normalRequest($options, config('gameleveling.wanzi.url')['getComplainDetail'], 'getComplainDetail', $order);
             $details = [];
             if (isset($result) && $result['code'] == 1 && isset($result['data'])) {
                 $details = $result['data'];
@@ -914,7 +914,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $options = [
-                'app_id'    => config('leveling.wanzi.app_id'),
+                'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
                 'reason'    => $content,
@@ -925,7 +925,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options['image'] = !empty($pic) ? $pic : '';
 
             // 发送
-            return static::formDataRequest($options, config('leveling.wanzi.url')['addComplainDetail'], 'addComplainDetail', $order);
+            return static::formDataRequest($options, config('gameleveling.wanzi.url')['addComplainDetail'], 'addComplainDetail', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());

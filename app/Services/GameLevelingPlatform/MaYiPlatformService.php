@@ -61,12 +61,12 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             $client = new Client();
-            $response = $client->request($method, config('leveling.mayi.url'), [
+            $response = $client->request($method, config('gameleveling.mayi.url'), [
                 'multipart' => $data,
             ]);
             $result =  $response->getBody()->getContents();
 
-            myLog('mayi-platform-form-request-result', [config('leveling.mayi.url'), $options, $result]);
+            myLog('mayi-platform-form-request-result', [config('gameleveling.mayi.url'), $options, $result]);
 
             if (! isset($result) || empty($result)) {
                 if ($options['method'] != 'dlOrderDel') {
@@ -87,7 +87,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                             'json' => [
                                 'msgtype' => 'text',
                                 'text' => [
-                                    'content' => '订单（内部单号：'.$order->trade_no. '）调用【蚂蚁平台】【'.config('leveling.operate')[$functionName].'】接口失败:'.$errorMessage
+                                    'content' => '订单（内部单号：'.$order->trade_no. '）调用【蚂蚁平台】【'.config('gameleveling.operate')[$functionName].'】接口失败:'.$errorMessage
                                 ],
                                 'at' => [
                                     'isAtAll' => false,
@@ -127,7 +127,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
     {
         try {
             $client = new Client();
-            $response = $client->request($method, config('leveling.mayi.url'), [
+            $response = $client->request($method, config('gameleveling.mayi.url'), [
                 'form_params' => $options,
             ]);
 
@@ -155,7 +155,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                             'json' => [
                                 'msgtype' => 'text',
                                 'text' => [
-                                    'content' => '订单（内部单号：'.$order->trade_no. '）调用【蚂蚁平台】【'.config('leveling.operate')[$functionName].'】接口失败:'.$errorMessage
+                                    'content' => '订单（内部单号：'.$order->trade_no. '）调用【蚂蚁平台】【'.config('gameleveling.operate')[$functionName].'】接口失败:'.$errorMessage
                                 ],
                                 'at' => [
                                     'isAtAll' => false,
@@ -191,7 +191,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
     public static function getSign($method, $time)
     {
         try {
-            return md5($method . config('leveling.mayi.appid') . $time . config('leveling.mayi.Ver') . config('leveling.mayi.appsecret'));
+            return md5($method . config('gameleveling.mayi.appid') . $time . config('gameleveling.mayi.Ver') . config('gameleveling.mayi.appsecret'));
         } catch (Exception $e) {
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
@@ -219,10 +219,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderGrounding',
                 'order_id' => $gameLevelingPlatform->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderGrounding', $time),
             ];
 
@@ -265,10 +265,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderUndercarriage',
                 'order_id' => $gameLevelingPlatform->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderUndercarriage', $time),
             ];
 
@@ -307,10 +307,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'bzmoney' => bcadd($order->gameLevelingOrderConsult->security_deposit, $order->gameLevelingOrderConsult->efficiency_deposit),
                 'needsMoney' => $order->gameLevelingOrderConsult->amount,
                 'tsContent' => $order->gameLevelingOrderConsult->reason ?? '无',
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderTs', $time),
             ];
 
@@ -334,10 +334,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderCancelTs',
                 'nid' => $order->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderCancelTs', $time),
             ];
 
@@ -361,10 +361,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderAgreeTs',
                 'nid' => $order->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderAgreeTs', $time),
             ];
 
@@ -393,10 +393,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method'    => 'dlOrdertsPub',
                 'nid'       => $order->platform_trade_no,
-                'appid'     => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid'     => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver'       => config('leveling.mayi.Ver'),
+                'Ver'       => config('gameleveling.mayi.Ver'),
                 'sign'      => static::getSign('dlOrdertsPub', $time),
                 'bz'        => $order->gameLevelingOrderComplain->reason ?? '无',
                 'img1'      => $pic['pic1'],
@@ -425,10 +425,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'method' => 'dlCancelOrdertsPub',
                 'order_id' => $order->platform_trade_no,
                 'bz' => '取消仲裁',
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlCancelOrdertsPub', $time),
             ];
 
@@ -457,11 +457,11 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderAcceptance',
                 'nid' => $order->platform_trade_no,
-                'password' => config('leveling.mayi.password'),
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'password' => config('gameleveling.mayi.password'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderAcceptance', $time),
             ];
 
@@ -486,10 +486,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'method' => 'dlOrderLock',
                 'nid' => $order->platform_trade_no,
                 'remark' => '锁定订单',
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderLock', $time),
             ];
 
@@ -514,10 +514,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'method' => 'dlOrderunLock',
                 'nid' => $order->platform_trade_no,
                 'remark' => '订单状态正常',
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderunLock', $time),
             ];
 
@@ -555,10 +555,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderDel',
                 'nid' => $gameLevelingPlatform->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderDel', $time),
             ];
 
@@ -614,12 +614,12 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'test_phone'    => $order->gameLevelingOrderDetail->user_phone,
                 'contact_phone' => $order->gameLevelingOrderDetail->user_phone,
                 'qq'            => $order->gameLevelingOrderDetail->user_qq,
-                'password'      => config('leveling.mayi.password'),
+                'password'      => config('gameleveling.mayi.password'),
                 'onway'         => 1,
-                'appid'         => config('leveling.mayi.appid'),
-                'appsecret'     => config('leveling.mayi.appsecret'),
+                'appid'         => config('gameleveling.mayi.appid'),
+                'appsecret'     => config('gameleveling.mayi.appsecret'),
                 'TimeStamp'     => $time,
-                'Ver'           => config('leveling.mayi.Ver'),
+                'Ver'           => config('gameleveling.mayi.Ver'),
                 'sign'          => static::getSign('dlOrderUpdate', $time),
             ];
 
@@ -654,10 +654,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'order_id' => $gameLevelingPlatform->platform_trade_no,
                 'append_hours' => $order->day,
                 'append_day' => $order->hour,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrdereUpdateSpec', $time),
             ];
 
@@ -691,10 +691,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'method' => 'dlOrdereUpdatePaymoney',
                 'order_id' => $gameLevelingPlatform->platform_trade_no,
                 'append_price' => $order->amount,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrdereUpdatePaymoney', $time),
             ];
 
@@ -727,10 +727,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderInfo',
                 'nid' => $gameLevelingPlatform->platform_trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderInfo', $time),
             ];
 
@@ -755,10 +755,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderImageList',
                 'nid' => $order->trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderImageList', $time),
             ];
 
@@ -804,10 +804,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method' => 'dlOrderMessageList',
                 'nid' => $order->trade_no,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderMessageList', $time),
             ];
 
@@ -845,10 +845,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'method' => 'dlOrderMessageReply',
                 'nid' => $order->trade_no,
                 'lytext' => $message,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrderMessageReply', $time),
             ];
 
@@ -874,10 +874,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'order_id' => $order->platform_trade_no,
                 'account' => $order->game_account,
                 'gpassword' => $order->game_password,
-                'appid' => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid' => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver' => config('leveling.mayi.Ver'),
+                'Ver' => config('gameleveling.mayi.Ver'),
                 'sign' => static::getSign('dlOrdereUpdatePass', $time),
             ];
 
@@ -906,10 +906,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method'    => 'dlOrdertsPubInfo',
                 'nid'       => $order->platform_trade_no,
-                'appid'     => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid'     => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver'       => config('leveling.mayi.Ver'),
+                'Ver'       => config('gameleveling.mayi.Ver'),
                 'sign'      => static::getSign('dlOrdertsPubInfo', $time),
             ];
 
@@ -919,7 +919,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 return '暂无相关信息';
             }
             $arr = [];
-            $arr['detail']['who'] = $details['data']['userid'] == config('leveling.mayi.uid') ? '我方' : '对方';
+            $arr['detail']['who'] = $details['data']['userid'] == config('gameleveling.mayi.uid') ? '我方' : '对方';
             $arr['detail']['created_at'] = $details['data']['add_time'];
             $arr['detail']['content'] = $details['data']['remark'];
             $arr['detail']['arbitration_id'] = $details['data']['ts_id'];
@@ -929,7 +929,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
             if (isset($details['data']['supplement'])) {
                 foreach($details['data']['supplement'] as $k => $detail) {
-                    $arr['info'][$k]['who'] = $detail['userid'] == config('leveling.mayi.uid') ? '我方' : '对方';
+                    $arr['info'][$k]['who'] = $detail['userid'] == config('gameleveling.mayi.uid') ? '我方' : '对方';
                     $arr['info'][$k]['created_at'] = $detail['add_time'];
                     $arr['info'][$k]['content'] = $detail['remark'];
                     $arr['info'][$k]['pic'] = $detail['img_url'];
@@ -957,10 +957,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             $options = [
                 'method'    => 'dlOrdertsPubAddInfo',
                 'nid'       => $order->platform_trade_no,
-                'appid'     => config('leveling.mayi.appid'),
-                'appsecret' => config('leveling.mayi.appsecret'),
+                'appid'     => config('gameleveling.mayi.appid'),
+                'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
-                'Ver'       => config('leveling.mayi.Ver'),
+                'Ver'       => config('gameleveling.mayi.Ver'),
                 'sign'      => static::getSign('dlOrdertsPubAddInfo', $time),
                 'pic1'      => !empty($pic) ? base64ToBlob($pic) : '',
                 'bz'        => $content,
