@@ -260,7 +260,7 @@ class WanZiPlatform implements GameLevelingPlatformInterface
             // 发送
             static::normalRequest($options, config('leveling.wanzi.url')['applyConsult'], 'applyConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '申请撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', ['方法' => '申请协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
@@ -284,7 +284,7 @@ class WanZiPlatform implements GameLevelingPlatformInterface
             // 发送
             static::normalRequest($options, config('leveling.wanzi.url')['cancelConsult'], 'cancelConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '取消撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', ['方法' => '取消协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
@@ -308,7 +308,7 @@ class WanZiPlatform implements GameLevelingPlatformInterface
             // 发送
             $result = static::normalRequest($options, config('leveling.wanzi.url')['agreeConsult'], 'agreeConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '同意撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', ['方法' => '同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
@@ -332,7 +332,7 @@ class WanZiPlatform implements GameLevelingPlatformInterface
             // 发送
             static::normalRequest($options, config('leveling.wanzi.url')['refuseConsult'], 'refuseConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '不同意撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
